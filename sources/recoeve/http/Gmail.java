@@ -34,8 +34,8 @@ public class Gmail{
 	
 	public static void sendVeriKey(String email, String id, String veriKey) throws AddressException, MessagingException {
 		String title="Verify your account on Recoeve.";
-		String url="http://localhost:1000/account/verify/"+id+"/"+veriKey;
-		String msg="Thank you for the registration on Recoeve.<br><br>Please click the following link to verify your account:<br><a href='"+url+"'>"+url+"</a>";
+		String url="http://recoeve.net/account/verify/"+id+"/"+veriKey;
+		String msg="<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:15px'>Thanks for your registration on <a href='http://recoeve.net/'>Recoeve.net</a>.<br><br>Please click the following link to verify your account:<br><a href='"+url+"'>"+url+"</a></span>";
 		Gmail.send("recoeve", "com$goscarekl12", email, "", title, msg);
 	}
 
