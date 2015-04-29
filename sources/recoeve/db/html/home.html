@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+	<!-- <link rel="stylesheet" media="all" type="text/css" href="./log-in.css"/> -->
+<style>
+div, textarea, form, label, input, table {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
+body {margin:0; padding:0}
+#container {position:absolute; left:0; top:0; width:100%; height:100%; background:rgb(250,250,250); font-size:20px;}
+#sidebar {position:absolute; left:0; top:0; bottom:0; width:15em; height:100%; overflow-x:hidden; overflow-y:auto; background:rgb(230,230,230)}
+#contents {position:absolute; left:15em; right:0; top:0; bottom:0; height:100%; overflow-x:hidden; overflow-y:auto;}
+
+.recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(240,240,255);}
+h1 {display:block; font:inherit; font-size:3em; font-weight:bold; color:rgb(70,70,80); margin:0 0 .5em; padding:.6em .5em; border-bottom:5px solid rgb(140,140,150);}
+.reco {width:40em; max-width:100%; margin:0 auto 1em; padding:1em; font-size:16px; color:white; line-height:1; background:black; border:3px solid rgb(120,120,130); text-align:left}
+/*.reco>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3;}*/
+.reco>label {display:inline-block; text-align:left; color:white; font-size:1em; font-weight:bold; margin:.9em 0 .4em;}
+.reco>label>span.desc {font-size:.8em;}
+.reco>label:first-of-type {margin-top:0}
+.reco>input, .reco>textarea {display:block; width:100%; height:auto; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; font-weight:bold; font-size:.9em; line-height:1.5; background:white; color:rgb(50,50,50);}
+.reco>input:focus, .reco>textarea:focus {background:rgb(240,240,255)}
+.reco>button {width:auto; padding:.2em .5em; font:inherit; font-weight:bold; font-size:.9em; line-height:1.5; margin:.7em 0 0;}
+.cBoth {clear:both}
+
+/* r(S)C: Ratio (Sub)Container */
+.rC {margin:.5em 0}
+.rC>.rSC {position:relative; height:3em; padding-bottom:60%}
+.rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
+
+.none {display:none}
+
+table {font:inherit; color:inherit; border:1px solid #ccc; margin:.5em 0 1em; max-width:100%}
+table td {padding:4px; margin:3px; border:1px solid #ccc}
+</style>
+	<title>Recoeve</title>
+</head>
+<body>
+<div class="docuK rendered none"><div class="sec" id="docuK-log"></div></div>
+
+<div id="container">
+<div id="sidebar">
+<h2><a class="jump" id="toc1-Newest" href="#secId1-Newest"><span class="none"><span class="number">Newest</span>.</span>Newest posts</a></h2>
+<h2><a class="jump" id="toc1-PM" href="#secId1-PM"><span class="none"><span class="number">PM</span>.</span>[Physics/Math] Category</a></h2>
+<h3><a class="jump" id="toc1-PM-1" href="#secId1-PM-1"><span class="secN"><span class="number">PM.1</span>.</span>Physics</a></h3>
+<h3><a class="jump" id="toc1-PM-2" href="#secId1-PM-2"><span class="secN"><span class="number">PM.2</span>.</span>Mathematics</a></h3>
+<h3><a class="jump" id="toc1-PM-3" href="#secId1-PM-3"><span class="secN"><span class="number">PM.3</span>.</span>New Ideas in Physics</a></h3>
+<h3><a class="jump" id="toc1-PM-4" href="#secId1-PM-4"><span class="secN"><span class="number">PM.4</span>.</span>News</a></h3>
+<h3><a class="jump" id="toc1-PM-5" href="#secId1-PM-5"><span class="secN"><span class="number">PM.5</span>.</span>Etc.</a></h3>
+<h2><a class="jump" id="toc1-IT" href="#secId1-IT"><span class="none"><span class="number">IT</span>.</span>[IT/Programming] Category</a></h2>
+<h3><a class="jump" id="toc1-IT-1" href="#secId1-IT-1"><span class="secN"><span class="number">IT.1</span>.</span>HTML related (HTML, css, javascript 관련 이야기들)</a></h3>
+<h3><a class="jump" id="toc1-IT-2" href="#secId1-IT-2"><span class="secN"><span class="number">IT.2</span>.</span>Algorithm and Database</a></h3>
+<h3><a class="jump" id="toc1-IT-3" href="#secId1-IT-3"><span class="secN"><span class="number">IT.3</span>.</span>Etc.</a></h3>
+<h2><a class="jump" id="toc1-SPE" href="#secId1-SPE"><span class="none"><span class="number">SPE</span>.</span>[사회/정치/경제] Category</a></h2>
+<h3><a class="jump" id="toc1-SPE-1" href="#secId1-SPE-1"><span class="secN"><span class="number">SPE.1</span>.</span>국사 (대한민국 역사)</a></h3>
+<h3><a class="jump" id="toc1-SPE-2" href="#secId1-SPE-2"><span class="secN"><span class="number">SPE.2</span>.</span>경제</a></h3>
+<h3><a class="jump" id="toc1-SPE-3" href="#secId1-SPE-3"><span class="secN"><span class="number">SPE.3</span>.</span>사회</a></h3>
+<h3><a class="jump" id="toc1-SPE-4" href="#secId1-SPE-4"><span class="secN"><span class="number">SPE.4</span>.</span>정치</a></h3>
+<h3><a class="jump" id="toc1-SPE-5" href="#secId1-SPE-5"><span class="secN"><span class="number">SPE.5</span>.</span>사건 사고</a></h3>
+<h2><a class="jump" id="toc1-Break" href="#secId1-Break"><span class="none"><span class="number">Break</span>.</span>[Music/Break] Category</a></h2>
+
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+		<li>10</li>
+	</ul>
+	<ol>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ol>
+</div><!-- #sidebar -->
+<div id="contents">
+	abcdefghijkl
+</div><!-- #contents -->
+</div><!-- #container -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-prepare-2.2.js"></script>
+<!-- <script src="./log-in.js"></script> -->
+<script>
+(function(recoeve, $, undefined){
+	recoeve.errorMsgDiv=function(msg){
+		return '<div class="error-msg">'+msg+'</div>';
+	};
+	recoeve.uriBefore="URI";
+	
+	recoeve.showURI = function(elem){
+		var $uri=$(elem).next("input");
+		var uri=$uri[0].value;
+		if (uri!==recoeve.uriBefore){
+			recoeve.uriBefore=uri;
+			var youtubeURL=/^https?:\/\/www.youtube.com\/watch\?.*(?:v=)([\w-]+)/;
+			var tvpotURL=/^https?:\/\/tvpot.daum.net\/v\/([\w-]+)/;
+			var vimeoURL=/^https?:\/\/vimeo.com\/([0-9]+)/;
+			var videoId;
+			var httpURL=/^https?:\/\//;
+			
+			var rC=function(iframeStr){
+				return '<div class="rC"><div class="rSC">'
+						+iframeStr
+					+'</div></div>';
+			};
+			var str="";
+			if ((videoId=youtubeURL.exec( uri ))!==null){
+				str+=rC('<iframe src="http://www.youtube.com/embed/'+videoId[1]+'" frameborder="0" allowfullscreen=""></iframe>');
+			} else if ((videoId=tvpotURL.exec( uri ))!==null){
+				str+=rC('<iframe src="http://videofarm.daum.net/controller/video/viewer/Video.html?play_loc=tvpot&amp;jsCallback=true&amp;wmode=transparent&amp;vid='+videoId[1]+'$&amp;autoplay=false&amp;startNotReport=&amp;permitWideScreen=true&amp;forceWide=true&amp;" frameborder="0" onload="addAnyViewPlayListCallback(this);"></iframe>');
+			} else if ((videoId=vimeoURL.exec( uri ))!==null){
+				str+=rC('<iframe src="http://player.vimeo.com/video/'+videoId[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+			} else if (httpURL.test(uri)){
+				str+=rC('<iframe src="'+uri+'" frameborder="0"></iframe>');
+			} else if (uri==""){
+				str+=recoeve.errorMsgDiv("URI is empty.");
+			} else {
+				str+=recoeve.errorMsgDiv("URI is not a type of HTTP.");
+			}
+			$("#show-URI").html(str);
+		}
+	};
+	
+	recoeve.encloseStr = function(str){
+		var delimiter=/[\n\t]/;
+		var startQuote=/^"/;
+		if (delimiter.test(str)||startQuote.test(str)){
+			return '"'+str.replace(/"/g,'""')+'"';
+		} else{
+			return str;
+		}
+	};
+	recoeve.validVal = function(val){
+		if (val==""){
+			return true;
+		} else{
+			var regexVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+			var res=regexVal.exec(val);
+			if (res!=null){
+				return Number(res[1])<=Number(res[2]);
+			}
+		}
+		return false;
+	};
+	
+	recoeve.reco = function(elem){
+		var $elem=$(elem);
+		$elem[0].disabled=true;
+		var $form=$elem.parent("form.reco");
+		var strHeads="";
+		var strContents="";
+		var input=$form.find("#input-uri")[0].value.trim();
+		var val=$form.find("#input-val")[0].value.trim();
+		if (input!==""&&recoeve.validVal(val)){
+			strHeads="uri";
+			strContents=recoeve.encloseStr(input);
+			input=$form.find("#input-cats")[0].value.trim();
+			if (input!==""){
+				strHeads+="\t"+"cats";
+				strContents+="\t"+recoeve.encloseStr(input);
+			}
+			input=$form.find("#input-title")[0].value.trim();
+			if (input!==""){
+				strHeads+="\t"+"title";
+				strContents+="\t"+recoeve.encloseStr(input);
+			}
+			input=$form.find("#input-desc")[0].value.trim();
+			if (input!==""){
+				strHeads+="\t"+"desc";
+				strContents+="\t"+recoeve.encloseStr(input);
+			}
+			input=$form.find("#input-cmt")[0].value.trim();
+			if (input!==""){
+				strHeads+="\t"+"cmt";
+				strContents+="\t"+recoeve.encloseStr(input);
+			}
+			input=$form.find("#input-val")[0].value.trim();
+			if (input!==""){
+				strHeads+="\t"+"val";
+				strContents+="\t"+recoeve.encloseStr(input);
+			}
+			$elem.after(
+				kipid.arrayToTableHTML(
+					kipid.strToJSON( strHeads+"\n"
+				+strContents )
+				)
+			);
+			$.post("/reco/put", strHeads+"\n"+strContents, function(a, b, c){
+				console.log("Data is submitted."
+					+"\na: "+a
+					+"\nb: "+b
+					+"\nc: "+c);
+			}, "text")
+				.fail(function(a, b, c, d){
+					console.log("Reco is failed."
+						+"\na: "+a
+						+"\nb: "+b
+						+"\nc: "+c);
+				})
+				.always(function(){
+					console.log("Always done.");
+				});
+		} else{
+			if (!recoeve.validVal(val)){
+				$elem.after("<div>Value is not in a proper format.</div>");
+			}
+			if (input==""){
+				$elem.after("<div>URI is required.</div>");
+			}
+		}
+		
+		$elem[0].disabled=false;
+	};
+})(window.recoeve=window.recoeve||{}, jQuery);
+</script>
+</body>
+</html>

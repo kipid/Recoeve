@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<style>
+body {margin:0; padding:0}
+
+#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(250,250,250); font-size:15px}
+#sidebar {padding:.5em; background:rgb(230,230,230)}
+#contents {padding:.5em;}
+
+#sidebar .cat {margin-left:5em;}
+#sidebar .cat.depth0 {margin-left:0em;}
+#sidebar .cat.depth1 {margin-left:1em;}
+#sidebar .cat.depth2 {margin-left:2em;}
+#sidebar .cat.depth3 {margin-left:3em;}
+#sidebar .cat.depth4 {margin-left:4em;}
+
+#contents .reco {border:2px solid black;}
+#contents .reco>.title {border:1px solid red;}
+#contents .reco>.uri {font-size:.8em;}
+#contents .reco>.cats {font-size:.8em;}
+
+@media all and (min-width:801px) {
+	#container {position:absolute; left:0; top:0; right:0; bottom:0; overflow:hidden}
+	#sidebar {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; position:absolute; left:0; top:0; bottom:0; width:20em; overflow-x:auto; overflow-y:auto;}
+	#contents {position:absolute; left:20em; right:0; top:0; bottom:0; overflow-x:hidden; overflow-y:auto}
+}
+</style>
+</head>
+<body>
+<div id="container">
+	<div id="sidebar">
+		
+	</div><!-- div#sidebar -->
+	<div id="contents">
+		
+	</div><!-- div#contents -->
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+(function(recoeve, $, undefined){
+	////////////////////////////////////////////////////
+	// String to Array
+	////////////////////////////////////////////////////
+	recoeve.strToArray=function(str) {
+		if (str.charAt(str.length-1)!=='\n') str+="\n";
+		var ret=[];
+		var delimiter=/([^\t\n]*)([\t\n])/g;
+		var lastQuote=/[^"](?:"")*"([\t\n])/g;
+		var exec;
+		var start=0;
+		var row=-1, col=-1, delim="\n";
+		var strElem="";
+		function increseRC(str) {
+			if (str==='\t') {
+				col++; return true;
+			} else if (str==='\n') {
+				row++; col=0; ret.push([]); return true;
+			} return false;
+		}
+		while (start<str.length&&increseRC(delim)) {
+			if ((str.substring(start, start+1))==='"') {
+				lastQuote.lastIndex=start+1;
+				if ((exec=lastQuote.exec(str))!==null) {
+					strElem=str.substring(start+1, lastQuote.lastIndex-2);
+					delim=exec[1];
+					start=delimiter.lastIndex=lastQuote.lastIndex;
+				} else {
+					strElem=str.substring(start+1);
+					delim="";
+					start=str.length;
+				}
+				strElem=strElem.replace(/""/g,'"');
+			} else {
+				if ((exec=delimiter.exec(str))!==null) {
+					strElem=exec[1];
+					delim=exec[2];
+					start=delimiter.lastIndex;
+				} else {
+					strElem=str.substring(start);
+					delim="";
+					start=str.length;
+				}
+			}
+			ret[row][col]=strElem;
+		}
+		return ret;
+	};
+	recoeve.strToJSON=function(str) {
+		var ret=recoeve.strToArray(str);
+		for (var i=1;i<ret.length;i++) {
+			for (var j=0;j<ret[i].length;j++) {
+				if (ret[0][j]!==undefined) {
+					ret[i][ret[0][j]]=ret[i][j];
+				}
+			}
+		}
+		return ret;
+	};
+	
+	recoeve.getDepthOfTabs=function(str){
+		var n=0;
+		while (n<str.length&&str.charAt(n)==='\t') {
+			n++;
+		}
+		return n;
+	};
+	recoeve.renderCats=function(resp){
+		var catList=[];
+		var superCats=[];
+		var list=resp.trim().split("\n");
+		for (var i=0;i<list.length;i++) {
+			catList[i]={};
+			var depth=recoeve.getDepthOfTabs(list[i]);
+			catList[i].baseCat=list[i].trim();
+			catList[i].depth=depth;
+			superCats[depth]=catList[i].baseCat;
+			for (var j=superCats.length-1;j>depth;j--) {
+				superCats.pop();
+			}
+			var cat=superCats[0];
+			for (var j=1;j<=depth;j++) {
+				cat+="--"+superCats[j];
+			}
+			catList[i].cat=cat;
+		}
+		return catList;
+	};
+	
+	recoeve.pathname=location.pathname;
+	$.ajax({
+		type:"GET"
+		, url:recoeve.pathname+"/get-CatList"
+		, dataType:"text"
+		, success:function(resp){
+			// console.log(resp);
+			if (resp=="") {
+				$("#sidebar").html(recoeve.pathname+" does not exist.");
+				return;
+			}
+			var catList=recoeve.renderCats(resp);
+			var catListHTML="";
+			for (var i=0;i<catList.length;i++) {
+				catListHTML+='<div class="cat depth'+catList[i].depth+'">'+catList[i].baseCat+'</div>';
+			}
+			$("#sidebar").html(catListHTML);
+			
+			var str="cat";
+			for (var i=0;i<catList.length;i++) {
+				str+="\n"+catList[i].cat;
+			}
+			$.ajax({
+				type:"POST"
+				, url:recoeve.pathname+"/get-UriList"
+				, data:str
+				, dataType:"text"
+			}).done(function(uriList) {
+				recoeve.catUriList=recoeve.strToJSON(uriList);
+				recoeve.wholeUriList=[];
+				for (var i=1;i<recoeve.catUriList.length;i++) {
+					var uriL=recoeve.catUriList[i]["UriList"];
+					if (uriL!="") {
+						var uris=uriL.split("\n");
+						for (var j=0;j<uris.length;j++) {
+							recoeve.wholeUriList.push(uris[j]);
+						}
+					}
+				}
+				// cat	UriList
+				var getRecoesStr="uri";
+				for (var i=0;i<recoeve.wholeUriList.length;i++) {
+					getRecoesStr+="\n"+recoeve.wholeUriList[i];
+				}
+				$.ajax({
+					type:"POST"
+					, url:recoeve.pathname+"/get-Recoes"
+					, data:getRecoesStr
+					, dataType:"text"
+				}).done(function(recoes) {
+					recoeve.recoes=recoeve.strToJSON(recoes);
+					// console.log(recoeve.recoes);
+					var contentsHTML="";
+					for (var i=1;i<recoeve.recoes.length;i++) {
+						contentsHTML+='<div class="reco">'
+							+'<div class="title">'+recoeve.recoes[i]["title"]+'</div>'
+							+'<div class="uri">'+recoeve.recoes[i]["uri"]+'</div>'
+							+'<div class="cats">'+recoeve.recoes[i]["cats"]+'</div>'
+							+'<div class="desc">'+recoeve.recoes[i]["desc"]+'</div>'
+							+'<div class="cmt">'+recoeve.recoes[i]["cmt"]+'</div>'
+							+'<div class="val">'+recoeve.recoes[i]["val"]+'</div>'
+						+'</div>';
+					}
+					$("#contents").html(contentsHTML);
+				});
+			});
+		}
+	});
+	// /user/(id)/get-CatList[/listName]
+	// /user/(id)/get-UriList
+		// POST 로 cat list 를 보내면 해당하는 UriList 를 보내도록?
+	// /user/(id)/get-Recoes
+		// POST 로 uri list 를 보내면 해당하는 reco 를 보내도록?
+	// /user/(id)?cat=(some-cat) putState?
+})(recoeve=window.recoeve||{}, jQuery);
+</script>
+</html>

@@ -1,0 +1,850 @@
+<codeprint id="docuK-style">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+<!-- From kipid.tistory CDN -->
+<link rel="stylesheet" media="all" type="text/css" href="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-2.2.css">
+<script src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-prepare-2.2.js"></script>
+</codeprint><!-- docuK-style -->
+
+<codeprint class="SEE">
+# HTTP Cookie in Web / HTML / Javascript and Server
+
+작성중... (아직 중구난방일 수 있으니 감안하고 보시길...)
+
+Client-side (browser) 에 일정 정보를 "key=value" 형태로 저장시켜놓고, 서버에서 사용자를 기억하는데 주로 사용되는 cookie 란 놈이 있다. 매번 browser 에서 server 로 HTTP request 보낼때 이 cookie 란 놈도 항상 같이 보내기 때문에 이런게 가능한 것인데, 보통 <code>request.headers().get("Cookie")</code> 같은 명령어로 server 에서 뽑아낼 수 있다.
+
+Server 측에서 주로 사용하는 데이터이긴 하지만, client 측에서도 javascript 를 통해서 접근 가능하기도 해서 XSS (Cross Site Script) 공격에 취약하기도 하다. 그래서 만들어진 것이 HttpOnly Cookie 로 해당 domain server 에서만 이 cookie 를 생성, 삭제, 접근 가능하도록 design 되었다. 이 HttpOnly cookie 는 javascript 를 이용해서 생성할수도 삭제할수도 읽어들일수도 없다.
+
+그래도 우선 javascript 를 통해 어떻게 cookie 를 생성하고 삭제하고 읽어들이는지, browser 에는 어떻게 저장되어 있는지, 특정 domain/path 에서 어떤 cookie 들이 접근 가능한 것인지, 특정 domain/path 에 HTTP request 를 보낼 때 어떤 cookie 들이 그 domain server 로 전송되는지를 공부해 놓는 것이 좋아 보인다. 그래야 server 를 돌릴때에도 어떻게 client 의 cookie 를 관리할지 구상하기 쉬워질테니...
+
+ps. Server 에서 쓸 data 가 아니라 client 측에서만 계속 사용할 data 라면, cookie 에 저장하기 보다 다른 local storage API 를 쓰는 것이 더 좋아보인다. Cookie 는 매번 server 에 (HTTP request 의 header 에 포함되어) 보내지는 data 이기 때문이다.
+
+
+
+## PH
+
+<ul>
+	<li>2014-08-31: First posting.</li>
+</ul>
+
+
+
+## TOC
+
+
+
+## Cookie handling from/by JavaScript.
+
+JavaScript 를 이용한 가장 간단한/무식한(?) cookie 사용 방법은
+
+```[.linenums.lang-js]
+allCookies = document.cookie;
+	// <code>allCookies</code> is a string containing a semicolon-separated list of cookies (i.e. key=value pairs).
+
+document.cookie = updatedCookie;
+	// <code>updatedCookie</code> is a string of form key=value. Note that <span class="emph">you can only set/update a single cookie at a time</span> using this method.
+
+document.cookie = 
+	"key=value" // 굳이 key=value 형태로 저장 안해도 된다는거 같은데, 그냥 이렇게 씁시다. 이렇게 안하면 나중에 찾기도 지우기도 쉽지 않을테니.
+	// The belows are optional, and they can be in any order.
+	+";max-age="+(365*24*60*60)
+		// or +";expires="+(new Date(2017,1,10).toUTCString())
+	+";domain="+window.location.host
+		// The current window.location.host is "<span class="curLocation-host"></span>".
+	+";path="+window.location.pathname
+		// The current window.location.pathname is "<span class="curLocation-pathname"></span>".
+	+";secure";
+```/
+
+와 같이 그냥 assign "=" 명령어 이용해서 읽고 쓰는 것이지만, 다음과 같은 Javascript Object 하나 만들어서 정의해놓고 쓰는것이 여러모로 더 좋아 보임 <cite class="ref-MDN-cookie"></cite>.
+
+ps. Ref. <cite class="ref-rfc6265"></cite> - <a href="http://tools.ietf.org/html/rfc6265#section-4.1.2.2">4.1.2.2.  The Max-Age Attribute</a> : "If a cookie has both the <code>Max-Age</code> and the <code>Expires</code> attribute, <span class="emph">the <code>Max-Age</code> attribute has precedence and controls the expiration date of the cookie.</span> If a cookie has neither the Max-Age nor the Expires attribute, the user agent will retain the cookie until "the current session is over" (as defined by the user agent)."
+
+
+
+### cookie.js : How to use
+
+우선 code 및 간단한 사용 방법은 다음과 같다. (Ref. <cite class="ref-MDN-cookie"></cite> 도 참고 하시면서...)
+
+<pre id="pre-code-cookie" class="prettyprint scrollable lang-js"></pre>
+
+
+#### Writing (Creating or Overwriting) a cookie
+
+```[.linenums.lang-js]
+// Syntax:
+docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]);
+	// return false if name(key) is invalid, e.g. predefined keys (expires|max-age|path|domain|secure).
+	// return true when the cookie is properly set.
+
+docCookies.setItem(
+	String name
+	, String value
+	// The belows are optional arguments.
+	[, Number|String|Date end
+		// Number or String or Date object
+		// If not specified or null, it will expire at the end of session (when closing the browser tab?).
+			// Number: max-age in seconds (e.g. 365*24*60*60 for a year, Infinity for a never-expires cookie)
+			// String: expires date in GMTString format string
+			// Date: expires date as Date object
+	[, String path
+		// E.g. "/", "/mydir"; if not specified, defaults to the current path of the current document location.
+		// Defaults to "window.location.pathname"???, which is "/entry/Cookie-in-Web-HTML-Javascript" in this document.
+	[, String domain
+		// E.g. "example.com", or "subdomain.example.com"; if not specified, defaults to the host portion of the current document location.
+		// Defaults to "window.location.host", which is "kipid.tistory.com" in this document.
+		// Note: The dot, e.g. ".example.com", may be needed by old browser implementing the deprecated RFC 2109. Cookie is sent to all subdomains of cookie's domain attribute in browser implementing RFC 6265 (2011-04). So a leading %x2E (".") in domain, if present, will be ignored.
+	[, boolean secure
+		// The cookie will be transmitted only over secure protocol as https.
+	]]]]
+);
+
+// Examples:
+docCookies.setItem("Hello", "World!");
+docCookies.setItem("Hello", "World!", 24*60*60);
+docCookies.setItem("Hello", "World!", 24*60*60, "/");
+docCookies.setItem("Hello", "World!", 24*60*60, "/", "example.com");
+docCookies.setItem("Hello", "World!", 24*60*60, "/", "example.com", true);
+```/
+
+<div class="p"></div>
+
+Default 값에 대한 설명이 뭔가 애매모호하고 접근 권한 (읽기 권한, 쓰기 권한) 에 대한 설명이 없다 ㅡㅡ;;;;
+<ul>
+	<li>같은 domain/host [e.g. example.com] 에 있다면 (sub domain [e.g. sub.example.com] 이라고 할지라도), 하위 path 는 상위 path 에 저장된 cookie 도 접근 (읽거나 덮어쓰거나 지우거나) 할 수 있는건가? 읽는건 가능한거 같은데, 덮어쓰거나 지울 수 있는지는 모르겠네;;;</li>
+	<li>다른 domain 의 cookie 도 마음대로 저장할 수 있구나??? 읽지만 못하는건가? 테스트 해보니 쓰는것도 안되는거 같은데... 아마도 main host [e.g. example.com] 는 같아야 하는듯?</li>
+</ul>
+
+쓰기/지우기 권한에 관한 자세한 이야기는 section <refer class="sec-Cookie-access"></refer> 에서...
+
+
+
+#### Getting a cookie
+
+```[.linenums.lang-js]
+// Syntax:
+docCookies.getItem(name);
+	// return value (String).
+	// return null if not found.
+
+// Examples:
+var cookies={};
+cookies["Hello"] = docCookies.getItem("Hello");
+cookies["key"] = docCookies.getItem("key");
+```/
+
+Value 값만 뽑아낼 수 있고, 나머지 expire, domain, path, secure 등의 설정 값은 뽑아낼 수 없는듯???
+
+각 cookie 의 domain, path 값들이 안보여서 정확히 알수는 없지만, <code>document.cookie</code> 자체가 상위 path 에 저장된 cookie 들도 모두 읽어 들이는듯?
+
+읽기 권한에 관한 자세한 이야기는 section <refer class="sec-Cookie-access"></refer> 에서...
+
+
+
+#### Removing a cookie
+
+```[.linenums.lang-js]
+// Syntax:
+docCookies.removeItem(name[, path[, domain]]);
+	// return true if the cookie is properly removed.
+	// return false if the cookie for the name does not exist.
+	// equivalent to returning docCookies.hasItem(name);
+
+// This removing function is equivalent to
+docCookies.setItem(name, "", "Thu, 01 Jan 1970 00:00:00 GMT"[, path[, domain]]);
+
+// Examples:
+docCookies.removeItem("Hello");
+docCookies.removeItem("Hello", "/");
+docCookies.removeItem("Hello", "/", "example.com");
+```/
+
+지우는 과정은 <code>expires</code> 를 현재 이전 날짜로 설정해서 해당 key 의 cookie 값을 저장하는 방식으로 이루어진다.
+
+그런데 현재보다 상위 path 에 저장된 cookie 는 path 값을 지정해야만 지워지는듯? 그냥 지우려니까 안지워지네?
+
+쓰기/지우기 권한 및 identification of cookie 에 관한 자세한 이야기는 section <refer class="sec-Cookie-access"></refer> 에서...
+
+
+
+#### Checking a cookie whether it exists or not.
+
+```[.linenums.lang-js]
+// Syntax:
+docCookies.hasItem(name);
+	// return true if the cookie for the name exists.
+	// return false if the cookie for the name does not exist.
+```/
+
+읽기 권한 및 identification of cookie 에 관한 자세한 이야기는 section <refer class="sec-Cookie-access"></refer> 에서...
+
+
+
+#### Key lists
+
+```[.linenums.lang-js]
+// Syntax:
+docCookies.keys();
+	// return all keys decoded.
+	// return keys only accessible from javascript at the current domain+path.
+```/
+
+
+
+### Code tests
+
+You can test it by yourself in browser console. (Press <code>F12</code>, and Press <code>Ctrl</code>+<code>`</code>(Tilde) to open console in chrome browser. It might be the same way in other browsers.)
+
+#### Simple {setItem, getItem} test
+
+<pre id="pre-code-test" class="prettyprint scrollable lang-js"></pre>
+
+<div id="cookie-result"></div>
+
+#### Deleting all cookies just by keys (will fail)
+
+<pre id="pre-code-delete-cookie" class="prettyprint scrollable lang-js"></pre>
+
+<div id="delete-cookie-result"></div>
+
+#### 접근권한 test
+
+<pre id="pre-code-access-cookie" class="prettyprint scrollable lang-js"></pre>
+
+<div id="access-cookie-result"></div>
+
+#### Delete all test cookies (including button)
+
+The whole test cookies created here was deleted in the beginning, to show consistant results. (But to delete the test cookies afterwards, you have to click the button below. Check your browser cookie settings before and after the deleting.)
+
+<pre id="pre-code-delete-test-cookies" class="prettyprint scrollable lang-js"></pre>
+
+<div class="p"></div>
+
+Click the below button to delete all test cookies. Then check your browser cookie settings again.
+
+<div class="p"><button id="button-delete-test-cookies">Delete all test cookies</button></div>
+
+<script>
+$("#button-delete-test-cookies").on("click", function(){
+	deleteTestCookies();
+	console.log("Deleted all test cookies.");
+	$("#button-delete-test-cookies").parent().after(
+		"<div>All test cookies are deleted. The remains are not from this test.</div>"
+		+"<pre>"
+			+'// document.cookie.replace(/\\s*;\\s*/g,";\\n")\n'
+			+document.cookie.replace(/\s*;\s*/g,";\n")
+		+"</pre>"
+	);
+});
+</script>
+
+
+
+##[#sec-Cookie-access] Cookie 접근 권한
+
+Cookie 가 어떻게 동작해야 하는지, 어떻게 접근 권한을 부여해야 하는지는 <cite class="ref-rfc6265"></cite> 에서 규정하고 있고, 설명은 <cite class="ref-ncz"></cite> 에 잘 되어 있는듯 하군요.
+
+(둘 다 헷갈리게 작성되어 있긴 함.... 제대로 이해하려면 본인이 직접 이것저것 테스트를 해봐야 할듯.)
+
+
+
+### Identification of a cookie
+
+Cookie 를 구분하는 인자는 <code>name-domain-path-secure</code> 이렇게 4개이다.
+
+즉, <code>name-domain-path-secure</code> 이 같은 cookie 를 다시 저장하면 이전 cookie 가 덮어씌워진다. Expiration date 는 identification 에 들어가지 않기 때문에 이 option 이 없이 새로운 cookie 를 덮어쓰면 이전의 expires 는 그대로 남아있고 "key=value" 값만 바뀐다.
+
+별로 권장되는 설정법은 아닌듯 함. 그래도 persistent cookie 가 session cookie (browser 를 닫으면 사라지는) 로 쉽게 바뀌지는 않는다는 것은 알아야 할테니...
+
+
+
+### Expiration of a cookie
+
+<div class="bcf">
+
+From Ref. <cite class="ref-ncz"></cite> - Using expiration dates :
+
+When a cookie is created with an expiration date, that expiration date relates to the cookie identified by <code>name-domain-path-secure</code>. In order to change the expiration date of a cookie, you must specify the exact same tuple. When changing a cookie’s value, you need not set the expiration date each time because it’s not part of the identifying information. Example:
+
+```Set-Cookie: name=Mike; expires=Sat, 03 May 2025 17:44:22 GMT```/
+
+The expiration date of the cookie has now been set, so the next time I want to change the value of the cookie, I can just use its name:
+
+```Set-Cookie: name=Matt```/
+
+The expiration date on this cookie hasn’t changed, since the identifying characteristics of the cookie are the same. In fact, the expiration date won’t change until you manually change it again. That means a session cookie can become a persistent cookie (one that lasts multiple sessions) within the same session but the opposite isn’t true. <span class="emph">In order to change a persistent cookie to a session cookie, you must delete the persistent cookie by setting its expiration date to a time in the past and then create a session cookie with the same name.</span>
+
+Keep in mind that <span class="emph">the expiration date is checked against the system time on the computer that is running the browser.</span> There is no way to verify that the system time is in sync with the server time and so errors may occur when there is a discrepancy between the system time and the server time.
+
+</div><!-- bcf -->
+
+<div class="bcf">
+
+From Ref. <cite class="ref-rfc6265"></cite> - <a href="http://tools.ietf.org/html/rfc6265#section-4.1.2.2">4.1.2.2.  The Max-Age Attribute</a> :
+
+If a cookie has both the <code>Max-Age</code> and the <code>Expires</code> attribute, <span class="emph">the <code>Max-Age</code> attribute has precedence and controls the expiration date of the cookie.</span> If a cookie has neither the Max-Age nor the Expires attribute, the user agent will retain the cookie until "the current session is over" (as defined by the user agent).
+
+</div><!-- bcf -->
+
+
+
+### Cookie 읽기 권한
+
+보통 하위 domain/host 는 상위 domain/host 의 cookie 를 읽을 수 있는듯? 하위 path 들도 마찬가지로 상위 path 의 cookie 를 읽을 수 있는듯 하고... 글로만 설명을 읽으니 헷갈린다;;;;;
+
+"example.com" 에 저장된 쿠키는 "blog.example.com" 같은 domain/host 에 접속했을 때도 읽어들일 수 있고, "example.com/super-directory/sub-directory" 같은 domain/host + path 에 접속했을 때도 읽어들일 수 있는거 같음. 반대로는 안되고.
+
+"example.com/super-directory/sub-directory" 에 저장된 쿠키는 "blog.example.com" 에서는 읽을 수 없고, "blog.example.com/super-directory/sub-directory/subsub-directory" 에서는 읽을 수 있는듯.
+
+즉, domain 과 path 모두 request-domain, request-path 와 같거나 super (상위) 이어야만 읽어들이는듯. Request-domain 과 request-path 는 당연히 현재 domain 과 path 이고.
+
+
+
+#### Domain matching
+
+<div class="bcf">
+
+From <cite class="ref-rfc6265"></cite> - 5. User Agent Requirements - <a href="http://tools.ietf.org/html/rfc6265#section-5.1.3">5.1.3.  Domain Matching</a> (헷갈리게 쓰여 있어서 조금 수정. 제대로 수정한건지 모르겠네;;;) :
+
+A request-domain domain-matches a given cookie-domain if at least one of the following conditions hold:
+
+<ul>
+	<li>The cookie-domain and the request-domain are identical. (Note that both the cookie-domain and the request-domain will have been canonicalized to lower case at this point.)</li>
+	<li>All of the following conditions hold:
+		<ul>
+			<li>The cookie-domain is a suffix of the request-domain. (Cookie 의 domain 이 요청한 request-domain 의 끝부분과 일치해야 하고.)</li>
+			<li>The last character of the request-domain that is not included in the cookie-domain is a %x2E (".") character. (Request-domain 의 마지막 문자가 "." 이라면 "." 빼고 검사한다는 뜻인가?)</li>
+			<li>The request-domain is a host name (i.e., not an IP address). (Request-domain 은 host name 과 같아야 함. 다른 domain 에 저장된 cookie 는 접근할 수 없다는 뜻인듯?)</li>
+		</ul>
+	</li>
+</ul>
+
+</div><!-- bcf -->
+<div class="p"></div>
+
+Current domain 의 super domain 의 cookie 를 모두 읽어들인다는 뜻인듯. 즉, browser 가 "http://kipid.tistory.com" 에 접속을 시도하면,
+
+```
+Get all cookies accessible from domain="http://kipid.tistory.com";
+// 같은 명령어로 Local Cookie DB 에 Cookie Request 를 보내고.
+
+HTTP Request to "kipid.tistory.com" with these cookies;
+// 이 쿠키를 포함시켜서 host 에 HTTP request 를 보내는듯?
+
+// Path 로도 걸러내긴 하는듯. 구체적인 이야기는 다음 section 에서...
+
+// 이 때 포함되는 cookie 는
+Cookies with domain="kipid.tistory.com"; path=all-super-paths-of-the-current-path;
+	and withOUT secure;
+Cookies with domain="tistory.com"; path=all-super-paths-of-the-current-path;
+	and withOUT secure;
+	// Super domain 에서도 current path 포함 super path 를 모두 찾는듯. Super domain 이라 path="/" 에 있는거만 가져올줄 알았는데.....
+// The cookie string is always returned in order from most specific <code>path-secure</code> tuple to least specific.
+```/
+
+위와 같은 cookie 들을 HTTP request header 에 포함시키는 듯.
+
+Browser 가 "http://kipid.tistory.com" 에 접속을 했다면, javascript 로 얻어지는 cookie 는 마찬가지로 (but, HttpOnly 도 제외하면서)
+
+```
+document.cookie;
+// returns
+Cookies with domain="kipid.tistory.com"; path=all-super-paths-of-the-current-path;
+	and withOUT secure; HttpOnly;
+Cookies with domain="tistory.com"; path=all-super-paths-of-the-current-path;
+	and withOUT secure; HttpOnly;
+	// Super domain 에서도 current path 포함 super path 를 모두 찾는듯. Super domain 이라 path="/" 에 있는거만 가져올줄 알았는데.....
+// The cookie string is always returned in order from most specific <code>path-secure</code> tuple to least specific.
+```/
+
+<div class="p"></div>
+
+
+
+#### Path matching
+
+<div class="bcf">
+
+From <cite class="ref-rfc6265"></cite> - 5. User Agent Requirements - <a href="http://tools.ietf.org/html/rfc6265#section-5.1.4">5.1.4.  Paths and Path-Match</a> :
+
+A request-path path-matches a given cookie-path if at least one of the following conditions holds:
+
+<ul>
+	<li>The cookie-path and the request-path are identical.</li>
+	<li>The cookie-path is a prefix of the request-path, and the last character of the cookie-path is %x2F ("/").</li>
+	<li>The cookie-path is a prefix of the request-path, and the first character of the request-path that is not included in the cookie-path is a %x2F ("/") character.</li>
+</ul>
+
+</div><!-- bcf -->
+<div class="p"></div>
+
+Current path 의 super path 에 있는 cookie 를 모두 읽어들인다는 뜻인듯. 즉, browser 가 "http://kipid.tistory.com/super0-path/super1-path/current-path/index.html" 에 접속을 시도하면,
+
+```
+Get all cookies accessible from domain="http://kipid.tistory.com"; path="/super0-path/super1-path/current-path/index.html";
+// 같은 명령어로 Local Cookie DB 에 Cookie Request 를 보내고.
+
+HTTP Request to "kipid.tistory.com" with path="/super0-path/super1-path/current-path/index.html"; and these cookies;
+// 이 쿠키를 포함시켜서 host 에 HTTP request 를 보내는듯?
+
+// 이 때 포함되는 cookie 는
+Cookies with domain="kipid.tistory.com"; path="/super0-path/super1-path/current-path";
+	and withOUT secure;
+Cookies with domain="tistory.com"; path="/super0-path/super1-path/current-path";
+	and withOUT secure;
+
+Cookies with domain="kipid.tistory.com"; path="/super0-path/super1-path";
+	and withOUT secure;
+Cookies with domain="tistory.com"; path="/super0-path/super1-path";
+	and withOUT secure;
+
+Cookies with domain="kipid.tistory.com"; path="/super0-path";
+	and withOUT secure;
+Cookies with domain="tistory.com"; path="/super0-path";
+	and withOUT secure;
+
+Cookies with domain="kipid.tistory.com"; path="/";
+	and withOUT secure;
+Cookies with domain="tistory.com"; path="/";
+	and withOUT secure;
+
+// The cookie string is always returned in order from most specific <code>path-secure</code> tuple to least specific.
+// Test 해보니 domain 은 accessibility 만 처리하고 정렬은 path 기준으로만 되는듯???
+```/
+
+
+
+### Cookie 쓰기 권한
+
+쓰기 권한은 domain attribute 로만 판별하는듯.
+
+
+
+#### The Domain Attribute
+
+<div class="bcf">
+
+From Ref. <cite class="ref-rfc6265"></cite> - 4. Server Requirements - 4.1. Set-Cookie - <a href="http://tools.ietf.org/html/rfc6265#section-4.1.2.3">4.1.2.3. The Domain Attribute</a> (일부만 발췌) :
+
+The Domain attribute specifies those hosts to which the cookie will be sent.  For example, if the value of the Domain attribute is "example.com", the user agent will include the cookie in the Cookie header when making HTTP requests to example.com, www.example.com, and www.corp.example.com. (Note that a leading %x2E ("."), if present, is ignored even though that character is not permitted, but a trailing %x2E ("."), if present, will cause the user agent to ignore the attribute.)
+
+// leading %x2E (".") 가 있으면 무시한 뒤/지운 뒤 처리하고, trailing %x2E (".") 가 있으면 아예 domain attribute 를 무시한다는 뜻인가???
+
+The user agent will reject cookies unless <span class="emph">the Domain attribute specifies a scope for the cookie that would include the origin server.</span> For example, the user agent will accept a cookie with a Domain attribute of "example.com" or of "foo.example.com" <span class="bold">from "foo.example.com"</span>, but the user agent will not accept a cookie with a Domain attribute of "bar.example.com" or of "baz.foo.example.com".
+
+NOTE: For security reasons, many user agents are configured to reject Domain attributes that correspond to "public suffixes". For example, some user agents will reject Domain attributes of "com" or "co.uk".
+
+</div><!-- bcf -->
+<div class="p"></div>
+
+Current domain 의 super domain 쿠키를 쓸 수 있다는 뜻인듯. 즉, "http://foo.example.com" 에 접속했을 때에는 domain="example.com" 의 쿠키를 쓸 수 있음. (당연히 읽을수도 있고.) 하지만, domain="bar.foo.example.com" 의 쿠키나 domain="sub.example.com" 의 쿠키는 쓸 수 없다는 말. (당연히 읽을수도 없음.)
+
+
+
+#### The Path Attribute
+
+<div class="bcf">
+
+From Ref. <cite class="ref-rfc6265"></cite> - 4. Server Requirements - 4.1. Set-Cookie - <a href="http://tools.ietf.org/html/rfc6265#section-4.1.2.4">4.1.2.4. The Path Attribute</a> :
+
+The scope of each cookie is limited to a set of paths, controlled by the Path attribute. If the server omits the Path attribute, the user agent will use the "directory" of the request-uri's path component as the default value. (See <a href="http://tools.ietf.org/html/rfc6265#section-5.1.4">Section 5.1.4</a> for more details.)
+
+The user agent will include the cookie in an HTTP request only if the path portion of the request-uri matches (or is a subdirectory of) the cookie's Path attribute, where the %x2F ("/") character is interpreted as a directory separator.
+
+</div><!-- bcf -->
+
+위에 설명은 되어 있지 않은데, 읽는 권한은 current path 의 super path 의 쿠키들만 읽을 수 있지만, 쓰는건 domain 에만 권한이 있으면 path 에는 제한이 없는듯??? Chrome 에서만 이렇게 동작하는 것일지도?
+
+
+
+## Cookies in chrome
+
+Chrome browser 에서 쿠키를 확인하는 방법은 <a href="chrome://settings/content">chrome://settings/content</a> (Settings - Privacy - Content settings...) 접속해서 Cookies 부분에 "All cookies and site data..." button 누르면 되는듯. 여기서는 [Domain, Path, Send for, Accessible to script, Created, Expires] 등의 정보도 다 볼 수 있음.
+
+개인 보안을 위해서라도 쿠키는 주기적으로 한번씩 다 지워주는게 좋아보임. 다시 모든 사이트 로그인을 다시 해야한다는 번거로움이 있긴 하지만...
+
+
+
+## Cookie handling from/by Server: and HttpOnly cookie
+
+HTTP header 에 다음과 같은 것들을 담아서 client 에 보내면 cookie 가 저장되는듯 함.
+
+```
+Set-Cookie: name=value[; expires=date][; domain=domain][; path=path][; secure][; HttpOnly]
+```/
+
+여러개의 cookie 는 다음과 같은 명령어로...
+
+```
+req.response()
+	.putHeader("Set-Cookie", "some=cookie;max-age=1000;path=/;HttpOnly"
+		+"\nSet-Cookie: next=cookie"
+		+"\nSet-Cookie: nnext=cookie;HttpOnly");
+
+// Header 에서 보내지는 데이터는...
+HTTP/1.0 200 OK
+Content-type: text/html
+Set-Cookie: some=cookie;max-age=1000;path=/;HttpOnly
+Set-Cookie: next=cookie
+Set-Cookie: nnext=cookie;HttpOnly
+(content of page)
+```/
+
+Set-Cookie header 는 여러개가 있을 수 있는듯.
+
+그런데 쿠키란 놈 보안에 너무 취약한거 아닌가? Domain (url) 별로 따로 cookie 를 저장하고, 이 domain 에 접속할때에만 이 cookie 를 그 domain server 에 쏘는 것이긴한데, XSS 같은 것들 이용해서 다른 도메인의 cookie 도 쉽게 빼낼수 있다는거 같은데.... 민감한 정보는 저장해 놓으면 안될듯.
+
+그런데 로그인 유지하는거랑 브라우저를 껐다 켰을때도 기억해서 다시 로그인 시켜주는 기능은 cookie 를 쓰는거 같긴한데 어떻게 보안 문제를 해결하는거지???
+
+HttpOnly option 도 있는거 같던데, javascript 에서는 이런 HttpOnly cookie 를 생성할수도 없는듯? (From <cite class="ref-SO-httponly"></cite> : A HttpOnly cookie means that it's not available to scripting languages like JavaScript. So there's in JavaScript absolutely no API available to get/set the HttpOnly attribute of the cookie, as that would otherwise defeat the meaning of HttpOnly.)
+
+이 type 의 cookie 는 server 에서 "Set-Cookie" header 를 붙여서만 생성할 수 있는듯. 이거 이용해서 보안문제를 어느정도 해결하는구나. 뭐 이런것도 bypass 가 존재하는것 같기도 하지만 <cite class="ref-bypass-httponly"></cite>, 꾸준히 업데이트 해서 해결하고 있는 중인듯. 뭐 공격하는 쪽도 꾸준히 방법을 찾긴 하겠지만...
+
+뭐 XSS (Cross Site Script) 같은 방법이 아니라 아예 사용자 컴퓨터/스마트폰을 해킹해 놨다던가 통신 중간과정에서 가로챈다던가 하는 방법을 시도한다면 이런 방식으로는 해킹을 못막을거 같긴 하다. (이런 방법은 전체 사용자를 터는게 아니라 특정 사용자를 타겟 잡아서 그 사람이 쓰는 컴퓨터/스마트폰이나 통신망에 접근해야 하는거라 개인이 보안에 신경써야 하는 부분일지도...)
+
+http://stackoverflow.com/questions/4773609/what-is-a-relatively-secure-way-of-using-a-login-cookie
+
+http://jaspan.com/improved_persistent_login_cookie_best_practice
+
+http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice/
+
+http://stackoverflow.com/questions/1062963/how-do-browser-cookie-domains-work
+
+
+
+## Other local storage API
+
+Cookie 는 항상 server 로 보내지는 자료라서 용량이 크면 안되고 (보통 4 Kbyte 정도로 제한이 있는듯), server 에서 굳이 쓸 자료가 아니라면 쓸데없이 통신용량만 크게 만들기도 하기 때문에 다른 local storage API 가 유용하게 쓰일때도 많은데...
+
+그런 기능이 도입되긴 한거 같은데, 아직 브라우저 별로 통일된 방법은 없는듯도??? 공부해봐야 알듯 <cite class="ref-LS"></cite><cite class="ref-html5-LS"></cite><cite class="ref-dive-LS"></cite>.
+
+<eqq>
+\alpha \beta
+</eqq>
+
+
+## RRA
+
+<ol class="refs">
+<div class="subsec"><h3>Cookie</h3></div>
+	<li id="ref-rfc6265"><a href="http://tools.ietf.org/html/rfc6265">tools.ietf.org - RFC 6265 - HTTP State Management Mechanism</a>, 2011-04<br>
+		// HTTP Cookie 와 Set-Cookie header fields 에 대한 규약인듯? 문서가 구식 스타일로 되어 있어서 읽기 편하지는 않은듯. 그래도 이 규약을 바탕으로 브라우저들이 cookie 를 구현해 놓은듯하니 최종 reference 로 생각하면 될듯.</li>
+	<li id="ref-MDN-cookie"><a href="https://developer.mozilla.org/en-US/docs/Web/API/document.cookie">MDN - Web API - Document.cookie</a><br>
+		// Javascript 에서의 cookie 사용법에 대한 간단한 설명과 "cookies.js" code 와 설명이 있음. Javascript 에서 cookie 를 다룰때에는 "cookies.js" 를 쓰는게 좋은듯. Code 도 그닥 길지 않고 적당히 자신에게 맞춰서 고쳐쓰면 될듯? 고칠 부분이 딱히 없어보이기도...</li>
+	<li id="ref-MDN-cookie-history"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">MDN - HTTP cookies</a> (History and Critics)</li>
+	<li id="ref-ncz"><a href="http://www.nczonline.net/blog/2009/05/05/http-cookies-explained/">NCZ Online - HTTP cookies explained</a>, 2009-05-05, by Nicholas C. Zakas;<br>
+		and <a href="http://www.nczonline.net/blog/2009/05/12/cookies-and-security/">NCZ Online - Cookies and security</a>, 2009-05-12, by Nicholas C. Zakas<br>
+		// 꽤나 자세하게 cookie 에 대해 설명되어 있음. 꼭 읽어보시길 추천. MDN 문서보다 더 자세한듯도...
+	</li>
+<div class="subsec"><h3>Web security and HttpOnly option</h3></div>
+	<li id="ref-MDN-webSecurity"><a href="https://developer.mozilla.org/en-US/docs/Web/Security">MDN - Web security</a></li>
+	<li id="ref-HttpOnly"><a href="https://www.owasp.org/index.php/HttpOnly">owasp.org - HttpOnly</a><br>
+		// Wiki 랑 거의 똑같은데 이건 뭔 사이트지? Cookie 의 HttpOnly 관련 설명이 있음.</li>
+	<li id="ref-SO-httponly"><a href="http://stackoverflow.com/questions/14691654/set-a-cookie-to-httponly-via-javascript">Stack Overflow - Set a cookie to HttpOnly via Javascript</a>, 2013-02-04, asked by Robert P., answered by BalusC</li>
+	<li id="ref-bypass-httponly"><a href="http://www.natexim.com/how-to-bypass-httponly/">natexim.com - How to Bypass HttpOnly</a>, 2013-09-10, by Natexim<br>
+		// Apache 2.2.22 이전 version 에서의 문제였던거 같음. "The versions 2.2.x to Apache 2.2.21 are vulnerable, in fact when sending malformed HTTP request, Apache returns in response to an error 400 (Bad Request), to the delight of hackers, this response contains HTTP headers including Cookies with the HttpOnly flag."<br>
+		// 고쳐졌다는거 같긴 함.</li>
+	<li id="ref-JAVA-HttpCookie"><a href="http://docs.oracle.com/javase/8/docs/api/java/net/HttpCookie.html">JAVA SE 8 API - Class java.net.HttpCookie</a></li>
+<div class="subsec"><h3>Local storage API</h3></div>
+	<li id="ref-LS"><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage">MDN - DOM Storage guide</a></li>
+	<li id="ref-html5-LS"><a href="http://www.html5rocks.com/en/features/storage">html5rocks.com - HTML5 FEATURES - STORAGE</a><br>
+		// 아직 읽어본건 아닌데, 여기 잘 정리되어 있는듯 함.</li>
+	<li id="ref-dive-LS"><a href="http://diveintohtml5.info/storage.html">diveintohtml5.info - THE PAST, PRESENT &amp; FUTURE OF LOCAL STORAGE FOR WEB APPLICATIONS</a></li>
+</ol>
+</codeprint><!-- SEE -->
+
+<script>
+$("span.curLocation-host").html(window.location.host);
+$("span.curLocation-pathname").html(window.location.pathname);
+</script>
+
+<codeprint id="code-cookie">
+<script>
+// removeItem 부분을 수정했음. 읽을 수 있는 쿠키만 지울 수 있게 해놨길래...
+/*  :: cookies.js :: Slightly edited by kipid at 2014-09-03.
+|*|
+|*|  A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|  This framework is released under the GNU Public License, version 3 or later.
+|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|  Syntaxes:
+|*|
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.getItem(name)
+|*|  * docCookies.removeItem(name[, path], domain)
+|*|  * docCookies.hasItem(name)
+|*|  * docCookies.keys()
+*/
+docCookies={
+  getItem: function (sKey) {
+    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age="+vEnd;
+          break;
+        case String:
+          sExpires = "; expires="+vEnd;
+          break;
+        case Date:
+          sExpires = "; expires="+vEnd.toUTCString();
+          break;
+      }
+    }
+    document.cookie = encodeURIComponent(sKey)+"="+encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  removeItem: function (sKey, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)/* || !this.hasItem(sKey)*/) { return false; }
+    document.cookie = encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+    return aKeys;
+  }
+};
+</script>
+</codeprint><!-- code-cookie -->
+
+<codeprint id="code-delete-test-cookies">
+<script>
+deleteTestCookies = function(){
+	docCookies.removeItem("test1", "/");
+	docCookies.removeItem("test3", "/blog");
+	docCookies.removeItem("test5", "/home");
+	docCookies.removeItem("test7", "/content");
+	docCookies.removeItem("test9", null, null, true);
+	docCookies.removeItem("test10");
+	docCookies.removeItem("test11");
+	docCookies.removeItem("test12", "/");
+	docCookies.removeItem("test13", "/blog");
+	docCookies.removeItem("test14", "/blog/category1");
+	docCookies.removeItem("test15", "/blog/category1/sub-category2");
+	docCookies.removeItem("test16", "/home");
+	docCookies.removeItem("test17", "/entry");
+	docCookies.removeItem("test18", "/entry", "kipid.tistory.com");
+	docCookies.removeItem("test19", "/", "tistory.com");
+	docCookies.removeItem("test20", "/entry", "tistory.com");
+	docCookies.removeItem("test21", "/", "tistory.com");
+	docCookies.removeItem("test22", "/entry", "tistory.com");
+	docCookies.removeItem("test23", "/blog", "tistory.com");
+	docCookies.removeItem("test24", "/blog", "tistory.com");
+};
+
+deleteTestCookies();
+</script>
+</codeprint><!-- code-delete-test-cookies -->
+
+<codeprint id="code-test">
+<script>
+docCookies.setItem("case", "Case sensitivity check.");
+docCookies.setItem("CASE", "Case sensitive?");
+docCookies.setItem("test0", "Hello world!");
+	// Session cookie at the current domain and path.
+docCookies.setItem("test1", "Unicode test: \u00E0\u00E8\u00EC\u00F2\u00F9", Infinity, "/");
+	// Persistent cookie with path="/" and which expires="Fri, 31 Dec 9999 23:59:59 GMT";
+	// Unicode text will be encoded and decoded by default javascript functions, i.e. encodeURIComponent() and decodeURIComponent();
+docCookies.setItem("test2", "Hello world!", new Date(2020, 5, 12));
+docCookies.setItem("test3", "Hello world!", new Date(2027, 2, 3), "/blog");
+	// Cookie will be saved with domain=the-current-domain; path="/blog";
+	// You can save a cookie in a different path even though the path is not the super path of the current path. Writing authority is checked only through a domain attribute?? (Not quite sure. This can be browser-dependent.)
+	// This will not show up in the current path ("/entry").
+docCookies.setItem("test4", "Hello world!", "Sun, 06 Nov 2022 21:43:15 GMT");
+docCookies.setItem("test5", "Hello world!", "Tue, 06 Dec 2022 13:11:07 GMT", "/home");
+	// This will not show up in the current path ("/entry") since it is saved in a different path ("/home").
+docCookies.setItem("test6", "Hello world!", 150);
+	// Expiration set by seconds.
+docCookies.setItem("test7", "Hello world!", 245, "/content");
+	// This will not show up in the current path ("/entry") since it is saved in a different path ("/content").
+docCookies.setItem("test8", "Hello world!", null, null, "example.com");
+	// Invalid domain options are simply ignored. So this cookie will not be saved.
+docCookies.setItem("test9", "Hello world!", null, null, null, true);
+	// Secure cookie. You can write or delete secure cookies fron non-secure connection ("http://").
+	// This will not show up in the current connection ("http://"). This is only accessible from a secure connection ("https://").
+docCookies.setItem("test1;=", "Safe character test;=", Infinity);
+
+printResult=function(str){
+	$("#cookie-result").append(
+		'\n\n<pre class="prettyprint linenums">'+str+'</pre>\n\n'
+	);
+};
+
+var str='// document.cookie.replace(/\\s*;\\s*/g,";\\n")\n'
+	+document.cookie.replace(/\s*;\s*/g,";\n");
+str+='\n\n// "keys : values" decoded\n';
+var keys=docCookies.keys();
+for (var i=0;i<keys.length;i++){
+	str+=keys[i]+" : "+docCookies.getItem(keys[i])+"\n";
+}
+printResult(
+	str
+	+'\n\n// test3, 5, 7 will not show up since they are saved in different paths from the current one ("/entry").'
+	+'\n// test8 is not saved because of invalid domain ("example.com") which is not the current domain or the super domain of it ("kipid.tistory.com").'
+	+'\n// test9 will not show up because it has a secure option.'
+	+'\n\n// You probably can see {test3, 5, 7, 9} cookies in your browser cookie settings. In chrome, visit "chrome://settings/content". (But test7 will be evicted only after 245 seconds.)'
+);
+printResult(
+	'// docCookies.keys().join("\\n"): The whole accessible keys decoded\n'
+	+docCookies.keys().join("\n")
+);
+printResult(
+	'// docCookies.getItem("test1")\n'
+	+docCookies.getItem("test1")
+);
+printResult(
+	'// docCookies.getItem("test5")\n'
+	+docCookies.getItem("test5")
+);
+docCookies.removeItem("test1");
+docCookies.removeItem("test5", "/home");
+printResult(
+	'docCookies.removeItem("test1");\n'
+	+'// docCookies.getItem("test1") after removing it.\n'
+	+docCookies.getItem("test1")
+	+'\n// "test1" will not be removed simply, since it is saved in path="/".'
+);
+printResult(
+	'docCookies.removeItem("test5", "/home");\n'
+	+'// docCookies.getItem("test5") after removing it from path="/home"\n'
+	+docCookies.getItem("test5")
+	+'\n// Not properly deleted by the original docCookies.js even though it properly set path="/home", since it checks hasItem() first. (Read accessibility and Write accessibility are different.) So I changed the code slightly.'
+);
+printResult(
+	'// docCookies.getItem("unexistingCookie")\n'
+	+docCookies.getItem("unexistingCookie")
+	+'\n// returns null.'
+);
+printResult(
+	'// docCookies.getItem()\n'
+	+docCookies.getItem()
+	+'\n// returns null for an empty key.'
+);
+printResult(
+	'// docCookies.getItem("test1;=")\n'
+	+docCookies.getItem("test1;=")
+);
+</script>
+</codeprint><!-- code-test -->
+
+<codeprint id="code-delete-cookie">
+<script>
+(function(){
+	var printResult=function(str){
+		$("#delete-cookie-result").append(
+			'\n\n<pre class="prettyprint linenums">'+str+'</pre>\n\n'
+		);
+	};
+	var keys=docCookies.keys();
+	
+	var str="// Printing all cookies before deleting.\n";
+	for (var i=0;i<keys.length;i++){
+		str+=keys[i]+" : "
+			+docCookies.getItem(keys[i])+"\n";
+	}
+	printResult(str);
+	
+	str="// Deleting all cookies just by keys.\n";
+	for (var i=0;i<keys.length;i++){
+		str+="Deleting "+keys[i]+": "
+			+docCookies.removeItem(keys[i])+"\n";
+	}
+	printResult(str);
+	
+	printResult(
+		'// document.cookie.replace(/\\s*;\\s*/g,";\\n")\n'
+		+document.cookie.replace(/\s*;\s*/g,";\n")
+	);
+	
+	printResult(
+		'// The whole cookie keys after removing all of them just by keys.\n'
+		+docCookies.keys().join("\n")
+	);
+	
+	str="// Printing all cookies after removing all of them just by keys.\n";
+	for (var i=0;i<keys.length;i++){
+		str+=keys[i]+" : "
+			+docCookies.getItem(keys[i])+"\n";
+	}
+	printResult(str);
+})();
+</script>
+</codeprint><!-- code-delete-cookie -->
+
+<codeprint id="code-access-cookie">
+<script>
+(function(){
+	var printResult=function(str){
+		$("#access-cookie-result").append(
+			'\n\n<pre class="prettyprint linenums">'+str+'</pre>\n\n'
+		);
+	};
+	var maxAge=60*60; // 60 minutes.
+	
+	docCookies.setItem("test10", "Session cookie!");
+	docCookies.setItem("test11", "Persistent cookie in the current domain and path", maxAge);
+	docCookies.setItem("test12", "in path '/'", maxAge, "/");
+	docCookies.setItem("test13", "in path '/blog'", maxAge, "/blog");
+	docCookies.setItem("test14", "in path '/blog/category1'", maxAge, "/blog/category1");
+	docCookies.setItem("test15", "in path '/blog/category1/sub-category2'", maxAge, "/blog/category1/sub-category2");
+	docCookies.setItem("test16", "in path '/home'", maxAge, "/home");
+	docCookies.setItem("test17", "in path '/entry'", maxAge, "/entry");
+	docCookies.setItem("test18", "in path '/entry' and domain 'kipid.tistory.com'", maxAge, "/entry", "kipid.tistory.com");
+	docCookies.setItem("test19", "in path '/' and domain 'tistory.com'", maxAge, "/", "tistory.com");
+	docCookies.setItem("test20", "in path '/entry' and domain 'tistory.com'", maxAge, "/entry", "tistory.com");
+	docCookies.setItem("test21", "in path '/' and domain '.tistory.com'", maxAge, "/", ".tistory.com");
+		// A leading %x2E (".") in domain, if present, is ignored.
+	docCookies.setItem("test22", "in path '/entry' and domain '.tistory.com'", maxAge, "/entry", ".tistory.com");
+		// A leading %x2E (".") in domain, if present, is ignored.
+	docCookies.setItem("test23", "in path '/blog' and domain 'tistory.com'", maxAge, "/blog", "tistory.com");
+	docCookies.setItem("test24", "in path '/blog' and domain '.tistory.com'", maxAge, "/blog", ".tistory.com");
+		// A leading %x2E (".") in domain, if present, is ignored.
+	
+	printResult(
+		'// document.cookie.replace(/\\s*;\\s*/g,";\\n")\n'
+		+document.cookie.replace(/\s*;\s*/g,";\n")
+	);
+	
+	var str="// Printing all cookies.\n";
+	var keys=docCookies.keys();
+	for (var i=0;i<keys.length;i++){
+		str+=keys[i]+" : "
+			+docCookies.getItem(keys[i])+"\n";
+	}
+	printResult(str);
+})();
+</script>
+</codeprint><!-- code-access-cookie -->
+
+<codeprint id="docuK-script">
+<script>
+kipid.wait=2000;
+kipid.delayPad=2000;
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+	skipStartupTypeset: true, // Skip startup typeset.
+	positionToHash: false, // No repositioning to #something anchor.
+	tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\[','\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \$
+		processEnvironments: false, // Ignore \begin{something} ... \end{something}
+	}
+});
+</script>
+<!-- From kipid.tistory CDN -->
+<script src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-postProcess-2.2.js"></script>
+</codeprint><!-- docuK-script -->
