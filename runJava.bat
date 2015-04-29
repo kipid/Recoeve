@@ -3,7 +3,7 @@
 
 set sp=C:\Recoeve\sources
 set cp=C:\Recoeve\classes
-set CLASSPATH=.;C:\Program Files\Java\jdk1.8.0_25\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
+@rem set CLASSPATH=.;C:\Program Files\Java\jdk1.8.0_25\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
 @rem mysql-connector.jar;javax.mail.jar
 
 ECHO Compiling %~nx1.......
