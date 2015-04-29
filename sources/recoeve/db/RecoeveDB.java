@@ -30,8 +30,9 @@ import recoeve.http.BodyData;
 
 public class RecoeveDB {
 	public static final String encoding="UTF-8";
-	public static final int port=1000;
-	public static final String domain="localhost:"+port; // recoeve.com
+	public static final int port=80;
+	public static final String domain="recoeve.net";
+		// "localhost:"+port;
 	
 		// domain="localhost" does not works in cookie.
 	public static final String cookieDel=";max-age=-100";
