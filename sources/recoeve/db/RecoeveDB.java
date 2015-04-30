@@ -802,7 +802,7 @@ public class RecoeveDB {
 		return false;
 	}
 	
-	public String getRecoes(String user_id, StrArray uris) {
+	public String getRecos(String user_id, StrArray uris) {
 		String res="";
 		try {
 			ResultSet user=findUserById(user_id);
@@ -1184,7 +1184,7 @@ System.out.println("SubCats_n are added to setOfSubCats_n.");
 				String strUriL=uriL.toString().trim();
 				if (!strUriL.isEmpty()) {
 					strUriL="\""+strUriL.replaceAll("\"","\"\"")+"\"";
-				}
+				} // faster than StrArray.enclose(strUriL)
 				res+=cat+"\t"+strUriL+"\n";
 			}
 		} catch (SQLException e) {

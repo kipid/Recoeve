@@ -6,7 +6,7 @@ import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.buffer.Buffer;
 
 import java.util.Map;
-// import java.util.HashMap;
+import java.util.HashMap;
 
 // import java.net.URLDecoder;
 
@@ -27,8 +27,8 @@ import recoeve.db.StrArray;
 
 
 public class Recoeve extends Verticle {
-	public static final String FILEPATH="html/";
 	public static final String ENCODING="UTF-8";
+	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
 	static {
 		numberOfClients=0;
@@ -41,162 +41,97 @@ public void start() {
 	// Lambda exp with chaining.
 	/////////////////////////////////////////////
 	vertx.createHttpServer().requestHandler( (HttpServerRequest req) -> {
+		////////////////////////////////////
+		// Console log.
+		////////////////////////////////////
 		System.out.println("\n\nA client has connected! : "+(++numberOfClients));
-			// Why sometimes double counting? (favicon.ico request.)
+		final String now=db.now();
+			System.out.println("Time : "+now);		
+			System.out.println("Referer : "+req.headers().get("Referer"));
 		
-		System.out.println("req.method(): "+req.method());
-			// GET, PUT, POST, DELETE, HEAD, OPTIONS, CONNECT, TRACE, PATCH
-		// System.out.println("req.version(): "+req.version()); // HTTP_1_1
+		final String method=req.method();
+		final String path=req.path();
+		final String query=req.query();
+			System.out.println("Method : "+method);
+			System.out.println("Absolute URI : "+req.absoluteURI());
 		
-		// System.out.println("req.absoluteURI(): "+req.absoluteURI()); // (Uniform Resource Indicator/Locator)
-		// System.out.println("req.uri(): "+req.uri()); // /path/and?query=a&some=data
-		System.out.println("req.path(): "+req.path()); // /path/and
-		// System.out.println("req.query(): "+req.query()); // query=a&some=data
-		// req.uri(), req.path(), req.query()
-		
-		// StringBuilder sbConsole = new StringBuilder(); // to be printed in console.
-		
-		// System.out.println("req.params(): "+req.params().toString().trim()); // org.vertx.java.core.http.CaseInsensitiveMultiMap@4ecce4
-		// System.out.println("    number of params: "+req.params().size());
-		// // params() return Interface MultiMap (org.vertx.java.core.MultiMap).
-		// if (!req.params().isEmpty()) {
-		// 	for (Map.Entry<String, String> param: req.params().entries()) {
-		// 		sbConsole.append("  ")
-		// 			.append(param.getKey()).append(": ")
-		// 			.append(param.getValue()).append("\n");
-		// 	}
-		// 	System.out.println(sbConsole.toString().replaceFirst("\\n$", ""));
-		// 	sbConsole.delete(0, sbConsole.length());
-		// 	// System.out.println("  req.params().get(\"lang\"): "+req.params().get("lang"));
-		// }
-		
-		// System.out.println("req.headers(): "+req.headers()); // org.vertx.java.core.http.impl.HttpHeadersAdapter@43ab9bdc
-		// headers() return Interface MultiMap (org.vertx.java.core.MultiMap).
-		// for (Map.Entry<String, String> header: req.headers().entries()) {
-		// 	sbConsole.append("  ")
-		// 		.append(header.getKey()).append(": ")
-		// 		.append(header.getValue()).append("\n");
-		// }
-		// sbConsole.append("  Cookie : "+req.headers().get("Cookie")+"\n");
-		// System.out.println(sbConsole);
-		// sbConsole.delete(0, sbConsole.length());
-		
-		System.out.println("req.remoteAddress(): "+req.remoteAddress()); // java.net.InetSocketAddress
-			// /0:0:0:0:0:0:0:1:10221 (What is this? Request/User ip.)
-		System.out.println("req.localAddress(): "+req.localAddress()); // java.net.InetSocketAddress
-			// /0:0:0:0:0:0:0:1:1000 (Server ip)
-		
-		// System.out.println("\nreq.response().headers(): "+req.response().headers());
-		// for (Map.Entry<String, String> header: req.response().headers().entries()) {
-		// 	sbConsole.append("  ")
-		// 		.append(header.getKey()).append(": ")
-		// 		.append(header.getValue()).append("\n");
-		// }
-		// System.out.println(sbConsole);
-		// sbConsole.delete(0, sbConsole.length());
-		
-		String path=req.path();
-		if (path.contains("..")) {
-			path="invalid.html";
-		}
+		final String ip=req.remoteAddress().toString();
+			System.out.println("IP : "+ip);
+			System.out.println("Local Address : "+req.localAddress());
 		
 		////////////////////////////////////
 		// Session cookie 확인.
 		////////////////////////////////////
-		String ip=req.remoteAddress().toString();
-		// String log="web";
-		Cookie cookie=new Cookie(req.headers().get("Cookie"));
-		boolean sessionPassed=db.sessionCheck(cookie);
-			System.out.println("Session passed? : "+sessionPassed);
-		String lang=req.params().get("lang");
-		if (lang==null) {
-			lang=cookie.get("lang");
-			if (lang==null) { lang="en"; }
-		}
+		final Cookie cookie=new Cookie(req.headers().get("Cookie"));
+		final boolean sessionPassed=db.sessionCheck(cookie);
+		System.out.println("Session passed? : "+sessionPassed);
 		
-		if (path.equals("/")) {
-			req.response().putHeader("Content-Type","text/html; charset=utf-8");
+		String tmpLang=req.params().get("lang");
+		if (tmpLang==null) {
+			tmpLang=cookie.get("lang");
+			if (tmpLang==null) { tmpLang="en"; }
+		}
+		final String lang=tmpLang;
+		System.out.println("Lang : "+lang);
+		
+		if (path.equals("/favicon.ico")) {
+			System.out.println("Sending favicon.ico");
+			req.response().sendFile("favicon.ico");
+		} else if (path.equals("/jquery.min.js")) {
+			System.out.println("Sending jquery.min.js");
+			req.response().putHeader("Content-Type","text/javascript");
+			req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
+		} else if (path.equals("/")) {
+			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (sessionPassed) {
-				req.response().end(FileMapWithVar.get("my-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 			} else {
-				req.response().end(FileMap.get("log-in-first.html",lang), ENCODING);
+				req.response().end(FileMap.get("log-in.html", lang), ENCODING);
 			}
 		} else if (path.startsWith("/user/")) {
-			path=path.replaceFirst("^/user/","");
-			String[] pathSplit=path.split("/");
-			if (pathSplit.length==1) {
-				boolean userExists=!db.idAvailable(pathSplit[0]);
-				System.out.println("Sending a user-page ("+userExists+") : "+pathSplit[0]);
+			String user=path.substring(6);
+				// faster than path.replaceFirst("^/user/","");
+			String[] userSplit=user.split("/");
+			if (userSplit.length==1) {
+				boolean userExists=!db.idAvailable(userSplit[0]);
+				System.out.println("Sending a user-page (user exists:"+userExists+") : "+userSplit[0]);
 				req.response().putHeader("Content-Type","text/html; charset=utf-8");
 				if (userExists) {
-					req.response().end(FileMapWithVar.get("my-page.html", lang, db.varMapUserPage(cookie, pathSplit[0])), ENCODING);
+					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapUserPage(cookie, userSplit[0])), ENCODING);
 				} else {
-					req.response().end("User doesn't exist.", ENCODING);
+					req.response().end("User does not exist.", ENCODING);
+				}
+			} else if (userSplit.length==2&&method.equals("POST")) {
+				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+				switch (userSplit[1]) {
+					case "get-Recos":
+						req.bodyHandler( (Buffer data) -> {
+							req.response().end(db.getRecos(userSplit[0], new StrArray(data.toString())), ENCODING);
+						} );
+						break;
+					case "get-UriList":
+						req.bodyHandler( (Buffer data) -> {
+							req.response().end(db.getStringCatUriList(userSplit[0], new StrArray(data.toString())), ENCODING);
+						} );
+					default:
+						req.response().end(INVALID_ACCESS, ENCODING);
 				}
 			} else {
-				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-				if (pathSplit[1].equals("get-Recoes")&&pathSplit.length==2&&req.method().equals("POST")) {
-					req.bodyHandler( (Buffer data) -> {
-						String res=db.getRecoes(pathSplit[0], new StrArray(data.toString()));
-						req.response().end(res);
-					} );
-				}
-				//  else if (pathSplit[1].equals("get-CatList")&&pathSplit.length==2) {
-				// 	String res=db.getStringCatList(pathSplit[0]);
-				// 	req.response().end(res, ENCODING);
-				// } else if (pathSplit[1].equals("get-UriList")&&pathSplit.length==2&&req.method().equals("POST")) {
-				// 	req.bodyHandler( (Buffer data) -> {
-				// 		String res=db.getStringCatUriList(pathSplit[0], new StrArray(data.toString()));
-				// 		req.response().end(res);
-				// 	} );
-				// }
+				req.response().end(INVALID_ACCESS, ENCODING);
 			}
 		} else if (path.startsWith("/account/")) {
-			path=path.replaceFirst("^/account/","");
+			String toDo=path.substring(9);
+				// faster than path.replaceFirst("^/account/","");
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
-		switch (path) {
-			case "pwd_iteration":
-				if (sessionPassed) {
-					// You are already logged in.
-					System.out.println("pwd_iteration : Sending You are already logged in...");
-					req.response().end("pwd_iteration : You are already logged in Recoeve.", ENCODING);
-				} else if (req.method().equals("POST")) {
-					req.bodyHandler( (Buffer data) -> {
-						String dataStr=data.toString();
-						int i=dataStr.indexOf("\t");
-						String idType=dataStr.substring(0,i);
-						String id=dataStr.substring(i+1);
-						String iter=db.getPwdIteration(idType, id);
-						System.out.println("pwd_iteration : iter "+iter);
-						req.response().end(iter, ENCODING);
-					});
-				} else {
-					System.out.println("pwd_iteration : invalid method "+req.method());
-					req.response().end("invalid access", ENCODING);
-				}
-				break;
-			// case "log-in.css":
-			// 	System.out.println("log-in.css");
-			// 	req.response().putHeader("Content-Type","text/css; charset=utf-8");
-			// 	req.response().end(FileMap.get("log-in.css",lang), ENCODING);
-			// 	break;
-			// case "log-in.js":
-			// 	System.out.println("log-in.js");
-			// 	req.response().putHeader("Content-Type","text/javascript; charset=utf-8");
-			// 	req.response().end(FileMap.get("log-in.js",lang), ENCODING);
-			// 	break;
+			switch (toDo) {
 			case "log-in":
 				if (sessionPassed) {
-					// You are already logged in.
-					System.out.println("log-in : Sending You are already logged in...");
-					req.response().end("log-in : You are already logged in Recoeve.", ENCODING);
+					System.out.println("Redirecting to path=/");
+					req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
 				} else if (cookie.get("rmbdI")==null) {
-					System.out.println("log-in : Sending log-in.html");
-					// if (lang!=null){
-					// 	req.response().putHeader("Set-Cookie", "lang="+lang+";expires=...");
-					// }
+					System.out.println("Sending log-in.html");
 					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
-				} else if (req.method().equals("POST")) {
+				} else if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
@@ -205,7 +140,7 @@ public void start() {
 						if (setCookieRMB.startsWith("I=")) {
 							// Success: Session cookie and New token.
 							System.out.println("log-in : Remembered user.");
-							req.response().end(FileMap.get("to-my-page.html","df"), ENCODING);
+							req.response().end(FileMap.get("to-user-page.html","df"), ENCODING);
 						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
 							// Failed: Delete rmbd cookie.
 							System.out.println("log-in : Failed Remembering user.");
@@ -217,22 +152,39 @@ public void start() {
 					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
 				}
 				break;
+			case "pwd_iteration":
+				req.response().putHeader("Content-Type","text/plain");
+				if (sessionPassed) {
+					req.response().end("pwd_iteration : You are already logged in Recoeve.", ENCODING);
+				} else if (method.equals("POST")) {
+					req.bodyHandler( (Buffer data) -> {
+						String dataStr=data.toString();
+						int i=dataStr.indexOf("\t");
+						String idType=dataStr.substring(0,i);
+						String id=dataStr.substring(i+1);
+						String iter=db.getPwdIteration(idType, id);
+						System.out.println("pwd_iteration for "+idType+" "+id+" : "+iter);
+						req.response().end(iter, ENCODING);
+					});
+				} else {
+					req.response().end(INVALID_ACCESS, ENCODING);
+				}
+				break;
 			case "log-in.do":
 				if (sessionPassed) {
 					// You are already logged in.
 					System.out.println("log-in.do : Sending You are already logged in...");
-					req.response().end(FileMap.get("to-my-page.html",lang), ENCODING);
-				} else if (req.method().equals("POST")) {
+					req.response().end(FileMap.get("to-user-page.html",lang), ENCODING);
+				} else if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						System.out.println("data:\n"+inputs.toString());
-						String now=db.now();
 						String setCookieSSN=db.authUser(inputs, ip);
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							req.response().putHeader("Set-Cookie", setCookieSSN);
 							System.out.println("log-in.do : Log-in success! ID or E-mail: "+inputs.get("userId"));
-							req.response().end(FileMap.get("to-my-page.html","df"), ENCODING);
+							req.response().end(FileMap.get("to-user-page.html","df"), ENCODING);
 						} else {
 							// Log-in failed.
 							System.out.println("log-in.do : Log-in failed.");
@@ -240,19 +192,19 @@ public void start() {
 						}
 					} );
 				} else {
-					System.out.println("log-in.do : invalid method "+req.method());
-					req.response().end("invalid access", ENCODING);
+					System.out.println("log-in.do : invalid method "+method);
+					req.response().end(INVALID_ACCESS, ENCODING);
 				}
 				break;
 			case "log-out":
-				// Delete UserSession if exists. (cookie check.)
-				// Delete UserRemember if exists. (cookie check.)
-				// Erase all cookies
 				req.response().putHeader("Set-Cookie", db.logout());
-				req.response().end(FileMap.get("log-out.html","df"), ENCODING);
+					// Delete UserSession if exists. (cookie check.)
+					// Delete UserRemember if exists. (cookie check.)
+					// Erase all cookies
+				req.response().end(FileMap.get("log-out.html", lang), ENCODING);
 				break;
 			case "check":
-				if (req.method().equals("POST")) {
+				if (method.equals("POST")) {
 					// req.response().putHeader("Content-Type","text/plain");
 					req.bodyHandler( (Buffer data) -> {
 						String dataStr=data.toString();
@@ -263,7 +215,6 @@ public void start() {
 						boolean emailAvailable=db.emailAvailable(email);
 						System.out.println("Checking: "+id+" and "+email);
 						System.out.println("Availability: "+idAvailable+"\t"+emailAvailable);
-						String now=db.now();
 						if (idAvailable&&emailAvailable) {
 							byte[] token=db.randomBytes(128);
 							req.response().end(
@@ -278,22 +229,22 @@ public void start() {
 						}
 					} );
 				} else {
-					System.out.println("check : invalid method "+req.method());
-					req.response().end("invalid access", ENCODING);
+					System.out.println("check : invalid method "+method);
+					req.response().end(INVALID_ACCESS, ENCODING);
 				}
 				break;
 			case "sign-up":
-				if (req.method().equals("POST")) {
+				if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						System.out.println(data.toString());
 						BodyData inputs=new BodyData(data.toString());
 						System.out.println("data :\n"+inputs);
-						String now=db.now();
 						if (db.checkAuthToken(inputs, ip, now)) {
 							System.out.println("Token is verified.");
 							if (db.createUser(inputs, ip, now)) {
-								// req.response().sendFile("signed-up.html");
-								req.response().end("Your account is created. Log in first, and check your e-mail and verify your account within a day.", ENCODING);
+								Map<String,String> varMap=new HashMap<String,String>();
+								varMap.put("{--user email--}", inputs.get("userEmail"));
+								req.response().end(FileMapWithVar.get("signed-up.html", lang, varMap), ENCODING);
 							} else {
 								req.response().end("Error occured during registration. Please sign-up again.", ENCODING);
 							}
@@ -303,15 +254,15 @@ public void start() {
 						}
 					} );
 				} else {
-					System.out.println("sign-up : invalid method "+req.method());
-					req.response().end("invalid access", ENCODING);
+					System.out.println("sign-up : invalid method "+method);
+					req.response().end(INVALID_ACCESS, ENCODING);
 				}
 				break;
 			default:
-				if (path.startsWith("verify/")) {
+				if (toDo.startsWith("verify/")) {
 					if (sessionPassed) {
 						// VeriKey check.
-						if (db.verifyUser(cookie.get("I"), path.replaceFirst("verify/",""), ip)) {
+						if (db.verifyUser(cookie.get("I"), toDo.replaceFirst("verify/",""), ip)) {
 							// User is verified.
 							req.response().end("You are verified.", ENCODING);
 						} else {
@@ -324,14 +275,15 @@ public void start() {
 					}
 				} else {
 					// invalid.html?
-					req.response().end("invalid access");
+					req.response().end(INVALID_ACCESS);
 				}
-		}} else if (path.startsWith("/reco/")) {
-			path=path.replaceFirst("^/reco/","");
-			switch (path) {
+			}
+		} else if (path.startsWith("/reco/")) {
+			String toDo=path.replaceFirst("^/reco/","");
+			switch (toDo) {
 			case "infos":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&req.method().equals("POST")) {
+				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.recoInfos(Long.parseLong(cookie.get("I")), data.toString());
 						req.response().end(res);
@@ -340,7 +292,7 @@ public void start() {
 				break;
 			case "do":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&req.method().equals("POST")) {
+				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.recoDo(Long.parseLong(cookie.get("I")), data.toString());
 						req.response().end(res);
@@ -354,7 +306,7 @@ public void start() {
 				break;
 			case "put":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&req.method().equals("POST")) {
+				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.putReco(Long.parseLong(cookie.get("I")), data.toString());
 						req.response().end(res);
@@ -368,21 +320,14 @@ public void start() {
 				break;
 			}
 		} else if (path.startsWith("/changeOrders/")) {
-			path=path.replaceFirst("^/changeOrders/","");
-			if (sessionPassed&&path.equals("CatList")&&req.method().equals("POST")) {
+			String toDo=path.replaceFirst("^/changeOrders/","");
+			if (sessionPassed&&toDo.equals("CatList")&&method.equals("POST")) {
 				req.bodyHandler( (Buffer data) -> {
 					req.response().end(""+db.changeOrdersCatList(Long.parseLong(cookie.get("I")), data.toString()));
 				} );
 			} else {
 				req.response().end("Not a proper access.");
 			}
-		} else if (path.equals("/favicon.ico")) {
-			System.out.println("Sending a file : "+path);
-			req.response().sendFile("wrong/favicon.ico");
-		} else if (path.equals("/jquery.min.js")) {
-			System.out.println("Sending a jquery.min.js");
-			req.response().putHeader("Content-Type","text/javascript");
-			req.response().end(FileMap.get("jquery.min.js","df"), ENCODING);
 		} else {
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
 			if (sessionPassed) {
@@ -395,6 +340,6 @@ public void start() {
 				req.response().end("Log in first", ENCODING);
 			}
 		}
-	}).listen(RecoeveDB.port);
+	}).listen(80); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle
