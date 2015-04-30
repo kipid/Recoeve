@@ -17,7 +17,8 @@ import java.io.IOException;
 public class FileMapWithVar {
 	private static String filePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] fileNames={
-			"my-page.html"
+			"user-page.html"
+			, "signed-up.html"
 			// , "redirect.html", "remember-me.html"
 		};
 	private static final int fileMapSize=50;
@@ -179,6 +180,7 @@ public class FileMapWithVar {
 		Map<String,String> varMap=new HashMap<String,String>();
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
-		System.out.println(FileMapWithVar.get("my-page.html", "en", varMap));
+		varMap.put("{--user email--}", "id@email.com");
+		// System.out.println(FileMapWithVar.get("signed-up.html", "en", varMap));
 	}
 }
