@@ -1,209 +1,2177 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+(function(eve, undefined) {
+	eve.myIndex="{--myIndex--}";
+	eve.myId="{--myId--}";
+	var pathname=window.location.pathname;
+	if (pathname==="/") {
+		pathname="/user/"+eve.myId;
+		window.history.replaceState(null, null, pathname);
+	}
+	eve.userId="";
+	if (pathname.indexOf("/user/")===0) {
+		eve.userId=pathname.substring(6);
+	}
+	eve.myPage=(eve.myId===eve.userId);
+})(eve=window.eve||{});
+</script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+	<title>Recoeve.net</title>
 <style>
-body {margin:0; padding:0}
+body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word}
 
-#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(250,250,250); font-size:15px}
-#sidebar {padding:.5em; background:rgb(230,230,230)}
-#contents {padding:.5em;}
+div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
+data {display:none}
+.none {display:none}
+.center {text-align:center}
+.right {text-align:right}
+.cBoth {clear:both}
 
-#sidebar .cat {margin-left:5em;}
-#sidebar .cat.depth0 {margin-left:0em;}
-#sidebar .cat.depth1 {margin-left:1em;}
-#sidebar .cat.depth2 {margin-left:2em;}
-#sidebar .cat.depth3 {margin-left:3em;}
-#sidebar .cat.depth4 {margin-left:4em;}
+.button {display:inline-block; cursor:pointer; padding:.2em .5em; border:2px solid rgb(50,50,50); background:rgb(110,110,110);}
+.button.left {float:left; margin-right:.5em}
+.button:active {background:rgb(0,80,80)}
+.button.enabled {background:rgb(50,130,50)}
+.button.enabled:active {background:rgb(70,70,70)}
 
-#contents .reco {border:2px solid black;}
-#contents .reco>.title {border:1px solid red;}
-#contents .reco>.uri {font-size:.8em;}
-#contents .reco>.cats {font-size:.8em;}
+a {text-decoration:none}
+a:link {color:rgb(190,190,235)}
+a:visited {color:rgb(170,170,215)}
+a:active {color:rgb(100,215,215)}
+a:hover {color:rgb(170,215,170); text-decoration:underline}
+
+#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
+	#container.dark {background:rgb(75,75,75); color:white}
+#sidebar {margin-bottom:1em; padding:.5em; background:rgb(230,230,230); color:black}
+	.dark #sidebar {background:rgb(35,35,35); color:white}
+.side2 {padding:0}
+
+#user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
+
+#catList {margin-bottom:1em}
+#catList .cat {border:1px solid transparent; margin-bottom:2px}
+#cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
+#catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
+#catList .cat.edit.move {position:fixed; z-index:101}
+#catList .cat.edit>.edit-bar {position:absolute; width:1.3em; top:0; bottom:0; background:rgb(150,150,225)}
+#catList .cat.edit>.edit-bar:first-child {left:0}
+#catList .cat.edit>.edit-bar:last-child {right:0}
+#catList .cat.selected {border:1px solid black}
+	.dark #catList .cat.selected {border-color:white}
+#catList .cat>.baseCat, #catList .cat>.ES {cursor:pointer}
+#catList .cat.selected>.baseCat {pointer-events:none}
+#catList .cat>.noES, #catList .cat>.ES {display:inline-block; width:1em; text-align:center; vertical-align:text-bottom}
+
+#cat-fs-container {
+	position:relative;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left;
+}
+#cat-fs-list {
+	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	border:2px gray solid;
+	background:rgb(20,20,20);
+}
+#cat-fs-list .list-item {
+	background:black; color:white;
+	padding:.2em .5em .4em;
+}
+#cat-fs-list .list-item.selected {border:2px solid rgb(210,150,150)}
+#cat-fs-list .list-item .list-index {display:none}
+#cat-fs-list .list-item:nth-child(2n) {
+	background:rgb(40,40,40);
+}
+#cat-fs-list .list-item .cat {font-size:.9em;}
+#cat-fs-list .list-item .highlighted {
+	font-size:.5em; color:rgb(150,150,150);
+}
+#cat-fs-list .list-item .highlighted .bold {
+	color:rgb(170,250,170);
+}
+
+
+#fuzzy-search-container {
+	position:fixed; left:0; top:0;
+	z-index:100;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left;
+}
+#fuzzy-search {
+	height:2em; max-height:5em; overflow-y:auto;
+	font:inherit; font-size:1.3em; color:black;
+	width:100%;
+	padding:.1em 2em 0 .2em;
+	border:2px gray solid;
+	background:white;
+}
+#fuzzy-search-list {
+	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	border:2px gray solid;
+	background:rgb(20,20,20);
+}
+#fuzzy-search-list .list-item {
+	background:black; color:white;
+	padding:.2em .5em .4em;
+}
+#fuzzy-search-list .list-item.selected {border:2px solid rgb(210,150,150)}
+#fuzzy-search-list .list-item .list-index {display:none}
+#fuzzy-search-list .list-item:nth-child(2n) {
+	background:rgb(40,40,40);
+}
+#fuzzy-search-list .list-item .cat {font-size:.9em;}
+#fuzzy-search-list .list-item .highlighted {
+	font-size:.5em; color:rgb(150,150,150);
+}
+#fuzzy-search-list .list-item .highlighted .bold {
+	color:rgb(170,250,170);
+}
+.exit {
+	z-index:100;
+	position:absolute; display:inline-block;
+	right:0; top:0;
+	margin:-.2em -.2em 0 0;
+	width:1.8em; height:1.8em; line-height:1.0;
+	text-align:center;
+	/*border-radius:.4em;*/
+	cursor:pointer;
+	border:2px rgb(80, 80, 80) solid;
+	background-color:rgb(30,30,30); color:white;
+}
+.exit>svg {
+	width:100%; height:100%;
+	font-size:1.8em; line-height:1.0;
+}
+
+#point-range {position:relative; display:inline-block; width:300px; height:30px; background:rgb(200,100,100)}
+#point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
+#point-range-left, #point-range-right {position:absolute; width:20px; top:0; bottom:10px; background:rgba(150,150,150,0.9); border:2px solid rgb(50,50,50)}
+#point-range-left {left:0}
+#point-range-right {right:0}
+#point-range-result {border:2px solid black; padding:.1em .5em; vertical-align:top}
+	.dark #point-range-result {border-color:white}
+
+.reco.outRange {display:none}
+.reco {margin:0 0 1em; border-bottom:2px solid black}
+	.dark .reco {border-color:rgb(100,100,100); background:black}
+.reco:last-child {margin:0}
+.reco>.textURI, .reco>.YTVideoId {display:none}
+.reco>.uri {font-size:.8em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
+.reco>.title {font-size:1.1em; border:2px solid rgb(150,100,100); padding:.2em .5em}
+.reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
+.reco>.desc {margin:.5em 0; padding:.5em}
+.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+.reco .value {margin-bottom:1em}
+.stars-container {position:relative; display:inline-block; cursor:text}
+.stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
+.stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
+.stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
+.reco>.val>.str {border:2px solid black; padding:.1em .5em; vertical-align:top}
+	.dark .reco>.val>.str {border-color:white}
+
+.lyricsC {display:none}
+.lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
+.lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
+
+.rC {margin:1em 0}
+.rC.fixed {position:fixed; z-index:100; top:0; right:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:2px solid black}
+	.dark .rC.fixed {background:black; border-color:white}
+.rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:60%}
+.rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
+.pc {text-align:center; font-size:.6em} /* position change */
+
+#new-reco {position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto}
+#new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:3px solid rgb(120,120,130); text-align:left}
+#new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
+#new-reco label:first-child {margin-top:0}
+#new-reco label>.desc {font-size:.8em}
+#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; height:auto; font:inherit; font-weight:bold; font-size:.9em; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50);}
+#new-reco input#input-val {display:inline-block; width:8.5em}
+#new-reco .def-title {margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-title.selected {border-color:rgb(255,180,180)}
+#new-reco .def-cat {display:inline-block; margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-cat.selected {border-color:rgb(255,180,180)}
+#input-val-stars {margin:0 .5em -.4em 0}
+#new-reco .buttons {margin-top:1em; text-align:right}
+#new-reco #error-msg {margin:0}
 
 @media all and (min-width:801px) {
-	#container {position:absolute; left:0; top:0; right:0; bottom:0; overflow:hidden}
-	#sidebar {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; position:absolute; left:0; top:0; bottom:0; width:20em; overflow-x:auto; overflow-y:auto;}
-	#contents {position:absolute; left:20em; right:0; top:0; bottom:0; overflow-x:hidden; overflow-y:auto}
+	#container {}
+	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:20em; overflow:auto}
+	.side2 {margin-left:20em; padding:.5em}
+	.rC.fixed {width:646px; border-left:2px solid black}
+}
+@media all and (min-height:500px) {
+	#fuzzy-search-list {max-height:430px;}
 }
 </style>
 </head>
 <body>
-<div id="container">
+<data id="data-CatList">{--CatList--}</data>
+<data id="data-UriList">{--UriList--}</data>
+<div id="container" class="dark">
 	<div id="sidebar">
-		
+		<div id="user-noti"></div>
+		<div id="catList"></div>
+		<div id="edit-cat" class="right">
+			<div class="button" id="edit-cat-edit">Change orders</div>
+			<div class="button" id="edit-cat-ok">OK</div>
+			<div class="button" id="edit-cat-cancel">Cancel</div>
+		</div>
 	</div><!-- div#sidebar -->
-	<div id="contents">
-		
-	</div><!-- div#contents -->
-</div>
+	<div id="fuzzy-search-container">
+		<div id="fuzzy-search" contenteditable="true"></div>
+		<div id="fuzzy-search-list"></div>
+		<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	</div><!-- div#fuzzy-search-container -->
+	<div class="side2" id="head">
+		<div class="button" id="my-id"></div>
+		head : <a href="/account/log-out">Log out</a>
+		<div class="button" onclick="$('#container').toggleClass('dark')">Toggle style</div>
+		<div class="button" id="out-focus" onclick='$("#fuzzy-search-container").show(); $("#fuzzy-search").focus();'>Fuzzy search</div>
+		<div class="button" id="button-new-reco">New Reco</div>
+		<ul id="shortkeys"></ul>
+		<div id="point-range"></div>
+	</div><!-- div#head -->
+	<div class="side2" id="head2">
+		<div class="rC">
+			<div class="rSC">
+				<div id="youtube-playlist"></div>
+			</div>
+			<div class="button" onclick="eve.playlist.setShuffle(true)">Shuffle</div>
+			<div class="button" onclick="eve.playlist.toggleLoop(this)">Loop</div>
+			<div class="button" onclick="eve.playlist.toggleOneLoop(this)">One-loop</div>
+			<div class="pc" onclick="eve.togglePosition(this)">▲ click me to stick to the right top (fixed position)</div>
+		</div>
+	</div><!-- div#head2 -->
+	<div class="side2" id="contents"></div><!-- div#contents -->
+	<div class="side2" id="foot">The <a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this page</a>.</div><!-- div#foot -->
+	<div id="new-reco">
+		<form>
+		<label for="uri">URI <span class="desc">(required)</span></label>
+			<input id="input-uri" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text"/>
+			<div id="show-URI"></div>
+		<label for="title">Title</label>
+			<div id="def-titles"></div>
+			<input id="input-title" name="title" placeholder="Title" type="text"/>
+		<label for="cats">Categories</label>
+			<div id="def-cats"><div class="def-cat">Indifferent</div> <div class="def-cat">Later</div></div>
+			<input id="input-cats" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"/>
+			<div id="cat-fs-container" class="fs-container">
+				<div id="cat-fs-list"></div>
+				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+			</div>
+		<label for="desc">Description</label>
+			<textarea id="input-desc" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." rows="5"></textarea>
+		<label for="cmt">Comment</label>
+			<textarea id="input-cmt" name="cmt" placeholder="Comment: your personal description or opinion on this URI." rows="5"></textarea>
+		<label for="val">Points</label>
+			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text"/>
+		<div class="buttons">
+			<div class="button" id="button-reco">Reco</div>
+			<div class="button" id="button-edit">Edit</div>
+			<div class="button" id="button-del">Del</div>
+			<div class="button left" id="button-close">Close</div>
+			<div class="button left" id="button-back">Back</div>
+			<div class="cBoth"></div>
+		</div>
+		<div id="error-msg"></div>
+		<div id="my-reco"></div>
+		<div class="exit" onclick='$("#button-close").trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+		</form>
+	</div><!-- div#new-reco -->
+</div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- <script src="./jquery.min.js"></script> -->
 <script>
-(function(recoeve, $, undefined){
-	////////////////////////////////////////////////////
-	// String to Array
-	////////////////////////////////////////////////////
-	recoeve.strToArray=function(str) {
-		if (str.charAt(str.length-1)!=='\n') str+="\n";
-		var ret=[];
-		var delimiter=/([^\t\n]*)([\t\n])/g;
-		var lastQuote=/[^"](?:"")*"([\t\n])/g;
-		var exec;
-		var start=0;
-		var row=-1, col=-1, delim="\n";
-		var strElem="";
-		function increseRC(str) {
-			if (str==='\t') {
-				col++; return true;
-			} else if (str==='\n') {
-				row++; col=0; ret.push([]); return true;
-			} return false;
+(function(eve, $, undefined) {
+$("#user-noti").html(eve.userId+"'s recos");
+if (eve.myId) {
+	$("#my-id").html(eve.myId+" ▾");
+} else {
+	$("#my-id").hide();
+	$("#button-new-reco").hide();
+}
+
+$.fn.exists=function() { return this.length!==0; };
+$window=$(window);
+////////////////////////////////////////////////////
+// Delayed Loading.
+////////////////////////////////////////////////////
+$.fn.inView=function(delayPad) {
+	delayPad=delayPad||0;
+	var $elem=$(this);
+	if ($elem.is(":visible")) {
+		var viewportHeight=window.innerHeight;
+		var scrollTop=$window.scrollTop();
+		var elemTop=$elem.offset().top-delayPad;
+		var elemBottom=elemTop+$elem.height()+delayPad*2;
+		return (scrollTop+viewportHeight>elemTop) && (scrollTop<elemBottom);
+	} else {
+		return false;
+	}
+};
+$.fn.delayedLoad=function(delayPad) {
+	var $elem=$(this);
+	var done=false;
+	if ($elem.inView(delayPad)) {
+		// divs with background-image
+		if ($elem.attr("delayed-bgimage")) {
+			$elem.css("background-image", "url("+$elem.attr("delayed-bgimage")+")");
+			$elem.removeAttr("delayed-bgimage");
+			done=true;
+		} 
+		// iframes or images
+		if ($elem.attr("delayed-src")) {
+			$elem.attr("src", $elem.attr("delayed-src"));
+			$elem.removeAttr("delayed-src");
+			done=true;
 		}
-		while (start<str.length&&increseRC(delim)) {
-			if ((str.substring(start, start+1))==='"') {
-				lastQuote.lastIndex=start+1;
-				if ((exec=lastQuote.exec(str))!==null) {
-					strElem=str.substring(start+1, lastQuote.lastIndex-2);
-					delim=exec[1];
-					start=delimiter.lastIndex=lastQuote.lastIndex;
-				} else {
-					strElem=str.substring(start+1);
-					delim="";
-					start=str.length;
-				}
-				strElem=strElem.replace(/""/g,'"');
+		// MathJax Process
+		if (typeof MathJax!=='undefined'&&$elem.is(".MathJax_Preview")) {
+			MathJax.Hub.Queue(["Process", MathJax.Hub, $elem.next()[0]]);
+			done=true;
+		}
+	}
+	return done;
+};
+
+eve.delayPad=eve.delayPad||0;
+eve.delayedElems=[];
+eve.delayedLoadAll=function() {
+	if (eve.delayedElems.length===0) {
+		$window.off("scroll.delayedLoad");
+	} else {
+		eve.delayedElems.each(function() {
+			if ($(this).delayedLoad(eve.delayPad)) {
+				eve.delayedElems=eve.delayedElems.not(this);
+			}
+		});
+	}
+}
+
+eve.previous=Date.now();
+eve.wait=eve.wait||200;
+eve.delayedLoadByScroll=function eveDelayedLoadByScroll() {
+	var now=Date.now();
+	var passed=now-eve.previous;
+	if (passed>eve.wait) {
+		eve.delayedLoadAll();
+		eve.previous=now;
+	} else {
+		$window.off("scroll.delayedLoad");
+		setTimeout(function() {
+			eve.delayedLoadAll();
+			eve.previous=Date.now();
+			$window.on("scroll.delayedLoad", eveDelayedLoadByScroll);
+		}, eve.wait*1.1-passed);
+	}
+};
+
+eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
+$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+$window.trigger("scroll.delayedLoad");
+
+////////////////////////////////////////////////////
+// String to Array
+////////////////////////////////////////////////////
+eve.encloseStr=function(str) {
+	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
+		return '"'+str.replace(/"/g,'""')+'"';
+	} else {
+		return str;
+	}
+};
+eve.strToArray=function(str) {
+	// str=str.trim()+"\n";
+	if (str.charAt(str.length-1)!=="\n") {
+		str+="\n";
+	}
+	var ret=[];
+	var delimiter=/([^\t\n]*)([\t\n])/g;
+	var lastQuote=/[^"](?:"")*"([\t\n])/g;
+	var exec;
+	var start=0;
+	var row=-1, col=-1, delim="\n";
+	var strElem="";
+	function increseRC(str) {
+		if (str==='\t') {
+			col++; return true;
+		} else if (str==='\n') {
+			row++; col=0; ret.push([]); return true;
+		} return false;
+	}
+	while (start<str.length&&increseRC(delim)) {
+		if ((str.substring(start, start+1))==='"') {
+			lastQuote.lastIndex=start+1;
+			if ((exec=lastQuote.exec(str))!==null) {
+				strElem=str.substring(start+1, lastQuote.lastIndex-2);
+				delim=exec[1];
+				start=delimiter.lastIndex=lastQuote.lastIndex;
 			} else {
-				if ((exec=delimiter.exec(str))!==null) {
-					strElem=exec[1];
-					delim=exec[2];
-					start=delimiter.lastIndex;
+				strElem=str.substring(start+1);
+				delim="";
+				start=str.length;
+			}
+			strElem=strElem.replace(/""/g,'"');
+		} else {
+			if ((exec=delimiter.exec(str))!==null) {
+				strElem=exec[1];
+				delim=exec[2];
+				start=delimiter.lastIndex;
+			} else {
+				strElem=str.substring(start);
+				delim="";
+				start=str.length;
+			}
+		}
+		ret[row][col]=strElem;
+	}
+	return ret;
+};
+eve.strToJSON=function(str) {
+	var ret=eve.strToArray(str);
+	for (var i=1;i<ret.length;i++) {
+		for (var j=0;j<ret[i].length;j++) {
+			if (ret[0][j]!==undefined) {
+				ret[i][ret[0][j]]=ret[i][j];
+			}
+		}
+	}
+	return ret;
+};
+
+////////////////////////////////////////////////////
+// Escape and Unescape HTML string.
+////////////////////////////////////////////////////
+eve.escapeHTML=function(str) {
+	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+};
+eve.unescapeHTML=function(str) {
+	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
+};
+eve.escapeAMP=function(str) {
+	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
+};
+eve.unescapeAMP=function(str) {
+	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
+};
+
+////////////////////////////////////////////////////
+// YouTube API
+////////////////////////////////////////////////////
+eve.cueYTCount=0;
+eve.cueYoutubePlaylist=function(list) {
+	if (eve.playlist&&eve.playlist.cuePlaylist) {
+		if (list.length>0) {
+			$("#head2").show();
+			eve.playlist.cuePlaylist(list);
+		} else {
+			$("#head2").hide();
+			eve.playlist.stopVideo();
+		}
+	} else {
+		if (++eve.cueYTCount<100) {
+			setTimeout(function() {
+				eve.cueYoutubePlaylist(list);
+			}, 1000);
+		}
+	}
+};
+
+////////////////////////////////////////////////////
+// RegEx URL of video
+////////////////////////////////////////////////////
+eve.togglePosition=function(elem) {
+	var $elem=$(elem);
+	var $parent=$elem.parent();
+	if ($parent.hasClass("fixed")) {
+		$parent.removeClass("fixed");
+		window.scrollTo(0, $parent.offset().top);
+		$elem.text("▲ click me to stick to the right top (fixed position)");
+	} else {
+		$parent.addClass("fixed");
+		window.scrollBy(0, -$parent.height());
+		$elem.text("▲ click me to return to the original position (static position)");
+	}
+};
+eve.rC=function(iframeStr) {
+	return '<div class="rC">'
+		+'<div class="rSC">'
+			+iframeStr
+		+'</div>'
+		+'<div class="pc" onclick="eve.togglePosition(this)">▲ click me to stick to the right top (fixed position)</div>'
+	+'</div>';
+};
+eve.videoURL={};
+eve.videoRendering=function(uri) {
+	switch (uri.constructor) {
+	case String:
+		for (var p in eve.videoURL) {
+			var result=eve.videoURL[p].toIframe(uri);
+			if (result) { return result; }
+		}
+		return {html:""};
+	default:
+		return {html:""};
+	}
+};
+var videoURL;
+videoURL=eve.videoURL.youtubeURL={};
+videoURL.regEx=/^https?:\/\/www.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.youtubeURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
+			, from:"youtube", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.youtuURL={};
+videoURL.regEx=/^https?:\/\/youtu.be\/([\w-]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.youtuURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
+			, from:"youtube", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.mYoutubeURL={};
+videoURL.regEx=/^https?:\/\/m.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.mYoutubeURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
+			, from:"youtube", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.youtubeEmbedURL={};
+videoURL.regEx=/^https?:\/\/www.youtube.com\/embed\/([\w-]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.youtubeEmbedURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
+			, from:"youtube", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.tvpotURL={};
+videoURL.regEx=/^https?:\/\/tvpot.daum.net\/v\/([\w-]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.tvpotURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?play_loc=tvpot&amp;jsCallback=true&amp;wmode=transparent&amp;vid='+exec[1]+'$&amp;autoplay=false&amp;startNotReport=&amp;permitWideScreen=true&amp;forceWide=true&amp;" frameborder="0"></iframe>')
+			, from:"daum", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.vimeoURL={};
+videoURL.regEx=/^https?:\/\/vimeo.com\/([0-9]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.vimeoURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>')
+			, from:"vimeo", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.dmURL={};
+videoURL.regEx=/^https?:\/\/www.dailymotion.com\/video\/([0-9a-zA-Z]+)/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.dmURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>')
+			, from:"dailymotion", videoId:exec[1]};
+	}
+	return false;
+};
+videoURL=eve.videoURL.htmlTAG={};
+videoURL.regEx=/^&lt;.+&gt;$/i;
+videoURL.toIframe=function(url) {
+	var exec=eve.videoURL.htmlTAG.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC(url.replace(/&gt;/gi,">").replace(/&lt;/gi,"<"))
+			, from:"html"};
+	}
+	return false;
+};
+
+////////////////////////////////////////////////////
+// desc and cmt rendering
+////////////////////////////////////////////////////
+eve.regExDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
+eve.renderStrDescCmt=function(str) {
+	var res=[];
+	str=str.trim();
+	var key="#";
+	var i=0;
+	var start=0;
+	var exec;
+	while ((exec=eve.regExDescCmt.exec(str))!==null) {
+		res[i++]=key;
+		res[key]=str.substring(start, exec.index).trim();
+		start=eve.regExDescCmt.lastIndex;
+		key=exec[1];
+	}
+	res[i++]=key;
+	res[key]=str.substring(start).trim();
+	return res;
+};
+
+////////////////////////////////////////////////////
+// uri to a href
+////////////////////////////////////////////////////
+eve.regexURL=/^https?:\/\//i;
+eve.uriToA=function(uri) {
+	if (eve.regexURL.test(uri)) {
+		return '<a href="'+uri+'">'+uri+'</a>';
+	} else {
+		return uri;
+	}
+};
+
+////////////////////////////////////////////////////
+// val
+////////////////////////////////////////////////////
+eve.regexVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+eve.val=function(val) {
+	var res={};
+	res.str=val;
+	if (val.length===0) {
+		res.valid=true;
+		res.val=-1;
+	} else {
+		var exec=eve.regexVal.exec(val);
+		if (exec!==null) {
+			res.num=Number(exec[1]);
+			res.divisor=Number(exec[2])
+			res.valid=(res.num<=res.divisor);
+			if (res.valid) {
+				res.val=res.num/res.divisor;
+			} else {
+				res.val=-1;
+			}
+		}
+	}
+	return res;
+};
+{
+	var r=12; // outer radius of star
+	var r0=6; // inner radius of star
+	var pad=1; // padding of star
+	var pad0=9; // left/right pad
+	var thetas=[];
+	var coss=[];
+	var sins=[];
+	for (var i=0;i<10;i++) {
+		thetas.push(-Math.PI/2+2*Math.PI/10*i);
+		coss.push(Math.cos(thetas[i]));
+		sins.push(Math.sin(thetas[i]));
+	}
+	var str=pad0+',0 ';
+	var yc=pad+r;
+	var xc=pad0+pad+r;
+	for (var k=0;k<5;k++,xc+=2*r+pad) {
+		str+=xc+',0 ';
+		for (var i=0;i<10;i++) {
+			var rp=(i%2==0)?r:r0;
+			str+=(xc+rp*coss[i]).toFixed(1)+','+(yc+rp*sins[i]).toFixed(1)+' ';
+		}
+		str+=xc+','+pad+' '+xc+',0 ';
+	}
+	xc-=r;
+	yc+=r*sins[4]+pad;
+	str+=xc+',0 '+xc+','+yc.toFixed(1)+' '+pad0+','+yc.toFixed(1);
+	eve["5stars-pre"]='<div class="stars-container" style="width:'+(xc+pad0)+'px; height:'+yc.toFixed(1)+'px"><div class="bar" style="left:'+(pad0+1)+'px; width:';
+	eve["5stars-width"]=xc-pad0-2;
+	eve["5stars-pad0+1"]=pad0+1;
+	eve["5stars-post"]='px"></div><svg class="out-stars">'
+			+'<polygon points="'+str+'"/>'
+		+'</svg></div>';
+	eve["5stars"]=function(val) {
+		if (val<0) { val=0; }
+		else if (val>1) { val=1; }
+		return eve["5stars-pre"]+(eve["5stars-width"]*val).toFixed(1)+eve["5stars-post"];
+	}
+}
+$("#test-5stars").html(eve["5stars"](0.4));
+
+////////////////////////////////////////////////////
+// Point range
+////////////////////////////////////////////////////
+eve.ptsRangeFrom=0; // from <= pts <= to
+eve.ptsRangeTo=1;
+eve.mdInPRL=false; // mouse down in Point Range Left
+eve.mdInPRR=false; // mouse down in Point Range Right
+$("#point-range").html('<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>');
+$("#point-range").after('&nbsp; <span id="point-range-result"></span>');
+$("#point-range-left").on("mousedown touchstart", function(e) {
+	eve.mdInPRL=true;
+});
+$("#point-range-right").on("mousedown touchstart", function(e) {
+	eve.mdInPRR=true;
+});
+$("html").on("mouseup.mdInPR", function(e) {
+	eve.mdInPRL=false;
+	eve.mdInPRR=false;
+});
+$("html").on("mousemove", function(e) {
+	if (eve.mdInPRL||eve.mdInPRR) {
+		window.getSelection().removeAllRanges();
+	}
+});
+eve.PRsteps=10;
+eve.PRLw=15;
+eve.PRw=$("#point-range").width();
+eve.PRRw=eve.PRw-15;
+eve.PRtoInt=function(w) {
+	return Math.round(eve.PRsteps*(w-15)/(eve.PRw-30));
+};
+$("#point-range").on("mousemove touchmove", function(e) {
+	// e.stopPropagation();
+	if (eve.mdInPRL||eve.mdInPRR) {
+		window.getSelection().removeAllRanges();
+		var $this=$(this);
+		var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		var w=x-$this.offset().left+$window.scrollLeft();
+		eve.PRw=$this.width();
+		w=(w>15)?w:15;
+		w=(w<eve.PRw-15)?w:eve.PRw-15;
+		w=eve.PRtoInt(w)/eve.PRsteps*(eve.PRw-30)+15;
+		var changed=false;
+		if (eve.mdInPRL) {
+			if (w>eve.PRRw) { w=eve.PRRw; }
+			if (eve.PRLw!==w) {
+				$("#point-range-left").css({left:w-15});
+				$("#point-range-bar").css({left:w});
+				eve.PRLw=w;
+				changed=true;
+			}
+		} else {
+			if (w<eve.PRLw) { w=eve.PRLw; }
+			if (eve.PRRw!==w) {
+				$("#point-range-right").css({left:w-5});
+				$("#point-range-bar").css({right:eve.PRw-w});
+				eve.PRRw=w;
+				changed=true;
+			}
+		}
+		if (changed) {
+			$("#point-range-result").html(eve.PRtoInt(eve.PRLw)/2+"~"+eve.PRtoInt(eve.PRRw)/2+" /"+eve.PRsteps/2);
+			eve.ptsRangeFrom=eve.PRtoInt(eve.PRLw)/eve.PRsteps;
+			eve.ptsRangeTo=eve.PRtoInt(eve.PRRw)/eve.PRsteps;
+			clearTimeout(eve.timeOutHideOutRange);
+			eve.timeOutHideOutRange=setTimeout(eve.processOutRange, 500);
+		}
+	}
+});
+eve.processOutRange=function() {
+	var $recos=$(".reco");
+	var list=[];
+	eve.fsFullList=[];
+	for (var i=0;i<$recos.length;i++) {
+		var $recoI=$recos.eq(i);
+		var recoI=eve.userRecos[eve.unescapeHTML($recoI.find(">.textURI").eq(0).html())];
+		if (recoI!==undefined) {
+			var val=recoI.val.val;
+			if (val!==-1) {
+				if (eve.ptsRangeFrom<=val&&val<=eve.ptsRangeTo) {
+					$recoI.removeClass("outRange");
 				} else {
-					strElem=str.substring(start);
-					delim="";
-					start=str.length;
+					$recoI.addClass("outRange");
 				}
 			}
-			ret[row][col]=strElem;
+		} else {
+			console.log("undefined reco!");
 		}
-		return ret;
-	};
-	recoeve.strToJSON=function(str) {
-		var ret=recoeve.strToArray(str);
-		for (var i=1;i<ret.length;i++) {
-			for (var j=0;j<ret[i].length;j++) {
-				if (ret[0][j]!==undefined) {
-					ret[i][ret[0][j]]=ret[i][j];
+		if (!$recoI.hasClass("outRange")) {
+			var $YTVideoId=$recoI.find(">.YTVideoId");
+			if ($YTVideoId.exists()) {
+				list.push($YTVideoId.html());
+			}
+			var $title=$recoI.find(">.title");
+			if ($title.exists()) {
+				var txt=$title.text();
+				if (txt.length!==0) {
+					eve.fsFullList.push({"txt":txt, "html":$title.html(), "$reco":$recoI});
 				}
 			}
 		}
-		return ret;
-	};
-	
-	recoeve.getDepthOfTabs=function(str){
-		var n=0;
-		while (n<str.length&&str.charAt(n)==='\t') {
-			n++;
+	}
+	eve.fsLastTxt+="$!@#";
+	$("#fuzzy-search").trigger("keyup");
+	eve.cueYoutubePlaylist(list);
+};
+
+////////////////////////////////////////////////////
+// CatList rendering
+////////////////////////////////////////////////////
+eve.emptyReco={has:true, title:"", cats:"", desc:"", cmt:"", val:eve.val("")};
+eve.userRecos={};
+eve.myRecos=(eve.myPage)?eve.userRecos:{};
+eve.getDepthOfTabs=function(str) {
+	var n=0;
+	while (n<str.length&&str.charAt(n)==='\t') { n++; }
+	return n;
+};
+eve.renderStrCatList=function(strCatList) {
+	var catList=[];
+	var superCats=[];
+	var list=strCatList.trim().split("\n");
+	if (strCatList.trim().length===0) {
+		list=[];
+	}
+	list.unshift("");
+	for (var i=0;i<list.length;i++) {
+		catList[i]={};
+		var depth=eve.getDepthOfTabs(list[i]);
+		catList[i].baseCat=list[i].trim();
+		catList[i].depth=depth;
+		superCats[depth]=catList[i].baseCat;
+		for (var j=superCats.length-1;j>depth;j--) {
+			superCats.pop();
 		}
-		return n;
-	};
-	recoeve.renderCats=function(resp){
-		var catList=[];
-		var superCats=[];
-		var list=resp.trim().split("\n");
-		for (var i=0;i<list.length;i++) {
-			catList[i]={};
-			var depth=recoeve.getDepthOfTabs(list[i]);
-			catList[i].baseCat=list[i].trim();
-			catList[i].depth=depth;
-			superCats[depth]=catList[i].baseCat;
-			for (var j=superCats.length-1;j>depth;j--) {
-				superCats.pop();
-			}
-			var cat=superCats[0];
-			for (var j=1;j<=depth;j++) {
-				cat+="--"+superCats[j];
-			}
-			catList[i].cat=cat;
+		var cat=superCats[0];
+		for (var j=1;j<=depth;j++) {
+			cat+="--"+superCats[j];
 		}
-		return catList;
-	};
-	
-	recoeve.pathname=location.pathname;
-	$.ajax({
-		type:"GET"
-		, url:recoeve.pathname+"/get-CatList"
-		, dataType:"text"
-		, success:function(resp){
-			// console.log(resp);
-			if (resp=="") {
-				$("#sidebar").html(recoeve.pathname+" does not exist.");
-				return;
+		catList[i].cat=cat;
+		catList[cat]=i;
+	}
+	return catList;
+		// catList[i]=(cat, baseCat, depth);
+		// catList[cat]=i;
+};
+eve.slideUp=function(elem) {
+	var $elem=$(elem).parent().parent();
+	$elem.slideUp(1000);
+	$("body").animate({scrollTop:'-='+$elem.height()}, 1000);
+};
+eve.recoHTML=function(r) {
+	var res="";
+	if (r&&r["has"]) {
+		var uriEscaped=eve.escapeHTML( r["uri"] );
+		res+='<div class="reco">'
+			+(eve.myId?'<div class="right"><div class="button edit">'+((eve.myPage)?'Edit':'Reco to mine')+'</div></div>':'')
+			+'<div class="textURI">'+uriEscaped+'</div>';
+		var video=eve.videoRendering( r["uri"] );
+		if (video.from==="youtube") {
+			res+='<div class="YTVideoId">'+video.videoId+'</div>';
+		}
+		res+='<div class="uri">'+eve.uriToA( uriEscaped )+'</div>'
+			+'<div class="title">'+eve.escapeHTML( r["title"] )+'</div>'
+			+'<div class="cats">'+eve.escapeHTML( r["cats"] )+'</div>'
+			+video.html
+			+'<div class="desc">';
+		var descR=r["descR"];
+		for (var l=0;l<descR.length;l++) {
+			var key=eve.escapeHTML( descR[l] );
+			var value=eve.escapeHTML( descR[descR[l]] );
+			switch (key.toLowerCase()) {
+			case "#" :
+				res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
+				break;
+			case "lyrics" :
+				res+='<div class="value"><div class="center"><div class="button" onclick="$(this).parent().next().slideToggle(1000)">▼ Toggle lyrics</div></div>'
+					+'<div class="lyricsC">'
+						+'<div class="lyricsArrow"></div>'
+						+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
+						+'<div class="right"><div class="button" onclick="eve.slideUp(this)">▲ Hide lyrics</div></div>'
+					+'</div></div>';
+				break;
+			case "related" :
+				res+='<div class="value"><span class="key">'+key+' : </span>';
+				var relateds=value.split("\n");
+				for (var m=0;m<relateds.length;m++) {
+					res+='<br>'+eve.uriToA( relateds[m] )+eve.videoRendering( relateds[m] ).html;
+				}
+				res+='</div>';
+				break;
+			default :
+				res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
 			}
-			var catList=recoeve.renderCats(resp);
-			var catListHTML="";
-			for (var i=0;i<catList.length;i++) {
-				catListHTML+='<div class="cat depth'+catList[i].depth+'">'+catList[i].baseCat+'</div>';
+		}
+		res+='</div>'
+			+(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"")
+			+'<div class="val">'+eve["5stars"]( r["val"].val )+' <span class="str">'+eve.escapeHTML( r["val"].str )+'</span></div>'
+		+'</div>';
+	} else {
+		res+='<div class="reco">No Reco</div>';
+	}
+	return res;
+};
+eve.showContents=function(uris) {
+	var strHTML="";
+	if (uris.length>0) { for (var k=0;k<uris.length;k++) {
+		strHTML+=eve.recoHTML( eve.userRecos[uris[k]] );
+	}} else {
+		strHTML+="No reco.";
+	}
+	$("#contents").html(strHTML);
+	eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
+	eve.processOutRange();
+	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+	$window.trigger("scroll.delayedLoad");
+	eve.fdList=$("#contents .reco");
+	$("#contents .reco .button.edit").on("click", function(e) {
+		var $reco=$(this).parent().parent(".reco");
+		var uri=eve.unescapeHTML($reco.find(".textURI").html());
+		var r=eve.userRecos[uri];
+		$("#input-uri")[0].value=r["uri"];
+		$("#input-uri")[0].disabled=true;
+		$("#new-reco").show();
+		if (uri.length!==0&&uri!==eve.lastURI) {
+			eve.lastURI=uri;
+			eve.getAndShowDefsAndReco();
+		}
+		eve.wST=$window.scrollTop();
+		$window.on("scroll.stop", function(e) {
+			$window.scrollTop(eve.wST);
+		});
+	});
+};
+
+eve.catUriList=eve.strToJSON(eve.unescapeHTML($("#data-UriList").html())); // cat, UriList
+if (eve.catUriList.length===1) {
+	eve.catUriList[1]=["",""];
+	eve.catUriList[1]["cat"]="";
+	eve.catUriList[1]["UriList"]="";
+}
+for (var i=1;i<eve.catUriList.length;i++) {
+	eve.catUriList[ eve.catUriList[i]["cat"] ]=eve.catUriList[i];
+	var uriL=eve.catUriList[i]["UriList"].trim();
+	if (uriL!=="") {
+		var uris=uriL.split("\n");
+		for (var j=0;j<uris.length;j++) {
+			eve.userRecos[uris[j]]={down:false};
+		}
+	}
+}
+
+eve.recoDowned=function(urisStr, recos) {
+	var uris=urisStr.split("\n");
+	for (k=0;k<uris.length;k++) {
+		var p=recos[ uris[k] ];
+		if (!p) { p=recos[ uris[k] ]={}; }
+		p["down"]=true;
+	}
+};
+eve.recoToEve=function(resp, recos) {
+	var recos=eve.strToJSON(resp);
+	for (var k=1;k<recos.length;k++) {
+		var recoK=recos[k];
+		var p=recos[ recoK["uri"] ];
+		if (!p) {
+			p=recos[ recoK["uri"] ]={};
+		}
+		p["has"]=true;
+		p["uri"]=recoK["uri"];
+		p["title"]=recoK["title"];
+		p["cats"]=recoK["cats"];
+		p["desc"]=recoK["desc"];
+		p["descR"]=eve.renderStrDescCmt(recoK["desc"]); // R for rendered.
+		p["cmt"]=recoK["cmt"];
+		p["cmtR"]=eve.renderStrDescCmt(recoK["cmt"]); // R for rendered.
+		p["val"]=eve.val( recoK["val"] );
+		// p["tFirst"]=recoK["tFirst"];
+		// p["tLast"]=recoK["tLast"];
+	}
+};
+eve.getAndShowRecosOnCat=function(cat) {
+	var catI=eve.catList[cat];
+	var $cat=$("#cat-"+catI);
+	$("#catList .cat").removeClass("selected");
+	$cat.addClass("selected");
+	if (eve.catUriList[cat]) {
+		var uriList=eve.catUriList[cat]["UriList"];
+		var uris=[];
+		var getRecosStr="uri";
+		var getRecosN=0;
+		if (uriList.length!==0) { uris=uriList.split("\n"); }
+		for (var j=0;j<uris.length;j++) {
+			if (!eve.userRecos[uris[j]]["down"]) {
+				getRecosStr+="\n"+uris[j];
+				getRecosN++;
 			}
-			$("#sidebar").html(catListHTML);
-			
-			var str="cat";
-			for (var i=0;i<catList.length;i++) {
-				str+="\n"+catList[i].cat;
-			}
+		}
+		if (getRecosN>0) {
 			$.ajax({
-				type:"POST"
-				, url:recoeve.pathname+"/get-UriList"
-				, data:str
+				type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
 				, dataType:"text"
-			}).done(function(uriList) {
-				recoeve.catUriList=recoeve.strToJSON(uriList);
-				recoeve.wholeUriList=[];
-				for (var i=1;i<recoeve.catUriList.length;i++) {
-					var uriL=recoeve.catUriList[i]["UriList"];
-					if (uriL!="") {
-						var uris=uriL.split("\n");
-						for (var j=0;j<uris.length;j++) {
-							recoeve.wholeUriList.push(uris[j]);
-						}
+			}).done(function(resp) {
+				eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
+				eve.recoToEve(resp, eve.userRecos);
+				eve.showContents(uris);
+			});
+		} else {
+			eve.showContents(uris);
+		}
+	} else {
+		$("#contents").html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
+	}
+};
+eve.refresh=function(cats) {
+	var currentCat=eve.getSearchVars().cat;
+	var c=cats.split(";");
+	var k=0;
+	if (currentCat!==undefined) {
+		for (k=c.length-1;k>0;k--) {
+			if (c[k]===currentCat) {break;}
+		}
+	}
+	eve.getAndShowRecosOnCat(c[k]);
+	if (c[k]!==currentCat) {
+		window.history.pushState({cat:c[k]}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(c[k]));
+	}
+};
+
+eve.renderCatListHTML=function(catList) {
+	var catListHTML='<div class="cat" id="cat-0"><span class="noES"></span><span class="baseCat">Uncategorized</span></div>';
+	var i=1;
+	for (;i<eve.catList.length-1;i++) {
+		var beforeDepth=eve.catList[i-1].depth;
+		var currentDepth=eve.catList[i].depth;
+		var afterDepth=eve.catList[i+1].depth;
+		if (beforeDepth<currentDepth) { // open subCat
+			catListHTML+='<div class="subCat">';
+		} else {
+			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
+				catListHTML+='</div>';
+			}
+		}
+		catListHTML+='<div class="cat" id="cat-'+i+'">';
+		if (currentDepth<afterDepth) {
+			catListHTML+='<span class="ES">▾</span>';
+		} else {
+			catListHTML+='<span class="noES"></span>';
+		}
+		catListHTML+='<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'+'</div>';
+	}
+	if (eve.catList.length>1) {
+		var beforeDepth=eve.catList[i-1].depth;
+		var currentDepth=eve.catList[i].depth;
+		if (beforeDepth<currentDepth) { // open subCat
+			catListHTML+='<div class="subCat">';
+		} else {
+			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
+				catListHTML+='</div>';
+			}
+		}
+		catListHTML+='<div class="cat" id="cat-'+i+'">'
+			+'<span class="noES"></span>'
+			+'<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'
+		+'</div>';
+		for (var j=0;j<currentDepth;j++) { // close subCats
+			catListHTML+='</div>';
+		}
+	}
+	$("#catList").html(catListHTML);
+	for (var i=0;i<eve.catList.length;i++) {
+		var $catI=$("#cat-"+i);
+		$catI.css({"margin-left":(eve.catList[i].depth)+"em"});
+		$catI.find(">.baseCat").on("click", function(e) {
+			var cat=eve.catList[Number($(this).parent().attr("id").replace(/^cat-/,""))].cat;
+			eve.getAndShowRecosOnCat(cat);
+			window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
+		});
+		$catI.find(">.ES").on("click", function(e) {
+			var $this=$(this);
+			var $next=$this.parent().next();
+			$next.toggle();
+			if ($next.is(":visible")) {
+				$this.html("▾");
+			} else {
+				$this.html("▸");
+			}
+		});
+	}
+};
+eve.catList=eve.renderStrCatList(eve.unescapeHTML($("#data-CatList").html()));
+eve.renderCatListHTML(eve.catList);
+window.onpopstate=function(e) {
+	if (e.state&&e.state.cat!==undefined) {
+		eve.getAndShowRecosOnCat(e.state.cat);
+	}
+};
+eve.getSearchVars=function() {
+	var searchStr=window.location.search;
+	var vars={};
+	if (searchStr!==0) {
+		if (searchStr.substring(0,1)==="?") {
+			searchStr=searchStr.substring(1);
+		}
+		var splits=searchStr.split("&");
+		for (var i=0;i<splits.length;i++) {
+			var key=splits[i];
+			var value="";
+			var k=splits[i].indexOf("=");
+			if (k!==-1) {
+				key=splits[i].substring(0,k);
+				value=decodeURIComponent(splits[i].substring(k+1));
+			}
+			vars[key]=value;
+		}
+	}
+	return vars;
+};
+var vars=eve.getSearchVars();
+if (vars.cat!==undefined) {
+	eve.getAndShowRecosOnCat(vars.cat);
+}
+
+//////////////////////////////////////
+// CatList edit
+//////////////////////////////////////
+eve.getSuperCat=function(cat) {
+	if (cat!=null) {
+		var i=cat.lastIndexOf("--");
+		if (i!=-1) {
+			return cat.substring(0,i);
+		}
+	}
+	return null;
+}
+eve.putCatsUriToList=function(cats, uri) {
+	var catSplit=cats.split(";");
+	for (var i=0;i<catSplit.length;i++) {
+		var cat=catSplit[i];
+		if (eve.catUriList[cat]) {
+			eve.catUriList[cat]["UriList"]=uri+"\n"+eve.catUriList[cat]["UriList"];
+		} else {
+			eve.putCat(cat);
+			eve.catUriList[cat]={
+				cat:cat
+				, UriList:uri
+			};
+		}
+	}
+};
+eve.deleteCatsUriFromList=function(cats, uri) {
+	var catSplit=cats.split(";");
+	for (var i=0;i<catSplit.length;i++) {
+		var cat=catSplit[i];
+		if (eve.catUriList[cat]) {
+			var fullURIs="\n"+eve.catUriList[cat]["UriList"]+"\n";
+			var k=fullURIs.indexOf("\n"+uri+"\n");
+			if (k!==-1) {
+				eve.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
+			}
+			if (eve.catUriList[cat]["UriList"].length===0) {
+				while (cat!==null&&(!eve.catUriList[cat]||eve.catUriList[cat]["UriList"].length===0)&&eve.deleteCat(cat)) {
+					cat=eve.getSuperCat(cat);
+				}
+			}
+		}
+	}
+};
+eve.putCat=function(cat) {
+	var res=false;
+	if (cat===null||cat.length===0) { return res; }
+	var fullCats=eve.unescapeHTML($("#data-CatList").html());
+	var levels=cat.split("--");
+	var pre="\n";
+	var start=0;
+	var end=fullCats.length;
+	for (var j=0;j<levels.length;j++) {
+		var subStr=fullCats.substring(start,end);
+		var toFind=pre+levels[j]+"\n";
+		var i=subStr.indexOf(toFind);
+		if (i!=-1) {
+			var ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
+			ptnEnd.lastIndex=i+toFind.length-1;
+			var matchEnd=ptnEnd.exec(subStr);
+			if (matchEnd!==null) {
+				end=start+matchEnd.index+1;
+			}
+			start+=i+toFind.length-1;
+			pre+="\t";
+		} else {
+			var toPut="";
+			for (;j<levels.length;j++) {
+				toPut+=pre+levels[j];
+				pre+="\t";
+			}
+			fullCats=fullCats.substring(0,end-1)+toPut+"\n"+fullCats.substring(end);
+			res=true;
+		}
+	}
+	if (res) {
+		$("#data-CatList").html(eve.escapeHTML(fullCats));
+		$("#edit-cat-cancel").trigger("click");
+	}
+	return res;
+};
+eve.deleteCat=function(cat) {
+	var res=false;
+	if (cat===null||cat.length===0) { return res; }
+	var fullCats=eve.unescapeHTML($("#data-CatList").html());
+	var levels=cat.split("--");
+	var pre="\n";
+	var start0=0;
+	var start=0;
+	var end=fullCats.length;
+	var subStr="";
+	for (var j=0;j<levels.length;j++) {
+		subStr=fullCats.substring(start,end);
+		var toFind=pre+levels[j]+"\n";
+		var i=subStr.indexOf(toFind);
+		if (i===-1) {
+			return res;
+		} else {
+			var ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
+			ptnEnd.lastIndex=i+toFind.length-1;
+			var matchEnd=ptnEnd.exec(subStr);
+			if (matchEnd!==null) {
+				end=start+matchEnd.index+1;
+			}
+			start0=start+i;
+			start+=i+toFind.length-1;
+			pre+="\t";
+		}
+	}
+	subStr=fullCats.substring(start+1,end);
+		// subStr=subCats+"\n"
+		// if no subCats, this is empty.
+	if (subStr.length===0) {
+		fullCats=fullCats.substring(0,start0+1)+fullCats.substring(end); // delete a cat if there is no subCat.
+		res=true;
+	}
+	if (res) {
+		$("#data-CatList").html(eve.escapeHTML(fullCats));
+		$("#edit-cat-cancel").trigger("click");
+	}
+	return res;
+};
+
+$("#edit-cat-ok").hide();
+$("#edit-cat-cancel").hide();
+$("#edit-cat-edit").on("click", function(e) {
+	$("#edit-cat-edit").hide();
+	$("#edit-cat-ok").show();
+	$("#edit-cat-cancel").show();
+	var $cats=$("#catList .cat").not("#cat-0");
+	$cats.addClass("edit");
+	$cats.prepend('<div class="edit-bar"></div>');
+	$cats.append('<div class="edit-bar"></div>');
+	$("#catList .edit-bar").on("mousedown touchstart", function(e) {
+		var $catM=$(this).parent(); // cat-moving
+		var $catSiblings=$catM.siblings(".cat").not("#cat-0");
+		if ($catSiblings.exists()) {
+			var relativeX=((e.type=='touchstart')?e.originalEvent.touches[0].clientX:e.clientX)-Math.round($catM.offset().left)+$window.scrollLeft();
+			var relativeY=((e.type=='touchstart')?e.originalEvent.touches[0].clientY:e.clientY)-Math.round($catM.offset().top)+$window.scrollTop();
+			var $subCat=$catM.next(".subCat");
+			var subCatIsVisible=false;
+			if ($subCat.exists()&&$subCat.is(":visible")) {
+				$subCat.hide();
+				subCatIsVisible=true;
+			}
+			var $lastSibling=$catSiblings.last();
+			var $lastSubCat=$lastSibling.next(".subCat");
+			if ($lastSubCat.exists()&&$lastSubCat.is(":visible")) { $lastSibling=$lastSubCat; }
+			$catM.css({width:$catM.outerWidth()});
+			$catM.addClass("move");
+			var catI=Number($catM.attr("id").replace(/^cat-/,""));
+			var $catTo=$('<div id="cat-to-here" style="margin-left:'+(eve.catList[catI].depth+0.5)+'em"></div>');
+			$catM.before($catTo);
+			var catTo=-1;
+			$("html").on("mousemove.mdInEB touchmove.mdInEB", function(e) {
+				window.getSelection().removeAllRanges();
+				e.preventDefault();
+				e.stopPropagation();
+				$catM.css({left:((e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX)-relativeX, top:((e.type=='touchmove')?e.originalEvent.touches[0].clientY:e.clientY)-relativeY});
+				var wST=$window.scrollTop();
+				var $sidebar=$("#sidebar");
+				var sidebarTop=$sidebar.offset().top-wST;
+				var sidebarBottom=sidebarTop+$sidebar.outerHeight();
+				var scrollPad=20;
+				if (sidebarTop<0?e.clientY<scrollPad:e.clientY<sidebarTop+scrollPad) {
+					if (sidebarTop<0) {
+						$window.scrollTop(wST+e.clientY-scrollPad);
+					} else {
+						$sidebar.scrollTop($sidebar.scrollTop()+e.clientY-sidebarTop-scrollPad);
+					}
+				} else if (sidebarBottom>$window.outerHeight()?e.clientY>$window.outerHeight()-scrollPad:e.clientY>sidebarBottom-scrollPad) {
+					if (sidebarBottom>$window.outerHeight()) {
+						$window.scrollTop(wST+e.clientY-$window.outerHeight()+scrollPad);
+					} else {
+						$sidebar.scrollTop($sidebar.scrollTop()+e.clientY-sidebarBottom+scrollPad);
 					}
 				}
-				// cat	UriList
-				var getRecoesStr="uri";
-				for (var i=0;i<recoeve.wholeUriList.length;i++) {
-					getRecoesStr+="\n"+recoeve.wholeUriList[i];
+				var tops=[];
+				for (var i=1;i<$catSiblings.length;i++) {
+					tops.push(($catSiblings.eq(i-1).offset().top-wST+$catSiblings.eq(i).offset().top-wST)/2);
 				}
-				$.ajax({
-					type:"POST"
-					, url:recoeve.pathname+"/get-Recoes"
-					, data:getRecoesStr
-					, dataType:"text"
-				}).done(function(recoes) {
-					recoeve.recoes=recoeve.strToJSON(recoes);
-					// console.log(recoeve.recoes);
-					var contentsHTML="";
-					for (var i=1;i<recoeve.recoes.length;i++) {
-						contentsHTML+='<div class="reco">'
-							+'<div class="title">'+recoeve.recoes[i]["title"]+'</div>'
-							+'<div class="uri">'+recoeve.recoes[i]["uri"]+'</div>'
-							+'<div class="cats">'+recoeve.recoes[i]["cats"]+'</div>'
-							+'<div class="desc">'+recoeve.recoes[i]["desc"]+'</div>'
-							+'<div class="cmt">'+recoeve.recoes[i]["cmt"]+'</div>'
-							+'<div class="val">'+recoeve.recoes[i]["val"]+'</div>'
-						+'</div>';
+				tops.push(($catSiblings.last().offset().top-wST+$lastSibling.offset().top+$lastSibling.outerHeight()-wST)/2);
+				var k=0;
+				for (;k<tops.length;k++) {
+					if (e.clientY<tops[k]) { break; }
+				}
+				if (catTo!==k) {
+					if (k<tops.length) {
+						$catSiblings.eq(k).before($catTo);
+					} else {
+						$lastSibling.after($catTo);
 					}
-					$("#contents").html(contentsHTML);
-				});
+					catTo=k;
+				}
+			});
+			$("html").on("mouseup.mdInEB", function(e) {
+				$("html").off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+				$catM.removeClass("move");
+				$catM.css({width:'', left:'', top:''});
+				$catTo.replaceWith($catM);
+				if ($subCat.exists()) {
+					$catM.after($subCat);
+					if (subCatIsVisible) { $subCat.show(); }
+				}
+			});
+		} else { // if $catSiblings doesn't exist.
+			$catM.css({"border-color":"rgb(230,120,120)"});
+			$("html").on("mousemove.mdInEB touchmove.mdInEB", function(e) {
+				window.getSelection().removeAllRanges();
+				e.preventDefault();
+				e.stopPropagation();
+			});
+			$("html").on("mouseup.mdInEB", function(e) {
+				$("html").off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+				$catM.css({"border-color":""});
 			});
 		}
 	});
-	// /user/(id)/get-CatList[/listName]
-	// /user/(id)/get-UriList
-		// POST 로 cat list 를 보내면 해당하는 UriList 를 보내도록?
-	// /user/(id)/get-Recoes
-		// POST 로 uri list 를 보내면 해당하는 reco 를 보내도록?
-	// /user/(id)?cat=(some-cat) putState?
-})(recoeve=window.recoeve||{}, jQuery);
+});
+eve.getCatListChanged=function() {
+	$("#edit-cat-ok").hide();
+	$("#edit-cat-cancel").hide();
+	var $cats=$("#catList .cat").not("#cat-0");
+	$cats.removeClass("edit");
+	$cats.find('.edit-bar').remove();
+	var catListChanged="\n";
+	for (var i=0;i<$cats.length;i++) {
+		var catI=Number($cats.eq(i).attr("id").replace(/^cat-/,""));
+		for (var j=0;j<eve.catList[catI].depth;j++) {
+			catListChanged+="\t";
+		}
+		catListChanged+=eve.catList[catI].baseCat+"\n";
+	}
+	return catListChanged;
+};
+$("#edit-cat-ok").on("click", function(e) {
+	var catListChanged=eve.getCatListChanged();
+	if (catListChanged!==eve.unescapeHTML($("#data-CatList").html())) {
+		if (eve.myPage) {
+			$.ajax({
+				type:"POST", url:"/changeOrders/CatList", data:catListChanged
+				, dataType:"text"
+			}).done(function(resp) {
+				$("#data-CatList").html(eve.escapeHTML(catListChanged));
+				$("#edit-cat-edit").show();
+				console.log(resp);
+			});
+		} else {
+			$("#data-CatList").html(eve.escapeHTML(catListChanged));
+			$("#edit-cat-edit").show();
+		}
+	} else {
+		$("#edit-cat-edit").show();
+	}
+});
+$("#edit-cat-cancel").on("click", function(e) {
+	var catListChanged=eve.getCatListChanged();
+	if (catListChanged!==eve.unescapeHTML($("#data-CatList").html())) {
+		eve.catList=eve.renderStrCatList(eve.unescapeHTML($("#data-CatList").html()));
+		eve.renderCatListHTML(eve.catList);
+	}
+	$("#edit-cat-edit").show();
+});
+// /user/(id)/get-CatList[/listName]
+// /user/(id)/get-UriList
+	// POST 로 cat list 를 보내면 해당하는 UriList 를 보내도록?
+// /user/(id)/get-Recos
+	// POST 로 uri list 를 보내면 해당하는 reco 를 보내도록?
+// /user/(id)?cat=(some-cat) putState?
+
+////////////////////////////////////////////////////
+// Fuzzy search
+////////////////////////////////////////////////////
+RegExp.quote=function(str) {
+	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "\\s");
+};
+eve.arrayFuzzyRegExs=function(fuzzyStr) {
+	var res=[];
+	fuzzyStr=fuzzyStr.replace(/[\n\t]/g, "");
+	for (var i=0;i<fuzzyStr.length;i++) {
+		res.push( new RegExp(RegExp.quote(fuzzyStr.charAt(i)), "ig") );
+	}
+	return res;
+};
+eve.highlightStrFromIndices=function(str, indices) {
+	var res="";
+	var i=0;
+	res+=eve.escapeHTML(str.substring(0,indices[i].start));
+	for (i=0;i+1<indices.length;i++) {
+		res+='<span class="bold">'+eve.escapeHTML(str.substring(indices[i].start,indices[i].end))+'</span>'+eve.escapeHTML(str.substring(indices[i].end,indices[i+1].start));
+	}
+	res+='<span class="bold">'+eve.escapeHTML(str.substring(indices[i].start,indices[i].end))+'</span>'+eve.escapeHTML(str.substring(indices[i].end));
+	return res;
+};
+eve.fuzzySearch=function(fuzzyStr, list) {
+	var listSelected=[];
+	var regExs=eve.arrayFuzzyRegExs(fuzzyStr);
+	for (var i=0;i<list.length;i++) {
+		if (regExs.length>0) {
+			var txt=list[i]["txt"];
+			regExs[0].lastIndex=0;
+			var exec=regExs[0].exec(txt);
+			var matched=(exec!==null);
+			var indices=[];
+			if (matched) {
+				indices.push({start:exec.index, end:regExs[0].lastIndex});
+			}
+			for (var j=1;matched&&(j<regExs.length);j++) {
+				regExs[j].lastIndex=regExs[j-1].lastIndex;
+				exec=regExs[j].exec(txt);
+				matched=(exec!==null);
+				if (matched) {
+					indices.push({start:exec.index, end:regExs[j].lastIndex});
+				}
+			}
+			if (matched) {
+				list[i]["highlighted"]=eve.highlightStrFromIndices(txt, indices);
+				listSelected.push(list[i]);
+			}
+		} else {
+			delete list[i]["highlighted"];
+			listSelected.push(list[i]);
+		}
+	}
+	return listSelected;
+};
+
+$("#fuzzy-search").on("keydown", function(e) {
+	e.stopPropagation();
+	switch (e.keyCode) {
+	case 27: // ESC = 27
+		e.preventDefault();
+		$("#out-focus").focus();
+		$("#fuzzy-search-container").hide();
+		break;
+	case 38: // up = 38
+	case 40: // down = 40
+		e.preventDefault();
+		var $fsl=$("#fuzzy-search-list");
+		var $lis=$fsl.find(".list-item");
+		var $liSelected=$fsl.find(".list-item.selected").eq(0);
+		var $liTo=null;
+		if ($liSelected.exists()) {
+			if (e.keyCode===38) {
+				$liTo=$liSelected.prev();
+			} else {
+				$liTo=$liSelected.next();
+			}
+			if ($liTo.exists()) {
+				$liTo.eq(0).trigger("click");
+				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+				} else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+				}
+			}
+		} else {
+			if ($lis.exists()) {
+				if (e.keyCode===38) {
+					$liTo=$lis.last();
+					$fsl.scrollTop($fsl[0].scrollHeight);
+				} else {
+					$liTo=$lis.first();
+					$fsl.scrollTop(0);
+				}
+				$liTo.eq(0).trigger("click");
+			}
+		}
+		break;
+	}
+});
+eve.fsFullList=[]; // initialize
+eve.fsLastTxt="$!@#";
+$("#fuzzy-search").on("keyup", function(e) {
+	var fsTxt=$(this).text();
+	if (eve.fsLastTxt!==fsTxt) {
+		if (fsTxt.indexOf(eve.fsLastTxt)===0) {
+			eve.fsList=eve.fuzzySearch(fsTxt, eve.fsList);
+		} else {
+			eve.fsList=eve.fuzzySearch(fsTxt, eve.fsFullList);
+		}
+		var str="";
+		for (var i=0;i<eve.fsList.length;i++) {
+			str+='<div class="list-item">'
+					+'<div class="list-index">'+i+'</div>'
+					+eve.fsList[i]["html"]
+					+((eve.fsList[i]["highlighted"]!==undefined)?
+					'<div class="highlighted">'+eve.fsList[i]["highlighted"]+'</div>':'')
+				+'</div>';
+		}
+		$("#fuzzy-search-list").html(str);
+		var $fsLis=$("#fuzzy-search-list .list-item");
+		$fsLis.on("click", function(e) {
+			$fsLis.removeClass("selected");
+			var $this=$(this);
+			$this.addClass("selected");
+			var i=Number($this.find(".list-index").html());
+			$window.scrollTop(eve.fsList[i]["$reco"].offset().top);
+		});
+		eve.fsLastTxt=fsTxt;
+	}
+});
+$("#fuzzy-search").trigger("keyup");
+$("#fuzzy-search-container").hide();
+
+eve.catFSFullList=[];
+for (var i=1;i<eve.catList.length;i++) {
+	var cat=eve.catList[i].cat;
+	eve.catFSFullList.push({
+		"txt":cat, "html":eve.escapeHTML(cat)
+	});
+}
+eve.catFSLastTxt="$!@#";
+eve.catFSLastK=0;
+$("#input-cats").on("keyup click", function(e) {
+	var catsTxt=this.value;
+	var sEnd=this.selectionEnd;
+	var list=catsTxt.split(";");
+	var l=catsTxt.length;
+	var k=0;
+	for (var i=list.length-1;i>=0;i--) {
+		l-=list[i].length+1;
+		if (l<sEnd) {
+			k=i;
+			break;
+		}
+	}
+	var fsTxt=list[k];
+	if (eve.catFSLastTxt!==fsTxt||eve.catFSLastK!==k) {
+		if (fsTxt.indexOf(eve.catFSLastTxt)===0) {
+			eve.catFSList=eve.fuzzySearch(fsTxt, eve.catFSList);
+		} else {
+			eve.catFSList=eve.fuzzySearch(fsTxt, eve.catFSFullList);
+		}
+		var str="";
+		for (var i=0;i<eve.catFSList.length;i++) {
+			str+='<div class="list-item">'
+					+'<div class="list-index">'+i+'</div>'
+					+eve.catFSList[i]["html"]
+					+((eve.catFSList[i]["highlighted"]!==undefined)?
+					'<div class="highlighted">'+eve.catFSList[i]["highlighted"]+'</div>':'')
+				+'</div>';
+		}
+		$("#cat-fs-list").html(str);
+		var $fsLis=$("#cat-fs-list .list-item");
+		var $input=$("#input-cats");
+		$fsLis.on("click", function(e) {
+			$fsLis.removeClass("selected");
+			var $this=$(this);
+			$this.addClass("selected");
+			var j=Number($this.find(".list-index").html());
+			list[k]=eve.catFSList[j].txt;
+			$input[0].value=list.join(";");
+			$input.focus();
+			var sStart=0;
+			for (var i=0;i<k;i++) {
+				sStart+=list[i].length+1;
+			}
+			var sEnd=sStart+list[k].length;
+			$input[0].setSelectionRange(sEnd,sEnd);
+		});
+		eve.catFSLastTxt=fsTxt;
+		eve.catFSLastK=k;
+	}
+});
+$("#input-cats").trigger("keyup");
+$("#cat-fs-container").hide();
+$("#input-cats").on("focus", function() {
+	$("#cat-fs-container").show();
+});
+// $("#input-cats").on("focusout", function() {
+// 	$("#cat-fs-container").hide();
+// });
+
+////////////////////////////////////////////////////
+// New Reco or Edit
+////////////////////////////////////////////////////
+eve.formatURI=function(uri) {
+	return uri.trim().replace(/[\t\n]/g," ");
+};
+eve.formatTitle=function(title) {
+	return title.trim().replace(/[\t\n]/g," ");
+};
+eve.formatCats=function(cats) {
+	if (cats.constructor!==String||cats.trim().length===0) {
+		return "";
+	}
+	cats=cats.trim().replace(/[\t\r\n]/g," ");
+	var list=cats.split(";");
+	for (var i=0;i<list.length;i++) {
+		var levels=list[i].split("--");
+		for (var j=0;j<levels.length;j++) {
+			levels[j]=levels[j].replace(/^[\s-]+/,"").replace(/[\s-]+$/,"");
+		}
+		list[i]="";
+		var k=0;
+		for (;k<levels.length;k++) {
+			if (levels[k].length!==0) {
+				list[i]=levels[k];
+				break;
+			}
+		}
+		for (k++;k<levels.length;k++) {
+			if (levels[k].length!==0) {
+				list[i]+="--"+levels[k];
+			}
+		}
+	}
+	var catsMap={};
+	catsMap[list[0]]=true;
+	cats=list[0];
+	for (var i=1;i<list.length;i++) {
+		if (catsMap[list[i]]) {
+		} else {
+			catsMap[list[i]]=true;
+			cats+=";"+list[i];
+		}
+	}
+	return cats;
+};
+
+eve.showMyReco=function(r) {
+	if (r["has"]) {
+		$("#button-reco").hide();
+		$("#button-edit").show();
+		$("#button-del").show();
+	} else {
+		$("#button-reco").show();
+		$("#button-edit").hide();
+		$("#button-del").hide();
+	}
+	var $mR=$("#my-reco");
+	$mR.html( eve.recoHTML(r) );
+	if (r["has"]) {
+		var $edit=$mR.find(".button.edit");
+		$edit.html("Edit mine");
+		$edit.on("click", function(e) {
+			$("#input-title")[0].value=r["title"];
+			$("#input-cats")[0].value=r["cats"];
+			$("#input-desc")[0].value=r["desc"];
+			$("#input-cmt")[0].value=r["cmt"];
+			$("#input-val")[0].value=r["val"].str;
+			$("#input-val").trigger("keyup");
+		});
+	}
+};
+eve.showReco=function(r) {
+	if (r["has"]) {
+		$("#input-title")[0].value=r["title"];
+		$("#input-cats")[0].value=r["cats"];
+		$("#input-desc")[0].value=r["desc"];
+		if (eve.myPage) {
+			$("#input-cmt")[0].value=r["cmt"];
+			$("#input-val")[0].value=r["val"].str;
+		} else {
+			$("#input-cmt")[0].value="";
+			$("#input-val")[0].value="";
+		}
+		$("#input-val").trigger("keyup");
+	}
+	if (eve.myPage) {
+		if (r["has"]) {
+			$("#button-reco").hide();
+			$("#button-edit").show();
+			$("#button-del").show();
+			$("#button-back").show();
+		} else {
+			$("#button-reco").show();
+			$("#button-edit").hide();
+			$("#button-del").hide();
+			$("#button-back").hide();
+		}
+	}
+};
+eve.showDefs=function(r) {
+	var defTitles=r["def-titles"].trim().split("\n");
+	var defTitlesHTML="";
+	for (var i=0;i<defTitles.length;i++) {
+		var title=defTitles[i].trim();
+		if (title.length!==0) {
+			defTitlesHTML+='<div class="def-title">'+eve.escapeHTML(title)+'</div>';
+		}
+	}
+	var $defTitles=$("#def-titles");
+	$defTitles.html(defTitlesHTML);
+	var $defTitle=$defTitles.find(".def-title");
+	$defTitle.on("click", function(e) {
+		$defTitle.removeClass("selected");
+		var $this=$(this);
+		$this.addClass("selected");
+		$("#input-title")[0].value=eve.unescapeHTML($this.html());
+	});
+	
+	var defCats=r["def-cats"].trim().split("\n");
+	var defCatsHTML='<div class="def-cat">Indifferent</div> <div class="def-cat">Later</div><br>';
+	for (var i=0;i<defCats.length;i++) {
+		var cat=defCats[i].trim();
+		if (cat.length!==0) {
+			defCatsHTML+='<div class="def-cat">'+eve.escapeHTML(cat)+'</div> ';
+		}
+	}
+	var $defCats=$("#def-cats");
+	$defCats.html(defCatsHTML);
+	var $defCat=$defCats.find(".def-cat");
+	$defCat.on("click", function(e) {
+		$defCat.removeClass("selected");
+		var $this=$(this);
+		$this.addClass("selected");
+		$("#input-cats")[0].value=eve.unescapeHTML($this.html());
+	});
+};
+eve.lastURI="";
+eve.timeOutGetInfos=null;
+eve.userRecos[""]={
+	has:true, down:true, defs:true, "def-titles":"", "def-cats":""
+};
+eve.getAndShowDefsAndReco=function() {
+	var elem=$("#input-uri")[0];
+	var uri=eve.formatURI(elem.value);
+	if (elem.value!==uri) { elem.value=uri; }
+	$("#show-URI").html(eve.videoRendering(uri).html.replace(/delayed-src/gi,"src"));
+	var r=eve.userRecos[uri];
+	if (!r) { r=eve.userRecos[uri]={}; }
+	if (r.down) {
+		eve.showReco(r);
+	} else {
+		var getRecosStr="uri"+"\n"+uri;
+		$.ajax({
+			type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
+			, dataType:"text"
+		}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
+			eve.recoDowned(uri, eve.userRecos);
+			eve.recoToEve(resp, eve.userRecos);
+			eve.showReco(r);
+		});
+	}
+	if (r.defs) {
+		eve.showDefs(r);
+	} else {
+		eve.showDefs({"def-titles":"", "def-cats":""});
+		$.ajax({
+			type:"POST", url:"/reco/infos", data:uri
+			, dataType:"text"
+		}).done(function(resp) {
+			var defs=eve.strToJSON(resp);
+			r.defs=true;
+			r["def-cats"]=defs[1]["def-cats"];
+			r["def-titles"]=defs[1]["def-titles"];
+			eve.showDefs(r);
+		});
+	}
+	var $error=$("#error-msg");
+	if (eve.myPage) {
+		$error.html("");
+	} else {
+		$error.html("Be careful! This is not your page. On this URI, you have");
+		var mR=eve.myRecos[uri];
+		if (!mR) { mR=eve.myRecos[uri]={}; }
+		if (mR.down) {
+			eve.showMyReco(mR);
+		} else {
+			var getRecosStr="uri"+"\n"+uri;
+			$.ajax({
+				type:"POST", url:"/user/"+eve.myId+"/get-Recos", data:getRecosStr
+				, dataType:"text"
+			}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
+				eve.recoDowned(uri, eve.myRecos);
+				eve.recoToEve(resp, eve.myRecos);
+				eve.showMyReco(mR);
+			});
+		}
+	}
+};
+$("#input-uri").on("keyup", function(e) {
+	var uri=eve.formatURI(this.value);
+	if (uri!==eve.lastURI) {
+		eve.lastURI=uri;
+		clearTimeout(eve.timeOutGetInfos);
+		eve.timeOutGetInfos=setTimeout(function() {
+			eve.getAndShowDefsAndReco();
+		}, 1000);
+	}
+});
+
+eve.fullPts=5;
+eve.lastVal=eve.val("");
+$("#input-val").before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
+$("#input-val-stars").on("mousedown.mdInStars touchstart.mdInStars", function(e) {
+	var $bar=$(this).find(".bar");
+	var barW=$bar.width();
+	var $val=$("#input-val")[0];
+	$("html").on("mousemove.mdInStars touchmove.mdInStars", function(e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		var w=x-$bar.offset().left+$window.scrollLeft();
+		if (w<-15) {
+			w=-1;
+		} else if (w<0) {
+			w=0;
+		} else if (w>eve["5stars-width"]) {
+			w=eve["5stars-width"];
+		}
+		if (w!==barW) {
+			barW=w;
+			if (w<0) {
+				$val.value="";
+				w=0;
+			} else {
+				$val.value=(w/eve["5stars-width"]*eve.fullPts).toFixed(1)+"/"+eve.fullPts;
+			}
+			$bar.css({width:w});
+			eve.lastVal=eve.val($val.value);
+		}
+	});
+	$("html").on("mouseup.mdInStars touchend.mdInStars", function(e) {
+		$("html").off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+	});
+});
+$("#input-val-stars").on("click", function(e) {
+	var $bar=$(this).find(".bar");
+	var barW=$bar.width();
+	var $val=$("#input-val")[0];
+	var w=e.clientX-$bar.offset().left+$window.scrollLeft();
+	if (w<0) {
+		w=0;
+	} else if (w>eve["5stars-width"]) {
+		w=eve["5stars-width"];
+	}
+	if (w!==barW) {
+		$bar.css({width:w});
+		$val.value=(w/eve["5stars-width"]*eve.fullPts).toFixed(1)+"/"+eve.fullPts;
+		eve.lastVal=eve.val($val.value);
+	}
+});
+$("#input-val").on("keyup", function(e) {
+	if (this.value!==eve.lastVal.str) {
+		var val=eve.val(this.value);
+		var $bar=$("#input-val-stars .bar");
+		if (val.valid&&val.str.length!==0) {
+			eve.fullPts=val.divisor;
+			$bar.css({width:eve["5stars-width"]*val.val});
+		} else {
+			$bar.css({width:0});
+		}
+		eve.lastVal=val;
+	}
+});
+$("#new-reco").hide();
+$("#button-new-reco").on("click", function(e) {
+	$("#input-uri")[0].disabled=false;
+	$("#new-reco").show();
+	eve.wST=$window.scrollTop();
+	$window.on("scroll.stop", function(e) {
+		$window.scrollTop(eve.wST);
+	});
+});
+$("#button-close").on("click", function(e) {
+	$("#new-reco").hide();
+	$window.off("scroll.stop");
+});
+$("#button-back").on("click", function(e) {
+	var r=eve.userRecos[$("#input-uri")[0].value];
+	eve.showReco(r);
+});
+
+$("#button-reco").on("click", function(e) {
+	this.disabled=true;
+	var $error=$("#error-msg");
+	var uri=eve.formatURI($("#input-uri")[0].value);
+	var val=eve.val($("#input-val")[0].value.trim());
+	if (uri.length!==0&&val.valid) {
+		var strHeads="do"+"\t"+"uri";
+		var strContents="reco"+"\t"+eve.encloseStr(uri);
+		strHeads+="\t"+"title";
+		strContents+="\t"+eve.encloseStr(eve.formatTitle($("#input-title")[0].value.trim()));
+		strHeads+="\t"+"cats";
+		strContents+="\t"+eve.encloseStr(eve.formatCats($("#input-cats")[0].value.trim()));
+		strHeads+="\t"+"desc";
+		strContents+="\t"+eve.encloseStr($("#input-desc")[0].value.trim());
+		strHeads+="\t"+"cmt";
+		strContents+="\t"+eve.encloseStr($("#input-cmt")[0].value.trim());
+		strHeads+="\t"+"val";
+		strContents+="\t"+eve.encloseStr(val.str);
+		var strRecoDo=strHeads+"\n"+strContents;
+		$error.html("Being recoed.");
+		$.ajax({
+			type:"POST", url:"/reco/do", data:strRecoDo
+			, dataType:"text"
+		}).done(function(resp) {
+			var res=eve.strToJSON(resp);
+			if (res[1]["result"]==="recoed") {
+				$error.html("Recoed");
+				eve.recoDowned(uri, eve.myRecos);
+				eve.recoToEve(strRecoDo, eve.myRecos);
+				if (eve.myPage) {
+					var recoed=eve.strToJSON(strRecoDo);
+					var cats=recoed[1]["cats"];
+					eve.putCatsUriToList(cats, uri);
+					eve.refresh(cats);
+				}
+				setTimeout(function() {
+					$error.html("");
+					$("#input-uri")[0].value="";
+					eve.showReco(eve.emptyReco);
+					$("#button-reco")[0].disabled=false;
+					$("#button-close").trigger("click");
+				}, 1000);
+			} else {
+				$error.html(res[1]["result"]);
+				$("#button-reco")[0].disabled=false;
+			}
+		});
+	} else {
+		var errorMsg="";
+		if (uri.length==0) {
+			errorMsg="URI is required.";
+		} else {
+			errorMsg="Points is of invalid form.";
+		}
+		$error.html(errorMsg);
+		this.disabled=false;
+	}
+});
+$("#button-edit").on("click", function(e) {
+	this.disabled=true;
+	var $error=$("#error-msg");
+	var uri=eve.formatURI($("#input-uri")[0].value);
+	var val=eve.val($("#input-val")[0].value.trim());
+	var r=eve.myRecos[uri];
+	if (uri.length!==0&&val.valid&&r) {
+		var strHeads="do"+"\t"+"uri";
+		var strContents="change"+"\t"+eve.encloseStr(uri);
+		var changed=false;
+		var title=eve.formatTitle($("#input-title")[0].value.trim());
+		if (title!==r["title"]) {
+			changed=true;
+			strHeads+="\t"+"title";
+			strContents+="\t"+eve.encloseStr(title);
+		}
+		var cats=eve.formatCats($("#input-cats")[0].value.trim());
+		if (cats!==r["cats"]) {
+			changed=true;
+			strHeads+="\t"+"cats";
+			strContents+="\t"+eve.encloseStr(cats);
+		}
+		var desc=$("#input-desc")[0].value.trim();
+		if (desc!==r["desc"]) {
+			changed=true;
+			strHeads+="\t"+"desc";
+			strContents+="\t"+eve.encloseStr(desc);
+		}
+		var cmt=$("#input-cmt")[0].value.trim();
+		if (cmt!==r["cmt"]) {
+			changed=true;
+			strHeads+="\t"+"cmt";
+			strContents+="\t"+eve.encloseStr(cmt);
+		}
+		if (val.str!==r["val"].str) {
+			changed=true;
+			strHeads+="\t"+"val";
+			strContents+="\t"+eve.encloseStr(val.str);
+		}
+		if (changed) {
+			$error.html("Being changed.");
+			$.ajax({
+				type:"POST", url:"/reco/do", data:strHeads+"\n"+strContents
+				, dataType:"text"
+			}).done(function(resp) {
+				var res=eve.strToJSON(resp);
+				if (res[1]["result"]==="changed") {
+					$error.html("Changed");
+					if (cats!==r["cats"]) {
+						if (eve.myPage) {
+							eve.deleteCatsUriFromList(r["cats"], uri);
+							eve.putCatsUriToList(cats, uri);
+						}
+						r["cats"]=cats;
+					}
+					if (title!==r["title"]) { r["title"]=title; }
+					if (desc!==r["desc"]) { r["desc"]=desc; }
+					if (cmt!==r["cmt"]) { r["cmt"]=cmt; }
+					if (val.str!==r["val"].str) { r["val"]=val; }
+					if (eve.myPage) { eve.refresh(cats); }
+					setTimeout(function() {
+						$error.html("");
+						$("#input-uri")[0].value="";
+						eve.showReco(eve.emptyReco);
+						$("#button-edit")[0].disabled=false;
+						$("#button-close").trigger("click");
+					}, 1000);
+				} else {
+					$error.html(res[1]["result"]);
+					$("#button-edit")[0].disabled=false;
+				}
+			});
+		} else {
+			$error.html("You have made no change.");
+			this.disabled=false;
+		}
+	} else {
+		var errorMsg="";
+		if (uri.length==0) {
+			errorMsg="URI is required.";
+		} else if (!val.valid) {
+			errorMsg="Points is of invalid form.";
+		} else {
+			errorMsg="You have no reco on this URI.";
+		}
+		$error.html(errorMsg);
+		this.disabled=false;
+	}
+});
+$("#button-del").on("click", function(e) {
+	this.disabled=true;
+	var $error=$("#error-msg");
+	var uri=eve.formatURI($("#input-uri")[0].value);
+	var r=eve.userRecos[uri];
+	if (uri.length!==0&&r) {
+		var strHeads="do"+"\t"+"uri";
+		var strContents="delete"+"\t"+eve.encloseStr(uri);
+		$.ajax({
+			type:"POST", url:"/reco/do", data:strHeads+"\n"+strContents
+			, dataType:"text"
+		}).done(function(resp) {
+			console.log(resp);
+			var res=eve.strToJSON(resp);
+			if (res[1]["result"]==="deleted") {
+				$error.html("Deleted");
+				delete eve.userRecos[uri];
+				eve.deleteCatsUriFromList(r["cats"], uri);
+				eve.getAndShowRecosOnCat(r["cats"].split(";")[0]);
+			} else {
+				$error.html(res[1]["result"]);
+			}
+		});
+	} else {
+		var errorMsg="";
+		if (uri.length==0) {
+			errorMsg="URI is required.";
+		} else {
+			errorMsg="You have no reco on this URI.";
+		}
+		$error.html(errorMsg);
+		this.disabled=false;
+	}
+});
+
+////////////////////////////////////////////////////
+// ShortKeys
+////////////////////////////////////////////////////
+eve.fdList=$(".reco"); // Ordered automatically by jQuery.
+eve.processShortKey=function(e) {
+	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
+	switch (e.target.nodeName) {
+		case "INPUT": case "SELECT": case "TEXTAREA": return;
+	}
+	switch (e.keyCode) {
+		case 71: // G = 71
+			e.preventDefault();
+			$("#fuzzy-search-container").show();
+			$("#fuzzy-search").focus();
+			break;
+		case 70: //F = 70
+		case 68: //D = 68
+			var scrollTop=$window.scrollTop();
+			var i, k=eve.fdList.length;
+			var hI;
+			
+			if (e.keyCode===70) {
+				scrollTop+=10;
+				for (i=0;i<k;i++) {
+					hI=eve.fdList.eq(i);
+					if (hI.is(":visible")&&scrollTop<hI.offset().top) { break; }
+				}
+				if (i===k) {
+					// hI=eve.fdList.eq(0);
+					// alert("This is the last section.");
+					return;
+				}
+			} else{
+				scrollTop-=10;
+				for (i=k-1;i>=0;i--) {
+					hI=eve.fdList.eq(i);
+					if (hI.is(":visible")&&scrollTop>hI.offset().top) { break; }
+				}
+				if (i===-1) {
+					// hI=eve.fdList.eq(k-1);
+					// alert("This is the first section.");
+					return;
+				}
+			}
+			$window.scrollTop(hI.offset().top);
+			break;
+		default:
+	}
+}
+$window.on("keydown", eve.processShortKey);
+var $shortkeyDesc=$("ul#shortkeys");
+if ($shortkeyDesc.exists()) {
+	$shortkeyDesc.prepend(
+		"<li>G: Fuzzy search (Go)</li>"
+		+"<li>F: Forward Reco</li>"
+		+"<li>D: Previous Reco</li>"
+	);
+}
+})(eve=window.eve||{}, jQuery);
+
+function onYouTubeIframeAPIReady() {
+	$("#head2").hide();
+	eve.playlist=new YT.Player('youtube-playlist', {events:{
+		'onError':function(e) {
+			setTimeout(function() {
+				e.target.nextVideo();
+			}, 2000);
+		}, 'onStateChange':function(e) {
+			if (eve.playlist.oneLoop&&e.data===YT.PlayerState.ENDED) {
+				e.target.playVideoAt(eve.playlist.currentIndex);
+			} else if (e.data===YT.PlayerState.PLAYING) {
+				eve.playlist.currentIndex=e.target.getPlaylistIndex();
+			}
+		}}
+	});
+	eve.playlist.oneLoop=false;
+	eve.playlist.toggleLoop=function(elem) {
+		var $elem=$(elem);
+		if ($elem.hasClass("enabled")) {
+			$elem.removeClass("enabled");
+			eve.playlist.setLoop(false);
+		} else {
+			$elem.addClass("enabled");
+			eve.playlist.setLoop(true);
+		}
+	};
+	eve.playlist.toggleOneLoop=function(elem) {
+		var $elem=$(elem);
+		if ($elem.hasClass("enabled")) {
+			$elem.removeClass("enabled");
+			eve.playlist.oneLoop=false;
+		} else {
+			$elem.addClass("enabled");
+			eve.playlist.oneLoop=true;
+		}
+	};
+}
 </script>
+<script src="http://www.youtube.com/player_api"></script>
 </html>
