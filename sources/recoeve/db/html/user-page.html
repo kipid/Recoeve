@@ -6,16 +6,16 @@
 	eve.myIndex="{--myIndex--}";
 	eve.myId="{--myId--}";
 	var pathname=window.location.pathname;
-	if (pathname==="/") {
+	if (pathname.substring(0,6)!=="/user/") {
 		pathname="/user/"+eve.myId;
-		window.history.replaceState(null, null, pathname);
+		window.history.replaceState(null, null, pathname+window.location.search+window.location.hash);
 	}
 	eve.userId="";
-	if (pathname.indexOf("/user/")===0) {
+	if (pathname.substring(0,6)==="/user/") {
 		eve.userId=pathname.substring(6);
 	}
 	eve.myPage=(eve.myId===eve.userId);
-})(eve=window.eve||{});
+})(window.eve=window.eve||{});
 </script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
@@ -62,7 +62,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	.dark #catList .cat.selected {border-color:white}
 #catList .cat>.baseCat, #catList .cat>.ES {cursor:pointer}
 #catList .cat.selected>.baseCat {pointer-events:none}
-#catList .cat>.noES, #catList .cat>.ES {display:inline-block; width:1em; text-align:center; vertical-align:text-bottom}
+#catList .cat>.noES, #catList .cat>.ES {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
 	position:relative;
@@ -91,7 +91,6 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #cat-fs-list .list-item .highlighted .bold {
 	color:rgb(170,250,170);
 }
-
 
 #fuzzy-search-container {
 	position:fixed; left:0; top:0;
@@ -146,6 +145,21 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	font-size:1.8em; line-height:1.0;
 }
 
+#new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto}
+#new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:3px solid rgb(120,120,130); text-align:left}
+#new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
+#new-reco label:first-child {margin-top:0}
+#new-reco label>.desc {font-size:.8em}
+#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; height:auto; font:inherit; font-weight:bold; font-size:.9em; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50);}
+#new-reco input#input-val {display:inline-block; width:8.5em}
+#new-reco .def-title {margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-title.selected {border-color:rgb(255,180,180)}
+#new-reco .def-cat {display:inline-block; margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-cat.selected {border-color:rgb(255,180,180)}
+#input-val-stars {margin:0 .5em -.4em 0}
+#new-reco .buttons {margin-top:1em; text-align:right}
+#new-reco #error-msg {margin:0}
+
 #point-range {position:relative; display:inline-block; width:300px; height:30px; background:rgb(200,100,100)}
 #point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
 #point-range-left, #point-range-right {position:absolute; width:20px; top:0; bottom:10px; background:rgba(150,150,150,0.9); border:2px solid rgb(50,50,50)}
@@ -183,20 +197,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:.6em} /* position change */
 
-#new-reco {position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto}
-#new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:3px solid rgb(120,120,130); text-align:left}
-#new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
-#new-reco label:first-child {margin-top:0}
-#new-reco label>.desc {font-size:.8em}
-#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; height:auto; font:inherit; font-weight:bold; font-size:.9em; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50);}
-#new-reco input#input-val {display:inline-block; width:8.5em}
-#new-reco .def-title {margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-title.selected {border-color:rgb(255,180,180)}
-#new-reco .def-cat {display:inline-block; margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-cat.selected {border-color:rgb(255,180,180)}
-#input-val-stars {margin:0 .5em -.4em 0}
-#new-reco .buttons {margin-top:1em; text-align:right}
-#new-reco #error-msg {margin:0}
+#foot {margin-top:1em; border-top:2px solid white}
 
 @media all and (min-width:801px) {
 	#container {}
@@ -227,6 +228,40 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 		<div id="fuzzy-search-list"></div>
 		<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 	</div><!-- div#fuzzy-search-container -->
+	<div id="new-reco">
+		<form>
+		<label for="uri">URI <span class="desc">(required)</span></label>
+			<input id="input-uri" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"/>
+			<div id="show-URI"></div>
+		<label for="title">Title</label>
+			<div id="def-titles"></div>
+			<input id="input-title" name="title" placeholder="Title" type="text" tabindex="2"/>
+		<label for="cats">Categories</label>
+			<div id="def-cats"><div class="def-cat">Indifferent</div> <div class="def-cat">Later</div></div>
+			<input id="input-cats" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"/>
+			<div id="cat-fs-container" class="fs-container">
+				<div id="cat-fs-list"></div>
+				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+			</div>
+		<label for="desc">Description</label>
+			<textarea id="input-desc" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." rows="5" tabindex="4"></textarea>
+		<label for="cmt">Comment</label>
+			<textarea id="input-cmt" name="cmt" placeholder="Comment: your personal description or opinion on this URI." rows="5" tabindex="5"></textarea>
+		<label for="val">Points</label>
+			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
+		<div class="buttons">
+			<div class="button" id="button-reco" tabindex="7">Reco</div>
+			<div class="button" id="button-edit" tabindex="8">Edit</div>
+			<div class="button" id="button-del" tabindex="11">Del</div>
+			<div class="button left" id="button-close" tabindex="9">Close</div>
+			<div class="button left" id="button-back" tabindex="10">Back</div>
+			<div class="cBoth"></div>
+		</div>
+		<div id="error-msg"></div>
+		<div id="my-reco"></div>
+		<div class="exit" onclick='$("#button-close").trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+		</form>
+	</div><!-- div#new-reco -->
 	<div class="side2" id="head">
 		<div class="button" id="my-id"></div>
 		head : <a href="/account/log-out">Log out</a>
@@ -248,41 +283,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 		</div>
 	</div><!-- div#head2 -->
 	<div class="side2" id="contents"></div><!-- div#contents -->
-	<div class="side2" id="foot">The <a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this page</a>.</div><!-- div#foot -->
-	<div id="new-reco">
-		<form>
-		<label for="uri">URI <span class="desc">(required)</span></label>
-			<input id="input-uri" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text"/>
-			<div id="show-URI"></div>
-		<label for="title">Title</label>
-			<div id="def-titles"></div>
-			<input id="input-title" name="title" placeholder="Title" type="text"/>
-		<label for="cats">Categories</label>
-			<div id="def-cats"><div class="def-cat">Indifferent</div> <div class="def-cat">Later</div></div>
-			<input id="input-cats" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"/>
-			<div id="cat-fs-container" class="fs-container">
-				<div id="cat-fs-list"></div>
-				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-			</div>
-		<label for="desc">Description</label>
-			<textarea id="input-desc" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." rows="5"></textarea>
-		<label for="cmt">Comment</label>
-			<textarea id="input-cmt" name="cmt" placeholder="Comment: your personal description or opinion on this URI." rows="5"></textarea>
-		<label for="val">Points</label>
-			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text"/>
-		<div class="buttons">
-			<div class="button" id="button-reco">Reco</div>
-			<div class="button" id="button-edit">Edit</div>
-			<div class="button" id="button-del">Del</div>
-			<div class="button left" id="button-close">Close</div>
-			<div class="button left" id="button-back">Back</div>
-			<div class="cBoth"></div>
-		</div>
-		<div id="error-msg"></div>
-		<div id="my-reco"></div>
-		<div class="exit" onclick='$("#button-close").trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-		</form>
-	</div><!-- div#new-reco -->
+	<div class="side2" id="foot">Ver. 0.1.1. (2015-05-03). The <a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this page</a>.</div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -294,7 +295,7 @@ if (eve.myId) {
 	$("#my-id").html(eve.myId+" ▾");
 } else {
 	$("#my-id").hide();
-	$("#button-new-reco").hide();
+	$("#button-new-reco").remove();
 }
 
 $.fn.exists=function() { return this.length!==0; };
@@ -812,7 +813,6 @@ eve.processOutRange=function() {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-eve.emptyReco={has:true, title:"", cats:"", desc:"", cmt:"", val:eve.val("")};
 eve.userRecos={};
 eve.myRecos=(eve.myPage)?eve.userRecos:{};
 eve.getDepthOfTabs=function(str) {
@@ -963,9 +963,9 @@ eve.recoDowned=function(urisStr, recos) {
 	}
 };
 eve.recoToEve=function(resp, recos) {
-	var recos=eve.strToJSON(resp);
-	for (var k=1;k<recos.length;k++) {
-		var recoK=recos[k];
+	var resp=eve.strToJSON(resp);
+	for (var k=1;k<resp.length;k++) {
+		var recoK=resp[k];
 		var p=recos[ recoK["uri"] ];
 		if (!p) {
 			p=recos[ recoK["uri"] ]={};
@@ -1047,7 +1047,7 @@ eve.renderCatListHTML=function(catList) {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'">';
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="ES">▾</span>';
+			catListHTML+='<span class="ES">▼</span>';
 		} else {
 			catListHTML+='<span class="noES"></span>';
 		}
@@ -1085,9 +1085,9 @@ eve.renderCatListHTML=function(catList) {
 			var $next=$this.parent().next();
 			$next.toggle();
 			if ($next.is(":visible")) {
-				$this.html("▾");
+				$this.html("▼");
 			} else {
-				$this.html("▸");
+				$this.html("▶");
 			}
 		});
 	}
@@ -1389,22 +1389,15 @@ $("#edit-cat-cancel").on("click", function(e) {
 	}
 	$("#edit-cat-edit").show();
 });
-// /user/(id)/get-CatList[/listName]
-// /user/(id)/get-UriList
-	// POST 로 cat list 를 보내면 해당하는 UriList 를 보내도록?
-// /user/(id)/get-Recos
-	// POST 로 uri list 를 보내면 해당하는 reco 를 보내도록?
-// /user/(id)?cat=(some-cat) putState?
 
 ////////////////////////////////////////////////////
 // Fuzzy search
 ////////////////////////////////////////////////////
 RegExp.quote=function(str) {
-	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "\\s");
+	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
 eve.arrayFuzzyRegExs=function(fuzzyStr) {
 	var res=[];
-	fuzzyStr=fuzzyStr.replace(/[\n\t]/g, "");
 	for (var i=0;i<fuzzyStr.length;i++) {
 		res.push( new RegExp(RegExp.quote(fuzzyStr.charAt(i)), "ig") );
 	}
@@ -1700,6 +1693,11 @@ eve.showReco=function(r) {
 		}
 	}
 };
+eve.emptifyReco=function() {
+	$("#error-msg").html("");
+	$("#input-uri")[0].value="";
+	eve.getAndShowDefsAndReco();
+};
 eve.showDefs=function(r) {
 	var defTitles=r["def-titles"].trim().split("\n");
 	var defTitlesHTML="";
@@ -1740,7 +1738,7 @@ eve.showDefs=function(r) {
 eve.lastURI="";
 eve.timeOutGetInfos=null;
 eve.userRecos[""]={
-	has:true, down:true, defs:true, "def-titles":"", "def-cats":""
+	has:true, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
 };
 eve.getAndShowDefsAndReco=function() {
 	var elem=$("#input-uri")[0];
@@ -1778,7 +1776,7 @@ eve.getAndShowDefsAndReco=function() {
 		});
 	}
 	var $error=$("#error-msg");
-	if (eve.myPage) {
+	if (eve.myPage||uri==="") {
 		$error.html("");
 	} else {
 		$error.html("Be careful! This is not your page. On this URI, you have");
@@ -1801,7 +1799,7 @@ eve.getAndShowDefsAndReco=function() {
 };
 $("#input-uri").on("keyup", function(e) {
 	var uri=eve.formatURI(this.value);
-	if (uri!==eve.lastURI) {
+	if (uri!==""&&uri!==eve.lastURI) {
 		eve.lastURI=uri;
 		clearTimeout(eve.timeOutGetInfos);
 		eve.timeOutGetInfos=setTimeout(function() {
@@ -1923,15 +1921,12 @@ $("#button-reco").on("click", function(e) {
 				eve.recoDowned(uri, eve.myRecos);
 				eve.recoToEve(strRecoDo, eve.myRecos);
 				if (eve.myPage) {
-					var recoed=eve.strToJSON(strRecoDo);
-					var cats=recoed[1]["cats"];
+					var cats=eve.myRecos[uri]["cats"];
 					eve.putCatsUriToList(cats, uri);
 					eve.refresh(cats);
 				}
 				setTimeout(function() {
-					$error.html("");
-					$("#input-uri")[0].value="";
-					eve.showReco(eve.emptyReco);
+					eve.emptifyReco();
 					$("#button-reco")[0].disabled=false;
 					$("#button-close").trigger("click");
 				}, 1000);
@@ -2012,9 +2007,7 @@ $("#button-edit").on("click", function(e) {
 					if (val.str!==r["val"].str) { r["val"]=val; }
 					if (eve.myPage) { eve.refresh(cats); }
 					setTimeout(function() {
-						$error.html("");
-						$("#input-uri")[0].value="";
-						eve.showReco(eve.emptyReco);
+						eve.emptifyReco();
 						$("#button-edit")[0].disabled=false;
 						$("#button-close").trigger("click");
 					}, 1000);
@@ -2090,6 +2083,9 @@ eve.processShortKey=function(e) {
 			$("#fuzzy-search-container").show();
 			$("#fuzzy-search").focus();
 			break;
+		case 78: // N = 78
+			$("#button-new-reco").trigger("click");
+			break;
 		case 70: //F = 70
 		case 68: //D = 68
 			var scrollTop=$window.scrollTop();
@@ -2131,9 +2127,10 @@ if ($shortkeyDesc.exists()) {
 		"<li>G: Fuzzy search (Go)</li>"
 		+"<li>F: Forward Reco</li>"
 		+"<li>D: Previous Reco</li>"
+		+"<li>N: New Reco</li>"
 	);
 }
-})(eve=window.eve||{}, jQuery);
+})(window.eve=window.eve||{}, jQuery);
 
 function onYouTubeIframeAPIReady() {
 	$("#head2").hide();

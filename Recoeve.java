@@ -75,31 +75,38 @@ public void start() {
 		System.out.println("Lang : "+lang);
 		
 		if (path.equals("/favicon.ico")) {
-			System.out.println("Sending favicon.ico");
 			req.response().sendFile("favicon.ico");
+			System.out.println("Sended favicon.ico");
 		} else if (path.equals("/jquery.min.js")) {
-			System.out.println("Sending jquery.min.js");
 			req.response().putHeader("Content-Type","text/javascript");
 			req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
+			System.out.println("Sended jquery.min.js");
 		} else if (path.equals("/")) {
+				// (path=/)==(path=/account/log-in). 두 path 는 같은방식으로 처리 됨.
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (sessionPassed) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+				System.out.println("Sended user-page.html");
+			} else if (cookie.get("rmbdI")==null) {
+				req.response().end(FileMap.get("log-in.html",lang), ENCODING);
+				System.out.println("Sended log-in.html (No rmbd cookie)");
 			} else {
-				req.response().end(FileMap.get("log-in.html", lang), ENCODING);
+				req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
+				System.out.println("Sended remember-me.html");
 			}
 		} else if (path.startsWith("/user/")) {
 			String user=path.substring(6);
 				// faster than path.replaceFirst("^/user/","");
 			String[] userSplit=user.split("/");
 			if (userSplit.length==1) {
-				boolean userExists=!db.idAvailable(userSplit[0]);
-				System.out.println("Sending a user-page (user exists:"+userExists+") : "+userSplit[0]);
+				boolean userExists=db.idExists(userSplit[0]);
 				req.response().putHeader("Content-Type","text/html; charset=utf-8");
 				if (userExists) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapUserPage(cookie, userSplit[0])), ENCODING);
+					System.out.println("Sended user-page.html");
 				} else {
 					req.response().end("User does not exist.", ENCODING);
+					System.out.println("User does not exist.");
 				}
 			} else if (userSplit.length==2&&method.equals("POST")) {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
@@ -107,17 +114,21 @@ public void start() {
 					case "get-Recos":
 						req.bodyHandler( (Buffer data) -> {
 							req.response().end(db.getRecos(userSplit[0], new StrArray(data.toString())), ENCODING);
+							System.out.println("Sended recos");
 						} );
 						break;
 					case "get-UriList":
 						req.bodyHandler( (Buffer data) -> {
 							req.response().end(db.getStringCatUriList(userSplit[0], new StrArray(data.toString())), ENCODING);
+							System.out.println("Sended uriLists");
 						} );
 					default:
 						req.response().end(INVALID_ACCESS, ENCODING);
+						System.out.println(INVALID_ACCESS);
 				}
 			} else {
 				req.response().end(INVALID_ACCESS, ENCODING);
+				System.out.println(INVALID_ACCESS);
 			}
 		} else if (path.startsWith("/account/")) {
 			String toDo=path.substring(9);
@@ -126,55 +137,66 @@ public void start() {
 			switch (toDo) {
 			case "log-in":
 				if (sessionPassed) {
-					System.out.println("Redirecting to path=/");
-					req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
+					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+					System.out.println("Sended user-page.html (already logged-in)");
 				} else if (cookie.get("rmbdI")==null) {
-					System.out.println("Sending log-in.html");
 					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
-				} else if (method.equals("POST")) {
+					System.out.println("Sended log-in.html (No rmbd cookie)");
+				} else {
+					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
+					System.out.println("Sended remember-me.html");
+				}
+				break;
+			case "remember-me":
+				if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-						// System.out.println(setCookieRMB);
 						req.response().putHeader("Set-Cookie", setCookieRMB);
 						if (setCookieRMB.startsWith("I=")) {
 							// Success: Session cookie and New token.
-							System.out.println("log-in : Remembered user.");
-							req.response().end(FileMap.get("to-user-page.html","df"), ENCODING);
+							req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+							System.out.println("Sended user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user)");
 						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
 							// Failed: Delete rmbd cookie.
-							System.out.println("log-in : Failed Remembering user.");
 							req.response().end("You have failed to log in with remembered http-only cookie.", ENCODING);
+							System.out.println("Sended fail message with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user)");
 						}
 					} );
 				} else {
-					System.out.println("log-in : Sending remember-me.html");
-					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
+					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (method:"+method+")");
 				}
 				break;
 			case "pwd_iteration":
 				req.response().putHeader("Content-Type","text/plain");
 				if (sessionPassed) {
 					req.response().end("pwd_iteration : You are already logged in Recoeve.", ENCODING);
+					System.out.println("Sended pwd_iteration : You are already logged in Recoeve.");
 				} else if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						String dataStr=data.toString();
 						int i=dataStr.indexOf("\t");
-						String idType=dataStr.substring(0,i);
-						String id=dataStr.substring(i+1);
-						String iter=db.getPwdIteration(idType, id);
-						System.out.println("pwd_iteration for "+idType+" "+id+" : "+iter);
-						req.response().end(iter, ENCODING);
+						if (i>0) {
+							String idType=dataStr.substring(0,i);
+							String id=dataStr.substring(i+1);
+							String iter=db.getPwdIteration(idType, id);
+							req.response().end(iter, ENCODING);
+							System.out.println("Sended pwd_iteration for "+idType+" "+id+" : "+iter);
+						} else {
+							req.response().end("Not proper data.", ENCODING);
+							System.out.println("Not proper data. : "+dataStr);
+						}
 					});
 				} else {
 					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (method:"+method+")");
 				}
 				break;
 			case "log-in.do":
 				if (sessionPassed) {
-					// You are already logged in.
-					System.out.println("log-in.do : Sending You are already logged in...");
-					req.response().end(FileMap.get("to-user-page.html",lang), ENCODING);
+					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+					System.out.println("Sended user-page.html (already logged-in)");
 				} else if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
@@ -183,17 +205,18 @@ public void start() {
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							req.response().putHeader("Set-Cookie", setCookieSSN);
-							System.out.println("log-in.do : Log-in success! ID or E-mail: "+inputs.get("userId"));
-							req.response().end(FileMap.get("to-user-page.html","df"), ENCODING);
+							// req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
+							System.out.println("Sended user-page.html with Set-Cookie of session and optionally rmbd (log-in success : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
 						} else {
 							// Log-in failed.
-							System.out.println("log-in.do : Log-in failed.");
 							req.response().end("Log-in failed.", ENCODING);
+							System.out.println("Log-in failed. : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
 						}
 					} );
 				} else {
-					System.out.println("log-in.do : invalid method "+method);
 					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (method : "+method+")");
 				}
 				break;
 			case "log-out":
@@ -201,7 +224,8 @@ public void start() {
 					// Delete UserSession if exists. (cookie check.)
 					// Delete UserRemember if exists. (cookie check.)
 					// Erase all cookies
-				req.response().end(FileMap.get("log-out.html", lang), ENCODING);
+				req.response().end(FileMap.get("log-in.html",lang), ENCODING);
+				System.out.println("Sended log-in.html with Set-Cookie of deleting all cookies.");
 				break;
 			case "check":
 				if (method.equals("POST")) {
@@ -329,16 +353,8 @@ public void start() {
 				req.response().end("Not a proper access.");
 			}
 		} else {
-			req.response().putHeader("Content-Type","text/html; charset=utf-8");
-			if (sessionPassed) {
-				// Give some datas???
-				System.out.println("Sending ");
-				req.response().end("You are being logged in Recoeve, but accessed the wrong address.", ENCODING);
-			} else {
-				// Redirecting to "/account/log-in" with back path???
-				System.out.println("Sending log-in-first.html...");
-				req.response().end("Log in first", ENCODING);
-			}
+			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+			req.response().end(INVALID_ACCESS, ENCODING);
 		}
 	}).listen(80); // RecoeveDB.port
 } // public void start()
