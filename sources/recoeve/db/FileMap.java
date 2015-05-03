@@ -19,9 +19,9 @@ public class FileMap {
 	private static final String[] fileNames={
 			"jquery.min.js"
 			, "log-in.html"//, "log-in.css", "log-in.js"
-			, "log-in-first.html", "to-my-page.html"
+			, "log-in-first.html"
 			, "log-out.html"
-			, "user-page.html"
+			, "user-page.html", "to-user-page.html"
 			, "redirect.html", "remember-me.html"
 			, "AJAX post test (Cross orgin policy) and Reco test.html", "Reco-musics-test.html"
 		};
