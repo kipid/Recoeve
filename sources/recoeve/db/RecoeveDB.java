@@ -288,6 +288,14 @@ public class RecoeveDB {
 		return false;
 	}
 	
+	public boolean idExists(String id) {
+		try {
+			return findUserById(id).next();
+		} catch (SQLException e) {
+			err(e);
+		}
+		return false; // if error occurs.
+	}
 	public boolean idAvailable(String id) {
 		try {
 			return !findUserById(id).next();
@@ -299,7 +307,7 @@ public class RecoeveDB {
 		} catch (SQLException e) {
 			err(e);
 		}
-		return false;
+		return false; // if error occurs.
 	}
 	public boolean emailAvailable(String email) {
 		try {
