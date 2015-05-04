@@ -29,9 +29,10 @@ data {display:none}
 .center {text-align:center}
 .right {text-align:right}
 .cBoth {clear:both}
+img {min-width:1px; min-height:1px; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:2px solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.disabled {pointer-events:none; background:rgb(50,50,50)}
+.button.disabled {pointer-events:none; background:rgb(25,25,25)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
 .button.enabled {background:rgb(50,130,50)}
@@ -497,7 +498,7 @@ eve.cueYoutubePlaylist=function(list) {
 };
 
 ////////////////////////////////////////////////////
-// RegEx URL of video
+// RegEx URI :: URL of videos, images, maps
 ////////////////////////////////////////////////////
 eve.togglePosition=function(elem) {
 	var $elem=$(elem);
@@ -520,12 +521,12 @@ eve.rC=function(iframeStr) {
 		+'<div class="pc" onclick="eve.togglePosition(this)">▲ click me to stick to the right top (fixed position)</div>'
 	+'</div>';
 };
-eve.videoURL={};
+eve.ptnURI={};
 eve.videoRendering=function(uri) {
 	switch (uri.constructor) {
 	case String:
-		for (var p in eve.videoURL) {
-			var result=eve.videoURL[p].toIframe(uri);
+		for (var p in eve.ptnURI) {
+			var result=eve.ptnURI[p].toIframe(uri);
 			if (result) { return result; }
 		}
 		return {html:""};
@@ -533,84 +534,83 @@ eve.videoRendering=function(uri) {
 		return {html:""};
 	}
 };
-var videoURL;
-videoURL=eve.videoURL.youtubeURL={};
-videoURL.regEx=/^https?:\/\/www.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.youtubeURL.regEx.exec(url);
+var ptnURI;
+ptnURI=eve.ptnURI.youtubeURL={};
+ptnURI.regEx=/^https?:\/\/www.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.youtubeURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
 			, from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.youtuURL={};
-videoURL.regEx=/^https?:\/\/youtu.be\/([\w-]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.youtuURL.regEx.exec(url);
+ptnURI=eve.ptnURI.youtuURL={};
+ptnURI.regEx=/^https?:\/\/youtu.be\/([\w-]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.youtuURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
 			, from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.mYoutubeURL={};
-videoURL.regEx=/^https?:\/\/m.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.mYoutubeURL.regEx.exec(url);
+ptnURI=eve.ptnURI.mYoutubeURL={};
+ptnURI.regEx=/^https?:\/\/m.youtube.com\/watch\?.*(?:v=)([\w-]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.mYoutubeURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
 			, from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.youtubeEmbedURL={};
-videoURL.regEx=/^https?:\/\/www.youtube.com\/embed\/([\w-]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.youtubeEmbedURL.regEx.exec(url);
+ptnURI=eve.ptnURI.youtubeEmbedURL={};
+ptnURI.regEx=/^https?:\/\/www.youtube.com\/embed\/([\w-]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.youtubeEmbedURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
 			, from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.tvpotURL={};
-videoURL.regEx=/^https?:\/\/tvpot.daum.net\/v\/([\w-]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.tvpotURL.regEx.exec(url);
+ptnURI=eve.ptnURI.tvpotURL={};
+ptnURI.regEx=/^https?:\/\/tvpot.daum.net\/v\/([\w-]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.tvpotURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?play_loc=tvpot&amp;jsCallback=true&amp;wmode=transparent&amp;vid='+exec[1]+'$&amp;autoplay=false&amp;startNotReport=&amp;permitWideScreen=true&amp;forceWide=true&amp;" frameborder="0"></iframe>')
+		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>')
 			, from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.vimeoURL={};
-videoURL.regEx=/^https?:\/\/vimeo.com\/([0-9]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.vimeoURL.regEx.exec(url);
+ptnURI=eve.ptnURI.vimeoURL={};
+ptnURI.regEx=/^https?:\/\/vimeo.com\/([0-9]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.vimeoURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>')
 			, from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.dmURL={};
-videoURL.regEx=/^https?:\/\/www.dailymotion.com\/video\/([0-9a-zA-Z]+)/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.dmURL.regEx.exec(url);
+ptnURI=eve.ptnURI.dmURL={};
+ptnURI.regEx=/^https?:\/\/www.dailymotion.com\/video\/([0-9a-zA-Z]+)/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.dmURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>')
 			, from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
-videoURL=eve.videoURL.htmlTAG={};
-videoURL.regEx=/^&lt;.+&gt;$/i;
-videoURL.toIframe=function(url) {
-	var exec=eve.videoURL.htmlTAG.regEx.exec(url);
+ptnURI=eve.ptnURI.imgURL={};
+ptnURI.regEx=/^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))$/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.imgURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC(url.replace(/&gt;/gi,">").replace(/&lt;/gi,"<"))
-			, from:"html"};
+		return {html:'<div class="center"><img delayed-src="'+exec[1]+'"/></div>'};
 	}
 	return false;
 };
