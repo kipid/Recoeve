@@ -59,7 +59,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <!-- <h2>Sign in</h2> -->
 	<input type="hidden" name="idType" value="id" id="input-idType"/>
 	<label for="userId">[--ID--] or [--E-mail--]</label>
-	<input class="user-id" name="userId" value="" placeholder="ID or E-mail" type="text" maxlength="50" tabindex="1"/>
+	<input class="user-id go-next" name="userId" value="" placeholder="ID or E-mail" type="text" maxlength="50" tabindex="1"/>
 	<label for="userPwd">[--Password--]</label>
 	<input class="user-pwd" name="userPwd" id="log-in-userPwd" value="" placeholder="Password" type="password" maxlength="100" tabindex="2"/>
 	<label class="checkbox"><input name="rememberMe" class="checkbox" value="yes" type="checkbox" tabindex="3"/> <span>[--Remember me--]</span></label><!-- checked="checked" -->
@@ -70,11 +70,11 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <form class="form-login" action="./sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
 	<label for="userId">[--ID--]</label>
-	<input class="user-id" name="userId" value="" placeholder="ID" type="text" maxlength="21" tabindex="5"/>
+	<input class="user-id go-next" name="userId" value="" placeholder="ID" type="text" maxlength="21" tabindex="5"/>
 	<label for="userEmail">[--E-mail--]</label>
-	<input class="user-Email" name="userEmail" value="" placeholder="E-mail" type="text" maxlength="50" tabindex="6"/>
+	<input class="user-Email go-next" name="userEmail" value="" placeholder="E-mail" type="text" maxlength="50" tabindex="6"/>
 	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd" name="userPwd" value="" placeholder="Password" type="password" maxlength="64" tabindex="7"/>
+	<input class="user-pwd go-next" name="userPwd" value="" placeholder="Password" type="password" maxlength="64" tabindex="7"/>
 	<label for="userPwdCfm">[--Password confirm--]</label>
 	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="Password confirm" type="password" maxlength="100" tabindex="8"/>
 	<button id="button-sign-up" type="button" onclick="eve.signUp(this)" tabindex="9">[--Sign up for Recoeve--]</button>
@@ -546,6 +546,11 @@ $("#log-in-userPwd").on("keyup", function(e) {
 $("#sign-up-userPwdCfm").on("keyup", function(e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-sign-up").trigger("click");
+	}
+});
+$("input.go-next").on("keyup", function(e) {
+	if (e.keyCode===13) { // Enter
+		$(this).next().next("input").focus();
 	}
 });
 })(window.eve=window.eve||{}, jQuery);

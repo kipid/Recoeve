@@ -18,8 +18,7 @@ public class FileMap {
 	private static String filePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] fileNames={
 			"jquery.min.js"
-			, "log-in.html"//, "log-in.css", "log-in.js"
-			, "log-in-first.html"
+			, "log-in.html", "to-log-in.html" //, "log-in.css", "log-in.js"
 			, "log-out.html"
 			, "user-page.html", "to-user-page.html"
 			, "redirect.html", "remember-me.html"

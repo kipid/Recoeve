@@ -21,7 +21,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
 	<title>Recoeve.net</title>
 <style>
-body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word}
+body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
 
 div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
 data {display:none}
@@ -31,6 +31,7 @@ data {display:none}
 .cBoth {clear:both}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:2px solid rgb(50,50,50); background:rgb(110,110,110);}
+.button.disabled {pointer-events:none; background:rgb(50,50,50)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
 .button.enabled {background:rgb(50,130,50)}
@@ -41,6 +42,11 @@ a:link {color:rgb(190,190,235)}
 a:visited {color:rgb(170,170,215)}
 a:active {color:rgb(100,215,215)}
 a:hover {color:rgb(170,215,170); text-decoration:underline}
+
+::-webkit-scrollbar {width:3px; height:3px}
+::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
+::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
+::-webkit-scrollbar-corner {background:transparent}
 
 #container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
@@ -61,7 +67,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #catList .cat.selected {border:1px solid black}
 	.dark #catList .cat.selected {border-color:white}
 #catList .cat>.baseCat, #catList .cat>.ES {cursor:pointer}
-#catList .cat.selected>.baseCat {pointer-events:none}
+#catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,230,230)}
 #catList .cat>.noES, #catList .cat>.ES {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
@@ -197,13 +203,18 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:.6em} /* position change */
 
-#foot {margin-top:1em; border-top:2px solid white}
+#foot {clear:both; margin-top:1em; border-top:2px solid white; padding:1em .5em}
 
-@media all and (min-width:801px) {
+@media all and (min-width:701px) {
 	#container {}
-	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:20em; overflow:auto}
-	.side2 {margin-left:20em; padding:.5em}
+	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em; overflow:auto}
+	.side2 {margin-left:15em; padding:.5em}
 	.rC.fixed {width:646px; border-left:2px solid black}
+	::-webkit-scrollbar {width:9px; height:9px}
+}
+@media all and (min-width:901px) {
+	#sidebar {width:20em}
+	.side2 {margin-left:20em}
 }
 @media all and (min-height:500px) {
 	#fuzzy-search-list {max-height:430px;}
@@ -287,9 +298,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 </div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<!-- <script src="./jquery.min.js"></script> -->
+<!-- <script src="/jquery.min.js"></script> -->
 <script>
 (function(eve, $, undefined) {
+$("title").html(eve.userId+" on Recoeve.net");
 $("#user-noti").html(eve.userId+"'s recos");
 if (eve.myId) {
 	$("#my-id").html(eve.myId+" ▾");
@@ -1695,7 +1707,7 @@ eve.showReco=function(r) {
 };
 eve.emptifyReco=function() {
 	$("#error-msg").html("");
-	$("#input-uri")[0].value="";
+	$("#input-uri")[0].value=eve.lastURI="";
 	eve.getAndShowDefsAndReco();
 };
 eve.showDefs=function(r) {
@@ -1892,7 +1904,8 @@ $("#button-back").on("click", function(e) {
 });
 
 $("#button-reco").on("click", function(e) {
-	this.disabled=true;
+	var $this=$(this);
+	$this.addClass("disabled");
 	var $error=$("#error-msg");
 	var uri=eve.formatURI($("#input-uri")[0].value);
 	var val=eve.val($("#input-val")[0].value.trim());
@@ -1927,12 +1940,12 @@ $("#button-reco").on("click", function(e) {
 				}
 				setTimeout(function() {
 					eve.emptifyReco();
-					$("#button-reco")[0].disabled=false;
+					$this.removeClass("disabled");
 					$("#button-close").trigger("click");
 				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
-				$("#button-reco")[0].disabled=false;
+				$this.removeClass("disabled");
 			}
 		});
 	} else {
@@ -1943,11 +1956,12 @@ $("#button-reco").on("click", function(e) {
 			errorMsg="Points is of invalid form.";
 		}
 		$error.html(errorMsg);
-		this.disabled=false;
+		$this.removeClass("disabled");
 	}
 });
 $("#button-edit").on("click", function(e) {
-	this.disabled=true;
+	var $this=$(this);
+	$this.addClass("disabled");
 	var $error=$("#error-msg");
 	var uri=eve.formatURI($("#input-uri")[0].value);
 	var val=eve.val($("#input-val")[0].value.trim());
@@ -2008,17 +2022,17 @@ $("#button-edit").on("click", function(e) {
 					if (eve.myPage) { eve.refresh(cats); }
 					setTimeout(function() {
 						eve.emptifyReco();
-						$("#button-edit")[0].disabled=false;
+						$this.removeClass("disabled");
 						$("#button-close").trigger("click");
 					}, 1000);
 				} else {
 					$error.html(res[1]["result"]);
-					$("#button-edit")[0].disabled=false;
+					$this.removeClass("disabled");
 				}
 			});
 		} else {
 			$error.html("You have made no change.");
-			this.disabled=false;
+			$this.removeClass("disabled");
 		}
 	} else {
 		var errorMsg="";
@@ -2030,14 +2044,15 @@ $("#button-edit").on("click", function(e) {
 			errorMsg="You have no reco on this URI.";
 		}
 		$error.html(errorMsg);
-		this.disabled=false;
+		$this.removeClass("disabled");
 	}
 });
 $("#button-del").on("click", function(e) {
-	this.disabled=true;
+	var $this=$(this);
+	$this.addClass("disabled");
 	var $error=$("#error-msg");
 	var uri=eve.formatURI($("#input-uri")[0].value);
-	var r=eve.userRecos[uri];
+	var r=eve.myRecos[uri];
 	if (uri.length!==0&&r) {
 		var strHeads="do"+"\t"+"uri";
 		var strContents="delete"+"\t"+eve.encloseStr(uri);
@@ -2049,11 +2064,19 @@ $("#button-del").on("click", function(e) {
 			var res=eve.strToJSON(resp);
 			if (res[1]["result"]==="deleted") {
 				$error.html("Deleted");
-				delete eve.userRecos[uri];
-				eve.deleteCatsUriFromList(r["cats"], uri);
-				eve.getAndShowRecosOnCat(r["cats"].split(";")[0]);
+				var cats=r["cats"];
+				delete eve.myRecos[uri];
+				if (eve.myPage) {
+					eve.deleteCatsUriFromList(cats, uri);
+					eve.refresh(cats);
+				}
+				setTimeout(function() {
+					$this.removeClass("disabled");
+					$("#button-close").trigger("click");
+				})
 			} else {
 				$error.html(res[1]["result"]);
+				$this.removeClass("disabled");
 			}
 		});
 	} else {
@@ -2064,7 +2087,7 @@ $("#button-del").on("click", function(e) {
 			errorMsg="You have no reco on this URI.";
 		}
 		$error.html(errorMsg);
-		this.disabled=false;
+		$this.removeClass("disabled");
 	}
 });
 

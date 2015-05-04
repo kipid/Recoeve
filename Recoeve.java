@@ -64,7 +64,8 @@ public void start() {
 		////////////////////////////////////
 		final Cookie cookie=new Cookie(req.headers().get("Cookie"));
 		final boolean sessionPassed=db.sessionCheck(cookie);
-		System.out.println("Session passed? : "+sessionPassed);
+			// System.out.println("Cookie : "+cookie);
+			System.out.println("Session passed? : "+sessionPassed);
 		
 		String tmpLang=req.params().get("lang");
 		if (tmpLang==null) {
@@ -82,17 +83,13 @@ public void start() {
 			req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
 			System.out.println("Sended jquery.min.js");
 		} else if (path.equals("/")) {
-				// (path=/)==(path=/account/log-in). 두 path 는 같은방식으로 처리 됨.
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (sessionPassed) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
-			} else if (cookie.get("rmbdI")==null) {
-				req.response().end(FileMap.get("log-in.html",lang), ENCODING);
-				System.out.println("Sended log-in.html (No rmbd cookie)");
 			} else {
-				req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
-				System.out.println("Sended remember-me.html");
+				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING);
+				System.out.println("Sended to-log-in.html (redirecting to /account/log-in since rmbd cookie is to be checked too.)");
 			}
 		} else if (path.startsWith("/user/")) {
 			String user=path.substring(6);
@@ -106,7 +103,7 @@ public void start() {
 					System.out.println("Sended user-page.html");
 				} else {
 					req.response().end("User does not exist.", ENCODING);
-					System.out.println("User does not exist.");
+					System.out.println("Sended 'User does not exist.'");
 				}
 			} else if (userSplit.length==2&&method.equals("POST")) {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
@@ -139,15 +136,15 @@ public void start() {
 				if (sessionPassed) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html (already logged-in)");
-				} else if (cookie.get("rmbdI")==null) {
-					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
-					System.out.println("Sended log-in.html (No rmbd cookie)");
-				} else {
+				} else if (cookie.get("rmbdI")!=null) {
 					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
 					System.out.println("Sended remember-me.html");
+				} else {
+					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
+					System.out.println("Sended log-in.html (No rmbd cookie)");
 				}
 				break;
-			case "remember-me":
+			case "log-in/remember-me":
 				if (method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
@@ -155,8 +152,8 @@ public void start() {
 						req.response().putHeader("Set-Cookie", setCookieRMB);
 						if (setCookieRMB.startsWith("I=")) {
 							// Success: Session cookie and New token.
-							req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
-							System.out.println("Sended user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user)");
+							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
+							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user)");
 						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
 							// Failed: Delete rmbd cookie.
 							req.response().end("You have failed to log in with remembered http-only cookie.", ENCODING);
@@ -207,7 +204,7 @@ public void start() {
 							req.response().putHeader("Set-Cookie", setCookieSSN);
 							// req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
-							System.out.println("Sended user-page.html with Set-Cookie of session and optionally rmbd (log-in success : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
+							System.out.println("Sended to-user-page.html with Set-Cookie of session and optionally rmbd (log-in success : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
 						} else {
 							// Log-in failed.
 							req.response().end("Log-in failed.", ENCODING);

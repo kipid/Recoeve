@@ -1542,6 +1542,7 @@ System.out.println("SubCats_n are added to setOfSubCats_n.");
 						oldCats=new Categories(reco.getString("cats"));
 						oldTitle=reco.getString("title");
 						oldPts=new Points(reco.getString("val")); // can be null.
+						System.out.println("deleting "+reco.getString("uri"));
 						deleteCatsUriFromList(user_i, oldCats, uri, catL);
 						updateDefCat(uri, oldCats, -1);
 						updateDefTitle(uri, oldTitle, -1);
