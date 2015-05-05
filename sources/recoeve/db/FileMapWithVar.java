@@ -106,32 +106,41 @@ public class FileMapWithVar {
 				}
 				
 				if (strList.size()>1) {
-					for (int k=1;k<langMap.getRowSize();k++) {
-						String strReplaced="";
-						String replaced=null;
-						for (int i=0;i<strList.size();i++) {
-							if (i%2==0) {
-								strReplaced+=strList.get(i);
-							} else {
-								replaced=langMap.get(k, strList.get(i));
-								if (replaced==null) { replaced=strList.get(i); }
-								strReplaced+=replaced;
+					int colSize=langMap.getColSizeAtRow(0);
+					for (int k=2;k<colSize;k++) {
+						String lang=langMap.get(0,k);
+						if (!lang.equals("desc")) {
+							String strReplaced="";
+							String replaced=null;
+							for (int i=0;i<strList.size();i++) {
+								if (i%2==0) {
+									strReplaced+=strList.get(i);
+								} else {
+									replaced=langMap.get(strList.get(i), lang);
+									if (replaced==null||replaced.isEmpty()||replaced.equals("-")) {
+										replaced=langMap.get(strList.get(i), "en"); // "en" is default lang.
+									}
+									if (replaced==null) {
+										replaced=strList.get(i);
+									}
+									strReplaced+=replaced;
+								}
 							}
-						}
-						strListVars=new ArrayList<String>();
-						matchVariable=ptnVariable.matcher(strReplaced); // [--lang--] replaced
-						start=0;
-						while (start<strReplaced.length()) {
-							if (matchVariable.find(start)) {
-								strListVars.add(strReplaced.substring(start, matchVariable.start()));
-								strListVars.add(matchVariable.group());
-								start=matchVariable.end();
-							} else {
-								strListVars.add(strReplaced.substring(start));
-								start=strReplaced.length();
+							strListVars=new ArrayList<String>();
+							matchVariable=ptnVariable.matcher(strReplaced); // [--lang--] replaced
+							start=0;
+							while (start<strReplaced.length()) {
+								if (matchVariable.find(start)) {
+									strListVars.add(strReplaced.substring(start, matchVariable.start()));
+									strListVars.add(matchVariable.group());
+									start=matchVariable.end();
+								} else {
+									strListVars.add(strReplaced.substring(start));
+									start=strReplaced.length();
+								}
 							}
+							fileLangMap.put(lang, strListVars); // after replacing langMap.
 						}
-						fileLangMap.put(langMap.get(k,1), strListVars); // after replacing langMap.
 					}
 				}
 				fileStr=null;
