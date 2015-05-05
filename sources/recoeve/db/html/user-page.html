@@ -291,11 +291,11 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 			<div class="button" onclick="eve.playlist.setShuffle(true)">Shuffle</div>
 			<div class="button" onclick="eve.playlist.toggleLoop(this)">Loop</div>
 			<div class="button" onclick="eve.playlist.toggleOneLoop(this)">One-loop</div>
-			<div class="pc" onclick="eve.togglePosition(this)">▲ click me to stick to the right top (fixed position)</div>
+			<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>
 		</div>
 	</div><!-- div#head2 -->
 	<div class="side2" id="contents"></div><!-- div#contents -->
-	<div class="side2" id="foot">Ver. 0.1.1. (2015-05-03). The <a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this page</a>.</div><!-- div#foot -->
+	<div class="side2" id="foot">Ver. 0.1.1. (2015-05-03). [--foot--]</div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -502,15 +502,15 @@ eve.cueYoutubePlaylist=function(list) {
 ////////////////////////////////////////////////////
 eve.togglePosition=function(elem) {
 	var $elem=$(elem);
-	var $parent=$elem.parent();
+	var $parent=$elem.parent().parent();
 	if ($parent.hasClass("fixed")) {
 		$parent.removeClass("fixed");
 		window.scrollTo(0, $parent.offset().top);
-		$elem.text("▲ click me to stick to the right top (fixed position)");
+		$elem.text("▲ [--stick to the right top--]");
 	} else {
 		$parent.addClass("fixed");
 		window.scrollBy(0, -$parent.height());
-		$elem.text("▲ click me to return to the original position (static position)");
+		$elem.text("▲ [--return to the original position--]");
 	}
 };
 eve.rC=function(iframeStr) {
@@ -518,7 +518,7 @@ eve.rC=function(iframeStr) {
 		+'<div class="rSC">'
 			+iframeStr
 		+'</div>'
-		+'<div class="pc" onclick="eve.togglePosition(this)">▲ click me to stick to the right top (fixed position)</div>'
+		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>'
 	+'</div>';
 };
 eve.ptnURI={};
@@ -602,6 +602,15 @@ ptnURI.toIframe=function(url) {
 	if (exec!==null) {
 		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>')
 			, from:"dailymotion", videoId:exec[1]};
+	}
+	return false;
+};
+ptnURI=eve.ptnURI.videoURL={};
+ptnURI.regEx=/^(https?:\/\/\S+\.(?:mp4|ogg|webm))/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.videoURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[1]+'"></video>')};
 	}
 	return false;
 };
@@ -1132,7 +1141,64 @@ eve.getSearchVars=function() {
 	}
 	return vars;
 };
+/*  :: cookies.js :: Slightly edited by kipid at 2014-09-03.
+|*|
+|*|  A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|  This framework is released under the GNU Public License, version 3 or later.
+|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|  Syntaxes:
+|*|
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.getItem(name)
+|*|  * docCookies.removeItem(name[, path], domain)
+|*|  * docCookies.hasItem(name)
+|*|  * docCookies.keys()
+*/
+eve.docCookies={
+  getItem: function (sKey) {
+    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age="+vEnd;
+          break;
+        case String:
+          sExpires = "; expires="+vEnd;
+          break;
+        case Date:
+          sExpires = "; expires="+vEnd.toUTCString();
+          break;
+      }
+    }
+    document.cookie = encodeURIComponent(sKey)+"="+encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  removeItem: function (sKey, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)/* || !this.hasItem(sKey)*/) { return false; }
+    document.cookie = encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+    return aKeys;
+  }
+};
 var vars=eve.getSearchVars();
+if (vars.lang!==undefined) {
+	eve.docCookies.setItem("lang", vars.lang, Infinity, "/");
+}
 if (vars.cat!==undefined) {
 	eve.getAndShowRecosOnCat(vars.cat);
 }
