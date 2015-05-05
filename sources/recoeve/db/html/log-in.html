@@ -608,10 +608,10 @@ eve.signUp=function(elem) {
 			} else {
 				var errStr="";
 				if (res[0]=="false") {
-					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]";
+					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]<br>";
 				}
 				if (res[1]=="false") {
-					errStr+="[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]";
+					errStr+="[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]<br>";
 				}
 				$elem.before( eve.encloseErr(errStr) );
 				$elem[0].disabled=false;
