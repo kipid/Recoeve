@@ -20,11 +20,11 @@ body {width:100%; max-width:1000px; margin:0 auto; padding:5px 0}
 .recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(40,40,55); color:white}
 h1 {display:block; font:inherit; font-size:3em; font-weight:bold; margin:0 0 .5em; padding:.6em .5em; border-bottom:5px solid rgb(140,140,150)}
 .form-login {width:20em; max-width:100%; margin:0 auto 1em; padding:1em; font-size:16px; color:white; line-height:1; background:black; border:3px solid rgb(120,120,130)}
-.form-login>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3}
+.form-login>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3; font-weight:bold}
 .form-login>label {display:block; color:white; font-size:1em; font-weight:bold; margin:.9em 0 .4em}
 .form-login>label:first-of-type {margin-top:0}
 .form-login>label.checkbox {font-weight:normal}
-.form-login>input {display:block; width:100%; height:auto; overflow:hidden; padding:.3em .5em; font-weight:bold; font-size:1em; line-height:1.5; background:white; color:rgb(50,50,50)}
+.form-login>input {display:block; width:100%; height:auto; overflow:hidden; padding:.3em .5em; font-family:inherit; font-weight:normal; font-size:1em; line-height:1.5; background:white; color:rgb(50,50,50)}
 .form-login>input:focus {background:rgb(240,240,255)}
 .form-login>button {width:100%; font:inherit; font-weight:bold; padding:.5em; text-align:center; margin-top:1.3em} .form-login>button:disabled {background:rgb(70,70,70)}
 .form-login>.error-msg {border:1px solid gray; padding:.3em .5em; margin:.5em 0 0; color:rgb(255,200,200); line-height:1.3}
@@ -49,7 +49,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	.form-login {margin:0 .6em 1em 1em; float:right; clear:right}
 }
 </style>
-	<title>Recoeve</title>
+	<title>Recoeve.net</title>
 </head>
 <body>
 <div class="recoeve-container">
@@ -59,9 +59,9 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <!-- <h2>Sign in</h2> -->
 	<input type="hidden" name="idType" value="id" id="input-idType"/>
 	<label for="userId">[--ID--] or [--E-mail--]</label>
-	<input class="user-id go-next" name="userId" value="" placeholder="ID or E-mail" type="text" maxlength="50" tabindex="1"/>
+	<input class="user-id go-next" name="userId" value="" placeholder="[--ID--] or [--E-mail--]" type="text" maxlength="50" tabindex="1"/>
 	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd" name="userPwd" id="log-in-userPwd" value="" placeholder="Password" type="password" maxlength="100" tabindex="2"/>
+	<input class="user-pwd" name="userPwd" id="log-in-userPwd" value="" placeholder="[--Password--]" type="password" maxlength="100" tabindex="2"/>
 	<label class="checkbox"><input name="rememberMe" class="checkbox" value="yes" type="checkbox" tabindex="3"/> <span>[--Remember me--]</span></label><!-- checked="checked" -->
 	<!-- <div>Forgot password?</div> -->
 	<button id="button-log-in" type="button" onclick="eve.logIn(this)" tabindex="4">[--Log in--]</button>
@@ -70,13 +70,13 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <form class="form-login" action="./sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
 	<label for="userId">[--ID--]</label>
-	<input class="user-id go-next" name="userId" value="" placeholder="ID" type="text" maxlength="21" tabindex="5"/>
+	<input class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
 	<label for="userEmail">[--E-mail--]</label>
-	<input class="user-Email go-next" name="userEmail" value="" placeholder="E-mail" type="text" maxlength="50" tabindex="6"/>
+	<input class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" maxlength="50" tabindex="6"/>
 	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd go-next" name="userPwd" value="" placeholder="Password" type="password" maxlength="64" tabindex="7"/>
+	<input class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" maxlength="64" tabindex="7"/>
 	<label for="userPwdCfm">[--Password confirm--]</label>
-	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="Password confirm" type="password" maxlength="100" tabindex="8"/>
+	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" maxlength="100" tabindex="8"/>
 	<button id="button-sign-up" type="button" onclick="eve.signUp(this)" tabindex="9">[--Sign up for Recoeve--]</button>
 </form>
 
@@ -85,7 +85,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 </div>
 
 <div class="lang">
-	<div class="p">Language</div>
+	<div class="p">Language/언어/語言</div>
 <data id="data-lang">
 English/영어/en	en
 Korean/한국어/kr	kr
@@ -94,13 +94,96 @@ Chinese/중국어/cn	cn
 </data>
 </div>
 
-<div id="foot">Ver. 0.1.1. (2015-05-03). The <a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this page</a>.</div>
+<div id="foot">Ver. 0.1.1. (2015-05-03). [--foot--]</div>
 </div><!-- recoeve-container -->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<!-- <script src="./log-in.js"></script> -->
 <script>
 (function(eve, $, undefined) {
+//////////////////////////////////////////
+// path.search rendering
+//////////////////////////////////////////
+eve.getSearchVars=function() {
+	var searchStr=window.location.search;
+	var vars={};
+	if (searchStr!==0) {
+		if (searchStr.substring(0,1)==="?") {
+			searchStr=searchStr.substring(1);
+		}
+		var splits=searchStr.split("&");
+		for (var i=0;i<splits.length;i++) {
+			var key=splits[i];
+			var value="";
+			var k=splits[i].indexOf("=");
+			if (k!==-1) {
+				key=splits[i].substring(0,k);
+				value=decodeURIComponent(splits[i].substring(k+1));
+			}
+			vars[key]=value;
+		}
+	}
+	return vars;
+};
+
+/*  :: cookies.js :: Slightly edited by kipid at 2014-09-03.
+|*|
+|*|  A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|  This framework is released under the GNU Public License, version 3 or later.
+|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|  Syntaxes:
+|*|
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.getItem(name)
+|*|  * docCookies.removeItem(name[, path], domain)
+|*|  * docCookies.hasItem(name)
+|*|  * docCookies.keys()
+*/
+eve.docCookies={
+  getItem: function (sKey) {
+    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age="+vEnd;
+          break;
+        case String:
+          sExpires = "; expires="+vEnd;
+          break;
+        case Date:
+          sExpires = "; expires="+vEnd.toUTCString();
+          break;
+      }
+    }
+    document.cookie = encodeURIComponent(sKey)+"="+encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  removeItem: function (sKey, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)/* || !this.hasItem(sKey)*/) { return false; }
+    document.cookie = encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+    return aKeys;
+  }
+};
+var vars=eve.getSearchVars();
+if (vars.lang!==undefined) {
+	eve.docCookies.setItem("lang", vars.lang, Infinity, "/");
+}
+
 ////////////////////////////////////////////////////
 // String to Array
 ////////////////////////////////////////////////////
@@ -166,7 +249,6 @@ $("form.form-login").prepend(
 	+'<input type="hidden" name="iehack" value="&#9760;"/>' // Encoding utf-8 in IE.
 	+'<input type="hidden" name="screenWidth" value="'+screen.width+'"/>'
 	+'<input type="hidden" name="screenHeight" value="'+screen.height+'"/>'
-	+'<input type="hidden" name="locationHref" value="'+location.href+'"/>'
 );
 $(".desc").html(function(i, orgHtml) {
 	return orgHtml
@@ -174,7 +256,7 @@ $(".desc").html(function(i, orgHtml) {
 		.replace(/eve/ig,'<span class="eve bold">$&</span>');
 });
 
-eve.errorMsgDiv=function(msg) {
+eve.encloseErr=function(msg) {
 	return '<div class="error-msg">'+msg+'</div>';
 };
 eve.byteCount=function(str) {
@@ -406,6 +488,10 @@ eve.iterFull=10000;
 
 eve.regExId=/^[a-zA-Z가-힣0-9-_.]+$/;
 eve.regExEmail=/^[a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+$/;
+eve.minIdLength=3;
+eve.maxIdLength=21;
+eve.minPwdLength=7;
+eve.maxPwdLength=64;
 
 eve.logIn=function(elem) {
 	var $elem=$(elem).eq(0);
@@ -415,55 +501,58 @@ eve.logIn=function(elem) {
 	var userId=$form.find(".user-id")[0].value;
 	var userIdLength=eve.byteCount(userId);
 	var userPwd=$form.find(".user-pwd")[0].value;
+	var err="";
 	var valid=false;
 	
 	if (userIdLength==0) {
-		$elem.after( eve.errorMsgDiv("ID or E-mail is empty.") );
-	} else if (userIdLength<3) {
-		$elem.after( eve.errorMsgDiv("ID or E-mail is too short.") );
+		err+="[--ID or E-mail is empty.--]";
+	} else if (userIdLength<eve.minIdLength) {
+		err+="[--ID or E-mail is too short.--]";
 	} else if (userPwd.length==0) {
-		$elem.after( eve.errorMsgDiv("Password is empty.") );
-	} else if (userPwd.length<7) {
-		$elem.after( eve.errorMsgDiv("Password is too short.") );
+		err+="[--Password is empty.--]";
+	} else if (userPwd.length<eve.minPwdLength) {
+		err+="[--Password is too short.--]";
 	} else {
 		if (eve.regExId.test(userId)) {
 			$form.find("input#input-idType")[0].value=idType="id"; valid=true;
 		} else if (eve.regExEmail.test(userId)) {
 			$form.find("input#input-idType")[0].value=idType="email"; valid=true;
 		} else {
-			$elem.after( eve.errorMsgDiv("ID or E-mail '"+userId+"' is of invalid form.") );
+			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
 		}
 	}
 	
 	if (valid) {
-		$elem.after( eve.errorMsgDiv("Checking ID or E-mail: Please wait......") );
+		$elem.before( eve.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
 		}).fail(function() {
-			$elem.after( eve.errorMsgDiv("Request times out. Please click the Log-in button again.") );
+			$elem.before( eve.encloseErr("[--Request times out.--] [--Please click the Log-in button again.--]") );
 			$elem[0].disabled=false;
 		}).done(function(resp) { // resp: pwd_iteration or "No such id"	salt
 			var res=resp.split('\t');
 			var iter=Number(res[0]);
 			if (isNaN(iter)) {
-				$elem.after( eve.errorMsgDiv("Error : "+res[0]) );
+				$elem.before( eve.encloseErr("Error : "+res[0]) );
 				$elem[0].disabled=false;
 			} else {
-				$elem.after( eve.errorMsgDiv("Password is being encrypted.") );
+				$elem.before( eve.encloseErr("[--Password is being encrypted.--]") );
 				$form.find(".user-pwd")[0].value=eve.encrypt(res[1], userPwd, iter); userPwd="";
-				$elem.after( eve.errorMsgDiv("Logging in: Please wait......") );
+				$elem.before( eve.encloseErr("[--Logging in--] : [--Please wait.--]") );
 				$form.submit();
 			}
 		});
 	} else {
+		$elem.before( eve.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
 	var errorMsgs=$form.find(".error-msg");
-	for (var i=5;i<errorMsgs.length;i++) {
+	for (var i=errorMsgs.length-6;i>=0;i--) {
 		errorMsgs.eq(i).css({display:"none"});
 	};
 };
+
 eve.signUp=function(elem) {
 	var $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
@@ -473,37 +562,36 @@ eve.signUp=function(elem) {
 	var userEmail=$form.find(".user-Email")[0].value;
 	var userPwd=$form.find(".user-pwd")[0].value;
 	var userPwdCfm=$form.find(".user-pwd")[1].value;
+	var err="";
 	var valid=false;
 	
 	if (userIdLength==0) {
-		$elem.after( eve.errorMsgDiv("ID is empty. (required)") );
-	} else if (userIdLength<3) {
-		$elem.after( eve.errorMsgDiv("ID is too short.<br>"+userId+" : "+userIdLength+" (ID.length: 3~21)") );
-	} else if (userIdLength>21) {
-		$elem.after( eve.errorMsgDiv("ID is too long.<br>"+userId+" : "+userIdLength+" (ID.length: 3~21)") );
+		err+="[--ID is empty.--]";
+	} else if (userIdLength<eve.minIdLength||userIdLength>eve.maxIdLength) {
+		err+=(userIdLength<eve.minIdLength?"[--ID is too short.--]":"[--ID is too long.--]")+" '"+userId+"':"+userIdLength+" ([--ID--].[--length--]:"+eve.minIdLength+"~"+eve.maxIdLength+")";
 	} else if (!eve.regExId.test(userId)) {
-		$elem.after( eve.errorMsgDiv("ID [\""+userId+"\": "+userIdLength+"] is of invalid form.") );
+		err+="[--ID--] '"+userId+"' [--is of invalid form.--]";
 	} else if (userEmail.length==0) {
-		$elem.after( eve.errorMsgDiv("E-mail is empty. (required)") );
+		err+="[--E-mail is empty.--]";
 	} else if (!eve.regExEmail.test(userEmail)) {
-		$elem.after( eve.errorMsgDiv("E-mail [\""+userEmail+"\"] is of invalid form.") );
+		err+="[--E-mail--] '"+userEmail+"' [--is of invalid form.--]";
 	} else if (userPwd.length==0) {
-		$elem.after( eve.errorMsgDiv("Password is empty. (required)") );
-	} else if (userPwd.length<7) {
-		$elem.after( eve.errorMsgDiv("Password is too short.<br>*: "+userPwd.length+" (Password.length: 7~64)") );
+		err+="[--Password is empty.--]";
+	} else if (userPwd.length<eve.minPwdLength||userPwd.length>eve.maxPwdLength) {
+		err+=(userPwd.length<eve.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")+" ([--Password--].[--length--]:"+eve.minPwdLength+"~"+eve.maxPwdLength+")";
 	} else if (userPwd!==userPwdCfm) {
-		$elem.after( eve.errorMsgDiv("Confirm your password correctly.") );
+		err+="[--Confirm your password correctly.--]";
 	} else {
 		valid=true;
 	}
 	
 	if (valid) {
-		$elem.after( eve.errorMsgDiv("Checking ID and E-mail: Please wait......") );
+		$elem.before( eve.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]") );
 		$.ajax("./check", {
 			type: "POST"
 			, data: userId+"\t"+userEmail
 		}).fail(function() {
-			$elem.after( eve.errorMsgDiv("Request times out. Please click the Sign-up button again.") );
+			$elem.before( eve.encloseErr("[--Request time out.--] [--Please click the Sign-up button again.--]") );
 			$elem[0].disabled=false;
 		}).done(function(resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
 			var res=resp.split('\t');
@@ -512,28 +600,29 @@ eve.signUp=function(elem) {
 					'<input type="hidden" name="tToken" value="'+res[2]+'"/>'
 					+'<input type="hidden" name="authToken" value="'+res[3]+'"/>'
 				);
-				$elem.after( eve.errorMsgDiv("Password is being encrypted.") );
+				$elem.before( eve.encloseErr("[--Password is being encrypted.--]") );
 				$form.find(".user-pwd")[0].value=eve.encrypt(res[3], userPwd, eve.iterFull); userPwd="";
 				$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
-				$elem.after( eve.errorMsgDiv("Signing up: Please wait......") );
+				$elem.before( eve.encloseErr("[--Signing up--] : [--Please wait.--]") );
 				$form.submit();
 			} else {
 				var errStr="";
 				if (res[0]=="false") {
-					errStr+="<br>* ID '"+userId+"' is already in use. Please try another ID.";
+					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]";
 				}
 				if (res[1]=="false") {
-					errStr+="<br>* E-mail '"+userEmail+"' is already registered. Please try another e-mail.";
+					errStr+="[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]";
 				}
-				$elem.after( eve.errorMsgDiv(errStr) );
+				$elem.before( eve.encloseErr(errStr) );
 				$elem[0].disabled=false;
 			}
 		});
 	} else {
+		$elem.before( eve.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
 	var errorMsgs=$form.find(".error-msg");
-	for (var i=5;i<errorMsgs.length;i++) {
+	for (var i=errorMsgs.length-6;i>=0;i--) {
 		errorMsgs.eq(i).css({display:"none"});
 	}
 };
