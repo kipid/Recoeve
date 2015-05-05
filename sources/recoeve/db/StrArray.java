@@ -43,7 +43,7 @@ public class StrArray {
 	}
 	
 	public StrArray() {
-		this(false, false);
+		this(true, false);
 	}
 	public StrArray(boolean colMap) {
 		this(colMap, false);
@@ -70,7 +70,7 @@ public class StrArray {
 		col=-1;
 	}
 	public StrArray(String strData) {
-		this(strData, false, false);
+		this(strData, true, false);
 	}
 	public StrArray(String strData, boolean colMap) {
 		this(strData, colMap, false);
@@ -97,7 +97,7 @@ public class StrArray {
 	}
 	
 	public void updateLists() {
-		updateLists(false, false);
+		updateLists(true, false);
 	}
 	public void updateLists(boolean colMap) {
 		updateLists(colMap, false);
