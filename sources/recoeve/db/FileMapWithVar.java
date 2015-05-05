@@ -27,8 +27,8 @@ public class FileMapWithVar {
 	public static Map<String, Map<String, ArrayList<String>>> fileMap;
 		// fileMap.get("fileName").get("lang")
 	
-	public static final Pattern ptnReplacer=Pattern.compile("\\[--[^\\]]+--\\]");
-	public static final Pattern ptnVariable=Pattern.compile("\\{--[^\\}]+--\\}");
+	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
+	public static final Pattern ptnVariable=Pattern.compile("\\{--[\\s\\S]+?--\\}");
 	
 	static {
 		fileMap=new HashMap<String, Map<String, ArrayList<String>>>(fileMapSize);

@@ -30,7 +30,7 @@ public class FileMap {
 	public static Map<String, Map<String, String>> fileMap;
 		// fileMap.get("fileName").get("lang")
 	
-	public static final Pattern ptnReplacer=Pattern.compile("\\[--[^\\]]+--\\]");
+	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
 	
 	static {
 		fileMap=new HashMap<String, Map<String, String>>(fileMapSize);
