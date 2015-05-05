@@ -52,7 +52,7 @@ public class FileMap {
 		} finally {
 			file=null;
 		} }
-		StrArray langMap=new StrArray(fileStr);
+		StrArray langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
 		
@@ -93,37 +93,32 @@ public class FileMap {
 				}
 				
 				if (strList.size()>1) {
-					for (int k=1;k<langMap.getRowSize();k++) {
-						String strReplaced="";
-						String replaced=null;
-						for (int i=0;i<strList.size();i++) {
-							if (i%2==0) {
-								strReplaced+=strList.get(i);
-							} else {
-								replaced=langMap.get(k, strList.get(i));
-								if (replaced==null) { replaced=strList.get(i); }
-								strReplaced+=replaced;
+					int colSize=langMap.getColSizeAtRow(0);
+					for (int k=2;k<colSize;k++) {
+						String lang=langMap.get(0,k);
+						if (!lang.equals("desc")) {
+							String strReplaced="";
+							String replaced=null;
+							for (int i=0;i<strList.size();i++) {
+								if (i%2==0) {
+									strReplaced+=strList.get(i);
+								} else {
+									replaced=langMap.get(strList.get(i), lang);
+									if (replaced==null||replaced.isEmpty()||replaced.equals("-")) {
+										replaced=langMap.get(strList.get(i), "en"); // "en" is default lang.
+									}
+									if (replaced==null) {
+										replaced=strList.get(i);
+									}
+									strReplaced+=replaced;
+								}
 							}
+							fileLangMap.put(lang, strReplaced); // after replacing langMap.
 						}
-						fileLangMap.put(langMap.get(k,1), strReplaced); // after replacing langMap.
 					}
 				}
 				fileStr=null;
 			}
-			
-			/////////////////////////////////////////////////////
-			// Old version of replacing.
-			/////////////////////////////////////////////////////
-			// if (fileStr!=null) {
-			// 	for (int i=1;i<langMap.getColSizeAtRow(0);i++) {
-			// 		String replaced=fileStr;
-			// 		for (int k=1;k<langMap.getRowSize();k++) {
-			// 			replaced=replaced.replaceAll(Pattern.quote(langMap.get(k,0)), Matcher.quoteReplacement(langMap.get(k,i)));
-			// 		}
-			// 		fileLangMap.put(langMap.get(0,i), replaced); // after replacing langMap.
-			// 	}
-			// 	fileStr=null;
-			// }
 		}
 	}
 	

@@ -50,7 +50,7 @@ public class FileMapWithVar {
 		} finally {
 			file=null;
 		} }
-		StrArray langMap=new StrArray(fileStr);
+		StrArray langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
 		
@@ -136,20 +136,6 @@ public class FileMapWithVar {
 				}
 				fileStr=null;
 			}
-			
-			/////////////////////////////////////////////////////
-			// Old version of replacing.
-			/////////////////////////////////////////////////////
-			// if (fileStr!=null) {
-			// 	for (int i=1;i<langMap.getColSizeAtRow(0);i++) {
-			// 		String replaced=fileStr;
-			// 		for (int k=1;k<langMap.getRowSize();k++) {
-			// 			replaced=replaced.replaceAll(Pattern.quote(langMap.get(k,0)), Matcher.quoteReplacement(langMap.get(k,i)));
-			// 		}
-			// 		fileLangMap.put(langMap.get(0,i), replaced); // after replacing langMap.
-			// 	}
-			// 	fileStr=null;
-			// }
 		}
 	}
 	

@@ -28,32 +28,60 @@ public class StrArray {
 	}
 	
 	public String str;
-	public ArrayList<ArrayList<String>> arrayList;
-	public ArrayList<Map<String, String>> mapList;
+	public ArrayList<ArrayList<String>> arrayArray;
+	public ArrayList<Map<String, String>> arrayMap;
+	public Map<String, ArrayList<String>> mapArray;
+	public Map<String, Map<String, String>> mapMap;
 	private int row; // The last row number will be saved.
 	private int col; // The last col number of the last row will be saved.
 	
 	public int getRowSize() {
-		return arrayList.size();
+		return arrayArray.size();
 	}
 	public int getColSizeAtRow(int r) {
-		return arrayList.get(r).size();
+		return arrayArray.get(r).size();
 	}
 	
 	public StrArray() {
+		this(false, false);
+	}
+	public StrArray(boolean colMap) {
+		this(colMap, false);
+	}
+	public StrArray(boolean colMap, boolean rowMap) {
 		str="";
-		arrayList=new ArrayList<ArrayList<String>>();
-		mapList=new ArrayList<Map<String, String>>();
+		arrayArray=new ArrayList<ArrayList<String>>();
+		if (colMap) {
+			arrayMap=new ArrayList<Map<String, String>>();
+		} else {
+			arrayMap=null;
+		}
+		if (rowMap) {
+			mapArray=new HashMap<String, ArrayList<String>>();
+		} else {
+			mapArray=null;
+		}
+		if (colMap&&rowMap) {
+			mapMap=new HashMap<String, Map<String, String>>();
+		} else {
+			mapMap=null;
+		}
 		row=-1;
 		col=-1;
 	}
 	public StrArray(String strData) {
-		this();
+		this(strData, false, false);
+	}
+	public StrArray(String strData, boolean colMap) {
+		this(strData, colMap, false);
+	}
+	public StrArray(String strData, boolean colMap, boolean rowMap) {
+		this(colMap, rowMap);
 		str=strData.replaceAll("\\r","");
 		if (str.charAt(str.length()-1)!='\n') {
 			str+="\n";
 		}
-		this.updateLists();
+		this.updateLists(colMap, rowMap);
 	}
 	
 	public boolean increaseRC(String delim) {
@@ -62,13 +90,19 @@ public class StrArray {
 			return true;
 		} else if (delim.equals("\n")) {
 			row++; col=0;
-			arrayList.add(new ArrayList<String>());
+			arrayArray.add(new ArrayList<String>());
 			return true;
 		}
 		return false;
 	}
 	
 	public void updateLists() {
+		updateLists(false, false);
+	}
+	public void updateLists(boolean colMap) {
+		updateLists(colMap, false);
+	}
+	public void updateLists(boolean colMap, boolean rowMap) {
 		if (str!=null&&!str.isEmpty()) {
 			String delim="\n";
 			String strElem="";
@@ -101,15 +135,33 @@ public class StrArray {
 						start=end=str.length();
 					}
 				}
-				arrayList.get(row).add(strElem);
+				arrayArray.get(row).add(strElem);
 			}
-			for (int i=1;i<arrayList.size();i++) {
-				mapList.add(new HashMap<String, String>());
-				for (int j=0;j<arrayList.get(i).size();j++) {
-					String key=this.get(0,j);
-					if (key!=null) {
-						mapList.get(i-1).put(key, arrayList.get(i).get(j));
+			if (colMap) {
+				int firstColSize=arrayArray.get(0).size();
+				for (int i=0;i<arrayArray.size();i++) {
+					arrayMap.add(new HashMap<String, String>());
+					int jMax=arrayArray.get(i).size();
+					if (jMax>firstColSize) { jMax=firstColSize; }
+					for (int j=0;j<jMax;j++) {
+						String key=arrayArray.get(0).get(j);
+						// if (key!=null) {
+							arrayMap.get(i).putIfAbsent(key, arrayArray.get(i).get(j));
+						// }
 					}
+				}
+			}
+			if (rowMap) {
+				for (int i=0;i<arrayArray.size();i++) {
+					ArrayList<String> aL=arrayArray.get(i);
+					mapArray.putIfAbsent(aL.get(0), aL);
+				}
+			}
+			if (colMap&&rowMap) {
+				for (int i=0;i<arrayArray.size();i++) {
+					String key=arrayArray.get(i).get(0);
+					Map<String,String> map=arrayMap.get(i);
+					mapMap.putIfAbsent(key, map);
 				}
 			}
 		}
@@ -117,41 +169,45 @@ public class StrArray {
 	
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
-		for (int j=0;j<arrayList.get(0).size();j++) {
-			sb.append(" 0,"+j+" : "+arrayList.get(0).get(j)+"\n");
-		}
-		sb.append("\n");
-		for (int i=1;i<arrayList.size();i++) {
-			for (int j=0;j<arrayList.get(i).size();j++) {
-				sb.append(" "+i+","+j+" : "+arrayList.get(i).get(j)+"\n");
+		for (int i=0;i<arrayArray.size();i++) {
+			for (int j=0;j<arrayArray.get(i).size();j++) {
+				sb.append(" "+i+","+j+" : "+arrayArray.get(i).get(j)+"\n");
 			}
-			for (Map.Entry<String, String> entry: mapList.get(i-1).entrySet()) {
-				sb.append(" "+i+","+entry.getKey()+" : "+entry.getValue()+"\n");
+			if (arrayMap!=null) {
+				for (Map.Entry<String, String> entry: arrayMap.get(i).entrySet()) {
+					sb.append(" "+i+","+entry.getKey()+" : "+entry.getValue()+"\n");
+				}
 			}
 			sb.append("\n");
 		}
-		/* int i=0, j=0;
-		for (ArrayList<String> row: arrayList) {
-			j=0;
-			for (String s: row) {
-				sb.append(" "+i+","+j+" : "+s+"\n");
-				j++;
-			}
-			sb.append("\n");
-			i++;
-		} */
 		return sb.toString();
 	}
 	
 	public String get(int row, int col) {
-		if (row<arrayList.size()&&col<arrayList.get(row).size()) {
-			return arrayList.get(row).get(col);
+		if (0<=row&&row<arrayArray.size()&&0<=col&&col<arrayArray.get(row).size()) {
+			return arrayArray.get(row).get(col);
 		}
 		return null;
 	}
 	public String get(int row, String key) {
-		if (0<row&&row<arrayList.size()) {
-			return mapList.get(row-1).get(key); // If no value for a key, this returns null;
+		if (0<=row&&row<arrayArray.size()) {
+			return arrayMap.get(row).get(key); // If no value for a key, this returns null;
+		}
+		return null;
+	}
+	public String get(String key, int col) {
+		if (0<=col) {
+			ArrayList<String> aL=mapArray.get(key); // If no value for a key, this returns null;
+			if (aL!=null&&col<aL.size()) {
+				return aL.get(col);
+			}
+		}
+		return null;
+	}
+	public String get(String rowKey, String colKey) {
+		Map<String,String> map=mapMap.get(rowKey);
+		if (map!=null) {
+			return map.get(colKey);
 		}
 		return null;
 	}
