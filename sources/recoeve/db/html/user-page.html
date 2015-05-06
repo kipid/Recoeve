@@ -1883,7 +1883,6 @@ eve.showDefs=function(r) {
 	});
 };
 eve.lastURI="";
-eve.timeOutGetInfos=null;
 eve.userRecos[""]={
 	has:true, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
 };
@@ -1922,7 +1921,6 @@ eve.getAndShowDefsAndReco=function() {
 			eve.showDefs(r);
 		});
 	}
-	var $error=$error;
 	if (eve.myPage||uri==="") {
 		$error.html("");
 	} else {
@@ -1946,13 +1944,15 @@ eve.getAndShowDefsAndReco=function() {
 };
 $input_uri.on("keyup", function(e) {
 	var uri=eve.formatURI(this.value);
-	if (uri!==""&&uri!==eve.lastURI) {
+	if (uri!==eve.lastURI) {
 		eve.lastURI=uri;
-		clearTimeout(eve.timeOutGetInfos);
-		eve.timeOutGetInfos=setTimeout(function() {
-			$input_uri[0].value=eve.lastURI;
-			eve.getAndShowDefsAndReco();
-		}, 1000);
+		if (uri!=="") {
+			clearTimeout(eve.timeOutGetInfos);
+			eve.timeOutGetInfos=setTimeout(function() {
+				$input_uri[0].value=eve.lastURI;
+				eve.getAndShowDefsAndReco();
+			}, 1000);
+		}
 	}
 });
 
