@@ -334,6 +334,7 @@ $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
+$input_val_stars=$("#input-val-stars");
 $input_val=$("#input-val");
 
 $error=$("#error-msg");
@@ -1960,7 +1961,7 @@ $input_uri.on("keyup", function(e) {
 eve.fullPts=5;
 eve.lastVal=eve.val("");
 $input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
-$("#input-val-stars").on("mousedown.mdInStars touchstart.mdInStars", function(e) {
+$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 	var $bar=$(this).find(".bar");
 	var barW=$bar.width();
 	var $val=$input_val[0];
@@ -1993,7 +1994,7 @@ $("#input-val-stars").on("mousedown.mdInStars touchstart.mdInStars", function(e)
 		$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 	});
 });
-$("#input-val-stars").on("click", function(e) {
+$input_val_stars.on("click", function(e) {
 	var $bar=$(this).find(".bar");
 	var barW=$bar.width();
 	var $val=$input_val[0];
@@ -2047,7 +2048,6 @@ $button_back.on("click", function(e) {
 $button_reco.on("click", function(e) {
 	var $this=$(this);
 	$this.addClass("disabled");
-	var $error=$error;
 	var uri=eve.formatURI($input_uri[0].value);
 	var val=eve.val($input_val[0].value.trim());
 	if (uri.length!==0&&val.valid) {
