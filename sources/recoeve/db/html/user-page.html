@@ -231,10 +231,10 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div id="sidebar">
 		<div id="user-noti"></div>
 		<div id="catList"></div>
-		<div id="edit-cat" class="right">
-			<div class="button" id="edit-cat-edit">Change orders</div>
-			<div class="button" id="edit-cat-ok">OK</div>
-			<div class="button" id="edit-cat-cancel">Cancel</div>
+		<div class="right">
+			<div class="button" id="change-catList-order">Change orders</div>
+			<div class="button" id="change-catList-order-ok">OK</div>
+			<div class="button" id="change-catList-order-cancel">Cancel</div>
 		</div>
 	</div><!-- div#sidebar -->
 	<div id="fuzzy-search-container">
@@ -319,9 +319,9 @@ $button_new_reco=$("#button-new-reco");
 
 $sidebar=$("#sidebar");
 $catList=$("#catList");
-$edit_cat_edit=$("#edit-cat-edit");
-$edit_cat_ok=$("#edit-cat-ok");
-$edit_cat_cancel=$("#edit-cat-cancel");
+$change_catList_order=$("#change-catList-order");
+$change_catList_order_ok=$("#change-catList-order-ok");
+$change_catList_order_cancel=$("#change-catList-order-cancel");
 
 $new_reco=$("#new-reco");
 
@@ -1366,7 +1366,7 @@ eve.putCat=function(cat) {
 	}
 	if (res) {
 		$data_CatList.html(eve.escapeHTML(fullCats));
-		$edit_cat_cancel.trigger("click");
+		$change_catList_order_cancel.trigger("click");
 	}
 	return res;
 };
@@ -1407,17 +1407,17 @@ eve.deleteCat=function(cat) {
 	}
 	if (res) {
 		$data_CatList.html(eve.escapeHTML(fullCats));
-		$edit_cat_cancel.trigger("click");
+		$change_catList_order_cancel.trigger("click");
 	}
 	return res;
 };
 
-$edit_cat_ok.hide();
-$edit_cat_cancel.hide();
-$edit_cat_edit.on("click", function(e) {
-	$edit_cat_edit.hide();
-	$edit_cat_ok.show();
-	$edit_cat_cancel.show();
+$change_catList_order_ok.hide();
+$change_catList_order_cancel.hide();
+$change_catList_order.on("click", function(e) {
+	$change_catList_order.hide();
+	$change_catList_order_ok.show();
+	$change_catList_order_cancel.show();
 	var $cats=$("#catList .cat").not("#cat-0");
 	$cats.addClass("edit");
 	$cats.prepend('<div class="edit-bar"></div>');
@@ -1508,8 +1508,8 @@ $edit_cat_edit.on("click", function(e) {
 	});
 });
 eve.getCatListChanged=function() {
-	$edit_cat_ok.hide();
-	$edit_cat_cancel.hide();
+	$change_catList_order_ok.hide();
+	$change_catList_order_cancel.hide();
 	var $cats=$("#catList .cat").not("#cat-0");
 	$cats.removeClass("edit");
 	$cats.find('.edit-bar').remove();
@@ -1523,7 +1523,7 @@ eve.getCatListChanged=function() {
 	}
 	return catListChanged;
 };
-$edit_cat_ok.on("click", function(e) {
+$change_catList_order_ok.on("click", function(e) {
 	var catListChanged=eve.getCatListChanged();
 	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
 		if (eve.myPage) {
@@ -1532,24 +1532,25 @@ $edit_cat_ok.on("click", function(e) {
 				, dataType:"text"
 			}).done(function(resp) {
 				$data_CatList.html(eve.escapeHTML(catListChanged));
-				$edit_cat_edit.show();
+				$change_catList_order.show();
 				console.log(resp);
 			});
 		} else {
 			$data_CatList.html(eve.escapeHTML(catListChanged));
-			$edit_cat_edit.show();
+			$change_catList_order.show();
 		}
 	} else {
-		$edit_cat_edit.show();
+		$change_catList_order.show();
 	}
 });
-$edit_cat_cancel.on("click", function(e) {
+$change_catList_order_cancel.on("click", function(e) {
 	var catListChanged=eve.getCatListChanged();
 	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
 		eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
+		eve.updateCatFS();
 		eve.renderCatListHTML(eve.catList);
 	}
-	$edit_cat_edit.show();
+	$change_catList_order.show();
 });
 
 ////////////////////////////////////////////////////
@@ -1655,7 +1656,7 @@ $fuzzy_search.on("keydown", function(e) {
 eve.fsFullList=[]; // initialize
 eve.fsLastTxt="$!@#";
 $fuzzy_search.on("keyup", function(e) {
-	var fsTxt=$(this).text();
+	var fsTxt=$fuzzy_search.text();
 	if (eve.fsLastTxt!==fsTxt) {
 		if (fsTxt.indexOf(eve.fsLastTxt)===0) {
 			eve.fsList=eve.fuzzySearch(fsTxt, eve.fsList);
@@ -1686,15 +1687,18 @@ $fuzzy_search.on("keyup", function(e) {
 $fuzzy_search.trigger("keyup");
 $fuzzy_search_container.hide();
 
-eve.catFSFullList=[];
-for (var i=1;i<eve.catList.length;i++) {
-	var cat=eve.catList[i].cat;
-	eve.catFSFullList.push({
-		"txt":cat, "html":eve.escapeHTML(cat)
-	});
-}
-eve.catFSLastTxt="$!@#";
-eve.catFSLastK=0;
+eve.updateCatFS=function() {
+	eve.catFSFullList=[];
+	for (var i=1;i<eve.catList.length;i++) {
+		var cat=eve.catList[i].cat;
+		eve.catFSFullList.push({
+			"txt":cat, "html":eve.escapeHTML(cat)
+		});
+	}
+	eve.catFSLastTxt="$!@#";
+	eve.catFSLastK=-1;
+};
+eve.updateCatFS();
 $input_cats.on("keyup click", function(e) {
 	var catsTxt=this.value;
 	var sEnd=this.selectionEnd;
