@@ -1109,7 +1109,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
 	}
 };
-eve.refresh=function(cats) {
+eve.refresh=function(cats, option) {
 	var currentCat=eve.getSearchVars().cat;
 	var c=cats.split(";");
 	var k=0;
@@ -1118,9 +1118,22 @@ eve.refresh=function(cats) {
 			if (c[k]===currentCat) {break;}
 		}
 	}
-	eve.getAndShowRecosOnCat(c[k]);
 	if (c[k]!==currentCat) {
 		window.history.pushState({cat:c[k]}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(c[k]));
+		eve.getAndShowRecosOnCat(c[k]);
+	} else {
+		eve.getAndShowRecosOnCat(c[k]);
+		// if (option===undefined||option==null) {
+		// 	eve.getAndShowRecosOnCat(c[k]);
+		// } else if (option==="recoed") {
+			
+		// } else if (option==="changed") {
+			
+		// } else if (option==="deleted") {
+			
+		// } else {
+			
+		// }
 	}
 };
 
@@ -1962,7 +1975,7 @@ eve.lastVal=eve.val("");
 $input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
 $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
-	var $bar=$(this).find(".bar");
+	var $bar=$input_val_stars.find(".bar");
 	var barW=$bar.width();
 	var $val=$input_val[0];
 	$html.on("mousemove.mdInStars touchmove.mdInStars", function(e) {
@@ -2046,8 +2059,7 @@ $button_back.on("click", function(e) {
 });
 
 $button_reco.on("click", function(e) {
-	var $this=$(this);
-	$this.addClass("disabled");
+	$button_reco.addClass("disabled");
 	var uri=eve.formatURI($input_uri[0].value);
 	var val=eve.val($input_val[0].value.trim());
 	if (uri.length!==0&&val.valid) {
@@ -2068,6 +2080,9 @@ $button_reco.on("click", function(e) {
 		$.ajax({
 			type:"POST", url:"/reco/do", data:strRecoDo
 			, dataType:"text"
+		}).fail(function() {
+			$error.html("Reco failed. You may be not logged-in.");
+			$button_reco.removeClass("disabled");
 		}).done(function(resp) {
 			var res=eve.strToJSON(resp);
 			if (res[1]["result"]==="recoed") {
@@ -2077,16 +2092,16 @@ $button_reco.on("click", function(e) {
 				if (eve.myPage) {
 					var cats=eve.myRecos[uri]["cats"];
 					eve.putCatsUriToList(cats, uri);
-					eve.refresh(cats);
+					eve.refresh(cats, "recoed");
 				}
 				setTimeout(function() {
 					eve.emptifyReco();
-					$this.removeClass("disabled");
+					$button_reco.removeClass("disabled");
 					$button_close.trigger("click");
 				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
-				$this.removeClass("disabled");
+				$button_reco.removeClass("disabled");
 			}
 		});
 	} else {
@@ -2097,12 +2112,11 @@ $button_reco.on("click", function(e) {
 			errorMsg="Points is of invalid form.";
 		}
 		$error.html(errorMsg);
-		$this.removeClass("disabled");
+		$button_reco.removeClass("disabled");
 	}
 });
 $button_edit.on("click", function(e) {
-	var $this=$(this);
-	$this.addClass("disabled");
+	$button_edit.addClass("disabled");
 	var uri=eve.formatURI($input_uri[0].value);
 	var val=eve.val($input_val[0].value.trim());
 	var r=eve.myRecos[uri];
@@ -2144,6 +2158,9 @@ $button_edit.on("click", function(e) {
 			$.ajax({
 				type:"POST", url:"/reco/do", data:strHeads+"\n"+strContents
 				, dataType:"text"
+			}).fail(function() {
+				$error.html("Failed change. You may not be logged-in.");
+				$button_edit.removeClass("disabled");
 			}).done(function(resp) {
 				var res=eve.strToJSON(resp);
 				if (res[1]["result"]==="changed") {
@@ -2156,23 +2173,29 @@ $button_edit.on("click", function(e) {
 						r["cats"]=cats;
 					}
 					if (title!==r["title"]) { r["title"]=title; }
-					if (desc!==r["desc"]) { r["desc"]=desc; }
-					if (cmt!==r["cmt"]) { r["cmt"]=cmt; }
+					if (desc!==r["desc"]) {
+						r["desc"]=desc;
+						r["descR"]=eve.renderStrDescCmt(desc);
+					}
+					if (cmt!==r["cmt"]) {
+						r["cmt"]=cmt;
+						r["cmtR"]=eve.renderStrDescCmt(cmt);
+					}
 					if (val.str!==r["val"].str) { r["val"]=val; }
-					if (eve.myPage) { eve.refresh(cats); }
+					if (eve.myPage) { eve.refresh(cats, "changed"); }
 					setTimeout(function() {
 						eve.emptifyReco();
-						$this.removeClass("disabled");
+						$button_edit.removeClass("disabled");
 						$button_close.trigger("click");
 					}, 1000);
 				} else {
 					$error.html(res[1]["result"]);
-					$this.removeClass("disabled");
+					$button_edit.removeClass("disabled");
 				}
 			});
 		} else {
 			$error.html("You have made no change.");
-			$this.removeClass("disabled");
+			$button_edit.removeClass("disabled");
 		}
 	} else {
 		var errorMsg="";
@@ -2184,7 +2207,7 @@ $button_edit.on("click", function(e) {
 			errorMsg="You have no reco on this URI.";
 		}
 		$error.html(errorMsg);
-		$this.removeClass("disabled");
+		$button_edit.removeClass("disabled");
 	}
 });
 $button_del.on("click", function(e) {
