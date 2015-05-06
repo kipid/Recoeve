@@ -1945,11 +1945,12 @@ eve.getAndShowDefsAndReco=function() {
 $input_uri.on("keyup", function(e) {
 	var uri=eve.formatURI(this.value);
 	if (uri!==eve.lastURI) {
-		eve.lastURI=uri;
-		if (uri!=="") {
+		if (uri==="") {
+			eve.lastURI=uri;
+		} else {
 			clearTimeout(eve.timeOutGetInfos);
 			eve.timeOutGetInfos=setTimeout(function() {
-				$input_uri[0].value=eve.lastURI;
+				$input_uri[0].value=eve.lastURI=uri;
 				eve.getAndShowDefsAndReco();
 			}, 1000);
 		}
