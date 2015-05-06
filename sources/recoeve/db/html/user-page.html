@@ -300,7 +300,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		</div>
 	</div><!-- div#head2 -->
 	<div class="side2" id="contents"></div><!-- div#contents -->
-	<div class="side2" id="foot">[--version--] [--foot--]</div><!-- div#foot -->
+	<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a></div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -334,7 +334,6 @@ $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
-$input_val_stars=$("#input-val-stars");
 $input_val=$("#input-val");
 
 $error=$("#error-msg");
@@ -1961,6 +1960,7 @@ $input_uri.on("keyup", function(e) {
 eve.fullPts=5;
 eve.lastVal=eve.val("");
 $input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
+$input_val_stars=$("#input-val-stars");
 $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 	var $bar=$(this).find(".bar");
 	var barW=$bar.width();
