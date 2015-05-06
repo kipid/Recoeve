@@ -44,7 +44,7 @@ a:visited {color:rgb(170,170,215)}
 a:active {color:rgb(100,215,215)}
 a:hover {color:rgb(170,215,170); text-decoration:underline}
 
-::-webkit-scrollbar {width:3px; height:3px}
+::-webkit-scrollbar {width:7px; height:7px}
 ::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
 ::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
 ::-webkit-scrollbar-corner {background:transparent}
@@ -157,7 +157,9 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
 #new-reco label:first-child {margin-top:0}
 #new-reco label>.desc {font-size:.8em}
-#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; height:auto; font:inherit; font-weight:bold; font-size:.9em; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50);}
+#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50)}
+textarea.single-line {min-height:2.2em; height:2.2em}
+textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco input#input-val {display:inline-block; width:8.5em}
 #new-reco .def-title {margin:2px 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
@@ -211,7 +213,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em; overflow:auto}
 	.side2 {margin-left:15em; padding:.5em}
 	.rC.fixed {width:646px; border-left:2px solid black}
-	::-webkit-scrollbar {width:9px; height:9px}
+	::-webkit-scrollbar {width:11px; height:11px}
 }
 @media all and (min-width:901px) {
 	#sidebar {width:20em}
@@ -243,24 +245,25 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<div id="new-reco">
 		<form>
 		<label for="uri">URI <span class="desc">(required)</span></label>
-			<input id="input-uri" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"/>
+			<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
 			<div id="show-URI"></div>
 		<label for="title">Title</label>
 			<div id="def-titles"></div>
-			<input id="input-title" name="title" placeholder="Title" type="text" tabindex="2"/>
+			<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
 		<label for="cats">Categories</label>
 			<div id="def-cats"><div class="def-cat">Indifferent</div> <div class="def-cat">Later</div></div>
-			<input id="input-cats" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"/>
+			<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
 			<div id="cat-fs-container" class="fs-container">
 				<div id="cat-fs-list"></div>
 				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 			</div>
 		<label for="desc">Description</label>
-			<textarea id="input-desc" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." rows="5" tabindex="4"></textarea>
+			<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
 		<label for="cmt">Comment</label>
-			<textarea id="input-cmt" name="cmt" placeholder="Comment: your personal description or opinion on this URI." rows="5" tabindex="5"></textarea>
+			<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
 		<label for="val">Points</label>
 			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
+		<div id="error-msg"></div>
 		<div class="buttons">
 			<div class="button" id="button-reco" tabindex="7">Reco</div>
 			<div class="button" id="button-edit" tabindex="8">Edit</div>
@@ -269,19 +272,21 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 			<div class="button left" id="button-back" tabindex="10">Back</div>
 			<div class="cBoth"></div>
 		</div>
-		<div id="error-msg"></div>
 		<div id="my-reco"></div>
-		<div class="exit" onclick='$("#button-close").trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+		<div class="exit" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</form>
 	</div><!-- div#new-reco -->
 	<div class="side2" id="head">
 		<div class="button" id="my-id"></div>
 		head : <a href="/account/log-out">Log out</a>
 		<div class="button" onclick="$('#container').toggleClass('dark')">Toggle style</div>
-		<div class="button" id="out-focus" onclick='$("#fuzzy-search-container").show(); $("#fuzzy-search").focus();'>Fuzzy search</div>
+		<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>Fuzzy search</div>
 		<div class="button" id="button-new-reco">New Reco</div>
 		<ul id="shortkeys"></ul>
-		<div id="point-range"></div>
+		<div id="point-range">
+			<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
+		</div>
+		<span id="point-range-result"></span>
 	</div><!-- div#head -->
 	<div class="side2" id="head2">
 		<div class="rC">
@@ -302,17 +307,73 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <!-- <script src="/jquery.min.js"></script> -->
 <script>
 (function(eve, $, undefined) {
+/////////////////////////////////////////////
+// Variables
+/////////////////////////////////////////////
+$data_CatList=$("#data-CatList");
+$data_UriList=$("#data-UriList");
+
+$user_noti=$("#user-noti");
+$my_id=$("#my-id");
+$button_new_reco=$("#button-new-reco");
+
+$sidebar=$("#sidebar");
+$catList=$("#catList");
+$edit_cat_edit=$("#edit-cat-edit");
+$edit_cat_ok=$("#edit-cat-ok");
+$edit_cat_cancel=$("#edit-cat-cancel");
+
+$new_reco=$("#new-reco");
+
+$head2=$("#head2"); // youtube playlist
+
+$input_uri=$("#input-uri");
+$def_titles=$("#def-titles");
+$input_title=$("#input-title");
+$def_cats=$("#def-cats");
+$input_cats=$("#input-cats");
+$input_desc=$("#input-desc");
+$input_cmt=$("#input-cmt");
+$input_val=$("#input-val");
+
+$error=$("#error-msg");
+
+$button_reco=$("#button-reco");
+$button_edit=$("#button-edit");
+$button_del=$("#button-del");
+$button_back=$("#button-back");
+$button_close=$("#button-close");
+
+$out_focus=$("#out-focus");
+$fuzzy_search_container=$("#fuzzy-search-container");
+$fuzzy_search=$("#fuzzy-search");
+$fuzzy_search_list=$("#fuzzy-search-list");
+
+$cat_fs_container=$("#cat-fs-container");
+$cat_fs_list=$("#cat-fs-list");
+
+$test_5stars=$("#test-5stars");
+$point_range=$("#point-range");
+$point_range_bar=$("#point-range-bar");
+$point_range_left=$("#point-range-left");
+$point_range_right=$("#point-range-right");
+$point_range_result=$("#point-range-result");
+
+$contents=$("#contents");
+
+$window=$(window);
+$html=$("html");
+$.fn.exists=function() { return this.length!==0; };
+
 $("title").html(eve.userId+" on Recoeve.net");
-$("#user-noti").html(eve.userId+"'s recos");
+$user_noti.html(eve.userId+"'s recos");
 if (eve.myId) {
-	$("#my-id").html(eve.myId+" ▾");
+	$my_id.html(eve.myId+" ▾");
 } else {
-	$("#my-id").hide();
-	$("#button-new-reco").remove();
+	$my_id.hide();
+	$button_new_reco.remove();
 }
 
-$.fn.exists=function() { return this.length!==0; };
-$window=$(window);
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
@@ -391,16 +452,19 @@ $window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 $window.trigger("scroll.delayedLoad");
 
 ////////////////////////////////////////////////////
-// String to Array
+// String to Array (This is the up-to-date. in user-page.html)
 ////////////////////////////////////////////////////
 eve.encloseStr=function(str) {
+	if (str===undefined||str===null||str.constructor!==String) { return ""; }
 	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
 		return '"'+str.replace(/"/g,'""')+'"';
 	} else {
 		return str;
 	}
 };
-eve.strToArray=function(str) {
+eve.strToJSON=function(str, colMap, rowMap) {
+	if (str===undefined||str===null||str.constructor!==String) { return []; }
+	if (colMap===undefined||colMap===null) { colMap=true; }
 	// str=str.trim()+"\n";
 	if (str.charAt(str.length-1)!=="\n") {
 		str+="\n";
@@ -445,14 +509,24 @@ eve.strToArray=function(str) {
 		}
 		ret[row][col]=strElem;
 	}
-	return ret;
-};
-eve.strToJSON=function(str) {
-	var ret=eve.strToArray(str);
-	for (var i=1;i<ret.length;i++) {
-		for (var j=0;j<ret[i].length;j++) {
-			if (ret[0][j]!==undefined) {
-				ret[i][ret[0][j]]=ret[i][j];
+	if (colMap) {
+		var firstColSize=ret[0].length;
+		for (var i=0;i<ret.length;i++) {
+			var jMax=ret[i].length;
+			if (jMax>firstColSize) { jMax=firstColSize; }
+			for (var j=0;j<jMax;j++) {
+				var key=ret[0][j];
+				if (key!==undefined) {
+					ret[i][key]=ret[i][j];
+				}
+			}
+		}
+	}
+	if (rowMap) {
+		for (var i=0;i<ret.length;i++) {
+			var key=ret[i][0];
+			if (key!==undefined) {
+				ret[key]=ret[i];
 			}
 		}
 	}
@@ -482,10 +556,10 @@ eve.cueYTCount=0;
 eve.cueYoutubePlaylist=function(list) {
 	if (eve.playlist&&eve.playlist.cuePlaylist) {
 		if (list.length>0) {
-			$("#head2").show();
+			$head2.show();
 			eve.playlist.cuePlaylist(list);
 		} else {
-			$("#head2").hide();
+			$head2.hide();
 			eve.playlist.stopVideo();
 		}
 	} else {
@@ -722,7 +796,7 @@ eve.val=function(val) {
 		return eve["5stars-pre"]+(eve["5stars-width"]*val).toFixed(1)+eve["5stars-post"];
 	}
 }
-$("#test-5stars").html(eve["5stars"](0.4));
+$test_5stars.html(eve["5stars"](0.4));
 
 ////////////////////////////////////////////////////
 // Point range
@@ -731,31 +805,29 @@ eve.ptsRangeFrom=0; // from <= pts <= to
 eve.ptsRangeTo=1;
 eve.mdInPRL=false; // mouse down in Point Range Left
 eve.mdInPRR=false; // mouse down in Point Range Right
-$("#point-range").html('<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>');
-$("#point-range").after('&nbsp; <span id="point-range-result"></span>');
-$("#point-range-left").on("mousedown touchstart", function(e) {
+$point_range_left.on("mousedown touchstart", function(e) {
 	eve.mdInPRL=true;
 });
-$("#point-range-right").on("mousedown touchstart", function(e) {
+$point_range_right.on("mousedown touchstart", function(e) {
 	eve.mdInPRR=true;
 });
-$("html").on("mouseup.mdInPR", function(e) {
+$html.on("mouseup.mdInPR", function(e) {
 	eve.mdInPRL=false;
 	eve.mdInPRR=false;
 });
-$("html").on("mousemove", function(e) {
+$html.on("mousemove", function(e) {
 	if (eve.mdInPRL||eve.mdInPRR) {
 		window.getSelection().removeAllRanges();
 	}
 });
 eve.PRsteps=10;
 eve.PRLw=15;
-eve.PRw=$("#point-range").width();
+eve.PRw=$point_range.width();
 eve.PRRw=eve.PRw-15;
 eve.PRtoInt=function(w) {
 	return Math.round(eve.PRsteps*(w-15)/(eve.PRw-30));
 };
-$("#point-range").on("mousemove touchmove", function(e) {
+$point_range.on("mousemove touchmove", function(e) {
 	// e.stopPropagation();
 	if (eve.mdInPRL||eve.mdInPRR) {
 		window.getSelection().removeAllRanges();
@@ -770,22 +842,22 @@ $("#point-range").on("mousemove touchmove", function(e) {
 		if (eve.mdInPRL) {
 			if (w>eve.PRRw) { w=eve.PRRw; }
 			if (eve.PRLw!==w) {
-				$("#point-range-left").css({left:w-15});
-				$("#point-range-bar").css({left:w});
+				$point_range_left.css({left:w-15});
+				$point_range_bar.css({left:w});
 				eve.PRLw=w;
 				changed=true;
 			}
 		} else {
 			if (w<eve.PRLw) { w=eve.PRLw; }
 			if (eve.PRRw!==w) {
-				$("#point-range-right").css({left:w-5});
-				$("#point-range-bar").css({right:eve.PRw-w});
+				$point_range_right.css({left:w-5});
+				$point_range_bar.css({right:eve.PRw-w});
 				eve.PRRw=w;
 				changed=true;
 			}
 		}
 		if (changed) {
-			$("#point-range-result").html(eve.PRtoInt(eve.PRLw)/2+"~"+eve.PRtoInt(eve.PRRw)/2+" /"+eve.PRsteps/2);
+			$point_range_result.html(eve.PRtoInt(eve.PRLw)/2+"~"+eve.PRtoInt(eve.PRRw)/2+" /"+eve.PRsteps/2);
 			eve.ptsRangeFrom=eve.PRtoInt(eve.PRLw)/eve.PRsteps;
 			eve.ptsRangeTo=eve.PRtoInt(eve.PRRw)/eve.PRsteps;
 			clearTimeout(eve.timeOutHideOutRange);
@@ -827,7 +899,7 @@ eve.processOutRange=function() {
 		}
 	}
 	eve.fsLastTxt+="$!@#";
-	$("#fuzzy-search").trigger("keyup");
+	$fuzzy_search.trigger("keyup");
 	eve.cueYoutubePlaylist(list);
 };
 
@@ -934,19 +1006,19 @@ eve.showContents=function(uris) {
 	}} else {
 		strHTML+="No reco.";
 	}
-	$("#contents").html(strHTML);
+	$contents.html(strHTML);
 	eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
 	eve.processOutRange();
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	eve.fdList=$("#contents .reco");
-	$("#contents .reco .button.edit").on("click", function(e) {
+	eve.fdList=$contents.find(".reco");
+	eve.fdList.find(".button.edit").on("click", function(e) {
 		var $reco=$(this).parent().parent(".reco");
 		var uri=eve.unescapeHTML($reco.find(".textURI").html());
 		var r=eve.userRecos[uri];
-		$("#input-uri")[0].value=r["uri"];
-		$("#input-uri")[0].disabled=true;
-		$("#new-reco").show();
+		$input_uri[0].value=r["uri"];
+		$input_uri[0].disabled=true;
+		$new_reco.show();
 		if (uri.length!==0&&uri!==eve.lastURI) {
 			eve.lastURI=uri;
 			eve.getAndShowDefsAndReco();
@@ -958,7 +1030,7 @@ eve.showContents=function(uris) {
 	});
 };
 
-eve.catUriList=eve.strToJSON(eve.unescapeHTML($("#data-UriList").html())); // cat, UriList
+eve.catUriList=eve.strToJSON(eve.unescapeHTML($data_UriList.html())); // cat, UriList
 if (eve.catUriList.length===1) {
 	eve.catUriList[1]=["",""];
 	eve.catUriList[1]["cat"]="";
@@ -1034,7 +1106,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 			eve.showContents(uris);
 		}
 	} else {
-		$("#contents").html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
+		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
 	}
 };
 eve.refresh=function(cats) {
@@ -1092,7 +1164,7 @@ eve.renderCatListHTML=function(catList) {
 			catListHTML+='</div>';
 		}
 	}
-	$("#catList").html(catListHTML);
+	$catList.html(catListHTML);
 	for (var i=0;i<eve.catList.length;i++) {
 		var $catI=$("#cat-"+i);
 		$catI.css({"margin-left":(eve.catList[i].depth)+"em"});
@@ -1113,7 +1185,7 @@ eve.renderCatListHTML=function(catList) {
 		});
 	}
 };
-eve.catList=eve.renderStrCatList(eve.unescapeHTML($("#data-CatList").html()));
+eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 eve.renderCatListHTML(eve.catList);
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
@@ -1251,7 +1323,7 @@ eve.deleteCatsUriFromList=function(cats, uri) {
 eve.putCat=function(cat) {
 	var res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=eve.unescapeHTML($("#data-CatList").html());
+	var fullCats=eve.unescapeHTML($data_CatList.html());
 	var levels=cat.split("--");
 	var pre="\n";
 	var start=0;
@@ -1280,15 +1352,15 @@ eve.putCat=function(cat) {
 		}
 	}
 	if (res) {
-		$("#data-CatList").html(eve.escapeHTML(fullCats));
-		$("#edit-cat-cancel").trigger("click");
+		$data_CatList.html(eve.escapeHTML(fullCats));
+		$edit_cat_cancel.trigger("click");
 	}
 	return res;
 };
 eve.deleteCat=function(cat) {
 	var res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=eve.unescapeHTML($("#data-CatList").html());
+	var fullCats=eve.unescapeHTML($data_CatList.html());
 	var levels=cat.split("--");
 	var pre="\n";
 	var start0=0;
@@ -1321,18 +1393,18 @@ eve.deleteCat=function(cat) {
 		res=true;
 	}
 	if (res) {
-		$("#data-CatList").html(eve.escapeHTML(fullCats));
-		$("#edit-cat-cancel").trigger("click");
+		$data_CatList.html(eve.escapeHTML(fullCats));
+		$edit_cat_cancel.trigger("click");
 	}
 	return res;
 };
 
-$("#edit-cat-ok").hide();
-$("#edit-cat-cancel").hide();
-$("#edit-cat-edit").on("click", function(e) {
-	$("#edit-cat-edit").hide();
-	$("#edit-cat-ok").show();
-	$("#edit-cat-cancel").show();
+$edit_cat_ok.hide();
+$edit_cat_cancel.hide();
+$edit_cat_edit.on("click", function(e) {
+	$edit_cat_edit.hide();
+	$edit_cat_ok.show();
+	$edit_cat_cancel.show();
 	var $cats=$("#catList .cat").not("#cat-0");
 	$cats.addClass("edit");
 	$cats.prepend('<div class="edit-bar"></div>');
@@ -1358,13 +1430,12 @@ $("#edit-cat-edit").on("click", function(e) {
 			var $catTo=$('<div id="cat-to-here" style="margin-left:'+(eve.catList[catI].depth+0.5)+'em"></div>');
 			$catM.before($catTo);
 			var catTo=-1;
-			$("html").on("mousemove.mdInEB touchmove.mdInEB", function(e) {
+			$html.on("mousemove.mdInEB touchmove.mdInEB", function(e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
 				e.stopPropagation();
 				$catM.css({left:((e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX)-relativeX, top:((e.type=='touchmove')?e.originalEvent.touches[0].clientY:e.clientY)-relativeY});
 				var wST=$window.scrollTop();
-				var $sidebar=$("#sidebar");
 				var sidebarTop=$sidebar.offset().top-wST;
 				var sidebarBottom=sidebarTop+$sidebar.outerHeight();
 				var scrollPad=20;
@@ -1399,8 +1470,8 @@ $("#edit-cat-edit").on("click", function(e) {
 					catTo=k;
 				}
 			});
-			$("html").on("mouseup.mdInEB", function(e) {
-				$("html").off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+			$html.on("mouseup.mdInEB", function(e) {
+				$html.off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
 				$catM.removeClass("move");
 				$catM.css({width:'', left:'', top:''});
 				$catTo.replaceWith($catM);
@@ -1411,21 +1482,21 @@ $("#edit-cat-edit").on("click", function(e) {
 			});
 		} else { // if $catSiblings doesn't exist.
 			$catM.css({"border-color":"rgb(230,120,120)"});
-			$("html").on("mousemove.mdInEB touchmove.mdInEB", function(e) {
+			$html.on("mousemove.mdInEB touchmove.mdInEB", function(e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
 				e.stopPropagation();
 			});
-			$("html").on("mouseup.mdInEB", function(e) {
-				$("html").off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+			$html.on("mouseup.mdInEB", function(e) {
+				$html.off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
 				$catM.css({"border-color":""});
 			});
 		}
 	});
 });
 eve.getCatListChanged=function() {
-	$("#edit-cat-ok").hide();
-	$("#edit-cat-cancel").hide();
+	$edit_cat_ok.hide();
+	$edit_cat_cancel.hide();
 	var $cats=$("#catList .cat").not("#cat-0");
 	$cats.removeClass("edit");
 	$cats.find('.edit-bar').remove();
@@ -1439,33 +1510,33 @@ eve.getCatListChanged=function() {
 	}
 	return catListChanged;
 };
-$("#edit-cat-ok").on("click", function(e) {
+$edit_cat_ok.on("click", function(e) {
 	var catListChanged=eve.getCatListChanged();
-	if (catListChanged!==eve.unescapeHTML($("#data-CatList").html())) {
+	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
 		if (eve.myPage) {
 			$.ajax({
 				type:"POST", url:"/changeOrders/CatList", data:catListChanged
 				, dataType:"text"
 			}).done(function(resp) {
-				$("#data-CatList").html(eve.escapeHTML(catListChanged));
-				$("#edit-cat-edit").show();
+				$data_CatList.html(eve.escapeHTML(catListChanged));
+				$edit_cat_edit.show();
 				console.log(resp);
 			});
 		} else {
-			$("#data-CatList").html(eve.escapeHTML(catListChanged));
-			$("#edit-cat-edit").show();
+			$data_CatList.html(eve.escapeHTML(catListChanged));
+			$edit_cat_edit.show();
 		}
 	} else {
-		$("#edit-cat-edit").show();
+		$edit_cat_edit.show();
 	}
 });
-$("#edit-cat-cancel").on("click", function(e) {
+$edit_cat_cancel.on("click", function(e) {
 	var catListChanged=eve.getCatListChanged();
-	if (catListChanged!==eve.unescapeHTML($("#data-CatList").html())) {
-		eve.catList=eve.renderStrCatList(eve.unescapeHTML($("#data-CatList").html()));
+	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
+		eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 		eve.renderCatListHTML(eve.catList);
 	}
-	$("#edit-cat-edit").show();
+	$edit_cat_edit.show();
 });
 
 ////////////////////////////////////////////////////
@@ -1524,18 +1595,18 @@ eve.fuzzySearch=function(fuzzyStr, list) {
 	return listSelected;
 };
 
-$("#fuzzy-search").on("keydown", function(e) {
+$fuzzy_search.on("keydown", function(e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
 	case 27: // ESC = 27
 		e.preventDefault();
-		$("#out-focus").focus();
-		$("#fuzzy-search-container").hide();
+		$out_focus.focus();
+		$fuzzy_search_container.hide();
 		break;
 	case 38: // up = 38
 	case 40: // down = 40
 		e.preventDefault();
-		var $fsl=$("#fuzzy-search-list");
+		var $fsl=$fuzzy_search_list;
 		var $lis=$fsl.find(".list-item");
 		var $liSelected=$fsl.find(".list-item.selected").eq(0);
 		var $liTo=null;
@@ -1570,7 +1641,7 @@ $("#fuzzy-search").on("keydown", function(e) {
 });
 eve.fsFullList=[]; // initialize
 eve.fsLastTxt="$!@#";
-$("#fuzzy-search").on("keyup", function(e) {
+$fuzzy_search.on("keyup", function(e) {
 	var fsTxt=$(this).text();
 	if (eve.fsLastTxt!==fsTxt) {
 		if (fsTxt.indexOf(eve.fsLastTxt)===0) {
@@ -1587,8 +1658,8 @@ $("#fuzzy-search").on("keyup", function(e) {
 					'<div class="highlighted">'+eve.fsList[i]["highlighted"]+'</div>':'')
 				+'</div>';
 		}
-		$("#fuzzy-search-list").html(str);
-		var $fsLis=$("#fuzzy-search-list .list-item");
+		$fuzzy_search_list.html(str);
+		var $fsLis=$fuzzy_search_list.find(".list-item");
 		$fsLis.on("click", function(e) {
 			$fsLis.removeClass("selected");
 			var $this=$(this);
@@ -1599,8 +1670,8 @@ $("#fuzzy-search").on("keyup", function(e) {
 		eve.fsLastTxt=fsTxt;
 	}
 });
-$("#fuzzy-search").trigger("keyup");
-$("#fuzzy-search-container").hide();
+$fuzzy_search.trigger("keyup");
+$fuzzy_search_container.hide();
 
 eve.catFSFullList=[];
 for (var i=1;i<eve.catList.length;i++) {
@@ -1611,7 +1682,7 @@ for (var i=1;i<eve.catList.length;i++) {
 }
 eve.catFSLastTxt="$!@#";
 eve.catFSLastK=0;
-$("#input-cats").on("keyup click", function(e) {
+$input_cats.on("keyup click", function(e) {
 	var catsTxt=this.value;
 	var sEnd=this.selectionEnd;
 	var list=catsTxt.split(";");
@@ -1640,9 +1711,9 @@ $("#input-cats").on("keyup click", function(e) {
 					'<div class="highlighted">'+eve.catFSList[i]["highlighted"]+'</div>':'')
 				+'</div>';
 		}
-		$("#cat-fs-list").html(str);
-		var $fsLis=$("#cat-fs-list .list-item");
-		var $input=$("#input-cats");
+		$cat_fs_list.html(str);
+		var $fsLis=$cat_fs_list.find(".list-item");
+		var $input=$input_cats;
 		$fsLis.on("click", function(e) {
 			$fsLis.removeClass("selected");
 			var $this=$(this);
@@ -1662,13 +1733,13 @@ $("#input-cats").on("keyup click", function(e) {
 		eve.catFSLastK=k;
 	}
 });
-$("#input-cats").trigger("keyup");
-$("#cat-fs-container").hide();
-$("#input-cats").on("focus", function() {
-	$("#cat-fs-container").show();
+$input_cats.trigger("keyup");
+$cat_fs_container.hide();
+$input_cats.on("focus", function() {
+	$cat_fs_container.show();
 });
-// $("#input-cats").on("focusout", function() {
-// 	$("#cat-fs-container").hide();
+// $input_cats.on("focusout", function() {
+// 	$cat_fs_container.hide();
 // });
 
 ////////////////////////////////////////////////////
@@ -1720,13 +1791,13 @@ eve.formatCats=function(cats) {
 
 eve.showMyReco=function(r) {
 	if (r["has"]) {
-		$("#button-reco").hide();
-		$("#button-edit").show();
-		$("#button-del").show();
+		$button_reco.hide();
+		$button_edit.show();
+		$button_del.show();
 	} else {
-		$("#button-reco").show();
-		$("#button-edit").hide();
-		$("#button-del").hide();
+		$button_reco.show();
+		$button_edit.hide();
+		$button_del.hide();
 	}
 	var $mR=$("#my-reco");
 	$mR.html( eve.recoHTML(r) );
@@ -1734,46 +1805,46 @@ eve.showMyReco=function(r) {
 		var $edit=$mR.find(".button.edit");
 		$edit.html("Edit mine");
 		$edit.on("click", function(e) {
-			$("#input-title")[0].value=r["title"];
-			$("#input-cats")[0].value=r["cats"];
-			$("#input-desc")[0].value=r["desc"];
-			$("#input-cmt")[0].value=r["cmt"];
-			$("#input-val")[0].value=r["val"].str;
-			$("#input-val").trigger("keyup");
+			$input_title[0].value=r["title"];
+			$input_cats[0].value=r["cats"];
+			$input_desc[0].value=r["desc"];
+			$input_cmt[0].value=r["cmt"];
+			$input_val[0].value=r["val"].str;
+			$input_val.trigger("keyup");
 		});
 	}
 };
 eve.showReco=function(r) {
 	if (r["has"]) {
-		$("#input-title")[0].value=r["title"];
-		$("#input-cats")[0].value=r["cats"];
-		$("#input-desc")[0].value=r["desc"];
+		$input_title[0].value=r["title"];
+		$input_cats[0].value=r["cats"];
+		$input_desc[0].value=r["desc"];
 		if (eve.myPage) {
-			$("#input-cmt")[0].value=r["cmt"];
-			$("#input-val")[0].value=r["val"].str;
+			$input_cmt[0].value=r["cmt"];
+			$input_val[0].value=r["val"].str;
 		} else {
-			$("#input-cmt")[0].value="";
-			$("#input-val")[0].value="";
+			$input_cmt[0].value="";
+			$input_val[0].value="";
 		}
-		$("#input-val").trigger("keyup");
+		$input_val.trigger("keyup");
 	}
 	if (eve.myPage) {
 		if (r["has"]) {
-			$("#button-reco").hide();
-			$("#button-edit").show();
-			$("#button-del").show();
-			$("#button-back").show();
+			$button_reco.hide();
+			$button_edit.show();
+			$button_del.show();
+			$button_back.show();
 		} else {
-			$("#button-reco").show();
-			$("#button-edit").hide();
-			$("#button-del").hide();
-			$("#button-back").hide();
+			$button_reco.show();
+			$button_edit.hide();
+			$button_del.hide();
+			$button_back.hide();
 		}
 	}
 };
 eve.emptifyReco=function() {
-	$("#error-msg").html("");
-	$("#input-uri")[0].value=eve.lastURI="";
+	$error.html("");
+	$input_uri[0].value=eve.lastURI="";
 	eve.getAndShowDefsAndReco();
 };
 eve.showDefs=function(r) {
@@ -1785,14 +1856,13 @@ eve.showDefs=function(r) {
 			defTitlesHTML+='<div class="def-title">'+eve.escapeHTML(title)+'</div>';
 		}
 	}
-	var $defTitles=$("#def-titles");
-	$defTitles.html(defTitlesHTML);
-	var $defTitle=$defTitles.find(".def-title");
+	$def_titles.html(defTitlesHTML);
+	var $defTitle=$def_titles.find(".def-title");
 	$defTitle.on("click", function(e) {
 		$defTitle.removeClass("selected");
 		var $this=$(this);
 		$this.addClass("selected");
-		$("#input-title")[0].value=eve.unescapeHTML($this.html());
+		$input_title[0].value=eve.unescapeHTML($this.html());
 	});
 	
 	var defCats=r["def-cats"].trim().split("\n");
@@ -1803,14 +1873,13 @@ eve.showDefs=function(r) {
 			defCatsHTML+='<div class="def-cat">'+eve.escapeHTML(cat)+'</div> ';
 		}
 	}
-	var $defCats=$("#def-cats");
-	$defCats.html(defCatsHTML);
-	var $defCat=$defCats.find(".def-cat");
+	$def_cats.html(defCatsHTML);
+	var $defCat=$def_cats.find(".def-cat");
 	$defCat.on("click", function(e) {
 		$defCat.removeClass("selected");
 		var $this=$(this);
 		$this.addClass("selected");
-		$("#input-cats")[0].value=eve.unescapeHTML($this.html());
+		$input_cats[0].value=eve.unescapeHTML($this.html());
 	});
 };
 eve.lastURI="";
@@ -1819,7 +1888,7 @@ eve.userRecos[""]={
 	has:true, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
 };
 eve.getAndShowDefsAndReco=function() {
-	var elem=$("#input-uri")[0];
+	var elem=$input_uri[0];
 	var uri=eve.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
 	$("#show-URI").html(eve.videoRendering(uri).html.replace(/delayed-src/gi,"src"));
@@ -1853,7 +1922,7 @@ eve.getAndShowDefsAndReco=function() {
 			eve.showDefs(r);
 		});
 	}
-	var $error=$("#error-msg");
+	var $error=$error;
 	if (eve.myPage||uri==="") {
 		$error.html("");
 	} else {
@@ -1875,12 +1944,13 @@ eve.getAndShowDefsAndReco=function() {
 		}
 	}
 };
-$("#input-uri").on("keyup", function(e) {
+$input_uri.on("keyup", function(e) {
 	var uri=eve.formatURI(this.value);
 	if (uri!==""&&uri!==eve.lastURI) {
 		eve.lastURI=uri;
 		clearTimeout(eve.timeOutGetInfos);
 		eve.timeOutGetInfos=setTimeout(function() {
+			$input_uri[0].value=eve.lastURI;
 			eve.getAndShowDefsAndReco();
 		}, 1000);
 	}
@@ -1888,12 +1958,12 @@ $("#input-uri").on("keyup", function(e) {
 
 eve.fullPts=5;
 eve.lastVal=eve.val("");
-$("#input-val").before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
+$input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
 $("#input-val-stars").on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 	var $bar=$(this).find(".bar");
 	var barW=$bar.width();
-	var $val=$("#input-val")[0];
-	$("html").on("mousemove.mdInStars touchmove.mdInStars", function(e) {
+	var $val=$input_val[0];
+	$html.on("mousemove.mdInStars touchmove.mdInStars", function(e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		e.stopPropagation();
@@ -1918,14 +1988,14 @@ $("#input-val-stars").on("mousedown.mdInStars touchstart.mdInStars", function(e)
 			eve.lastVal=eve.val($val.value);
 		}
 	});
-	$("html").on("mouseup.mdInStars touchend.mdInStars", function(e) {
-		$("html").off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+	$html.on("mouseup.mdInStars touchend.mdInStars", function(e) {
+		$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 	});
 });
 $("#input-val-stars").on("click", function(e) {
 	var $bar=$(this).find(".bar");
 	var barW=$bar.width();
-	var $val=$("#input-val")[0];
+	var $val=$input_val[0];
 	var w=e.clientX-$bar.offset().left+$window.scrollLeft();
 	if (w<0) {
 		w=0;
@@ -1938,7 +2008,7 @@ $("#input-val-stars").on("click", function(e) {
 		eve.lastVal=eve.val($val.value);
 	}
 });
-$("#input-val").on("keyup", function(e) {
+$input_val.on("keyup", function(e) {
 	if (this.value!==eve.lastVal.str) {
 		var val=eve.val(this.value);
 		var $bar=$("#input-val-stars .bar");
@@ -1951,41 +2021,45 @@ $("#input-val").on("keyup", function(e) {
 		eve.lastVal=val;
 	}
 });
-$("#new-reco").hide();
-$("#button-new-reco").on("click", function(e) {
-	$("#input-uri")[0].disabled=false;
-	$("#new-reco").show();
+$new_reco.hide();
+$button_new_reco.on("click", function(e) {
+	$input_uri[0].disabled=false;
+	$new_reco.show();
+	var cat=eve.getSearchVars().cat;
+	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
+		$input_cats[0].value=cat;
+	}
 	eve.wST=$window.scrollTop();
 	$window.on("scroll.stop", function(e) {
 		$window.scrollTop(eve.wST);
 	});
 });
-$("#button-close").on("click", function(e) {
-	$("#new-reco").hide();
+$button_close.on("click", function(e) {
+	$new_reco.hide();
 	$window.off("scroll.stop");
 });
-$("#button-back").on("click", function(e) {
-	var r=eve.userRecos[$("#input-uri")[0].value];
+$button_back.on("click", function(e) {
+	var r=eve.userRecos[$input_uri[0].value];
 	eve.showReco(r);
 });
 
-$("#button-reco").on("click", function(e) {
+$button_reco.on("click", function(e) {
 	var $this=$(this);
 	$this.addClass("disabled");
-	var $error=$("#error-msg");
-	var uri=eve.formatURI($("#input-uri")[0].value);
-	var val=eve.val($("#input-val")[0].value.trim());
+	var $error=$error;
+	var uri=eve.formatURI($input_uri[0].value);
+	var val=eve.val($input_val[0].value.trim());
 	if (uri.length!==0&&val.valid) {
 		var strHeads="do"+"\t"+"uri";
 		var strContents="reco"+"\t"+eve.encloseStr(uri);
 		strHeads+="\t"+"title";
-		strContents+="\t"+eve.encloseStr(eve.formatTitle($("#input-title")[0].value.trim()));
+		strContents+="\t"+eve.encloseStr(eve.formatTitle($input_title[0].value.trim()));
 		strHeads+="\t"+"cats";
-		strContents+="\t"+eve.encloseStr(eve.formatCats($("#input-cats")[0].value.trim()));
+		strContents+="\t"+eve.encloseStr(eve.formatCats($input_cats[0].value.trim()));
 		strHeads+="\t"+"desc";
-		strContents+="\t"+eve.encloseStr($("#input-desc")[0].value.trim());
+		strContents+="\t"+eve.encloseStr($input_desc[0].value.trim());
 		strHeads+="\t"+"cmt";
-		strContents+="\t"+eve.encloseStr($("#input-cmt")[0].value.trim());
+		strContents+="\t"+eve.encloseStr($input_cmt[0].value.trim());
 		strHeads+="\t"+"val";
 		strContents+="\t"+eve.encloseStr(val.str);
 		var strRecoDo=strHeads+"\n"+strContents;
@@ -2007,7 +2081,7 @@ $("#button-reco").on("click", function(e) {
 				setTimeout(function() {
 					eve.emptifyReco();
 					$this.removeClass("disabled");
-					$("#button-close").trigger("click");
+					$button_close.trigger("click");
 				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
@@ -2025,36 +2099,35 @@ $("#button-reco").on("click", function(e) {
 		$this.removeClass("disabled");
 	}
 });
-$("#button-edit").on("click", function(e) {
+$button_edit.on("click", function(e) {
 	var $this=$(this);
 	$this.addClass("disabled");
-	var $error=$("#error-msg");
-	var uri=eve.formatURI($("#input-uri")[0].value);
-	var val=eve.val($("#input-val")[0].value.trim());
+	var uri=eve.formatURI($input_uri[0].value);
+	var val=eve.val($input_val[0].value.trim());
 	var r=eve.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
 		var strHeads="do"+"\t"+"uri";
 		var strContents="change"+"\t"+eve.encloseStr(uri);
 		var changed=false;
-		var title=eve.formatTitle($("#input-title")[0].value.trim());
+		var title=eve.formatTitle($input_title[0].value.trim());
 		if (title!==r["title"]) {
 			changed=true;
 			strHeads+="\t"+"title";
 			strContents+="\t"+eve.encloseStr(title);
 		}
-		var cats=eve.formatCats($("#input-cats")[0].value.trim());
+		var cats=eve.formatCats($input_cats[0].value.trim());
 		if (cats!==r["cats"]) {
 			changed=true;
 			strHeads+="\t"+"cats";
 			strContents+="\t"+eve.encloseStr(cats);
 		}
-		var desc=$("#input-desc")[0].value.trim();
+		var desc=$input_desc[0].value.trim();
 		if (desc!==r["desc"]) {
 			changed=true;
 			strHeads+="\t"+"desc";
 			strContents+="\t"+eve.encloseStr(desc);
 		}
-		var cmt=$("#input-cmt")[0].value.trim();
+		var cmt=$input_cmt[0].value.trim();
 		if (cmt!==r["cmt"]) {
 			changed=true;
 			strHeads+="\t"+"cmt";
@@ -2089,7 +2162,7 @@ $("#button-edit").on("click", function(e) {
 					setTimeout(function() {
 						eve.emptifyReco();
 						$this.removeClass("disabled");
-						$("#button-close").trigger("click");
+						$button_close.trigger("click");
 					}, 1000);
 				} else {
 					$error.html(res[1]["result"]);
@@ -2113,11 +2186,9 @@ $("#button-edit").on("click", function(e) {
 		$this.removeClass("disabled");
 	}
 });
-$("#button-del").on("click", function(e) {
-	var $this=$(this);
-	$this.addClass("disabled");
-	var $error=$("#error-msg");
-	var uri=eve.formatURI($("#input-uri")[0].value);
+$button_del.on("click", function(e) {
+	$button_del.addClass("disabled");
+	var uri=eve.formatURI($input_uri[0].value);
 	var r=eve.myRecos[uri];
 	if (uri.length!==0&&r) {
 		var strHeads="do"+"\t"+"uri";
@@ -2137,12 +2208,12 @@ $("#button-del").on("click", function(e) {
 					eve.refresh(cats);
 				}
 				setTimeout(function() {
-					$this.removeClass("disabled");
-					$("#button-close").trigger("click");
+					$button_del.removeClass("disabled");
+					$button_close.trigger("click");
 				})
 			} else {
 				$error.html(res[1]["result"]);
-				$this.removeClass("disabled");
+				$button_del.removeClass("disabled");
 			}
 		});
 	} else {
@@ -2153,7 +2224,7 @@ $("#button-del").on("click", function(e) {
 			errorMsg="You have no reco on this URI.";
 		}
 		$error.html(errorMsg);
-		$this.removeClass("disabled");
+		$button_del.removeClass("disabled");
 	}
 });
 
@@ -2167,13 +2238,13 @@ eve.processShortKey=function(e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
-		case 71: // G = 71
+		case 71: case 84: // G = 71, T = 84
 			e.preventDefault();
-			$("#fuzzy-search-container").show();
-			$("#fuzzy-search").focus();
+			$fuzzy_search_container.show();
+			$fuzzy_search.focus();
 			break;
 		case 78: // N = 78
-			$("#button-new-reco").trigger("click");
+			$button_new_reco.trigger("click");
 			break;
 		case 70: //F = 70
 		case 68: //D = 68
@@ -2213,7 +2284,8 @@ $window.on("keydown", eve.processShortKey);
 var $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-		"<li>G: Fuzzy search (Go)</li>"
+		"<div>Short Keys</div>"
+		+"<li>G,T: Fuzzy search (Go), or Table of Recos</li>"
 		+"<li>F: Forward Reco</li>"
 		+"<li>D: Previous Reco</li>"
 		+"<li>N: New Reco</li>"
@@ -2222,7 +2294,7 @@ if ($shortkeyDesc.exists()) {
 })(window.eve=window.eve||{}, jQuery);
 
 function onYouTubeIframeAPIReady() {
-	$("#head2").hide();
+	$head2.hide();
 	eve.playlist=new YT.Player('youtube-playlist', {events:{
 		'onError':function(e) {
 			setTimeout(function() {

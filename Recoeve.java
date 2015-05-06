@@ -46,7 +46,7 @@ public void start() {
 		////////////////////////////////////
 		System.out.println("\n\nA client has connected! : "+(++numberOfClients));
 		final String now=db.now();
-			System.out.println("Time : "+now);		
+			System.out.println("Time : "+now);
 			System.out.println("Referer : "+req.headers().get("Referer"));
 		
 		final String method=req.method();

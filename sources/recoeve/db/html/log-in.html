@@ -12,7 +12,7 @@
 </script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-	<meta name="keywords" content="Recoeve"/>
+	<meta name="keywords" content="Recoeve.net"/>
 	<!-- <link rel="stylesheet" media="all" type="text/css" href="./log-in.css"/> -->
 <style>
 * {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
@@ -100,6 +100,12 @@ Chinese/중국어/cn	cn
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 (function(eve, $, undefined) {
+$(".replace-reco-eve").html(function(i, orgHtml) {
+	return orgHtml
+		.replace(/reco/ig,'<span class="reco bold">$&</span>')
+		.replace(/eve/ig,'<span class="eve bold">$&</span>');
+});
+
 //////////////////////////////////////////
 // path.search rendering
 //////////////////////////////////////////
@@ -185,9 +191,23 @@ if (vars.lang!==undefined) {
 }
 
 ////////////////////////////////////////////////////
-// String to Array
+// String to Array (copied from user-page.html)
 ////////////////////////////////////////////////////
-eve.strToArray=function(str) {
+eve.encloseStr=function(str) {
+	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
+		return '"'+str.replace(/"/g,'""')+'"';
+	} else {
+		return str;
+	}
+};
+eve.strToJSON=function(str, colMap, rowMap) {
+	if (str===undefined||str===null||str.constructor!==String) { return []; }
+	if (colMap===undefined||colMap===null) { colMap=true; }
+	// str=str.trim()+"\n";
+	if (str.charAt(str.length-1)!=="\n") {
+		str+="\n";
+	}
 	var ret=[];
 	var delimiter=/([^\t\n]*)([\t\n])/g;
 	var lastQuote=/[^"](?:"")*"([\t\n])/g;
@@ -228,11 +248,32 @@ eve.strToArray=function(str) {
 		}
 		ret[row][col]=strElem;
 	}
+	if (colMap) {
+		var firstColSize=ret[0].length;
+		for (var i=0;i<ret.length;i++) {
+			var jMax=ret[i].length;
+			if (jMax>firstColSize) { jMax=firstColSize; }
+			for (var j=0;j<jMax;j++) {
+				var key=ret[0][j];
+				if (key!==undefined) {
+					ret[i][key]=ret[i][j];
+				}
+			}
+		}
+	}
+	if (rowMap) {
+		for (var i=0;i<ret.length;i++) {
+			var key=ret[i][0];
+			if (key!==undefined) {
+				ret[key]=ret[i];
+			}
+		}
+	}
 	return ret;
 };
 
 var $dataLang=$("#data-lang");
-var dataLang=eve.strToArray( $dataLang.html().trim() );
+var dataLang=eve.strToJSON( $dataLang.html().trim() );
 var href=window.location.href.replace(/\?.*$/, "")+"?lang=";
 var htmlLang='<div class="p">';
 for (var i=0;i<dataLang.length;i++) {
@@ -250,11 +291,6 @@ $("form.form-login").prepend(
 	+'<input type="hidden" name="screenWidth" value="'+screen.width+'"/>'
 	+'<input type="hidden" name="screenHeight" value="'+screen.height+'"/>'
 );
-$(".desc").html(function(i, orgHtml) {
-	return orgHtml
-		.replace(/\breco/ig,'<span class="reco bold">$&</span>')
-		.replace(/eve/ig,'<span class="eve bold">$&</span>');
-});
 
 eve.encloseErr=function(msg) {
 	return '<div class="error-msg">'+msg+'</div>';
