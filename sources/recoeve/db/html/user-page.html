@@ -991,9 +991,11 @@ eve.recoHTML=function(r) {
 			}
 		}
 		res+='</div>'
-			+(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"")
-			+'<div class="val">'+eve["5stars"]( r["val"].val )+' <span class="str">'+eve.escapeHTML( r["val"].str )+'</span></div>'
-		+'</div>';
+			+(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
+		if (r["val"].str) {
+			res+='<div class="val">'+eve["5stars"]( r["val"].val )+' <span class="str">'+eve.escapeHTML( r["val"].str )+'</span></div>';
+		}
+		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
 	}
