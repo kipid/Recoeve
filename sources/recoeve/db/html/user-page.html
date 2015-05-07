@@ -1079,8 +1079,9 @@ eve.recoToEve=function(resp, recos) {
 eve.getAndShowRecosOnCat=function(cat) {
 	var catI=eve.catList[cat];
 	var $cat=$("#cat-"+catI);
-	$("#catList .cat").removeClass("selected");
+	$catList.find(".cat").removeClass("selected");
 	$cat.addClass("selected");
+	$cat.parents().show();
 	if (eve.catUriList[cat]) {
 		var uriList=eve.catUriList[cat]["UriList"];
 		var uris=[];
@@ -1200,6 +1201,7 @@ eve.renderCatListHTML=function(catList) {
 };
 eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 eve.renderCatListHTML(eve.catList);
+$("#catList>.cat>.ES").trigger("click");
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
 		eve.getAndShowRecosOnCat(e.state.cat);
