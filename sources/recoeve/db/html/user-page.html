@@ -187,11 +187,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
-.reco .value {margin-bottom:1em}
 .stars-container {position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
+.reco>.val {margin:.5em 0 .3em}
 .reco>.val>.str {border:2px solid black; padding:.1em .5em; vertical-align:top}
 	.dark .reco>.val>.str {border-color:white}
 
@@ -960,38 +960,40 @@ eve.recoHTML=function(r) {
 		res+='<div class="uri">'+eve.uriToA( uriEscaped )+'</div>'
 			+'<div class="title">'+eve.escapeHTML( r["title"] )+'</div>'
 			+'<div class="cats">'+eve.escapeHTML( r["cats"] )+'</div>'
-			+video.html
-			+'<div class="desc">';
-		var descR=r["descR"];
-		for (var l=0;l<descR.length;l++) {
-			var key=eve.escapeHTML( descR[l] );
-			var value=eve.escapeHTML( descR[descR[l]] );
-			switch (key.toLowerCase()) {
-			case "#" :
-				res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
-				break;
-			case "lyrics" :
-				res+='<div class="value"><div class="center"><div class="button" onclick="$(this).parent().next().slideToggle(1000)">▼ Toggle lyrics</div></div>'
-					+'<div class="lyricsC">'
-						+'<div class="lyricsArrow"></div>'
-						+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
-						+'<div class="right"><div class="button" onclick="eve.slideUp(this)">▲ Hide lyrics</div></div>'
-					+'</div></div>';
-				break;
-			case "related" :
-				res+='<div class="value"><span class="key">'+key+' : </span>';
-				var relateds=value.split("\n");
-				for (var m=0;m<relateds.length;m++) {
-					res+='<br>'+eve.uriToA( relateds[m] )+eve.videoRendering( relateds[m] ).html;
+			+video.html;
+		if (r["desc"]) {
+			var descR=r["descR"];
+			res+='<div class="desc">';
+			for (var l=0;l<descR.length;l++) {
+				var key=eve.escapeHTML( descR[l] );
+				var value=eve.escapeHTML( descR[descR[l]] );
+				switch (key.toLowerCase()) {
+				case "#" :
+					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
+					break;
+				case "lyrics" :
+					res+='<div class="value"><div class="center"><div class="button" onclick="$(this).parent().next().slideToggle(1000)">▼ Toggle lyrics</div></div>'
+						+'<div class="lyricsC">'
+							+'<div class="lyricsArrow"></div>'
+							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
+							+'<div class="right"><div class="button" onclick="eve.slideUp(this)">▲ Hide lyrics</div></div>'
+						+'</div></div>';
+					break;
+				case "related" :
+					res+='<div class="value"><span class="key">'+key+' : </span>';
+					var relateds=value.split("\n");
+					for (var m=0;m<relateds.length;m++) {
+						res+='<br>'+eve.uriToA( relateds[m] )+eve.videoRendering( relateds[m] ).html;
+					}
+					res+='</div>';
+					break;
+				default :
+					res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
 				}
-				res+='</div>';
-				break;
-			default :
-				res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
 			}
+			res+='</div>';
 		}
-		res+='</div>'
-			+(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
+		res+=(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
 		if (r["val"].str) {
 			res+='<div class="val">'+eve["5stars"]( r["val"].val )+' <span class="str">'+eve.escapeHTML( r["val"].str )+'</span></div>';
 		}
