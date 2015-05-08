@@ -49,7 +49,7 @@ Replacer	0	English/영어/en	Korean/한국어/kr	Japanese/일본어/jp	Chinese/�
 [--Toggle style--]	102	Toggle style	스타일 바꾸기			
 [--New Reco--]	103	New Reco	새 레코			
 [--Short Keys--]	104	Short Keys	단축키			
-[--Uncategorized--]	110	Uncategorized	무 카테고리			
+[--Uncategorized--]	110	Uncategorized	분류없음			
 [--Later--]	111	Later	나중에			
 [--Indifferent--]	112	Indifferent	관심없음			
 [--Shuffle--]	120	Shuffle	순서섞기			
