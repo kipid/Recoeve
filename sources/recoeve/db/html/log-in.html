@@ -574,9 +574,11 @@ eve.logIn=function(elem) {
 				$elem[0].disabled=false;
 			} else {
 				$elem.before( eve.encloseErr("[--Password is being encrypted.--]") );
-				$form.find(".user-pwd")[0].value=eve.encrypt(res[1], userPwd, iter); userPwd="";
-				$elem.before( eve.encloseErr("[--Logging in--] : [--Please wait.--]") );
-				$form.submit();
+				setTimeout(function() {
+					$form.find(".user-pwd")[0].value=eve.encrypt(res[1], userPwd, iter); userPwd="";
+					$elem.before( eve.encloseErr("[--Logging in--] : [--Please wait.--]") );
+					$form.submit();
+				}, 500);
 			}
 		});
 	} else {
@@ -637,10 +639,12 @@ eve.signUp=function(elem) {
 					+'<input type="hidden" name="authToken" value="'+res[3]+'"/>'
 				);
 				$elem.before( eve.encloseErr("[--Password is being encrypted.--]") );
-				$form.find(".user-pwd")[0].value=eve.encrypt(res[3], userPwd, eve.iterFull); userPwd="";
-				$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
-				$elem.before( eve.encloseErr("[--Signing up--] : [--Please wait.--]") );
-				$form.submit();
+				setTimeout(function() {
+					$form.find(".user-pwd")[0].value=eve.encrypt(res[3], userPwd, eve.iterFull); userPwd="";
+					$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
+					$elem.before( eve.encloseErr("[--Signing up--] : [--Please wait.--]") );
+					$form.submit();
+				}, 500);
 			} else {
 				var errStr="";
 				if (res[0]=="false") {
