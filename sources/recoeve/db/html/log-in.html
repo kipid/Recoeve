@@ -274,7 +274,7 @@ eve.strToJSON=function(str, colMap, rowMap) {
 
 var $dataLang=$("#data-lang");
 var dataLang=eve.strToJSON( $dataLang.html().trim() );
-var href=window.location.href.replace(/\?.*$/, "")+"?lang=";
+var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
 var htmlLang='<div class="p">';
 for (var i=0;i<dataLang.length;i++) {
 	htmlLang+='<a href="'+href+dataLang[i][1]+'">'+dataLang[i][0]+'</a><br>';

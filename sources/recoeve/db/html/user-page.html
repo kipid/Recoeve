@@ -232,9 +232,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div id="user-noti"></div>
 		<div id="catList"></div>
 		<div class="right">
-			<div class="button" id="change-catList-order">Change orders</div>
-			<div class="button" id="change-catList-order-ok">OK</div>
-			<div class="button" id="change-catList-order-cancel">Cancel</div>
+			<div class="button" id="change-catList-order">[--Change orders--]</div>
+			<div class="button" id="change-catList-order-ok">[--OK--]</div>
+			<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
 		</div>
 	</div><!-- div#sidebar -->
 	<div id="fuzzy-search-container">
@@ -247,29 +247,29 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<label for="uri">URI <span class="desc">(required)</span></label>
 			<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
 			<div id="show-URI"></div>
-		<label for="title">Title</label>
+		<label for="title">[--Title--]</label>
 			<div id="def-titles"></div>
 			<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
-		<label for="cats">Categories</label>
-			<div id="def-cats"><div class="def-cat">Indifferent</div> <div class="def-cat">Later</div></div>
+		<label for="cats">[--Categories--]</label>
+			<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div></div>
 			<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
 			<div id="cat-fs-container" class="fs-container">
 				<div id="cat-fs-list"></div>
 				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 			</div>
-		<label for="desc">Description</label>
+		<label for="desc">[--Description--]</label>
 			<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
-		<label for="cmt">Comment</label>
+		<label for="cmt">[--Comment--]</label>
 			<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
-		<label for="val">Points</label>
+		<label for="val">[--Points--]</label>
 			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
 		<div id="error-msg"></div>
 		<div class="buttons">
-			<div class="button" id="button-reco" tabindex="7">Reco</div>
-			<div class="button" id="button-edit" tabindex="8">Edit</div>
-			<div class="button" id="button-del" tabindex="11">Del</div>
-			<div class="button left" id="button-close" tabindex="9">Close</div>
-			<div class="button left" id="button-back" tabindex="10">Back</div>
+			<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
+			<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
+			<div class="button" id="button-del" tabindex="11">[--Del--]</div>
+			<div class="button left" id="button-close" tabindex="9">[--Close--]</div>
+			<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
 			<div class="cBoth"></div>
 		</div>
 		<div id="my-reco"></div>
@@ -278,11 +278,14 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div><!-- div#new-reco -->
 	<div class="side2" id="head">
 		<div class="button" id="my-id"></div>
-		head : <a href="/account/log-out">Log out</a>
-		<div class="button" onclick="$('#container').toggleClass('dark')">Toggle style</div>
-		<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>Fuzzy search</div>
-		<div class="button" id="button-new-reco">New Reco</div>
-		<ul id="shortkeys"></ul>
+		head : <a href="/account/log-out">[--Log out--]</a>
+		<div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div>
+		<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
+		<div class="button" id="button-new-reco">[--New Reco--]</div>
+		<div>
+			[--Short Keys--]
+			<ul id="shortkeys"></ul>
+		</div>
 		<div id="point-range">
 			<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
 		</div>
@@ -293,14 +296,20 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="rSC">
 				<div id="youtube-playlist"></div>
 			</div>
-			<div class="button" onclick="eve.playlist.setShuffle(true)">Shuffle</div>
-			<div class="button" onclick="eve.playlist.toggleLoop(this)">Loop</div>
-			<div class="button" onclick="eve.playlist.toggleOneLoop(this)">One-loop</div>
+			<div class="button" onclick="eve.playlist.setShuffle(true)">[--Shuffle--]</div>
+			<div class="button" onclick="eve.playlist.toggleLoop(this)">[--Loop--]</div>
+			<div class="button" onclick="eve.playlist.toggleOneLoop(this)">[--One-loop--]</div>
 			<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>
 		</div>
 	</div><!-- div#head2 -->
 	<div class="side2" id="contents"></div><!-- div#contents -->
-	<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a></div><!-- div#foot -->
+	<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br><div>Language/언어/語言
+<data id="data-lang">
+English/영어/en	en
+Korean/한국어/kr	kr
+Japanese/일본어/jp	jp
+Chinese/중국어/cn	cn
+</data></div></div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -532,6 +541,16 @@ eve.strToJSON=function(str, colMap, rowMap) {
 	}
 	return ret;
 };
+
+var $dataLang=$("#data-lang");
+var dataLang=eve.strToJSON( $dataLang.html().trim() );
+var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
+var htmlLang='<div class="p">';
+for (var i=0;i<dataLang.length;i++) {
+	htmlLang+='<a href="'+href+dataLang[i][1]+'">'+dataLang[i][0]+'</a><br>';
+}
+htmlLang+='</div>';
+$dataLang.after(htmlLang);
 
 ////////////////////////////////////////////////////
 // Escape and Unescape HTML string.
@@ -1143,7 +1162,7 @@ eve.refresh=function(cats, option) {
 };
 
 eve.renderCatListHTML=function(catList) {
-	var catListHTML='<div class="cat" id="cat-0"><span class="noES"></span><span class="baseCat">Uncategorized</span></div>';
+	var catListHTML='<div class="cat" id="cat-0"><span class="noES"></span><span class="baseCat">[--Uncategorized--]</span></div>';
 	var i=1;
 	for (;i<eve.catList.length-1;i++) {
 		var beforeDepth=eve.catList[i-1].depth;
@@ -1889,7 +1908,7 @@ eve.showDefs=function(r) {
 	});
 	
 	var defCats=r["def-cats"].trim().split("\n");
-	var defCatsHTML='<div class="def-cat">Indifferent</div> <div class="def-cat">Later</div><br>';
+	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">Later</div><br>';
 	for (var i=0;i<defCats.length;i++) {
 		var cat=defCats[i].trim();
 		if (cat.length!==0) {
@@ -2318,11 +2337,10 @@ $window.on("keydown", eve.processShortKey);
 var $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-		"<div>Short Keys</div>"
-		+"<li>G,T: Fuzzy search (Go), or Table of Recos</li>"
-		+"<li>F: Forward Reco</li>"
-		+"<li>D: Previous Reco</li>"
-		+"<li>N: New Reco</li>"
+		"<li>G,T: [--Fuzzy Search--] (Go), or Table of Recos</li>"
+		+"<li>F: Forward [--Reco--]</li>"
+		+"<li>D: Previous [--Reco--]</li>"
+		+"<li>N: New [--Reco--]</li>"
 	);
 }
 })(window.eve=window.eve||{}, jQuery);
