@@ -49,7 +49,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 ::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
 ::-webkit-scrollbar-corner {background:transparent}
 
-#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
+#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
 #sidebar {margin-bottom:1em; padding:.5em; background:rgb(230,230,230); color:black}
 	.dark #sidebar {background:rgb(35,35,35); color:white}
@@ -67,9 +67,9 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #catList .cat.edit>.edit-bar:last-child {right:0}
 #catList .cat.selected {border:1px solid black}
 	.dark #catList .cat.selected {border-color:white}
-#catList .cat>.baseCat, #catList .cat>.ES {cursor:pointer}
+#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer}
 #catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,230,230)}
-#catList .cat>.noES, #catList .cat>.ES {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
+#catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
 	position:relative;
@@ -312,8 +312,8 @@ Chinese/중국어/cn	cn
 </data></div></div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<!-- <script src="/jquery.min.js"></script> -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+<script src="/jquery.min.js"></script>
 <script>
 (function(eve, $, undefined) {
 /////////////////////////////////////////////
@@ -746,9 +746,11 @@ eve.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 // uri to a href
 ////////////////////////////////////////////////////
-eve.regexURL=/^https?:\/\//i;
+eve.regexURL=/^https?:\/\/\S+/i;
 eve.uriToA=function(uri) {
-	if (eve.regexURL.test(uri)) {
+	if (uri===undefined||uri===null||uri.constructor!==String) { return ""; }
+	var exec=eve.regexURL.exec(uri);
+	if (exec!==null) {
 		return '<a href="'+uri+'">'+uri+'</a>';
 	} else {
 		return uri;
@@ -1166,7 +1168,7 @@ eve.refresh=function(cats, option) {
 };
 
 eve.renderCatListHTML=function(catList) {
-	var catListHTML='<div class="cat" id="cat-0"><span class="noES"></span><span class="baseCat">[--Uncategorized--]</span></div>';
+	var catListHTML='<div class="cat" id="cat-0"><span class="noEC"></span><span class="baseCat">[--Uncategorized--]</span></div>';
 	var i=1;
 	for (;i<eve.catList.length-1;i++) {
 		var beforeDepth=eve.catList[i-1].depth;
@@ -1181,9 +1183,9 @@ eve.renderCatListHTML=function(catList) {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'">';
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="ES">▼</span>';
+			catListHTML+='<span class="EC">▼</span>';
 		} else {
-			catListHTML+='<span class="noES"></span>';
+			catListHTML+='<span class="noEC"></span>';
 		}
 		catListHTML+='<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'+'</div>';
 	}
@@ -1198,7 +1200,7 @@ eve.renderCatListHTML=function(catList) {
 			}
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'">'
-			+'<span class="noES"></span>'
+			+'<span class="noEC"></span>'
 			+'<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'
 		+'</div>';
 		for (var j=0;j<currentDepth;j++) { // close subCats
@@ -1214,21 +1216,31 @@ eve.renderCatListHTML=function(catList) {
 			eve.getAndShowRecosOnCat(cat);
 			window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
 		});
-		$catI.find(">.ES").on("click", function(e) {
+		$catI.find(">.EC").on("click", function(e) {
 			var $this=$(this);
-			var $next=$this.parent().next();
-			$next.toggle();
+			var $parent=$this.parent();
+			var $next=$parent.next();
+			var catEC=eve.catList[Number($parent.attr("id").substring(4))].cat;
 			if ($next.is(":visible")) {
-				$this.html("▼");
-			} else {
+				$next.hide();
 				$this.html("▶");
+				eve.subCatCollapsed[catEC]=true;
+			} else {
+				$next.show();
+				$this.html("▼");
+				eve.subCatCollapsed[catEC]=false;
 			}
 		});
 	}
 };
 eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 eve.renderCatListHTML(eve.catList);
-$("#catList>.cat>.ES").trigger("click");
+eve.subCatCollapsed={};
+var $catECs=$catList.find(">.cat:has(>.EC)"); // Only the 1-level subCats.
+for (var i=$catECs.length-1;i>=0;i--) {
+	eve.subCatCollapsed[eve.catList[Number($catECs.eq(i).attr("id").substring(4))].cat]=true;
+}
+$catECs.find(">.EC").trigger("click");
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
 		eve.getAndShowRecosOnCat(e.state.cat);
@@ -1578,6 +1590,11 @@ $change_catList_order_cancel.on("click", function(e) {
 		eve.catList=eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 		eve.updateCatFS();
 		eve.renderCatListHTML(eve.catList);
+		for (var i=eve.catList.length-1;i>=0;i--) {
+			if (eve.subCatCollapsed[eve.catList[i].cat]) {
+				$("#cat-"+i+">.EC").trigger("click");
+			}
+		}
 	}
 	$change_catList_order.show();
 });
