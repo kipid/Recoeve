@@ -4,11 +4,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 (function(eve, $, undefined){
+	var sW=screen.width;
+	var sH=screen.height;
+	if (sW<sH) {
+		sW=screen.height;
+		sH=screen.width;
+	}
 	$("form.form-login").prepend(
 		'<input type="hidden" name="log" value="web"/>'
 		+'<input type="hidden" name="iehack" value="&#9760;"/>' // Encoding utf-8 in IE.
-		+'<input type="hidden" name="screenWidth" value="'+screen.width+'"/>'
-		+'<input type="hidden" name="screenHeight" value="'+screen.height+'"/>'
+		+'<input type="hidden" name="screenWidth" value="'+sW+'"/>'
+		+'<input type="hidden" name="screenHeight" value="'+sH+'"/>'
 	);
 	$("form").submit();
 })(window.eve=window.eve||{}, jQuery);
