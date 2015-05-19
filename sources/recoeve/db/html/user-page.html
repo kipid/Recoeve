@@ -624,16 +624,14 @@ eve.rC=function(iframeStr) {
 };
 eve.ptnURI={};
 eve.videoRendering=function(uri) {
-	switch (uri.constructor) {
-	case String:
+	if (uri&&uri.constructor===String) {
 		for (var p in eve.ptnURI) {
 			var result=eve.ptnURI[p].toIframe(uri);
 			if (result) { return result; }
 		}
 		return {html:""};
-	default:
-		return {html:""};
 	}
+	return {html:""};
 };
 var ptnURI;
 ptnURI=eve.ptnURI.youtubeURL={};
