@@ -1084,7 +1084,7 @@ eve.showContents=function(uris) {
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	$contents.find(".reco .button.edit").on("click", function(e) {
-		var $reco=$(this).parent().parent(".reco");
+		var $reco=$(this).parent(".reco");
 		var uri=eve.unescapeHTML($reco.find(".textURI").html());
 		var r=eve.userRecos[uri];
 		$input_uri[0].value=r["uri"];
