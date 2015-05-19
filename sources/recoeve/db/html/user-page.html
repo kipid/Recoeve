@@ -1083,8 +1083,7 @@ eve.showContents=function(uris) {
 	eve.processOutRange();
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	eve.fdList=$contents.find(".reco");
-	eve.fdList.find(".button.edit").on("click", function(e) {
+	$contents.find(".reco .button.edit").on("click", function(e) {
 		var $reco=$(this).parent().parent(".reco");
 		var uri=eve.unescapeHTML($reco.find(".textURI").html());
 		var r=eve.userRecos[uri];
@@ -1100,6 +1099,7 @@ eve.showContents=function(uris) {
 			$window.scrollTop(eve.wST);
 		});
 	});
+	eve.fdList=$("#sidebar, #head, #contents .reco, #foot");
 };
 
 eve.catUriList=eve.strToJSON(eve.unescapeHTML($data_UriList.html())); // cat, UriList
@@ -2470,7 +2470,7 @@ $button_del.on("click", function(e) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
-eve.fdList=$(".reco"); // Ordered automatically by jQuery.
+eve.fdList=$("#sidebar, #head, #contents .reco, #foot"); // Ordered automatically by jQuery.
 eve.processShortKey=function(e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
 	switch (e.target.nodeName) {
