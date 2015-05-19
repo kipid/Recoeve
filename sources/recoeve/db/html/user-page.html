@@ -1151,7 +1151,12 @@ eve.getAndShowRecosOnCat=function(cat) {
 	var $cat=$("#cat-"+catI);
 	$catList.find(".cat").removeClass("selected");
 	$cat.addClass("selected");
-	$cat.parents().show();
+	var $parents=$cat.parents(".subCat");
+	for (var i=$parents.length-1;i>=0;i--) {
+		if (!$parents.eq(i).is(":visible")) {
+			$parents.eq(i).prev().find(">.EC").trigger("click");
+		}
+	}
 	if (eve.catUriList[cat]) {
 		var uriList=eve.catUriList[cat]["UriList"];
 		var uris=[];
