@@ -378,6 +378,9 @@ $window=$(window);
 $html=$("html");
 $.fn.exists=function() { return this.length!==0; };
 
+$new_reco.hide();
+$fuzzy_search_container.hide();
+$cat_fs_container.hide();
 $("title").html(eve.userId+" on Recoeve.net");
 $user_noti.html(eve.userId+"'s recos");
 if (eve.myId) {
@@ -1889,7 +1892,6 @@ $fuzzy_search.on("keyup", function(e) {
 	}
 });
 $fuzzy_search.trigger("keyup");
-$fuzzy_search_container.hide();
 
 eve.updateCatFS=function() {
 	eve.catFSFullList=[];
@@ -1965,7 +1967,6 @@ $input_cats.on("keyup click", function(e) {
 	}
 });
 $input_cats.trigger("keyup");
-$cat_fs_container.hide();
 $input_cats.on("focus", function() {
 	$cat_fs_container.show();
 });
@@ -2254,7 +2255,7 @@ $input_val.on("keyup", function(e) {
 		eve.lastVal=val;
 	}
 });
-$new_reco.hide();
+
 $button_new_reco.on("click", function(e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
