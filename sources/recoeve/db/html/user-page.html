@@ -745,6 +745,15 @@ ptnURI.toIframe=function(url) {
 	}
 	return false;
 };
+ptnURI=eve.ptnURI.appSurpriseURL={};
+ptnURI.regEx=/^(https?:\/\/appsurprise\.co\.kr\/\S*$/i;
+ptnURI.toIframe=function(url) {
+	var exec=eve.ptnURI.appSurpriseURL.regEx.exec(url);
+	if (exec!==null) {
+		return {html:eve.rC('<iframe delayed-src="'+url+'" frameborder="0"></iframe>')};
+	}
+	return false;
+};
 
 ////////////////////////////////////////////////////
 // desc and cmt rendering
@@ -2221,6 +2230,18 @@ eve.getAndShowDefsAndReco=function() {
 		}
 	}
 };
+$new_reco.find("input, textarea").on("keydown.common", function(e) {
+	if (e.keyCode==='ESC') { // ESC
+		$button_close.trigger("click");
+	} else if (e.ctrlKey&&e.keyCode==='Enter') { // Ctrl+Enter
+		var r=eve.myRecos[$input_uri[0].value];
+		if (r["has"]) {
+			$button_edit.trigger("click");
+		} else {
+			$button_reco.trigger("click");
+		}
+	}
+});
 $input_uri.on("keyup", function(e) {
 	var uri=eve.formatURI(this.value);
 	if (uri!==eve.lastURI) {
