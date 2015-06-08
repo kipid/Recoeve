@@ -371,6 +371,8 @@ $point_range_bar=$("#point-range-bar");
 $point_range_left=$("#point-range-left");
 $point_range_right=$("#point-range-right");
 $point_range_result=$("#point-range-result");
+$show_recos_without_points=$("#show-recos-without-points");
+eve.showRWOP=true;
 
 $contents=$("#contents");
 
@@ -737,16 +739,16 @@ ptnURI.toIframe=function(url) {
 	return false;
 };
 ptnURI=eve.ptnURI.imgURL={};
-ptnURI.regEx=/^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))$/i;
+ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)$/i;
 ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.imgURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:'<div class="center"><img delayed-src="'+exec[1]+'"/></div>'};
+		return {html:'<div class="center"><img delayed-src="'+url+'"/></div>'};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.appSurpriseURL={};
-ptnURI.regEx=/^(https?:\/\/appsurprise\.co\.kr\/\S*$/i;
+ptnURI.regEx=/^https?:\/\/appsurprise\.co\.kr\/\S*$/i;
 ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.appSurpriseURL.regEx.exec(url);
 	if (exec!==null) {
@@ -860,70 +862,85 @@ $test_5stars.html(eve["5stars"](0.4));
 ////////////////////////////////////////////////////
 // Point range
 ////////////////////////////////////////////////////
+$show_recos_without_points.on("click", function(e) {
+	if ($show_recos_without_points.hasClass("enabled")) {
+		$show_recos_without_points.removeClass("enabled");
+		eve.showRWOP=false;
+	} else {
+		$show_recos_without_points.addClass("enabled");
+		eve.showRWOP=true;
+	}
+	clearTimeout(eve.timeOutRange);
+	eve.timeOutRange=setTimeout(eve.processOutRange, 500);
+});
 eve.ptsRangeFrom=0; // from <= pts <= to
 eve.ptsRangeTo=1;
 eve.mdInPRL=false; // mouse down in Point Range Left
 eve.mdInPRR=false; // mouse down in Point Range Right
-$point_range_left.on("mousedown touchstart", function(e) {
-	eve.mdInPRL=true;
-});
-$point_range_right.on("mousedown touchstart", function(e) {
-	eve.mdInPRR=true;
-});
-$html.on("mouseup.mdInPR", function(e) {
-	eve.mdInPRL=false;
-	eve.mdInPRR=false;
-});
-$html.on("mousemove", function(e) {
-	if (eve.mdInPRL||eve.mdInPRR) {
-		window.getSelection().removeAllRanges();
-	}
-});
-eve.PRsteps=10;
+eve.PRmax=10;
 eve.PRLw=15;
 eve.PRw=$point_range.width();
 eve.PRRw=eve.PRw-15;
-eve.PRtoInt=function(w) {
-	return Math.round(eve.PRsteps*(w-15)/(eve.PRw-30));
+eve.PRtoFixed=function(w) {
+	return (eve.PRmax*(w-15)/(eve.PRw-30)).toFixed(1);
 };
-$point_range.on("mousemove touchmove", function(e) {
-	// e.stopPropagation();
-	if (eve.mdInPRL||eve.mdInPRR) {
-		window.getSelection().removeAllRanges();
-		var $this=$(this);
-		var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-		var w=x-$this.offset().left+$window.scrollLeft();
-		eve.PRw=$this.width();
-		w=(w>15)?w:15;
-		w=(w<eve.PRw-15)?w:eve.PRw-15;
-		w=eve.PRtoInt(w)/eve.PRsteps*(eve.PRw-30)+15;
-		var changed=false;
-		if (eve.mdInPRL) {
-			if (w>eve.PRRw) { w=eve.PRRw; }
-			if (eve.PRLw!==w) {
-				$point_range_left.css({left:w-15});
-				$point_range_bar.css({left:w});
-				eve.PRLw=w;
-				changed=true;
-			}
-		} else {
-			if (w<eve.PRLw) { w=eve.PRLw; }
-			if (eve.PRRw!==w) {
-				$point_range_right.css({left:w-5});
-				$point_range_bar.css({right:eve.PRw-w});
-				eve.PRRw=w;
-				changed=true;
-			}
+eve.mmInPR=function(e) {
+	window.getSelection().removeAllRanges();
+	e.preventDefault();
+	e.stopPropagation();
+	var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	var w=x-$point_range.offset().left+$window.scrollLeft();
+	w=(w>15)?w:15;
+	w=(w<eve.PRw-15)?w:eve.PRw-15;
+	var changed=false;
+	if (eve.mdInPRL) {
+		if (w>eve.PRRw) { w=eve.PRRw; }
+		if (eve.PRLw!==w) {
+			$point_range_left.css({left:w-15});
+			$point_range_bar.css({left:w});
+			eve.PRLw=w;
+			changed=true;
 		}
-		if (changed) {
-			$point_range_result.html(eve.PRtoInt(eve.PRLw)/2+"~"+eve.PRtoInt(eve.PRRw)/2+" /"+eve.PRsteps/2);
-			eve.ptsRangeFrom=eve.PRtoInt(eve.PRLw)/eve.PRsteps;
-			eve.ptsRangeTo=eve.PRtoInt(eve.PRRw)/eve.PRsteps;
-			clearTimeout(eve.timeOutHideOutRange);
-			eve.timeOutHideOutRange=setTimeout(eve.processOutRange, 500);
+	} else {
+		if (w<eve.PRLw) { w=eve.PRLw; }
+		if (eve.PRRw!==w) {
+			$point_range_right.css({left:w-5});
+			$point_range_bar.css({right:eve.PRw-w});
+			eve.PRRw=w;
+			changed=true;
 		}
 	}
+	if (changed) {
+		var PRL=eve.PRtoFixed(eve.PRLw);
+		var PRR=eve.PRtoFixed(eve.PRRw);
+		$point_range_result.html(PRL+"~"+PRR+" / "+eve.PRmax);
+		PRL=Number(PRL)/eve.PRmax;
+		PRR=Number(PRR)/eve.PRmax;
+		if (eve.ptsRangeFrom!==PRL||eve.ptsRangeTo!==PRR) {
+			eve.ptsRangeFrom=PRL;
+			eve.ptsRangeTo=PRR;
+			clearTimeout(eve.timeOutRange);
+			eve.timeOutRange=setTimeout(eve.processOutRange, 800);
+		}
+	}
+};
+$point_range_left.on("mousedown touchstart", function(e) {
+	eve.mdInPRL=true;
+	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
+	$html.on("mouseup.mdInPR", function(e) {
+		eve.mdInPRL=false;
+		$html.off("mouseup.mdInPR mousemove.mdInPR touchmove.mdInPR");
+	});
 });
+$point_range_right.on("mousedown touchstart", function(e) {
+	eve.mdInPRR=true;
+	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
+	$html.on("mouseup.mdInPR", function(e) {
+		eve.mdInPRR=false;
+		$html.off("mouseup.mdInPR mousemove.mdInPR touchmove.mdInPR");
+	});
+});
+
 eve.YTPlaylist=[];
 eve.processOutRange=function() {
 	var $recos=$(".reco");
@@ -934,7 +951,13 @@ eve.processOutRange=function() {
 		var recoI=eve.userRecos[eve.unescapeHTML($recoI.find(">.textURI").eq(0).html())];
 		if (recoI!==undefined) {
 			var val=recoI.val.val;
-			if (val!==-1) {
+			if (val===-1) {
+				if (eve.showRWOP) {
+					$recoI.removeClass("outRange");
+				} else {
+					$recoI.addClass("outRange");
+				}
+			} else {
 				if (eve.ptsRangeFrom<=val&&val<=eve.ptsRangeTo) {
 					$recoI.removeClass("outRange");
 				} else {
