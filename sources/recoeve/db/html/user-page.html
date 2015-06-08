@@ -1020,7 +1020,7 @@ eve.recoHTML=function(r) {
 		var uriEscaped=eve.escapeHTML( r["uri"] );
 		res+='<div class="reco">'
 			+'<img class="SNS-img" src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/icon-Twitter.png" onclick="eve.shareSNS(this, \'twitter\')"/><img class="SNS-img" src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/icon-Facebook.png" onclick="eve.shareSNS(this, \'facebook\')"/>'
-			+(eve.myId?'<div class="button edit fRight">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
+			+(eve.myId?'<div class="button edit fRight" onclick="eve.editOrRecoToMine(this)">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+uriEscaped+'</div>';
 		var video=eve.videoRendering( r["uri"] );
 		if (video.from==="youtube") {
@@ -1072,6 +1072,22 @@ eve.recoHTML=function(r) {
 	}
 	return res;
 };
+eve.editOrRecoToMine=function(elem) {
+	var $reco=$(elem).parent(".reco");
+	var uri=eve.unescapeHTML($reco.find(".textURI").html());
+	var r=eve.userRecos[uri];
+	$input_uri[0].value=r["uri"];
+	$input_uri[0].disabled=true;
+	$new_reco.show();
+	if (uri.length!==0&&uri!==eve.lastURI) {
+		eve.lastURI=uri;
+		eve.getAndShowDefsAndReco();
+	}
+	eve.wST=$window.scrollTop();
+	$window.on("scroll.stop", function(e) {
+		$window.scrollTop(eve.wST);
+	});
+};
 eve.showContents=function(uris) {
 	var strHTML="";
 	if (uris.length>0) { for (var k=0;k<uris.length;k++) {
@@ -1080,26 +1096,17 @@ eve.showContents=function(uris) {
 		strHTML+="No reco.";
 	}
 	$contents.html(strHTML);
+	// var $recos=$contents.find(".reco");
+	// eve.recoList=[];
+	// for (var i=0;i<$recos.length;i++) {
+	// 	var $reco=$recos.eq(i);
+	// 	var uri=eve.unescapeHTML( $reco.find(">.textURI").html() );
+	// 	eve.recoList[uri]=eve.recoList[i]=$reco;
+	// }
 	eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
 	eve.processOutRange();
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	$contents.find(".reco .button.edit").on("click", function(e) {
-		var $reco=$(this).parent(".reco");
-		var uri=eve.unescapeHTML($reco.find(".textURI").html());
-		var r=eve.userRecos[uri];
-		$input_uri[0].value=r["uri"];
-		$input_uri[0].disabled=true;
-		$new_reco.show();
-		if (uri.length!==0&&uri!==eve.lastURI) {
-			eve.lastURI=uri;
-			eve.getAndShowDefsAndReco();
-		}
-		eve.wST=$window.scrollTop();
-		$window.on("scroll.stop", function(e) {
-			$window.scrollTop(eve.wST);
-		});
-	});
 	eve.fdList=$("#sidebar, #head, #contents .reco, #foot");
 };
 
@@ -1188,7 +1195,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
 	}
 };
-eve.refresh=function(cats, option) {
+eve.refresh=function(cats, option, uri) {
 	var currentCat=eve.getSearchVars().cat;
 	var c=cats.split(";");
 	var k=0;
@@ -1201,18 +1208,37 @@ eve.refresh=function(cats, option) {
 		window.history.pushState({cat:c[k]}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(c[k]));
 		eve.getAndShowRecosOnCat(c[k]);
 	} else {
-		eve.getAndShowRecosOnCat(c[k]);
-		// if (option===undefined||option==null) {
-		// 	eve.getAndShowRecosOnCat(c[k]);
-		// } else if (option==="recoed") {
-			
-		// } else if (option==="changed") {
-			
-		// } else if (option==="deleted") {
-			
-		// } else {
-			
-		// }
+		if (option===undefined||option===null) {
+			eve.getAndShowRecosOnCat(c[k]);
+		} else if (option==="recoed") {
+			var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
+			$contents.prepend( $newReco );
+			// eve.recoList.unshift($newReco);
+			// eve.recoList[uri]=$newReco;
+			eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+			$window.trigger("scroll.delayedLoad");
+			eve.fdList=eve.fdList.add( $newReco );
+		} else if (option==="changed"||option==="deleted") {
+			var $recos=$contents.find(">.reco");
+			for (var i=0;i<$recos.length;i++) {
+				var $reco=$recos.eq(i);
+				var recoUri=eve.unescapeHTML($reco.find(">.textURI").html());
+				if (recoUri===uri) {
+					if (option==="changed") {
+						var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
+						$reco.replaceWith($newReco);
+						eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+						$window.trigger("scroll.delayedLoad");
+						eve.fdList=eve.fdList.add( $newReco );
+					} else if (option==="deleted") {
+						$reco.remove();
+					}
+					break;
+				}
+			}
+		} else {
+			eve.getAndShowRecosOnCat(c[k]);
+		}
 	}
 };
 
@@ -1376,6 +1402,7 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	eve.getAndShowRecosOnCat(vars.cat);
+	window.history.pushState({cat:vars.cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(vars.cat));
 }
 
 //////////////////////////////////////
@@ -2343,7 +2370,7 @@ $button_reco.on("click", function(e) {
 				if (eve.myPage) {
 					var cats=eve.myRecos[uri]["cats"];
 					eve.putCatsUriToList(cats, uri);
-					eve.refresh(cats, "recoed");
+					eve.refresh(cats, "recoed", uri);
 				}
 				setTimeout(function() {
 					eve.emptifyReco();
@@ -2427,7 +2454,7 @@ $button_edit.on("click", function(e) {
 						r["cmtR"]=eve.renderStrDescCmt(cmt);
 					}
 					if (val.str!==r["val"].str) { r["val"]=val; }
-					if (eve.myPage) { eve.refresh(cats, "changed"); }
+					if (eve.myPage) { eve.refresh(cats, "changed", uri); }
 					setTimeout(function() {
 						eve.emptifyReco();
 						$button_edit.removeClass("disabled");
@@ -2444,7 +2471,7 @@ $button_edit.on("click", function(e) {
 		}
 	} else {
 		var errorMsg="";
-		if (uri.length==0) {
+		if (uri.length===0) {
 			errorMsg="URI is required.";
 		} else if (!val.valid) {
 			errorMsg="Points is of invalid form.";
@@ -2474,7 +2501,7 @@ $button_del.on("click", function(e) {
 				delete eve.myRecos[uri];
 				if (eve.myPage) {
 					eve.deleteCatsUriFromList(cats, uri);
-					eve.refresh(cats);
+					eve.refresh(cats, "deleted", uri);
 				}
 				setTimeout(function() {
 					$button_del.removeClass("disabled");
