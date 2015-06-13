@@ -1243,7 +1243,7 @@ eve.refresh=function(cats, option, uri) {
 			var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
 			$contents.prepend( $newReco );
 			eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
-			$window.on("scroll.delayedLoad", eveDelayedLoadByScroll);
+			$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
 			eve.fdList=eve.fdList.add( $newReco );
 		} else if (option==="changed"||option==="deleted") {
@@ -1256,7 +1256,7 @@ eve.refresh=function(cats, option, uri) {
 						var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
 						$reco.replaceWith($newReco);
 						eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
-						$window.on("scroll.delayedLoad", eveDelayedLoadByScroll);
+						$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
 						eve.fdList=eve.fdList.add( $newReco );
 					} else if (option==="deleted") {
