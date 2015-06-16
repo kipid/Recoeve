@@ -199,7 +199,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.val>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark .reco>.val>.str {border-color:white}
 
-.lyricsC {display:none}
+.lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
 
@@ -1074,7 +1074,7 @@ eve.recoHTML=function(r) {
 					break;
 				case "lyrics" :
 					res+='<div class="value"><div class="center"><div class="button" onclick="$(this).parent().next().slideToggle(1000)">▼ Toggle lyrics</div></div>'
-						+'<div class="lyricsC">'
+						+'<div class="lyricsC" style="display:none">'
 							+'<div class="lyricsArrow"></div>'
 							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
 							+'<div class="right"><div class="button" onclick="eve.slideUp(this)">▲ Hide lyrics</div></div>'
