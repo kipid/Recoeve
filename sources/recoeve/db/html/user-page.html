@@ -1208,11 +1208,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		var catUriList=eve.catUriList[cat];
 		if (!catUriList) { catUriList=eve.catUriList[cat]={}; }
 		if (catUriList.down) {
-			if (catUriList.has) {
-				eve.getAndShowRecosOnUris(catUriList.UriList);
-			} else {
-				$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not have any reco.");
-			}
+			eve.getAndShowRecosOnUris(catUriList.has?catUriList.UriList:"");
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\n$#@!":cat);
 			$.ajax({
@@ -1229,11 +1225,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 					catUL.has=true;
 					catUL.UriList=resp[i].UriList;
 				}
-				if (catUriList.has) {
-					eve.getAndShowRecosOnUris(catUriList.UriList);
-				} else {
-					$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not have any reco.");
-				}
+				eve.getAndShowRecosOnUris(catUriList.has?catUriList.UriList:"");
 			});
 		}
 	} else {
