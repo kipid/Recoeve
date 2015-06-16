@@ -230,7 +230,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </head>
 <body>
 <data id="data-CatList">{--CatList--}</data>
-<data id="data-UriList">{--UriList--}</data>
 <div id="container" class="dark">
 	<div id="sidebar">
 		<div id="user-noti"></div>
@@ -317,7 +316,6 @@ Chinese/중국어/cn	cn
 </data></div></div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
-<!-- <script src="http://code.jquery.com/jquery-git2.min.js"></script> -->
 <script src="/jquery.min.js"></script>
 <script>
 (function(eve, $, undefined) {
@@ -325,7 +323,6 @@ Chinese/중국어/cn	cn
 // Variables
 /////////////////////////////////////////////
 $data_CatList=$("#data-CatList");
-$data_UriList=$("#data-UriList");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
@@ -788,7 +785,7 @@ eve.uriToA=function(uri) {
 	if (uri===undefined||uri===null||uri.constructor!==String) { return ""; }
 	var exec=eve.regexURL.exec(uri);
 	if (exec!==null) {
-		return '<a href="'+uri+'">'+uri+'</a>';
+		return '<a href="'+uri+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
 	} else {
 		return uri;
 	}
@@ -928,17 +925,17 @@ eve.mmInPR=function(e) {
 $point_range_left.on("mousedown touchstart", function(e) {
 	eve.mdInPRL=true;
 	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
-	$html.on("mouseup.mdInPR", function(e) {
+	$html.on("mouseup.mdInPR touchend.mdInPR", function(e) {
 		eve.mdInPRL=false;
-		$html.off("mouseup.mdInPR mousemove.mdInPR touchmove.mdInPR");
+		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
 $point_range_right.on("mousedown touchstart", function(e) {
 	eve.mdInPRR=true;
 	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
-	$html.on("mouseup.mdInPR", function(e) {
+	$html.on("mouseup.mdInPR touchend.mdInPR", function(e) {
 		eve.mdInPRR=false;
-		$html.off("mouseup.mdInPR mousemove.mdInPR touchmove.mdInPR");
+		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
 
@@ -1014,18 +1011,18 @@ eve.getDepthOfTabs=function(str) {
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
 	return n;
 };
-eve.renderStrCatList=function() {
-	var strCatList=eve.unescapeHTML($data_CatList.html()).trim();
-	var list=strCatList.split("\n");
+eve.renderStrCatList=function(strCatList, catList) {
+	var list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
 		list=[];
 	}
 	list.unshift("");
-	var catList=null;
-	if (eve.catList) {
-		catList=eve.catList;
-	} else {
-		catList=eve.catList=[];
+	if (catList===undefined||catList===null) {
+		if (eve.catList) {
+			catList=eve.catList;
+		} else {
+			catList=eve.catList=[];
+		}
 	}
 	var superCats=[];
 	for (var i=0;i<list.length;i++) {
@@ -1138,41 +1135,24 @@ eve.showContents=function(uris) {
 	eve.fdList=$("#sidebar, #head, #contents .reco, #foot");
 };
 
-eve.catUriList=eve.strToJSON(eve.unescapeHTML($data_UriList.html())); // cat, UriList
-if (eve.catUriList.length===1) {
-	eve.catUriList[1]=["",""];
-	eve.catUriList[1]["cat"]="";
-	eve.catUriList[1]["UriList"]="";
-}
-for (var i=1;i<eve.catUriList.length;i++) {
-	eve.catUriList[ eve.catUriList[i]["cat"] ]=eve.catUriList[i];
-	var uriL=eve.catUriList[i]["UriList"].trim();
-	if (uriL!=="") {
-		var uris=uriL.split("\n");
-		for (var j=0;j<uris.length;j++) {
-			eve.userRecos[uris[j]]={down:false};
-		}
-	}
-}
-
 eve.recoDowned=function(urisStr, recos) {
 	var uris=urisStr.split("\n");
 	for (k=0;k<uris.length;k++) {
-		var p=recos[ uris[k] ];
-		if (!p) { p=recos[ uris[k] ]={}; }
-		p["down"]=true;
+		var uri=uris[k];
+		var p=recos[uri];
+		if (!p) { p=recos[uri]={}; }
+		p.down=true;
 	}
 };
 eve.recoToEve=function(resp, recos) {
 	var resp=eve.strToJSON(resp);
 	for (var k=1;k<resp.length;k++) {
 		var recoK=resp[k];
-		var p=recos[ recoK["uri"] ];
-		if (!p) {
-			p=recos[ recoK["uri"] ]={};
-		}
+		var uri=recoK["uri"];
+		var p=recos[uri];
+		if (!p) { p=recos[uri]={}; }
 		p["has"]=true;
-		p["uri"]=recoK["uri"];
+		p["uri"]=uri;
 		p["title"]=recoK["title"];
 		p["cats"]=recoK["cats"];
 		p["desc"]=recoK["desc"];
@@ -1184,41 +1164,77 @@ eve.recoToEve=function(resp, recos) {
 		// p["tLast"]=recoK["tLast"];
 	}
 };
-eve.getAndShowRecosOnCat=function(cat) {
-	$contents.html("Loading recos in cat="+eve.escapeHTML(cat)+"...");
-	var catI=eve.catList[cat].i;
-	var $cat=$("#cat-"+catI);
-	$catList.find(".cat").removeClass("selected");
-	$cat.addClass("selected");
-	var $parents=$cat.parents(".subCat");
-	for (var i=$parents.length-1;i>=0;i--) {
-		if (!$parents.eq(i).is(":visible")) {
-			$parents.eq(i).prev().find(">.EC").trigger("click");
+eve.getAndShowRecosOnUris=function(uriList) {
+	uriList=uriList.trim();
+	var uris=[];
+	if (uriList.length!==0) { uris=uriList.split("\n"); }
+	var getRecosStr="uri";
+	var getRecosN=0;
+	for (var j=0;j<uris.length;j++) {
+		var uri=uris[j];
+		var r=eve.userRecos[uri];
+		if (!r) { r=eve.userRecos[uri]={}; }
+		if (!r.down) {
+			getRecosStr+="\n"+uri;
+			getRecosN++;
 		}
 	}
-	if (eve.catUriList[cat]) {
-		var uriList=eve.catUriList[cat]["UriList"];
-		var uris=[];
-		var getRecosStr="uri";
-		var getRecosN=0;
-		if (uriList.length!==0) { uris=uriList.split("\n"); }
-		for (var j=0;j<uris.length;j++) {
-			if (!eve.userRecos[uris[j]]["down"]) {
-				getRecosStr+="\n"+uris[j];
-				getRecosN++;
+	if (getRecosN>0) {
+		$.ajax({
+			type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
+			, dataType:"text"
+		}).done(function(resp) {
+			eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
+			eve.recoToEve(resp, eve.userRecos);
+			eve.showContents(uris);
+		});
+	} else {
+		eve.showContents(uris);
+	}
+};
+eve.getAndShowRecosOnCat=function(cat) {
+	$contents.html("Loading recos in cat="+eve.escapeHTML(cat)+"...");
+	var catList=eve.catList[cat];
+	if (catList) {
+		$catList.find(".cat").removeClass("selected");
+		var $cat=$("#cat-"+catList.i);
+		$cat.addClass("selected");
+		var $parents=$cat.parents(".subCat");
+		for (var i=$parents.length-1;i>=0;i--) {
+			if (!$parents.eq(i).is(":visible")) {
+				$parents.eq(i).prev().find(">.EC").trigger("click");
 			}
 		}
-		if (getRecosN>0) {
-			$.ajax({
-				type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
-				, dataType:"text"
-			}).done(function(resp) {
-				eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
-				eve.recoToEve(resp, eve.userRecos);
-				eve.showContents(uris);
-			});
+		var catUriList=eve.catUriList[cat];
+		if (!catUriList) { catUriList=eve.catUriList[cat]={}; }
+		if (catUriList.down) {
+			if (catUriList.has) {
+				eve.getAndShowRecosOnUris(catUriList.UriList);
+			} else {
+				$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not have any reco.");
+			}
 		} else {
-			eve.showContents(uris);
+			var getUriListStr="cat\n"+(cat===""?"\n$#@!":cat);
+			$.ajax({
+				type:"POST", url:"/user/"+eve.userId+"/get-UriList", data:getUriListStr
+				, dataType:"text"
+			}).fail(function() {
+				$contents.html("get-UriList on "+eve.escapeHTML(cat)+" has failed..");
+			}).done(function(resp) {
+				catUriList.down=true;
+				var resp=eve.strToJSON(resp);
+				for (var i=1;i<resp.length;i++) {
+					var catUL=eve.catUriList[resp[i].cat];
+					catUL.down=true;
+					catUL.has=true;
+					catUL.UriList=resp[i].UriList;
+				}
+				if (catUriList.has) {
+					eve.getAndShowRecosOnUris(catUriList.UriList);
+				} else {
+					$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not have any reco.");
+				}
+			});
 		}
 	} else {
 		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
@@ -1337,13 +1353,20 @@ eve.renderCatListHTML=function(catList) {
 		});
 	}
 };
-eve.renderStrCatList();
+eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 eve.renderCatListHTML(eve.catList);
 var $catECs=$catList.find(">.cat:has(>.EC)"); // Only the 1-level subCats.
 for (var i=$catECs.length-1;i>=0;i--) {
 	eve.catList[eve.catList[Number($catECs.eq(i).attr("id").substring(4))].cat].subCatCollapsed=true;
 }
 $catECs.find(">.EC").trigger("click");
+
+eve.catUriList=[]; // eve.catUriList[cat]={cat:"cat", UriList:"uri1\nuri2", down:true, has:true};
+for (var i=0;i<eve.catList.length;i++) {
+	var cat=eve.catList[i].cat;
+	eve.catUriList[cat]={cat:cat, down:false};
+}
+
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
 		eve.getAndShowRecosOnCat(e.state.cat);
@@ -1629,8 +1652,8 @@ $change_catList_order.on("click", function(e) {
 					catTo=k;
 				}
 			});
-			$html.on("mouseup.mdInEB", function(e) {
-				$html.off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+			$html.on("mouseup.mdInEB touchend.mdInEB", function(e) {
+				$html.off("mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB");
 				$catM.removeClass("move");
 				$catM.css({width:'', left:'', top:''});
 				$catTo.replaceWith($catM);
@@ -1646,8 +1669,8 @@ $change_catList_order.on("click", function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 			});
-			$html.on("mouseup.mdInEB", function(e) {
-				$html.off("mouseup.mdInEB mousemove.mdInEB touchmove.mdInEB");
+			$html.on("mouseup.mdInEB touchend.mdInEB", function(e) {
+				$html.off("mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB");
 				$catM.css({"border-color":""});
 			});
 		}
@@ -1696,8 +1719,9 @@ $change_catList_order_ok.on("click", function(e) {
 });
 $change_catList_order_cancel.on("click", function(e) {
 	var catListChanged=eve.getCatListChanged();
-	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
-		eve.renderStrCatList();
+	var catList=eve.unescapeHTML($data_CatList.html());
+	if (catListChanged!==catList) {
+		eve.renderStrCatList(catList);
 		eve.renderCatListHTML(eve.catList);
 		for (var i=eve.catList.length-1;i>=0;i--) {
 			if (eve.catList[i].subCatCollapsed) {
@@ -2289,7 +2313,7 @@ $input_uri.on("keyup", function(e) {
 	}
 });
 
-eve.fullPts=5;
+eve.fullPts=10;
 eve.lastVal=eve.val("");
 $input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");

@@ -554,7 +554,7 @@ public class RecoeveDB {
 				long user_i=user.getLong("i");
 				CatList catList=getCatList(user_i);
 				varMap.put("{--CatList--}", HTMLString.escapeHTML(catList.toString()));
-				varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
+				// varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
 			}
 		} catch (SQLException e) {
 			err(e);
@@ -572,7 +572,7 @@ public class RecoeveDB {
 					varMap.put("{--myId--}", user.getString("id"));
 					CatList catList=getCatList(user_i);
 					varMap.put("{--CatList--}", HTMLString.escapeHTML(catList.toString()));
-					varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
+					// varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
 				}
 			} catch (SQLException e) {
 				err(e);
@@ -1184,16 +1184,15 @@ System.out.println("SubCats_n are added to setOfSubCats_n.");
 	public String getStringCatUriList(long user_i, StrArray catList) {
 		String res="";
 		try {
-			res+="cat\tUriList\n";
+			res+="cat\tUriList";
 			int size=catList.getRowSize();
 			for (int i=1;i<size;i++) {
 				String cat=catList.get(i, "cat");
 				UriList uriL=getUriList(user_i, cat);
 				String strUriL=uriL.toString().trim();
 				if (!strUriL.isEmpty()) {
-					strUriL="\""+strUriL.replaceAll("\"","\"\"")+"\"";
+					res+="\n"+cat+"\t\""+strUriL.replaceAll("\"","\"\"")+"\"";
 				} // faster than StrArray.enclose(strUriL)
-				res+=cat+"\t"+strUriL+"\n";
 			}
 		} catch (SQLException e) {
 			err(e);

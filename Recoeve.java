@@ -119,6 +119,7 @@ public void start() {
 							req.response().end(db.getStringCatUriList(userSplit[0], new StrArray(data.toString())), ENCODING);
 							System.out.println("Sended uriLists");
 						} );
+						break;
 					default:
 						req.response().end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS);
