@@ -213,15 +213,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
 
 @media all and (min-width:701px) {
-	#container {}
+	#container {margin-left:14.9em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em; overflow:auto}
-	.side2 {margin-left:15em; padding:.5em}
+	.side2 {padding:.5em}
 	.rC.fixed {width:646px; border-left:.15em solid black}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
 @media all and (min-width:901px) {
+	#container {margin-left:19.9em}
 	#sidebar {width:20em}
-	.side2 {margin-left:20em}
 }
 @media all and (min-height:500px) {
 	#fuzzy-search-list {max-height:430px;}
@@ -231,89 +231,89 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <body>
 <data id="data-CatList">{--CatList--}</data>
 <div id="container" class="dark">
-	<div id="sidebar">
-		<div id="user-noti"></div>
-		<div id="catList"></div>
-		<div class="right">
-			<div class="button" id="change-catList-order">[--Change orders--]</div>
-			<div class="button" id="change-catList-order-ok">[--OK--]</div>
-			<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
+<div id="sidebar">
+	<div id="user-noti"></div>
+	<div id="catList"></div>
+	<div class="right">
+		<div class="button" id="change-catList-order">[--Change orders--]</div>
+		<div class="button" id="change-catList-order-ok">[--OK--]</div>
+		<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
+	</div>
+</div><!-- div#sidebar -->
+<div id="fuzzy-search-container">
+	<div id="fuzzy-search" contenteditable="true"></div>
+	<div id="fuzzy-search-list"></div>
+	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+</div><!-- div#fuzzy-search-container -->
+<div id="new-reco">
+	<form>
+	<label for="uri">URI <span class="desc">(required)</span></label>
+		<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
+		<div id="show-URI"></div>
+	<label for="title">[--Title--]</label>
+		<div id="def-titles"></div>
+		<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
+	<label for="cats">[--Categories--]</label>
+		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div></div>
+		<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
+		<div id="cat-fs-container" class="fs-container">
+			<div id="cat-fs-list"></div>
+			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
-	</div><!-- div#sidebar -->
-	<div id="fuzzy-search-container">
-		<div id="fuzzy-search" contenteditable="true"></div>
-		<div id="fuzzy-search-list"></div>
-		<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-	</div><!-- div#fuzzy-search-container -->
-	<div id="new-reco">
-		<form>
-		<label for="uri">URI <span class="desc">(required)</span></label>
-			<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
-			<div id="show-URI"></div>
-		<label for="title">[--Title--]</label>
-			<div id="def-titles"></div>
-			<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
-		<label for="cats">[--Categories--]</label>
-			<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div></div>
-			<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
-			<div id="cat-fs-container" class="fs-container">
-				<div id="cat-fs-list"></div>
-				<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-			</div>
-		<label for="desc">[--Description--]</label>
-			<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
-		<label for="cmt">[--Comment--]</label>
-			<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
-		<label for="val">[--Points--]</label>
-			<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
-		<div id="error-msg"></div>
-		<div class="buttons">
-			<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
-			<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
-			<div class="button" id="button-del" tabindex="11">[--Del--]</div>
-			<div class="button left" id="button-close" tabindex="9">[--Close--]</div>
-			<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
-			<div class="cBoth"></div>
+	<label for="desc">[--Description--]</label>
+		<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
+	<label for="cmt">[--Comment--]</label>
+		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
+	<label for="val">[--Points--]</label>
+		<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
+	<div id="error-msg"></div>
+	<div class="buttons">
+		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
+		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
+		<div class="button" id="button-del" tabindex="11">[--Del--]</div>
+		<div class="button left" id="button-close" tabindex="9">[--Close--]</div>
+		<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
+		<div class="cBoth"></div>
+	</div>
+	<div id="my-reco"></div>
+	<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	</form>
+</div><!-- div#new-reco -->
+<div class="side2" id="head">
+	<div class="button" id="my-id"></div>
+	head : <a href="/account/log-out">[--Log out--]</a>
+	<div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div>
+	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
+	<div class="button" id="button-new-reco">[--New Reco--]</div>
+	<div>
+		[--Short Keys--]
+		<ul id="shortkeys"></ul>
+	</div>
+	<div id="point-range">
+		<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
+	</div><br>
+	<span id="point-range-result"></span><br><br>
+	<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
+</div><!-- div#head -->
+<div class="side2" id="head2">
+	<div class="rC">
+		<div class="rSC">
+			<div id="youtube-playlist"></div>
 		</div>
-		<div id="my-reco"></div>
-		<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-		</form>
-	</div><!-- div#new-reco -->
-	<div class="side2" id="head">
-		<div class="button" id="my-id"></div>
-		head : <a href="/account/log-out">[--Log out--]</a>
-		<div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div>
-		<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
-		<div class="button" id="button-new-reco">[--New Reco--]</div>
-		<div>
-			[--Short Keys--]
-			<ul id="shortkeys"></ul>
-		</div>
-		<div id="point-range">
-			<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
-		</div><br>
-		<span id="point-range-result"></span><br><br>
-		<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
-	</div><!-- div#head -->
-	<div class="side2" id="head2">
-		<div class="rC">
-			<div class="rSC">
-				<div id="youtube-playlist"></div>
-			</div>
-			<div class="button" onclick="eve.playlist.setShuffle(true)">[--Shuffle--]</div>
-			<div class="button" onclick="eve.playlist.toggleLoop(this)">[--Loop--]</div>
-			<div class="button" onclick="eve.playlist.toggleOneLoop(this)">[--One-loop--]</div>
-			<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>
-		</div>
-	</div><!-- div#head2 -->
-	<div class="side2" id="contents"></div><!-- div#contents -->
-	<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br><div>Language/언어/語言
-<data id="data-lang">
-English/영어/en	en
+		<div class="button" onclick="eve.playlist.setShuffle(true)">[--Shuffle--]</div>
+		<div class="button" onclick="eve.playlist.toggleLoop(this)">[--Loop--]</div>
+		<div class="button" onclick="eve.playlist.toggleOneLoop(this)">[--One-loop--]</div>
+		<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>
+	</div>
+</div><!-- div#head2 -->
+<div class="side2" id="contents"></div><!-- div#contents -->
+<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
+	<div>Language/언어/語言
+		<data id="data-lang">English/영어/en	en
 Korean/한국어/kr	kr
 Japanese/일본어/jp	jp
-Chinese/중국어/cn	cn
-</data></div></div><!-- div#foot -->
+Chinese/중국어/cn	cn</data></div>
+</div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
 <script src="/jquery.min.js"></script>
@@ -376,6 +376,7 @@ $contents=$("#contents");
 
 $window=$(window);
 $html=$("html");
+$body=$("body");
 $.fn.exists=function() { return this.length!==0; };
 
 $new_reco.hide();
@@ -447,7 +448,7 @@ eve.delayedLoadAll=function() {
 
 eve.previous=Date.now();
 eve.wait=eve.wait||200;
-eve.delayedLoadByScroll=function eveDelayedLoadByScroll() {
+eve.delayedLoadByScroll=function delayedLoadByScroll() {
 	var now=Date.now();
 	var passed=now-eve.previous;
 	if (passed>eve.wait) {
@@ -458,7 +459,7 @@ eve.delayedLoadByScroll=function eveDelayedLoadByScroll() {
 		setTimeout(function() {
 			eve.delayedLoadAll();
 			eve.previous=Date.now();
-			$window.on("scroll.delayedLoad", eveDelayedLoadByScroll);
+			$window.on("scroll.delayedLoad", delayedLoadByScroll);
 		}, eve.wait*1.1-passed);
 	}
 };
@@ -1041,10 +1042,18 @@ eve.renderStrCatList=function(strCatList, catList) {
 		}
 	}
 };
+eve.slideToggle=function(elem) {
+	var $elem=$(elem);
+	$elem.addClass("disabled");
+	$elem.parent().next().slideToggle(1000);
+	setTimeout(function() {
+		$elem.removeClass("disabled");
+	}, 1000);
+};
 eve.slideUp=function(elem) {
 	var $elem=$(elem).parent().parent();
 	$elem.slideUp(1000);
-	$("body").animate({scrollTop:'-='+$elem.height()}, 1000);
+	$body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
 eve.recoHTML=function(r) {
 	var res="";
@@ -1073,7 +1082,7 @@ eve.recoHTML=function(r) {
 					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
 					break;
 				case "lyrics" :
-					res+='<div class="value"><div class="center"><div class="button" onclick="$(this).parent().next().slideToggle(1000)">▼ Toggle lyrics</div></div>'
+					res+='<div class="value"><div class="center"><div class="button" onclick="eve.slideToggle(this)">▼ Toggle lyrics</div></div>'
 						+'<div class="lyricsC" style="display:none">'
 							+'<div class="lyricsArrow"></div>'
 							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
