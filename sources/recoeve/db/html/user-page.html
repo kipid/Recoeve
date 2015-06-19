@@ -240,12 +240,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
 	</div>
 </div><!-- div#sidebar -->
-<div id="fuzzy-search-container">
+<div id="fuzzy-search-container" style="display:none">
 	<div id="fuzzy-search" contenteditable="true"></div>
 	<div id="fuzzy-search-list"></div>
 	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
-<div id="new-reco">
+<div id="new-reco" style="display:none">
 	<form>
 	<label for="uri">URI <span class="desc">(required)</span></label>
 		<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
@@ -256,7 +256,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<label for="cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div></div>
 		<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
-		<div id="cat-fs-container" class="fs-container">
+		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
@@ -295,7 +295,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<span id="point-range-result"></span><br><br>
 	<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
 </div><!-- div#head -->
-<div class="side2" id="head2">
+<div class="side2" id="head2" style="display:none">
 	<div class="rC">
 		<div class="rSC">
 			<div id="youtube-playlist"></div>
@@ -316,6 +316,7 @@ Chinese/중국어/cn	cn</data></div>
 </div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
+<div id="scripts"></div>
 <script src="/jquery.min.js"></script>
 <script>
 (function(eve, $, undefined) {
@@ -373,15 +374,13 @@ $show_recos_without_points=$("#show-recos-without-points");
 eve.showRWOP=true;
 
 $contents=$("#contents");
+$scripts=$("#scripts");
 
 $window=$(window);
 $html=$("html");
 $body=$("body");
 $.fn.exists=function() { return this.length!==0; };
 
-$new_reco.hide();
-$fuzzy_search_container.hide();
-$cat_fs_container.hide();
 $("title").html(eve.userId+" on Recoeve.net");
 $user_noti.html(eve.userId+"'s recos");
 if (eve.myId) {
@@ -582,6 +581,7 @@ eve.unescapeAMP=function(str) {
 // YouTube API
 ////////////////////////////////////////////////////
 eve.cueYTCount=0;
+eve.YTNotLoaded=true;
 eve.cueYoutubePlaylist=function(list) {
 	if (eve.playlist&&eve.playlist.cuePlaylist) {
 		if (list.length>0) {
@@ -592,6 +592,12 @@ eve.cueYoutubePlaylist=function(list) {
 			eve.playlist.stopVideo();
 		}
 	} else {
+		if (eve.YTNotLoaded) {
+			var ytAPI=document.createElement('script');
+			ytAPI.src="http://www.youtube.com/player_api";
+			$scripts.append(ytAPI);
+			eve.YTNotLoaded=false;
+		}
 		if (++eve.cueYTCount<100) { // Trying until YT API is loaded.
 			setTimeout(function() {
 				eve.cueYoutubePlaylist(list);
@@ -2658,7 +2664,6 @@ if ($shortkeyDesc.exists()) {
 })(window.eve=window.eve||{}, jQuery);
 
 function onYouTubeIframeAPIReady() {
-	$head2.hide();
 	eve.playlist=new YT.Player('youtube-playlist', {events:{
 		'onError':function(e) {
 			setTimeout(function() {
@@ -2695,5 +2700,4 @@ function onYouTubeIframeAPIReady() {
 	};
 }
 </script>
-<script src="http://www.youtube.com/player_api"></script>
 </html>
