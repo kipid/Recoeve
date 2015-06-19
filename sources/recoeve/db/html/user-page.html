@@ -394,6 +394,10 @@ if (eve.myId) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
+eve.delayPad=eve.delayPad||0;
+eve.wait=eve.wait||200;
+eve.delayedElems=[];
+eve.previous=Date.now();
 $.fn.inView=function(delayPad) {
 	delayPad=delayPad||0;
 	var $elem=$(this);
@@ -431,9 +435,6 @@ $.fn.delayedLoad=function(delayPad) {
 	}
 	return done;
 };
-
-eve.delayPad=eve.delayPad||0;
-eve.delayedElems=[];
 eve.delayedLoadAll=function() {
 	if (eve.delayedElems.length===0) {
 		$window.off("scroll.delayedLoad");
@@ -445,9 +446,6 @@ eve.delayedLoadAll=function() {
 		});
 	}
 }
-
-eve.previous=Date.now();
-eve.wait=eve.wait||200;
 eve.delayedLoadByScroll=function delayedLoadByScroll() {
 	var now=Date.now();
 	var passed=now-eve.previous;
@@ -1288,8 +1286,25 @@ eve.refresh=function(cats, option, uri) {
 	}
 };
 
+eve.ExpCol=function(elem, catEC) {
+	var $elem=$(elem);
+	var $next=$elem.parent().next();
+	if ($next.is(":visible")) {
+		$next.hide();
+		$elem.html("▶");
+		catEC.subCatCollapsed=true;
+	} else {
+		$next.show();
+		$elem.html("▼");
+		catEC.subCatCollapsed=false;
+	}
+};
+eve.openCat=function(cat) {
+	eve.getAndShowRecosOnCat(cat);
+	window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
+};
 eve.renderCatListHTML=function(catList) {
-	var catListHTML='<div class="cat" id="cat-0"><span class="noEC"></span><span class="baseCat">[--Uncategorized--]</span></div>';
+	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+eve.catList[0].depth+'em"><span class="noEC"></span><span class="baseCat" onclick="eve.openCat(eve.catList[0].cat)">[--Uncategorized--]</span></div>';
 	var i=1;
 	for (;i<eve.catList.length-1;i++) {
 		var beforeDepth=eve.catList[i-1].depth;
@@ -1302,13 +1317,13 @@ eve.renderCatListHTML=function(catList) {
 				catListHTML+='</div>';
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'">';
+		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+eve.catList[i].depth+'em">';
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="EC">▼</span>';
+			catListHTML+='<span class="EC" onclick="eve.ExpCol(this,eve.catList['+i+'])">▼</span>';
 		} else {
 			catListHTML+='<span class="noEC"></span>';
 		}
-		catListHTML+='<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'+'</div>';
+		catListHTML+='<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'+'</div>';
 	}
 	if (eve.catList.length>1) {
 		var beforeDepth=eve.catList[i-1].depth;
@@ -1320,39 +1335,15 @@ eve.renderCatListHTML=function(catList) {
 				catListHTML+='</div>';
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'">'
+		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+eve.catList[i].depth+'em">'
 			+'<span class="noEC"></span>'
-			+'<span class="baseCat">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'
+			+'<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'
 		+'</div>';
 		for (var j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+='</div>';
 		}
 	}
 	$catList.html(catListHTML);
-	for (var i=0;i<eve.catList.length;i++) {
-		var $catI=$("#cat-"+i);
-		$catI.css({"margin-left":(eve.catList[i].depth)+"em"});
-		$catI.find(">.baseCat").on("click", function(e) {
-			var cat=eve.catList[Number($(this).parent().attr("id").substring(4))].cat;
-			eve.getAndShowRecosOnCat(cat);
-			window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
-		});
-		$catI.find(">.EC").on("click", function(e) {
-			var $this=$(this);
-			var $parent=$this.parent();
-			var $next=$parent.next();
-			var catEC=eve.catList[Number($parent.attr("id").substring(4))];
-			if ($next.is(":visible")) {
-				$next.hide();
-				$this.html("▶");
-				catEC.subCatCollapsed=true;
-			} else {
-				$next.show();
-				$this.html("▼");
-				catEC.subCatCollapsed=false;
-			}
-		});
-	}
 };
 eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
 eve.renderCatListHTML(eve.catList);
