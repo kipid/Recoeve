@@ -393,27 +393,26 @@ if (eve.myId) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
-eve.delayPad=eve.delayPad||0;
+eve.delayPad=eve.delayPad||1600;
 eve.wait=eve.wait||200;
 eve.delayedElems=[];
 eve.previous=Date.now();
-$.fn.inView=function(delayPad) {
-	delayPad=delayPad||0;
+$.fn.inView=function() {
 	var $elem=$(this);
 	if ($elem.is(":visible")) {
 		var viewportHeight=window.innerHeight;
 		var scrollTop=$window.scrollTop();
-		var elemTop=$elem.offset().top-delayPad;
-		var elemBottom=elemTop+$elem.height()+delayPad*2;
-		return (scrollTop+viewportHeight>elemTop) && (scrollTop<elemBottom);
+		var elemTop=$elem.offset().top-eve.delayPad;
+		var elemBottom=elemTop+$elem.height()+eve.delayPad;
+		return (scrollTop+viewportHeight>elemTop)&&(scrollTop<elemBottom);
 	} else {
 		return false;
 	}
 };
-$.fn.delayedLoad=function(delayPad) {
+$.fn.delayedLoad=function() {
 	var $elem=$(this);
 	var done=false;
-	if ($elem.inView(delayPad)) {
+	if ($elem.inView()) {
 		// divs with background-image
 		if ($elem.attr("delayed-bgimage")) {
 			$elem.css("background-image", "url("+$elem.attr("delayed-bgimage")+")");
@@ -439,7 +438,7 @@ eve.delayedLoadAll=function() {
 		$window.off("scroll.delayedLoad");
 	} else {
 		eve.delayedElems.each(function() {
-			if ($(this).delayedLoad(eve.delayPad)) {
+			if ($(this).delayedLoad()) {
 				eve.delayedElems=eve.delayedElems.not(this);
 			}
 		});
