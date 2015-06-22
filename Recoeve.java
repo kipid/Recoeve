@@ -308,7 +308,7 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain");
 				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
-						String res=db.recoInfos(Long.parseLong(cookie.get("I")), data.toString());
+						String res=db.recoInfos(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
 					} );
 				}
@@ -317,7 +317,7 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain");
 				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
-						String res=db.recoDo(Long.parseLong(cookie.get("I")), data.toString());
+						String res=db.recoDo(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
 					} );
 				}
@@ -331,7 +331,7 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain");
 				if (sessionPassed&&method.equals("POST")) {
 					req.bodyHandler( (Buffer data) -> {
-						String res=db.putReco(Long.parseLong(cookie.get("I")), data.toString());
+						String res=db.putReco(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
 						// StrArray sa=new StrArray(data.toString());
 						// System.out.println(sa);
@@ -346,7 +346,7 @@ public void start() {
 			String toDo=path.replaceFirst("^/changeOrders/","");
 			if (sessionPassed&&toDo.equals("CatList")&&method.equals("POST")) {
 				req.bodyHandler( (Buffer data) -> {
-					req.response().end(""+db.changeOrdersCatList(Long.parseLong(cookie.get("I")), data.toString()));
+					req.response().end(""+db.changeOrdersCatList(Long.parseLong(cookie.get("I"),16), data.toString()));
 				} );
 			} else {
 				req.response().end("Not a proper access.");
