@@ -442,7 +442,7 @@ public class RecoeveDB {
 	}
 	public boolean verifyUser(String cookieI, String path, String ip) {
 		boolean done=false;
-		long user_i=Long.parseLong(cookieI);
+		long user_i=Long.parseLong(cookieI, 16);
 		int i=path.indexOf("/");
 		String id=path.substring(0,i);
 		String veriKey=path.substring(i+1);
@@ -535,7 +535,7 @@ public class RecoeveDB {
 		Map<String,String> varMap=new HashMap<String,String>();
 		if (cookie.get("I")!=null) {
 			varMap.put("{--myIndex--}", cookie.get("I"));
-			long user_i=Long.parseLong(cookie.get("I"));
+			long user_i=Long.parseLong(cookie.get("I"), 16);
 			try {
 				ResultSet user=findUserByIndex(user_i);
 				if (user.next()) {
@@ -565,7 +565,7 @@ public class RecoeveDB {
 		Map<String,String> varMap=new HashMap<String,String>();
 		if (cookie.get("I")!=null) {
 			varMap.put("{--myIndex--}", cookie.get("I"));
-			long user_i=Long.parseLong(cookie.get("I"));
+			long user_i=Long.parseLong(cookie.get("I"), 16);
 			try {
 				ResultSet user=findUserByIndex(user_i);
 				if (user.next()) {
@@ -582,7 +582,7 @@ public class RecoeveDB {
 	}
 	public boolean sessionCheck(Cookie cookie) {
 		if (cookie.get("I")!=null) {
-		long user_i=Long.parseLong(cookie.get("I"));
+		long user_i=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate");
 		String session=cookie.get("SSN");
 		String token=cookie.get("token");
@@ -674,7 +674,7 @@ public class RecoeveDB {
 			+"\nSet-Cookie: rmbdToken="+cookieOptionDelRMB;
 		String now=now();
 		if (cookie.get("rmbdI")!=null) {
-		long user_i=Long.parseLong(cookie.get("rmbdI"));
+		long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
 		String rmbdT=cookie.get("rmbdT");
 		String rmbdAuth=cookie.get("rmbdAuth");
 		String rmbdToken=cookie.get("rmbdToken");
@@ -747,7 +747,7 @@ public class RecoeveDB {
 		String setCookie="";
 		if (pstmtCreateUserSession.executeUpdate()>0) {
 			// user.updateInt("ssnC", user.getInt("ssnC")+1);
-			setCookie="I="+user_i+cookieOptionSSN;
+			setCookie="I="+Long.toHexString(user_i)+cookieOptionSSN;
 			setCookie+="\nSet-Cookie: tCreate="+now+cookieOptionSSN;
 			setCookie+="\nSet-Cookie: SSN="+hex(session)+cookieOptionSSN;
 			setCookie+="\nSet-Cookie: token="+hex(token)+cookieOptionSSNtoken;
@@ -767,7 +767,7 @@ public class RecoeveDB {
 		String setCookie="";
 		if (pstmtCreateUserRemember.executeUpdate()>0) {
 			// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
-			setCookie+="\nSet-Cookie: rmbdI="+user_i+cookieOptionRMB;
+			setCookie+="\nSet-Cookie: rmbdI="+Long.toHexString(user_i)+cookieOptionRMB;
 			setCookie+="\nSet-Cookie: rmbdT="+now+cookieOptionRMB;
 			setCookie+="\nSet-Cookie: rmbdAuth="+hex(rmbdAuth)+cookieOptionRMB;
 			setCookie+="\nSet-Cookie: rmbdToken="+hex(rmbdToken)+cookieOptionRMBtoken;
