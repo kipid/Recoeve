@@ -639,7 +639,7 @@ eve.ptnURI={};
 eve.videoRendering=function(uri) {
 	if (uri&&uri.constructor===String) {
 		for (var p in eve.ptnURI) {
-			var result=eve.ptnURI[p].toEmbed(uri);
+			var result=eve.ptnURI[p].toIframe(uri);
 			if (result) { return result; }
 		}
 		return {html:""};
@@ -649,96 +649,96 @@ eve.videoRendering=function(uri) {
 var ptnURI;
 ptnURI=eve.ptnURI.youtubeURL={};
 ptnURI.regEx=/^https?:\/\/www\.youtube\.com\/watch\?(\S+)$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.youtubeURL.regEx.exec(url);
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
 		if (vars.v) {
-			return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:vars.v};
+			return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></iframe>'), from:"youtube", videoId:vars.v};
 		}
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.youtuURL={};
 ptnURI.regEx=/^https?:\/\/youtu\.be\/([\w-]+)/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.youtuURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:exec[1]};
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>'), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.mYoutubeURL={};
 ptnURI.regEx=/^https?:\/\/m\.youtube\.com\/watch\?(\S+)$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.mYoutubeURL.regEx.exec(url);
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
 		if (vars.v) {
-			return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:vars.v};
+			return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></iframe>'), from:"youtube", videoId:vars.v};
 		}
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.youtubeEmbedURL={};
 ptnURI.regEx=/^https?:\/\/www\.youtube\.com\/embed\/([\w-]+)/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.youtubeEmbedURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:exec[1]};
+		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>'), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.tvpotURL={};
 ptnURI.regEx=/^https?:\/\/tvpot\.daum\.net\/v\/([\w-]+)/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.tvpotURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></embed>'), from:"daum", videoId:exec[1]};
+		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.daumVideo={};
 ptnURI.regEx=/^https?:\/\/videofarm\.daum\.net\/controller\/video\/viewer\/Video\.html\?(\S+)$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.daumVideo.regEx.exec(url);
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
-		return {html:eve.rC('<embed delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></embed>'), from:"daum"};
+		return {html:eve.rC('<iframe delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.naverVideo={};
 ptnURI.regEx=/^https?:\/\/serviceapi\.rmcnmv\.naver\.com\/flash\/outKeyPlayer\.nhn\?(\S+)$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.naverVideo.regEx.exec(url);
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
-		return {html:eve.rC('<embed delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></embed>'), from:"naver"};
+		return {html:eve.rC('<iframe delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.vimeoURL={};
 ptnURI.regEx=/^https?:\/\/vimeo.com\/([0-9]+)/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.vimeoURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></embed>'), from:"vimeo", videoId:exec[1]};
+		return {html:eve.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.dmURL={};
 ptnURI.regEx=/^https?:\/\/www\.dailymotion\.com\/video\/([0-9a-zA-Z]+)/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.dmURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></embed>'), from:"dailymotion", videoId:exec[1]};
+		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.videoURL={};
 ptnURI.regEx=/^(https?:\/\/\S+\.(?:mp4|ogg|webm))$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.videoURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[1]+'"></video>')};
@@ -747,7 +747,7 @@ ptnURI.toEmbed=function(url) {
 };
 ptnURI=eve.ptnURI.imgURL={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.imgURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:'<div class="center"><img delayed-src="'+url+'"/></div>'};
@@ -756,10 +756,10 @@ ptnURI.toEmbed=function(url) {
 };
 ptnURI=eve.ptnURI.appSurpriseURL={};
 ptnURI.regEx=/^https?:\/\/appsurprise\.co\.kr\/\S*$/i;
-ptnURI.toEmbed=function(url) {
+ptnURI.toIframe=function(url) {
 	var exec=eve.ptnURI.appSurpriseURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<embed delayed-src="'+url+'" frameborder="0"></embed>')};
+		return {html:eve.rC('<iframe delayed-src="'+url+'" frameborder="0"></iframe>')};
 	}
 	return false;
 };
