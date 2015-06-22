@@ -399,42 +399,40 @@ eve.wait=eve.wait||512;
 eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 eve.previous=Date.now();
 $.fn.inView=function() {
-	var $elem=$(this);
-	if ($elem.is(":visible")) {
+	if (this.is(":visible")) {
 		var viewportHeight=window.innerHeight;
 		var scrollTop=$window.scrollTop();
-		var elemTop=$elem.offset().top-eve.delayPad;
-		var elemBottom=elemTop+$elem.height()+eve.delayPad;
+		var elemTop=this.offset().top-eve.delayPad;
+		var elemBottom=elemTop+this.height()+eve.delayPad;
 		return (scrollTop+viewportHeight>elemTop)&&(scrollTop<elemBottom);
 	} else {
 		return false;
 	}
 };
 $.fn.delayedLoad=function() {
-	var $elem=$(this);
 	var done=false;
-	if ($elem.inView()) {
-		if ($elem.hasClass("to-be-executed")) {
-			var toDo=$elem.attr("onclick");
+	if (this.inView()) {
+		if (this.hasClass("to-be-executed")) {
+			var toDo=this.attr("onclick");
 			console.log(toDo);
 			// exec(toDo);
 			done=true;
 		}
 		// divs with background-image
-		if ($elem.attr("delayed-bgimage")) {
-			$elem.css("background-image", "url("+$elem.attr("delayed-bgimage")+")");
-			$elem.removeAttr("delayed-bgimage");
+		if (this.attr("delayed-bgimage")) {
+			this.css("background-image", "url("+this.attr("delayed-bgimage")+")");
+			this.removeAttr("delayed-bgimage");
 			done=true;
 		} 
 		// iframes or images
-		if ($elem.attr("delayed-src")) {
-			$elem.attr("src", $elem.attr("delayed-src"));
-			$elem.removeAttr("delayed-src");
+		if (this.attr("delayed-src")) {
+			this.attr("src", this.attr("delayed-src"));
+			this.removeAttr("delayed-src");
 			done=true;
 		}
 		// MathJax Process
-		if (typeof MathJax!=='undefined'&&$elem.is(".MathJax_Preview")) {
-			MathJax.Hub.Queue(["Process", MathJax.Hub, $elem.next()[0]]);
+		if (typeof MathJax!=='undefined'&&this.is(".MathJax_Preview")) {
+			MathJax.Hub.Queue(["Process", MathJax.Hub, this.next()[0]]);
 			done=true;
 		}
 	}
@@ -1171,16 +1169,20 @@ eve.recoToEve=function(resp, recos) {
 		var p=recos[uri];
 		if (!p) { p=recos[uri]={}; }
 		p["has"]=true;
-		p["uri"]=uri;
-		p["title"]=recoK["title"];
-		p["cats"]=recoK["cats"];
-		p["desc"]=recoK["desc"];
-		p["descR"]=eve.renderStrDescCmt(recoK["desc"]); // R for rendered.
-		p["cmt"]=recoK["cmt"];
-		p["cmtR"]=eve.renderStrDescCmt(recoK["cmt"]); // R for rendered.
-		p["val"]=eve.val( recoK["val"] );
-		// p["tFirst"]=recoK["tFirst"];
-		// p["tLast"]=recoK["tLast"];
+		for (var prop in recoK) {
+			if (isNaN(prop)) {
+				p[prop]=recoK[prop];
+			}
+		}
+		if (p.desc!==undefined) {
+			p.descR=eve.renderStrDescCmt(p.desc); // R for rendered.
+		}
+		if (p.cmt!==undefined) {
+			p.cmtR=eve.renderStrDescCmt(p.cmt); // R for rendered.
+		}
+		if (p.val!==undefined) {
+			p.val=eve.val(p.val);
+		}
 	}
 };
 eve.getAndShowRecosOnUris=function(uriList) {
