@@ -15,7 +15,12 @@ import java.io.IOException;
 
 
 public class FileMap {
-	private static String filePath="C:/Recoeve/sources/recoeve/db/html/";
+	private static final String imgPath="C:/Recoeve/img";
+	private static final String[] imgNames={
+			"/favicon.ico"
+			, "/icon-Twitter.png", "/icon-Facebook.png"
+		};
+	private static final String filePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] fileNames={
 			"jquery.min.js"
 			, "log-in.html", "to-log-in.html" //, "log-in.css", "log-in.js"
@@ -27,12 +32,19 @@ public class FileMap {
 	private static final int fileMapSize=50;
 	private static final int fileLangMapSize=10;
 	
+	public static Map<String, String> imgMap;
+		// imgMap.get("imgName")
 	public static Map<String, Map<String, String>> fileMap;
 		// fileMap.get("fileName").get("lang")
 	
 	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
 	
 	static {
+		imgMap=new HashMap<String, String>();
+		for (String imgName: imgNames) {
+			imgMap.put(imgName, imgPath+imgName);
+		}
+		
 		fileMap=new HashMap<String, Map<String, String>>(fileMapSize);
 		File file=null;
 		String fileStr=null;
@@ -123,6 +135,10 @@ public class FileMap {
 	}
 	
 	public FileMap() {}
+	
+	public static String getImg(String imgName) {
+		return imgMap.get(imgName);
+	}
 	
 	public static String get(String fileName, String lang) {
 		Map<String, String> fileLangMap=fileMap.get(fileName);

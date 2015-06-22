@@ -307,6 +307,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div>
 </div><!-- div#head2 -->
 <div class="side2" id="contents"></div><!-- div#contents -->
+<div class="button to-be-executed" onclick="alert('done')">Delayed Action Test</div>
 <div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
 		<data id="data-lang">English/영어/en	en
@@ -393,9 +394,9 @@ if (eve.myId) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
-eve.delayPad=eve.delayPad||1600;
-eve.wait=eve.wait||200;
-eve.delayedElems=[];
+eve.delayPad=eve.delayPad||1024;
+eve.wait=eve.wait||512;
+eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 eve.previous=Date.now();
 $.fn.inView=function() {
 	var $elem=$(this);
@@ -413,6 +414,12 @@ $.fn.delayedLoad=function() {
 	var $elem=$(this);
 	var done=false;
 	if ($elem.inView()) {
+		if ($elem.hasClass("to-be-executed")) {
+			var toDo=$elem.attr("onclick");
+			console.log(toDo);
+			// exec(toDo);
+			done=true;
+		}
 		// divs with background-image
 		if ($elem.attr("delayed-bgimage")) {
 			$elem.css("background-image", "url("+$elem.attr("delayed-bgimage")+")");
@@ -460,7 +467,6 @@ eve.delayedLoadByScroll=function delayedLoadByScroll() {
 	}
 };
 
-eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
 $window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 $window.trigger("scroll.delayedLoad");
 
@@ -621,10 +627,10 @@ eve.togglePosition=function(elem) {
 		$elem.text("▲ [--return to the original position--]");
 	}
 };
-eve.rC=function(iframeStr) {
+eve.rC=function(elemStr) {
 	return '<div class="rC">'
 		+'<div class="rSC">'
-			+iframeStr
+			+elemStr
 		+'</div>'
 		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>'
 	+'</div>';
@@ -633,7 +639,7 @@ eve.ptnURI={};
 eve.videoRendering=function(uri) {
 	if (uri&&uri.constructor===String) {
 		for (var p in eve.ptnURI) {
-			var result=eve.ptnURI[p].toIframe(uri);
+			var result=eve.ptnURI[p].toEmbed(uri);
 			if (result) { return result; }
 		}
 		return {html:""};
@@ -642,98 +648,97 @@ eve.videoRendering=function(uri) {
 };
 var ptnURI;
 ptnURI=eve.ptnURI.youtubeURL={};
-ptnURI.regEx=/^https?:\/\/www\.youtube\.com\/watch\?.*(?:v=)([\w-]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.regEx=/^https?:\/\/www\.youtube\.com\/watch\?(\S+)$/i;
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.youtubeURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
-			, from:"youtube", videoId:exec[1]};
+		var vars=eve.getSearchVars(exec[1]);
+		if (vars.v) {
+			return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:vars.v};
+		}
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.youtuURL={};
 ptnURI.regEx=/^https?:\/\/youtu\.be\/([\w-]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.youtuURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
-			, from:"youtube", videoId:exec[1]};
+		return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.mYoutubeURL={};
-ptnURI.regEx=/^https?:\/\/m\.youtube\.com\/watch\?.*(?:v=)([\w-]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.regEx=/^https?:\/\/m\.youtube\.com\/watch\?(\S+)$/i;
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.mYoutubeURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
-			, from:"youtube", videoId:exec[1]};
+		var vars=eve.getSearchVars(exec[1]);
+		if (vars.v) {
+			return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+vars.v+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:vars.v};
+		}
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.youtubeEmbedURL={};
 ptnURI.regEx=/^https?:\/\/www\.youtube\.com\/embed\/([\w-]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.youtubeEmbedURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></iframe>')
-			, from:"youtube", videoId:exec[1]};
+		return {html:eve.rC('<embed delayed-src="https://www.youtube.com/embed/'+exec[1]+'" frameborder="0" allowfullscreen=""></embed>'), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.tvpotURL={};
 ptnURI.regEx=/^https?:\/\/tvpot\.daum\.net\/v\/([\w-]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.tvpotURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>')
-			, from:"daum", videoId:exec[1]};
+		return {html:eve.rC('<embed delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></embed>'), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.daumVideo={};
-ptnURI.regEx=/^https?:\/\/videofarm\.daum\.net\/controller\/video\/viewer\/Video\.html\?\S+$/i;
-ptnURI.toIframe=function(url) {
+ptnURI.regEx=/^https?:\/\/videofarm\.daum\.net\/controller\/video\/viewer\/Video\.html\?(\S+)$/i;
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.daumVideo.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></iframe>')
-			, from:"daum"};
+		var vars=eve.getSearchVars(exec[1]);
+		return {html:eve.rC('<embed delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></embed>'), from:"daum"};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.naverVideo={};
-ptnURI.regEx=/^https?:\/\/serviceapi\.rmcnmv\.naver\.com\/flash\/outKeyPlayer\.nhn\?\S+$/i;
-ptnURI.toIframe=function(url) {
+ptnURI.regEx=/^https?:\/\/serviceapi\.rmcnmv\.naver\.com\/flash\/outKeyPlayer\.nhn\?(\S+)$/i;
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.naverVideo.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></iframe>')
-			, from:"naver"};
+		var vars=eve.getSearchVars(exec[1]);
+		return {html:eve.rC('<embed delayed-src="'+exec[0]+'" frameborder="0" scrolling="no"></embed>'), from:"naver"};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.vimeoURL={};
 ptnURI.regEx=/^https?:\/\/vimeo.com\/([0-9]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.vimeoURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>')
-			, from:"vimeo", videoId:exec[1]};
+		return {html:eve.rC('<embed delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></embed>'), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.dmURL={};
 ptnURI.regEx=/^https?:\/\/www\.dailymotion\.com\/video\/([0-9a-zA-Z]+)/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.dmURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>')
-			, from:"dailymotion", videoId:exec[1]};
+		return {html:eve.rC('<embed delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></embed>'), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
 ptnURI=eve.ptnURI.videoURL={};
-ptnURI.regEx=/^(https?:\/\/\S+\.(?:mp4|ogg|webm))/i;
-ptnURI.toIframe=function(url) {
+ptnURI.regEx=/^(https?:\/\/\S+\.(?:mp4|ogg|webm))$/i;
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.videoURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[1]+'"></video>')};
@@ -742,7 +747,7 @@ ptnURI.toIframe=function(url) {
 };
 ptnURI=eve.ptnURI.imgURL={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)$/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.imgURL.regEx.exec(url);
 	if (exec!==null) {
 		return {html:'<div class="center"><img delayed-src="'+url+'"/></div>'};
@@ -751,10 +756,10 @@ ptnURI.toIframe=function(url) {
 };
 ptnURI=eve.ptnURI.appSurpriseURL={};
 ptnURI.regEx=/^https?:\/\/appsurprise\.co\.kr\/\S*$/i;
-ptnURI.toIframe=function(url) {
+ptnURI.toEmbed=function(url) {
 	var exec=eve.ptnURI.appSurpriseURL.regEx.exec(url);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="'+url+'" frameborder="0"></iframe>')};
+		return {html:eve.rC('<embed delayed-src="'+url+'" frameborder="0"></embed>')};
 	}
 	return false;
 };
@@ -1063,7 +1068,7 @@ eve.recoHTML=function(r) {
 	if (r&&r["has"]) {
 		var uriEscaped=eve.escapeHTML( r["uri"] );
 		res+='<div class="reco">'
-			+'<img class="SNS-img" src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/icon-Twitter.png" onclick="eve.shareSNS(this, \'twitter\')"/><img class="SNS-img" src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/icon-Facebook.png" onclick="eve.shareSNS(this, \'facebook\')"/>'
+			+'<img class="SNS-img" src="/icon-Twitter.png" onclick="eve.shareSNS(this, \'twitter\')"/><img class="SNS-img" src="/icon-Facebook.png" onclick="eve.shareSNS(this, \'facebook\')"/>'
 			+(eve.myId?'<div class="button edit fRight" onclick="eve.editOrRecoToMine(this)">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+uriEscaped+'</div>';
 		var video=eve.videoRendering( r["uri"] );
@@ -1134,13 +1139,15 @@ eve.editOrRecoToMine=function(elem) {
 };
 eve.showContents=function(uris) {
 	var strHTML="";
-	if (uris.length>0) { for (var k=0;k<uris.length;k++) {
-		strHTML+=eve.recoHTML( eve.userRecos[uris[k]] );
-	}} else {
+	if (uris.length>0) {
+		for (var k=0;k<uris.length;k++) {
+			strHTML+=eve.recoHTML( eve.userRecos[uris[k]] );
+		}
+	} else {
 		strHTML+="No reco.";
 	}
 	$contents.html(strHTML);
-	eve.delayedElems=$("[delayed-src], [delayed-bgimage]");
+	eve.delayedElems=eve.delayedElems.add( $contents.find("[delayed-src], [delayed-bgimage]") );
 	eve.processOutRange();
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
@@ -1245,7 +1252,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 	}
 };
 eve.refresh=function(cats, option, uri) {
-	var currentCat=eve.getSearchVars().cat;
+	var currentCat=eve.getSearchVars(window.location.search).cat;
 	var c=cats.split(";");
 	var k=0;
 	if (currentCat!==undefined) {
@@ -1369,23 +1376,23 @@ window.onpopstate=function(e) {
 		eve.getAndShowRecosOnCat(e.state.cat);
 	}
 };
-eve.getSearchVars=function() {
-	var searchStr=window.location.search;
-	var vars={};
+eve.getSearchVars=function(searchStr) {
+	var vars=[];
 	if (searchStr!==0) {
 		if (searchStr.substring(0,1)==="?") {
 			searchStr=searchStr.substring(1);
 		}
-		var splits=searchStr.split("&");
+		var splits=searchStr.replace(/&amp;/ig,"&").split("&");
 		for (var i=0;i<splits.length;i++) {
 			var key=splits[i];
 			var value="";
-			var k=splits[i].indexOf("=");
+			var k=key.indexOf("=");
 			if (k!==-1) {
-				key=splits[i].substring(0,k);
-				value=decodeURIComponent(splits[i].substring(k+1));
+				value=decodeURIComponent(key.substring(k+1));
+				key=key.substring(0,k);
 			}
-			vars[key]=value;
+			key=decodeURIComponent(key);
+			vars[i]=vars[key]=value;
 		}
 	}
 	return vars;
@@ -1444,7 +1451,7 @@ eve.docCookies={
     return aKeys;
   }
 };
-var vars=eve.getSearchVars();
+var vars=eve.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
 	eve.docCookies.setItem("lang", vars.lang, Infinity, "/");
 }
@@ -2380,7 +2387,7 @@ $input_val.on("keyup", function(e) {
 $button_new_reco.on("click", function(e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
-	var cat=eve.getSearchVars().cat;
+	var cat=eve.getSearchVars(window.location.search).cat;
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
 	}
@@ -2388,6 +2395,8 @@ $button_new_reco.on("click", function(e) {
 	$window.on("scroll.stop", function(e) {
 		$window.scrollTop(eve.wST);
 	});
+	$input_uri.focus();
+	$input_uri.trigger("keyup");
 });
 $button_close.on("click", function(e) {
 	$new_reco.hide();

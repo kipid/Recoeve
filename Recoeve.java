@@ -75,9 +75,10 @@ public void start() {
 		final String lang=tmpLang;
 		System.out.println("Lang : "+lang);
 		
-		if (path.equals("/favicon.ico")) {
-			req.response().sendFile("favicon.ico");
-			System.out.println("Sended favicon.ico");
+		String img=FileMap.getImg(path);
+		if (img!=null) {
+			req.response().sendFile(img);
+			System.out.println("Sended "+img);
 		} else if (path.equals("/jquery.min.js")) {
 			req.response().putHeader("Content-Type","text/javascript");
 			req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
