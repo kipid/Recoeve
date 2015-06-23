@@ -2619,9 +2619,9 @@ eve.processShortKey=function(e) {
 	switch (e.target.nodeName) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
+	e.preventDefault();
 	switch (e.keyCode) {
 		case 71: case 84: // G = 71, T = 84
-			e.preventDefault();
 			$fuzzy_search_container.show();
 			$fuzzy_search.focus();
 			break;
@@ -2633,7 +2633,6 @@ eve.processShortKey=function(e) {
 			var scrollTop=$window.scrollTop();
 			var i, k=eve.fdList.length;
 			var hI;
-			
 			if (e.keyCode===70) {
 				scrollTop+=10;
 				for (i=0;i<k;i++) {
