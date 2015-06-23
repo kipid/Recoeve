@@ -204,7 +204,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
 
 .rC {margin:1em 0}
-.rC.fixed {position:fixed; z-index:100; top:0; right:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
+.rC.fixed {position:fixed; z-index:100; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
 	.dark .rC.fixed {background:black; border-color:white}
 .rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:60%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
@@ -216,7 +216,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#container {margin-left:14.9em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em; overflow:auto}
 	.side2 {padding:.5em}
-	.rC.fixed {width:646px; border-left:.15em solid black}
+	.rC.fixed {width:646px; border-right:.15em solid black}
+	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
 @media all and (min-width:901px) {
@@ -448,7 +449,7 @@ eve.delayedLoadAll=function() {
 			}
 		});
 	}
-}
+};
 eve.delayedLoadByScroll=function delayedLoadByScroll() {
 	var now=Date.now();
 	var passed=now-eve.previous;
