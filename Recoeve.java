@@ -46,8 +46,31 @@ public void start() {
 		////////////////////////////////////
 		System.out.println("\n\nA client has connected! : "+(++numberOfClients));
 		final String now=db.now();
+		final String referer=req.headers().get("Referer");
 			System.out.println("Time : "+now);
-			System.out.println("Referer : "+req.headers().get("Referer"));
+			System.out.println("Referer : "+referer);
+		boolean refererAllowed=false;
+		if (referer==null) {
+			refererAllowed=true;
+		} else if (referer.substring(0,4).toLowerCase().equals("http")) {
+			int k=4;
+			if (referer.charAt(k)=='s'||referer.charAt(k)=='S') {
+				k++;
+			}
+			if (referer.startsWith("://",k)) {
+				k+=3;
+				int l=referer.indexOf('/',k);
+				String refererHost=null;
+				if (l==-1) {
+					refererHost=referer.substring(k);
+				} else {
+					refererHost=referer.substring(k,l);
+				}
+				refererAllowed=FileMap.refererAllowed(refererHost);
+				System.out.println("Referer Host : "+refererHost);
+			}
+		}
+		System.out.println("Referer Allowed : "+refererAllowed);
 		
 		final String method=req.method();
 		final String path=req.path();
@@ -76,10 +99,10 @@ public void start() {
 		System.out.println("Lang : "+lang);
 		
 		String img=FileMap.getImg(path);
-		if (img!=null) {
+		if (refererAllowed&&img!=null) {
 			req.response().sendFile(img);
 			System.out.println("Sended "+img);
-		} else if (path.equals("/jquery.min.js")) {
+		} else if (refererAllowed&&path.equals("/jquery.min.js")) {
 			req.response().putHeader("Content-Type","text/javascript");
 			req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
 			System.out.println("Sended jquery.min.js");
@@ -129,7 +152,7 @@ public void start() {
 				req.response().end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS);
 			}
-		} else if (path.startsWith("/account/")) {
+		} else if (refererAllowed&&path.startsWith("/account/")) {
 			String toDo=path.substring(9);
 				// faster than path.replaceFirst("^/account/","");
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -301,7 +324,7 @@ public void start() {
 					req.response().end(INVALID_ACCESS);
 				}
 			}
-		} else if (path.startsWith("/reco/")) {
+		} else if (refererAllowed&&path.startsWith("/reco/")) {
 			String toDo=path.replaceFirst("^/reco/","");
 			switch (toDo) {
 			case "infos":
@@ -342,7 +365,7 @@ public void start() {
 				}
 				break;
 			}
-		} else if (path.startsWith("/changeOrders/")) {
+		} else if (refererAllowed&&path.startsWith("/changeOrders/")) {
 			String toDo=path.replaceFirst("^/changeOrders/","");
 			if (sessionPassed&&toDo.equals("CatList")&&method.equals("POST")) {
 				req.bodyHandler( (Buffer data) -> {

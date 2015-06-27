@@ -2,6 +2,8 @@ package recoeve.db;
 
 import java.lang.StringBuilder;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -15,11 +17,18 @@ import java.io.IOException;
 
 
 public class FileMap {
+	private static final String[] referersAllowed={
+			"localhost"
+			, "recoeve.net"
+			// , "kipid.tistory.com"
+		};
+	
 	private static final String imgPath="C:/Recoeve/img";
 	private static final String[] imgNames={
 			"/favicon.ico"
 			, "/icon-Twitter.png", "/icon-Facebook.png"
 		};
+		
 	private static final String filePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] fileNames={
 			"jquery.min.js"
@@ -32,6 +41,7 @@ public class FileMap {
 	private static final int fileMapSize=50;
 	private static final int fileLangMapSize=10;
 	
+	public static Set<String> refererSet;
 	public static Map<String, String> imgMap;
 		// imgMap.get("imgName")
 	public static Map<String, Map<String, String>> fileMap;
@@ -40,6 +50,11 @@ public class FileMap {
 	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
 	
 	static {
+		refererSet=new HashSet<String>();
+		for (String referer: referersAllowed) {
+			refererSet.add(referer);
+		}
+		
 		imgMap=new HashMap<String, String>();
 		for (String imgName: imgNames) {
 			imgMap.put(imgName, imgPath+imgName);
@@ -136,6 +151,10 @@ public class FileMap {
 	
 	public FileMap() {}
 	
+	public static boolean refererAllowed(String host) {
+		return refererSet.contains(host);
+	}
+	
 	public static String getImg(String imgName) {
 		return imgMap.get(imgName);
 	}
@@ -151,6 +170,7 @@ public class FileMap {
 	}
 	
 	public static void main(String... args) {
+		// System.out.println(FileMap.refererAllowed("localhost"));
 		// System.out.println(FileMap.get("AJAX post test (Cross orgin policy) and Reco test.html", "en"));
 		// System.out.println(Pattern.quote("[a-d]"));
 	}
