@@ -796,12 +796,12 @@ eve.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 // uri to a href
 ////////////////////////////////////////////////////
-eve.regexURL=/^https?:\/\/\S+$/i;
+eve.regexURL=/^(https?:\/\/\S+)/i;
 eve.uriToA=function(uri) {
 	if (uri===undefined||uri===null||uri.constructor!==String) { return ""; }
 	var exec=eve.regexURL.exec(uri);
 	if (exec!==null) {
-		return '<a target="_blank" href="'+uri+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
+		return '<a target="_blank" href="'+exec[1]+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
 	} else {
 		return uri;
 	}
