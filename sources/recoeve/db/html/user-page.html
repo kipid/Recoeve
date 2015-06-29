@@ -304,7 +304,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" onclick="eve.playlist.setShuffle(true)">[--Shuffle--]</div>
 		<div class="button" onclick="eve.playlist.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="eve.playlist.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>
+		<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 	</div>
 </div><!-- div#head2 -->
 <div class="side2" id="contents"></div><!-- div#contents -->
@@ -473,15 +473,13 @@ $window.trigger("scroll.delayedLoad");
 // String to Array (This is the up-to-date. in user-page.html)
 ////////////////////////////////////////////////////
 eve.encloseStr=function(str) {
-	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (!str||str.constructor!==String) { return ""; }
 	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
 		return '"'+str.replace(/"/g,'""')+'"';
-	} else {
-		return str;
-	}
+	} return str;
 };
 eve.strToJSON=function(str, colMap, rowMap) {
-	if (str===undefined||str===null||str.constructor!==String) { return []; }
+	if (!str||str.constructor!==String) { return []; }
 	if (colMap===undefined||colMap===null) { colMap=true; }
 	// str=str.trim()+"\n";
 	if (str.charAt(str.length-1)!=="\n") {
@@ -565,19 +563,19 @@ $dataLang.after(htmlLang);
 // Escape and Unescape HTML string.
 ////////////////////////////////////////////////////
 eve.escapeHTML=function(str) {
-	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 };
 eve.unescapeHTML=function(str) {
-	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
 eve.escapeAMP=function(str) {
-	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
 };
 eve.unescapeAMP=function(str) {
-	if (str===undefined||str===null||str.constructor!==String) { return ""; }
+	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };
 
@@ -619,7 +617,7 @@ eve.togglePosition=function(elem) {
 	if ($parent.hasClass("fixed")) {
 		$parent.removeClass("fixed");
 		window.scrollTo(0, $parent.offset().top);
-		$elem.text("▲ [--stick to the right top--]");
+		$elem.text("▲ [--stick to the left top--]");
 	} else {
 		$parent.addClass("fixed");
 		window.scrollBy(0, -$parent.height());
@@ -631,7 +629,7 @@ eve.rC=function(elemStr) {
 		+'<div class="rSC">'
 			+elemStr
 		+'</div>'
-		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the right top--]</span></div>'
+		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>'
 	+'</div>';
 };
 eve.ptnURI={};
@@ -641,7 +639,6 @@ eve.videoRendering=function(uri) {
 			var result=eve.ptnURI[p].toIframe(uri);
 			if (result) { return result; }
 		}
-		return {html:""};
 	}
 	return {html:""};
 };
@@ -798,7 +795,7 @@ eve.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 eve.regexURL=/^(https?:\/\/\S+)/i;
 eve.uriToA=function(uri) {
-	if (uri===undefined||uri===null||uri.constructor!==String) { return ""; }
+	if (!uri||uri.constructor!==String) { return ""; }
 	var exec=eve.regexURL.exec(uri);
 	if (exec!==null) {
 		return '<a target="_blank" href="'+exec[1]+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
@@ -2109,7 +2106,7 @@ eve.formatTitle=function(title) {
 	return title.trim().replace(/[\t\n]/g," ");
 };
 eve.formatCats=function(cats) {
-	if (cats.constructor!==String||cats.trim().length===0) {
+	if (!cats||cats.constructor!==String||cats.trim().length===0) {
 		return "";
 	}
 	cats=cats.trim().replace(/[\t\r\n]/g," ");
@@ -2599,7 +2596,7 @@ $button_del.on("click", function(e) {
 				setTimeout(function() {
 					$button_del.removeClass("disabled");
 					$button_close.trigger("click");
-				})
+				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
 				$button_del.removeClass("disabled");
