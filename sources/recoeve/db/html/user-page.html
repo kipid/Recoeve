@@ -766,7 +766,7 @@ ptnURI.toIframe=function(uriRest) {
 	return false;
 };
 ptnURI=eve.ptnURI["instagram.com"]={};
-ptnURI.regEx=/^p\/(\w+)/i;
+ptnURI.regEx=/^p\/([\w-]+)/i;
 ptnURI.toIframe=function(uriRest) {
 	var exec=eve.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
