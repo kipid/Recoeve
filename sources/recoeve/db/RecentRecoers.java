@@ -45,16 +45,16 @@ public class RecentRecoers {
 		String[] list=listOfRecoers();
 		if (list.length==1&&list[0].isEmpty()) { return set; }
 		for (int i=0;i<list.length;i++) {
-			set.add(new Long(list[i]));
+			set.add(Long.parseLong(list[i], 16));
 		}
 		return set;
 	}
 	public void putRecoer(long user_i) {
-		String recoer=Long.toString(user_i);
+		String recoer=Long.toHexString(user_i);
 		fullRecoers="\n"+recoer+fullRecoers;
 	}
 	public boolean deleteRecoer(long user_i) {
-		String recoer=Long.toString(user_i);
+		String recoer=Long.toHexString(user_i);
 		int i=fullRecoers.indexOf("\n"+recoer+"\n");
 		if (i!=-1) {
 			fullRecoers=fullRecoers.substring(0,i)+fullRecoers.substring(i+recoer.length()+1);
@@ -82,23 +82,23 @@ public class RecentRecoers {
 	}
 	
 	public static void main(String... args) {
-		RecentRecoers rr=new RecentRecoers();
-		rr.putRecoer(1300000000);
-		rr.putRecoer(1200000000);
-		rr.putRecoer(1100000000);
-		rr.putRecoer(1000000000);
-		rr.putRecoer(900000000);
-		rr.putRecoer(800000000);
-		rr.putRecoer(700000000);
-		rr.putRecoer(600000000);
-		rr.putRecoer(500000000);
-		rr.putRecoer(400000000);
-		rr.putRecoer(300000000);
-		rr.putRecoer(200000000);
-		rr.putRecoer(100000000);
-		System.out.println(rr);
+		// RecentRecoers rr=new RecentRecoers();
+		// rr.putRecoer(1300000000);
+		// rr.putRecoer(1200000000);
+		// rr.putRecoer(1100000000);
+		// rr.putRecoer(1000000000);
+		// rr.putRecoer(900000000);
+		// rr.putRecoer(800000000);
+		// rr.putRecoer(700000000);
+		// rr.putRecoer(600000000);
+		// rr.putRecoer(500000000);
+		// rr.putRecoer(400000000);
+		// rr.putRecoer(300000000);
+		// rr.putRecoer(200000000);
+		// rr.putRecoer(100000000);
+		// System.out.println(rr);
 		
-		rr.cutRecoers();
-		System.out.println(rr);
+		// rr.cutRecoers();
+		// System.out.println(rr);
 	}
 }
