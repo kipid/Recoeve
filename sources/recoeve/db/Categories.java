@@ -5,6 +5,7 @@ package recoeve.db;
 // import java.util.ArrayList;
 // import java.util.regex.Pattern;
 // import java.util.regex.Matcher;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -123,12 +124,29 @@ public class Categories {
 		} else {
 			cats=strCats; // toFormatNoDuplicateCat(strCats)? in javascript (user-side handling)
 		}
-		
 		setOfCats=new HashSet<String>();
 		for (String cat: cats.split(";")) {
 			setOfCats.add(cat);
 		}
-		
+		setOfSuperCats=new HashSet<String>();
+		for (String cat: setOfCats) {
+			while (cat!=null) {
+				setOfSuperCats.add(cat);
+				cat=getSuperCat(cat);
+			}
+		}
+	}
+	public Categories(Set<String> setCats) {
+		Iterator<String> iterator=setCats.iterator();
+		if (iterator.hasNext()) {
+			cats=iterator.next();
+			while (iterator.hasNext()) {
+				cats+=";"+iterator.next();
+			}
+		} else {
+			cats=null;
+		}
+		setOfCats=setCats;
 		setOfSuperCats=new HashSet<String>();
 		for (String cat: setOfCats) {
 			while (cat!=null) {
@@ -192,45 +210,46 @@ public class Categories {
 		// System.out.println("toFormatNoDuplicateCat(\""+catsStr+"\") : "+toFormatNoDuplicateCat(catsStr));
 		// System.out.println("");
 		
-		String singleCat=toFormat("A--B--C");
-		System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
-		singleCat=toFormat("A something---asd");
-		System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
-		singleCat=toFormat("");
-		System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
-		singleCat=null;
-		System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
-		System.out.println("");
+		// String singleCat=toFormat("A--B--C");
+		// System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
+		// singleCat=toFormat("A something---asd");
+		// System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
+		// singleCat=toFormat("");
+		// System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
+		// singleCat=null;
+		// System.out.println("getSuperCat(\""+singleCat+"\" / "+depthOfCat(singleCat)+") : "+getSuperCat(singleCat));
+		// System.out.println("");
 		
-		Categories cats=new Categories(toFormatNoDuplicateCat("음악--2014;음악--2014;음악--2014;음악--IU;음악--K-pop--ABC;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"));
-		System.out.println(cats);
-		Categories cats2=new Categories(toFormatNoDuplicateCat("음악--IU;음악--K-pop--ABC;음악--2014"));
-		System.out.println(cats2);
-		System.out.println("Equality : "+cats.equals(cats2));
+		// Categories cats=new Categories(toFormatNoDuplicateCat("음악--2014;음악--2014;음악--2014;음악--IU;음악--K-pop--ABC;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"));
+		// // Categories cats=new Categories("");
+		// System.out.println(cats);
+		// Categories cats2=new Categories(toFormatNoDuplicateCat("음악--IU;음악--K-pop--ABC;음악--2014"));
+		// System.out.println(cats2);
+		// System.out.println("Equality : "+cats.equals(cats2));
 		
-		System.out.println("\nSet of cats:");
-		for (String cat: cats.setOfCats) {
-			System.out.println(cat);
-		}
+		// System.out.println("\nSet of cats:");
+		// for (String cat: cats.setOfCats) {
+		// 	System.out.println(cat);
+		// }
 		
-		// cats.setOfSuperCats.add(null);
-		// cats.setOfSuperCats.remove("");
-		System.out.println("\nSet of super cats:");
-		for (String superCat: cats.setOfSuperCats) {
-			System.out.println(superCat);
-		}
-		System.out.println("");
+		// // cats.setOfSuperCats.add(null);
+		// // cats.setOfSuperCats.remove("");
+		// System.out.println("\nSet of super cats:");
+		// for (String superCat: cats.setOfSuperCats) {
+		// 	System.out.println(superCat);
+		// }
+		// System.out.println("");
 		
-		String str=null;
-		System.out.println("cats.hasSuperCat(\""+str+"\") : "+cats.hasSuperCat(str));
-		str="음악";
-		System.out.println("cats.hasSuperCat(\""+str+"\") : "+cats.hasSuperCat(str));
-		str=";음악2;ABC--DEF";
-		System.out.println("cats.isInTheSameTree(\""+str+"\") : "+cats.isInTheSameTree(str)); // 뭐 때문에 만들었지?
-		str="AA--BB--CC";
-		System.out.println("Categories.depthOfCat(\""+str+"\") : "+Categories.depthOfCat(str));
-		str="C--AA--BB;CDE--FDD";
-		singleCat="AA--BB";
-		System.out.println("Categories.isSuperCat(\""+singleCat+"\", \""+str+"\") : "+Categories.isSuperCat(singleCat, str));
+		// String str=null;
+		// System.out.println("cats.hasSuperCat(\""+str+"\") : "+cats.hasSuperCat(str));
+		// str="음악";
+		// System.out.println("cats.hasSuperCat(\""+str+"\") : "+cats.hasSuperCat(str));
+		// str=";음악2;ABC--DEF";
+		// System.out.println("cats.isInTheSameTree(\""+str+"\") : "+cats.isInTheSameTree(str)); // 뭐 때문에 만들었지?
+		// str="AA--BB--CC";
+		// System.out.println("Categories.depthOfCat(\""+str+"\") : "+Categories.depthOfCat(str));
+		// str="C--AA--BB;CDE--FDD";
+		// singleCat="AA--BB";
+		// System.out.println("Categories.isSuperCat(\""+singleCat+"\", \""+str+"\") : "+Categories.isSuperCat(singleCat, str));
 	}
 }
