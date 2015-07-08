@@ -634,29 +634,31 @@ eve.rC=function(elemStr, pb) {
 };
 eve.ptnURI=[];
 eve.uriRendering=function(uri) {
-	if (uri&&uri.constructor===String&&uri.substring(0,4).toLowerCase()==="http") {
-		var k=4;
-		if (uri.charAt(k).toLowerCase()==='s') {
-			k++;
+	if (uri&&uri.constructor===String) {
+		if (uri.substring(0,4).toLowerCase()==="http") {
+			var k=4;
+			if (uri.charAt(k).toLowerCase()==='s') {
+				k++;
+			}
+			if (uri.substring(k,k+3)==="://") {
+				k+=3;
+				var l=uri.indexOf('/',k);
+				var uriHost=null;
+				var uriRest='';
+				if (l===-1) {
+					uriHost=uri.substring(k);
+				} else {
+					uriHost=uri.substring(k,l);
+					uriRest=uri.substring(l+1);
+				}
+				if (eve.ptnURI[uriHost]) {
+					return eve.ptnURI[uriHost].toIframe(uriRest);
+				}
+			}
 		}
-		if (uri.substring(k,k+3)==="://") {
-			k+=3;
-			var l=uri.indexOf('/',k);
-			var uriHost=null;
-			var uriRest='';
-			if (l===-1) {
-				uriHost=uri.substring(k);
-			} else {
-				uriHost=uri.substring(k,l);
-				uriRest=uri.substring(l+1);
-			}
-			if (eve.ptnURI[uriHost]) {
-				return eve.ptnURI[uriHost].toIframe(uriRest);
-			}
-			for (var i=0;i<eve.ptnURI.length;i++) {
-				var result=eve.ptnURI[i].toIframe(uri);
-				if (result) { return result; }
-			}
+		for (var i=0;i<eve.ptnURI.length;i++) {
+			var result=eve.ptnURI[i].toIframe(uri);
+			if (result) { return result; }
 		}
 	}
 	return {html:""};
@@ -790,6 +792,16 @@ ptnURI.toIframe=function(uri) {
 	var exec=eve.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>')};
+	}
+	return false;
+};
+ptnURI=eve.ptnURI[2]={};
+ptnURI.regEx=/^<(?:iframe|embed)\s/i;
+ptnURI.toIframe=function(uri) {
+	var exec=eve.ptnURI[2].regEx.exec(uri);
+	if (exec!==null) {
+		console.log($(uri).attr("src"));
+		// return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>')};
 	}
 	return false;
 };
@@ -1510,13 +1522,12 @@ eve.putCatsUriToList=function(cats, uri) {
 	for (var i=0;i<catSplit.length;i++) {
 		var cat=catSplit[i];
 		if (eve.catUriList[cat]) {
-			eve.catUriList[cat]["UriList"]=uri+"\n"+eve.catUriList[cat]["UriList"];
+			if (eve.catUriList[cat].has) {
+				eve.catUriList[cat]["UriList"]=uri+"\n"+eve.catUriList[cat]["UriList"];
+			}
 		} else {
 			eve.putCat(cat);
-			eve.catUriList[cat]={
-				cat:cat
-				, UriList:uri
-			};
+			eve.catUriList[cat]={cat:cat, down:true, has:true, UriList:uri};
 		}
 	}
 };
@@ -1524,14 +1535,14 @@ eve.deleteCatsUriFromList=function(cats, uri) {
 	var catSplit=cats.split(";");
 	for (var i=0;i<catSplit.length;i++) {
 		var cat=catSplit[i];
-		if (eve.catUriList[cat]) {
+		if (eve.catUriList[cat]&&eve.catUriList[cat].has) {
 			var fullURIs="\n"+eve.catUriList[cat]["UriList"]+"\n";
 			var k=fullURIs.indexOf("\n"+uri+"\n");
 			if (k!==-1) {
 				eve.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			}
 			if (eve.catUriList[cat]["UriList"].length===0) {
-				while (cat!==null&&(!eve.catUriList[cat]||eve.catUriList[cat]["UriList"].length===0)&&eve.deleteCat(cat)) {
+				while (cat!==null&&eve.catUriList[cat].has&&eve.catUriList[cat]["UriList"].length===0&&eve.deleteCat(cat)) {
 					cat=eve.getSuperCat(cat);
 				}
 			}
@@ -2503,6 +2514,37 @@ $button_reco.on("click", function(e) {
 		$button_reco.removeClass("disabled");
 	}
 });
+eve.catsChangedOnUri=function(oldCats, newCats, uri) {
+	if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
+		var oldCatSplit=oldCats.split(";");
+		var newCatSplit=newCats.split(";");
+		var o=[];
+		var n=[];
+		for (var i=0;i<oldCatSplit.length;i++) {
+			o[oldCatSplit[i]]=true;
+		}
+		newCats="";
+		for (var i=0;i<newCatSplit.length;i++) {
+			if (o[newCatSplit[i]]) {
+				o[newCatSplit[i]]=false;
+				n[newCatSplit[i]]=false;
+			} else {
+				newCats+=newCatSplit[i]+";";
+				n[newCatSplit[i]]=true;
+			}
+		}
+		oldCats="";
+		for (var p in o) {
+			if (o[p]) { oldCats+=p+";"; }
+		}
+		if (oldCats.length>0) {
+			eve.deleteCatsUriFromList(oldCats.substring(0,oldCats.length-1), uri);
+		}
+		if (newCats.length>0) {
+			eve.putCatsUriToList(newCats.substring(0,newCats.length-1), uri);
+		}
+	}
+};
 $button_edit.on("click", function(e) {
 	$button_edit.addClass("disabled");
 	var uri=eve.formatURI($input_uri[0].value);
@@ -2555,8 +2597,9 @@ $button_edit.on("click", function(e) {
 					$error.html("Changed");
 					if (cats!==r["cats"]) {
 						if (eve.myPage) {
-							eve.deleteCatsUriFromList(r["cats"], uri);
-							eve.putCatsUriToList(cats, uri);
+							eve.catsChangedOnUri(r.cats, cats, uri);
+							// eve.deleteCatsUriFromList(r["cats"], uri);
+							// eve.putCatsUriToList(cats, uri);
 						}
 						r["cats"]=cats;
 					}
