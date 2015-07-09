@@ -70,7 +70,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #catList .cat.selected {border:1px solid black}
 	.dark #catList .cat.selected {border-color:white}
 #catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer}
-#catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,230,230)}
+#catList .cat>.baseCat {color:white}
+#catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,210,210)}
 #catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
@@ -1299,6 +1300,9 @@ eve.getAndShowRecosOnCat=function(cat) {
 		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
 	}
 };
+eve.pathOfCat=function(cat) {
+	return "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat);
+};
 eve.refresh=function(cats, option, uri) {
 	var currentCat=eve.getSearchVars(window.location.search).cat;
 	var c=cats.split(";");
@@ -1309,7 +1313,7 @@ eve.refresh=function(cats, option, uri) {
 		}
 	}
 	if (c[k]!==currentCat) {
-		window.history.pushState({cat:c[k]}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(c[k]));
+		window.history.pushState({cat:c[k]}, null, eve.pathOfCat(c[k]));
 		eve.getAndShowRecosOnCat(c[k]);
 	} else {
 		if (option===undefined||option===null) {
@@ -1359,13 +1363,18 @@ eve.ExpCol=function(elem, catEC) {
 		catEC.subCatCollapsed=false;
 	}
 };
-eve.openCat=function(cat) {
-	eve.getAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
+eve.openCat=function(cat, e) {
+	if (e&&e.which===2) { // 2 for wheel click
+		return true;
+	} else {
+		eve.getAndShowRecosOnCat(cat);
+		window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
+		return false;
+	}
 };
 eve.renderCatListHTML=function() {
 	var cL=eve.catList;
-	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><span class="baseCat" onclick="eve.openCat(eve.catList[0].cat)">[--Uncategorized--]</span></div>';
+	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+eve.pathOfCat("")+'" class="baseCat" onclick="return eve.openCat(eve.catList[0].cat, event)">[--Uncategorized--]</a></div>';
 	var i=1;
 	for (;i<cL.length-1;i++) {
 		var beforeDepth=cL[i-1].depth;
@@ -1384,7 +1393,7 @@ eve.renderCatListHTML=function() {
 		} else {
 			catListHTML+='<span class="noEC"></span>';
 		}
-		catListHTML+='<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( cL[i].baseCat )+'</span>'+'</div>';
+		catListHTML+='<a href="'+eve.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return eve.openCat(eve.catList['+i+'].cat, event)">'+eve.escapeHTML( cL[i].baseCat )+'</a>'+'</div>';
 	}
 	if (cL.length>1) {
 		var beforeDepth=cL[i-1].depth;
@@ -1398,7 +1407,7 @@ eve.renderCatListHTML=function() {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">'
 			+'<span class="noEC"></span>'
-			+'<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( cL[i].baseCat )+'</span>'
+			+'<a href="'+eve.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return eve.openCat(eve.catList['+i+'].cat, event)">'+eve.escapeHTML( cL[i].baseCat )+'</a>'
 		+'</div>';
 		for (var j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+='</div>';
@@ -1514,7 +1523,7 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	eve.getAndShowRecosOnCat(vars.cat);
-	window.history.pushState({cat:vars.cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(vars.cat));
+	window.history.pushState({cat:vars.cat}, null, eve.pathOfCat(vars.cat));
 }
 
 //////////////////////////////////////
