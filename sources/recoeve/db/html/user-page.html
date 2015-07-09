@@ -230,6 +230,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </style>
 </head>
 <body>
+<data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
 <div id="container" class="dark">
 <div id="sidebar">
@@ -325,6 +326,7 @@ Chinese/중국어/cn	cn</data></div>
 /////////////////////////////////////////////
 // Variables
 /////////////////////////////////////////////
+$data_myCatList=$("#data-myCatList");
 $data_CatList=$("#data-CatList");
 
 $user_noti=$("#user-noti");
@@ -652,7 +654,8 @@ eve.uriRendering=function(uri) {
 					uriRest=uri.substring(l+1);
 				}
 				if (eve.ptnURI[uriHost]) {
-					return eve.ptnURI[uriHost].toIframe(uriRest);
+					var result=eve.ptnURI[uriHost].toIframe(uriRest);
+					if (result) { return result; }
 				}
 			}
 		}
@@ -1360,13 +1363,14 @@ eve.openCat=function(cat) {
 	eve.getAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat));
 };
-eve.renderCatListHTML=function(catList) {
-	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+eve.catList[0].depth+'em"><span class="noEC"></span><span class="baseCat" onclick="eve.openCat(eve.catList[0].cat)">[--Uncategorized--]</span></div>';
+eve.renderCatListHTML=function() {
+	var cL=eve.catList;
+	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><span class="baseCat" onclick="eve.openCat(eve.catList[0].cat)">[--Uncategorized--]</span></div>';
 	var i=1;
-	for (;i<eve.catList.length-1;i++) {
-		var beforeDepth=eve.catList[i-1].depth;
-		var currentDepth=eve.catList[i].depth;
-		var afterDepth=eve.catList[i+1].depth;
+	for (;i<cL.length-1;i++) {
+		var beforeDepth=cL[i-1].depth;
+		var currentDepth=cL[i].depth;
+		var afterDepth=cL[i+1].depth;
 		if (beforeDepth<currentDepth) { // open subCat
 			catListHTML+='<div class="subCat">';
 		} else {
@@ -1374,17 +1378,17 @@ eve.renderCatListHTML=function(catList) {
 				catListHTML+='</div>';
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+eve.catList[i].depth+'em">';
+		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">';
 		if (currentDepth<afterDepth) {
 			catListHTML+='<span class="EC" onclick="eve.ExpCol(this,eve.catList['+i+'])">▼</span>';
 		} else {
 			catListHTML+='<span class="noEC"></span>';
 		}
-		catListHTML+='<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'+'</div>';
+		catListHTML+='<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( cL[i].baseCat )+'</span>'+'</div>';
 	}
-	if (eve.catList.length>1) {
-		var beforeDepth=eve.catList[i-1].depth;
-		var currentDepth=eve.catList[i].depth;
+	if (cL.length>1) {
+		var beforeDepth=cL[i-1].depth;
+		var currentDepth=cL[i].depth;
 		if (beforeDepth<currentDepth) { // open subCat
 			catListHTML+='<div class="subCat">';
 		} else {
@@ -1392,9 +1396,9 @@ eve.renderCatListHTML=function(catList) {
 				catListHTML+='</div>';
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+eve.catList[i].depth+'em">'
+		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">'
 			+'<span class="noEC"></span>'
-			+'<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( eve.catList[i].baseCat )+'</span>'
+			+'<span class="baseCat" onclick="eve.openCat(eve.catList['+i+'].cat)">'+eve.escapeHTML( cL[i].baseCat )+'</span>'
 		+'</div>';
 		for (var j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+='</div>';
@@ -1402,8 +1406,16 @@ eve.renderCatListHTML=function(catList) {
 	}
 	$catList.html(catListHTML);
 };
-eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
-eve.renderCatListHTML(eve.catList);
+if (eve.myPage) {
+	eve.myCatList=eve.catList=[];
+	eve.renderStrCatList(eve.unescapeHTML($data_myCatList.html()), eve.myCatList);
+} else {
+	eve.myCatList=[];
+	eve.renderStrCatList(eve.unescapeHTML($data_myCatList.html()), eve.myCatList);
+	eve.catList=[];
+	eve.renderStrCatList(eve.unescapeHTML($data_CatList.html()));
+}
+eve.renderCatListHTML();
 var $catECs=$catList.find(">.cat:has(>.EC)"); // Only the 1-level subCats.
 for (var i=$catECs.length-1;i>=0;i--) {
 	eve.catList[eve.catList[Number($catECs.eq(i).attr("id").substring(4))].cat].subCatCollapsed=true;
@@ -1770,7 +1782,7 @@ $change_catList_order_cancel.on("click", function(e) {
 	var catList=eve.unescapeHTML($data_CatList.html());
 	if (catListChanged!==catList) {
 		eve.renderStrCatList(catList);
-		eve.renderCatListHTML(eve.catList);
+		eve.renderCatListHTML();
 		for (var i=eve.catList.length-1;i>=0;i--) {
 			if (eve.catList[i].subCatCollapsed) {
 				$("#cat-"+i+">.EC").trigger("click");
@@ -2025,24 +2037,34 @@ $fuzzy_search.on("keyup", function(e) {
 });
 $fuzzy_search.trigger("keyup");
 
+eve.putCatToFSFullList=function(i, cat) {
+	if (eve.catFSFullList[cat]) {
+		eve.catFSFullList[i]=eve.catFSFullList[cat];
+	} else {
+		var txtSplitted=eve.splitHangul(cat);
+		var txt="";
+		for (var k=0;k<txtSplitted.length;k++) {
+			txt+=txtSplitted[k]["splitted"];
+		}
+		eve.catFSFullList[i]=eve.catFSFullList[cat]={"txt":txt, "txtSplitted":txtSplitted, "cat":cat, "html":eve.escapeHTML(cat)};
+	}
+};
 eve.updateCatFS=function() {
 	if (eve.catFSFullList) {
 		eve.catFSFullList.splice(0, eve.catFSFullList.length);
 	} else {
 		eve.catFSFullList=[];
 	}
-	var $cats=$("#catList .cat").not("#cat-0");
-	for (var i=0;i<$cats.length;i++) {
-		var cat=eve.catList[Number($cats.eq(i).attr("id").substring(4))].cat;
-		if (eve.catFSFullList[cat]) {
-			eve.catFSFullList[i]=eve.catFSFullList[cat];
-		} else {
-			var txtSplitted=eve.splitHangul(cat);
-			var txt="";
-			for (var k=0;k<txtSplitted.length;k++) {
-				txt+=txtSplitted[k]["splitted"];
+	if (eve.myPage) {
+		var $cats=$("#catList .cat").not("#cat-0");
+		for (var i=0;i<$cats.length;i++) {
+			eve.putCatToFSFullList(i, eve.catList[Number($cats.eq(i).attr("id").substring(4))].cat);
+		}
+	} else {
+		if (eve.myCatList) {
+			for (var i=0;i<eve.myCatList.length;i++) {
+				eve.putCatToFSFullList(i, eve.myCatList[i].cat);
 			}
-			eve.catFSFullList[i]=eve.catFSFullList[cat]={"txt":txt, "txtSplitted":txtSplitted, "cat":cat, "html":eve.escapeHTML(cat)};
 		}
 	}
 	eve.catFSLastTxt="$!@#";

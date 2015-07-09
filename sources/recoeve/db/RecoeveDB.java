@@ -534,51 +534,57 @@ public boolean updateUserClass(int classI, int increment) throws SQLException {
 
 public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 	Map<String,String> varMap=new HashMap<String,String>();
+	long my_i=0;
 	if (cookie.get("I")!=null) {
 		varMap.put("{--myIndex--}", cookie.get("I"));
-		long user_i=Long.parseLong(cookie.get("I"), 16);
+		my_i=Long.parseLong(cookie.get("I"), 16);
 		try {
-			ResultSet user=findUserByIndex(user_i);
+			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
 				varMap.put("{--myId--}", user.getString("id"));
+				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
 			}
 		} catch (SQLException e) {
 			err(e);
 		}
-	} else {
-		varMap.put("{--myIndex--}", "");
-		varMap.put("{--myId--}", "");
 	}
 	try {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
 			long user_i=user.getLong("i");
-			CatList catList=getCatList(user_i);
-			varMap.put("{--CatList--}", HTMLString.escapeHTML(catList.toString()));
-			// varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
+			if (cookie.get("I")!=null&&user_i!=my_i) {
+				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
+			}
 		}
 	} catch (SQLException e) {
 		err(e);
 	}
+	varMap.putIfAbsent("{--myIndex--}", "");
+	varMap.putIfAbsent("{--myId--}", "");
+	varMap.putIfAbsent("{--myCatList--}", "");
+	varMap.putIfAbsent("{--CatList--}", "");
 	return varMap;
 }
 public Map<String,String> varMapMyPage(Cookie cookie) {
 	Map<String,String> varMap=new HashMap<String,String>();
 	if (cookie.get("I")!=null) {
 		varMap.put("{--myIndex--}", cookie.get("I"));
-		long user_i=Long.parseLong(cookie.get("I"), 16);
+		long my_i=Long.parseLong(cookie.get("I"), 16);
 		try {
-			ResultSet user=findUserByIndex(user_i);
+			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
 				varMap.put("{--myId--}", user.getString("id"));
-				CatList catList=getCatList(user_i);
-				varMap.put("{--CatList--}", HTMLString.escapeHTML(catList.toString()));
-				// varMap.put("{--UriList--}", HTMLString.escapeHTML( getStringCatUriList(user_i, catList.subCats(null)) ));
+				CatList catList=getCatList(my_i);
+				varMap.put("{--myCatList--}", HTMLString.escapeHTML(catList.toString()));
 			}
 		} catch (SQLException e) {
 			err(e);
 		}
 	}
+	varMap.putIfAbsent("{--myIndex--}", "");
+	varMap.putIfAbsent("{--myId--}", "");
+	varMap.putIfAbsent("{--myCatList--}", "");
+	varMap.putIfAbsent("{--CatList--}", "");
 	return varMap;
 }
 public boolean sessionCheck(Cookie cookie) {
