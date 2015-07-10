@@ -552,7 +552,7 @@ public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
 			long user_i=user.getLong("i");
-			if (cookie.get("I")!=null&&user_i!=my_i) {
+			if (cookie.get("I")==null||user_i!=my_i) {
 				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
 			}
 		}
