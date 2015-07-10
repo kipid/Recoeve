@@ -5,12 +5,17 @@
 (function(eve, undefined) {
 	eve.myIndex="{--myIndex--}";
 	eve.myId="{--myId--}";
-	var pathname=window.location.pathname;
-	if (pathname.substring(0,6)!=="/user/") {
-		pathname="/user/"+eve.myId;
-		window.history.replaceState(null, null, pathname+window.location.search+window.location.hash);
+	eve.pathName=window.location.pathname;
+	if (eve.pathName.substring(0,6)!=="/user/") {
+		eve.pathName="/user/"+eve.myId;
+		window.history.replaceState(null, null, eve.pathName+window.location.search+window.location.hash);
 	}
-	eve.userId=pathname.substring(6);
+	eve.userId=eve.pathName.substring(6);
+	var k=eve.userId.indexOf("/");
+	if (k!==-1) {
+		eve.userId=eve.userId.substring(0,k);
+		eve.pathName="/user/"+eve.userId;
+	}
 	eve.myPage=(eve.myId===eve.userId);
 })(window.eve=window.eve||{});
 </script>
@@ -326,6 +331,7 @@ Chinese/중국어/cn	cn</data></div>
 /////////////////////////////////////////////
 $data_myCatList=$("#data-myCatList");
 $data_CatList=eve.myPage?$data_myCatList:$("#data-CatList");
+$data_lang=$("#data-lang");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
@@ -392,13 +398,25 @@ if (eve.myIndex) {
 	$button_new_reco.remove();
 }
 
-////////////////////////////////////////////////////
-// Delayed Loading.
-////////////////////////////////////////////////////
+eve.lastURI="";
 eve.delayPad=eve.delayPad||1024;
 eve.wait=eve.wait||512;
 eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 eve.previous=Date.now();
+
+eve.userRecos={};
+eve.myRecos=eve.myPage?eve.userRecos:{};
+eve.userRecos[""]={
+	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
+};
+
+eve.catList=[];
+eve.myCatList=eve.myPage?eve.catList:[];
+eve.catUriList=[]; // eve.catUriList[cat]={cat:"cat", UriList:"uri1\nuri2", down:true, has:true};
+
+////////////////////////////////////////////////////
+// Delayed Loading.
+////////////////////////////////////////////////////
 $.fn.inView=function() {
 	if (this.is(":visible")) {
 		var viewportHeight=window.innerHeight;
@@ -549,15 +567,17 @@ eve.strToJSON=function(str, colMap, rowMap) {
 	return ret;
 };
 
-var $dataLang=$("#data-lang");
-var dataLang=eve.strToJSON( $dataLang.html().trim() );
-var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
-var htmlLang='<div class="p">';
+////////////////////////////////////////////////////
+// Language/언어/語言
+////////////////////////////////////////////////////
+var dataLang=eve.strToJSON( $data_lang.html().trim() );
+var href=window.location.origin+eve.pathName+"?lang=";
+var htmlLang='<div>';
 for (var i=0;i<dataLang.length;i++) {
 	htmlLang+='<a href="'+href+dataLang[i][1]+'">'+dataLang[i][0]+'</a><br>';
 }
 htmlLang+='</div>';
-$dataLang.after(htmlLang);
+$data_lang.after(htmlLang);
 
 ////////////////////////////////////////////////////
 // Escape and Unescape HTML string.
@@ -605,6 +625,20 @@ eve.cueYoutubePlaylist=function(list) {
 				eve.cueYoutubePlaylist(list);
 			}, 1000);
 		}
+	}
+};
+
+////////////////////////////////////////////////////
+// uri to a href
+////////////////////////////////////////////////////
+eve.regexURL=/^https?:\/\/\S+/i;
+eve.uriToA=function(uri) {
+	if (!uri||uri.constructor!==String) { return ""; }
+	var exec=eve.regexURL.exec(uri);
+	if (exec!==null) {
+		return '<a target="_blank" href="'+exec[0]+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
+	} else {
+		return eve.escapeHTML(uri);
 	}
 };
 
@@ -662,10 +696,10 @@ eve.uriRendering=function(uri) {
 			if (result) { return result; }
 		}
 	}
-	return {html:""};
+	return {html:eve.uriToA(uri)};
 };
-eve.YTiframe=function(v, list) {
-	return eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(list?'?list='+list:'')+'" frameborder="0" allowfullscreen=""></iframe>')
+eve.YTiframe=function(v, vars) {
+	return eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(vars&&vars.list&&vars.list.val?'?list='+vars.list.val:'')+'" frameborder="0" allowfullscreen=""></iframe>');
 };
 var ptnURI;
 ptnURI=eve.ptnURI["www.youtube.com"]={};
@@ -679,10 +713,10 @@ ptnURI.toIframe=function(uriRest) {
 		if (exec[1]) {
 			v=exec[1];
 		} else if (vars&&vars.v) {
-			v=vars.v;
+			v=vars.v.val;
 		}
 		if (v) {
-			return {html:eve.YTiframe(v,vars&&vars.list), from:"youtube", videoId:v};
+			return {html:eve.YTiframe(v,vars), from:"youtube", videoId:v};
 		}
 	}
 	return false;
@@ -696,7 +730,7 @@ ptnURI.toIframe=function(uriRest) {
 		if (exec[2]) {
 			vars=eve.getSearchVars(exec[2]);
 		}
-		return {html:eve.YTiframe(exec[1],vars&&vars.list), from:"youtube", videoId:exec[1]};
+		return {html:eve.YTiframe(exec[1],vars), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
@@ -706,8 +740,8 @@ ptnURI.toIframe=function(uriRest) {
 	var exec=eve.ptnURI["m.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
-		if (vars.v) {
-			return {html:eve.YTiframe(vars.v,vars.list), from:"youtube", videoId:vars.v};
+		if (vars.v&&vars.v.val) {
+			return {html:eve.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v};
 		}
 	}
 	return false;
@@ -736,8 +770,16 @@ ptnURI.regEx=/^flash\/outKeyPlayer\.nhn(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
 	var exec=eve.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		// var vars=eve.getSearchVars(exec[1]);
-		return {html:eve.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+exec[0]+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
+		var vars=eve.getSearchVars(exec[1]);
+		var lastPath="flash/outKeyPlayer.nhn?";
+		for (var i=0;i<vars.length;i++) {
+			if (vars[i].key==="isAutoPlay") {
+				lastPath+="isAutoPlay=false&";
+			} else {
+				lastPath+=vars[i].key+"="+vars[i].val+"&";
+			}
+		}
+		return {html:eve.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+lastPath.substring(0,lastPath.length-1)+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
 	}
 	return false;
 };
@@ -796,16 +838,6 @@ ptnURI.toIframe=function(uri) {
 	}
 	return false;
 };
-ptnURI=eve.ptnURI[2]={};
-ptnURI.regEx=/^<(?:iframe|embed)\s/i;
-ptnURI.toIframe=function(uri) {
-	var exec=eve.ptnURI[2].regEx.exec(uri);
-	if (exec!==null) {
-		console.log($(uri).attr("src"));
-		// return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>')};
-	}
-	return false;
-};
 
 ////////////////////////////////////////////////////
 // desc and cmt rendering
@@ -827,20 +859,6 @@ eve.renderStrDescCmt=function(str) {
 	res[i++]=key;
 	res[key]=str.substring(start).trim();
 	return res;
-};
-
-////////////////////////////////////////////////////
-// uri to a href
-////////////////////////////////////////////////////
-eve.regexURL=/^(https?:\/\/\S+)/i;
-eve.uriToA=function(uri) {
-	if (!uri||uri.constructor!==String) { return ""; }
-	var exec=eve.regexURL.exec(uri);
-	if (exec!==null) {
-		return '<a target="_blank" href="'+exec[1]+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
-	} else {
-		return uri;
-	}
 };
 
 ////////////////////////////////////////////////////
@@ -1056,8 +1074,6 @@ eve.processOutRange=function() {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-eve.userRecos={};
-eve.myRecos=eve.myPage?eve.userRecos:{};
 eve.getDepthOfTabs=function(str) {
 	var n=0;
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
@@ -1143,7 +1159,7 @@ eve.recoHTML=function(r) {
 					res+='<div class="value"><span class="key">'+key+' : </span>';
 					var relateds=value.split("\n");
 					for (var m=0;m<relateds.length;m++) {
-						res+='<br>'+eve.uriToA( relateds[m] )+eve.uriRendering( relateds[m] ).html;
+						res+='<br>'+eve.uriRendering( relateds[m] ).html;
 					}
 					res+='</div>';
 					break;
@@ -1171,7 +1187,6 @@ eve.editOrRecoToMine=function(elem) {
 	$input_uri[0].disabled=true;
 	$new_reco.show();
 	if (uri.length!==0&&uri!==eve.lastURI) {
-		eve.lastURI=uri;
 		eve.getAndShowDefsAndReco();
 	}
 	eve.wST=$window.scrollTop();
@@ -1246,7 +1261,7 @@ eve.getAndShowRecosOnUris=function(uriList) {
 	}
 	if (getRecosN>0) {
 		$.ajax({
-			type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
+			type:"POST", url:eve.pathName+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function(resp) {
 			eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
@@ -1277,7 +1292,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
-				type:"POST", url:"/user/"+eve.userId+"/get-UriList", data:getUriListStr
+				type:"POST", url:eve.pathName+"/get-UriList", data:getUriListStr
 				, dataType:"text"
 			}).fail(function() {
 				$contents.html("get-UriList on "+eve.escapeHTML(cat)+" has failed..");
@@ -1298,10 +1313,11 @@ eve.getAndShowRecosOnCat=function(cat) {
 	}
 };
 eve.pathOfCat=function(cat) {
-	return "/user/"+eve.userId+"?cat="+eve.escapeAMP(cat);
+	return eve.pathName+"?cat="+eve.escapeAMP(cat);
 };
 eve.refresh=function(cats, option, uri) {
 	var currentCat=eve.getSearchVars(window.location.search).cat;
+	if (currentCat) { currentCat=currentCat.val; }
 	var c=cats.split(";");
 	var k=0;
 	if (currentCat!==undefined) {
@@ -1412,8 +1428,6 @@ eve.renderCatListHTML=function() {
 	}
 	$catList.html(catListHTML);
 };
-eve.catList=[];
-eve.myCatList=eve.myPage?eve.catList:[];
 if (eve.myIndex) { eve.renderStrCatList(eve.unescapeHTML($data_myCatList.html()), eve.myCatList); }
 if (!eve.myPage) { eve.renderStrCatList(eve.unescapeHTML($data_CatList.html())); }
 eve.renderCatListHTML();
@@ -1423,7 +1437,6 @@ for (var i=$catECs.length-1;i>=0;i--) {
 }
 $catECs.find(">.EC").trigger("click");
 
-eve.catUriList=[]; // eve.catUriList[cat]={cat:"cat", UriList:"uri1\nuri2", down:true, has:true};
 for (var i=0;i<eve.catList.length;i++) {
 	var cat=eve.catList[i].cat;
 	eve.catUriList[cat]={cat:cat, down:false};
@@ -1437,9 +1450,9 @@ window.onpopstate=function(e) {
 eve.getSearchVars=function(searchStr) {
 	var vars=[];
 	if (searchStr!==0) {
-		if (searchStr.substring(0,1)==="?") {
-			searchStr=searchStr.substring(1);
-		}
+		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
+		var j=searchStr.indexOf("#");
+		if (j!==-1) { searchStr=searchStr.substring(0,j); }
 		var splits=searchStr.replace(/&amp;/ig,"&").split("&");
 		for (var i=0;i<splits.length;i++) {
 			var key=splits[i];
@@ -1450,7 +1463,7 @@ eve.getSearchVars=function(searchStr) {
 				key=key.substring(0,k);
 			}
 			key=decodeURIComponent(key);
-			vars[i]=vars[key]=value;
+			vars[i]=vars[key]={key:key, val:value};
 		}
 	}
 	return vars;
@@ -1511,11 +1524,12 @@ eve.docCookies={
 };
 var vars=eve.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
-	eve.docCookies.setItem("lang", vars.lang, Infinity, "/");
+	eve.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
 if (vars.cat!==undefined) {
-	eve.getAndShowRecosOnCat(vars.cat);
-	window.history.pushState({cat:vars.cat}, null, eve.pathOfCat(vars.cat));
+	var cat=vars.cat.val;
+	eve.getAndShowRecosOnCat(cat);
+	window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
 }
 
 //////////////////////////////////////
@@ -2151,9 +2165,9 @@ $input_cats.on("keyup click", function(e) {
 		for (var i=0;i<eve.catFSList.length;i++) {
 			str+='<div class="list-item">'
 					+'<div class="list-index">'+i+'</div>'
-					+eve.catFSList[i]["html"]
-					+((eve.catFSList[i]["highlighted"]!==undefined)?
-					'<div class="highlighted">'+eve.catFSList[i]["highlighted"]+'</div>':'')
+					+eve.catFSList[i].html
+					+((eve.catFSList[i].highlighted!==undefined)?
+					'<div class="highlighted">'+eve.catFSList[i].highlighted+'</div>':'')
 				+'</div>';
 		}
 		$cat_fs_list.html(str);
@@ -2209,8 +2223,23 @@ eve.getUTF8Length=function(s) {
 	}
 	return len;
 };
+eve.ptnTag=/^<\w+[\s\S]+>$/i;
 eve.formatURI=function(uri) {
-	return uri.trim().replace(/[\t\n]/g," ");
+	uri=uri.trim().replace(/[\t\n]/g," ");
+	var exec=eve.ptnTag.exec(uri);
+	if (exec!==null) {
+		try {
+			var $uri=$(uri);
+			var src=$uri.attr("src");
+			if (src) {
+				uri=src;
+			} else {
+				src=$uri.find("[src]").attr("src");
+				if (src) { uri=src; }
+			}
+		} catch (err) { console.log(err); }
+	}
+	return uri.replace(/&amp;/ig,"&");
 };
 eve.formatTitle=function(title) {
 	return title.trim().replace(/[\t\n]/g," ");
@@ -2308,7 +2337,7 @@ eve.showReco=function(r) {
 };
 eve.emptifyReco=function() {
 	$error.html("");
-	$input_uri[0].value=eve.lastURI="";
+	$input_uri[0].value="";
 	eve.getAndShowDefsAndReco();
 };
 eve.showDefs=function(r) {
@@ -2346,13 +2375,9 @@ eve.showDefs=function(r) {
 		$input_cats[0].value=eve.unescapeHTML($this.html());
 	});
 };
-eve.lastURI="";
-eve.userRecos[""]={
-	has:true, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
-};
 eve.getAndShowDefsAndReco=function() {
 	var elem=$input_uri[0];
-	var uri=eve.formatURI(elem.value);
+	var uri=eve.lastURI=eve.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
 	$("#show-URI").html(eve.uriRendering(uri).html.replace(/delayed-src/gi,"src"));
 	var r=eve.userRecos[uri];
@@ -2362,7 +2387,7 @@ eve.getAndShowDefsAndReco=function() {
 	} else {
 		var getRecosStr="uri"+"\n"+uri;
 		$.ajax({
-			type:"POST", url:"/user/"+eve.userId+"/get-Recos", data:getRecosStr
+			type:"POST", url:eve.pathName+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
 			eve.recoDowned(uri, eve.userRecos);
@@ -2420,17 +2445,11 @@ $new_reco.find("input, textarea").on("keydown.common", function(e) {
 	}
 });
 $input_uri.on("keyup", function(e) {
-	var uri=eve.formatURI(this.value);
+	var uri=this.value;
 	if (uri!==eve.lastURI) {
-		if (uri==="") {
-			eve.lastURI=uri;
-		} else {
-			clearTimeout(eve.timeOutGetInfos);
-			eve.timeOutGetInfos=setTimeout(function() {
-				$input_uri[0].value=eve.lastURI=uri;
-				eve.getAndShowDefsAndReco();
-			}, 1000);
-		}
+		eve.lastURI=uri;
+		clearTimeout(eve.timeOutGetInfos);
+		eve.timeOutGetInfos=setTimeout(eve.getAndShowDefsAndReco, 1000);
 	}
 });
 
@@ -2505,6 +2524,7 @@ $button_new_reco.on("click", function(e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
 	var cat=eve.getSearchVars(window.location.search).cat;
+	if (cat) { cat=cat.val; }
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
 	}
