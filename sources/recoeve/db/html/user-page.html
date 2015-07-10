@@ -1643,7 +1643,7 @@ if (eve.myPage) {
 					c=false;
 					if (eve.catUriList[cat].has&&eve.catUriList[cat]["UriList"].length===0) {
 						c=eve.deleteCat(cat);
-						catIsDeleted=c||catIsDeleted;
+						catIsDeleted=catIsDeleted||c;
 					}
 					cat=eve.getSuperCat(cat);
 				}
@@ -1656,36 +1656,35 @@ if (eve.myPage) {
 	}
 }};
 eve.catsChangedOnUri=function(oldCats, newCats, uri) {
-	if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
-		var oldCatSplit=oldCats.split(";");
-		var newCatSplit=newCats.split(";");
-		var o=[];
-		var n=[];
-		for (var i=0;i<oldCatSplit.length;i++) {
-			o[oldCatSplit[i]]=true;
-		}
-		newCats="";
-		for (var i=0;i<newCatSplit.length;i++) {
-			if (o[newCatSplit[i]]) {
-				o[newCatSplit[i]]=false;
-				n[newCatSplit[i]]=false;
-			} else {
-				newCats+=newCatSplit[i]+";";
-				n[newCatSplit[i]]=true;
-			}
-		}
-		oldCats="";
-		for (var p in o) {
-			if (o[p]) { oldCats+=p+";"; }
-		}
-		if (oldCats.length>0) {
-			eve.deleteCatsUriFromList(oldCats.substring(0,oldCats.length-1), uri);
-		}
-		if (newCats.length>0) {
-			eve.putCatsUriToList(newCats.substring(0,newCats.length-1), uri);
+if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
+	var oldCatSplit=oldCats.split(";");
+	var newCatSplit=newCats.split(";");
+	var o=[];
+	var n=[];
+	for (var i=0;i<oldCatSplit.length;i++) {
+		o[oldCatSplit[i]]=true;
+	}
+	newCats="";
+	for (var i=0;i<newCatSplit.length;i++) {
+		if (o[newCatSplit[i]]) {
+			o[newCatSplit[i]]=false;
+			n[newCatSplit[i]]=false;
+		} else {
+			newCats+=newCatSplit[i]+";";
+			n[newCatSplit[i]]=true;
 		}
 	}
-};
+	oldCats="";
+	for (var p in o) {
+		if (o[p]) { oldCats+=p+";"; }
+	}
+	if (oldCats.length>0) {
+		eve.deleteCatsUriFromList(oldCats.substring(0,oldCats.length-1), uri);
+	}
+	if (newCats.length>0) {
+		eve.putCatsUriToList(newCats.substring(0,newCats.length-1), uri);
+	}
+}};
 
 $change_catList_order_ok.hide();
 $change_catList_order_cancel.hide();
