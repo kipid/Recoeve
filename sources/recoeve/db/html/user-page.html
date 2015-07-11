@@ -206,7 +206,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
 
-.rC {margin:1em 0}
+.rC, img {margin:.5em 0}
 .rC.fixed {position:fixed; z-index:100; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
 	.dark .rC.fixed {background:black; border-color:white}
 .rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:60%}
@@ -406,13 +406,31 @@ eve.previous=Date.now();
 
 eve.userRecos={};
 eve.myRecos=eve.myPage?eve.userRecos:{};
-eve.userRecos[""]={
-	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
-};
-
 eve.catList=[];
 eve.myCatList=eve.myPage?eve.catList:[];
-eve.catUriList=[]; // eve.catUriList[cat]={cat:"cat", UriList:"uri1\nuri2", down:true, has:true};
+eve.catUriList=[];
+eve.fsFullList=[];
+eve.fsLastTxt="$!@#";
+
+eve.YTPlaylist=[];
+eve.cueYTCount=0;
+eve.YTNotLoaded=true;
+
+eve.ptnURI=[];
+eve.regexURL=/^https?:\/\/\S+/i;
+eve.ptnTag=/^<\w+[\s\S]+>$/i;
+eve.regexVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+eve.regExDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
+
+eve.ptsRangeFrom=0; // from <= pts <= to
+eve.ptsRangeTo=1;
+eve.mdInPRL=false; // mouse down in Point Range Left
+eve.mdInPRR=false; // mouse down in Point Range Right
+eve.PRmax=10;
+eve.PRLw=15;
+eve.PRw=$point_range.width();
+eve.PRRw=eve.PRw-15;
+eve.fullPts=10;
 
 ////////////////////////////////////////////////////
 // Delayed Loading.
@@ -602,8 +620,6 @@ eve.unescapeAMP=function(str) {
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
-eve.cueYTCount=0;
-eve.YTNotLoaded=true;
 eve.cueYoutubePlaylist=function(list) {
 	if (eve.playlist&&eve.playlist.cuePlaylist) {
 		if (list.length>0) {
@@ -631,7 +647,6 @@ eve.cueYoutubePlaylist=function(list) {
 ////////////////////////////////////////////////////
 // uri to a href
 ////////////////////////////////////////////////////
-eve.regexURL=/^https?:\/\/\S+/i;
 eve.uriToA=function(uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	var exec=eve.regexURL.exec(uri);
@@ -666,7 +681,6 @@ eve.rC=function(elemStr, pb) {
 		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>'
 	+'</div>';
 };
-eve.ptnURI=[];
 eve.uriRendering=function(uri) {
 	if (uri&&uri.constructor===String) {
 		if (uri.substring(0,4).toLowerCase()==="http") {
@@ -741,7 +755,7 @@ ptnURI.toIframe=function(uriRest) {
 	if (exec!==null) {
 		var vars=eve.getSearchVars(exec[1]);
 		if (vars.v&&vars.v.val) {
-			return {html:eve.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v};
+			return {html:eve.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
 		}
 	}
 	return false;
@@ -842,7 +856,6 @@ ptnURI.toIframe=function(uri) {
 ////////////////////////////////////////////////////
 // desc and cmt rendering
 ////////////////////////////////////////////////////
-eve.regExDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
 eve.renderStrDescCmt=function(str) {
 	var res=[];
 	str=str.trim();
@@ -864,7 +877,6 @@ eve.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 // val
 ////////////////////////////////////////////////////
-eve.regexVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 eve.val=function(val) {
 	var res={};
 	res.str=val;
@@ -941,14 +953,6 @@ $show_recos_without_points.on("click", function(e) {
 	clearTimeout(eve.timeOutRange);
 	eve.timeOutRange=setTimeout(eve.processOutRange, 500);
 });
-eve.ptsRangeFrom=0; // from <= pts <= to
-eve.ptsRangeTo=1;
-eve.mdInPRL=false; // mouse down in Point Range Left
-eve.mdInPRR=false; // mouse down in Point Range Right
-eve.PRmax=10;
-eve.PRLw=15;
-eve.PRw=$point_range.width();
-eve.PRRw=eve.PRw-15;
 eve.PRtoFixed=function(w) {
 	return (eve.PRmax*(w-15)/(eve.PRw-30)).toFixed(1);
 };
@@ -1009,7 +1013,6 @@ $point_range_right.on("mousedown touchstart", function(e) {
 	});
 });
 
-eve.YTPlaylist=[];
 eve.processOutRange=function() {
 	var $recos=$(".reco");
 	var list=[];
@@ -1159,7 +1162,7 @@ eve.recoHTML=function(r) {
 					res+='<div class="value"><span class="key">'+key+' : </span>';
 					var relateds=value.split("\n");
 					for (var m=0;m<relateds.length;m++) {
-						res+='<br>'+eve.uriRendering( relateds[m] ).html;
+						res+='<br>'+eve.uriRendering( eve.formatURI(relateds[m]) ).html;
 					}
 					res+='</div>';
 					break;
@@ -1868,12 +1871,10 @@ eve.shareSNS=function(elem, service) {
 ////////////////////////////////////////////////////
 eve.jamoKE = ["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
 eve.jamo = ["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
-
 eve.mapKE = {"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
 for (var p in eve.mapKE) {
 	eve.mapKE[eve.mapKE[p]]=p;
 }
-
 eve.rChoKE = ["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 eve.rCho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
@@ -2050,8 +2051,6 @@ $fuzzy_search.on("keydown", function(e) {
 		break;
 	}
 });
-eve.fsFullList=[]; // initialize
-eve.fsLastTxt="$!@#";
 $fuzzy_search.on("keyup", function(e) {
 	var fsTxt=$fuzzy_search.text();
 	var fsTxtSplitted=eve.splitHangul(fsTxt);
@@ -2208,7 +2207,6 @@ eve.getUTF8Length=function(s) {
 	}
 	return len;
 };
-eve.ptnTag=/^<\w+[\s\S]+>$/i;
 eve.formatURI=function(uri) {
 	uri=uri.trim().replace(/[\t\n]/g," ");
 	var exec=eve.ptnTag.exec(uri);
@@ -2267,6 +2265,9 @@ eve.formatCats=function(cats) {
 	return cats;
 };
 
+eve.userRecos[""]={
+	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
+};
 eve.showMyReco=function(r) {
 	if (r["has"]) {
 		$button_reco.hide();
@@ -2438,7 +2439,6 @@ $input_uri.on("keyup", function(e) {
 	}
 });
 
-eve.fullPts=10;
 eve.lastVal=eve.val("");
 $input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
