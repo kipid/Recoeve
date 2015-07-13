@@ -2322,8 +2322,13 @@ eve.showReco=function(r) {
 	}
 };
 eve.emptifyReco=function() {
-	$error.html("");
 	$input_uri[0].value="";
+	$input_title[0].value="";
+	$input_cats[0].value="";
+	$input_desc[0].value="";
+	$input_cmt[0].value="";
+	$input_val[0].value="";
+	$input_val.trigger("keyup");
 	eve.getAndShowDefsAndReco();
 };
 eve.showDefs=function(r) {
