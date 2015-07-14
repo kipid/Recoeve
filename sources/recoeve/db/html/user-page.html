@@ -681,7 +681,7 @@ eve.rC=function(elemStr, pb) {
 		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>'
 	+'</div>';
 };
-eve.uriRendering=function(uri) {
+eve.uriRendering=function(uri, toA) {
 	if (uri&&uri.constructor===String) {
 		if (uri.substring(0,4).toLowerCase()==="http") {
 			var k=4;
@@ -710,7 +710,7 @@ eve.uriRendering=function(uri) {
 			if (result) { return result; }
 		}
 	}
-	return {html:eve.uriToA(uri)};
+	return {html:(toA?eve.uriToA(uri):"")};
 };
 eve.YTiframe=function(v, vars) {
 	return eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(vars&&vars.list&&vars.list.val?'?list='+vars.list.val:'')+'" frameborder="0" allowfullscreen=""></iframe>');
@@ -1162,7 +1162,7 @@ eve.recoHTML=function(r) {
 					res+='<div class="value"><span class="key">'+key+' : </span>';
 					var relateds=value.split("\n");
 					for (var m=0;m<relateds.length;m++) {
-						res+='<br>'+eve.uriRendering( eve.formatURI(relateds[m]) ).html;
+						res+='<br>'+eve.uriRendering(eve.formatURI(relateds[m]),true).html;
 					}
 					res+='</div>';
 					break;
@@ -2370,7 +2370,7 @@ eve.getAndShowDefsAndReco=function() {
 	var elem=$input_uri[0];
 	var uri=eve.lastURI=eve.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
-	$("#show-URI").html(eve.uriRendering(uri).html.replace(/delayed-src/gi,"src"));
+	$("#show-URI").html(eve.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
 	var r=eve.userRecos[uri];
 	if (!r) { r=eve.userRecos[uri]={}; }
 	if (r.down) {
