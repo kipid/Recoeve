@@ -846,6 +846,24 @@ ptnURI.toIframe=function(uriRest) {
 	}
 	return false;
 };
+ptnURI=eve.ptnURI["w.soundcloud.com"]={};
+ptnURI.regEx=/^player\/(\?\S+)/i;
+ptnURI.toIframe=function(uriRest) {
+	var exec=eve.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		var vars=eve.getSearchVars(exec[1]);
+		var lastPath="player/?";
+		for (var i=0;i<vars.length;i++) {
+			if (vars[i].key==="auto_play") {
+				lastPath+="auto_play=false&";
+			} else {
+				lastPath+=vars[i].key+"="+vars[i].val+"&";
+			}
+		}
+		return {html:eve.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>'), from:"ted", videoId:vars.url&&vars.url.val};
+	}
+	return false;
+};
 ptnURI=eve.ptnURI["appsurprise.co.kr"]={};
 ptnURI.regEx=/^\S*/i;
 ptnURI.toIframe=function(uriRest) {
