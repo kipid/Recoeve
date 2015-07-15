@@ -815,6 +815,37 @@ ptnURI.toIframe=function(uriRest) {
 	}
 	return false;
 };
+ptnURI=eve.ptnURI["www.ted.com"]={};
+ptnURI.regEx=/^talks\//i;
+ptnURI.toIframe=function(uriRest) {
+	var exec=eve.ptnURI["www.ted.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		uriRest=uriRest.substring(6);
+		var k=uriRest.indexOf("?");
+		var vars=null;
+		if (k!==-1) {
+			vars=eve.getSearchVars(uriRest.substring(k));
+			uriRest=uriRest.substring(0,k);
+		}
+		var v=uriRest;
+		if (vars&&vars.language) {
+			uriRest="lang/"+vars.language.val+"/"+uriRest;
+		}
+		return {html:eve.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'.html" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+	}
+	return false;
+};
+ptnURI=eve.ptnURI["embed-ssl.ted.com"]={};
+ptnURI.regEx=/^talks\//i;
+ptnURI.toIframe=function(uriRest) {
+	var exec=eve.ptnURI["embed-ssl.ted.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		uriRest=uriRest.substring(6);
+		var v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
+		return {html:eve.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+	}
+	return false;
+};
 ptnURI=eve.ptnURI["appsurprise.co.kr"]={};
 ptnURI.regEx=/^\S*/i;
 ptnURI.toIframe=function(uriRest) {
