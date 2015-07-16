@@ -192,6 +192,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.uri {font-size:.8em; border:.15em solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
 .reco>.title {font-size:1.1em; border:.15em solid rgb(150,100,100); padding:.2em .5em}
 .reco>.cats {font-size:.8em; border:.15em solid rgb(100,150,100); border-top:0; padding:.2em .5em}
+.reco>.cats>a {color:rgb(150,210,150)}
+.reco>.cats>a.currentCat {color:rgb(190,230,190); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .stars-container {position:relative; display:inline-block; cursor:text}
@@ -408,6 +410,7 @@ eve.myRecos=eve.myPage?eve.userRecos:{};
 eve.catList=[];
 eve.myCatList=eve.myPage?eve.catList:[];
 eve.catUriList=[];
+eve.currentCat=null;
 
 eve.lastURI="";
 eve.fsFullList=[];
@@ -1177,13 +1180,13 @@ eve.slideUp=function(elem) {
 };
 eve.catsToA=function(cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return '<a href="'+eve.pathOfCat("")+'" onclick="return eve.openCat(eve.catList[0].cat, event)">[--Uncategorized--]</a>';
+		return '<a href="'+eve.pathOfCat("")+'" onclick="return eve.openCat(eve.catList[0].cat, event)"'+(eve.currentCat===""?' class="currentCat"':'')+'>[--Uncategorized--]</a>';
 	}
 	var arrayHTML=[];
 	var list=cats.split(";");
 	for (var i=0;i<list.length;i++) {
 		var cat=list[i];
-		arrayHTML.push('<a href="'+eve.pathOfCat(cat)+'" onclick="return eve.openCat(eve.catList['+eve.catList[cat].i+'].cat, event)">'+eve.escapeHTML(cat)+'</a>');
+		arrayHTML.push('<a href="'+eve.pathOfCat(cat)+'" onclick="return eve.openCat(eve.catList['+eve.catList[cat].i+'].cat, event)"'+(eve.currentCat===cat?' class="currentCat"':'')+'>'+eve.escapeHTML(cat)+'</a>');
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -1390,20 +1393,21 @@ eve.refresh=function(cats, option, uri) {
 			if (c[k]===currentCat) {break;}
 		}
 	}
+	eve.currentCat=c[k];
 	if (c[k]!==currentCat) {
-		window.history.pushState({cat:c[k]}, null, eve.pathOfCat(c[k]));
 		eve.getAndShowRecosOnCat(c[k]);
+		window.history.pushState({cat:c[k]}, null, eve.pathOfCat(c[k]));
 	} else {
-		if (option===undefined||option===null) {
-			eve.getAndShowRecosOnCat(c[k]);
-		} else if (option==="recoed") {
+		switch (option) {
+		case "recoed" :
 			var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
 			$contents.prepend( $newReco );
 			eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
 			$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
 			eve.fdList=eve.fdList.add( $newReco );
-		} else if (option==="changed"||option==="deleted") {
+			break;
+		case "changed" : case "deleted" :
 			var $recos=$contents.find(">.reco");
 			for (var i=0;i<$recos.length;i++) {
 				var $reco=$recos.eq(i);
@@ -1422,7 +1426,8 @@ eve.refresh=function(cats, option, uri) {
 					break;
 				}
 			}
-		} else {
+			break;
+		default :
 			eve.getAndShowRecosOnCat(c[k]);
 		}
 	}
@@ -1445,6 +1450,8 @@ eve.openCat=function(cat, e) {
 	if (e&&e.which===2) { // 2 for wheel click
 		return true;
 	} else {
+		if (window.history.state&&window.history.state.cat===cat) { return false; }
+		eve.currentCat=cat;
 		eve.getAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
 		return false;
@@ -1578,6 +1585,7 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	var cat=vars.cat.val;
+	eve.currentCat=cat;
 	eve.getAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
 }
