@@ -398,7 +398,6 @@ if (eve.myIndex) {
 	$button_new_reco.remove();
 }
 
-eve.lastURI="";
 eve.delayPad=eve.delayPad||1024;
 eve.wait=eve.wait||512;
 eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
@@ -409,6 +408,8 @@ eve.myRecos=eve.myPage?eve.userRecos:{};
 eve.catList=[];
 eve.myCatList=eve.myPage?eve.catList:[];
 eve.catUriList=[];
+
+eve.lastURI="";
 eve.fsFullList=[];
 eve.fsLastTxt="$!@#";
 
@@ -1174,6 +1175,18 @@ eve.slideUp=function(elem) {
 	$elem.slideUp(1000);
 	$body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
+eve.catsToA=function(cats) {
+	if (!cats||cats.constructor!==String||cats.trim().length===0) {
+		return '<a href="'+eve.pathOfCat("")+'" onclick="return eve.openCat(eve.catList[0].cat, event)">[--Uncategorized--]</a>';
+	}
+	var arrayHTML=[];
+	var list=cats.split(";");
+	for (var i=0;i<list.length;i++) {
+		var cat=list[i];
+		arrayHTML.push('<a href="'+eve.pathOfCat(cat)+'" onclick="return eve.openCat(eve.catList['+eve.catList[cat].i+'].cat, event)">'+eve.escapeHTML(cat)+'</a>');
+	}
+	return arrayHTML.join(" ; ");
+};
 eve.recoHTML=function(r) {
 	var res="";
 	if (r&&r["has"]) {
@@ -1187,7 +1200,7 @@ eve.recoHTML=function(r) {
 		}
 		res+='<div class="uri cBoth">'+eve.uriToA( r["uri"] )+'</div>'
 			+'<div class="title">'+eve.escapeHTML( r["title"] )+'</div>'
-			+'<div class="cats">'+eve.escapeHTML( r["cats"] )+'</div>'
+			+'<div class="cats">'+eve.catsToA(r.cats)+'</div>'
 			+video.html;
 		if (r["desc"]) {
 			var descR=r["descR"];
