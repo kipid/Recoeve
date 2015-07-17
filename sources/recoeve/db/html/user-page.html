@@ -678,11 +678,20 @@ eve.togglePosition=function(elem) {
 	}
 };
 eve.rC=function(elemStr, pb) {
+	if (pb&&pb.constructor===Number) {
+		if (pb>200) {
+			pb=200;
+		} else if (pb<20) {
+			pb=20;
+		}
+	} else {
+		pb=null;
+	}
 	return '<div class="rC">'
 		+'<div class="rSC"'+(pb?' style="padding-bottom:'+pb+'%"':'')+'>'
 			+elemStr
 		+'</div>'
-		+'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>'
+		+(pb&&pb>70?'':'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>')
 	+'</div>';
 };
 eve.uriRendering=function(uri, toA) {
@@ -864,7 +873,7 @@ ptnURI.toIframe=function(uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:eve.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>'), from:"ted", videoId:vars.url&&vars.url.val};
+		return {html:eve.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"ted", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
