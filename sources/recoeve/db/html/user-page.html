@@ -193,7 +193,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.title {font-size:1.1em; border:.15em solid rgb(150,100,100); padding:.2em .5em}
 .reco>.cats {font-size:.8em; border:.15em solid rgb(100,150,100); border-top:0; padding:.2em .5em}
 .reco>.cats>a {color:rgb(150,210,150)}
-.reco>.cats>a.currentCat {color:rgb(190,230,190); font-weight:bold; text-decoration:none}
+.reco>.cats>a.currentCat {color:rgb(155,215,155); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .stars-container {position:relative; display:inline-block; cursor:text}
@@ -592,11 +592,21 @@ eve.strToJSON=function(str, colMap, rowMap) {
 ////////////////////////////////////////////////////
 // Language/언어/語言
 ////////////////////////////////////////////////////
+eve.changeLang=function(lang, e, elem) {
+	var search=window.location.search;
+	var href=eve.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
+	if (e&&e.which===2) {
+		$(elem).attr({"href":href});
+		return true;
+	} else {
+		window.location.href=href;
+		return false;
+	}
+};
 var dataLang=eve.strToJSON( $data_lang.html().trim() );
-var href=window.location.origin+eve.pathName+"?lang=";
 var htmlLang='<div>';
 for (var i=0;i<dataLang.length;i++) {
-	htmlLang+='<a href="'+href+dataLang[i][1]+'">'+dataLang[i][0]+'</a><br>';
+	htmlLang+='<a href="'+eve.pathName+"?lang="+dataLang[i][1]+'" onclick="return eve.changeLang(\''+dataLang[i][1]+'\',event,this)">'+dataLang[i][0]+'</a><br>';
 }
 htmlLang+='</div>';
 $data_lang.after(htmlLang);
@@ -1456,7 +1466,7 @@ eve.ExpCol=function(elem, catEC) {
 	}
 };
 eve.openCat=function(cat, e) {
-	if (e&&e.which===2) { // 2 for wheel click
+	if (e&&e.which===2) {
 		return true;
 	} else {
 		if (window.history.state&&window.history.state.cat===cat) { return false; }
