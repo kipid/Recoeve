@@ -186,7 +186,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco {margin:0 0 1em; border-bottom:.15em solid black}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
 .reco:last-child {margin:0}
-.reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer}
+.reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer; background-size:100% 100%}
 .reco .SNS-img:first-child {border-left:.15em gray solid}
 .reco>.textURI, .reco>.YTVideoId {display:none}
 .reco>.uri {font-size:.8em; border:.15em solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
@@ -1213,7 +1213,7 @@ eve.recoHTML=function(r) {
 	var res="";
 	if (r&&r["has"]) {
 		res+='<div class="reco">'
-			+'<img class="SNS-img" src="/icon-Twitter.png" onclick="eve.shareSNS(this, \'twitter\')"/><img class="SNS-img" src="/icon-Facebook.png" onclick="eve.shareSNS(this, \'facebook\')"/>'
+			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
 			+(eve.myIndex?'<div class="button edit fRight" onclick="eve.editOrRecoToMine(this)">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+eve.escapeHTML( r["uri"] )+'</div>';
 		var video=eve.uriRendering( r["uri"] );
