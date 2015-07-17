@@ -99,7 +99,7 @@ public void start() {
 		System.out.println("Lang : "+lang);
 		
 		String img=FileMap.getImg(path);
-		if (refererAllowed&&img!=null) {
+		if (img!=null) {
 			req.response().sendFile(img);
 			System.out.println("Sended "+img);
 		} else if (refererAllowed&&path.equals("/jquery.min.js")) {
