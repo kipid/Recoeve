@@ -192,8 +192,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.uri {font-size:.8em; border:.15em solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
 .reco>.title {font-size:1.1em; border:.15em solid rgb(150,100,100); padding:.2em .5em}
 .reco>.cats {font-size:.8em; border:.15em solid rgb(100,150,100); border-top:0; padding:.2em .5em}
-.reco>.cats>a {color:rgb(150,210,150)}
-.reco>.cats>a.currentCat {color:rgb(155,215,155); font-weight:bold; text-decoration:none}
+.reco>.cats>a {color:rgb(130,170,130)}
+.reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .stars-container {position:relative; display:inline-block; cursor:text}
@@ -2659,7 +2659,7 @@ $button_reco.on("click", function(e) {
 			, dataType:"text"
 		}).fail(function() {
 			$error.html("Reco failed. You may be not logged-in.");
-			$button_reco.removeClass("disabled");
+			// $button_reco.removeClass("disabled");
 		}).done(function(resp) {
 			var res=eve.strToJSON(resp);
 			if (res[1]["result"]==="recoed") {
@@ -2673,13 +2673,15 @@ $button_reco.on("click", function(e) {
 				}
 				setTimeout(function() {
 					eve.emptifyReco();
-					$button_reco.removeClass("disabled");
+					// $button_reco.removeClass("disabled");
 					$button_close.trigger("click");
 				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
-				$button_reco.removeClass("disabled");
+				// $button_reco.removeClass("disabled");
 			}
+		}).always(function() {
+			$button_reco.removeClass("disabled");
 		});
 	} else {
 		$error.html(errorMsg);
@@ -2731,7 +2733,7 @@ $button_edit.on("click", function(e) {
 				, dataType:"text"
 			}).fail(function() {
 				$error.html("Failed change. You may not be logged-in.");
-				$button_edit.removeClass("disabled");
+				// $button_edit.removeClass("disabled");
 			}).done(function(resp) {
 				var res=eve.strToJSON(resp);
 				if (res[1]["result"]==="changed") {
@@ -2753,13 +2755,15 @@ $button_edit.on("click", function(e) {
 					if (eve.myPage) { eve.refresh(cats, "changed", uri); }
 					setTimeout(function() {
 						eve.emptifyReco();
-						$button_edit.removeClass("disabled");
+						// $button_edit.removeClass("disabled");
 						$button_close.trigger("click");
 					}, 1000);
 				} else {
 					$error.html(res[1]["result"]);
-					$button_edit.removeClass("disabled");
+					// $button_edit.removeClass("disabled");
 				}
+			}).always(function() {
+				$button_edit.removeClass("disabled");
 			});
 		} else {
 			$error.html("You have made no change.");
@@ -2800,13 +2804,15 @@ $button_del.on("click", function(e) {
 					eve.refresh(cats, "deleted", uri);
 				}
 				setTimeout(function() {
-					$button_del.removeClass("disabled");
+					// $button_del.removeClass("disabled");
 					$button_close.trigger("click");
 				}, 1000);
 			} else {
 				$error.html(res[1]["result"]);
-				$button_del.removeClass("disabled");
+				// $button_del.removeClass("disabled");
 			}
+		}).always(function() {
+			$button_del.removeClass("disabled");
 		});
 	} else {
 		var errorMsg="";
