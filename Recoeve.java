@@ -380,6 +380,6 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80, "recoeve.net"); // RecoeveDB.port
+	}).listen(80, "localhost"); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle
