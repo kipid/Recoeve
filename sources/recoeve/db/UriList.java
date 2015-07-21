@@ -24,15 +24,16 @@ public class UriList {
 	public static String toFormat(String str) {
 		return "\n"+str.trim()+"\n";
 	}
+	public static final int CUT_SIZE=1024*256;
 	
 	public String fullURIs;
 	
 	public UriList() {
-		fullURIs="\n";
+		fullURIs="\n"; // for simple putURI().
 	}
 	public UriList(String strData) { // strData must be well formatted.
 		if (strData==null) {
-			fullURIs="\n";
+			fullURIs="\n"; // for simple putURI().
 		} else {
 			fullURIs=strData;
 		}
@@ -84,21 +85,63 @@ public class UriList {
 	public String toString() {
 		return fullURIs;
 	}
+	public String toStringEnclosed(String strFrom, String check) {
+		if (fullURIs.trim().isEmpty()) {
+			return "\t1,-1\t;empty";
+		}
+		String err="";
+		int from=1;
+		if (strFrom!=null) {
+			try {
+				from=Integer.parseInt(strFrom,16);
+			} catch (NumberFormatException e) {
+				err+=";from:NumberFormatException";
+				from=1; check=null;
+			}
+		}
+		if (check==null) {
+			check="\n";
+		} else if (check.charAt(check.length()-1)!='\n') {
+			check+="\n";
+		}
+		int checkStart=from-check.length();
+		if (checkStart<0||fullURIs.length()<from||!fullURIs.substring(checkStart,from).equals(check)) {
+			from=1;
+			err+=";check string is not matched";
+		}
+		int to=-1;
+		if (fullURIs.length()-from>CUT_SIZE) {
+			to=fullURIs.indexOf("\n", from+CUT_SIZE);
+			if (to>=fullURIs.length()-1) {
+				to=-1;
+			}
+		}
+		String uris=null;
+		if (to==-1) {
+			uris=fullURIs.substring(from).trim();
+		} else {
+			uris=fullURIs.substring(from,to);
+		}
+		if (!uris.isEmpty()) {
+			uris="\""+uris.replaceAll("\"","\"\"")+"\"";
+		} // faster than StrArray.enclose(strUriL)
+		return uris+"\t"+Integer.toString(from,16)+","+Integer.toString(to,16)+"\t"+err;
+	}
 	
 	public static void main(String... args) {
-		UriList uriL=new UriList();
-		System.out.println(uriL.isEmpty());
-		uriL.putURI("abcde");
-		uriL.putURI("abcde2");
-		uriL.putURI("abcde3");
-		uriL.putURI("abcde4");
-		uriL.putURI("abcde5");
-		uriL.putURI("abcde6");
-		System.out.println(uriL);
-		System.out.println(uriL.isEmpty());
-		uriL.deleteURI("abcde3");
-		System.out.println(uriL);
-		System.out.println(uriL.changeOrders("abcde\nabcde2\nabcde6\nabcde4\nabcde5"));
-		System.out.println(uriL);
+		// UriList uriL=new UriList();
+		// System.out.println(uriL.isEmpty());
+		// uriL.putURI("abcde");
+		// uriL.putURI("abcde2");
+		// uriL.putURI("abcde3");
+		// uriL.putURI("abcde4");
+		// uriL.putURI("abcde5");
+		// uriL.putURI("abcde6");
+		// System.out.println(uriL);
+		// System.out.println(uriL.isEmpty());
+		// uriL.deleteURI("abcde3");
+		// System.out.println(uriL);
+		// System.out.println(uriL.changeOrders("abcde\nabcde2\nabcde6\nabcde4\nabcde5"));
+		// System.out.println(uriL);
 	}
 }

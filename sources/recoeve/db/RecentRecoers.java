@@ -50,11 +50,11 @@ public class RecentRecoers {
 		return set;
 	}
 	public void putRecoer(long user_i) {
-		String recoer=Long.toHexString(user_i);
+		String recoer=Long.toString(user_i,16);
 		fullRecoers="\n"+recoer+fullRecoers;
 	}
 	public boolean deleteRecoer(long user_i) {
-		String recoer=Long.toHexString(user_i);
+		String recoer=Long.toString(user_i,16);
 		int i=fullRecoers.indexOf("\n"+recoer+"\n");
 		if (i!=-1) {
 			fullRecoers=fullRecoers.substring(0,i)+fullRecoers.substring(i+recoer.length()+1);

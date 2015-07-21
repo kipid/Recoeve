@@ -754,7 +754,7 @@ public String createUserSession(long user_i, String now, byte[] session, byte[] 
 	String setCookie="";
 	if (pstmtCreateUserSession.executeUpdate()>0) {
 		// user.updateInt("ssnC", user.getInt("ssnC")+1);
-		setCookie="I="+Long.toHexString(user_i)+cookieOptionSSN;
+		setCookie="I="+Long.toString(user_i,16)+cookieOptionSSN;
 		setCookie+="\nSet-Cookie: tCreate="+now+cookieOptionSSN;
 		setCookie+="\nSet-Cookie: SSN="+hex(session)+cookieOptionSSN;
 		setCookie+="\nSet-Cookie: token="+hex(token)+cookieOptionSSNtoken;
@@ -774,7 +774,7 @@ public String createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[
 	String setCookie="";
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
 		// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
-		setCookie+="\nSet-Cookie: rmbdI="+Long.toHexString(user_i)+cookieOptionRMB;
+		setCookie+="\nSet-Cookie: rmbdI="+Long.toString(user_i,16)+cookieOptionRMB;
 		setCookie+="\nSet-Cookie: rmbdT="+now+cookieOptionRMB;
 		setCookie+="\nSet-Cookie: rmbdAuth="+hex(rmbdAuth)+cookieOptionRMB;
 		setCookie+="\nSet-Cookie: rmbdToken="+hex(rmbdToken)+cookieOptionRMBtoken;
@@ -1182,40 +1182,36 @@ public String getStringCatUriList(String user_id, StrArray catList) {
 public String getStringCatUriList(long user_i, StrArray catList) {
 	String res="";
 	try {
-		res+="cat\tUriList";
+		res+="cat\tUriList\tcutP\terr";
 		int size=catList.getRowSize();
 		for (int i=1;i<size;i++) {
-			String cat=catList.get(i, "cat");
-			UriList uriL=getUriList(user_i, cat);
-			String strUriL=uriL.toString().trim();
-			if (!strUriL.isEmpty()) {
-				res+="\n"+cat+"\t\""+strUriL.replaceAll("\"","\"\"")+"\"";
-			} // faster than StrArray.enclose(strUriL)
+			String cat=catList.get(i,"cat");
+			res+="\n"+cat+"\t"+getUriList(user_i,cat).toStringEnclosed(catList.get(i,"from"), catList.get(i,"check"));
 		}
 	} catch (SQLException e) {
 		err(e);
 	}
 	return res;
 }
-public String getStringCatUriList(long user_i, ArrayList<String> catList) {
-	String res="";
-	try {
-		res+="cat\tUriList\n";
-		int size=catList.size();
-		for (int i=0;i<size;i++) {
-			String cat=catList.get(i);
-			UriList uriL=getUriList(user_i, cat);
-			String strUriL=uriL.toString().trim();
-			if (!strUriL.isEmpty()) {
-				strUriL="\""+strUriL.replaceAll("\"","\"\"")+"\"";
-			}
-			res+=cat+"\t"+strUriL+"\n";
-		}
-	} catch (SQLException e) {
-		err(e);
-	}
-	return res;
-}
+// public String getStringCatUriList(long user_i, ArrayList<String> catList) {
+// 	String res="";
+// 	try {
+// 		res+="cat\tUriList\n";
+// 		int size=catList.size();
+// 		for (int i=0;i<size;i++) {
+// 			String cat=catList.get(i);
+// 			UriList uriL=getUriList(user_i, cat);
+// 			String strUriL=uriL.toString().trim();
+// 			if (!strUriL.isEmpty()) {
+// 				strUriL="\""+strUriL.replaceAll("\"","\"\"")+"\"";
+// 			}
+// 			res+=cat+"\t"+strUriL+"\n";
+// 		}
+// 	} catch (SQLException e) {
+// 		err(e);
+// 	}
+// 	return res;
+// }
 public UriList getUriList(long user_i, String cat) throws SQLException {
 	pstmtGetUriList.setLong(1, user_i);
 	pstmtGetUriList.setString(2, cat);
