@@ -1,9 +1,11 @@
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.Verticle;
+import io.vertx.core.AbstractVerticle;
 
 // import org.vertx.java.core.Handler;
 // import org.vertx.java.core.http.HttpServer; // Interface
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.buffer.Buffer;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ import recoeve.db.StrArray;
 
 
 
-public class Recoeve extends Verticle {
+public class Recoeve extends AbstractVerticle {
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
@@ -67,12 +69,12 @@ public void start() {
 					refererHost=referer.substring(k,l);
 				}
 				refererAllowed=FileMap.refererAllowed(refererHost);
-				System.out.println("Referer Host : "+refererHost);
+				// System.out.println("Referer Host : "+refererHost);
 			}
 		}
-		System.out.println("Referer Allowed : "+refererAllowed);
+		// System.out.println("Referer Allowed : "+refererAllowed);
 		
-		final String method=req.method();
+		final HttpMethod method=req.method();
 		final String path=req.path();
 		final String query=req.query();
 			System.out.println("Method : "+method);
@@ -80,7 +82,7 @@ public void start() {
 		
 		final String ip=req.remoteAddress().toString();
 			System.out.println("IP : "+ip);
-			System.out.println("Local Address : "+req.localAddress());
+			// System.out.println("Local Address : "+req.localAddress());
 		
 		////////////////////////////////////
 		// Session cookie 확인.
@@ -129,7 +131,7 @@ public void start() {
 					req.response().end("User does not exist.", ENCODING);
 					System.out.println("Sended 'User does not exist.'");
 				}
-			} else if (userSplit.length==2&&method.equals("POST")) {
+			} else if (userSplit.length==2&&method==HttpMethod.POST) {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				switch (userSplit[1]) {
 					case "get-Recos":
@@ -170,7 +172,7 @@ public void start() {
 				}
 				break;
 			case "log-in/remember-me":
-				if (method.equals("POST")) {
+				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
@@ -195,7 +197,7 @@ public void start() {
 				if (sessionPassed) {
 					req.response().end("pwd_iteration : You are already logged in Recoeve.", ENCODING);
 					System.out.println("Sended pwd_iteration : You are already logged in Recoeve.");
-				} else if (method.equals("POST")) {
+				} else if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						String dataStr=data.toString();
 						int i=dataStr.indexOf("\t");
@@ -219,7 +221,7 @@ public void start() {
 				if (sessionPassed) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html (already logged-in)");
-				} else if (method.equals("POST")) {
+				} else if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						System.out.println("data:\n"+inputs.toString());
@@ -250,7 +252,7 @@ public void start() {
 				System.out.println("Sended log-in.html with Set-Cookie of deleting all cookies.");
 				break;
 			case "check":
-				if (method.equals("POST")) {
+				if (method==HttpMethod.POST) {
 					// req.response().putHeader("Content-Type","text/plain");
 					req.bodyHandler( (Buffer data) -> {
 						String dataStr=data.toString();
@@ -280,7 +282,7 @@ public void start() {
 				}
 				break;
 			case "sign-up":
-				if (method.equals("POST")) {
+				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						System.out.println(data.toString());
 						BodyData inputs=new BodyData(data.toString());
@@ -329,7 +331,7 @@ public void start() {
 			switch (toDo) {
 			case "infos":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&method.equals("POST")) {
+				if (sessionPassed&&method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.recoInfos(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
@@ -338,7 +340,7 @@ public void start() {
 				break;
 			case "do":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&method.equals("POST")) {
+				if (sessionPassed&&method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.recoDo(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
@@ -352,7 +354,7 @@ public void start() {
 				break;
 			case "put":
 				req.response().putHeader("Content-Type","text/plain");
-				if (sessionPassed&&method.equals("POST")) {
+				if (sessionPassed&&method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						String res=db.putReco(Long.parseLong(cookie.get("I"),16), data.toString());
 						req.response().end(res);
@@ -367,7 +369,7 @@ public void start() {
 			}
 		} else if (refererAllowed&&path.startsWith("/changeOrders/")) {
 			String toDo=path.replaceFirst("^/changeOrders/","");
-			if (sessionPassed&&toDo.equals("CatList")&&method.equals("POST")) {
+			if (sessionPassed&&toDo.equals("CatList")&&method==HttpMethod.POST) {
 				req.bodyHandler( (Buffer data) -> {
 					req.response().end(""+db.changeOrdersCatList(Long.parseLong(cookie.get("I"),16), data.toString()));
 				} );
@@ -378,6 +380,6 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80); // RecoeveDB.port
+	}).listen(80, "recoeve.net"); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle
