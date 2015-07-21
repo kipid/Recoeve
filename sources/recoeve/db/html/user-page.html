@@ -1390,8 +1390,11 @@ eve.getAndShowRecosOnCat=function(cat) {
 					var catUL=eve.catUriList[resp[i].cat];
 					catUL.down=true;
 					catUL.has=true;
-					catUL.UriList=resp[i].UriList;
-					console.log(resp[i].cutP+"\terr : "+resp[i].err);
+					for (var p in resp[i]) {
+						if (isNaN(p)) {
+							catUL[p]=resp[i][p];
+						}
+					}
 				}
 				eve.getAndShowRecosOnUris(catUriList.has?catUriList.UriList:"");
 			});
