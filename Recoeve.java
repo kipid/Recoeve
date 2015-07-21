@@ -82,7 +82,7 @@ public void start() {
 		
 		final String ip=req.remoteAddress().toString();
 			System.out.println("IP : "+ip);
-			// System.out.println("Local Address : "+req.localAddress());
+			System.out.println("Local Address : "+req.localAddress());
 		
 		////////////////////////////////////
 		// Session cookie 확인.
@@ -380,6 +380,6 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80, "localhost"); // RecoeveDB.port
+	}).listen(80, /*"localhost"*/"172.31.13.32"); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle
