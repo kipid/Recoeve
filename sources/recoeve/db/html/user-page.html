@@ -2462,9 +2462,9 @@ eve.showDefs=function(r) {
 		$input_cats[0].value=eve.unescapeHTML($this.html());
 	});
 };
-eve.getAndShowDefsAndReco=function(noFormat) {
+eve.getAndShowDefsAndReco=function(noFormatURI) {
 	var elem=$input_uri[0];
-	var uri=eve.lastURI=noFormat?elem.value:eve.formatURI(elem.value);
+	var uri=eve.lastURI=noFormatURI?elem.value:eve.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
 	$("#show-URI").html(eve.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
 	var r=eve.userRecos[uri];
@@ -2697,7 +2697,7 @@ $button_reco.on("click", function(e) {
 });
 $button_edit.on("click", function(e) {
 	$button_edit.addClass("disabled");
-	var uri=eve.formatURI($input_uri[0].value);
+	var uri=$input_uri[0].value;
 	var val=eve.val($input_val[0].value.trim());
 	var r=eve.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
@@ -2791,7 +2791,7 @@ $button_edit.on("click", function(e) {
 });
 $button_del.on("click", function(e) {
 	$button_del.addClass("disabled");
-	var uri=eve.formatURI($input_uri[0].value);
+	var uri=$input_uri[0].value;
 	var r=eve.myRecos[uri];
 	if (uri.length!==0&&r) {
 		var strHeads="do"+"\t"+"uri";
