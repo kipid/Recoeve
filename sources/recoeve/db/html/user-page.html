@@ -1530,7 +1530,7 @@ eve.renderCatListHTML=function() {
 if (eve.myIndex) { eve.renderStrCatList(eve.unescapeHTML($data_myCatList.html()), eve.myCatList); }
 if (!eve.myPage) { eve.renderStrCatList(eve.unescapeHTML($data_CatList.html())); }
 eve.renderCatListHTML();
-var $catECs=$catList.find(">.cat:has(>.EC)"); // Only the 1-level subCats.
+var $catECs=$catList.find(".cat:has(>.EC)");
 for (var i=$catECs.length-1;i>=0;i--) {
 	eve.catList[eve.catList[Number($catECs.eq(i).attr("id").substring(4))].cat].subCatCollapsed=true;
 }
