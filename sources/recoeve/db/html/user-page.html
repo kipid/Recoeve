@@ -64,7 +64,6 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 #catList {margin-bottom:1em}
 #catList .cat {border:1px solid transparent; margin-bottom:.15em}
-#catList .subCat {display:none}
 #cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
 #catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
 #catList .cat.edit.move {position:fixed; z-index:101}
@@ -1494,7 +1493,7 @@ eve.renderCatListHTML=function() {
 		var currentDepth=cL[i].depth;
 		var afterDepth=cL[i+1].depth;
 		if (beforeDepth<currentDepth) { // open subCat
-			catListHTML+='<div class="subCat">';
+			catListHTML+='<div class="subCat" style="display:none">';
 		} else {
 			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
 				catListHTML+='</div>';
@@ -1512,7 +1511,7 @@ eve.renderCatListHTML=function() {
 		var beforeDepth=cL[i-1].depth;
 		var currentDepth=cL[i].depth;
 		if (beforeDepth<currentDepth) { // open subCat
-			catListHTML+='<div class="subCat">';
+			catListHTML+='<div class="subCat" style="display:none">';
 		} else {
 			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
 				catListHTML+='</div>';
