@@ -64,6 +64,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 #catList {margin-bottom:1em}
 #catList .cat {border:1px solid transparent; margin-bottom:.15em}
+#catList .subCat {display:none}
 #cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
 #catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
 #catList .cat.edit.move {position:fixed; z-index:101}
@@ -1501,7 +1502,7 @@ eve.renderCatListHTML=function() {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">';
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="EC" onclick="eve.ExpCol(this,eve.catList['+i+'])">▼</span>';
+			catListHTML+='<span class="EC" onclick="eve.ExpCol(this,eve.catList['+i+'])">▶</span>';
 		} else {
 			catListHTML+='<span class="noEC"></span>';
 		}
@@ -1534,7 +1535,6 @@ var $catECs=$catList.find(".cat:has(>.EC)");
 for (var i=$catECs.length-1;i>=0;i--) {
 	eve.catList[eve.catList[Number($catECs.eq(i).attr("id").substring(4))].cat].subCatCollapsed=true;
 }
-$catECs.find(">.EC").trigger("click");
 
 for (var i=0;i<eve.catList.length;i++) {
 	var cat=eve.catList[i].cat;
