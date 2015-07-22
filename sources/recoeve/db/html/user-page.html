@@ -313,14 +313,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 	</div>
 </div><!-- div#head2 -->
+<div class="side2" id="subCats"></div>
 <div class="side2" id="contents"></div><!-- div#contents -->
 <!-- <div class="button to-be-executed" onclick="alert('done')">Delayed Action Test</div> -->
 <div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
 		<data id="data-lang">English/영어/en	en
-Korean/한국어/kr	kr
-Japanese/일본어/jp	jp
-Chinese/중국어/cn	cn</data></div>
+Chinese/中文/cn	cn
+Japanese/日本語/jp	jp
+Korean/한국어/kr	kr</data></div>
 </div><!-- div#foot -->
 </div><!-- div#container -->
 </body>
@@ -383,6 +384,7 @@ $point_range_result=$("#point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
 eve.showRWOP=true;
 
+$subCats=$("#subCats");
 $contents=$("#contents");
 $scripts=$("#scripts");
 
@@ -1274,7 +1276,7 @@ eve.editOrRecoToMine=function(elem) {
 	$input_uri[0].disabled=true;
 	$new_reco.show();
 	if (uri.length!==0&&uri!==eve.lastURI) {
-		eve.getAndShowDefsAndReco();
+		eve.getAndShowDefsAndReco(true);
 	}
 	eve.wST=$window.scrollTop();
 	$window.on("scroll.stop", function(e) {
@@ -1360,6 +1362,7 @@ eve.getAndShowRecosOnUris=function(uriList) {
 	}
 };
 eve.getAndShowRecosOnCat=function(cat) {
+	$subCats.html("");
 	$contents.html("Loading recos in cat="+eve.escapeHTML(cat)+"...");
 	var catList=eve.catList[cat];
 	if (catList) {
@@ -2459,9 +2462,9 @@ eve.showDefs=function(r) {
 		$input_cats[0].value=eve.unescapeHTML($this.html());
 	});
 };
-eve.getAndShowDefsAndReco=function() {
+eve.getAndShowDefsAndReco=function(noFormat) {
 	var elem=$input_uri[0];
-	var uri=eve.lastURI=eve.formatURI(elem.value);
+	var uri=eve.lastURI=noFormat?elem.value:eve.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
 	$("#show-URI").html(eve.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
 	var r=eve.userRecos[uri];
