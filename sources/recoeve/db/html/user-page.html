@@ -414,6 +414,7 @@ eve.catList=[];
 eve.myCatList=eve.myPage?eve.catList:[];
 eve.catUriList=[];
 eve.currentCat=null;
+eve.currentContents=[]; // {reco:, elem:, inRange:...}
 
 eve.lastURI="";
 eve.fsFullList=[];
@@ -899,7 +900,7 @@ ptnURI.toIframe=function(uriRest) {
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["instagram.com"]={};
+ptnURI=eve.ptnURI["instagram.com"]=eve.ptnURI["www.instagram.com"]={};
 ptnURI.regEx=/^p\/([\w-]+)/i;
 ptnURI.toIframe=function(uriRest) {
 	var exec=eve.ptnURI["instagram.com"].regEx.exec(uriRest);
@@ -1334,16 +1335,18 @@ eve.recoToEve=function(resp, recos) {
 		}
 	}
 };
-eve.getAndShowRecosOnUris=function(uriList) {
-	uriList=uriList.trim();
+eve.showRecosOnCat=function(cat) {
+	var uriList=(eve.catUriList[cat].has?eve.catUriList[cat].UriList:"").trim();
 	var uris=[];
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	var getRecosStr="uri";
 	var getRecosN=0;
+	eve.currentContents=[];
 	for (var j=0;j<uris.length;j++) {
 		var uri=uris[j];
 		var r=eve.userRecos[uri];
 		if (!r) { r=eve.userRecos[uri]={}; }
+		eve.currentContents[uris.length-1-j]={reco:r};
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
@@ -1379,7 +1382,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		var catUriList=eve.catUriList[cat];
 		if (!catUriList) { catUriList=eve.catUriList[cat]={}; }
 		if (catUriList.down) {
-			eve.getAndShowRecosOnUris(catUriList.has?catUriList.UriList:"");
+			eve.showRecosOnCat(cat);
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
@@ -1400,7 +1403,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 						}
 					}
 				}
-				eve.getAndShowRecosOnUris(catUriList.has?catUriList.UriList:"");
+				eve.showRecosOnCat(cat);
 			});
 		}
 	} else {
