@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<title>Recoeve.net</title>
 <script>
 (function(eve, undefined) {
 	eve.myIndex="{--myIndex--}";
@@ -19,10 +23,6 @@
 	eve.myPage=(eve.myId===eve.userId);
 })(window.eve=window.eve||{});
 </script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-	<title>Recoeve.net</title>
 <style>
 body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
 
@@ -458,10 +458,7 @@ $.fn.delayedLoad=function() {
 	var done=false;
 	if (this.inView()) {
 		if (this.hasClass("to-be-executed")) {
-			var toDo=this.attr("onclick");
-			console.log(toDo);
-			// exec(toDo);
-			done=true;
+			this.trigger("click");
 		}
 		// divs with background-image
 		if (this.attr("delayed-bgimage")) {
@@ -484,32 +481,28 @@ $.fn.delayedLoad=function() {
 	return done;
 };
 eve.delayedLoadAll=function() {
-	if (eve.delayedElems.length===0) {
-		$window.off("scroll.delayedLoad");
-	} else {
-		eve.delayedElems.each(function() {
-			if ($(this).delayedLoad()) {
-				eve.delayedElems=eve.delayedElems.not(this);
-			}
-		});
+	eve.delayedElems.each(function() {
+		if ($(this).delayedLoad()) {
+			eve.delayedElems=eve.delayedElems.not(this);
+		}
+	});
+	if (eve.delayedElems.length>0) {
+		$window.on("scroll.delayedLoad", delayedLoadByScroll);
 	}
+	eve.previous=Date.now();
 };
 eve.delayedLoadByScroll=function delayedLoadByScroll() {
+	$window.off("scroll.delayedLoad");
 	var now=Date.now();
 	var passed=now-eve.previous;
 	if (passed>eve.wait) {
 		eve.delayedLoadAll();
-		eve.previous=now;
 	} else {
-		$window.off("scroll.delayedLoad");
 		setTimeout(function() {
 			eve.delayedLoadAll();
-			eve.previous=Date.now();
-			$window.on("scroll.delayedLoad", delayedLoadByScroll);
 		}, eve.wait*1.1-passed);
 	}
 };
-
 $window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 $window.trigger("scroll.delayedLoad");
 
@@ -1123,12 +1116,8 @@ eve.processOutRange=function() {
 			if ($title.exists()) {
 				var txt=$title.text();
 				if (txt.length!==0) {
-					var txtSplitted=eve.splitHangul(txt);
-					txt="";
-					for (var k=0;k<txtSplitted.length;k++) {
-						txt+=txtSplitted[k]["splitted"];
-					}
-					eve.fsFullList.push({"txt":txt, "txtSplitted":txtSplitted, "html":$title.html(), "$reco":$recoI});
+					var txtSH=eve.splitHangul(txt);
+					eve.fsFullList.push({"txtSH":txtSH, "html":$title.html(), "$reco":$recoI});
 				}
 			}
 		}
@@ -1967,13 +1956,16 @@ eve.shareSNS=function(elem, service) {
 
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
+// KE : Korean Expanded
 ////////////////////////////////////////////////////
 eve.jamoKE = ["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
 eve.jamo = ["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+
 eve.mapKE = {"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
 for (var p in eve.mapKE) {
 	eve.mapKE[eve.mapKE[p]]=p;
 }
+
 eve.rChoKE = ["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 eve.rCho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
@@ -1985,43 +1977,69 @@ eve.rJong = ["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", 
 
 eve.splitHangul=function(str) {
 	var res=[];
+	res.originalStr=str;
+	res.splitted3="";
+	res.splitted="";
+	res.pCho=[]; // position of word-start or 초성
+if (str&&str.constructor===String) {
+	var p=0;
+	res.pCho[p]=true;
 	var cho, jung, jong;
 	for (var i=0;i<str.length;i++) {
 		var c=str.charAt(i)
 		var n=str.charCodeAt(i);
 		if (n>=0x3131&&n<=0x3163) {
 			n-=0x3131;
-			res.push({
-				"char":c, "n":n
-				, "splitted":eve.jamoKE[n]
-			});
+			res[i]={"char":c, "splitted3":c, "splitted":eve.jamoKE[n]};
+			res.pCho[p]=true;
 		} else if (n>=0xAC00&&n<=0xD7A3) {
 			n-=0xAC00;
 			jong=n%28;
 			jung=( (n-jong)/28 )%21;
 			cho=( ((n-jong)/28)-jung )/21;
-			res.push({
-				"char":c, "n":[cho,jung,jong]
+			res[i]={"char":c
 				, "splitted3":eve.rCho[cho]+eve.rJung[jung]+eve.rJong[jong]
-				, "splitted":eve.rChoKE[cho]+eve.rJungKE[jung]+eve.rJongKE[jong]
-			});
+				, "splitted":eve.rChoKE[cho]+eve.rJungKE[jung]+eve.rJongKE[jong]};
+			res.pCho[p]=true;
 		} else {
-			res.push({"char":c, "splitted":c});
+			res[i]={"char":c, "splitted3":c, "splitted":c};
+			if (i>0&&/[^a-zA-Z]$/.test(res[i-1].splitted&&/[a-zA-Z]/.test(c))) {
+				res.pCho[p]=true;
+			}
 		}
+		p+=res[i].splitted.length;
+		res.splitted3+=res[i].splitted3;
+		res.splitted+=res[i].splitted;
 	}
+}
 	return res;
 };
 
 ////////////////////////////////////////////////////
 // Fuzzy search
 ////////////////////////////////////////////////////
+eve.fsCat=[];
+eve.fsCat[0]=eve.fsCat[1]=[];
+eve.fsCat[0]["ptnSH"]=eve.fsCat[1]["ptnSH"]=eve.splitHangul("$!@#");
+eve.fsCat[0]["k"]=eve.fsCat[1]["k"]=-1;
+eve.fsCat.fullList=[];
+eve.fsCat["$fs"]=$input_cats;
+eve.fsCat["$fsl"]=$cat_fs_list;
+
+eve.fsTitle=[];
+eve.fsTitle[0]=eve.fsTitle[1]=[];
+eve.fsTitle[0]["ptnSH"]=eve.fsTitle[1]["ptnSH"]=eve.splitHangul("$!@#");
+eve.fsTitle.fullList=[];
+eve.fsTitle["$fs"]=$fuzzy_search;
+
 RegExp.quote=function(str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
-eve.arrayFuzzyRegExs=function(fuzzyStr) {
+eve.arrayRegExs=function(ptnSH) {
+	var str=ptnSH.splitted;
 	var res=[];
-	for (var i=0;i<fuzzyStr.length;i++) {
-		var c=fuzzyStr.charAt(i);
+	for (var i=0;i<str.length;i++) {
+		var c=str.charAt(i);
 		var mapKE=eve.mapKE[c];
 		if (mapKE) {
 			res.push( new RegExp("["+c+mapKE+"]", "ig") );
@@ -2031,7 +2049,7 @@ eve.arrayFuzzyRegExs=function(fuzzyStr) {
 	}
 	return res;
 };
-eve.highlightStrFromIndices=function(str, strSplitted, indices) {
+eve.highlightStrFromIndices=function(strSplitted, indices) {
 	var res="";
 	for (var i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
 		while (j<indices.length&&indices[j-1].end===indices[j].start) {
@@ -2072,38 +2090,110 @@ eve.highlightStrFromIndices=function(str, strSplitted, indices) {
 	}
 	return res;
 };
-eve.fuzzySearch=function(fuzzyStr, list) {
-	var listSelected=[];
-	var regExs=eve.arrayFuzzyRegExs(fuzzyStr);
+eve.matchScoreFromIndices=function(strSH, ptnSH, indices) {
+	var res=0;
+	for (var i=0;i<indices.length;i++) {
+		if (strSH.pCho[indices[i].start])
+			res+=8;
+	}
+	for (var i=1;i<indices.length;i++) {
+		var diff=indices[i].start-indices[i-1].start;
+		if (diff<5) res+=8*(5-diff);
+	}
+	return res;
+};
+eve.fuzzySearch=function(ptnSH, fs) {
+	var list=[];
+	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
+		fs[1]=fs[0];
+	} else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
+		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
+			return fs[1];
+		}
+	} else {
+		fs[1]=null;
+	}
+	if (fs[1]&&fs[1].sorted) {
+		var sorted=fs[1].sorted;
+		for (var i=0;i<sorted.length;i++) {
+			list.push(fs.fullList[fs[1][sorted[i]].i]);
+		}
+	} else {
+		list=fs.fullList;
+	}
+	var res=fs[0]=[];
+	res.ptnSH=ptnSH;
+	var regExs=eve.arrayRegExs(ptnSH);
 	for (var i=0;i<list.length;i++) {
-		if (regExs.length>0) {
-			var txt=list[i]["txt"];
-			var txtSplitted=list[i]["txtSplitted"];
-			regExs[0].lastIndex=0;
-			var exec=regExs[0].exec(txt);
-			var matched=(exec!==null);
-			var indices=[];
+	if (regExs.length>0) {
+		var txt=list[i].txt;
+		var txtS=txt.splitted;
+		regExs[0].lastIndex=0;
+		var exec=regExs[0].exec(txtS);
+		var matched=(exec!==null);
+		var indices=[];
+		if (matched) {
+			indices[0]={start:exec.index, end:regExs[0].lastIndex};
+		}
+		for (var j=1;matched&&(j<regExs.length);j++) {
+			regExs[j].lastIndex=regExs[j-1].lastIndex;
+			exec=regExs[j].exec(txtS);
+			matched=(exec!==null);
 			if (matched) {
-				indices.push({start:exec.index, end:regExs[0].lastIndex});
+				indices[j]={start:exec.index, end:regExs[j].lastIndex};
 			}
-			for (var j=1;matched&&(j<regExs.length);j++) {
-				regExs[j].lastIndex=regExs[j-1].lastIndex;
-				exec=regExs[j].exec(txt);
+		}
+		if (matched) {
+			var maxMatchScore=eve.matchScoreFromIndices(txt, ptnSH, indices);
+			var indicesMMS=[]; // indices of max match score
+			for (var p=0;p<indices.length;p++) {
+				indicesMMS[p]=indices[p]; // hard copy of indices
+			}
+			for (var k=indices.length-2;k>=0;) {
+				regExs[k].lastIndex=indices[k].start+1;
+				exec=regExs[k].exec(txtS);
 				matched=(exec!==null);
 				if (matched) {
-					indices.push({start:exec.index, end:regExs[j].lastIndex});
+					indices[k]={start:exec.index, end:regExs[k].lastIndex};
+				}
+				for (var j=k+1;matched&&(j<regExs.length);j++) {
+					regExs[j].lastIndex=regExs[j-1].lastIndex;
+					exec=regExs[j].exec(txtS);
+					matched=(exec!==null);
+					if (matched) {
+						indices[j]={start:exec.index, end:regExs[j].lastIndex};
+					}
+				}
+				if (matched) {
+					var matchScore=eve.matchScoreFromIndices(txt, ptnSH, indices);
+					if (matchScore>maxMatchScore) {
+						maxMatchScore=matchScore;
+						for (var p=0;p<indices.length;p++) {
+							indicesMMS[p]=indices[p]; // hard copy of indices
+						}
+					}
+					k=indices.length-2;
+				} else {
+					k--;
 				}
 			}
-			if (matched) {
-				list[i]["highlighted"]=eve.highlightStrFromIndices(txt, txtSplitted, indices);
-				listSelected.push(list[i]);
-			}
-		} else {
-			delete list[i]["highlighted"];
-			listSelected.push(list[i]);
+			res.push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:eve.highlightStrFromIndices(txt, indicesMMS)});
 		}
+	} else {sorted=res.sorted;
+		res.push({i:list[i].i, maxMatchScore:0});
+	}}
+	// sorting...
+	var sorted=res.sorted=[];
+	for (var i=0;i<res.length;i++) {
+		sorted[i]=i;
 	}
-	return listSelected;
+	for (var i=1;i<sorted.length;i++) {
+		var temp=sorted[i];
+		var j=i;
+		for (;(j>0) && (res[sorted[j-1]].maxMatchScore<res[temp].maxMatchScore);j--)
+			sorted[j]=sorted[j-1];
+		sorted[j]=temp;
+	}
 };
 
 $fuzzy_search.on("keydown", function(e) {
@@ -2150,60 +2240,67 @@ $fuzzy_search.on("keydown", function(e) {
 		break;
 	}
 });
-$fuzzy_search.on("keyup", function(e) {
-	var fsTxt=$fuzzy_search.text();
-	var fsTxtSplitted=eve.splitHangul(fsTxt);
-	fsTxt="";
-	for (var i=0;i<fsTxtSplitted.length;i++) {
-		fsTxt+=fsTxtSplitted[i]["splitted"];
+eve.gotoLi=function(e, elem, k) {
+if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+} else {
+	var $elem=$(elem);
+	if ($elem.hasClass("selected")) {
+		$fuzzy_search.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+	} else {
+		eve["$fsLis"].removeClass("selected");
+		$elem.addClass("selected");
 	}
-	if (eve.fsLastTxt!==fsTxt) {
-		if (fsTxt.indexOf(eve.fsLastTxt)===0) {
-			eve.fsList=eve.fuzzySearch(fsTxt, eve.fsList);
-		} else {
-			eve.fsList=eve.fuzzySearch(fsTxt, eve.fsFullList);
-		}
+	var $listI=eve.fs.fullList[k]["$listI"];
+	$window.scrollTop($listI.offset().top-window.innerHeight/3);
+}};
+eve.doFS=function(fs) {
+	var fsPtnSH=eve.splitHangul(fs["$fs"].text());
+	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
+		eve.fuzzySearch(fsPtnSH, fs);
+		var res=fs[0];
+		var sorted=res.sorted;
 		var str="";
-		for (var i=0;i<eve.fsList.length;i++) {
-			str+='<div class="list-item">'
-					+'<div class="list-index">'+i+'</div>'
-					+eve.fsList[i]["html"]
-					+((eve.fsList[i]["highlighted"]!==undefined)?
-					'<div class="highlighted">'+eve.fsList[i]["highlighted"]+'</div>':'')
+		for (var i=0;i<sorted.length;i++) {
+			var k=res[sorted[i]].i;
+			str+='<div class="list-item" onclick="eve.gotoLi(event,this,'+k+')">'
+					+fs.fullList[k]["html"]
+					+((res[sorted[i]]["highlight"]!==undefined)?
+					'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]]["highlight"]+'</div>':'')
 				+'</div>';
 		}
-		$fuzzy_search_list.html(str);
-		var $fsLis=$fuzzy_search_list.find(".list-item");
-		$fsLis.on("click", function(e) {
-			$fsLis.removeClass("selected");
-			var $this=$(this);
-			$this.addClass("selected");
-			var i=Number($this.find(".list-index").html());
-			$window.scrollTop(eve.fsList[i]["$reco"].offset().top);
-		});
-		eve.fsLastTxt=fsTxt;
+		fs["$fsl"].html(str);
+		fs["$fsl"].scrollTop(0);
+		fs["$fsLis"]=fs["$fsl"].find(".list-item");
 	}
-});
+};
+eve.fsTitleOn=function() {
+	var now=Date.now();
+	var passed=now-eve.previous;
+	if (passed>eve.wait) {
+		eve.doFS(eve.fsTitle);
+		eve.previous=now;
+	} else {
+		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
+		setTimeout(function() {
+			eve.doFS(eve.fsTitle);
+			eve.previous=Date.now();
+			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", eve.fsTitleOn);
+		}, eve.wait*1.1-passed);
+	}
+};
+$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", eve.fsTitleOn);
 $fuzzy_search.trigger("keyup");
 
 eve.putCatToFSFullList=function(i, cat) {
-	if (eve.catFSFullList[cat]) {
-		eve.catFSFullList[i]=eve.catFSFullList[cat];
+	if (eve.fsCat.fullList[cat]) {
+		eve.fsCat.fullList[i]=eve.fsCat.fullList[cat];
 	} else {
-		var txtSplitted=eve.splitHangul(cat);
-		var txt="";
-		for (var k=0;k<txtSplitted.length;k++) {
-			txt+=txtSplitted[k]["splitted"];
-		}
-		eve.catFSFullList[i]=eve.catFSFullList[cat]={"txt":txt, "txtSplitted":txtSplitted, "cat":cat, "html":eve.escapeHTML(cat)};
+		var txtSH=eve.splitHangul(cat);
+		eve.fsCat.fullList[i]=eve.fsCat.fullList[cat]={"txtSH":txtSH, "cat":cat, "html":eve.escapeHTML(cat)};
 	}
 };
 eve.updateCatFS=function() {
-	if (eve.catFSFullList) {
-		eve.catFSFullList.splice(0, eve.catFSFullList.length);
-	} else {
-		eve.catFSFullList=[];
-	}
+	eve.fsCat.fullList.splice(0, eve.fsCat.fullList.length);
 	if (eve.myPage) {
 		var $cats=$("#catList .cat").not("#cat-0");
 		for (var i=0;i<$cats.length;i++) {
@@ -2215,13 +2312,13 @@ eve.updateCatFS=function() {
 			eve.putCatToFSFullList(i, eve.myCatList[i].cat);
 		}
 	}
-	eve.catFSLastTxt="$!@#";
-	eve.catFSLastK=-1;
+	eve.fsCat[0]["ptnSH"]=eve.fsCat[1]["ptnSH"]=eve.splitHangul("$!@#");
+	eve.fsCat[0]["k"]=eve.fsCat[1]["k"]=-1;
 };
 eve.updateCatFS();
-$input_cats.on("keyup click", function(e) {
-	var catsTxt=this.value;
-	var sEnd=this.selectionEnd;
+eve.doFSCat=function(fs) {
+	var catsTxt=fs["$fs"][0].value;
+	var sEnd=fs["$fs"][0].selectionEnd;
 	var list=catsTxt.split(";");
 	var l=catsTxt.length;
 	var k=0;
@@ -2232,25 +2329,17 @@ $input_cats.on("keyup click", function(e) {
 			break;
 		}
 	}
-	var fsTxt=list[k];
-	var fsTxtSplitted=eve.splitHangul(fsTxt);
-	fsTxt="";
-	for (var i=0;i<fsTxtSplitted.length;i++) {
-		fsTxt+=fsTxtSplitted[i]["splitted"];
-	}
-	if (eve.catFSLastTxt!==fsTxt||eve.catFSLastK!==k) {
-		if (fsTxt.indexOf(eve.catFSLastTxt)===0) {
-			eve.catFSList=eve.fuzzySearch(fsTxt, eve.catFSList);
-		} else {
-			eve.catFSList=eve.fuzzySearch(fsTxt, eve.catFSFullList);
-		}
+	var fsCatSH=eve.splitHangul(list[k]);
+	if (fs[0].ptnSH.splitted!==fsCatSH.splitted||fs[0].k!==k) {
+		eve.fuzzySearch(fsCatSH, fs);
+		var res=fs[0];
 		var str="";
-		for (var i=0;i<eve.catFSList.length;i++) {
+		for (var i=0;i<res.length;i++) {
 			str+='<div class="list-item">'
 					+'<div class="list-index">'+i+'</div>'
-					+eve.catFSList[i].html
-					+((eve.catFSList[i].highlighted!==undefined)?
-					'<div class="highlighted">'+eve.catFSList[i].highlighted+'</div>':'')
+					+res[i].html
+					+((res[i].highlighted!==undefined)?
+					'<div class="highlighted">'+res[i].highlighted+'</div>':'')
 				+'</div>';
 		}
 		$cat_fs_list.html(str);
@@ -2261,7 +2350,7 @@ $input_cats.on("keyup click", function(e) {
 			var $this=$(this);
 			$this.addClass("selected");
 			var j=Number($this.find(".list-index").html());
-			list[k]=eve.catFSList[j].cat;
+			list[k]=res[j].cat;
 			$input[0].value=list.join(";");
 			$input.focus();
 			var sStart=0;
@@ -2271,17 +2360,34 @@ $input_cats.on("keyup click", function(e) {
 			var sEnd=sStart+list[k].length;
 			$input[0].setSelectionRange(sEnd,sEnd);
 		});
-		eve.catFSLastTxt=fsTxt;
-		eve.catFSLastK=k;
+		fs[0].k=k;
 	}
-});
+};
+eve.fsCatOn=function() {
+	var now=Date.now();
+	var passed=now-eve.previous;
+	if (passed>eve.wait) {
+		eve.doFSCat(eve.fsCat);
+		eve.previous=now;
+	} else {
+		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		setTimeout(function() {
+			eve.doFSCat(eve.fsCat);
+			eve.previous=Date.now();
+			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", eve.fsOn);
+		}, eve.wait*1.1-passed);
+	}
+};
+$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", eve.fsCatOn);
+if (eve.myIndex) {
+	for (var i=0;i<eve.myCatList.length;i++) {
+		eve.fsCat.fullList[i]={i:i, "txt":eve.splitHangul(eve.myCatList.cat)};
+	}
+}
 $input_cats.trigger("keyup");
 $input_cats.on("focus", function() {
 	$cat_fs_container.show();
 });
-// $input_cats.on("focusout", function() {
-// 	$cat_fs_container.hide();
-// });
 
 ////////////////////////////////////////////////////
 // New Reco or Edit
