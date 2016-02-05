@@ -86,12 +86,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 <div class="lang">
 	<div class="p">Language/언어/語言</div>
-<data id="data-lang">
-English/영어/en	en
-Korean/한국어/kr	kr
-Japanese/일본어/jp	jp
-Chinese/중국어/cn	cn
-</data>
+<data id="data-lang">en	ko	ja	zh
+English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data>
 </div>
 
 <div id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a></div>
@@ -277,8 +273,8 @@ var $dataLang=$("#data-lang");
 var dataLang=eve.strToJSON( $dataLang.html().trim() );
 var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
 var htmlLang='<div class="p">';
-for (var i=0;i<dataLang.length;i++) {
-	htmlLang+='<a href="'+href+dataLang[i][1]+'">'+dataLang[i][0]+'</a><br>';
+for (var i=0;i<dataLang[0].length;i++) {
+	htmlLang+='<a href="'+href+dataLang[0][i]+'">'+dataLang[1][i]+'</a><br>';
 }
 htmlLang+='</div>';
 $dataLang.after(htmlLang);
