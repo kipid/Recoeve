@@ -37,6 +37,7 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
+.button.margins {margin:10em auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
@@ -402,7 +403,7 @@ if (eve.myIndex) {
 	$button_new_reco.remove();
 }
 
-eve.delayPad=eve.delayPad||1024;
+eve.delayPad=eve.delayPad||256;
 eve.wait=eve.wait||512;
 eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 eve.previous=Date.now();
@@ -414,7 +415,6 @@ eve.catUriList=[];
 eve.userRecos={};
 eve.myRecos=eve.myPage?eve.userRecos:{};
 eve.maxShowReco=10;
-eve.currentContents=[];
 
 eve.fsCat=[];
 eve.fsCat[0]=eve.fsCat[1]=[];
@@ -1178,15 +1178,11 @@ eve.putCatToFSFullList=function(i, cat) {
 };
 eve.updateCatFS=function() {
 	eve.fsCat.fullList.splice(0, eve.fsCat.fullList.length);
-	if (eve.myPage) {
-		for (var i=0;i<eve.catList.length;i++) {
-			eve.putCatToFSFullList(i, eve.catList[i].cat);
-		}
-	} else {
+	if (!eve.myPage) {
 		eve.strCatListToJSON(eve.unescapeHTML($data_myCatList.html()), eve.myCatList);
-		for (var i=0;i<eve.myCatList.length;i++) {
-			eve.putCatToFSFullList(i, eve.myCatList[i].cat);
-		}
+	}
+	for (var i=0;i<eve.myCatList.length;i++) {
+		eve.putCatToFSFullList(i, eve.myCatList[i].cat);
 	}
 };
 eve.updateCatFS();
@@ -1606,8 +1602,8 @@ ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
 	var exec=eve.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		// var vars=eve.getSearchVars(exec[1]);
-		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/'+exec[0]+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
+		var vars=eve.getSearchVars(exec[1]);
+		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1].vid+'&play_loc='+exec[1].play_loc+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
 	}
 	return false;
 };
@@ -1976,13 +1972,13 @@ eve.recoHTML=function(r) {
 		res+='<div class="reco">'
 			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
 			+(eve.myIndex?'<div class="button edit fRight" onclick="eve.editOrRecoToMine(this)">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
-			+'<div class="textURI">'+eve.escapeHTML( r["uri"] )+'</div>';
-		var video=eve.uriRendering( r["uri"] );
+			+'<div class="textURI">'+eve.escapeHTML(r.uri)+'</div>';
+		var video=eve.uriRendering(r.uri);
 		if (video.from==="youtube") {
 			res+='<div class="YTVideoId">'+video.videoId+'</div>';
 		}
-		res+='<div class="uri cBoth">'+eve.uriToA( r["uri"] )+'</div>'
-			+'<div class="title">'+eve.escapeHTML( r["title"] )+'</div>'
+		res+='<div class="uri cBoth">'+eve.uriToA(r.uri)+'</div>'
+			+'<div class="title">'+eve.escapeHTML(r.title)+'</div>'
 			+'<div class="cats">'+eve.catsToA(r.cats)+'</div>'
 			+video.html;
 		if (r["desc"]) {
@@ -2027,74 +2023,108 @@ eve.recoHTML=function(r) {
 	}
 	return res;
 };
-eve.showContents=function(elem, from, toward) {
-	var l=eve.currentContents.length;
+eve.showRecosOnCat=function(elem, from, minus, plus) {
+	var fs=eve.fsTitle;
+	var l=fs.fullList.length;
 	var strHTML="";
 	if (l>0) {
-		if (from===undefined||from===null||from.constructor!==Number) {
+		if (from===undefined||from===null) {
+			from=l-1;
+		} else if (from.constructor===Number) {
+			if (from>=l) {
+				from=l-1;
+			} else if (from<0) {
+				from=0;
+			}
+		} else if (from.constructor===String) {
+			// from==uri
+			from=fs.fullList[from].i;
+		} else {
 			from=l-1;
 		}
-		if (toward===undefined||toward===null||toward.constructor!==Number) {
-			toward=-eve.maxShowReco;
+		if (minus===undefined||minus===null) {
+			minus=-eve.maxShowReco;
+		} else if (minus.constructor===Number) {
+			minus=minus>0?-minus:minus;
+		} else {
+			minus=-eve.maxShowReco;
 		}
-		var list=eve.fsTitle.fullList=[];
-		for (var k=0, i=0;k<l;k++) {
-			var cCI=eve.currentContents[k];
-			var r=cCI.reco;
+		if (plus===undefined||plus===null) {
+			plus=eve.maxShowReco;
+		} else if (plus.constructor===Number) {
+			plus=plus>0?plus:-plus;
+		} else {
+			plus=eve.maxShowReco;
+		}
+		for (var k=0;k<l;k++) {
+			var fsFLk=fs.fullList[k];
+			var uri=fsFLk.uri;
+			var r=fsFLk.reco;
 			var val=r.val.val;
 			var titleSH=eve.splitHangul(r.title);
+			fsFLk.txt=titleSH;
+			fsFLk.html=eve.escapeHTML(r.title);
 			if (val===-1) {
 				if (eve.showRWOP) {
-					cCI.inRange=true;
-					list.push({i:i, txt:titleSH, html:eve.escapeHTML(r.title)});
-					i++;
+					fsFLk.inRange=true;
 				} else {
-					cCI.inRange=false;
+					fsFLk.inRange=false;
 				}
 			} else {
 				if (eve.ptsRangeFrom<=val&&val<=eve.ptsRangeTo) {
-					cCI.inRange=true;
-					list.push({i:i, txt:titleSH, html:eve.escapeHTML(r.title)});
-					i++;
+					fsFLk.inRange=true;
 				} else {
-					cCI.inRange=false;
+					fsFLk.inRange=false;
 				}
 			}
 		}
+		// minus
 		var i=from;
-		var step=(toward>0)?1:-1;
-		for (var k=0;0<=i&&i<l;i+=step) {
-			var cCI=eve.currentContents[i];
-			var r=cCI.reco;
-			if (cCI.inRange) {
-				if (toward<0) {
-					strHTML+=eve.recoHTML(r);
-				} else {
-					strHTML=eve.recoHTML(r)+strHTML;
-				}
-				k++;
-				if (k>eve.maxShowReco) break;
+		var maxShowReco=-minus;
+		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--,k++) {
+			var fsFLi=fs.fullList[i];
+			var r=fsFLi.reco;
+			if (fsFLi.inRange) {
+				if (fsFLi.$listI) { continue; }
+				strHTML+=eve.recoHTML(r);
 			}
 		}
-		if (0<i&&i<l-1) {
-			if (toward<0) {
-				strHTML+='<div class="button" onclick="eve.showContents(this,'+(i+step)+','+toward+')">Load more...</div>';
-			} else {
-				strHTML='<div class="button" onclick="eve.showContents(this,'+(i+step)+','+toward+')">Load more...</div>'+strHTML;
+		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
+			strHTML+='<div class="button margins to-be-executed" onclick="eve.showRecosOnCat(this,'+i+',10,1)">Load more...</div>';
+		}
+		// plus
+		i=from+1;
+		maxShowReco=plus;
+		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++,k++) {
+			var fsFLi=fs.fullList[i];
+			var r=fsFLi.reco;
+			if (fsFLi.inRange) {
+				if (fsFLi.$listI) { continue; }
+				strHTML=eve.recoHTML(r)+strHTML;
 			}
+		}
+		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
+			strHTML='<div class="button margins to-be-executed" onclick="eve.showRecosOnCat(this,'+i+',1,10)">Load more...</div>'+strHTML;
 		}
 	} else {
-		strHTML+="No reco.";
+		strHTML+="<span style='font-size:3em'>No reco.</span>";
 	}
 	if (elem) {
 		$(elem).replaceWith(strHTML);
 	} else {
 		$contents.html(strHTML);
 	}
+	var $recos=$contents.find(".reco");
+	for (var i=0;i<$recos.length;i++) {
+		var uri=eve.unescapeHTML($recos.eq(i).find(".textURI").html());
+		fs.fullList[uri].$listI=$recos.eq(i);
+	}
 	eve.delayedElems=eve.delayedElems.add( $contents.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
 	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	eve.fdList=$("#sidebar, #head, #contents .reco, #foot");
+	fs[0].ptnSH=eve.splitHangul("$!@#");
+	fs.$fs.trigger("keyup");
 };
 eve.editOrRecoToMine=function(elem) {
 	var $reco=$(elem).parent(".reco");
@@ -2144,18 +2174,18 @@ eve.recoToEve=function(resp, recos) {
 		}
 	}
 };
-eve.showRecosOnCat=function(cat) {
+eve.getAndShowRecosOnCat=function(cat) {
 	var uriList=(eve.catUriList[cat].has?eve.catUriList[cat].UriList:"").trim();
 	var uris=[];
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	var getRecosStr="uri";
 	var getRecosN=0;
-	eve.currentContents=[];
-	for (var j=0;j<uris.length;j++) {
-		var uri=uris[j];
+	var fsFL=eve.fsTitle.fullList=[];
+	for (var i=0;i<uris.length;i++) {
+		var uri=uris[i];
 		var r=eve.userRecos[uri];
 		if (!r) { r=eve.userRecos[uri]={}; }
-		eve.currentContents[uris.length-1-j]={reco:r};
+		fsFL[uris.length-1-i]=fsFL[uri]={i:i, uri:uri, reco:r};
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
@@ -2168,13 +2198,13 @@ eve.showRecosOnCat=function(cat) {
 		}).done(function(resp) {
 			eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
 			eve.recoToEve(resp, eve.userRecos);
-			eve.showContents();
+			eve.showRecosOnCat();
 		});
 	} else {
-		eve.showContents();
+		eve.showRecosOnCat();
 	}
 };
-eve.getAndShowRecosOnCat=function(cat) {
+eve.getUriListAndShowRecosOnCat=function(cat) {
 	$subCats.html("");
 	$contents.html("Loading recos in cat="+eve.escapeHTML(cat)+"...");
 	var catList=eve.catList[cat];
@@ -2191,7 +2221,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 		var catUriList=eve.catUriList[cat];
 		if (!catUriList) { catUriList=eve.catUriList[cat]={}; }
 		if (catUriList.down) {
-			eve.showRecosOnCat(cat);
+			eve.getAndShowRecosOnCat(cat);
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
@@ -2212,7 +2242,7 @@ eve.getAndShowRecosOnCat=function(cat) {
 						}
 					}
 				}
-				eve.showRecosOnCat(cat);
+				eve.getAndShowRecosOnCat(cat);
 			});
 		}
 	} else {
@@ -2231,7 +2261,7 @@ eve.refresh=function(cats, option, uri) {
 	}
 	eve.currentCat=c[k];
 	if (c[k]!==currentCat) {
-		eve.getAndShowRecosOnCat(c[k]);
+		eve.getUriListAndShowRecosOnCat(c[k]);
 		window.history.pushState({cat:c[k]}, null, eve.pathOfCat(c[k]));
 	} else {
 		switch (option) {
@@ -2264,7 +2294,7 @@ eve.refresh=function(cats, option, uri) {
 			}
 			break;
 		default :
-			eve.getAndShowRecosOnCat(c[k]);
+			eve.getUriListAndShowRecosOnCat(c[k]);
 		}
 	}
 };
@@ -2292,7 +2322,7 @@ eve.openCat=function(cat, e) {
 	} else {
 		if (window.history.state&&window.history.state.cat===cat) { return false; }
 		eve.currentCat=cat;
-		eve.getAndShowRecosOnCat(cat);
+		eve.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
 		return false;
 	}
@@ -2305,7 +2335,7 @@ for (var i=0;i<eve.catList.length;i++) {
 
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
-		eve.getAndShowRecosOnCat(e.state.cat);
+		eve.getUriListAndShowRecosOnCat(e.state.cat);
 	}
 };
 eve.getSearchVars=function(searchStr) {
@@ -2441,12 +2471,12 @@ eve.showMyReco=function(r) {
 };
 eve.showReco=function(r) {
 	if (r["has"]) {
-		$input_title[0].value=r["title"];
-		$input_cats[0].value=r["cats"];
-		$input_desc[0].value=r["desc"];
+		$input_title[0].value=r.title;
+		$input_cats[0].value=r.cats;
+		$input_desc[0].value=r.desc;
 		if (eve.myPage) {
-			$input_cmt[0].value=r["cmt"];
-			$input_val[0].value=r["val"].str;
+			$input_cmt[0].value=r.cmt;
+			$input_val[0].value=r.val.str;
 		} else {
 			$input_cmt[0].value="";
 			$input_val[0].value="";
@@ -2931,18 +2961,28 @@ $fuzzy_search.on("keydown", function(e) {
 		break;
 	}
 });
-eve.gotoLi=function(e, elem, k) {
+eve.gotoLi=function(e, elem, k, fs) {
 if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 } else {
 	var $elem=$(elem);
+	var uri=fs.fullList[k].uri;
 	if ($elem.hasClass("selected")) {
-		$fuzzy_search.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	} else {
-		eve.$fsLis.removeClass("selected");
+		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
 	}
-	var $listI=eve.fs.fullList[k]["$listI"];
-	$window.scrollTop($listI.offset().top-window.innerHeight/3);
+	var $listI=fs.fullList[k].$listI;
+	if ($listI) {
+		$window.scrollTop($listI.offset().top);
+	} else {
+		var $insert=$('<div class="button">inserting...</div>');
+		$contents.append($insert);
+		$elem=eve.showRecosOnCat($insert[0], k, 2, 2);
+		setTimeout(function() {
+			$window.scrollTop(fs.fullList[k].$listI.offset().top);
+		}, 512);
+	}
 }};
 eve.doFSTitle=function(fs) {
 	var fsPtnSH=eve.splitHangul(fs.$fs.text());
@@ -2953,7 +2993,8 @@ eve.doFSTitle=function(fs) {
 		var str="";
 		for (var i=0;i<sorted.length;i++) {
 			var k=res[sorted[i]].i;
-			str+='<div class="list-item" onclick="eve.gotoLi(event,this,'+k+')">'
+			var uri=fs.fullList[k].uri;
+			str+='<div class="list-item" onclick="eve.gotoLi(event,this,'+k+',eve.fsTitle)">'
 					+fs.fullList[k].html
 					+((res[sorted[i]].highlight!==undefined)?
 					'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
@@ -3014,7 +3055,7 @@ if (vars.lang!==undefined) {
 if (vars.cat!==undefined) {
 	var cat=vars.cat.val;
 	eve.currentCat=cat;
-	eve.getAndShowRecosOnCat(cat);
+	eve.getUriListAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
 }
 
@@ -3130,28 +3171,51 @@ eve.cueYoutubePlaylist=function(list) {
 })(window.eve=window.eve||{}, jQuery);
 
 function onYouTubeIframeAPIReady() {
-	eve.playlist=new YT.Player('yt-and-video-playlist', {events:{
+	eve.playlist=[];
+	eve.playlist.currentIndex=0;
+	eve.playlist.oneLoop=false;
+	eve.playlist.loop=false;
+	
+	eve.playlist.playCurrentVideo=function() {
+		
+	};
+	eve.playlist.YTPlayer=new YT.Player('yt-and-video-playlist', {events:{
 		'onError':function(e) {
 			setTimeout(function() {
-				e.target.nextVideo();
+				// e.target.nextVideo();
+				eve.playlist.currentIndex++;
+				if (eve.playlist.currentIndex!==eve.playlist.length) {
+					eve.playlist.playCurrentVideo();
+				} else if (eve.playlist.loop) {
+					eve.playlist.currentIndex=0;
+					eve.playlist.playCurrentVideo();
+				}
 			}, 2000);
 		}, 'onStateChange':function(e) {
-			if (eve.playlist.oneLoop&&e.data===YT.PlayerState.ENDED) {
-				e.target.playVideoAt(eve.playlist.currentIndex);
-			} else if (e.data===YT.PlayerState.PLAYING) {
-				eve.playlist.currentIndex=e.target.getPlaylistIndex();
+			if (e.data===YT.PlayerState.ENDED) {
+				// e.target.playVideoAt(eve.playlist.currentIndex);
+				if (eve.playlist.oneLoop) {
+					eve.playlist.playCurrentVideo();
+				} else {
+					eve.playlist.currentIndex++;
+					if (eve.playlist.currentIndex!==eve.playlist.length) {
+						eve.playlist.playCurrentVideo();
+					} else if (eve.playlist.loop) {
+						eve.playlist.currentIndex=0;
+						eve.playlist.playCurrentVideo();
+					}
+				}
 			}
 		}}
 	});
-	eve.playlist.oneLoop=false;
 	eve.playlist.toggleLoop=function(elem) {
 		var $elem=$(elem);
 		if ($elem.hasClass("enabled")) {
 			$elem.removeClass("enabled");
-			eve.playlist.setLoop(false);
+			eve.playlist.loop=false;
 		} else {
 			$elem.addClass("enabled");
-			eve.playlist.setLoop(true);
+			eve.playlist.loop=true;
 		}
 	};
 	eve.playlist.toggleOneLoop=function(elem) {
