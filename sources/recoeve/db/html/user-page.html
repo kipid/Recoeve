@@ -6,22 +6,23 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <title>Recoeve.net</title>
 <script>
-(function(eve, undefined) {
-	eve.myIndex="{--myIndex--}";
-	eve.myId="{--myId--}";
-	eve.pathName=window.location.pathname;
-	if (eve.pathName.substring(0,6)!=="/user/") {
-		eve.pathName="/user/"+eve.myId;
-		window.history.replaceState(null, null, eve.pathName+window.location.search+window.location.hash);
+window.m={};
+(function(m, undefined) {
+	m.myIndex="{--myIndex--}";
+	m.myId="{--myId--}";
+	m.pathName=window.location.pathname;
+	if (m.pathName.substring(0,6)!=="/user/") {
+		m.pathName="/user/"+m.myId;
+		window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
 	}
-	eve.userId=eve.pathName.substring(6);
-	var k=eve.userId.indexOf("/");
+	m.userId=m.pathName.substring(6);
+	var k=m.userId.indexOf("/");
 	if (k!==-1) {
-		eve.userId=eve.userId.substring(0,k);
-		eve.pathName="/user/"+eve.userId;
+		m.userId=m.userId.substring(0,k);
+		m.pathName="/user/"+m.userId;
 	}
-	eve.myPage=(eve.myId===eve.userId);
-})(window.eve=window.eve||{});
+	m.myPage=(m.myId===m.userId);
+})(window.m);
 </script>
 <style>
 body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
@@ -215,7 +216,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.dark .rC.fixed {background:black; border-color:white}
 .rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
-.pc {text-align:center; font-size:.6em} /* position change */
+.pc {text-align:center; font-size:.85em} /* position change */
 
 #foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
 
@@ -305,15 +306,23 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
 </div><!-- div#head -->
 <div class="side2" id="headPlay">
-	<div class="button" onclick="$('#playlist-container').toggle()">Show/Hide playlist</div>
-	<div class="rC" id="playlist-container" style="display:none">
-		<div class="rSC">
-			<div id="yt-and-video-playlist"></div>
+	<div class="button" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
+	<div id="playlist-container" style="display:none">
+		<div id="uri-rendered"></div>
+		<div class="rC" id="rC-video-uri-rendered">
+			<div class="rSC"><div id="video"></div></div>
+			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
-		<div class="button" onclick="eve.playlist.setShuffle(true)">[--Shuffle--]</div>
-		<div class="button" onclick="eve.playlist.toggleLoop(this)">[--Loop--]</div>
-		<div class="button" onclick="eve.playlist.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>
+		<div class="rC" id="rC-youtube-uri-rendered">
+			<div class="rSC"><div id="youtube"></div></div>
+			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
+		</div>
+		<div class="button" onclick="m.fsTitle.Preceding()">[--Preceding--]</div>
+		<div class="button" onclick="m.fsTitle.Following()">[--Following--]</div>
+		<div class="button" onclick="m.fsTitle.shuffle()">[--Shuffle--]</div>
+		<div class="button" onclick="m.fsTitle.toggleLoop(this)">[--Loop--]</div>
+		<div class="button" onclick="m.fsTitle.toggleOneLoop(this)">[--One-loop--]</div>
+		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
 <div class="side2" id="subCats"></div>
@@ -328,13 +337,13 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 <div id="scripts"></div>
 <script src="/jquery.min.js"></script>
 <script>
-(function(eve, $, undefined) {
+(function(m, $, undefined) {
 /* Prerequisite */
 //////////////////
 // Variables
 //////////////////
 $data_myCatList=$("#data-myCatList");
-$data_CatList=eve.myPage?$data_myCatList:$("#data-CatList");
+$data_CatList=m.myPage?$data_myCatList:$("#data-CatList");
 $data_lang=$("#data-lang");
 
 $user_noti=$("#user-noti");
@@ -349,7 +358,14 @@ $change_catList_order_cancel=$("#change-catList-order-cancel");
 
 $new_reco=$("#new-reco");
 
-$headPlay=$("#headPlay"); // youtube playlist
+$headPlay=$("#headPlay");
+$playlist_container=$("#playlist-container");
+$uri_rendered=$("#uri-rendered");
+$rC_video_uri_rendered=$("#rC-video-uri-rendered");
+$video=$("#video");
+$rC_youtube_uri_rendered=$("#rC-youtube-uri-rendered");
+$youtube=$("#youtube");
+$reco_playing=$("#reco-playing");
 
 $input_uri=$("#input-uri");
 $def_titles=$("#def-titles");
@@ -383,7 +399,7 @@ $point_range_left=$("#point-range-left");
 $point_range_right=$("#point-range-right");
 $point_range_result=$("#point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
-eve.showRWOP=true; // RWOP : Reco WithOut Point
+m.showRWOP=true; // RWOP : Reco WithOut Point
 
 $subCats=$("#subCats");
 $contents=$("#contents");
@@ -394,81 +410,87 @@ $html=$("html");
 $body=$("body");
 $.fn.exists=function() { return this.length!==0; };
 
-$("title").html(eve.userId+" on Recoeve.net");
-$user_noti.html(eve.userId+"'s recos");
-if (eve.myIndex) {
-	$my_id.html(eve.myId+" ▾");
+$("title").html(m.userId+" on Recoeve.net");
+$user_noti.html(m.userId+"'s recos");
+if (m.myIndex) {
+	$my_id.html(m.myId+" ▾");
 } else {
 	$my_id.hide();
 	$button_new_reco.remove();
 }
 
-eve.delayPad=eve.delayPad||256;
-eve.wait=eve.wait||512;
-eve.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-eve.previous=Date.now();
+m.delayPad=m.delayPad||256;
+m.wait=m.wait||512;
+m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+m.previous=Date.now();
 
-eve.catList=[];
-eve.myCatList=eve.myPage?eve.catList:[];
-eve.currentCat=null;
-eve.catUriList=[];
-eve.userRecos={};
-eve.myRecos=eve.myPage?eve.userRecos:{};
-eve.maxShowReco=10;
+m.catList=[];
+m.myCatList=m.myPage?m.catList:[];
+m.currentCat=null;
+m.catUriList=[];
+m.userRecos={};
+m.myRecos=m.myPage?m.userRecos:{};
+m.maxShowReco=10;
 
-eve.fsCat=[];
-eve.fsCat[0]=eve.fsCat[1]=[];
-eve.fsCat[0].k=eve.fsCat[1].k=-1;
-eve.fsCat.fullList=[];
-eve.fsCat.$fs=$input_cats;
-eve.fsCat.$fsl=$cat_fs_list;
-eve.fsTitle=[];
-eve.fsTitle[0]=eve.fsTitle[1]=[];
-eve.fsTitle.fullList=[];
-eve.fsTitle.$fs=$fuzzy_search;
-eve.fsTitle.$fsl=$fuzzy_search_list;
-eve.fsGo=[];
-eve.fsGo[0]=eve.fsGo[1]=[];
-eve.fsGo.fullList=[];
-eve.fsGo.$fs=$fuzzy_search;
-eve.fsGo.$fsl=$fuzzy_search_list;
+m.fsCat=[];
+m.fsCat[0]=m.fsCat[1]=[];
+m.fsCat[0].k=m.fsCat[1].k=-1;
+m.fsCat.fullList=[];
+m.fsCat.$fs=$input_cats;
+m.fsCat.$fsl=$cat_fs_list;
 
-eve.YTPlaylist=[];
-eve.cueYTCount=0;
-eve.YtAPILoaded=true;
+m.fsTitle=[];
+m.fsTitle[0]=m.fsTitle[1]=[];
+m.fsTitle.fullList=[];
+m.fsTitle.$fs=$fuzzy_search;
+m.fsTitle.$fsl=$fuzzy_search_list;
+m.fsTitle.currentIndex=-1;
+m.fsTitle.shuffled=[];
+m.fsTitle.oneLoop=false;
+m.fsTitle.loop=false;
 
-eve.ptnURI=[];
-eve.ptnURL=/^https?:\/\/\S+/i;
-eve.ptnTag=/^<\w+[\s\S]+>$/i;
-eve.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
-eve.ptnDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
+m.fsGo=[];
+m.fsGo[0]=m.fsGo[1]=[];
+m.fsGo.fullList=[];
+m.fsGo.$fs=$fuzzy_search;
+m.fsGo.$fsl=$fuzzy_search_list;
 
-eve.ptsRangeFrom=0; // from <= pts <= to
-eve.ptsRangeTo=1;
-eve.mdInPRL=false; // mouse down in Point Range Left
-eve.mdInPRR=false; // mouse down in Point Range Right
-eve.PRmax=10;
-eve.PRLw=15;
-eve.PRw=$point_range.width();
-eve.PRRw=eve.PRw-15;
-eve.fullPts=10;
+m.YtPlayer=null;
+m.cueYtCount=0;
+m.YtAPINotLoaded=true;
+
+m.ptnURI=[];
+m.ptnURL=/^https?:\/\/\S+/i;
+m.ptnTag=/^<\w+[\s\S]+>$/i;
+m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+m.ptnDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
+
+m.ptsRangeFrom=0; // from <= pts <= to
+m.ptsRangeTo=1;
+m.mdInPRL=false; // mouse down in Point Range Left
+m.mdInPRR=false; // mouse down in Point Range Right
+m.PRmax=10;
+m.PRLw=15;
+m.PRw=$point_range.width();
+m.PRRw=m.PRw-15;
+m.fullPts=10;
 
 ////////////////////////////////////////////////////
 // Escape and Unescape HTML string.
 ////////////////////////////////////////////////////
-eve.escapeHTML=function(str) {
+m.escapeHTML=function(str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 };
-eve.unescapeHTML=function(str) {
+m.unescapeHTML=function(str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
-eve.escapeAMP=function(str) {
+m.escapeAMP=function(str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
 };
-eve.unescapeAMP=function(str) {
+m.unescapeAMP=function(str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };
@@ -476,13 +498,13 @@ eve.unescapeAMP=function(str) {
 ////////////////////////////
 // String to Array
 ////////////////////////////
-eve.encloseStr=function(str) {
+m.encloseStr=function(str) {
 	if (!str||str.constructor!==String) { return ""; }
 	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
 		return '"'+str.replace(/"/g,'""')+'"';
 	} return str;
 };
-eve.strToJSON=function(str, colMap, rowMap) {
+m.strToJSON=function(str, colMap, rowMap) {
 	if (!str||str.constructor!==String) { return []; }
 	if (colMap===undefined||colMap===null) { colMap=true; }
 	// str=str.trim()+"\n";
@@ -556,7 +578,7 @@ eve.strToJSON=function(str, colMap, rowMap) {
 /////////////////////////////
 // cookies.js
 /////////////////////////////
-eve.docCookies={
+m.docCookies={
 	hasItem:function(sKey) {
 		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
 	}
@@ -599,8 +621,8 @@ $.fn.inView=function() {
 	if (this.is(":visible")) {
 		var viewportHeight=window.innerHeight;
 		var scrollTop=$window.scrollTop();
-		var elemTop=this.offset().top-eve.delayPad;
-		var elemBottom=elemTop+this.height()+eve.delayPad;
+		var elemTop=this.offset().top-m.delayPad;
+		var elemBottom=elemTop+this.height()+m.delayPad;
 		return (scrollTop+viewportHeight>elemTop)&&(scrollTop<elemBottom);
 	} else {
 		return false;
@@ -632,30 +654,30 @@ $.fn.delayedLoad=function() {
 	}
 	return done;
 };
-eve.delayedLoadAll=function() {
-	eve.delayedElems.each(function() {
+m.delayedLoadAll=function() {
+	m.delayedElems.each(function() {
 		if ($(this).delayedLoad()) {
-			eve.delayedElems=eve.delayedElems.not(this);
+			m.delayedElems=m.delayedElems.not(this);
 		}
 	});
-	if (eve.delayedElems.length>0) {
-		$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+	if (m.delayedElems.length>0) {
+		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	}
-	eve.previous=Date.now();
+	m.previous=Date.now();
 };
-eve.delayedLoadByScroll=function() {
+m.delayedLoadByScroll=function() {
 	$window.off("scroll.delayedLoad");
 	var now=Date.now();
-	var passed=now-eve.previous;
-	if (passed>eve.wait) {
-		eve.delayedLoadAll();
+	var passed=now-m.previous;
+	if (passed>m.wait) {
+		m.delayedLoadAll();
 	} else {
-		eve.delayedLoadSetTimeout=setTimeout(function() {
-			eve.delayedLoadAll();
-		}, eve.wait*1.1-passed);
+		m.delayedLoadSetTimeout=setTimeout(function() {
+			m.delayedLoadAll();
+		}, m.wait*1.1-passed);
 	}
 };
-$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
 
 
@@ -664,24 +686,24 @@ $window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
 // Hangul (Korean) split and map to English
 // KE : Korean Expanded
 ////////////////////////////////////////////////////
-eve.jamoKE = ["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
-eve.jamo = ["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+m.jamoKE = ["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
+m.jamo = ["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
 
-eve.mapKE = {"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
-for (var p in eve.mapKE) {
-	eve.mapKE[eve.mapKE[p]]=p;
+m.mapKE = {"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
+for (var p in m.mapKE) {
+	m.mapKE[m.mapKE[p]]=p;
 }
 
-eve.rChoKE = ["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
-eve.rCho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rChoKE = ["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rCho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
-eve.rJungKE = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
-eve.rJung = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+m.rJungKE = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
+m.rJung = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
 
-eve.rJongKE = ["", "ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
-eve.rJong = ["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rJongKE = ["", "ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rJong = ["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
-eve.splitHangul=function(str) {
+m.splitHangul=function(str) {
 	var res=[];
 	res.originalStr=str;
 	res.splitted3="";
@@ -695,7 +717,7 @@ eve.splitHangul=function(str) {
 		var n=str.charCodeAt(i);
 		if (n>=0x3131&&n<=0x3163) {
 			n-=0x3131;
-			res[i]={"char":c, "splitted3":c, "splitted":eve.jamoKE[n]};
+			res[i]={"char":c, "splitted3":c, "splitted":m.jamoKE[n]};
 			res.pCho[p]=true;
 		} else if (n>=0xAC00&&n<=0xD7A3) {
 			n-=0xAC00;
@@ -703,8 +725,8 @@ eve.splitHangul=function(str) {
 			jung=( (n-jong)/28 )%21;
 			cho=( ((n-jong)/28)-jung )/21;
 			res[i]={"char":c
-				, "splitted3":eve.rCho[cho]+eve.rJung[jung]+eve.rJong[jong]
-				, "splitted":eve.rChoKE[cho]+eve.rJungKE[jung]+eve.rJongKE[jong]};
+				, "splitted3":m.rCho[cho]+m.rJung[jung]+m.rJong[jong]
+				, "splitted":m.rChoKE[cho]+m.rJungKE[jung]+m.rJongKE[jong]};
 			res.pCho[p]=true;
 		} else {
 			res[i]={"char":c, "splitted3":c, "splitted":c};
@@ -722,18 +744,18 @@ eve.splitHangul=function(str) {
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
-eve.fsCat[0].ptnSH=eve.fsCat[1].ptnSH
-=eve.fsTitle[0].ptnSH=eve.fsTitle[1].ptnSH
-=eve.fsGo[0].ptnSH=eve.fsGo[1].ptnSH=eve.splitHangul("$!@#");
+m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
+=m.fsTitle[0].ptnSH=m.fsTitle[1].ptnSH
+=m.fsGo[0].ptnSH=m.fsGo[1].ptnSH=m.splitHangul("$!@#");
 RegExp.quote=function(str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
-eve.arrayRegExs=function(ptnSH) {
+m.arrayRegExs=function(ptnSH) {
 	var str=ptnSH.splitted;
 	var res=[];
 	for (var i=0;i<str.length;i++) {
 		var c=str.charAt(i);
-		var mapKE=eve.mapKE[c];
+		var mapKE=m.mapKE[c];
 		if (mapKE) {
 			res.push( new RegExp("["+c+mapKE+"]", "ig") );
 		} else {
@@ -742,7 +764,7 @@ eve.arrayRegExs=function(ptnSH) {
 	}
 	return res;
 };
-eve.highlightStrFromIndices=function(strSplitted, indices) {
+m.highlightStrFromIndices=function(strSplitted, indices) {
 	var res="";
 	for (var i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
 		while (j<indices.length&&indices[j-1].end===indices[j].start) {
@@ -770,20 +792,20 @@ eve.highlightStrFromIndices=function(strSplitted, indices) {
 		if (strSplitted[i]["matched"]) {
 			res+='<span class="bold">';
 			while (i<strSplitted.length&&strSplitted[i]["matched"]) {
-				res+=eve.escapeHTML(strSplitted[i]["char"]);
+				res+=m.escapeHTML(strSplitted[i]["char"]);
 				i++;
 			}
 			res+='</span>';
 		} else {
 			while (i<strSplitted.length&&!strSplitted[i]["matched"]) {
-				res+=eve.escapeHTML(strSplitted[i]["char"]);
+				res+=m.escapeHTML(strSplitted[i]["char"]);
 				i++;
 			}
 		}
 	}
 	return res;
 };
-eve.matchScoreFromIndices=function(strSH, ptnSH, indices) {
+m.matchScoreFromIndices=function(strSH, ptnSH, indices) {
 	var res=0;
 	for (var i=0;i<indices.length;i++) {
 		if (strSH.pCho[indices[i].start])
@@ -795,7 +817,7 @@ eve.matchScoreFromIndices=function(strSH, ptnSH, indices) {
 	}
 	return res;
 };
-eve.fuzzySearch=function(ptnSH, fs) {
+m.fuzzySearch=function(ptnSH, fs) {
 	var list=[];
 	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
 		fs[1]=fs[0];
@@ -816,7 +838,7 @@ eve.fuzzySearch=function(ptnSH, fs) {
 	}
 	var res=fs[0]=[];
 	res.ptnSH=ptnSH;
-	var regExs=eve.arrayRegExs(ptnSH);
+	var regExs=m.arrayRegExs(ptnSH);
 	for (var i=0;i<list.length;i++) {
 	if (regExs.length>0) {
 		var txt=list[i].txt;
@@ -837,7 +859,7 @@ eve.fuzzySearch=function(ptnSH, fs) {
 			}
 		}
 		if (matched) {
-			var maxMatchScore=eve.matchScoreFromIndices(txt, ptnSH, indices);
+			var maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 			var indicesMMS=[]; // indices of max match score
 			for (var p=0;p<indices.length;p++) {
 				indicesMMS[p]=indices[p]; // hard copy of indices
@@ -858,7 +880,7 @@ eve.fuzzySearch=function(ptnSH, fs) {
 					}
 				}
 				if (matched) {
-					var matchScore=eve.matchScoreFromIndices(txt, ptnSH, indices);
+					var matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 					if (matchScore>maxMatchScore) {
 						maxMatchScore=matchScore;
 						for (var p=0;p<indices.length;p++) {
@@ -870,7 +892,7 @@ eve.fuzzySearch=function(ptnSH, fs) {
 					k--;
 				}
 			}
-			res.push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:eve.highlightStrFromIndices(txt, indicesMMS)});
+			res.push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
 		}
 	} else {
 		res.push({i:list[i].i, maxMatchScore:0});
@@ -892,15 +914,15 @@ eve.fuzzySearch=function(ptnSH, fs) {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-eve.pathOfCat=function(cat) {
-	return eve.pathName+"?cat="+eve.escapeAMP(cat);
+m.pathOfCat=function(cat) {
+	return m.pathName+"?cat="+m.escapeAMP(cat);
 };
-eve.getDepthOfTabs=function(str) {
+m.getDepthOfTabs=function(str) {
 	var n=0;
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
 	return n;
 };
-eve.getSuperCat=function(cat) {
+m.getSuperCat=function(cat) {
 	if (cat&&cat.constructor===String) {
 		var i=cat.lastIndexOf("--");
 		if (i!=-1) {
@@ -909,23 +931,23 @@ eve.getSuperCat=function(cat) {
 	}
 	return null;
 };
-eve.strCatListToJSON=function(strCatList, catList) {
+m.strCatListToJSON=function(strCatList, catList) {
 	var list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
 		list=[];
 	}
 	list.unshift("");
 	if (catList===undefined||catList===null) {
-		if (eve.catList) {
-			catList=eve.catList;
+		if (m.catList) {
+			catList=m.catList;
 		} else {
-			catList=eve.catList=[];
+			catList=m.catList=[];
 		}
 	}
 	var superCats=[];
 	for (var i=0;i<list.length;i++) {
 		var baseCat=list[i].trim();
-		var depth=eve.getDepthOfTabs(list[i]);
+		var depth=m.getDepthOfTabs(list[i]);
 		superCats.splice(depth, superCats.length-depth, baseCat);
 		var cat=superCats[0];
 		for (var j=1;j<=depth;j++) {
@@ -939,9 +961,9 @@ eve.strCatListToJSON=function(strCatList, catList) {
 		}
 	}
 };
-eve.catListToHTML=function() {
-	var cL=eve.catList;
-	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+eve.pathOfCat("")+'" class="baseCat" onclick="return eve.openCat(eve.catList[0].cat, event)">[--Uncategorized--]</a></div>';
+m.catListToHTML=function() {
+	var cL=m.catList;
+	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+m.pathOfCat("")+'" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>';
 	var i=1;
 	for (;i<cL.length-1;i++) {
 		var beforeDepth=cL[i-1].depth;
@@ -956,11 +978,11 @@ eve.catListToHTML=function() {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">';
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="EC" onclick="eve.ExpCol(this,eve.catList['+i+'])">▶</span>';
+			catListHTML+='<span class="EC" onclick="m.ExpCol(this,m.catList['+i+'])">▶</span>';
 		} else {
 			catListHTML+='<span class="noEC"></span>';
 		}
-		catListHTML+='<a href="'+eve.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return eve.openCat(eve.catList['+i+'].cat, event)">'+eve.escapeHTML(cL[i].baseCat)+'</a>'+'</div>';
+		catListHTML+='<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML(cL[i].baseCat)+'</a>'+'</div>';
 	}
 	if (cL.length>1) {
 		var beforeDepth=cL[i-1].depth;
@@ -974,7 +996,7 @@ eve.catListToHTML=function() {
 		}
 		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">'
 			+'<span class="noEC"></span>'
-			+'<a href="'+eve.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return eve.openCat(eve.catList['+i+'].cat, event)">'+eve.escapeHTML( cL[i].baseCat )+'</a>'
+			+'<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML( cL[i].baseCat )+'</a>'
 		+'</div>';
 		for (var j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+='</div>';
@@ -982,26 +1004,26 @@ eve.catListToHTML=function() {
 	}
 	$catList.html(catListHTML);
 };
-if (eve.myIndex) { eve.strCatListToJSON(eve.unescapeHTML($data_myCatList.html()), eve.myCatList); }
-if (!eve.myPage) { eve.strCatListToJSON(eve.unescapeHTML($data_CatList.html())); }
-eve.catListToHTML();
+if (m.myIndex) { m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList); }
+if (!m.myPage) { m.strCatListToJSON(m.unescapeHTML($data_CatList.html())); }
+m.catListToHTML();
 var $catECs=$catList.find(".cat:has(>.EC)");
 for (var i=$catECs.length-1;i>=0;i--) {
-	eve.catList[Number($catECs.eq(i).attr("id").substring(4))].subCatCollapsed=true;
+	m.catList[Number($catECs.eq(i).attr("id").substring(4))].subCatCollapsed=true;
 }
-eve.catsToA=function(cats) {
+m.catsToA=function(cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return '<a href="'+eve.pathOfCat("")+'" onclick="return eve.openCat(eve.catList[0].cat, event)"'+(eve.currentCat===""?' class="currentCat"':'')+'>[--Uncategorized--]</a>';
+		return '<a href="'+m.pathOfCat("")+'" onclick="return m.openCat(m.catList[0].cat, event)"'+(m.currentCat===""?' class="currentCat"':'')+'>[--Uncategorized--]</a>';
 	}
 	var arrayHTML=[];
 	var list=cats.split(";");
 	for (var i=0;i<list.length;i++) {
 		var cat=list[i];
-		arrayHTML.push('<a href="'+eve.pathOfCat(cat)+'" onclick="return eve.openCat(eve.catList['+eve.catList[cat].i+'].cat, event)"'+(eve.currentCat===cat?' class="currentCat"':'')+'>'+eve.escapeHTML(cat)+'</a>');
+		arrayHTML.push('<a href="'+m.pathOfCat(cat)+'" onclick="return m.openCat(m.catList['+m.catList[cat].i+'].cat, event)"'+(m.currentCat===cat?' class="currentCat"':'')+'>'+m.escapeHTML(cat)+'</a>');
 	}
 	return arrayHTML.join(" ; ");
 };
-eve.getCatListChanged=function() {
+m.getCatListChanged=function() {
 	$change_catList_order_ok.hide();
 	$change_catList_order_cancel.hide();
 	var $cats=$("#catList .cat").not("#cat-0");
@@ -1010,10 +1032,10 @@ eve.getCatListChanged=function() {
 	var catListChanged="\n";
 	for (var i=0;i<$cats.length;i++) {
 		var catI=Number($cats.eq(i).attr("id").substring(4));
-		for (var j=0;j<eve.catList[catI].depth;j++) {
+		for (var j=0;j<m.catList[catI].depth;j++) {
 			catListChanged+="\t";
 		}
-		catListChanged+=eve.catList[catI].baseCat+"\n";
+		catListChanged+=m.catList[catI].baseCat+"\n";
 	}
 	return catListChanged;
 };
@@ -1050,7 +1072,7 @@ $change_catList_order.on("click", function(e) {
 			$catM.css({width:$catM.outerWidth()});
 			$catM.addClass("move");
 			var catI=Number($catM.attr("id").substring(4));
-			var $catTo=$('<div id="cat-to-here" style="margin-left:'+(eve.catList[catI].depth+0.5)+'em"></div>');
+			var $catTo=$('<div id="cat-to-here" style="margin-left:'+(m.catList[catI].depth+0.5)+'em"></div>');
 			$catM.before($catTo);
 			var catTo=-1;
 			$html.on("mousemove.mdInEB touchmove.mdInEB", function(e) {
@@ -1119,9 +1141,9 @@ $change_catList_order.on("click", function(e) {
 	});
 });
 $change_catList_order_ok.on("click", function(e) {
-	var catListChanged=eve.getCatListChanged();
-	if (catListChanged!==eve.unescapeHTML($data_CatList.html())) {
-		if (eve.myPage) {
+	var catListChanged=m.getCatListChanged();
+	if (catListChanged!==m.unescapeHTML($data_CatList.html())) {
+		if (m.myPage) {
 			$.ajax({
 				type:"POST", url:"/changeOrders/CatList", data:catListChanged
 				, dataType:"text"
@@ -1130,12 +1152,12 @@ $change_catList_order_ok.on("click", function(e) {
 			}).done(function(resp) {
 				console.log(resp);
 			}).always(function() {
-				$data_myCatList.html(eve.escapeHTML(catListChanged));
-				eve.updateCatFS();
+				$data_myCatList.html(m.escapeHTML(catListChanged));
+				m.updateCatFS();
 				$change_catList_order.show();
 			});
 		} else {
-			$data_CatList.html(eve.escapeHTML(catListChanged));
+			$data_CatList.html(m.escapeHTML(catListChanged));
 			$change_catList_order.show();
 		}
 	} else {
@@ -1143,21 +1165,21 @@ $change_catList_order_ok.on("click", function(e) {
 	}
 });
 $change_catList_order_cancel.on("click", function(e) {
-	var catListChanged=eve.getCatListChanged();
-	var catList=eve.unescapeHTML($data_CatList.html());
+	var catListChanged=m.getCatListChanged();
+	var catList=m.unescapeHTML($data_CatList.html());
 	if (catListChanged!==catList) {
 		var $catSelected=$catList.find(".cat.selected");
 		var selected=[];
 		for (var i=0;i<$catSelected.length;i++) {
-			selected.push(eve.catList[Number($catSelected.eq(i).attr("id").substring(4))].cat);
+			selected.push(m.catList[Number($catSelected.eq(i).attr("id").substring(4))].cat);
 		}
-		eve.strCatListToJSON(catList);
-		eve.catListToHTML();
+		m.strCatListToJSON(catList);
+		m.catListToHTML();
 		for (var i=0;i<selected.length;i++) {
-			$("#cat-"+eve.catList[selected[i]].i).addClass("selected");
+			$("#cat-"+m.catList[selected[i]].i).addClass("selected");
 		}
-		for (var i=eve.catList.length-1;i>=0;i--) {
-			if (eve.catList[i].subCatCollapsed) {
+		for (var i=m.catList.length-1;i>=0;i--) {
+			if (m.catList[i].subCatCollapsed) {
 				$("#cat-"+i+">.EC").trigger("click");
 			}
 		}
@@ -1168,25 +1190,25 @@ $change_catList_order_cancel.on("click", function(e) {
 //////////////////////////////////////
 // Fuzzy search on Cat
 //////////////////////////////////////
-eve.putCatToFSFullList=function(i, cat) {
-	if (eve.fsCat.fullList[cat]) {
-		eve.fsCat.fullList[i]=eve.fsCat.fullList[cat];
+m.putCatToFSFullList=function(i, cat) {
+	if (m.fsCat.fullList[cat]) {
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
 	} else {
-		var txtSH=eve.splitHangul(cat);
-		eve.fsCat.fullList[i]=eve.fsCat.fullList[cat]={txt:txtSH, cat:cat, html:eve.escapeHTML(cat)};
+		var txtSH=m.splitHangul(cat);
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={txt:txtSH, cat:cat, html:m.escapeHTML(cat)};
 	}
 };
-eve.updateCatFS=function() {
-	eve.fsCat.fullList.splice(0, eve.fsCat.fullList.length);
-	if (!eve.myPage) {
-		eve.strCatListToJSON(eve.unescapeHTML($data_myCatList.html()), eve.myCatList);
+m.updateCatFS=function() {
+	m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
+	if (!m.myPage) {
+		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	}
-	for (var i=0;i<eve.myCatList.length;i++) {
-		eve.putCatToFSFullList(i, eve.myCatList[i].cat);
+	for (var i=0;i<m.myCatList.length;i++) {
+		m.putCatToFSFullList(i, m.myCatList[i].cat);
 	}
 };
-eve.updateCatFS();
-eve.chooseCat=function(elem, j) { // fs[0][j]
+m.updateCatFS();
+m.chooseCat=function(elem, j) { // fs[0][j]
 	var $elem=$(elem);
 	if ($elem.hasClass("selected")) {
 		$input_cats.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
@@ -1204,7 +1226,7 @@ eve.chooseCat=function(elem, j) { // fs[0][j]
 		$input_cats[0].setSelectionRange(sEnd,sEnd);
 	}
 };
-eve.doFSCat=function(fs) {
+m.doFSCat=function(fs) {
 	var catsTxt=fs.$fs[0].value;
 	var sEnd=fs.$fs[0].selectionEnd;
 	var listOfCats=fs.listOfCats=catsTxt.split(";");
@@ -1217,14 +1239,14 @@ eve.doFSCat=function(fs) {
 			break;
 		}
 	}
-	var fsCatSH=eve.splitHangul(listOfCats[fs[0].k]);
+	var fsCatSH=m.splitHangul(listOfCats[fs[0].k]);
 	if (fs[0].ptnSH.splitted!==fsCatSH.splitted) {
-		eve.fuzzySearch(fsCatSH, fs);
+		m.fuzzySearch(fsCatSH, fs);
 		var res=fs[0];
 		var str="";
 		for (var i=0;i<res.length;i++) {
 			var k=res[res.sorted[i]];
-			str+='<div class="list-item" onclick="eve.chooseCat(this,'+i+')">'
+			str+='<div class="list-item" onclick="m.chooseCat(this,'+i+')">'
 					+'<div class="list-index">'+i+'</div>'
 					+fs.fullList[k.i].html
 					+(k.highlight!==undefined?
@@ -1235,22 +1257,22 @@ eve.doFSCat=function(fs) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 	}
 };
-eve.fsCatOn=function() {
+m.fsCatOn=function() {
 	var now=Date.now();
-	var passed=now-eve.previous;
-	if (passed>eve.wait) {
-		eve.previous=now;
-		eve.doFSCat(eve.fsCat);
+	var passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSCat(m.fsCat);
 	} else {
 		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function() {
-			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", eve.fsCatOn);
-			eve.previous=Date.now();
-			eve.doFSCat(eve.fsCat);
-		}, eve.wait*1.1-passed);
+			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+			m.previous=Date.now();
+			m.doFSCat(m.fsCat);
+		}, m.wait*1.1-passed);
 	}
 };
-$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", eve.fsCatOn);
+$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $input_cats.on("keydown.fs", function(e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
@@ -1294,10 +1316,10 @@ $input_cats.on("keydown.fs", function(e) {
 		break;
 	}
 });
-if (eve.myIndex) {
-	for (var i=0;i<eve.myCatList.length;i++) {
-		var cat=eve.myCatList[i].cat;
-		eve.fsCat.fullList[i]={i:i, txt:eve.splitHangul(cat), cat:cat, html:eve.escapeHTML(cat)};
+if (m.myIndex) {
+	for (var i=0;i<m.myCatList.length;i++) {
+		var cat=m.myCatList[i].cat;
+		m.fsCat.fullList[i]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 }
 $input_cats.trigger("keyup");
@@ -1308,10 +1330,10 @@ $input_cats.on("focus", function() {
 //////////////////////////////////////
 // Put/Delete/Change Cats
 //////////////////////////////////////
-eve.putCat=function(cat) {
+m.putCat=function(cat) {
 	var res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=eve.unescapeHTML($data_myCatList.html());
+	var fullCats=m.unescapeHTML($data_myCatList.html());
 	var levels=cat.split("--");
 	var pre="\n";
 	var start=0;
@@ -1339,13 +1361,13 @@ eve.putCat=function(cat) {
 			res=true;
 		}
 	}
-	if (res) { $data_myCatList.html(eve.escapeHTML(fullCats)); }
+	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
 	return res;
 };
-eve.deleteCat=function(cat) {
+m.deleteCat=function(cat) {
 	var res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=eve.unescapeHTML($data_myCatList.html());
+	var fullCats=m.unescapeHTML($data_myCatList.html());
 	var levels=cat.split("--");
 	var pre="\n";
 	var start0=0;
@@ -1377,63 +1399,63 @@ eve.deleteCat=function(cat) {
 		fullCats=fullCats.substring(0,start0+1)+fullCats.substring(end); // delete a cat if there is no subCat.
 		res=true;
 	}
-	if (res) { $data_myCatList.html(eve.escapeHTML(fullCats)); }
+	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
 	return res;
 };
-eve.putCats_UriToLists=function(cats, uri) {
+m.putCats_UriToLists=function(cats, uri) {
 	var catSplit=cats.split(";");
 	var catIsPut=false;
 	for (var i=0;i<catSplit.length;i++) {
 		var cat=catSplit[i];
-		if (eve.myPage) {
-			if (eve.catUriList[cat]) {
-				if (eve.catUriList[cat].has) {
-					eve.catUriList[cat]["UriList"]=uri+"\n"+eve.catUriList[cat]["UriList"];
+		if (m.myPage) {
+			if (m.catUriList[cat]) {
+				if (m.catUriList[cat].has) {
+					m.catUriList[cat]["UriList"]=uri+"\n"+m.catUriList[cat]["UriList"];
 				}
 			} else {
-				catIsPut=eve.putCat(cat)||catIsPut;
-				eve.catUriList[cat]={cat:cat, down:true, has:true, UriList:uri};
+				catIsPut=m.putCat(cat)||catIsPut;
+				m.catUriList[cat]={cat:cat, down:true, has:true, UriList:uri};
 			}
 		} else {
-			catIsPut=eve.putCat(cat)||catIsPut;
+			catIsPut=m.putCat(cat)||catIsPut;
 		}
 	}
 	if (catIsPut) {
-		if (eve.myPage) { $change_catList_order_cancel.trigger("click"); }
-		eve.updateCatFS();
+		if (m.myPage) { $change_catList_order_cancel.trigger("click"); }
+		m.updateCatFS();
 	}
 };
-eve.delCats_UriFromLists=function(cats, uri) {
-if (eve.myPage) {
+m.delCats_UriFromLists=function(cats, uri) {
+if (m.myPage) {
 	var catSplit=cats.split(";");
 	var catIsDeleted=false;
 	for (var i=0;i<catSplit.length;i++) {
 		var cat=catSplit[i];
-		if (eve.catUriList[cat]&&eve.catUriList[cat].has) {
-			var fullURIs="\n"+eve.catUriList[cat]["UriList"]+"\n";
+		if (m.catUriList[cat]&&m.catUriList[cat].has) {
+			var fullURIs="\n"+m.catUriList[cat]["UriList"]+"\n";
 			var k=fullURIs.indexOf("\n"+uri+"\n");
 			if (k!==-1) {
-				eve.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
+				m.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			}
-			if (eve.catUriList[cat]["UriList"].length===0) {
+			if (m.catUriList[cat]["UriList"].length===0) {
 				var c=true;
 				while (cat!==null&&c) {
 					c=false;
-					if (eve.catUriList[cat].has&&eve.catUriList[cat]["UriList"].length===0) {
-						c=eve.deleteCat(cat);
+					if (m.catUriList[cat].has&&m.catUriList[cat]["UriList"].length===0) {
+						c=m.deleteCat(cat);
 						catIsDeleted=catIsDeleted||c;
 					}
-					cat=eve.getSuperCat(cat);
+					cat=m.getSuperCat(cat);
 				}
 			}
 		}
 	}
 	if (catIsDeleted) {
 		$change_catList_order_cancel.trigger("click");
-		// Intentionally no eve.updateCatFS();
+		// Intentionally no m.updateCatFS();
 	}
 }};
-eve.catsChangedOnUri=function(oldCats, newCats, uri) {
+m.catsChangedOnUri=function(oldCats, newCats, uri) {
 if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
 	var oldCatSplit=oldCats.split(";");
 	var newCatSplit=newCats.split(";");
@@ -1457,10 +1479,10 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 		if (o[p]) { oldCats+=p+";"; }
 	}
 	if (oldCats.length>0) {
-		eve.delCats_UriFromLists(oldCats.substring(0,oldCats.length-1), uri);
+		m.delCats_UriFromLists(oldCats.substring(0,oldCats.length-1), uri);
 	}
 	if (newCats.length>0) {
-		eve.putCats_UriToLists(newCats.substring(0,newCats.length-1), uri);
+		m.putCats_UriToLists(newCats.substring(0,newCats.length-1), uri);
 	}
 }};
 
@@ -1470,16 +1492,16 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.
 ////////////////////////////////////////////////////
-eve.uriToA=function(uri) {
+m.uriToA=function(uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
-	var exec=eve.ptnURL.exec(uri);
+	var exec=m.ptnURL.exec(uri);
 	if (exec!==null) {
-		return '<a target="_blank" href="'+exec[0]+'">'+eve.escapeHTML(decodeURIComponent(uri))+'</a>';
+		return '<a target="_blank" href="'+exec[0]+'">'+m.escapeHTML(decodeURIComponent(uri))+'</a>';
 	} else {
-		return eve.escapeHTML(uri);
+		return m.escapeHTML(uri);
 	}
 };
-eve.togglePosition=function(elem) {
+m.togglePosition=function(elem) {
 	var $elem=$(elem);
 	var $parent=$elem.parent().parent();
 	if ($parent.hasClass("fixed")) {
@@ -1492,7 +1514,7 @@ eve.togglePosition=function(elem) {
 		$elem.text("▲ [--return to the original position--]");
 	}
 };
-eve.rC=function(elemStr, pb) {
+m.rC=function(elemStr, pb) {
 	if (pb&&pb.constructor===Number) {
 		if (pb>200) {
 			pb=200;
@@ -1506,10 +1528,10 @@ eve.rC=function(elemStr, pb) {
 		+'<div class="rSC"'+(pb?' style="padding-bottom:'+pb+'%"':'')+'>'
 			+elemStr
 		+'</div>'
-		+(pb&&pb>70?'':'<div class="pc"><span onclick="eve.togglePosition(this)">▲ [--stick to the left top--]</span></div>')
+		+(pb&&pb>70?'':'<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>')
 	+'</div>';
 };
-eve.uriRendering=function(uri, toA) {
+m.uriRendering=function(uri, toA) {
 	if (uri&&uri.constructor===String) {
 		if (uri.substring(0,4).toLowerCase()==="http") {
 			var k=4;
@@ -1527,30 +1549,30 @@ eve.uriRendering=function(uri, toA) {
 					uriHost=uri.substring(k,l);
 					uriRest=uri.substring(l+1);
 				}
-				if (eve.ptnURI[uriHost]) {
-					var result=eve.ptnURI[uriHost].toIframe(uriRest);
+				if (m.ptnURI[uriHost]) {
+					var result=m.ptnURI[uriHost].toIframe(uriRest);
 					if (result) { return result; }
 				}
 			}
 		}
-		for (var i=0;i<eve.ptnURI.length;i++) {
-			var result=eve.ptnURI[i].toIframe(uri);
+		for (var i=0;i<m.ptnURI.length;i++) {
+			var result=m.ptnURI[i].toIframe(uri);
 			if (result) { return result; }
 		}
 	}
-	return {html:(toA?eve.uriToA(uri):"")};
+	return {html:(toA?m.uriToA(uri):"")};
 };
-eve.YTiframe=function(v, vars) {
-	return eve.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(vars&&vars.list&&vars.list.val?'?list='+vars.list.val:'')+'" frameborder="0" allowfullscreen=""></iframe>');
+m.YTiframe=function(v, vars) {
+	return m.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(vars&&vars.list&&vars.list.val?'?list='+vars.list.val:'')+'" frameborder="0" allowfullscreen=""></iframe>');
 };
 var ptnURI;
-ptnURI=eve.ptnURI["www.youtube.com"]={};
+ptnURI=m.ptnURI["www.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["www.youtube.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		var vars=null;
-		if (exec[2]) { vars=eve.getSearchVars(exec[2]); }
+		if (exec[2]) { vars=m.getSearchVars(exec[2]); }
 		var v=null;
 		if (exec[1]) {
 			v=exec[1];
@@ -1558,61 +1580,61 @@ ptnURI.toIframe=function(uriRest) {
 			v=vars.v.val;
 		}
 		if (v) {
-			return {html:eve.YTiframe(v,vars), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v,vars), from:"youtube", videoId:v};
 		}
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["youtu.be"]={};
+ptnURI=m.ptnURI["youtu.be"]={};
 ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["youtu.be"].regEx.exec(uriRest);
+	var exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
 	if (exec!==null) {
 		var vars=null;
 		if (exec[2]) {
-			vars=eve.getSearchVars(exec[2]);
+			vars=m.getSearchVars(exec[2]);
 		}
-		return {html:eve.YTiframe(exec[1],vars), from:"youtube", videoId:exec[1]};
+		return {html:m.YTiframe(exec[1],vars), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["m.youtube.com"]={};
+ptnURI=m.ptnURI["m.youtube.com"]={};
 ptnURI.regEx=/^watch(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["m.youtube.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=eve.getSearchVars(exec[1]);
+		var vars=m.getSearchVars(exec[1]);
 		if (vars.v&&vars.v.val) {
-			return {html:eve.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
+			return {html:m.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
 		}
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["tvpot.daum.net"]={};
+ptnURI=m.ptnURI["tvpot.daum.net"]={};
 ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
+	var exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["videofarm.daum.net"]={};
+ptnURI=m.ptnURI["videofarm.daum.net"]={};
 ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
+	var exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=eve.getSearchVars(exec[1]);
-		return {html:eve.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1].vid+'&play_loc='+exec[1].play_loc+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
+		var vars=m.getSearchVars(exec[1]);
+		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["serviceapi.rmcnmv.naver.com"]={};
+ptnURI=m.ptnURI["serviceapi.rmcnmv.naver.com"]={};
 ptnURI.regEx=/^flash\/outKeyPlayer\.nhn(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=eve.getSearchVars(exec[1]);
+		var vars=m.getSearchVars(exec[1]);
 		var lastPath="flash/outKeyPlayer.nhn?";
 		for (var i=0;i<vars.length;i++) {
 			if (vars[i].key==="isAutoPlay") {
@@ -1621,65 +1643,65 @@ ptnURI.toIframe=function(uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:eve.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+lastPath.substring(0,lastPath.length-1)+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
+		return {html:m.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+lastPath.substring(0,lastPath.length-1)+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["vimeo.com"]={};
+ptnURI=m.ptnURI["vimeo.com"]={};
 ptnURI.regEx=/^([0-9]+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["vimeo.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["www.dailymotion.com"]={};
+ptnURI=m.ptnURI["www.dailymotion.com"]={};
 ptnURI.regEx=/^video\/(\w+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["www.ted.com"]={};
+ptnURI=m.ptnURI["www.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["www.ted.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
 		var k=uriRest.indexOf("?");
 		var vars=null;
 		if (k!==-1) {
-			vars=eve.getSearchVars(uriRest.substring(k));
+			vars=m.getSearchVars(uriRest.substring(k));
 			uriRest=uriRest.substring(0,k);
 		}
 		var v=uriRest;
 		if (vars&&vars.language) {
 			uriRest="lang/"+vars.language.val+"/"+uriRest;
 		}
-		return {html:eve.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'.html" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'.html" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["embed-ssl.ted.com"]={};
+ptnURI=m.ptnURI["embed-ssl.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["embed-ssl.ted.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["embed-ssl.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
 		var v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
-		return {html:eve.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["w.soundcloud.com"]={};
+ptnURI=m.ptnURI["w.soundcloud.com"]={};
 ptnURI.regEx=/^player\/(\?\S+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=eve.getSearchVars(exec[1]);
+		var vars=m.getSearchVars(exec[1]);
 		var lastPath="player/?";
 		for (var i=0;i<vars.length;i++) {
 			if (vars[i].key==="auto_play") {
@@ -1688,44 +1710,44 @@ ptnURI.toIframe=function(uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:eve.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"ted", videoId:vars.url&&vars.url.val};
+		return {html:m.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"ted", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["appsurprise.co.kr"]={};
+ptnURI=m.ptnURI["appsurprise.co.kr"]={};
 ptnURI.regEx=/^\S*/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["appsurprise.co.kr"].regEx.exec(uriRest);
+	var exec=m.ptnURI["appsurprise.co.kr"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="http://appsurprise.co.kr/'+uriRest+'" frameborder="0"></iframe>')};
+		return {html:m.rC('<iframe delayed-src="http://appsurprise.co.kr/'+uriRest+'" frameborder="0"></iframe>')};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI["instagram.com"]=eve.ptnURI["www.instagram.com"]={};
+ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
 ptnURI.regEx=/^p\/([\w-]+)/i;
 ptnURI.toIframe=function(uriRest) {
-	var exec=eve.ptnURI["instagram.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:eve.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113)};
+		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113)};
 	}
 	return false;
 };
 
-ptnURI=eve.ptnURI[0]={};
+ptnURI=m.ptnURI[0]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
 ptnURI.toIframe=function(uri) {
-	var exec=eve.ptnURI[0].regEx.exec(uri);
+	var exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:'<div class="center"><img delayed-src="'+exec[0]+'"/></div>'};
 	}
 	return false;
 };
-ptnURI=eve.ptnURI[1]={};
+ptnURI=m.ptnURI[1]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
 ptnURI.toIframe=function(uri) {
-	var exec=eve.ptnURI[1].regEx.exec(uri);
+	var exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:eve.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>')};
+		return {html:m.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>'), from:'video', src:exec[0]};
 	}
 	return false;
 };
@@ -1733,7 +1755,7 @@ ptnURI.toIframe=function(uri) {
 ////////////////////////////////////////////////////
 // desc and cmt rendering
 ////////////////////////////////////////////////////
-eve.slideToggle=function(elem) {
+m.slideToggle=function(elem) {
 	var $elem=$(elem);
 	$elem.addClass("disabled");
 	$elem.parent().next().slideToggle(1000);
@@ -1741,22 +1763,22 @@ eve.slideToggle=function(elem) {
 		$elem.removeClass("disabled");
 	}, 1000);
 };
-eve.slideUp=function(elem) {
+m.slideUp=function(elem) {
 	var $elem=$(elem).parent().parent();
 	$elem.slideUp(1000);
 	$body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
-eve.renderStrDescCmt=function(str) {
+m.renderStrDescCmt=function(str) {
 	var res=[];
 	str=str.trim();
 	var key="#";
 	var i=0;
 	var start=0;
 	var exec;
-	while ((exec=eve.ptnDescCmt.exec(str))!==null) {
+	while ((exec=m.ptnDescCmt.exec(str))!==null) {
 		res[i++]=key;
 		res[key]=str.substring(start, exec.index).trim();
-		start=eve.ptnDescCmt.lastIndex;
+		start=m.ptnDescCmt.lastIndex;
 		key=exec[1];
 	}
 	res[i++]=key;
@@ -1770,14 +1792,14 @@ eve.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 // val, points, stars
 ////////////////////////////////////////////////////
-eve.val=function(val) {
+m.val=function(val) {
 	var res={};
 	res.str=val;
 	if (val.length===0) {
 		res.valid=true;
 		res.val=-1;
 	} else {
-		var exec=eve.ptnVal.exec(val);
+		var exec=m.ptnVal.exec(val);
 		if (exec!==null) {
 			res.num=Number(exec[1]);
 			res.divisor=Number(exec[2])
@@ -1818,19 +1840,19 @@ eve.val=function(val) {
 	xc-=r;
 	yc+=r*sins[4]+pad;
 	str+=xc+',0 '+xc+','+yc.toFixed(1)+' '+pad0+','+yc.toFixed(1);
-	eve["5stars-pre"]='<div class="stars-container" style="width:'+(xc+pad0)+'px; height:'+yc.toFixed(1)+'px"><div class="bar" style="left:'+(pad0+1)+'px; width:';
-	eve["5stars-width"]=xc-pad0-2;
-	eve["5stars-pad0+1"]=pad0+1;
-	eve["5stars-post"]='px"></div><svg class="out-stars">'
+	m["5stars-pre"]='<div class="stars-container" style="width:'+(xc+pad0)+'px; height:'+yc.toFixed(1)+'px"><div class="bar" style="left:'+(pad0+1)+'px; width:';
+	m["5stars-width"]=xc-pad0-2;
+	m["5stars-pad0+1"]=pad0+1;
+	m["5stars-post"]='px"></div><svg class="out-stars">'
 			+'<polygon points="'+str+'"/>'
 		+'</svg></div>';
-	eve["5stars"]=function(val) {
+	m["5stars"]=function(val) {
 		if (val<0) { val=0; }
 		else if (val>1) { val=1; }
-		return eve["5stars-pre"]+(eve["5stars-width"]*val).toFixed(1)+eve["5stars-post"];
+		return m["5stars-pre"]+(m["5stars-width"]*val).toFixed(1)+m["5stars-post"];
 	}
 }
-$test_5stars.html(eve["5stars"](0.4));
+$test_5stars.html(m["5stars"](0.4));
 
 ////////////////////////////////////////////////////
 // Point range
@@ -1838,91 +1860,91 @@ $test_5stars.html(eve["5stars"](0.4));
 $show_recos_without_points.on("click", function(e) {
 	if ($show_recos_without_points.hasClass("enabled")) {
 		$show_recos_without_points.removeClass("enabled");
-		eve.showRWOP=false;
+		m.showRWOP=false;
 	} else {
 		$show_recos_without_points.addClass("enabled");
-		eve.showRWOP=true;
+		m.showRWOP=true;
 	}
-	// clearTimeout(eve.timeOutRange);
-	// eve.timeOutRange=setTimeout(eve.processOutRange, 500);
+	// clearTimeout(m.timeOutRange);
+	// m.timeOutRange=setTimeout(m.processOutRange, 500);
 });
-eve.PRtoFixed=function(w) {
-	return (eve.PRmax*(w-15)/(eve.PRw-30)).toFixed(1);
+m.PRtoFixed=function(w) {
+	return (m.PRmax*(w-15)/(m.PRw-30)).toFixed(1);
 };
-eve.mmInPR=function(e) {
+m.mmInPR=function(e) {
 	window.getSelection().removeAllRanges();
 	e.preventDefault();
 	e.stopPropagation();
 	var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	var w=x-$point_range.offset().left+$window.scrollLeft();
 	w=(w>15)?w:15;
-	w=(w<eve.PRw-15)?w:eve.PRw-15;
+	w=(w<m.PRw-15)?w:m.PRw-15;
 	var changed=false;
-	if (eve.mdInPRL) {
-		if (w>eve.PRRw) { w=eve.PRRw; }
-		if (eve.PRLw!==w) {
+	if (m.mdInPRL) {
+		if (w>m.PRRw) { w=m.PRRw; }
+		if (m.PRLw!==w) {
 			$point_range_left.css({left:w-15});
 			$point_range_bar.css({left:w});
-			eve.PRLw=w;
+			m.PRLw=w;
 			changed=true;
 		}
 	} else {
-		if (w<eve.PRLw) { w=eve.PRLw; }
-		if (eve.PRRw!==w) {
+		if (w<m.PRLw) { w=m.PRLw; }
+		if (m.PRRw!==w) {
 			$point_range_right.css({left:w-5});
-			$point_range_bar.css({right:eve.PRw-w});
-			eve.PRRw=w;
+			$point_range_bar.css({right:m.PRw-w});
+			m.PRRw=w;
 			changed=true;
 		}
 	}
 	if (changed) {
-		var PRL=eve.PRtoFixed(eve.PRLw);
-		var PRR=eve.PRtoFixed(eve.PRRw);
-		$point_range_result.html(PRL+"~"+PRR+" / "+eve.PRmax);
-		PRL=Number(PRL)/eve.PRmax;
-		PRR=Number(PRR)/eve.PRmax;
-		if (eve.ptsRangeFrom!==PRL||eve.ptsRangeTo!==PRR) {
-			eve.ptsRangeFrom=PRL;
-			eve.ptsRangeTo=PRR;
-			// clearTimeout(eve.timeOutRange);
-			// eve.timeOutRange=setTimeout(eve.processOutRange, 800);
+		var PRL=m.PRtoFixed(m.PRLw);
+		var PRR=m.PRtoFixed(m.PRRw);
+		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
+		PRL=Number(PRL)/m.PRmax;
+		PRR=Number(PRR)/m.PRmax;
+		if (m.ptsRangeFrom!==PRL||m.ptsRangeTo!==PRR) {
+			m.ptsRangeFrom=PRL;
+			m.ptsRangeTo=PRR;
+			// clearTimeout(m.timeOutRange);
+			// m.timeOutRange=setTimeout(m.processOutRange, 800);
 		}
 	}
 };
 $point_range_left.on("mousedown touchstart", function(e) {
-	eve.mdInPRL=true;
-	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
+	m.mdInPRL=true;
+	$html.on("mousemove.mdInPR touchmove.mdInPR", m.mmInPR);
 	$html.on("mouseup.mdInPR touchend.mdInPR", function(e) {
-		eve.mdInPRL=false;
+		m.mdInPRL=false;
 		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
 $point_range_right.on("mousedown touchstart", function(e) {
-	eve.mdInPRR=true;
-	$html.on("mousemove.mdInPR touchmove.mdInPR", eve.mmInPR);
+	m.mdInPRR=true;
+	$html.on("mousemove.mdInPR touchmove.mdInPR", m.mmInPR);
 	$html.on("mouseup.mdInPR touchend.mdInPR", function(e) {
-		eve.mdInPRR=false;
+		m.mdInPRR=false;
 		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
 
-// eve.processOutRange=function() {
+// m.processOutRange=function() {
 // 	var $recos=$(".reco");
 // 	var list=[];
-// 	var fsFullList=eve.fsTitle.fullList=[];
+// 	var fsFullList=m.fsTitle.fullList=[];
 // 	for (var i=0;i<$recos.length;i++) {
 // 		var $recoI=$recos.eq(i);
-// 		var recoI=eve.userRecos[eve.unescapeHTML($recoI.find(">.textURI").eq(0).html())];
+// 		var recoI=m.userRecos[m.unescapeHTML($recoI.find(">.textURI").eq(0).html())];
 // 		if (recoI!==undefined) {
 // 			var val=recoI.val.val;
 // 			if (val===-1) {
-// 				if (eve.showRWOP) {
+// 				if (m.showRWOP) {
 // 					$recoI.removeClass("outRange");
 // 				} else {
 // 					$recoI.addClass("outRange");
 // 				}
 // 			} else {
-// 				if (eve.ptsRangeFrom<=val&&val<=eve.ptsRangeTo) {
+// 				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
 // 					$recoI.removeClass("outRange");
 // 				} else {
 // 					$recoI.addClass("outRange");
@@ -1940,70 +1962,66 @@ $point_range_right.on("mousedown touchstart", function(e) {
 // 			if ($title.exists()) {
 // 				var txt=$title.text();
 // 				if (txt.length!==0) {
-// 					var txtSH=eve.splitHangul(txt);
+// 					var txtSH=m.splitHangul(txt);
 // 					fsFullList.push({"txtSH":txtSH, "html":$title.html(), "$reco":$recoI});
 // 				}
 // 			}
 // 		}
 // 	}
-// 	eve.fsLastTxt+="$!@#";
+// 	m.fsLastTxt+="$!@#";
 // 	$fuzzy_search.trigger("keyup");
-// 	var YTPlaylistChanged=(eve.YTPlaylist.length!==list.length);
+// 	var YTPlaylistChanged=(m.YtPlaylist.length!==list.length);
 // 	if (!YTPlaylistChanged) {
 // 		for (var i=0;i<list.length;i++) {
-// 			if (eve.YTPlaylist[i]!==list[i]) {
+// 			if (m.YtPlaylist[i]!==list[i]) {
 // 				YTPlaylistChanged=true;
 // 				break;
 // 			}
 // 		}
 // 	}
 // 	if (YTPlaylistChanged) {
-// 		eve.YTPlaylist=list;
-// 		eve.cueYoutubePlaylist(list);
+// 		m.YtPlaylist=list;
+// 		m.cueYoutubePlaylist(list);
 // 	}
 // };
 
 ////////////////////////////////////////////////////
 // Show recos
 ////////////////////////////////////////////////////
-eve.recoHTML=function(r) {
+m.recoHTML0=function(r) {
 	var res="";
 	if (r&&r["has"]) {
 		res+='<div class="reco">'
 			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
-			+(eve.myIndex?'<div class="button edit fRight" onclick="eve.editOrRecoToMine(this)">'+((eve.myPage)?'Edit':'Reco to mine')+'</div>':'')
-			+'<div class="textURI">'+eve.escapeHTML(r.uri)+'</div>';
-		var video=eve.uriRendering(r.uri);
-		if (video.from==="youtube") {
-			res+='<div class="YTVideoId">'+video.videoId+'</div>';
-		}
-		res+='<div class="uri cBoth">'+eve.uriToA(r.uri)+'</div>'
-			+'<div class="title">'+eve.escapeHTML(r.title)+'</div>'
-			+'<div class="cats">'+eve.catsToA(r.cats)+'</div>'
-			+video.html;
+			+((m.myIndex)?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+((m.myPage)?'Edit':'Reco to mine')+'</div>':'')
+			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
+			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
+			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
+			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
+			+'<div id="uri-rendered"></div>';
 		if (r["desc"]) {
 			var descR=r["descR"];
 			res+='<div class="desc">';
 			for (var l=0;l<descR.length;l++) {
-				var key=eve.escapeHTML( descR[l] );
-				var value=eve.escapeHTML( descR[descR[l]] );
+				var key=m.escapeHTML( descR[l] );
+				var value=m.escapeHTML( descR[descR[l]] );
 				switch (key.toLowerCase()) {
 				case "#" :
 					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
 					break;
 				case "lyrics" :
-					res+='<div class="value"><div class="center"><div class="button" onclick="eve.slideToggle(this)">▼ Toggle lyrics</div></div>'
-						+'<div class="lyricsC" style="display:none">'
+					res+='<div class="value"><div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>'
+						+'<div class="lyricsC">'
 							+'<div class="lyricsArrow"></div>'
 							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
-							+'<div class="right"><div class="button" onclick="eve.slideUp(this)">▲ Hide lyrics</div></div>'
+							+'<div class="right"><div class="button" onclick="m.slideUp(this)">▲ Hide lyrics</div></div>'
 						+'</div></div>';
 					break;
 				case "related" :
 					res+='<div class="value"><span class="key">'+key+' : </span>';
 					var relateds=value.split("\n");
-					for (var m=0;m<relateds.length;m++) {
-						res+='<br>'+eve.uriRendering(eve.formatURI(relateds[m]),true).html;
+					for (var p=0;p<relateds.length;p++) {
+						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
 					}
 					res+='</div>';
 					break;
@@ -2013,9 +2031,9 @@ eve.recoHTML=function(r) {
 			}
 			res+='</div>';
 		}
-		res+=(r["cmt"].length!==0?('<div class="cmt">'+eve.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
+		res+=(r["cmt"].length!==0?('<div class="cmt">'+m.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
 		if (r["val"].str) {
-			res+='<div class="val">'+eve["5stars"]( r["val"].val )+' <span class="str">'+eve.escapeHTML( r["val"].str )+'</span></div>';
+			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
 		res+='</div>';
 	} else {
@@ -2023,8 +2041,61 @@ eve.recoHTML=function(r) {
 	}
 	return res;
 };
-eve.showRecosOnCat=function(elem, from, minus, plus) {
-	var fs=eve.fsTitle;
+m.recoHTML=function(r) {
+	var res="";
+	if (r&&r["has"]) {
+		res+='<div class="reco">'
+			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
+			+((m.myIndex)?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+((m.myPage)?'Edit':'Reco to mine')+'</div>':'')
+			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
+			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
+			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
+			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
+			+m.uriRendering(r.uri).html;
+		if (r["desc"]) {
+			var descR=r["descR"];
+			res+='<div class="desc">';
+			for (var l=0;l<descR.length;l++) {
+				var key=m.escapeHTML( descR[l] );
+				var value=m.escapeHTML( descR[descR[l]] );
+				switch (key.toLowerCase()) {
+				case "#" :
+					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
+					break;
+				case "lyrics" :
+					res+='<div class="value"><div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>'
+						+'<div class="lyricsC" style="display:none">'
+							+'<div class="lyricsArrow"></div>'
+							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
+							+'<div class="right"><div class="button" onclick="m.slideUp(this)">▲ Hide lyrics</div></div>'
+						+'</div></div>';
+					break;
+				case "related" :
+					res+='<div class="value"><span class="key">'+key+' : </span>';
+					var relateds=value.split("\n");
+					for (var p=0;p<relateds.length;p++) {
+						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
+					}
+					res+='</div>';
+					break;
+				default :
+					res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
+				}
+			}
+			res+='</div>';
+		}
+		res+=(r["cmt"].length!==0?('<div class="cmt">'+m.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
+		if (r["val"].str) {
+			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
+		}
+		res+='</div>';
+	} else {
+		res+='<div class="reco">No Reco</div>';
+	}
+	return res;
+};
+m.showRecosOnCat=function(elem, from, minus, plus) {
+	var fs=m.fsTitle;
 	var l=fs.fullList.length;
 	var strHTML="";
 	if (l>0) {
@@ -2043,35 +2114,35 @@ eve.showRecosOnCat=function(elem, from, minus, plus) {
 			from=l-1;
 		}
 		if (minus===undefined||minus===null) {
-			minus=-eve.maxShowReco;
+			minus=-m.maxShowReco;
 		} else if (minus.constructor===Number) {
 			minus=minus>0?-minus:minus;
 		} else {
-			minus=-eve.maxShowReco;
+			minus=-m.maxShowReco;
 		}
 		if (plus===undefined||plus===null) {
-			plus=eve.maxShowReco;
+			plus=m.maxShowReco;
 		} else if (plus.constructor===Number) {
 			plus=plus>0?plus:-plus;
 		} else {
-			plus=eve.maxShowReco;
+			plus=m.maxShowReco;
 		}
 		for (var k=0;k<l;k++) {
 			var fsFLk=fs.fullList[k];
 			var uri=fsFLk.uri;
 			var r=fsFLk.reco;
 			var val=r.val.val;
-			var titleSH=eve.splitHangul(r.title);
+			var titleSH=m.splitHangul(r.title);
 			fsFLk.txt=titleSH;
-			fsFLk.html=eve.escapeHTML(r.title);
+			fsFLk.html=m.escapeHTML(r.title);
 			if (val===-1) {
-				if (eve.showRWOP) {
+				if (m.showRWOP) {
 					fsFLk.inRange=true;
 				} else {
 					fsFLk.inRange=false;
 				}
 			} else {
-				if (eve.ptsRangeFrom<=val&&val<=eve.ptsRangeTo) {
+				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
 					fsFLk.inRange=true;
 				} else {
 					fsFLk.inRange=false;
@@ -2086,11 +2157,11 @@ eve.showRecosOnCat=function(elem, from, minus, plus) {
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
 				if (fsFLi.$listI) { continue; }
-				strHTML+=eve.recoHTML(r);
+				strHTML+=m.recoHTML(r);
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML+='<div class="button margins to-be-executed" onclick="eve.showRecosOnCat(this,'+i+',10,1)">Load more...</div>';
+			strHTML+='<div class="button margins to-be-executed" onclick="m.showRecosOnCat(this,'+i+',10,1)">Load more...</div>';
 		}
 		// plus
 		i=from+1;
@@ -2100,11 +2171,11 @@ eve.showRecosOnCat=function(elem, from, minus, plus) {
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
 				if (fsFLi.$listI) { continue; }
-				strHTML=eve.recoHTML(r)+strHTML;
+				strHTML=m.recoHTML(r)+strHTML;
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML='<div class="button margins to-be-executed" onclick="eve.showRecosOnCat(this,'+i+',1,10)">Load more...</div>'+strHTML;
+			strHTML='<div class="button margins to-be-executed" onclick="m.showRecosOnCat(this,'+i+',1,10)">Load more...</div>'+strHTML;
 		}
 	} else {
 		strHTML+="<span style='font-size:3em'>No reco.</span>";
@@ -2116,32 +2187,32 @@ eve.showRecosOnCat=function(elem, from, minus, plus) {
 	}
 	var $recos=$contents.find(".reco");
 	for (var i=0;i<$recos.length;i++) {
-		var uri=eve.unescapeHTML($recos.eq(i).find(".textURI").html());
+		var uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
 		fs.fullList[uri].$listI=$recos.eq(i);
 	}
-	eve.delayedElems=eve.delayedElems.add( $contents.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
-	$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+	m.delayedElems=m.delayedElems.add( $contents.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	eve.fdList=$("#sidebar, #head, #contents .reco, #foot");
-	fs[0].ptnSH=eve.splitHangul("$!@#");
+	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
+	fs[0].ptnSH=m.splitHangul("$!@#");
 	fs.$fs.trigger("keyup");
 };
-eve.editOrRecoToMine=function(elem) {
+m.editOrRecoToMine=function(elem) {
 	var $reco=$(elem).parent(".reco");
-	var uri=eve.unescapeHTML($reco.find(".textURI").html());
-	var r=eve.userRecos[uri];
+	var uri=m.unescapeHTML($reco.find(".textURI").html());
+	var r=m.userRecos[uri];
 	$input_uri[0].value=r["uri"];
 	$input_uri[0].disabled=true;
 	$new_reco.show();
-	if (uri.length!==0&&uri!==eve.lastURI) {
-		eve.getAndShowDefsAndReco(true);
+	if (uri.length!==0&&uri!==m.lastURI) {
+		m.getAndShowDefsAndReco(true);
 	}
-	eve.wST=$window.scrollTop();
+	m.wST=$window.scrollTop();
 	$window.on("scroll.stop", function(e) {
-		$window.scrollTop(eve.wST);
+		$window.scrollTop(m.wST);
 	});
 };
-eve.recoDowned=function(urisStr, recos) {
+m.recoDowned=function(urisStr, recos) {
 	var uris=urisStr.split("\n");
 	for (k=0;k<uris.length;k++) {
 		var uri=uris[k];
@@ -2150,8 +2221,8 @@ eve.recoDowned=function(urisStr, recos) {
 		p.down=true;
 	}
 };
-eve.recoToEve=function(resp, recos) {
-	var resp=eve.strToJSON(resp);
+m.recoToEve=function(resp, recos) {
+	var resp=m.strToJSON(resp);
 	for (var k=1;k<resp.length;k++) {
 		var recoK=resp[k];
 		var uri=recoK["uri"];
@@ -2164,27 +2235,27 @@ eve.recoToEve=function(resp, recos) {
 			}
 		}
 		if (p.desc!==undefined) {
-			p.descR=eve.renderStrDescCmt(p.desc); // R for rendered.
+			p.descR=m.renderStrDescCmt(p.desc); // R for rendered.
 		}
 		if (p.cmt!==undefined) {
-			p.cmtR=eve.renderStrDescCmt(p.cmt); // R for rendered.
+			p.cmtR=m.renderStrDescCmt(p.cmt); // R for rendered.
 		}
 		if (p.val!==undefined) {
-			p.val=eve.val(p.val);
+			p.val=m.val(p.val);
 		}
 	}
 };
-eve.getAndShowRecosOnCat=function(cat) {
-	var uriList=(eve.catUriList[cat].has?eve.catUriList[cat].UriList:"").trim();
+m.getAndShowRecosOnCat=function(cat) {
+	var uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
 	var uris=[];
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	var getRecosStr="uri";
 	var getRecosN=0;
-	var fsFL=eve.fsTitle.fullList=[];
+	var fsFL=m.fsTitle.fullList=[];
 	for (var i=0;i<uris.length;i++) {
 		var uri=uris[i];
-		var r=eve.userRecos[uri];
-		if (!r) { r=eve.userRecos[uri]={}; }
+		var r=m.userRecos[uri];
+		if (!r) { r=m.userRecos[uri]={}; }
 		fsFL[uris.length-1-i]=fsFL[uri]={i:i, uri:uri, reco:r};
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
@@ -2193,21 +2264,21 @@ eve.getAndShowRecosOnCat=function(cat) {
 	}
 	if (getRecosN>0) {
 		$.ajax({
-			type:"POST", url:eve.pathName+"/get-Recos", data:getRecosStr
+			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function(resp) {
-			eve.recoDowned(getRecosStr.substring(4), eve.userRecos);
-			eve.recoToEve(resp, eve.userRecos);
-			eve.showRecosOnCat();
+			m.recoDowned(getRecosStr.substring(4), m.userRecos);
+			m.recoToEve(resp, m.userRecos);
+			m.showRecosOnCat();
 		});
 	} else {
-		eve.showRecosOnCat();
+		m.showRecosOnCat();
 	}
 };
-eve.getUriListAndShowRecosOnCat=function(cat) {
+m.getUriListAndShowRecosOnCat=function(cat) {
 	$subCats.html("");
-	$contents.html("Loading recos in cat="+eve.escapeHTML(cat)+"...");
-	var catList=eve.catList[cat];
+	$contents.html("Loading recos in cat="+m.escapeHTML(cat)+"...");
+	var catList=m.catList[cat];
 	if (catList) {
 		$catList.find(".cat").removeClass("selected");
 		var $cat=$("#cat-"+catList.i);
@@ -2218,22 +2289,22 @@ eve.getUriListAndShowRecosOnCat=function(cat) {
 				$parents.eq(i).prev().find(">.EC").trigger("click");
 			}
 		}
-		var catUriList=eve.catUriList[cat];
-		if (!catUriList) { catUriList=eve.catUriList[cat]={}; }
+		var catUriList=m.catUriList[cat];
+		if (!catUriList) { catUriList=m.catUriList[cat]={}; }
 		if (catUriList.down) {
-			eve.getAndShowRecosOnCat(cat);
+			m.getAndShowRecosOnCat(cat);
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
-				type:"POST", url:eve.pathName+"/get-UriList", data:getUriListStr
+				type:"POST", url:m.pathName+"/get-UriList", data:getUriListStr
 				, dataType:"text"
 			}).fail(function() {
-				$contents.html("get-UriList on "+eve.escapeHTML(cat)+" has failed..");
+				$contents.html("get-UriList on "+m.escapeHTML(cat)+" has failed..");
 			}).done(function(resp) {
 				catUriList.down=true;
-				var resp=eve.strToJSON(resp);
+				var resp=m.strToJSON(resp);
 				for (var i=1;i<resp.length;i++) {
-					var catUL=eve.catUriList[resp[i].cat];
+					var catUL=m.catUriList[resp[i].cat];
 					catUL.down=true;
 					catUL.has=true;
 					for (var p in resp[i]) {
@@ -2242,15 +2313,15 @@ eve.getUriListAndShowRecosOnCat=function(cat) {
 						}
 					}
 				}
-				eve.getAndShowRecosOnCat(cat);
+				m.getAndShowRecosOnCat(cat);
 			});
 		}
 	} else {
-		$contents.html("Category \""+eve.escapeHTML(cat)+"\" does not exist.");
+		$contents.html("Category \""+m.escapeHTML(cat)+"\" does not exist.");
 	}
 };
-eve.refresh=function(cats, option, uri) {
-	var currentCat=eve.getSearchVars(window.location.search).cat;
+m.refresh=function(cats, option, uri) {
+	var currentCat=m.getSearchVars(window.location.search).cat;
 	if (currentCat) { currentCat=currentCat.val; }
 	var c=cats.split(";");
 	var k=0;
@@ -2259,33 +2330,33 @@ eve.refresh=function(cats, option, uri) {
 			if (c[k]===currentCat) {break;}
 		}
 	}
-	eve.currentCat=c[k];
+	m.currentCat=c[k];
 	if (c[k]!==currentCat) {
-		eve.getUriListAndShowRecosOnCat(c[k]);
-		window.history.pushState({cat:c[k]}, null, eve.pathOfCat(c[k]));
+		m.getUriListAndShowRecosOnCat(c[k]);
+		window.history.pushState({cat:c[k]}, null, m.pathOfCat(c[k]));
 	} else {
 		switch (option) {
 		case "recoed" :
-			var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
+			var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 			$contents.prepend( $newReco );
-			eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
-			$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+			m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
-			eve.fdList=eve.fdList.add( $newReco );
+			m.fdList=m.fdList.add( $newReco );
 			break;
 		case "changed" : case "deleted" :
 			var $recos=$contents.find(">.reco");
 			for (var i=0;i<$recos.length;i++) {
 				var $reco=$recos.eq(i);
-				var recoUri=eve.unescapeHTML($reco.find(">.textURI").html());
+				var recoUri=m.unescapeHTML($reco.find(">.textURI").html());
 				if (recoUri===uri) {
 					if (option==="changed") {
-						var $newReco=$( eve.recoHTML( eve.userRecos[uri] ) );
+						var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 						$reco.replaceWith($newReco);
-						eve.delayedElems=eve.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
-						$window.on("scroll.delayedLoad", eve.delayedLoadByScroll);
+						m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
-						eve.fdList=eve.fdList.add( $newReco );
+						m.fdList=m.fdList.add( $newReco );
 					} else if (option==="deleted") {
 						$reco.remove();
 					}
@@ -2294,12 +2365,12 @@ eve.refresh=function(cats, option, uri) {
 			}
 			break;
 		default :
-			eve.getUriListAndShowRecosOnCat(c[k]);
+			m.getUriListAndShowRecosOnCat(c[k]);
 		}
 	}
 };
 
-eve.ExpCol=function(elem, catEC) {
+m.ExpCol=function(elem, catEC) {
 	var $elem=$(elem);
 	var $next=$elem.parent().next();
 	if ($next.is(":visible")) {
@@ -2316,29 +2387,29 @@ eve.ExpCol=function(elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
-eve.openCat=function(cat, e) {
+m.openCat=function(cat, e) {
 	if (e&&e.which===2) {
 		return true;
 	} else {
 		if (window.history.state&&window.history.state.cat===cat) { return false; }
-		eve.currentCat=cat;
-		eve.getUriListAndShowRecosOnCat(cat);
-		window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
+		m.currentCat=cat;
+		m.getUriListAndShowRecosOnCat(cat);
+		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
 		return false;
 	}
 };
 
-for (var i=0;i<eve.catList.length;i++) {
-	var cat=eve.catList[i].cat;
-	eve.catUriList[cat]={cat:cat, down:false};
+for (var i=0;i<m.catList.length;i++) {
+	var cat=m.catList[i].cat;
+	m.catUriList[cat]={cat:cat, down:false};
 }
 
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
-		eve.getUriListAndShowRecosOnCat(e.state.cat);
+		m.getUriListAndShowRecosOnCat(e.state.cat);
 	}
 };
-eve.getSearchVars=function(searchStr) {
+m.getSearchVars=function(searchStr) {
 	var vars=[];
 	if (searchStr!==0) {
 		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
@@ -2363,7 +2434,7 @@ eve.getSearchVars=function(searchStr) {
 ////////////////////////////////////////////////////
 // New Reco or Edit
 ////////////////////////////////////////////////////
-eve.getUTF8Length=function(s) {
+m.getUTF8Length=function(s) {
 	var len=0;
 	for (var i=0;i<s.length;i++) {
 		var code=s.charCodeAt(i);
@@ -2383,9 +2454,9 @@ eve.getUTF8Length=function(s) {
 	}
 	return len;
 };
-eve.formatURI=function(uri) {
+m.formatURI=function(uri) {
 	uri=uri.trim().replace(/[\t\n]/g," ");
-	var exec=eve.ptnTag.exec(uri);
+	var exec=m.ptnTag.exec(uri);
 	if (exec!==null) {
 		try {
 			var $uri=$(uri);
@@ -2400,10 +2471,10 @@ eve.formatURI=function(uri) {
 	}
 	return uri.replace(/&amp;/ig,"&").trim();
 };
-eve.formatTitle=function(title) {
+m.formatTitle=function(title) {
 	return title.trim().replace(/[\t\n]/g," ");
 };
-eve.formatCats=function(cats) {
+m.formatCats=function(cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
 		return "";
 	}
@@ -2441,10 +2512,10 @@ eve.formatCats=function(cats) {
 	return cats;
 };
 
-eve.userRecos[""]={
-	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:eve.val(""), "def-titles":"", "def-cats":""
+m.userRecos[""]={
+	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:m.val(""), "def-titles":"", "def-cats":""
 };
-eve.showMyReco=function(r) {
+m.showMyReco=function(r) {
 	if (r["has"]) {
 		$button_reco.hide();
 		$button_edit.show();
@@ -2455,7 +2526,7 @@ eve.showMyReco=function(r) {
 		$button_del.hide();
 	}
 	var $mR=$("#my-reco");
-	$mR.html( eve.recoHTML(r) );
+	$mR.html( m.recoHTML(r) );
 	if (r["has"]) {
 		var $edit=$mR.find(".button.edit");
 		$edit.html("Edit mine");
@@ -2469,12 +2540,12 @@ eve.showMyReco=function(r) {
 		});
 	}
 };
-eve.showReco=function(r) {
+m.showReco=function(r) {
 	if (r["has"]) {
 		$input_title[0].value=r.title;
 		$input_cats[0].value=r.cats;
 		$input_desc[0].value=r.desc;
-		if (eve.myPage) {
+		if (m.myPage) {
 			$input_cmt[0].value=r.cmt;
 			$input_val[0].value=r.val.str;
 		} else {
@@ -2483,7 +2554,7 @@ eve.showReco=function(r) {
 		}
 		$input_val.trigger("keyup");
 	}
-	if (eve.myPage) {
+	if (m.myPage) {
 		if (r["has"]) {
 			$button_reco.hide();
 			$button_edit.show();
@@ -2497,7 +2568,7 @@ eve.showReco=function(r) {
 		}
 	}
 };
-eve.emptifyReco=function() {
+m.emptifyReco=function() {
 	$input_uri[0].value="";
 	$input_title[0].value="";
 	$input_cats[0].value="";
@@ -2505,15 +2576,15 @@ eve.emptifyReco=function() {
 	$input_cmt[0].value="";
 	$input_val[0].value="";
 	$input_val.trigger("keyup");
-	eve.getAndShowDefsAndReco();
+	m.getAndShowDefsAndReco();
 };
-eve.showDefs=function(r) {
+m.showDefs=function(r) {
 	var defTitles=r["def-titles"].trim().split("\n");
 	var defTitlesHTML="";
 	for (var i=0;i<defTitles.length;i++) {
 		var title=defTitles[i].trim();
 		if (title.length!==0) {
-			defTitlesHTML+='<div class="def-title">'+eve.escapeHTML(title)+'</div>';
+			defTitlesHTML+='<div class="def-title">'+m.escapeHTML(title)+'</div>';
 		}
 	}
 	$def_titles.html(defTitlesHTML);
@@ -2522,7 +2593,7 @@ eve.showDefs=function(r) {
 		$defTitle.removeClass("selected");
 		var $this=$(this);
 		$this.addClass("selected");
-		$input_title[0].value=eve.unescapeHTML($this.html());
+		$input_title[0].value=m.unescapeHTML($this.html());
 	});
 	
 	var defCats=r["def-cats"].trim().split("\n");
@@ -2530,7 +2601,7 @@ eve.showDefs=function(r) {
 	for (var i=0;i<defCats.length;i++) {
 		var cat=defCats[i].trim();
 		if (cat.length!==0) {
-			defCatsHTML+='<div class="def-cat">'+eve.escapeHTML(cat)+'</div> ';
+			defCatsHTML+='<div class="def-cat">'+m.escapeHTML(cat)+'</div> ';
 		}
 	}
 	$def_cats.html(defCatsHTML);
@@ -2539,61 +2610,61 @@ eve.showDefs=function(r) {
 		$defCat.removeClass("selected");
 		var $this=$(this);
 		$this.addClass("selected");
-		$input_cats[0].value=eve.unescapeHTML($this.html());
+		$input_cats[0].value=m.unescapeHTML($this.html());
 	});
 };
-eve.getAndShowDefsAndReco=function(noFormatURI) {
+m.getAndShowDefsAndReco=function(noFormatURI) {
 	var elem=$input_uri[0];
-	var uri=eve.lastURI=noFormatURI?elem.value:eve.formatURI(elem.value);
+	var uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
-	$("#show-URI").html(eve.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
-	var r=eve.userRecos[uri];
-	if (!r) { r=eve.userRecos[uri]={}; }
+	$("#show-URI").html(m.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
+	var r=m.userRecos[uri];
+	if (!r) { r=m.userRecos[uri]={}; }
 	if (r.down) {
-		eve.showReco(r);
+		m.showReco(r);
 	} else {
 		var getRecosStr="uri"+"\n"+uri;
 		$.ajax({
-			type:"POST", url:eve.pathName+"/get-Recos", data:getRecosStr
+			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-			eve.recoDowned(uri, eve.userRecos);
-			eve.recoToEve(resp, eve.userRecos);
-			eve.showReco(r);
+			m.recoDowned(uri, m.userRecos);
+			m.recoToEve(resp, m.userRecos);
+			m.showReco(r);
 		});
 	}
 	if (r.defs) {
-		eve.showDefs(r);
+		m.showDefs(r);
 	} else {
-		eve.showDefs({"def-titles":"", "def-cats":""});
+		m.showDefs({"def-titles":"", "def-cats":""});
 		$.ajax({
 			type:"POST", url:"/reco/infos", data:uri
 			, dataType:"text"
 		}).done(function(resp) {
-			var defs=eve.strToJSON(resp);
+			var defs=m.strToJSON(resp);
 			r.defs=true;
 			r["def-cats"]=defs[1]["def-cats"];
 			r["def-titles"]=defs[1]["def-titles"];
-			eve.showDefs(r);
+			m.showDefs(r);
 		});
 	}
-	if (eve.myPage||uri==="") {
+	if (m.myPage||uri==="") {
 		$error.html("");
 	} else {
 		$error.html("Be careful! This is not your page. On this URI, you have");
-		var mR=eve.myRecos[uri];
-		if (!mR) { mR=eve.myRecos[uri]={}; }
+		var mR=m.myRecos[uri];
+		if (!mR) { mR=m.myRecos[uri]={}; }
 		if (mR.down) {
-			eve.showMyReco(mR);
+			m.showMyReco(mR);
 		} else {
 			var getRecosStr="uri"+"\n"+uri;
 			$.ajax({
-				type:"POST", url:"/user/"+eve.myId+"/get-Recos", data:getRecosStr
+				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
 				, dataType:"text"
 			}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-				eve.recoDowned(uri, eve.myRecos);
-				eve.recoToEve(resp, eve.myRecos);
-				eve.showMyReco(mR);
+				m.recoDowned(uri, m.myRecos);
+				m.recoToEve(resp, m.myRecos);
+				m.showMyReco(mR);
 			});
 		}
 	}
@@ -2603,7 +2674,7 @@ $new_reco.find("input, textarea").on("keydown.common", function(e) {
 		$out_focus.focus();
 		$button_close.trigger("click");
 	} else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
-		var r=eve.myRecos[$input_uri[0].value];
+		var r=m.myRecos[$input_uri[0].value];
 		if (r["has"]) {
 			$button_edit.trigger("click");
 		} else {
@@ -2613,15 +2684,15 @@ $new_reco.find("input, textarea").on("keydown.common", function(e) {
 });
 $input_uri.on("keyup", function(e) {
 	var uri=this.value;
-	if (uri!==eve.lastURI) {
-		eve.lastURI=uri;
-		clearTimeout(eve.timeOutGetInfos);
-		eve.timeOutGetInfos=setTimeout(eve.getAndShowDefsAndReco, 1000);
+	if (uri!==m.lastURI) {
+		m.lastURI=uri;
+		clearTimeout(m.timeOutGetInfos);
+		m.timeOutGetInfos=setTimeout(m.getAndShowDefsAndReco, 1000);
 	}
 });
 
-eve.lastVal=eve.val("");
-$input_val.before($(eve["5stars"](0)).attr({id:"input-val-stars"}));
+m.lastVal=m.val("");
+$input_val.before($(m["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
 $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 	var $bar=$input_val_stars.find(".bar");
@@ -2637,8 +2708,8 @@ $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 			w=-1;
 		} else if (w<0) {
 			w=0;
-		} else if (w>eve["5stars-width"]) {
-			w=eve["5stars-width"];
+		} else if (w>m["5stars-width"]) {
+			w=m["5stars-width"];
 		}
 		if (w!==barW) {
 			barW=w;
@@ -2646,10 +2717,10 @@ $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
 				$val.value="";
 				w=0;
 			} else {
-				$val.value=(w/eve["5stars-width"]*eve.fullPts).toFixed(1)+"/"+eve.fullPts;
+				$val.value=(w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts;
 			}
 			$bar.css({width:w});
-			eve.lastVal=eve.val($val.value);
+			m.lastVal=m.val($val.value);
 		}
 	});
 	$html.on("mouseup.mdInStars touchend.mdInStars", function(e) {
@@ -2663,40 +2734,40 @@ $input_val_stars.on("click", function(e) {
 	var w=e.clientX-$bar.offset().left+$window.scrollLeft();
 	if (w<0) {
 		w=0;
-	} else if (w>eve["5stars-width"]) {
-		w=eve["5stars-width"];
+	} else if (w>m["5stars-width"]) {
+		w=m["5stars-width"];
 	}
 	if (w!==barW) {
 		$bar.css({width:w});
-		$val.value=(w/eve["5stars-width"]*eve.fullPts).toFixed(1)+"/"+eve.fullPts;
-		eve.lastVal=eve.val($val.value);
+		$val.value=(w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts;
+		m.lastVal=m.val($val.value);
 	}
 });
 $input_val.on("keyup", function(e) {
-	if (this.value!==eve.lastVal.str) {
-		var val=eve.val(this.value);
+	if (this.value!==m.lastVal.str) {
+		var val=m.val(this.value);
 		var $bar=$("#input-val-stars .bar");
 		if (val.valid&&val.str.length!==0) {
-			eve.fullPts=val.divisor;
-			$bar.css({width:eve["5stars-width"]*val.val});
+			m.fullPts=val.divisor;
+			$bar.css({width:m["5stars-width"]*val.val});
 		} else {
 			$bar.css({width:0});
 		}
-		eve.lastVal=val;
+		m.lastVal=val;
 	}
 });
 
 $button_new_reco.on("click", function(e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
-	var cat=eve.getSearchVars(window.location.search).cat;
+	var cat=m.getSearchVars(window.location.search).cat;
 	if (cat) { cat=cat.val; }
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
 	}
-	eve.wST=$window.scrollTop();
+	m.wST=$window.scrollTop();
 	$window.on("scroll.stop", function(e) {
-		$window.scrollTop(eve.wST);
+		$window.scrollTop(m.wST);
 	});
 	$input_uri.focus();
 	$input_uri.trigger("keyup");
@@ -2706,39 +2777,39 @@ $button_close.on("click", function(e) {
 	$window.off("scroll.stop");
 });
 $button_back.on("click", function(e) {
-	var r=eve.userRecos[$input_uri[0].value];
-	eve.showReco(r);
+	var r=m.userRecos[$input_uri[0].value];
+	m.showReco(r);
 });
 
 $button_reco.on("click", function(e) {
 	$button_reco.addClass("disabled");
-	var uri=eve.formatURI($input_uri[0].value);
-	var val=eve.val($input_val[0].value.trim());
+	var uri=m.formatURI($input_uri[0].value);
+	var val=m.val($input_val[0].value.trim());
 	var errorMsg="";
 	var valid=true;
 	if (uri.length===0) {
 		valid=false;
 		errorMsg="URI is required.";
-	} else if (eve.getUTF8Length(uri)>255) {
+	} else if (m.getUTF8Length(uri)>255) {
 		valid=false;
-		errorMsg="URI (Length "+eve.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.";
+		errorMsg="URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.";
 	} else if (!val.valid) {
 		valid=false;
 		errorMsg="Points is of invalid form.";
 	}
 	if (valid) {
 		var strHeads="do"+"\t"+"uri";
-		var strContents="reco"+"\t"+eve.encloseStr(uri);
+		var strContents="reco"+"\t"+m.encloseStr(uri);
 		strHeads+="\t"+"title";
-		strContents+="\t"+eve.encloseStr(eve.formatTitle($input_title[0].value.trim()));
+		strContents+="\t"+m.encloseStr(m.formatTitle($input_title[0].value.trim()));
 		strHeads+="\t"+"cats";
-		strContents+="\t"+eve.encloseStr(eve.formatCats($input_cats[0].value.trim()));
+		strContents+="\t"+m.encloseStr(m.formatCats($input_cats[0].value.trim()));
 		strHeads+="\t"+"desc";
-		strContents+="\t"+eve.encloseStr($input_desc[0].value.trim());
+		strContents+="\t"+m.encloseStr($input_desc[0].value.trim());
 		strHeads+="\t"+"cmt";
-		strContents+="\t"+eve.encloseStr($input_cmt[0].value.trim());
+		strContents+="\t"+m.encloseStr($input_cmt[0].value.trim());
 		strHeads+="\t"+"val";
-		strContents+="\t"+eve.encloseStr(val.str);
+		strContents+="\t"+m.encloseStr(val.str);
 		var strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
 		$.ajax({
@@ -2748,18 +2819,18 @@ $button_reco.on("click", function(e) {
 			$error.html("Reco failed. You may be not logged-in.");
 			// $button_reco.removeClass("disabled");
 		}).done(function(resp) {
-			var res=eve.strToJSON(resp);
+			var res=m.strToJSON(resp);
 			if (res[1]["result"]==="recoed") {
 				$error.html("Recoed");
-				eve.recoDowned(uri, eve.myRecos);
-				eve.recoToEve(strRecoDo, eve.myRecos);
-				var cats=eve.myRecos[uri]["cats"];
-				eve.putCats_UriToLists(cats, uri);
-				if (eve.myPage) {
-					eve.refresh(cats, "recoed", uri);
+				m.recoDowned(uri, m.myRecos);
+				m.recoToEve(strRecoDo, m.myRecos);
+				var cats=m.myRecos[uri]["cats"];
+				m.putCats_UriToLists(cats, uri);
+				if (m.myPage) {
+					m.refresh(cats, "recoed", uri);
 				}
 				setTimeout(function() {
-					eve.emptifyReco();
+					m.emptifyReco();
 					// $button_reco.removeClass("disabled");
 					$button_close.trigger("click");
 				}, 1000);
@@ -2778,40 +2849,40 @@ $button_reco.on("click", function(e) {
 $button_edit.on("click", function(e) {
 	$button_edit.addClass("disabled");
 	var uri=$input_uri[0].value;
-	var val=eve.val($input_val[0].value.trim());
-	var r=eve.myRecos[uri];
+	var val=m.val($input_val[0].value.trim());
+	var r=m.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
 		var strHeads="do"+"\t"+"uri";
-		var strContents="change"+"\t"+eve.encloseStr(uri);
+		var strContents="change"+"\t"+m.encloseStr(uri);
 		var changed=false;
-		var title=eve.formatTitle($input_title[0].value.trim());
+		var title=m.formatTitle($input_title[0].value.trim());
 		if (title!==r["title"]) {
 			changed=true;
 			strHeads+="\t"+"title";
-			strContents+="\t"+eve.encloseStr(title);
+			strContents+="\t"+m.encloseStr(title);
 		}
-		var cats=eve.formatCats($input_cats[0].value.trim());
+		var cats=m.formatCats($input_cats[0].value.trim());
 		if (cats!==r["cats"]) {
 			changed=true;
 			strHeads+="\t"+"cats";
-			strContents+="\t"+eve.encloseStr(cats);
+			strContents+="\t"+m.encloseStr(cats);
 		}
 		var desc=$input_desc[0].value.trim();
 		if (desc!==r["desc"]) {
 			changed=true;
 			strHeads+="\t"+"desc";
-			strContents+="\t"+eve.encloseStr(desc);
+			strContents+="\t"+m.encloseStr(desc);
 		}
 		var cmt=$input_cmt[0].value.trim();
 		if (cmt!==r["cmt"]) {
 			changed=true;
 			strHeads+="\t"+"cmt";
-			strContents+="\t"+eve.encloseStr(cmt);
+			strContents+="\t"+m.encloseStr(cmt);
 		}
 		if (val.str!==r["val"].str) {
 			changed=true;
 			strHeads+="\t"+"val";
-			strContents+="\t"+eve.encloseStr(val.str);
+			strContents+="\t"+m.encloseStr(val.str);
 		}
 		if (changed) {
 			$error.html("Being changed.");
@@ -2822,26 +2893,26 @@ $button_edit.on("click", function(e) {
 				$error.html("Failed change. You may not be logged-in.");
 				// $button_edit.removeClass("disabled");
 			}).done(function(resp) {
-				var res=eve.strToJSON(resp);
+				var res=m.strToJSON(resp);
 				if (res[1]["result"]==="changed") {
 					$error.html("Changed");
 					if (cats!==r["cats"]) {
-						eve.catsChangedOnUri(r.cats, cats, uri);
+						m.catsChangedOnUri(r.cats, cats, uri);
 						r["cats"]=cats;
 					}
 					if (title!==r["title"]) { r["title"]=title; }
 					if (desc!==r["desc"]) {
 						r["desc"]=desc;
-						r["descR"]=eve.renderStrDescCmt(desc);
+						r["descR"]=m.renderStrDescCmt(desc);
 					}
 					if (cmt!==r["cmt"]) {
 						r["cmt"]=cmt;
-						r["cmtR"]=eve.renderStrDescCmt(cmt);
+						r["cmtR"]=m.renderStrDescCmt(cmt);
 					}
 					if (val.str!==r["val"].str) { r["val"]=val; }
-					if (eve.myPage) { eve.refresh(cats, "changed", uri); }
+					if (m.myPage) { m.refresh(cats, "changed", uri); }
 					setTimeout(function() {
-						eve.emptifyReco();
+						m.emptifyReco();
 						// $button_edit.removeClass("disabled");
 						$button_close.trigger("click");
 					}, 1000);
@@ -2872,23 +2943,23 @@ $button_edit.on("click", function(e) {
 $button_del.on("click", function(e) {
 	$button_del.addClass("disabled");
 	var uri=$input_uri[0].value;
-	var r=eve.myRecos[uri];
+	var r=m.myRecos[uri];
 	if (uri.length!==0&&r) {
 		var strHeads="do"+"\t"+"uri";
-		var strContents="delete"+"\t"+eve.encloseStr(uri);
+		var strContents="delete"+"\t"+m.encloseStr(uri);
 		$.ajax({
 			type:"POST", url:"/reco/do", data:strHeads+"\n"+strContents
 			, dataType:"text"
 		}).done(function(resp) {
 			console.log(resp);
-			var res=eve.strToJSON(resp);
+			var res=m.strToJSON(resp);
 			if (res[1]["result"]==="deleted") {
 				$error.html("Deleted");
 				var cats=r["cats"];
-				delete eve.myRecos[uri];
-				eve.delCats_UriFromLists(cats, uri);
-				if (eve.myPage) {
-					eve.refresh(cats, "deleted", uri);
+				delete m.myRecos[uri];
+				m.delCats_UriFromLists(cats, uri);
+				if (m.myPage) {
+					m.refresh(cats, "deleted", uri);
 				}
 				setTimeout(function() {
 					// $button_del.removeClass("disabled");
@@ -2961,7 +3032,7 @@ $fuzzy_search.on("keydown", function(e) {
 		break;
 	}
 });
-eve.gotoLi=function(e, elem, k, fs) {
+m.gotoLi=function(e, elem, k, fs) {
 if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 } else {
 	var $elem=$(elem);
@@ -2978,23 +3049,23 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 	} else {
 		var $insert=$('<div class="button">inserting...</div>');
 		$contents.append($insert);
-		$elem=eve.showRecosOnCat($insert[0], k, 2, 2);
+		$elem=m.showRecosOnCat($insert[0], k, 2, 2);
 		setTimeout(function() {
 			$window.scrollTop(fs.fullList[k].$listI.offset().top);
 		}, 512);
 	}
 }};
-eve.doFSTitle=function(fs) {
-	var fsPtnSH=eve.splitHangul(fs.$fs.text());
+m.doFSTitle=function(fs) {
+	var fsPtnSH=m.splitHangul(fs.$fs.text());
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		eve.fuzzySearch(fsPtnSH, fs);
+		m.fuzzySearch(fsPtnSH, fs);
 		var res=fs[0];
 		var sorted=res.sorted;
 		var str="";
 		for (var i=0;i<sorted.length;i++) {
 			var k=res[sorted[i]].i;
 			var uri=fs.fullList[k].uri;
-			str+='<div class="list-item" onclick="eve.gotoLi(event,this,'+k+',eve.fsTitle)">'
+			str+='<div class="list-item" onclick="m.gotoLi(event,this,'+k+',m.fsTitle)">'
 					+fs.fullList[k].html
 					+((res[sorted[i]].highlight!==undefined)?
 					'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
@@ -3005,30 +3076,30 @@ eve.doFSTitle=function(fs) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 	}
 };
-eve.fsTitleOn=function() {
+m.fsTitleOn=function() {
 	var now=Date.now();
-	var passed=now-eve.previous;
-	if (passed>eve.wait) {
-		eve.previous=now;
-		eve.doFSTitle(eve.fsTitle);
+	var passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSTitle(m.fsTitle);
 	} else {
 		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
 		setTimeout(function() {
-			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", eve.fsTitleOn);
-			eve.previous=Date.now();
-			eve.doFSTitle(eve.fsTitle);
-		}, eve.wait*1.1-passed);
+			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsTitleOn);
+			m.previous=Date.now();
+			m.doFSTitle(m.fsTitle);
+		}, m.wait*1.1-passed);
 	}
 };
-$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", eve.fsTitleOn);
+$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsTitleOn);
 $fuzzy_search.trigger("keyup");
 
 ////////////////////////////////////////////////////
 // Language/언어/語言
 ////////////////////////////////////////////////////
-eve.changeLang=function(lang, e, elem) {
+m.changeLang=function(lang, e, elem) {
 	var search=window.location.search;
-	var href=eve.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
+	var href=m.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
 	if (e&&e.which===2) {
 		$(elem).attr({"href":href});
 		return true;
@@ -3037,10 +3108,10 @@ eve.changeLang=function(lang, e, elem) {
 		return false;
 	}
 };
-var dataLang=eve.strToJSON( $data_lang.html().trim() );
+var dataLang=m.strToJSON( $data_lang.html().trim() );
 var htmlLang='<div>';
 for (var i=0;i<dataLang[0].length;i++) {
-	htmlLang+='<a href="'+eve.pathName+"?lang="+dataLang[0][i]+'" onclick="return eve.changeLang(\''+dataLang[0][i]+'\',event,this)">'+dataLang[1][i]+'</a><br>';
+	htmlLang+='<a href="'+m.pathName+"?lang="+dataLang[0][i]+'" onclick="return m.changeLang(\''+dataLang[0][i]+'\',event,this)">'+dataLang[1][i]+'</a><br>';
 }
 htmlLang+='</div>';
 $data_lang.after(htmlLang);
@@ -3048,23 +3119,23 @@ $data_lang.after(htmlLang);
 ////////////////////////////////////////////////
 // Lang : set cookie, Cat : get ans show recos
 ////////////////////////////////////////////////
-var vars=eve.getSearchVars(window.location.search);
+var vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
-	eve.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
+	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
 if (vars.cat!==undefined) {
 	var cat=vars.cat.val;
-	eve.currentCat=cat;
-	eve.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat}, null, eve.pathOfCat(cat));
+	m.currentCat=cat;
+	m.getUriListAndShowRecosOnCat(cat);
+	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
 }
 
 ////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
-eve.shareSNS=function(elem, service) {
+m.shareSNS=function(elem, service) {
 	var $reco=$(elem).parent(".reco");
-	var uri=encodeURIComponent(eve.unescapeHTML($reco.find(".textURI").html()));
+	var uri=encodeURIComponent(m.unescapeHTML($reco.find(".textURI").html()));
 	var title=encodeURIComponent( $reco.find(".title").text() );
 	// encodeURIComponent(window.location.href);
 	var open="";
@@ -3082,8 +3153,8 @@ eve.shareSNS=function(elem, service) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
-eve.fdList=$("#sidebar, #head, #contents .reco, #foot"); // Ordered automatically by jQuery.
-eve.processShortKey=function(e) {
+m.fdList=$("#sidebar, #head, #contents .reco, #foot"); // Ordered automatically by jQuery.
+m.processShortKey=function(e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
 	switch (e.target.nodeName) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
@@ -3101,27 +3172,27 @@ eve.processShortKey=function(e) {
 		case 70: //F = 70
 		case 68: //D = 68
 			var scrollTop=$window.scrollTop();
-			var i, k=eve.fdList.length;
+			var i, k=m.fdList.length;
 			var hI;
 			if (e.keyCode===70) {
 				scrollTop+=10;
 				for (i=0;i<k;i++) {
-					hI=eve.fdList.eq(i);
+					hI=m.fdList.eq(i);
 					if (hI.is(":visible")&&scrollTop<hI.offset().top) { break; }
 				}
 				if (i===k) {
-					// hI=eve.fdList.eq(0);
+					// hI=m.fdList.eq(0);
 					// alert("This is the last section.");
 					return;
 				}
 			} else{
 				scrollTop-=10;
 				for (i=k-1;i>=0;i--) {
-					hI=eve.fdList.eq(i);
+					hI=m.fdList.eq(i);
 					if (hI.is(":visible")&&scrollTop>hI.offset().top) { break; }
 				}
 				if (i===-1) {
-					// hI=eve.fdList.eq(k-1);
+					// hI=m.fdList.eq(k-1);
 					// alert("This is the first section.");
 					return;
 				}
@@ -3131,7 +3202,7 @@ eve.processShortKey=function(e) {
 		default:
 	}
 }
-$window.on("keydown", eve.processShortKey);
+$window.on("keydown", m.processShortKey);
 var $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
@@ -3145,89 +3216,155 @@ if ($shortkeyDesc.exists()) {
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
-eve.cueYoutubePlaylist=function(list) {
-	if (eve.playlist&&eve.playlist.cuePlaylist) {
-		if (list.length>0) {
-			$headPlay.show();
-			eve.playlist.cuePlaylist(list);
-		} else {
-			$headPlay.hide();
-			eve.playlist.stopVideo();
+m.fsTitle.Preceding=function() {
+	m.fsTitle.playNext(m.fsTitle,-1);
+};
+m.fsTitle.Following=function() {
+	m.fsTitle.playNext(m.fsTitle,1);
+};
+m.fsTitle.shuffle=function() {
+	var fs=m.fsTitle;
+	var shuffled=fs.shuffled;
+	for (var i=1;i<shuffled.length;i++) {
+		var temp=shuffled[i];
+		var j=i;
+		for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
+			shuffled[j]=shuffled[j-1];
 		}
+		shuffled[j]=temp;
+	}
+	for (var i=0;i<fs.fullList.length;i++) {
+		fs.shuffled[i].randomN=Math.random();
+	}
+	fs.playNext(fs,0);
+};
+m.fsTitle.toggleLoop=function(elem) {
+	var $elem=$(elem);
+	if ($elem.hasClass("enabled")) {
+		$elem.removeClass("enabled");
+		m.fsTitle.loop=false;
 	} else {
-		if (!eve.YtAPILoaded) {
-			var ytAPI=document.createElement('script');
-			ytAPI.src="http://www.youtube.com/player_api";
-			$scripts.append(ytAPI);
-			eve.YtAPILoaded=true;
-		}
-		if (++eve.cueYTCount<100) { // Trying until YT API is loaded.
-			setTimeout(function() {
-				eve.cueYoutubePlaylist(list);
-			}, 1000);
-		}
+		$elem.addClass("enabled");
+		m.fsTitle.loop=true;
 	}
 };
-})(window.eve=window.eve||{}, jQuery);
-
-function onYouTubeIframeAPIReady() {
-	eve.playlist=[];
-	eve.playlist.currentIndex=0;
-	eve.playlist.oneLoop=false;
-	eve.playlist.loop=false;
-	
-	eve.playlist.playCurrentVideo=function() {
-		
-	};
-	eve.playlist.YTPlayer=new YT.Player('yt-and-video-playlist', {events:{
-		'onError':function(e) {
-			setTimeout(function() {
-				// e.target.nextVideo();
-				eve.playlist.currentIndex++;
-				if (eve.playlist.currentIndex!==eve.playlist.length) {
-					eve.playlist.playCurrentVideo();
-				} else if (eve.playlist.loop) {
-					eve.playlist.currentIndex=0;
-					eve.playlist.playCurrentVideo();
-				}
-			}, 2000);
-		}, 'onStateChange':function(e) {
-			if (e.data===YT.PlayerState.ENDED) {
-				// e.target.playVideoAt(eve.playlist.currentIndex);
-				if (eve.playlist.oneLoop) {
-					eve.playlist.playCurrentVideo();
-				} else {
-					eve.playlist.currentIndex++;
-					if (eve.playlist.currentIndex!==eve.playlist.length) {
-						eve.playlist.playCurrentVideo();
-					} else if (eve.playlist.loop) {
-						eve.playlist.currentIndex=0;
-						eve.playlist.playCurrentVideo();
+m.fsTitle.toggleOneLoop=function(elem) {
+	var $elem=$(elem);
+	if ($elem.hasClass("enabled")) {
+		$elem.removeClass("enabled");
+		m.fsTitle.oneLoop=false;
+	} else {
+		$elem.addClass("enabled");
+		m.fsTitle.oneLoop=true;
+	}
+};
+m.fsTitle.getAndPlayVideo=function(fs) {
+	var r=fs.fullList[fs.shuffled[fs.currentIndex].i].reco;
+	$reco_playing.html(m.recoHTML0(r));
+	var uriRendered=m.uriRendering(r.uri);
+	if (uriRendered.from==="youtube") {
+		$uri_rendered.html('');
+		$video[0].pause();
+		$rC_video_uri_rendered.hide();
+		$rC_youtube_uri_rendered.show();
+		if (m.YtPlayer) {
+			m.YtPlayer.loadVideoById(uriRendered.videoId);
+		} else {
+			m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
+				, events:{
+					'onError':function(e) {
+						setTimeout(function() {
+							fs.playNext();
+						}, 2000);
+					}, 'onStateChange':function(e) {
+						if (e.data===YT.PlayerState.ENDED) {
+							// e.target.playVideoAt(m.fsTitle.currentIndex);
+							if (fs.oneLoop) {
+								m.YtPlayer.seekTo(0,true);
+							} else {
+								fs.playNext(fs);
+							}
+						}
 					}
-				}
+				}}
+			);
+		}
+	} else if (uriRendered.from==="video") {
+		$uri_rendered.html('');
+		if (m.YtPlayer) {
+			m.YtPlayer.pauseVideo();
+		}
+		$rC_youtube_uri_rendered.hide();
+		$rC_video_uri_rendered.show();
+		
+		$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
+		$video=$("#video");
+		$video[0].play();
+		$video.on("ended", function() {
+			if (fs.oneLoop) {
+				$video[0].play();
+			} else {
+				fs.playNext(fs);
 			}
-		}}
-	});
-	eve.playlist.toggleLoop=function(elem) {
-		var $elem=$(elem);
-		if ($elem.hasClass("enabled")) {
-			$elem.removeClass("enabled");
-			eve.playlist.loop=false;
-		} else {
-			$elem.addClass("enabled");
-			eve.playlist.loop=true;
+		});
+	} else {
+		$uri_rendered.html(uriRendered.html);
+		$video[0].pause();
+		$video.html('');
+		$rC_video_uri_rendered.hide();
+		if (m.YtPlayer) {
+			m.YtPlayer.pauseVideo();
 		}
-	};
-	eve.playlist.toggleOneLoop=function(elem) {
-		var $elem=$(elem);
-		if ($elem.hasClass("enabled")) {
-			$elem.removeClass("enabled");
-			eve.playlist.oneLoop=false;
-		} else {
-			$elem.addClass("enabled");
-			eve.playlist.oneLoop=true;
+		$rC_youtube_uri_rendered.hide();
+		setTimeout(function() {
+			fs.playNext(fs);
+		}, 2500);
+	}
+};
+m.fsTitle.playNext=function(fs, increment) {
+	if (increment===undefined||increment===null||increment.constructor!==Number)
+		increment=1;
+	fs.currentIndex+=increment;
+	if (fs.loop) {
+		fs.currentIndex%=fs.fullList.length;
+		fs.getAndPlayVideo(fs);
+	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.fullList.length) {
+		fs.getAndPlayVideo(fs);
+	} else {
+		fs.currentIndex-=increment;
+	}
+};
+m.fsTitle.prepareRecoListPlay=function() {
+	if (m.YtAPINotLoaded) {
+		var ytAPI=document.createElement('script');
+		ytAPI.src="http://www.youtube.com/player_api";
+		$scripts.append(ytAPI);
+		m.YtAPINotLoaded=false;
+	}
+	if (++m.cueYtCount<100&&YT&&YT.Player) {
+		var fs=m.fsTitle;
+		for (var i=0;i<fs.fullList.length;i++) {
+			fs.shuffled[i]={i:fs.fullList.length-1-i, randomN:Math.random()};
 		}
-	};
-}
+		return true;
+	} else {
+		return false;
+	}
+};
+m.fsTitle.toggleRecoListPlay=function() {
+	var fs=m.fsTitle;
+	if ($playlist_container.is(":visible")) {
+		$playlist_container.hide();
+	} else {
+		$playlist_container.show();
+		fs.setInterval=setInterval(function() {
+			if (fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
+				clearInterval(fs.setInterval);
+				fs.playNext(fs);
+			}
+		}, 1000);
+	}
+};
+})(window.m, jQuery);
 </script>
 </html>
