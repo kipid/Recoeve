@@ -3264,7 +3264,8 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 	var uriRendered=m.uriRendering(r.uri);
 	if (uriRendered.from==="youtube") {
 		$uri_rendered.html('');
-		$video[0].pause();
+		// $video[0].pause();
+		$video.html('');
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		if (m.YtPlayer) {
@@ -3309,7 +3310,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 		});
 	} else {
 		$uri_rendered.html(uriRendered.html);
-		$video[0].pause();
+		// $video[0].pause();
 		$video.html('');
 		$rC_video_uri_rendered.hide();
 		if (m.YtPlayer) {
