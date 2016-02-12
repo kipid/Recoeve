@@ -10,7 +10,7 @@ import io.vertx.core.buffer.Buffer;
 import java.util.Map;
 import java.util.HashMap;
 
-// import java.net.URLDecoder;
+import java.net.URLDecoder;
 
 // import java.io.File;
 // import java.io.FileReader;
@@ -121,6 +121,7 @@ public void start() {
 			String user=path.substring(6);
 				// faster than path.replaceFirst("^/user/","");
 			String[] userSplit=user.split("/");
+			userSplit[0]=URLDecoder.decode(userSplit[0]);
 			if (userSplit.length==1) {
 				boolean userExists=db.idExists(userSplit[0]);
 				req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -310,7 +311,7 @@ public void start() {
 				if (toDo.startsWith("verify/")) {
 					if (sessionPassed) {
 						// VeriKey check.
-						if (db.verifyUser(cookie.get("I"), toDo.replaceFirst("verify/",""), ip)) {
+						if (db.verifyUser(cookie.get("I"), URLDecoder.decode(toDo.replaceFirst("verify/","")), ip)) {
 							// User is verified.
 							req.response().end("You are verified.", ENCODING);
 						} else {
