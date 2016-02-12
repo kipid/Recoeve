@@ -15,7 +15,7 @@ window.m={};
 		m.pathName="/user/"+m.myId;
 		window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
 	}
-	m.userId=m.pathName.substring(6);
+	m.userId=decodeURIComponent(m.pathName.substring(6));
 	var k=m.userId.indexOf("/");
 	if (k!==-1) {
 		m.userId=m.userId.substring(0,k);
