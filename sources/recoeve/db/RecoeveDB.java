@@ -41,6 +41,7 @@ public static final String domain="recoeve.net";
 public static final String cookieDel=";max-age=-100";
 public static final int hoursSSN=3;
 public static final String cookieOptionSSN=";path=/;HttpOnly"; // ;domain=recoeve.net
+public static final String jsCookieOptionSSN=";max-age="+(hoursSSN*60*50)+";path=/"; // ;domain=recoeve.net
 public static final String cookieOptionSSNtoken=";max-age="+(hoursSSN*60*60)+cookieOptionSSN;
 public static final String cookieOptionDelSSN=cookieDel+cookieOptionSSN;
 public static final int daysRMB=30;
@@ -746,6 +747,76 @@ public String authUserFromRmbd(Cookie cookie, BodyData inputs, String ip) {
 	}}}
 	return setCookie;
 }
+public String authUserFromRmbd(Cookie cookie, StrArray inputs, String ip) {
+	String setCookie="rmbdI="+cookieOptionDelRMB
+		+"\nSet-Cookie: rmbdT="+cookieOptionDelRMB
+		+"\nSet-Cookie: rmbdAuth="+cookieOptionDelRMB
+		+"\nSet-Cookie: rmbdToken="+cookieOptionDelRMB;
+	String now=now();
+	if (cookie.get("rmbdI")!=null) {
+	long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
+	String rmbdT=cookie.get("rmbdT");
+	String rmbdAuth=cookie.get("rmbdAuth");
+	String rmbdToken=cookie.get("rmbdToken");
+	String log=inputs.get(1, "log");
+	String sW=inputs.get(1, "sW");
+	String sH=inputs.get(1, "sH");
+	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
+	try {
+		pstmtCheckUserRemember.setLong(1, user_i);
+		pstmtCheckUserRemember.setString(2, rmbdT);
+		ResultSet rs=pstmtCheckUserRemember.executeQuery();
+		String errMsg="Error: ";
+		if (rs.next()) {
+			if ( checkDateDiff(now, rmbdT, daysRMB)
+				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
+				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))
+				&&rs.getString("log").equals(log)
+				&&rs.getInt("sW")==Integer.parseInt(sW)
+				&&rs.getInt("sH")==Integer.parseInt(sH) ) {
+				byte[] session=randomBytes(32);
+				byte[] token=randomBytes(32);
+				ResultSet user=findUserByIndex(user_i);
+				if (user!=null && user.next()) {
+					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
+					byte[] newToken=randomBytes(32);
+					rs.updateString("tLast", now);
+					rs.updateBytes("token", newToken);
+					rs.updateRow();
+					setCookie+="\nSet-Cookie: rmbdToken="+hex(newToken)+cookieOptionRMBtoken;
+					logs(user_i, now, ip, "rmb", true);
+					return setCookie;
+				}
+			} else {
+				// Failed: Delete rmbd cookie.
+				if (!checkDateDiff(now, rmbdT, daysRMB)) {
+					errMsg+="expired. ";
+				}
+				if (!Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))) {
+					errMsg+="auth. ";
+				}
+				if (!Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))) {
+					errMsg+="token. ";
+				}
+				if (!rs.getString("log").equals(log)) {
+					errMsg+="log. ";
+				}
+				if (!(rs.getInt("sW")==Integer.parseInt(sW))) {
+					errMsg+="sW. ";
+				}
+				if (!(rs.getInt("sH")==Integer.parseInt(sH))) {
+					errMsg+="sH. ";
+				}
+			}
+		} else {
+			errMsg+="Not remembered.";
+		}
+		logs(user_i, now, ip, "rmb", false, errMsg);
+	} catch (SQLException e) {
+		err(e);
+	}}}
+	return setCookie;
+}
 public String createUserSession(long user_i, String now, byte[] session, byte[] token, String ip)
 	throws SQLException {
 	pstmtCreateUserSession.setLong(1, user_i);
@@ -758,6 +829,7 @@ public String createUserSession(long user_i, String now, byte[] session, byte[] 
 		// user.updateInt("ssnC", user.getInt("ssnC")+1);
 		setCookie="I="+Long.toString(user_i,16)+cookieOptionSSN;
 		setCookie+="\nSet-Cookie: tCreate="+now+cookieOptionSSN;
+		setCookie+="\nSet-Cookie: tCjs="+now+jsCookieOptionSSN;
 		setCookie+="\nSet-Cookie: SSN="+hex(session)+cookieOptionSSN;
 		setCookie+="\nSet-Cookie: token="+hex(token)+cookieOptionSSNtoken;
 	}

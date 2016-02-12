@@ -181,11 +181,32 @@ public void start() {
 						if (setCookieRMB.startsWith("I=")) {
 							// Success: Session cookie and New token.
 							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
-							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user)");
+							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
 							// Failed: Delete rmbd cookie.
-							req.response().end("You have failed to log in with remembered http-only cookie.", ENCODING);
-							System.out.println("Sended fail message with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user)");
+							req.response().end("You have failed to log in with remembered http-only cookies.", ENCODING);
+							System.out.println("Sended fail message with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
+						}
+					} );
+				} else {
+					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (method:"+method+")");
+				}
+				break;
+			case "log-in/remember-me.do":
+				if (method==HttpMethod.POST) {
+					req.bodyHandler( (Buffer data) -> {
+						StrArray inputs=new StrArray(data.toString());
+						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
+						req.response().putHeader("Set-Cookie", setCookieRMB);
+						if (setCookieRMB.startsWith("I=")) {
+							// Success: Session cookie and New token.
+							req.response().end("Rmbd", ENCODING);
+							System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
+						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
+							// Failed: Delete rmbd cookie.
+							req.response().end("Failed", ENCODING);
+							System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 						}
 					} );
 				} else {
