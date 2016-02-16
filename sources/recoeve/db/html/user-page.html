@@ -46,10 +46,10 @@ img {min-width:1em; min-height:1em; max-width:100%}
 .button.enabled:active {background:rgb(70,70,70)}
 
 a {text-decoration:none}
-a:link {color:rgb(190,190,235)}
-a:visited {color:rgb(170,170,215)}
-a:active {color:rgb(100,215,215)}
-a:hover {color:rgb(170,215,170); text-decoration:underline}
+a:link {color:rgb(60,60,160)} .dark a:link {color:rgb(190,190,235)}
+a:visited {color:rgb(40,40,140)} .dark a:visited {color:rgb(170,170,215)}
+a:active {color:rgb(0,100,100)} .dark a:active {color:rgb(100,215,215)}
+a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 ::-webkit-scrollbar {width:7px; height:7px}
 ::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
@@ -162,7 +162,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	font-size:1.8em; line-height:1.0;
 }
 
-#new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto}
+#new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
 #new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
 #new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
 #new-reco label:first-child {margin-top:0}
@@ -190,7 +190,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .numbers-of-recos {margin:1em 0; padding:.5em}
 
 .reco.outRange {display:none}
-.reco {margin:0 0 1em; border-bottom:.15em solid black}
+.reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
 .reco:last-child {margin:0}
 .reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer; background-size:100% 100%}
@@ -202,7 +202,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats>a {color:rgb(130,170,130)}
 .reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
-.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(200,200,200); border-left:.3em solid rgb(10,80,80)} .dark .reco>.cmt {background:rgb(30,30,30)}
 .stars-container {position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
@@ -224,8 +224,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
 
-#floating-key {position:fixed; right:.5em; bottom:.5em; width:7em; height:10em}
+#floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
 #floating-key div {}
+#toggle-floating-key {position:fixed; right:.5em; bottom:.5em; width:auto; height:2.2em}
 
 @media all and (min-width:701px) {
 	#container {margin-left:14.9em}
@@ -302,7 +303,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#new-reco -->
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
-	head : <a href="/account/log-out">[--Log out--]</a>
+	head : <a href="/account/log-out">[--Log out--]</a> / <a href="/account/log-in">[--Log in--]</a>
 	<div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div>
 	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
@@ -344,13 +345,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<data id="data-lang">en	ko	ja	zh
 English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
 </div><!-- div#foot -->
-<div id="floating-key">
+<div id="floating-key" style="display:none">
+	<div class="button" onclick="m.hideFK()">▼ Hide</div>
 	<div class="button" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>Go</div>
 	<div class="button" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>ToC</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:68})">Backward</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:70})">Forward</div>
 	<div class="button" onclick="$button_new_reco.trigger('click')">New Reco</div>
 </div>
+<div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
 </body>
 <div id="scripts"></div>
@@ -457,12 +460,14 @@ m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
+m.fsCat.desc=false;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
 m.fsTitle=[];
 m.fsTitle[0]=m.fsTitle[1]=[];
 m.fsTitle.fullList=[];
+m.fsTitle.desc=true;
 m.fsTitle.$fs=$fuzzy_search;
 m.fsTitle.$fsl=$fuzzy_search_list;
 m.fsTitle.currentIndex=-1;
@@ -473,6 +478,7 @@ m.fsTitle.loop=false;
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
+m.fsGo.desc=true;
 m.fsGo.$fs=$fuzzy_search;
 m.fsGo.$fsl=$fuzzy_search_list;
 
@@ -496,6 +502,26 @@ m.PRw=$point_range.width();
 m.PRRw=m.PRw-15;
 m.fullPts=10;
 
+////////////////////////////////////////////////////
+// Floating key
+////////////////////////////////////////////////////
+$floating_key=$("#floating-key");
+$toggle_floating_key=$("#toggle-floating-key");
+
+m.hideFK=function() {
+	$floating_key.hide();
+	// $toggle_floating_key.html("▲ Show");
+}
+m.toggleFK=function() {
+	$floating_key.toggle();
+	// if ($floating_key.is(":visible")) {
+	// 	$floating_key.hide();
+		// $toggle_floating_key.html("▲ Show");
+	// } else {
+	// 	$floating_key.show();
+		// $toggle_floating_key.html("▲ Hide");
+	// }
+}
 ////////////////////////////////////////////////////
 // Sidebar dragger and exit
 ////////////////////////////////////////////////////
@@ -921,16 +947,18 @@ m.fuzzySearch=function(ptnSH, fs) {
 	} else {
 		fs[1]=null;
 	}
+	var listIsFullList=false;
 	if (fs[1]&&fs[1].sorted) {
 		var sorted=fs[1].sorted;
 		for (var i=0;i<sorted.length;i++) {
-			list.push(fs.fullList[fs[1][sorted[i]].i]);
+			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
 		}
 	} else {
 		list=fs.fullList;
+		listIsFullList=true;
 	}
-	var res=fs[0]=[];
-	res.ptnSH=ptnSH;
+	fs[0]=[];
+	fs[0].ptnSH=ptnSH;
 	var regExs=m.arrayRegExs(ptnSH);
 	for (var i=0;i<list.length;i++) {
 	if (regExs.length>0) {
@@ -985,19 +1013,23 @@ m.fuzzySearch=function(ptnSH, fs) {
 					k--;
 				}
 			}
-			res.push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
+			fs[0].push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
 		}
 	} else {
-		res.push({i:list[i].i, maxMatchScore:0});
+		fs[0].push({i:list[i].i, maxMatchScore:0});
 	}}
-	var sorted=res.sorted=[];
-	for (var i=0;i<res.length;i++) {
-		sorted[i]=res.length-1-i;
+	var sorted=fs[0].sorted=[];
+	for (var i=0;i<fs[0].length;i++) {
+		if (listIsFullList&&fs.desc) {
+			sorted[i]=fs[0].length-1-i;
+		} else {
+			sorted[i]=i;
+		}
 	}
 	for (var i=1;i<sorted.length;i++) {
 		var temp=sorted[i];
 		var j=i;
-		for (;(j>0) && (res[sorted[j-1]].maxMatchScore<res[temp].maxMatchScore);j--)
+		for (;(j>0) && (fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--)
 			sorted[j]=sorted[j-1];
 		sorted[j]=temp;
 	}
@@ -1290,8 +1322,7 @@ m.putCatToFSFullList=function(i, cat) {
 	if (m.fsCat.fullList[cat]) {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
 	} else {
-		var txtSH=m.splitHangul(cat);
-		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={txt:txtSH, cat:cat, html:m.escapeHTML(cat)};
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 };
 m.updateCatFS=function() {
@@ -1304,22 +1335,29 @@ m.updateCatFS=function() {
 	}
 };
 m.updateCatFS();
-m.chooseCat=function(elem, j) { // fs[0][j]
+m.chooseCat=function(elem, j) {
 	var $elem=$(elem);
+	var fs=m.fsCat;
 	if ($elem.hasClass("selected")) {
-		$input_cats.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	} else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
-		fs.listOfCats[fs[0].k]=fs.fullList[fs[0][j].i].cat;
-		$input_cats[0].value=fs.listOfCats.join(";");
-		$input_cats.focus();
+		var k=0;
+		if (fs[0]&&fs[0].k) {
+			k=fs[0].k;
+		} else if (fs[1]&&fs[1].k) {
+			k=fs[1].k;
+		}
+		fs.listOfCats[k]=fs.fullList[j].cat;
+		fs.$fs[0].value=fs.listOfCats.join(";");
+		fs.$fs.focus();
 		var sStart=0;
-		for (var i=0;i<fs[0].k;i++) {
+		for (var i=0;i<k;i++) {
 			sStart+=fs.listOfCats[i].length+1;
 		}
-		var sEnd=sStart+fs.listOfCats[fs[0].k].length;
-		$input_cats[0].setSelectionRange(sEnd,sEnd);
+		var sEnd=sStart+fs.listOfCats[k].length;
+		fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	}
 };
 m.doFSCat=function(fs) {
@@ -1336,22 +1374,19 @@ m.doFSCat=function(fs) {
 		}
 	}
 	var fsCatSH=m.splitHangul(listOfCats[fs[0].k]);
-	if (fs[0].ptnSH.splitted!==fsCatSH.splitted) {
-		m.fuzzySearch(fsCatSH, fs);
-		var res=fs[0];
-		var str="";
-		for (var i=0;i<res.length;i++) {
-			var k=res[res.sorted[i]];
-			str+='<div class="list-item" onclick="m.chooseCat(this,'+i+')">'
-					+'<div class="list-index">'+i+'</div>'
-					+fs.fullList[k.i].html
-					+(k.highlight!==undefined?
-					'<div class="highlighted">'+'<span class="maxMatchScore">'+k.maxMatchScore+'</span> :: '+k.highlight+'</div>':'')
-				+'</div>';
-		}
-		$cat_fs_list.html(str);
-		fs.$fsLis=fs.$fsl.find(".list-item");
+	m.fuzzySearch(fsCatSH, fs);
+	var str="";
+	for (var i=0;i<fs[0].length;i++) {
+		var k=fs[0][fs[0].sorted[i]];
+		str+='<div class="list-item" onclick="m.chooseCat(this,'+k.i+')">'
+				+'<div class="list-index">'+i+'</div>'
+				+fs.fullList[k.i].html
+				+(k.highlight!==undefined?
+				'<div class="highlighted">'+'<span class="maxMatchScore">'+k.maxMatchScore+'</span> :: '+k.highlight+'</div>':'')
+			+'</div>';
 	}
+	$cat_fs_list.html(str);
+	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 m.fsCatOn=function() {
 	var now=Date.now();
@@ -1372,10 +1407,14 @@ $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $input_cats.on("keydown.fs", function(e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
-	// case 27: // ESC = 27
-	// 	e.preventDefault();
-	// 	$cat_fs_container.hide();
-	// 	break;
+	case 9: // Tab = 9
+		e.preventDefault();
+		m.fsTitle.$fsLis.eq(0).trigger("click");
+		break;
+	case 27: // ESC = 27
+		e.preventDefault();
+		$cat_fs_container.hide();
+		break;
 	case 38: // up = 38
 	case 40: // down = 40
 		e.preventDefault();
@@ -2141,6 +2180,7 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 	var fs=m.fsTitle;
 	var l=fs.fullList.length;
 	var strHTML="";
+	var $elem=$(elem);
 	if (l>0) {
 		if (from===undefined||from===null) {
 			from=l-1;
@@ -2203,39 +2243,48 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 		// minus
 		var i=from;
 		var maxShowReco=-minus;
-		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--) {
+		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--,k++) {
 			var fsFLi=fs.fullList[i];
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { continue; }
+				if (fsFLi.$listI) { i=-1; break; }
 				strHTML+=m.recoHTML(r);
-				k++;
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML+='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',10,1)">Load more...</div>';
+			strHTML+='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',10,1)">Load more... from <span class="from">'+(i-9)+'</span> to <span class="to">'+(i+1)+'</span></div>';
 		}
+		if (elem) {
+			$elem.after(strHTML);
+		} else {
+			$contents.html(strHTML);
+		}
+		var h0=$body.height();
+		strHTML="";
 		// plus
 		i=from+1;
 		maxShowReco=plus;
-		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++) {
+		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++,k++) {
 			var fsFLi=fs.fullList[i];
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { continue; }
+				if (fsFLi.$listI) { i=l; break; }
 				strHTML=m.recoHTML(r)+strHTML;
-				k++;
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',1,10)">Load more...</div>'+strHTML;
+			strHTML='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',1,10)">Load more... from <span class="from">'+(i)+'</span> to <span class="to">'+(i+10)+'</span></div>'+strHTML;
 		}
+		if (elem) {
+			$elem.replaceWith(strHTML);
+		} else {
+			$contents.prepend(strHTML);
+		}
+		var h1=$body.height();
+		var wST=$window.scrollTop();
+		$window.scrollTop(wST+h1-h0);
 	} else {
-		strHTML+='<div class="numbers-of-recos">No reco on cat='+m.escapeHTML(m.currentCat)+'.</div>';
-	}
-	if (elem) {
-		$(elem).replaceWith(strHTML);
-	} else {
+		strHTML='<div class="numbers-of-recos">No reco on cat='+m.escapeHTML(m.currentCat)+'.</div>';
 		$contents.html(strHTML);
 	}
 	var $recos=$contents.find(".reco");
@@ -2247,8 +2296,8 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
-	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.trigger("keyup");
+	// fs[0].ptnSH=m.splitHangul("$!@#");
+	// fs.$fs.trigger("keyup");
 };
 m.editOrRecoToMine=function(elem) {
 	var $reco=$(elem).parent(".reco");
@@ -2306,6 +2355,9 @@ m.get_Recos_do=function(args) {
 		m.recoDowned(args.substring(4), m.userRecos);
 		m.recoToEve(resp, m.userRecos);
 		m.showRecosOnCat();
+		m.fsTitle[1]=null;
+		m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
+		m.fsTitle.$fs.trigger("keyup");
 	});
 };
 m.getAndShowRecosOnCat=function(cat) {
@@ -2330,6 +2382,9 @@ m.getAndShowRecosOnCat=function(cat) {
 		m.rmb_me(m.get_Recos_do, getRecosStr);
 	} else {
 		m.showRecosOnCat();
+		m.fsTitle[1]=null;
+		m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
+		m.fsTitle.$fs.trigger("keyup");
 	}
 };
 m.get_UriList_do=function(args) {
@@ -2750,7 +2805,8 @@ $new_reco.find("input, textarea").on("keydown.common", function(e) {
 		}
 	}
 });
-$input_uri.on("keyup", function(e) {
+$input_cats.off("keydown.common");
+$input_uri.on("input.rd keyup.rd cut.rd paste.rd click.rd", function(e) {
 	var uri=this.value;
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
@@ -3126,8 +3182,32 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 		$window.scrollTop($listI.offset().top);
 	} else {
 		var $insert=$('<div class="button">inserting...</div>');
-		$contents.append($insert);
-		$elem=m.showRecosOnCat($insert[0], k, 2, 2);
+		var $loads=$contents.find(">.button.to-be-executed");
+		var i=0;
+		for (;i<$loads.length-1;i++) {
+			var from0=Number($loads.eq(i).find(".from").html());
+			var to0=Number($loads.eq(i).find(".to").html());
+			if (to0<=k&&k<from0) {
+				$loads.eq(i).trigger("click");
+				break;
+			}
+			var to1=Number($loads.eq(i+1).find(".to").html());
+			if (to1<=k&&k<from0) {
+				$loads.eq(i).after($insert);
+				$elem=m.showRecosOnCat($insert[0], k, 2, 3);
+				break;
+			}
+		}
+		if (i===$loads.length-1) {
+			var from0=Number($loads.eq(i).find(".from").html());
+			var to0=Number($loads.eq(i).find(".to").html());
+			if (to0<=k&&k<from0) {
+				$loads.eq(i).trigger("click");
+			} else {
+				$loads.eq(i).after($insert);
+				$elem=m.showRecosOnCat($insert[0], k, 2, 3);
+			}
+		}
 		setTimeout(function() {
 			$window.scrollTop(fs.fullList[k].$listI.offset().top);
 		}, 512);
@@ -3353,7 +3433,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 				, events:{
 					'onError':function(e) {
 						setTimeout(function() {
-							fs.playNext();
+							fs.playNext(fs);
 						}, 2000);
 					}, 'onStateChange':function(e) {
 						if (e.data===YT.PlayerState.ENDED) {
@@ -3414,6 +3494,12 @@ m.fsTitle.playNext=function(fs, increment) {
 		fs.getAndPlayVideo(fs);
 	} else {
 		fs.currentIndex-=increment;
+		if ($video) {
+			$video[0].pause();
+		}
+		if (m.YtPlayer) {
+			m.YtPlayer.pauseVideo();
+		}
 	}
 };
 m.fsTitle.prepareRecoListPlay=function() {
