@@ -175,6 +175,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
 #new-reco .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-cat.selected {border-color:rgb(255,180,180)}
+#new-reco #add-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em;}
 #input-val-stars {margin:0 .5em -.4em 0}
 #new-reco .buttons {margin-top:1em; text-align:right}
 #new-reco #error-msg {margin:0}
@@ -210,6 +211,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.val {margin:.5em 0 .3em}
 .reco>.val>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark .reco>.val>.str {border-color:white}
+.reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 
 .lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
@@ -276,7 +278,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div id="def-titles"></div>
 		<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
 	<label for="cats">[--Categories--]</label>
-		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div></div>
+		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div></div>
 		<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
@@ -315,12 +317,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="headPlay">
 	<div class="button" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container" style="display:none">
-		<div id="uri-rendered"></div>
-		<div class="rC" id="rC-video-uri-rendered">
+		<div id="uri-rendered" style="display:none"></div>
+		<div class="rC" id="rC-video-uri-rendered" style="display:none">
 			<div class="rSC"><div id="video"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
-		<div class="rC" id="rC-youtube-uri-rendered">
+		<div class="rC" id="rC-youtube-uri-rendered" style="display:none">
 			<div class="rSC"><div id="youtube"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
@@ -338,6 +340,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div>
 	<span id="point-range-result">0~10/10</span>
 	<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
+	<div class="cBoth"></div>
 </div>
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
@@ -2117,6 +2120,8 @@ m.recoHTML0=function(r) {
 		if (r["val"].str) {
 			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
+		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
+			+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -2170,6 +2175,8 @@ m.recoHTML=function(r) {
 		if (r["val"].str) {
 			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
+		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
+			+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -2243,12 +2250,13 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 		// minus
 		var i=from;
 		var maxShowReco=-minus;
-		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--,k++) {
+		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--) {
 			var fsFLi=fs.fullList[i];
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { i=-1; break; }
+				if (fsFLi.$listI) { break; }
 				strHTML+=m.recoHTML(r);
+				k++;
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
@@ -2264,12 +2272,13 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 		// plus
 		i=from+1;
 		maxShowReco=plus;
-		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++,k++) {
+		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++) {
 			var fsFLi=fs.fullList[i];
 			var r=fsFLi.reco;
 			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { i=l; break; }
+				if (fsFLi.$listI) { break; }
 				strHTML=m.recoHTML(r)+strHTML;
+				k++;
 			}
 		}
 		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
@@ -2296,8 +2305,8 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
-	// fs[0].ptnSH=m.splitHangul("$!@#");
-	// fs.$fs.trigger("keyup");
+	fs[0].ptnSH=m.splitHangul("$!@#");
+	fs.$fs.trigger("keyup");
 };
 m.editOrRecoToMine=function(elem) {
 	var $reco=$(elem).parent(".reco");
@@ -2692,6 +2701,12 @@ m.emptifyReco=function() {
 	$input_val.trigger("keyup");
 	m.getAndShowDefsAndReco();
 };
+m.addCat=function() {
+	$input_cats[0].value+=";";
+	var l=$input_cats[0].value.length;
+	$input_cats.focus();
+	$input_cats[0].setSelectionRange(l,l);
+};
 m.showDefs=function(r) {
 	var defTitles=r["def-titles"].trim().split("\n");
 	var defTitlesHTML="";
@@ -2711,7 +2726,7 @@ m.showDefs=function(r) {
 	});
 	
 	var defCats=r["def-cats"].trim().split("\n");
-	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div><br>';
+	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div><br>';
 	for (var i=0;i<defCats.length;i++) {
 		var cat=defCats[i].trim();
 		if (cat.length!==0) {
@@ -3222,12 +3237,15 @@ m.doFSTitle=function(fs) {
 		var str="";
 		for (var i=0;i<sorted.length;i++) {
 			var k=res[sorted[i]].i;
-			var uri=fs.fullList[k].uri;
-			str+='<div class="list-item" onclick="m.gotoLi(event,this,'+k+',m.fsTitle)">'
-					+fs.fullList[k].html
-					+((res[sorted[i]].highlight!==undefined)?
-					'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
-				+'</div>';
+			var fsFLk=fs.fullList[k];
+			if (fsFLk.inRange) {
+				var uri=fsFLk.uri;
+				str+='<div class="list-item" onclick="m.gotoLi(event,this,'+k+',m.fsTitle)">'
+						+fs.fullList[k].html
+						+((res[sorted[i]].highlight!==undefined)?
+						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
+					+'</div>';
+			}
 		}
 		fs.$fsl.html(str);
 		// fs.$fsl.scrollTop(0);
@@ -3375,9 +3393,11 @@ if ($shortkeyDesc.exists()) {
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsTitle.Preceding=function() {
+	clearTimeout(m.playListSetTimeout);
 	m.fsTitle.playNext(m.fsTitle,-1);
 };
 m.fsTitle.Following=function() {
+	clearTimeout(m.playListSetTimeout);
 	m.fsTitle.playNext(m.fsTitle,1);
 };
 m.fsTitle.shuffle=function() {
@@ -3422,7 +3442,6 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 	var uriRendered=m.uriRendering(r.uri);
 	if (uriRendered.from==="youtube") {
 		$uri_rendered.html('');
-		// $video[0].pause();
 		$video.html('');
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
@@ -3432,7 +3451,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 			m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
 				, events:{
 					'onError':function(e) {
-						setTimeout(function() {
+						m.playListSetTimeout=setTimeout(function() {
 							fs.playNext(fs);
 						}, 2000);
 					}, 'onStateChange':function(e) {
@@ -3475,7 +3494,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 			m.YtPlayer.pauseVideo();
 		}
 		$rC_youtube_uri_rendered.hide();
-		setTimeout(function() {
+		m.playListSetTimeout=setTimeout(function() {
 			fs.playNext(fs);
 		}, 2500);
 	}
@@ -3489,9 +3508,17 @@ m.fsTitle.playNext=function(fs, increment) {
 	fs.currentIndex+=increment;
 	if (fs.loop) {
 		fs.currentIndex%=fs.fullList.length;
-		fs.getAndPlayVideo(fs);
+		if (fs.fullList[fs.currentIndex].inRange) {
+			fs.getAndPlayVideo(fs);
+		} else {
+			fs.playNext(fs, increment);
+		}
 	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.fullList.length) {
-		fs.getAndPlayVideo(fs);
+		if (fs.fullList[fs.currentIndex].inRange) {
+			fs.getAndPlayVideo(fs);
+		} else {
+			fs.playNext(fs, increment);
+		}
 	} else {
 		fs.currentIndex-=increment;
 		if ($video) {
