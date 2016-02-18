@@ -897,7 +897,7 @@ public String getRecos(String user_id, StrArray uris) {
 		ResultSet user=findUserById(user_id);
 		if (user.next()) {
 			long user_i=user.getLong("i");
-			res+="uri\tcats\ttitle\tdesc\tcmt\tval";
+			res+="uri\tcats\ttitle\tdesc\tcmt\tval\ttFirst\ttLast";
 			int size=uris.getRowSize();
 			for (int i=1;i<size;i++) {
 				String uri=uris.get(i, "uri");
@@ -908,7 +908,9 @@ public String getRecos(String user_id, StrArray uris) {
 						+"\t"+StrArray.enclose(reco.getString("title"))
 						+"\t"+StrArray.enclose(reco.getString("desc"))
 						+"\t"+StrArray.enclose(reco.getString("cmt"))
-						+"\t"+StrArray.enclose(reco.getString("val"));
+						+"\t"+StrArray.enclose(reco.getString("val"))
+						+"\t"+reco.getString("tFirst")
+						+"\t"+reco.getString("tLast");
 				}
 			}
 		}
