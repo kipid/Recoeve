@@ -306,7 +306,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
 	head : <a href="/account/log-out">[--Log out--]</a> / <a href="/account/log-in">[--Log in--]</a>
-	<div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div>
+	<!-- <div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div> -->
+	<div class="button" onclick="m.getNeighbors()">[--Get neighbors--]</div>
 	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
 	<div>
@@ -504,6 +505,51 @@ m.PRLw=15;
 m.PRw=$point_range.width();
 m.PRRw=m.PRw-15;
 m.fullPts=10;
+
+m.neighbors={};
+	// m.neighbors[cat_from]={down:true};
+	// m.neighbors[cat_from][user_i]={}
+	// m.neighbors[cat_from][user_i][cat_i]={sumSim:sumSim, nSim:nSim, simAvg100:simAvg100, tUpdate:tUpdate};
+////////////////////////////////////////////////////
+// Get neighbors
+////////////////////////////////////////////////////
+m.getNeighbors=function() {
+	if (m.neighbors[m.currentCat]&&m.neighbors[m.currentCat].down) {
+		var req="user_i\tcat_i";
+		var neighbors=m.neighbors[m.currentCat]
+		for (var p in neighbors) {
+			if (p!=="down") {
+				for (var q in neighbors[p]) {
+					req+="\n"+p+"\t"+q;
+				}
+			}
+		}
+		console.log(req);
+		$.ajax({
+			type:"POST", url:m.pathName+"/get-URI-cats-val", data:req
+			, dataType:"text"
+		}).done(function(resp) {
+			console.log(resp);
+		});
+	} else {
+		var req="cat_from\n"+m.currentCat;
+		$.ajax({
+			type:"POST", url:m.pathName+"/get-Neighbors", data:req
+			, dataType:"text"
+		}).done(function(resp) {
+			var cat_froms=m.strToJSON(req);
+			for (var i=1;i<cat_froms.length;i++) {
+				m.neighbors[cat_froms[i].cat_from]={down:true};
+			}
+			var res=m.strToJSON(resp);
+			for (var i=1;i<res.length;i++) {
+				m.neighbors[res[i].cat_from][res[i].user_i]={};
+				m.neighbors[res[i].cat_from][res[i].user_i][res[i].cat_i]=res[i];
+			}
+			console.log(m.neighbors);
+		});
+	}
+};
 
 ////////////////////////////////////////////////////
 // Floating key
@@ -2120,8 +2166,8 @@ m.recoHTML0=function(r) {
 		if (r["val"].str) {
 			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
-		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
-			+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
+		// res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
+		// 	+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -2175,8 +2221,8 @@ m.recoHTML=function(r) {
 		if (r["val"].str) {
 			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
-		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
-			+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
+		// res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
+		// 	+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -3536,7 +3582,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		$scripts.append(ytAPI);
 		m.YtAPINotLoaded=false;
 	}
-	if (++m.cueYtCount<100&&YT&&YT.Player) {
+	if (++m.cueYtCount<30&&YT&&YT.Player) {
 		var fs=m.fsTitle;
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={i:fs.fullList.length-1-i, randomN:Math.random()};

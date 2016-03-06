@@ -106,10 +106,11 @@ public class Categories {
 	}
 	public static boolean isSuperCat(String superCat, String strCats) {
 		strCats=";"+strCats;
-		return strCats.indexOf(";"+superCat)!=-1;
-		
-		// Categories cats=new Categories(strCats);
-		// return cats.hasSuperCat(superCat);
+		if (strCats.indexOf(";"+superCat)!=-1) {
+			Categories cats=new Categories(strCats);
+			return cats.hasSuperCat(superCat);
+		}
+		return false;
 	}
 	
 	

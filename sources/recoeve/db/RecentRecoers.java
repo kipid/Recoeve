@@ -19,7 +19,7 @@ import java.util.HashSet;
 // Each recoer must be enclosed by "\n".
 
 public class RecentRecoers {
-	public static final int maxNRecentRecoers=100;
+	public static final int maxNRecentRecoers=1000;
 	public static String toFormat(String str) {
 		return "\n"+str.trim()+"\n";
 	}
@@ -82,23 +82,23 @@ public class RecentRecoers {
 	}
 	
 	public static void main(String... args) {
-		// RecentRecoers rr=new RecentRecoers();
-		// rr.putRecoer(1300000000);
-		// rr.putRecoer(1200000000);
-		// rr.putRecoer(1100000000);
-		// rr.putRecoer(1000000000);
-		// rr.putRecoer(900000000);
-		// rr.putRecoer(800000000);
-		// rr.putRecoer(700000000);
-		// rr.putRecoer(600000000);
-		// rr.putRecoer(500000000);
-		// rr.putRecoer(400000000);
-		// rr.putRecoer(300000000);
-		// rr.putRecoer(200000000);
-		// rr.putRecoer(100000000);
-		// System.out.println(rr);
+		RecentRecoers rr=new RecentRecoers();
+		rr.putRecoer(1300000000);
+		rr.putRecoer(1200000000);
+		rr.putRecoer(1100000000);
+		rr.putRecoer(1000000000);
+		rr.putRecoer(900000000);
+		rr.putRecoer(800000000);
+		rr.putRecoer(700000000);
+		rr.putRecoer(600000000);
+		rr.putRecoer(500000000);
+		rr.putRecoer(400000000);
+		rr.putRecoer(300000000);
+		rr.putRecoer(200000000);
+		rr.putRecoer(100000000);
+		System.out.println(rr);
 		
-		// rr.cutRecoers();
-		// System.out.println(rr);
+		rr.cutRecoers();
+		System.out.println(rr);
 	}
 }
