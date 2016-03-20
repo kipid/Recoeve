@@ -2404,19 +2404,6 @@ m.recoToEve=function(resp, recos) {
 		}
 	}
 };
-m.get_Recos_do=function(args) {
-	$.ajax({
-		type:"POST", url:m.pathName+"/get-Recos", data:args
-		, dataType:"text"
-	}).done(function(resp) {
-		m.recoDowned(args.substring(4), m.userRecos);
-		m.recoToEve(resp, m.userRecos);
-		m.showRecosOnCat();
-		m.fsTitle[1]=null;
-		m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
-		m.fsTitle.$fs.trigger("keyup");
-	});
-};
 m.getAndShowRecosOnCat=function(cat) {
 	var uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
 	var uris=[];
@@ -2436,35 +2423,23 @@ m.getAndShowRecosOnCat=function(cat) {
 		}
 	}
 	if (getRecosN>0) {
-		m.rmb_me(m.get_Recos_do, getRecosStr);
+		$.ajax({
+			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
+			, dataType:"text"
+		}).done(function(resp) {
+			m.recoDowned(getRecosStr.substring(4), m.userRecos);
+			m.recoToEve(resp, m.userRecos);
+			m.showRecosOnCat();
+			m.fsTitle[1]=null;
+			m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
+			m.fsTitle.$fs.trigger("keyup");
+		});
 	} else {
 		m.showRecosOnCat();
 		m.fsTitle[1]=null;
 		m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
 		m.fsTitle.$fs.trigger("keyup");
 	}
-};
-m.get_UriList_do=function(args) {
-	$.ajax({
-		type:"POST", url:m.pathName+"/get-UriList", data:args.getUriListStr
-		, dataType:"text"
-	}).fail(function() {
-		$contents.html("get-UriList on "+m.escapeHTML(args.cat)+" has failed..");
-	}).done(function(resp) {
-		args.catUriList.down=true;
-		var resp=m.strToJSON(resp);
-		for (var i=1;i<resp.length;i++) {
-			var catUL=m.catUriList[resp[i].cat];
-			catUL.down=true;
-			catUL.has=true;
-			for (var p in resp[i]) {
-				if (isNaN(p)) {
-					catUL[p]=resp[i][p];
-				}
-			}
-		}
-		m.getAndShowRecosOnCat(args.cat);
-	});
 };
 m.getUriListAndShowRecosOnCat=function(cat) {
 	$contents.html("Loading recos in cat="+m.escapeHTML(cat)+"...");
@@ -2485,7 +2460,26 @@ m.getUriListAndShowRecosOnCat=function(cat) {
 			m.getAndShowRecosOnCat(cat);
 		} else {
 			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
-			m.rmb_me(m.get_UriList_do, {getUriListStr:getUriListStr, cat:cat, catUriList:catUriList});
+			$.ajax({
+				type:"POST", url:m.pathName+"/get-UriList", data:getUriListStr
+				, dataType:"text"
+			}).fail(function() {
+				$contents.html("get-UriList on "+m.escapeHTML(cat)+" has failed..");
+			}).done(function(resp) {
+				catUriList.down=true;
+				var resp=m.strToJSON(resp);
+				for (var i=1;i<resp.length;i++) {
+					var catUL=m.catUriList[resp[i].cat];
+					catUL.down=true;
+					catUL.has=true;
+					for (var p in resp[i]) {
+						if (isNaN(p)) {
+							catUL[p]=resp[i][p];
+						}
+					}
+				}
+				m.getAndShowRecosOnCat(cat);
+			});
 		}
 	} else {
 		$contents.html("Category \""+m.escapeHTML(cat)+"\" does not exist.");
@@ -2790,38 +2784,6 @@ m.showDefs=function(r) {
 		$input_cats[0].value=m.unescapeHTML($this.html());
 	});
 };
-m.get_Reco_do=function(args) {
-	$.ajax({
-		type:"POST", url:m.pathName+"/get-Recos", data:args.getRecosStr
-		, dataType:"text"
-	}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-		m.recoDowned(args.uri, m.userRecos);
-		m.recoToEve(resp, m.userRecos);
-		m.showReco(args.r);
-	});
-};
-m.reco_infos_do=function(args) {
-	$.ajax({
-		type:"POST", url:"/reco/infos", data:args.uri
-		, dataType:"text"
-	}).done(function(resp) {
-		var defs=m.strToJSON(resp);
-		args.r.defs=true;
-		args.r["def-cats"]=defs[1]["def-cats"];
-		args.r["def-titles"]=defs[1]["def-titles"];
-		m.showDefs(args.r);
-	});
-};
-m.user_get_Recos_do=function(args) {
-	$.ajax({
-		type:"POST", url:"/user/"+m.myId+"/get-Recos", data:args.getRecosStr
-		, dataType:"text"
-	}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-		m.recoDowned(args.uri, m.myRecos);
-		m.recoToEve(resp, m.myRecos);
-		m.showMyReco(args.mR);
-	});
-};
 m.getAndShowDefsAndReco=function(noFormatURI) {
 	var elem=$input_uri[0];
 	var uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
@@ -2833,13 +2795,29 @@ m.getAndShowDefsAndReco=function(noFormatURI) {
 		m.showReco(r);
 	} else {
 		var getRecosStr="uri"+"\n"+uri;
-		m.rmb_me(m.get_Reco_do, {getRecosStr:getRecosStr, uri:uri, r:r});
+		$.ajax({
+			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
+			, dataType:"text"
+		}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
+			m.recoDowned(uri, m.userRecos);
+			m.recoToEve(resp, m.userRecos);
+			m.showReco(r);
+		});
 	}
 	if (r.defs) {
 		m.showDefs(r);
 	} else {
 		m.showDefs({"def-titles":"", "def-cats":""});
-		m.rmb_me(m.reco_infos_do, {uri:uri, r:r});
+		$.ajax({
+			type:"POST", url:"/reco/infos", data:uri
+			, dataType:"text"
+		}).done(function(resp) {
+			var defs=m.strToJSON(resp);
+			r.defs=true;
+			r["def-cats"]=defs[1]["def-cats"];
+			r["def-titles"]=defs[1]["def-titles"];
+			m.showDefs(r);
+		});
 	}
 	if (m.myPage||uri==="") {
 		$error.html("");
@@ -2851,7 +2829,14 @@ m.getAndShowDefsAndReco=function(noFormatURI) {
 			m.showMyReco(mR);
 		} else {
 			var getRecosStr="uri"+"\n"+uri;
-			m.rmb_me(m.user_get_Recos_do, {getRecosStr:getRecosStr, uri:uri, mR:mR});
+			$.ajax({
+				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
+				, dataType:"text"
+			}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
+				m.recoDowned(uri, m.myRecos);
+				m.recoToEve(resp, m.myRecos);
+				m.showMyReco(mR);
+			});
 		}
 	}
 };
