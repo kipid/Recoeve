@@ -843,6 +843,8 @@ m.rmb_me=function(callback, args) {
 		}).done(function(resp) {
 			if (resp==="Rmbd") {
 				callback(args);
+			} else {
+				console.log(resp);
 			}
 		});
 	}
