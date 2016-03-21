@@ -1,6 +1,6 @@
 rp	i	en	ko	ja	zh	desc
-Replacer	0	English/영어/en	Korean/한국어/kr	Japanese/일본어/jp	Chinese/중국어(번체)/cn	Description
-[--version--]	1	Ver. 0.1.9. (2016-02-02).				
+Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Description
+[--version--]	1	Ver. 0.2.0. (2016-03-21).				
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -52,11 +52,13 @@ Replacer	0	English/영어/en	Korean/한국어/kr	Japanese/일본어/jp	Chinese/�
 [--Uncategorized--]	110	Uncategorized	분류없음			
 [--Later--]	111	Later	나중에			
 [--Indifferent--]	112	Indifferent	관심없음			
-[--Shuffle--]	120	Shuffle	순서섞기			
-[--Loop--]	121	Loop	전체반복			
-[--One-loop--]	122	One-loop	한곡반복			
-[--return to the original position--]	123	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置	
-[--stick to the left top--]	124	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置	
+[--Preceding--]	120	Preceding	전으로			
+[--Following--]	121	Following	앞으로			
+[--Shuffle--]	122	Shuffle	순서섞기			
+[--Loop--]	123	Loop	전체반복			
+[--One-loop--]	124	One-loop	한곡반복			
+[--return to the original position--]	125	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置	
+[--stick to the left top--]	126	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置	
 [--Title--]	130	Title	제목			
 [--Categories--]	131	Categories	카테고리			
 [--Description--]	132	Description	설명			
