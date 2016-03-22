@@ -2235,7 +2235,6 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 	var fs=m.fsTitle;
 	var l=fs.fullList.length;
 	var strHTML="";
-	var $elem=$(elem);
 	if (l>0) {
 		if (from===undefined||from===null) {
 			from=l-1;
@@ -2311,7 +2310,7 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 			strHTML+='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',10,1)">Load more... from <span class="from">'+(i-9)+'</span> to <span class="to">'+(i+1)+'</span></div>';
 		}
 		if (elem) {
-			$elem.after(strHTML);
+			$(elem).after(strHTML);
 		} else {
 			$contents.html(strHTML);
 		}
@@ -2333,7 +2332,7 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 			strHTML='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',1,10)">Load more... from <span class="from">'+(i)+'</span> to <span class="to">'+(i+10)+'</span></div>'+strHTML;
 		}
 		if (elem) {
-			$elem.replaceWith(strHTML);
+			$(elem).replaceWith(strHTML);
 		} else {
 			$contents.prepend(strHTML);
 		}
@@ -2410,7 +2409,8 @@ m.getAndShowRecosOnCat=function(cat) {
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	var getRecosStr="uri";
 	var getRecosN=0;
-	var fsFL=m.fsTitle.fullList=[];
+	var fs=m.fsTitle;
+	var fsFL=fs.fullList=[];
 	fsFL.cat=cat;
 	for (var i=0;i<uris.length;i++) {
 		var uri=uris[i];
@@ -2430,15 +2430,19 @@ m.getAndShowRecosOnCat=function(cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			m.fsTitle[1]=null;
-			m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
-			m.fsTitle.$fs.trigger("keyup");
+			fs.currentIndex=-1;
+			fs.playNext(fs,1);
+			fs[1]=null;
+			fs[0].ptnSH=m.splitHangul("$!@#");
+			fs.$fs.trigger("keyup");
 		});
 	} else {
 		m.showRecosOnCat();
-		m.fsTitle[1]=null;
-		m.fsTitle[0].ptnSH=m.splitHangul("$!@#");
-		m.fsTitle.$fs.trigger("keyup");
+		fs.currentIndex=-1;
+		fs.playNext(fs,1);
+		fs[1]=null;
+		fs[0].ptnSH=m.splitHangul("$!@#");
+		fs.$fs.trigger("keyup");
 	}
 };
 m.getUriListAndShowRecosOnCat=function(cat) {
