@@ -2430,16 +2430,18 @@ m.getAndShowRecosOnCat=function(cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			fs.currentIndex=-1;
-			fs.playNext(fs,1);
+			if (fs.prepareRecoListPlay()) {
+				fs.playNext(fs,1);
+			}
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup");
 		});
 	} else {
 		m.showRecosOnCat();
-		fs.currentIndex=-1;
-		fs.playNext(fs,1);
+		if (fs.prepareRecoListPlay()) {
+			fs.playNext(fs,1);
+		}
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("keyup");
@@ -3575,6 +3577,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 	}
 	if (++m.cueYtCount<30&&YT&&YT.Player) {
 		var fs=m.fsTitle;
+		fs.currentIndex=-1;
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={i:fs.fullList.length-1-i, randomN:Math.random()};
 		}
@@ -3589,12 +3592,14 @@ m.fsTitle.toggleRecoListPlay=function() {
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
-		fs.setInterval=setInterval(function() {
-			if (fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
-				clearInterval(fs.setInterval);
-				fs.playNext(fs);
-			}
-		}, 1000);
+		if (m.YtAPINotLoaded) {
+			fs.setInterval=setInterval(function() {
+				if (fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
+					clearInterval(fs.setInterval);
+					fs.playNext(fs);
+				}
+			}, 1000);
+		}
 	}
 };
 })(window.m, jQuery);
