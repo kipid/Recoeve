@@ -318,6 +318,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="headPlay">
 	<div class="button" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container" style="display:none">
+		<div class="button" onclick="m.fsTitle.Preceding()">[--Preceding--]</div>
+		<div class="button" onclick="m.fsTitle.Following()">[--Following--]</div>
+		<div class="button" onclick="m.fsTitle.shuffle()">[--Shuffle--]</div>
+		<div class="button" onclick="m.fsTitle.toggleLoop(this)">[--Loop--]</div>
+		<div class="button" onclick="m.fsTitle.toggleOneLoop(this)">[--One-loop--]</div>
 		<div id="uri-rendered" style="display:none"></div>
 		<div class="rC" id="rC-video-uri-rendered" style="display:none">
 			<div class="rSC"><div id="video"></div></div>
@@ -327,11 +332,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="rSC"><div id="youtube"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
-		<div class="button" onclick="m.fsTitle.Preceding()">[--Preceding--]</div>
-		<div class="button" onclick="m.fsTitle.Following()">[--Following--]</div>
-		<div class="button" onclick="m.fsTitle.shuffle()">[--Shuffle--]</div>
-		<div class="button" onclick="m.fsTitle.toggleLoop(this)">[--Loop--]</div>
-		<div class="button" onclick="m.fsTitle.toggleOneLoop(this)">[--One-loop--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
