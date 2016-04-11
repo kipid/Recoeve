@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import java.net.URLDecoder;
+	// deprecated API?
 
 // import java.io.File;
 // import java.io.FileReader;
@@ -147,6 +148,18 @@ public void start() {
 							System.out.println("Sended uriLists");
 						} );
 						break;
+					// case "get-Neighbors":
+					// 	req.bodyHandler( (Buffer data) -> {
+					// 		req.response().end(db.getStrOfNeighbors(userSplit[0], new StrArray(data.toString())), ENCODING);
+					// 		System.out.println("Sended neighbors.");
+					// 	} );
+					// 	break;
+					// case "/get-URI-cats-val":
+					// 	req.bodyHandler( (Buffer data) -> {
+					// 		req.response().end(db.getUriCatsVal(userSplit[0], new StrArray(data.toString())), ENCODING);
+					// 		System.out.println("Sended URI-cats-val.");
+					// 	} );
+					// 	break;
 					default:
 						req.response().end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS);
@@ -349,7 +362,8 @@ public void start() {
 				}
 			}
 		} else if (refererAllowed&&path.startsWith("/reco/")) {
-			String toDo=path.replaceFirst("^/reco/","");
+			// String toDo=path.replaceFirst("^/reco/","");
+			String toDo=path.substring(6);
 			switch (toDo) {
 			case "infos":
 				req.response().putHeader("Content-Type","text/plain");
@@ -402,6 +416,6 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80, /*"localhost"*/"172.31.13.32"); // RecoeveDB.port
+	}).listen(80, "localhost"/*"172.31.13.32"*/); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle
