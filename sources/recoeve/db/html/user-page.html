@@ -3485,7 +3485,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		if (m.YtPlayer) {
-			m.YtPlayer.loadVideoById(uriRendered.videoId);
+			m.YtPlayer.cueVideoById(uriRendered.videoId);
 		} else {
 			m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
 				, events:{
