@@ -1390,7 +1390,7 @@ m.chooseCat=function(elem, j) {
 	var $elem=$(elem);
 	var fs=m.fsCat;
 	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	} else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
