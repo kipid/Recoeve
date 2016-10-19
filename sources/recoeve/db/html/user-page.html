@@ -1394,12 +1394,7 @@ m.chooseCat=function(elem, j) {
 	} else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
-		var k=fs[0].k;
-		// if (fs[0]&&fs[0].k) {
-		// 	k=fs[0].k;
-		// } else if (fs[1]&&fs[1].k) {
-		// 	k=fs[1].k;
-		// }
+		var k=fs.k;
 		fs.listOfCats[k]=fs.fullList[j].cat;
 		fs.$fs[0].value=fs.listOfCats.join(";");
 		var sStart=0;
@@ -1416,15 +1411,15 @@ m.doFSCat=function(fs) {
 	var sEnd=fs.$fs[0].selectionEnd;
 	var listOfCats=fs.listOfCats=catsTxt.split(";");
 	var l=catsTxt.length;
-	fs[0].k=0;
+	fs.k=0;
 	for (var i=listOfCats.length-1;i>=0;i--) {
 		l-=listOfCats[i].length+1;
 		if (l<sEnd) {
-			fs[0].k=i;
+			fs.k=i;
 			break;
 		}
 	}
-	var fsCatSH=m.splitHangul(listOfCats[fs[0].k]);
+	var fsCatSH=m.splitHangul(listOfCats[fs.k]);
 	m.fuzzySearch(fsCatSH, fs);
 	var str="";
 	for (var i=0;i<fs[0].length;i++) {
