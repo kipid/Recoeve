@@ -1185,7 +1185,7 @@ if (!m.myPage) { m.strCatListToJSON(m.unescapeHTML($data_CatList.html())); }
 m.catListToHTML();
 var $catECs=$catList.find(".cat:has(>.EC)");
 for (var i=$catECs.length-1;i>=0;i--) {
-	m.catList[Number($catECs.eq(i).attr("id").substring(4))].subCatCollapsed=true;
+	m.catList[Number($catECs.eq(i).attr("id").substring(4))].subCatExpanded=false;
 }
 m.catsToA=function(cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
@@ -1358,7 +1358,7 @@ $change_catList_order_cancel.on("click", function(e) {
 			$("#cat-"+m.catList[selected[i]].i).addClass("selected");
 		}
 		for (var i=m.catList.length-1;i>=0;i--) {
-			if (m.catList[i].subCatCollapsed) {
+			if (m.catList[i].subCatExpanded) {
 				$("#cat-"+i+">.EC").trigger("click");
 			}
 		}
@@ -2542,11 +2542,11 @@ m.ExpCol=function(elem, catEC) {
 	if ($next.is(":visible")) {
 		$next.hide();
 		$elem.html("▶");
-		catEC.subCatCollapsed=true;
+		catEC.subCatExpanded=false;
 	} else {
 		$next.show();
 		$elem.html("▼");
-		catEC.subCatCollapsed=false;
+		catEC.subCatExpanded=true;
 	}
 };
 
