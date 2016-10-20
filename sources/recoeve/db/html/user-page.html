@@ -494,7 +494,7 @@ m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
 m.ptnTag=/^<\w+[\s\S]+>$/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
-m.ptnDescCmt=/^#([\w-]+)/mg; // \w=[A-Za-z0-9_]
+m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
 
 m.ptsRangeFrom=0; // from <= pts <= to
 m.ptsRangeTo=1;
@@ -2116,62 +2116,7 @@ $point_range_right.on("mousedown touchstart", function(e) {
 ////////////////////////////////////////////////////
 // Show recos
 ////////////////////////////////////////////////////
-m.recoHTML0=function(r) {
-	var res="";
-	if (r&&r["has"]) {
-		res+='<div class="reco" style="margin:.5em 0 1.5em">'
-			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
-			+((m.myIndex)?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+((m.myPage)?'Edit':'Reco to mine')+'</div>':'')
-			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
-			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
-			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
-			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
-			+'<div id="uri-rendered"></div>';
-		if (r["desc"]) {
-			var descR=r["descR"];
-			res+='<div class="desc">';
-			for (var l=0;l<descR.length;l++) {
-				var key=m.escapeHTML( descR[l] );
-				var value=m.escapeHTML( descR[descR[l]] );
-				switch (key.toLowerCase()) {
-				case "#" :
-					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
-					break;
-				case "lyrics" :
-					res+='<div class="value"><div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>'
-						+'<div class="lyricsC">'
-							+'<div class="lyricsArrow"></div>'
-							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
-							+'<div class="right"><div class="button" onclick="m.slideUp(this)">▲ Hide lyrics</div></div>'
-						+'</div></div>';
-					break;
-				case "related" :
-					res+='<div class="value"><span class="key">'+key+' : </span>';
-					var relateds=value.split("\n");
-					for (var p=0;p<relateds.length;p++) {
-						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
-					}
-					res+='</div>';
-					break;
-				default :
-					res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
-				}
-			}
-			res+='</div>';
-		}
-		res+=(r["cmt"].length!==0?('<div class="cmt">'+m.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
-		if (r["val"].str) {
-			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
-		}
-		// res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
-		// 	+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
-		res+='</div>';
-	} else {
-		res+='<div class="reco">No Reco</div>';
-	}
-	return res;
-};
-m.recoHTML=function(r) {
+m.recoHTML=function(r, uriRenderDisable) {
 	var res="";
 	if (r&&r["has"]) {
 		res+='<div class="reco">'
@@ -2181,7 +2126,7 @@ m.recoHTML=function(r) {
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
 			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
 			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
-			+m.uriRendering(r.uri).html;
+			+(uriRenderDisable?"":m.uriRendering(r.uri).html);
 		if (r["desc"]) {
 			var descR=r["descR"];
 			res+='<div class="desc">';
@@ -2189,10 +2134,10 @@ m.recoHTML=function(r) {
 				var key=m.escapeHTML( descR[l] );
 				var value=m.escapeHTML( descR[descR[l]] );
 				switch (key.toLowerCase()) {
-				case "#" :
+				case "#" : case "" :
 					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
 					break;
-				case "lyrics" :
+				case "lyrics" : case "lyric" : case "가사" :
 					res+='<div class="value"><div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>'
 						+'<div class="lyricsC" style="display:none">'
 							+'<div class="lyricsArrow"></div>'
@@ -2209,7 +2154,7 @@ m.recoHTML=function(r) {
 					res+='</div>';
 					break;
 				default :
-					res+='<div class="value"><span class="key">#'+key+' : </span>'+value.replace(/\n/g,"<br>")+'</div>';
+					res+='<div class="value"><span class="key">#'+key+' </span>'+value.replace(/\n/g,"<br>")+'</div>';
 				}
 			}
 			res+='</div>';
@@ -2218,8 +2163,10 @@ m.recoHTML=function(r) {
 		if (r["val"].str) {
 			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
 		}
-		// res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div>'
-		// 	+'<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
+		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div><div class="cBoth"></div>';
+		if (r.tFirst!==r.tLast) {
+			res+='<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
+		}
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -3472,7 +3419,7 @@ m.fsTitle.toggleOneLoop=function(elem) {
 };
 m.fsTitle.getAndPlayVideo=function(fs) {
 	var r=fs.fullList[fs.shuffled[fs.currentIndex].i].reco;
-	$reco_playing.html(m.recoHTML0(r));
+	$reco_playing.html(m.recoHTML(r, true));
 	var uriRendered=m.uriRendering(r.uri);
 	if (uriRendered.from==="youtube") {
 		$uri_rendered.html('');
