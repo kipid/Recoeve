@@ -2146,7 +2146,7 @@ m.recoHTML=function(r, uriRenderDisable) {
 						+'</div></div>';
 					break;
 				case "related" :
-					res+='<div class="value"><span class="key">'+key+' : </span>';
+					res+='<div class="value"><span class="key">#'+key+'</span>';
 					var relateds=value.split("\n");
 					for (var p=0;p<relateds.length;p++) {
 						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
