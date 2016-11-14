@@ -136,6 +136,10 @@ private PreparedStatement pstmtPutURIstatDefTitle;
 private PreparedStatement pstmtGetURIstat;
 private PreparedStatement pstmtPutURIstat;
 
+private PreparedStatement pstmtGetURIstatDefDescs;
+private PreparedStatement pstmtGetURIstatDefDesc;
+private PreparedStatement pstmtPutURIstatDefDesc;
+
 // private PreparedStatement pstmtGetNeighbor;
 // private PreparedStatement pstmtGetFollower;
 // private PreparedStatement pstmtGetNeighbors;
@@ -190,6 +194,10 @@ public RecoeveDB() {
 		pstmtPutURIstatDefTitle=con.prepareStatement("INSERT INTO `URIstatDefTitle` (`uri`, `title`) VALUES (?, ?);");
 		pstmtGetURIstat=con.prepareStatement("SELECT * FROM `URIstat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutURIstat=con.prepareStatement("INSERT INTO `URIstat` (`uri`) VALUES (?);");
+		
+		pstmtGetURIstatDefDescs=con.prepareStatement("SELECT * FROM `URIstatDefDesc` WHERE `uri`=? ORDER BY `avgV100` DESC LIMIT 5;", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		pstmtGetURIstatDefDesc=con.prepareStatement("SELECT * FROM `URIstatDefDesc` WHERE `user_i`=? and `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutURIstatDefDesc=con.prepareStatement("INSERT INTO `URIstatDefDesc` (`user_i`, `uri`) VALUES (?, ?);");
 		
 		// pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		// pstmtGetFollower=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_from`=? and `cat_from`=? and `user_i`=? and `cat_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -1395,9 +1403,9 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 				// newCats.setOfSuperCats.remove(newSuperCat);
 			}
 		}
-		updateURIstat(user_i, uri, oldCats, oldPts, now, -1);
+		updateURIstat(user_i, uri, oldPts, now, -1);
 		// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-		updateURIstat(user_i, uri, newCats, newPts, now, +1);
+		updateURIstat(user_i, uri, newPts, now, +1);
 		// updateNeighbors(user_i, uri, newCats, newPts, catL, now, +1);
 	}
 }
@@ -1436,6 +1444,24 @@ public void updateDefTitle(String uri, String title, int increment) throws SQLEx
 		pstmtPutURIstatDefTitle.executeUpdate();
 	}
 }
+public void updateDefDesc(long user_i, String uri, int increment) throws SQLException {
+	pstmtGetURIstatDefDesc.setLong(1, user_i);
+	pstmtGetURIstatDefDesc.setString(2, uri);
+	ResultSet rs=pstmtGetURIstatDefDesc.executeQuery();
+	if (rs.next()) {
+		long count=rs.getLong("count")+increment;
+		if (count==0) {
+			rs.deleteRow();
+		} else {
+			rs.updateLong("count", count);
+			rs.updateRow();
+		}
+	} else {
+		pstmtPutURIstatDefDesc.setLong(1, user_i);
+		pstmtPutURIstatDefDesc.setString(2, uri);
+		pstmtPutURIstatDefDesc.executeUpdate();
+	}
+}
 public ResultSet getURIstat(String uri) throws SQLException {
 	pstmtGetURIstat.setString(1, uri);
 	ResultSet rs=pstmtGetURIstat.executeQuery();
@@ -1452,31 +1478,15 @@ public ResultSet getURIstat(String uri) throws SQLException {
 		}
 	}
 }
-public void updateURIstat(long user_i, String uri, Categories cats, Points pts, String now, int increment) throws SQLException {
-	ResultSet rs=getURIstat(uri);
-	rs.updateString("tUpdate", now);
-	RecentRecoers recentRecoers=new RecentRecoers(rs.getString("recentRecoers"));
-	if (increment>0) {
-		recentRecoers.putRecoer(user_i);
-		recentRecoers.cutRecoers();
-	} else if (increment<0) {
-		recentRecoers.deleteRecoer(user_i);
-	}
-	rs.updateString("recentRecoers", recentRecoers.toString());
+public void updateURIstat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
+	ResultSet uriStat=getURIstat(uri);
+	uriStat.updateString("tUpdate", now);
 	if (pts.valid()) {
-		RecentRecoers recentRecoersWithVal=new RecentRecoers(rs.getString("recentRecoersWithVal"));
-		if (increment>0) {
-			recentRecoersWithVal.putRecoer(user_i);
-			recentRecoersWithVal.cutRecoers();
-		} else if (increment<0) {
-			recentRecoersWithVal.deleteRecoer(user_i);
-		}
-		rs.updateString("recentRecoersWithVal", recentRecoersWithVal.toString());
 		long val100=pts.val100();
-		long sumV100=rs.getLong("sumV100")+val100*increment;
-		long nV=rs.getLong("nV")+increment;
-		rs.updateLong("sumV100", sumV100);
-		rs.updateLong("nV", nV);
+		long sumV100=uriStat.getLong("sumV100")+val100*increment;
+		long nV=uriStat.getLong("nV")+increment;
+		uriStat.updateLong("sumV100", sumV100);
+		uriStat.updateLong("nV", nV);
 		String c="c";
 		if (val100<=10) { c+="0"; }
 		else if (val100<=20) { c+="1"; }
@@ -1488,23 +1498,15 @@ public void updateURIstat(long user_i, String uri, Categories cats, Points pts, 
 		else if (val100<=80) { c+="7"; }
 		else if (val100<=90) { c+="8"; }
 		else { c+="9"; }
-		long cN=rs.getLong(c)+increment;
-		rs.updateLong(c, cN);
+		long cN=uriStat.getLong(c)+increment;
+		uriStat.updateLong(c, cN);
 	} else {
-		if (cats.hasCatIndif()) {
-			long cIndif=rs.getLong("cIndif")+increment;
-			rs.updateLong("cIndif", cIndif);
-		} else if (cats.hasCatLater()) {
-			long cLater=rs.getLong("cLater")+increment;
-			rs.updateLong("cLater", cLater);
-		} else {
-			long cNull=rs.getLong("cNull")+increment;
-			rs.updateLong("cNull", cNull);
-		}
+		long cNull=uriStat.getLong("cNull")+increment;
+		uriStat.updateLong("cNull", cNull);
 	}
-	rs.updateRow();
+	uriStat.updateRow();
 }
-public String recoInfos(long user_i, String uri) {
+public String recoInfos(String uri) {
 	String res="";
 	try {
 		pstmtGetURIstatDefCats.setString(1, uri);
@@ -1525,6 +1527,24 @@ public String recoInfos(long user_i, String uri) {
 		heads+="\t"+"def-titles";
 		contents+="\t"+StrArray.enclose(strDefTitles.trim());
 		res=heads+"\n"+contents;
+	} catch (SQLException e) {
+		err(e);
+	}
+	return res;
+}
+public String recoDescs(String uri) {
+	String res="";
+	try {
+		pstmtGetURIstatDefDescs.setString(1, uri);
+		ResultSet defDescs=pstmtGetURIstatDefDescs.executeQuery();
+		res="def-descs";
+		while (defDescs.next()) {
+			long user_i=defDescs.getLong("user_i");
+			ResultSet reco=getReco(user_i, uri);
+			if (reco.next()) {
+				res+="\n"+StrArray.enclose(reco.getString("desc").trim());
+			}
+		}
 	} catch (SQLException e) {
 		err(e);
 	}
@@ -1610,7 +1630,7 @@ public String recoDo(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-						updateURIstat(user_i, uri, cats, pts, now, +1);
+					updateURIstat(user_i, uri, pts, now, +1);
 						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 					break;
@@ -1629,9 +1649,9 @@ public String recoDo(long user_i, String recoStr) {
 						res+="no change";
 					} else {
 						if (!equalityOfValuesOfPts) {
-							updateURIstat(user_i, uri, oldCats, oldPts, now, -1);
+							updateURIstat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateURIstat(user_i, uri, cats, pts, now, +1);
+							updateURIstat(user_i, uri, pts, now, +1);
 							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
@@ -1671,7 +1691,7 @@ public String recoDo(long user_i, String recoStr) {
 					deleteCatsUriFromList(user_i, oldCats, uri, catL);
 					updateDefCat(uri, oldCats, -1);
 					updateDefTitle(uri, oldTitle, -1);
-					updateURIstat(user_i, uri, oldCats, oldPts, now, -1);
+					updateURIstat(user_i, uri, oldPts, now, -1);
 					// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 					reco.deleteRow();
 					res+="deleted";
@@ -1729,9 +1749,9 @@ public String putReco(long user_i, String recoStr) {
 						res+="no change";
 					} else {
 						if (!equalityOfValuesOfPts) {
-							updateURIstat(user_i, uri, oldCats, oldPts, now, -1);
+							updateURIstat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateURIstat(user_i, uri, cats, pts, now, +1);
+							updateURIstat(user_i, uri, pts, now, +1);
 							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
@@ -1781,7 +1801,7 @@ public String putReco(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-						updateURIstat(user_i, uri, cats, pts, now, +1);
+						updateURIstat(user_i, uri, pts, now, +1);
 						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 				}
