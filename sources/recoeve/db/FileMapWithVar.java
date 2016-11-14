@@ -19,6 +19,7 @@ public class FileMapWithVar {
 	private static final String[] fileNames={
 			"user-page.html"
 			, "signed-up.html"
+			, "reco.html"
 			// , "redirect.html", "remember-me.html"
 		};
 	private static final int fileMapSize=50;
