@@ -173,12 +173,9 @@ public void start() {
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
 			switch (toDo) {
 			case "log-in": // path=/account/log-in
-				if (sessionPassed) {
+				if (sessionPassed||cookie.get("rmbdI")!=null) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html (already logged-in)");
-				} else if (cookie.get("rmbdI")!=null) {
-					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
-					System.out.println("Sended remember-me.html");
 				} else {
 					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
 					System.out.println("Sended log-in.html (No rmbd cookie)");
