@@ -46,28 +46,6 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 
 #container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
-#sidebar-dragger {position:fixed; z-index:10; top:0; bottom:0; left:0; width:1.5em; background:transparent}
-#sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(230,230,230); color:black; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
-	.dark #sidebar {background:rgb(35,35,35); color:white}
-#sidebar-exit {position:fixed; z-index:10; right:0; width:20%; top:20%; height:4em; background:red}
-.side2 {padding:0}
-
-#user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
-
-#catList {margin-bottom:1em}
-#catList .cat {border:1px solid transparent; margin-bottom:.15em}
-#cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
-#catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
-#catList .cat.edit.move {position:fixed; z-index:101}
-#catList .cat.edit>.edit-bar {position:absolute; width:1.3em; top:0; bottom:0; background:rgb(150,150,225)}
-#catList .cat.edit>.edit-bar:first-child {left:0}
-#catList .cat.edit>.edit-bar:last-child {right:0}
-#catList .cat.selected {border:1px solid black}
-	.dark #catList .cat.selected {border-color:white}
-#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer}
-#catList .cat>.baseCat {color:white}
-#catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,210,210)}
-#catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
 	position:relative;
@@ -97,42 +75,6 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	color:rgb(170,250,170);
 }
 
-#fuzzy-search-container {
-	position:fixed; left:0; top:0;
-	z-index:100;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left;
-}
-#fuzzy-search {
-	height:2em; max-height:5em; overflow-y:auto;
-	font:inherit; font-size:1.3em; color:black;
-	width:100%;
-	padding:.1em 2em 0 .2em;
-	border:.15em gray solid;
-	background:white;
-}
-#fuzzy-search-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20);
-}
-#fuzzy-search-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em;
-}
-#fuzzy-search-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#fuzzy-search-list .list-item .list-index {display:none}
-#fuzzy-search-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40);
-}
-#fuzzy-search-list .list-item .cat {font-size:.9em;}
-#fuzzy-search-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150);
-}
-#fuzzy-search-list .list-item .highlighted .bold {
-	color:rgb(170,250,170);
-}
 .exit {
 	z-index:100;
 	position:absolute; display:inline-block;
@@ -168,16 +110,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .buttons {margin-top:1em; text-align:right}
 #new-reco #error-msg {margin:0}
 
-#point-range {margin:1em 0; position:relative; display:inline-block; float:right; width:300px; height:30px; background:rgb(200,100,100)}
-#point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
-#point-range-left, #point-range-right {position:absolute; width:20px; top:0; bottom:10px; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
-#point-range-left {left:0}
-#point-range-right {right:0}
-#point-range-result {margin:1em; float:right; border:.15em solid black; padding:.1em .5em; vertical-align:top}
-	.dark #point-range-result {border-color:white}
-
-.numbers-of-recos {margin:1em 0; padding:.5em}
-
 .reco.outRange {display:none}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
@@ -212,18 +144,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:.85em} /* position change */
 
-#foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
-
-#floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
-#floating-key div {}
-#toggle-floating-key {position:fixed; right:.5em; bottom:.5em; width:auto; height:2.2em}
-
 @media all and (min-width:701px) {
 	#container {margin-left:14.9em}
-	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
-	#sidebar-dragger {display:none}
-	#sidebar-exit {display:none}
-	.side2 {padding:.5em}
 	.rC.fixed {width:646px; border-right:.15em solid black}
 	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
@@ -1898,15 +1820,15 @@ var vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
-if (vars.uri!==undefined) {
-	var uri=vars.uri.val;
-	$input_uri[0].value=uri;
-	$input_uri.trigger("input");
-}
 if (vars.title!==undefined) {
 	var title=vars.title.val;
 	$input_title[0].value=title;
 	// $input_title.trigger("input");
+}
+if (vars.uri!==undefined) {
+	var uri=vars.uri.val;
+	$input_uri[0].value=uri;
+	$input_uri.trigger("input");
 }
 })(window.m, jQuery);
 </script>
