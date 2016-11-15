@@ -13,13 +13,15 @@ window.m={};
 	m.pathName=window.location.pathname;
 	if (m.pathName.substring(0,6)!=="/user/") {
 		m.pathName="/user/"+m.myId;
-		window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
+		if (window.location.pathname==="/") {
+			window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
+		}
 	}
 	m.userId=decodeURIComponent(m.pathName.substring(6));
 	var k=m.userId.indexOf("/");
 	if (k!==-1) {
 		m.userId=m.userId.substring(0,k);
-		m.pathName="/user/"+m.userId;
+		// m.pathName="/user/"+m.userId;
 	}
 	m.myPage=(m.myId===m.userId);
 })(window.m);
@@ -190,7 +192,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 .numbers-of-recos {margin:1em 0; padding:.5em}
 
-.reco.outRange {display:none}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
 .reco:last-child {margin:0}
@@ -3283,6 +3284,19 @@ if (vars.cat!==undefined) {
 	m.currentCat=cat;
 	m.getUriListAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+}
+if (window.location.pathname==="/reco") {
+	$new_reco.show();
+	if (vars.title!==undefined) {
+		var title=vars.title.val;
+		$input_title[0].value=title;
+		// $input_title.trigger("input");
+	}
+	if (vars.uri!==undefined) {
+		var uri=vars.uri.val;
+		$input_uri[0].value=uri;
+		$input_uri.trigger("input.rd");
+	}
 }
 
 ////////////////////////////////////////////////////

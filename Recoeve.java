@@ -363,8 +363,8 @@ public void start() {
 		} else if (path.equals("/reco")) {
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (sessionPassed) {
-				req.response().end(FileMapWithVar.get("reco.html", lang, db.varMapMyPage(cookie)), ENCODING);
-				System.out.println("Sended reco.html");
+				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+				System.out.println("Sended user-page.html");
 			} else {
 				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING);
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
