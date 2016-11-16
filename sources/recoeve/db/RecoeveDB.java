@@ -545,10 +545,16 @@ public boolean updateUserClass(int classI, int increment) throws SQLException {
 
 public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 	Map<String,String> varMap=new HashMap<String,String>();
-	long my_i=0;
+	long my_i=-1;
+	String myIndex="";
 	if (cookie.get("I")!=null) {
-		varMap.put("{--myIndex--}", cookie.get("I"));
-		my_i=Long.parseLong(cookie.get("I"), 16);
+		myIndex=cookie.get("I");
+	} else if (cookie.get("rmbdI")!=null) {
+		myIndex=cookie.get("rmbdI");
+	}
+	if (!myIndex.isEmpty()) {
+		varMap.put("{--myIndex--}", myIndex);
+		my_i=Long.parseLong(myIndex, 16);
 		try {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
@@ -563,7 +569,7 @@ public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
 			long user_i=user.getLong("i");
-			if (cookie.get("I")==null||user_i!=my_i) {
+			if (cookie.get("I")==null&&cookie.get("rmbdI")==null||user_i!=my_i) {
 				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
 			}
 		}
@@ -578,15 +584,20 @@ public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 }
 public Map<String,String> varMapMyPage(Cookie cookie) {
 	Map<String,String> varMap=new HashMap<String,String>();
+	String myIndex="";
 	if (cookie.get("I")!=null) {
-		varMap.put("{--myIndex--}", cookie.get("I"));
-		long my_i=Long.parseLong(cookie.get("I"), 16);
+		myIndex=cookie.get("I");
+	} else if (cookie.get("rmbdI")!=null) {
+		myIndex=cookie.get("rmbdI");
+	}
+	if (!myIndex.isEmpty()) {
+		varMap.put("{--myIndex--}", myIndex);
+		long my_i=Long.parseLong(myIndex, 16);
 		try {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
 				varMap.put("{--myId--}", user.getString("id"));
-				CatList catList=getCatList(my_i);
-				varMap.put("{--myCatList--}", HTMLString.escapeHTML(catList.toString()));
+				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
 			}
 		} catch (SQLException e) {
 			err(e);
