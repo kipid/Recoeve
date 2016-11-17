@@ -3285,18 +3285,19 @@ if (vars.cat!==undefined) {
 	m.getUriListAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
 }
+if (vars.title!==undefined) {
+	var title=vars.title.val;
+	$input_title[0].value=title;
+	// $input_title.trigger("input");
+}
+if (vars.uri!==undefined) {
+	$new_reco.show();
+	var uri=vars.uri.val;
+	$input_uri[0].value=uri;
+	$input_uri.trigger("input.rd");
+}
 if (window.location.pathname==="/reco") {
 	$new_reco.show();
-	if (vars.title!==undefined) {
-		var title=vars.title.val;
-		$input_title[0].value=title;
-		// $input_title.trigger("input");
-	}
-	if (vars.uri!==undefined) {
-		var uri=vars.uri.val;
-		$input_uri[0].value=uri;
-		$input_uri.trigger("input.rd");
-	}
 }
 
 ////////////////////////////////////////////////////
