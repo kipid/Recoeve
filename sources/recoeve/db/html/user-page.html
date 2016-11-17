@@ -13,8 +13,8 @@ window.m={};
 	m.pathName=window.location.pathname;
 	if (m.pathName.substring(0,6)!=="/user/") {
 		m.pathName="/user/"+m.myId;
-		if (window.location.pathname!=="/reco") {
-			window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
+		if (window.location.pathname!="/reco") {
+			// window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
 		}
 	}
 	m.userId=decodeURIComponent(m.pathName.substring(6));
