@@ -111,7 +111,7 @@ public void start() {
 			System.out.println("Sended jquery.min.js");
 		} else if (path.equals("/")) { // e.g. path=/
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-			if (sessionPassed) {
+			if (sessionPassed||cookie.get("rmbdI")!=null) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
 			} else {
@@ -359,7 +359,7 @@ public void start() {
 			}
 		} else if (path.equals("/reco")) {
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-			if (sessionPassed) {
+			if (sessionPassed||cookie.get("rmbdI")!=null) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
 			} else {
