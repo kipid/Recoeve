@@ -111,11 +111,11 @@ public void start() {
 			System.out.println("Sended jquery.min.js");
 		} else if (path.equals("/")) { // e.g. path=/
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-			if (sessionPassed||cookie.get("rmbdI")!=null) {
+			if (sessionPassed) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
 			} else {
-				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING);
+				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING); // window.location.pathname="/account/log-in";
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
 		} else if (path.startsWith("/user/")) { // e.g. path=/user/kipid
@@ -173,9 +173,12 @@ public void start() {
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
 			switch (toDo) {
 			case "log-in": // path=/account/log-in
-				if (sessionPassed||cookie.get("rmbdI")!=null) {
+				if (sessionPassed) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html (already logged-in)");
+				} else if (cookie.get("rmbdI")!=null) {
+					req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
+					System.out.println("Sended remember-me.html");
 				} else {
 					req.response().end(FileMap.get("log-in.html",lang), ENCODING);
 					System.out.println("Sended log-in.html (No rmbd cookie)");
@@ -189,7 +192,7 @@ public void start() {
 						req.response().putHeader("Set-Cookie", setCookieRMB);
 						if (setCookieRMB.startsWith("I=")) {
 							// Success: Session cookie and New token.
-							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
+							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING); // window.location.pathname="/reco";
 							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
 							// Failed: Delete rmbd cookie.
@@ -359,11 +362,11 @@ public void start() {
 			}
 		} else if (path.equals("/reco")) {
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-			if (sessionPassed||cookie.get("rmbdI")!=null) {
+			if (sessionPassed) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
 			} else {
-				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING);
+				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING); // window.location.pathname="/account/log-in";
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
 		} else if (refererAllowed&&sessionPassed&&method==HttpMethod.POST&&path.startsWith("/reco/")) { // e.g. path=/reco/do
