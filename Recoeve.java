@@ -30,6 +30,9 @@ import recoeve.db.StrArray;
 
 
 public class Recoeve extends AbstractVerticle {
+	public static final String host
+		="172.31.13.32";
+		// ="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
@@ -252,24 +255,19 @@ public void start() {
 				}
 				break;
 			case "log-in.do": // path=/account/log-in.do
-				if (sessionPassed) {
-					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
-					System.out.println("Sended user-page.html (already logged-in)");
-				} else if (method==HttpMethod.POST) {
+				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
-						BodyData inputs=new BodyData(data.toString());
-						System.out.println("data:\n"+inputs.toString());
+						StrArray inputs=new StrArray(data.toString());
 						String setCookieSSN=db.authUser(inputs, ip);
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							req.response().putHeader("Set-Cookie", setCookieSSN);
-							// req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
-							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING);
-							System.out.println("Sended to-user-page.html with Set-Cookie of session and optionally rmbd (log-in success : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
+							req.response().end("log-in success", ENCODING);
+							System.out.println("Sended log-in success :: "+inputs.get(1, "idType")+" : "+inputs.get(1, "userId"));
 						} else {
 							// Log-in failed.
-							req.response().end("Log-in failed.", ENCODING);
-							System.out.println("Log-in failed. : "+inputs.get("idType")+" : "+inputs.get("userId")+")");
+							req.response().end("log-in fail", ENCODING);
+							System.out.println("log-in fail :: "+inputs.get(1, "idType")+" : "+inputs.get(1, "userId"));
 						}
 					} );
 				} else {
@@ -423,6 +421,6 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80, /*"localhost"*/"172.31.13.32"); // RecoeveDB.port
+	}).listen(80, host); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle

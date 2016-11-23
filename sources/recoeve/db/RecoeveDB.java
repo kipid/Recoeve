@@ -631,7 +631,7 @@ public boolean sessionCheck(Cookie cookie) {
 	}}}}
 	return false;
 }
-public String authUser(BodyData inputs, String ip) {
+public String authUser(StrArray inputs, String ip) {
 	boolean done=false;
 	long user_i=1; // anonymous
 	String now=now();
@@ -639,12 +639,12 @@ public String authUser(BodyData inputs, String ip) {
 	try {
 		con.setAutoCommit(false);
 		ResultSet user=null;
-		switch(inputs.get("idType")) {
+		switch(inputs.get(1, "idType")) {
 			case "id":
-				user=findUserById(inputs.get("userId"));
+				user=findUserById(inputs.get(1, "userId"));
 				break;
 			case "email":
-				user=findUserByEmail(inputs.get("userId"));
+				user=findUserByEmail(inputs.get(1, "userId"));
 				break;
 		}
 		if ( user!=null&&user.next() ) {
@@ -652,7 +652,7 @@ public String authUser(BodyData inputs, String ip) {
 			byte[] salt=user.getBytes("pwd_salt");
 			int iter=user.getInt("pwd_iteration");
 			if ( Arrays.equals(
-					pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get("userPwd"), iter))
+					pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))
 					, user.getBytes("pwd")
 				) ) {
 				user.updateInt("pwd_iteration", iter-1);
@@ -662,7 +662,7 @@ public String authUser(BodyData inputs, String ip) {
 				setCookie=createUserSession(user_i, now, session, token, ip);
 				user.updateInt("ssnC", ssnC+1);
 				String logDesc=null;
-				String rmb=inputs.get("rememberMe");
+				String rmb=inputs.get(1, "rememberMe");
 				if ( rmb!=null && rmb.equals("yes") ) {
 					byte[] rmbdAuth=randomBytes(32);
 					byte[] rmbdToken=randomBytes(32);
@@ -854,15 +854,15 @@ public String createUserSession(long user_i, String now, byte[] session, byte[] 
 	}
 	return setCookie;
 }
-public String createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[] rmbdToken, BodyData inputs, String ip)
+public String createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip)
 	throws SQLException {
 	pstmtCreateUserRemember.setLong(1, user_i);
 	pstmtCreateUserRemember.setString(2, now);
 	pstmtCreateUserRemember.setBytes(3, rmbdAuth);
 	pstmtCreateUserRemember.setBytes(4, rmbdToken);
-	pstmtCreateUserRemember.setString(5, inputs.get("log"));
-	pstmtCreateUserRemember.setInt(6, Integer.parseInt(inputs.get("screenWidth")));
-	pstmtCreateUserRemember.setInt(7, Integer.parseInt(inputs.get("screenHeight")));
+	pstmtCreateUserRemember.setString(5, inputs.get(1, "log"));
+	pstmtCreateUserRemember.setInt(6, Integer.parseInt(inputs.get(1, "screenWidth")));
+	pstmtCreateUserRemember.setInt(7, Integer.parseInt(inputs.get(1, "screenHeight")));
 	pstmtCreateUserRemember.setString(8, ip);
 	String setCookie="";
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
