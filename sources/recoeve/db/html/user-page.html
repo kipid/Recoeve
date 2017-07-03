@@ -3383,11 +3383,9 @@ if ($shortkeyDesc.exists()) {
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsTitle.Preceding=function() {
-	clearTimeout(m.playListSetTimeout);
 	m.fsTitle.playNext(m.fsTitle,-1);
 };
 m.fsTitle.Following=function() {
-	clearTimeout(m.playListSetTimeout);
 	m.fsTitle.playNext(m.fsTitle,1);
 };
 m.fsTitle.shuffle=function() {
@@ -3478,7 +3476,6 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 		});
 	} else {
 		$uri_rendered.html(uriRendered.html);
-		// $video[0].pause();
 		$video.html('');
 		$rC_video_uri_rendered.hide();
 		if (m.YtPlayer) {
@@ -3493,7 +3490,16 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 };
+m.fsTitle.pauseVideo=function() {
+	if ($video&&$video[0]) {
+		$video[0].pause();
+	}
+	if (m.YtPlayer) {
+		m.YtPlayer.pauseVideo();
+	}
+};
 m.fsTitle.playNext=function(fs, increment) {
+	clearTimeout(m.playListSetTimeout);
 	if (increment===undefined||increment===null||increment.constructor!==Number)
 		increment=1;
 	fs.currentIndex+=increment;
@@ -3512,12 +3518,7 @@ m.fsTitle.playNext=function(fs, increment) {
 		}
 	} else {
 		fs.currentIndex-=increment;
-		if ($video) {
-			$video[0].pause();
-		}
-		if (m.YtPlayer) {
-			m.YtPlayer.pauseVideo();
-		}
+		m.fsTitle.pauseVideo();
 	}
 };
 m.fsTitle.prepareRecoListPlay=function() {
@@ -3542,12 +3543,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
 	if ($playlist_container.is(":visible")) {
-		if ($video) {
-			$video[0].pause();
-		}
-		if (m.YtPlayer) {
-			m.YtPlayer.pauseVideo();
-		}
+		m.fsTitle.pauseVideo();
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
