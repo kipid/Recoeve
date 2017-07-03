@@ -3426,7 +3426,7 @@ m.fsTitle.toggleOneLoop=function(elem) {
 	}
 };
 m.fsTitle.getAndPlayVideo=function(fs, cue) {
-if (fs.shuffled.length>0) {
+if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 	var r=fs.fullList[fs.shuffled[fs.currentIndex].i].reco;
 	$reco_playing.html(m.recoHTML(r, true));
 	var uriRendered=m.uriRendering(r.uri);
@@ -3490,6 +3490,7 @@ if (fs.shuffled.length>0) {
 		}, 2500);
 	}
 } else {
+	$reco_playing.html('');
 	$uri_rendered.html('');
 	$video.html('');
 	fs.pauseVideo();
