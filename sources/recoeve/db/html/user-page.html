@@ -3468,7 +3468,7 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		$rC_video_uri_rendered.show();
 		
 		$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
-		// $video=$("#video");
+		$video=$("#video");
 		$video.on("ended", function() {
 			if (fs.oneLoop) {
 				$video[0].play();
