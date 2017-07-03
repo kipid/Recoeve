@@ -3403,7 +3403,7 @@ m.fsTitle.shuffle=function() {
 		shuffled[j]=temp;
 	}
 	fs.currentIndex=0;
-	fs.playNext(fs,0);
+	fs.getAndPlayVideo(fs,true);
 };
 m.fsTitle.toggleLoop=function(elem) {
 	var $elem=$(elem);
@@ -3425,7 +3425,7 @@ m.fsTitle.toggleOneLoop=function(elem) {
 		m.fsTitle.oneLoop=true;
 	}
 };
-m.fsTitle.getAndPlayVideo=function(fs) {
+m.fsTitle.getAndPlayVideo=function(fs, cue) {
 	var r=fs.fullList[fs.shuffled[fs.currentIndex].i].reco;
 	$reco_playing.html(m.recoHTML(r, true));
 	var uriRendered=m.uriRendering(r.uri);
@@ -3435,7 +3435,11 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		if (m.YtPlayer) {
-			m.YtPlayer.loadVideoById(uriRendered.videoId);
+			if (cue) {
+				m.YtPlayer.cueVideoById(uriRendered.videoId);
+			} else {
+				m.YtPlayer.loadVideoById(uriRendered.videoId);
+			}
 		} else {
 			m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
 				, events:{
@@ -3530,6 +3534,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
+		fs.getAndPlayVideo(fs,true); // cue
 		return true;
 	}
 	return false;
@@ -3545,7 +3550,6 @@ m.fsTitle.toggleRecoListPlay=function() {
 			fs.setInterval=setInterval(function() {
 				if (++m.cueYtCount>30||fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
 					clearInterval(fs.setInterval);
-					fs.playNext(fs,0);
 				}
 			}, 1000);
 		}
