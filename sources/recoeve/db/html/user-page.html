@@ -3491,7 +3491,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 	$window.trigger("scroll.delayedLoad");
 };
 m.fsTitle.pauseVideo=function() {
-	if ($video&&$video[0]) {
+	if ($video&&$video[0]&&!$video[0].paused) {
 		$video[0].pause();
 	}
 	if (m.YtPlayer) {
@@ -3532,7 +3532,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		fs.currentIndex=-1;
 		fs.shuffled=[];
 		for (var i=0;i<fs.fullList.length;i++) {
-			fs.shuffled[i]={i:fs.fullList.length-1-i};
+			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
 		return true;
 	}
