@@ -3431,9 +3431,9 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 	$reco_playing.html(m.recoHTML(r, true));
 	var uriRendered=m.uriRendering(r.uri);
 	if (uriRendered.from==="youtube") {
+		fs.pauseVideo();
 		$uri_rendered.html('');
 		$video.html('');
-		fs.pauseVideo();
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		if (m.YtPlayer) {
@@ -3463,8 +3463,8 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 			);
 		}
 	} else if (uriRendered.from==="video") {
-		$uri_rendered.html('');
 		fs.pauseVideo();
+		$uri_rendered.html('');
 		$rC_youtube_uri_rendered.hide();
 		$rC_video_uri_rendered.show();
 		
@@ -3481,9 +3481,9 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 			$video[0].play();
 		}
 	} else {
+		fs.pauseVideo();
 		$uri_rendered.html(uriRendered.html);
 		$video.html('');
-		fs.pauseVideo();
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 		m.playListSetTimeout=setTimeout(function() {
@@ -3491,10 +3491,10 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		}, 2500);
 	}
 } else {
+	fs.pauseVideo();
 	$reco_playing.html('');
 	$uri_rendered.html('');
 	$video.html('');
-	fs.pauseVideo();
 	$rC_video_uri_rendered.hide();
 	$rC_youtube_uri_rendered.hide();
 }
