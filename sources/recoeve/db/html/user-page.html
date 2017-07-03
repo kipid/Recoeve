@@ -3433,6 +3433,7 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 	if (uriRendered.from==="youtube") {
 		$uri_rendered.html('');
 		$video.html('');
+		fs.pauseVideo();
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		if (m.YtPlayer) {
@@ -3533,6 +3534,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		var ytAPI=document.createElement('script');
 		ytAPI.src="http://www.youtube.com/player_api";
 		$scripts.append(ytAPI);
+		console.log("YouTube API is loaded.");
 		m.YtAPINotLoaded=false;
 	} else if (YT!==undefined&&YT.Player) {
 		var fs=m.fsTitle;
@@ -3542,6 +3544,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
 		fs.playNext(fs,0,true); // cue
+		console.log("fs.playNext is cued.");
 		return true;
 	}
 	return false;
@@ -3549,15 +3552,16 @@ m.fsTitle.prepareRecoListPlay=function() {
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
 	if ($playlist_container.is(":visible")) {
-		m.fsTitle.pauseVideo();
+		fs.pauseVideo();
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
 		if (m.YtAPINotLoaded) {
-			fs.setIntervalId=setInterval(function() {
+			fs.loadYtAPI=setInterval(function() {
 				m.cueYtCount++;
+				console.log(m.cueYtCount);
 				if (m.cueYtCount>30||m.fsTitle.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
-					clearInterval(m.fsTitle.setIntervalId);
+					clearInterval(m.fsTitle.loadYtAPI);
 				}
 			}, 1000);
 		}
