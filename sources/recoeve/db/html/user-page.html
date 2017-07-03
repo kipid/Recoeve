@@ -3491,7 +3491,7 @@ m.fsTitle.getAndPlayVideo=function(fs) {
 	$window.trigger("scroll.delayedLoad");
 };
 m.fsTitle.pauseVideo=function() {
-	if ($video&&$video[0]&&!$video[0].paused) {
+	if ($video&&$video[0]&&$video[0].tagName=="video") {
 		$video[0].pause();
 	}
 	if (m.YtPlayer) {
@@ -3547,7 +3547,7 @@ m.fsTitle.toggleRecoListPlay=function() {
 		$playlist_container.show();
 		if (m.YtAPINotLoaded) {
 			fs.setInterval=setInterval(function() {
-				if (fs.prepareRecoListPlay()||++m.cueYtCount>30) { // Trying or waiting until YT API is loaded.
+				if (++m.cueYtCount>30||fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
 					clearInterval(fs.setInterval);
 				}
 			}, 1000);
