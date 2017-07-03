@@ -3505,12 +3505,8 @@ m.fsTitle.playNext=function(fs, increment) {
 	fs.currentIndex+=increment;
 	if (fs.loop) {
 		fs.currentIndex=(fs.currentIndex+fs.fullList.length)%fs.fullList.length;
-		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
-			fs.getAndPlayVideo(fs);
-		} else {
-			fs.playNext(fs, increment);
-		}
-	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.fullList.length) {
+	}
+	if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
 			fs.getAndPlayVideo(fs);
 		} else {
@@ -3527,7 +3523,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		ytAPI.src="http://www.youtube.com/player_api";
 		$scripts.append(ytAPI);
 		m.YtAPINotLoaded=false;
-	} else if (YT&&YT.Player) {
+	} else if (YT!==undefined&&YT.Player) {
 		var fs=m.fsTitle;
 		fs.currentIndex=0;
 		fs.shuffled=[];
