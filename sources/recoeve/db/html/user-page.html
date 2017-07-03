@@ -3549,6 +3549,7 @@ m.fsTitle.toggleRecoListPlay=function() {
 			fs.setInterval=setInterval(function() {
 				if (++m.cueYtCount>30||fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
 					clearInterval(fs.setInterval);
+					fs.playNext(fs,0);
 				}
 			}, 1000);
 		}
