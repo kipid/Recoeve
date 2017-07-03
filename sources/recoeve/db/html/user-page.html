@@ -2371,18 +2371,14 @@ m.getAndShowRecosOnCat=function(cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			if (fs.prepareRecoListPlay()) {
-				fs.playNext(fs,1);
-			}
+			fs.prepareRecoListPlay();
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup");
 		});
 	} else {
 		m.showRecosOnCat();
-		if (fs.prepareRecoListPlay()) {
-			fs.playNext(fs,1);
-		}
+		fs.prepareRecoListPlay();
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("keyup");
@@ -3397,6 +3393,9 @@ m.fsTitle.Following=function() {
 m.fsTitle.shuffle=function() {
 	var fs=m.fsTitle;
 	var shuffled=fs.shuffled;
+	for (var i=0;i<shuffled.length;i++) {
+		shuffled[i].randomN=Math.random();
+	}
 	for (var i=1;i<shuffled.length;i++) {
 		var temp=shuffled[i];
 		var j=i;
@@ -3405,9 +3404,7 @@ m.fsTitle.shuffle=function() {
 		}
 		shuffled[j]=temp;
 	}
-	for (var i=0;i<fs.fullList.length;i++) {
-		fs.shuffled[i].randomN=Math.random();
-	}
+	fs.currentIndex=0;
 	fs.playNext(fs,0);
 };
 m.fsTitle.toggleLoop=function(elem) {
@@ -3530,11 +3527,12 @@ m.fsTitle.prepareRecoListPlay=function() {
 		$scripts.append(ytAPI);
 		m.YtAPINotLoaded=false;
 	}
-	if (++m.cueYtCount<30&&YT&&YT.Player) {
+	if (YT&&YT.Player) {
 		var fs=m.fsTitle;
 		fs.currentIndex=-1;
+		fs.shuffled=[];
 		for (var i=0;i<fs.fullList.length;i++) {
-			fs.shuffled[i]={i:fs.fullList.length-1-i, randomN:Math.random()};
+			fs.shuffled[i]={i:fs.fullList.length-1-i};
 		}
 		return true;
 	} else {
@@ -3544,14 +3542,19 @@ m.fsTitle.prepareRecoListPlay=function() {
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
 	if ($playlist_container.is(":visible")) {
+		if ($video) {
+			$video[0].pause();
+		}
+		if (m.YtPlayer) {
+			m.YtPlayer.pauseVideo();
+		}
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
 		if (m.YtAPINotLoaded) {
 			fs.setInterval=setInterval(function() {
-				if (fs.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
+				if (fs.prepareRecoListPlay()||++m.cueYtCount>30) { // Trying or waiting until YT API is loaded.
 					clearInterval(fs.setInterval);
-					fs.playNext(fs);
 				}
 			}, 1000);
 		}
