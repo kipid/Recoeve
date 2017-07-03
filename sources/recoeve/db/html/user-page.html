@@ -3504,7 +3504,7 @@ m.fsTitle.playNext=function(fs, increment) {
 		increment=1;
 	fs.currentIndex+=increment;
 	if (fs.loop) {
-		fs.currentIndex%=fs.fullList.length;
+		fs.currentIndex=(fs.currentIndex+fs.fullList.length)%fs.fullList.length;
 		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
 			fs.getAndPlayVideo(fs);
 		} else {
@@ -3529,7 +3529,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		m.YtAPINotLoaded=false;
 	} else if (YT&&YT.Player) {
 		var fs=m.fsTitle;
-		fs.currentIndex=-1;
+		fs.currentIndex=0;
 		fs.shuffled=[];
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
