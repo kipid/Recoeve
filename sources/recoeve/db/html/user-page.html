@@ -3527,8 +3527,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 		ytAPI.src="http://www.youtube.com/player_api";
 		$scripts.append(ytAPI);
 		m.YtAPINotLoaded=false;
-	}
-	if (YT&&YT.Player) {
+	} else if (YT&&YT.Player) {
 		var fs=m.fsTitle;
 		fs.currentIndex=-1;
 		fs.shuffled=[];
@@ -3536,9 +3535,8 @@ m.fsTitle.prepareRecoListPlay=function() {
 			fs.shuffled[i]={i:fs.fullList.length-1-i};
 		}
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 };
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
