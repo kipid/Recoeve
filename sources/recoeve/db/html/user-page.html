@@ -488,7 +488,7 @@ m.fsGo.$fsl=$fuzzy_search_list;
 
 m.YtPlayer=null;
 m.cueYtCount=0;
-m.YtAPINotLoaded=true;
+m.YtAPILoaded=false;
 
 m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
@@ -3484,9 +3484,11 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		$video.html('');
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
-		m.playListSetTimeout=setTimeout(function() {
-			fs.playNext(fs,1);
-		}, 2500);
+		if (!cue) {
+			m.playListSetTimeout=setTimeout(function() {
+				fs.playNext(fs,1);
+			}, 2500);
+		}
 	}
 } else {
 	$reco_playing.html('');
@@ -3527,22 +3529,36 @@ m.fsTitle.playNext=function(fs, increment, cue) {
 	}
 };
 m.fsTitle.prepareRecoListPlay=function() {
-	if (m.YtAPINotLoaded) {
-		var ytAPI=document.createElement('script');
-		ytAPI.src="http://www.youtube.com/player_api";
-		$scripts.append(ytAPI);
-		m.YtAPINotLoaded=false;
-	} else if (YT!==undefined&&YT.Player) {
-		var fs=m.fsTitle;
+	var fs=m.fsTitle;
+	var YtAPINeeded=false;
+	if (!m.YtAPILoaded) {
+		for (var i=0;i<fs.fullList.length;i++) {
+			var r=fs.fullList[i].reco;
+			var uriRendered=m.uriRendering(r.uri);
+			if (uriRendered.from==="youtube") {
+				YtAPINeeded=true;
+				break;
+			}
+		}
+		if (YtAPINeeded) {
+			var ytAPI=document.createElement('script');
+			ytAPI.src="http://www.youtube.com/player_api";
+			$scripts.append(ytAPI);
+			m.YtAPILoaded=true;
+		}
+	}
+	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
 		fs.currentIndex=0;
 		fs.shuffled=[];
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
 		fs.playNext(fs,0,true); // cue
-		return true;
+	} else {
+		setTimeout(function() {
+			fs.prepareRecoListPlay();
+		}, 1000);
 	}
-	return false;
 };
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
@@ -3551,11 +3567,6 @@ m.fsTitle.toggleRecoListPlay=function() {
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
-		fs.loadYtAPI=setInterval(function() {
-			if (++m.cueYtCount>30||m.fsTitle.prepareRecoListPlay()) { // Trying or waiting until YT API is loaded.
-				clearInterval(m.fsTitle.loadYtAPI);
-			}
-		}, 1000);
 	}
 };
 })(window.m, jQuery);
