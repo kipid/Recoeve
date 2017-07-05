@@ -198,9 +198,10 @@ m.encloseStr=function(str) {
 		return str;
 	}
 };
-m.strToJSON=function(str='', colMap=true, rowMap=false) {
+m.strToJSON=function(str, colMap, rowMap) {
 	if (str===undefined||str===null||str.constructor!==String) { return []; }
 	if (colMap===undefined||colMap===null) { colMap=true; }
+	if (rowMap===undefined||rowMap===null) { rowMap=false; }
 	// str=str.trim()+"\n";
 	if (str.charAt(str.length-1)!=="\n") {
 		str+="\n";
