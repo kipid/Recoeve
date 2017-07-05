@@ -580,7 +580,7 @@ m.logIn=function(elem) {
 					$.ajax("./log-in.do", {
 						type: "POST"
 						, data: form_data
-					}).done((resp) => {
+					}).done(function(resp) {
 						$elem.before( m.encloseErr(resp) );
 						if (resp==="log-in success") {
 							window.location.pathname="/";
