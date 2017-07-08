@@ -3402,8 +3402,8 @@ m.fsTitle.shuffle=function() {
 		}
 		shuffled[j]=temp;
 	}
-	fs.currentIndex=0;
-	fs.playNext(fs,0,true);
+	fs.currentIndex=-1;
+	fs.playNext(fs,1,true);
 };
 m.fsTitle.toggleLoop=function(elem) {
 	var $elem=$(elem);
@@ -3517,7 +3517,9 @@ m.fsTitle.playNext=function(fs, increment, cue) {
 	if (fs.loop) {
 		fs.currentIndex=(fs.currentIndex+fs.fullList.length)%fs.fullList.length;
 	}
-	if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
+	if (fs.shuffled.length===0) {
+		fs.getAndPlayVideo(fs, cue);
+	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
 			fs.getAndPlayVideo(fs, cue);
 		} else {
@@ -3548,12 +3550,12 @@ m.fsTitle.prepareRecoListPlay=function() {
 		}
 	}
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
-		fs.currentIndex=0;
 		fs.shuffled=[];
 		for (var i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
-		fs.playNext(fs,0,true); // cue
+		fs.currentIndex=-1;
+		fs.playNext(fs,1,true); // cue
 	} else {
 		setTimeout(function() {
 			fs.prepareRecoListPlay();
