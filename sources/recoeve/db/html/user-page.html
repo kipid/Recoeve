@@ -3514,13 +3514,16 @@ m.fsTitle.playNext=function(fs, increment, cue) {
 	if (increment===undefined||increment===null||increment.constructor!==Number)
 		increment=1;
 	fs.currentIndex+=increment;
-	if (fs.loop) {
-		fs.currentIndex=(fs.currentIndex+fs.fullList.length)%fs.fullList.length;
+	if (fs.loop&&fs.shuffled.length>0) {
+		fs.currentIndex=(fs.currentIndex+fs.shuffled.length)%fs.shuffled.length;
 	}
 	if (fs.shuffled.length===0) {
 		fs.getAndPlayVideo(fs, cue);
 	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
+			fs.getAndPlayVideo(fs, cue);
+		} else if (fs.currentIndex===fs.shuffled.length-1) {
+			fs.currentIndex+=increment;
 			fs.getAndPlayVideo(fs, cue);
 		} else {
 			fs.playNext(fs, increment, cue);
