@@ -3383,10 +3383,10 @@ if ($shortkeyDesc.exists()) {
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsTitle.Preceding=function() {
-	m.fsTitle.playNext(m.fsTitle,-1);
+	m.fsTitle.playNext(-1);
 };
 m.fsTitle.Following=function() {
-	m.fsTitle.playNext(m.fsTitle,1);
+	m.fsTitle.playNext(1);
 };
 m.fsTitle.shuffle=function() {
 	var fs=m.fsTitle;
@@ -3403,7 +3403,7 @@ m.fsTitle.shuffle=function() {
 		shuffled[j]=temp;
 	}
 	fs.currentIndex=-1;
-	fs.playNext(fs,1,true);
+	fs.playNext(1,true);
 };
 m.fsTitle.toggleLoop=function(elem) {
 	var $elem=$(elem);
@@ -3425,10 +3425,12 @@ m.fsTitle.toggleOneLoop=function(elem) {
 		m.fsTitle.oneLoop=true;
 	}
 };
-m.fsTitle.getAndPlayVideo=function(fs, cue) {
+m.fsTitle.getAndPlayVideo=function(cue) {
+var fs=m.fsTitle;
 fs.pauseVideo();
-if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
-	var r=fs.fullList[fs.shuffled[fs.currentIndex].i].reco;
+var i=fs.currentIndex;
+if (0<=i&&i<fs.shuffled.length) {
+	var r=fs.fullList[fs.shuffled[i].i].reco;
 	$reco_playing.html(m.recoHTML(r, true));
 	var uriRendered=m.uriRendering(r.uri);
 	if (uriRendered.from==="youtube") {
@@ -3447,15 +3449,14 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 				, events:{
 					'onError':function(e) {
 						m.playListSetTimeout=setTimeout(function() {
-							fs.playNext(fs,1);
-						}, 2000);
+							fs.playNext(1);
+						}, 2500);
 					}, 'onStateChange':function(e) {
 						if (e.data===YT.PlayerState.ENDED) {
-							// e.target.playVideoAt(m.fsTitle.currentIndex);
 							if (fs.oneLoop) {
 								m.YtPlayer.seekTo(0,true);
 							} else {
-								fs.playNext(fs,1);
+								fs.playNext(1);
 							}
 						}
 					}
@@ -3473,7 +3474,7 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 			if (fs.oneLoop) {
 				$video[0].play();
 			} else {
-				fs.playNext(fs,1);
+				fs.playNext(1);
 			}
 		});
 		if (!cue) {
@@ -3486,7 +3487,7 @@ if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
 		$rC_youtube_uri_rendered.hide();
 		if (!cue) {
 			m.playListSetTimeout=setTimeout(function() {
-				fs.playNext(fs,1);
+				fs.playNext(1);
 			}, 2500);
 		}
 	}
@@ -3509,28 +3510,40 @@ m.fsTitle.pauseVideo=function() {
 		m.YtPlayer.pauseVideo();
 	}
 };
-m.fsTitle.playNext=function(fs, increment, cue) {
+m.fsTitle.playNext=function(increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
-	if (increment===undefined||increment===null||increment.constructor!==Number)
-		increment=1;
-	fs.currentIndex+=increment;
-	if (fs.loop&&fs.shuffled.length>0) {
-		fs.currentIndex=(fs.currentIndex+fs.shuffled.length)%fs.shuffled.length;
-	}
-	if (fs.shuffled.length===0) {
-		fs.getAndPlayVideo(fs, cue);
-	} else if (0<=fs.currentIndex&&fs.currentIndex<fs.shuffled.length) {
-		if (fs.fullList[fs.shuffled[fs.currentIndex].i].inRange) {
-			fs.getAndPlayVideo(fs, cue);
-		} else if (fs.currentIndex===fs.shuffled.length-1) {
-			fs.currentIndex+=increment;
-			fs.getAndPlayVideo(fs, cue);
-		} else {
-			fs.playNext(fs, increment, cue);
-		}
+	var fs=m.fsTitle;
+	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=1; }
+	if (first) { fs.currentIndex=-1; }
+	var l=fs.shuffled.length;
+	if (l===0) {
+		if (first) { fs.getAndPlayVideo(cue); }
 	} else {
-		fs.currentIndex-=increment;
-		m.fsTitle.pauseVideo();
+		var count=first?0:1;
+		var i=fs.currentIndex+increment;
+		if (fs.loop) { i=(i+l)%l; }
+		var done=false;
+		while (0<=i&&i<l&&count<l) {
+			if (fs.fullList[fs.shuffled[i].i].inRange) {
+				fs.currentIndex=i;
+				fs.getAndPlayVideo(cue);
+				done=true;
+				break;
+			} else {
+				count++;
+				i+=increment; // i=fs.currentIndex+increment*(count+1);
+				if (fs.loop) { i=(i+l)%l; }
+			}
+		}
+		if (!done) {
+			if (first) {
+				fs.currentIndex=-1;
+				fs.getAndPlayVideo(cue);
+			}
+			if (!cue) {
+				m.fsTitle.pauseVideo();
+			}
+		}
 	}
 };
 m.fsTitle.prepareRecoListPlay=function() {
@@ -3558,7 +3571,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
 		fs.currentIndex=-1;
-		fs.playNext(fs,1,true); // cue
+		fs.playNext(1,true,true);
 	} else {
 		setTimeout(function() {
 			fs.prepareRecoListPlay();
