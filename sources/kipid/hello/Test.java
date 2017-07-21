@@ -2,9 +2,12 @@
 // 1, 11, 12, 1121, 122111, 112213 …
 // 양의 정수 n이 주어졌을때, 수열의 n번째의 수를 반환하는 함수를 작성하세요.
 
-// 1
-// 11
-// 12
+// numAndCount(1) => 1
+// numAndCount(2) => 11 : 1이1개
+// numAndCount(3) => 12 : 1이2개
+// numAndCount(4) => 1121 : 1이1개, 2가1개
+// numAndCount(5) => 122111 : 1이2개, 2가1개, 1이1개
+
 package kipid.hello;
 
 public class Test {
