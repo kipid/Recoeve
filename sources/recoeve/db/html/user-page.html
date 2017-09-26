@@ -643,81 +643,79 @@ m.unescapeAMP=function(str) {
 ////////////////////////////
 // String to Array
 ////////////////////////////
-m.encloseStr=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
-		return '"'+str.replace(/"/g,'""')+'"';
-	} return str;
+m.encloseStr=function (str) {
+  if (!str || str.constructor!==String) { return ''; }
+  if (str.charAt(0)==='"' || /[\n\t]/.test(str)) {
+    return `"${str.replace(/"/g,'""')}"`;
+  } return str;
 };
-m.strToJSON=function(str, colMap, rowMap) {
-	if (!str||str.constructor!==String) { return []; }
-	if (colMap===undefined||colMap===null) { colMap=true; }
-	// str=str.trim()+"\n";
-	if (str.charAt(str.length-1)!=="\n") {
-		str+="\n";
-	}
-	var ret=[];
-	var delimiter=/([^\t\n]*)([\t\n])/g;
-	var lastQuote=/[^"](?:"")*"([\t\n])/g;
-	var exec;
-	var start=0;
-	var row=-1, col=-1, delim="\n";
-	var strElem="";
-	function increseRC(str) {
-		if (str==='\t') {
-			col++; return true;
-		} else if (str==='\n') {
-			row++; col=0; ret.push([]); return true;
-		} return false;
-	}
-	while (start<str.length&&increseRC(delim)) {
-		if ((str.substring(start, start+1))==='"') {
-			lastQuote.lastIndex=start+1;
-			if ((exec=lastQuote.exec(str))!==null) {
-				strElem=str.substring(start+1, lastQuote.lastIndex-2);
-				delim=exec[1];
-				start=delimiter.lastIndex=lastQuote.lastIndex;
-			} else {
-				strElem=str.substring(start+1);
-				delim="";
-				start=str.length;
-			}
-			strElem=strElem.replace(/""/g,'"');
-		} else {
-			if ((exec=delimiter.exec(str))!==null) {
-				strElem=exec[1];
-				delim=exec[2];
-				start=delimiter.lastIndex;
-			} else {
-				strElem=str.substring(start);
-				delim="";
-				start=str.length;
-			}
-		}
-		ret[row][col]=strElem;
-	}
-	if (colMap) {
-		var firstColSize=ret[0].length;
-		for (var i=0;i<ret.length;i++) {
-			var jMax=ret[i].length;
-			if (jMax>firstColSize) { jMax=firstColSize; }
-			for (var j=0;j<jMax;j++) {
-				var key=ret[0][j];
-				if (key!==undefined) {
-					ret[i][key]=ret[i][j];
-				}
-			}
-		}
-	}
-	if (rowMap) {
-		for (var i=0;i<ret.length;i++) {
-			var key=ret[i][0];
-			if (key!==undefined) {
-				ret[key]=ret[i];
-			}
-		}
-	}
-	return ret;
+m.strToJSON=function(str, colMap=true, rowMap=false) {
+  if (!str||str.constructor!==String) { return []; }
+  if (str.charAt(str.length-1)!=="\n") {
+    str+="\n";
+  }
+  const ret=[];
+  const delimiter=/([^\t\n]*)([\t\n])/g;
+  const lastQuote=/[^"](?:"")*"([\t\n])/g;
+  let exec;
+  let start=0;
+  let row=-1, col=-1, delim="\n";
+  let strElem="";
+  function increseRC(delim) {
+    if (delim==='\t') {
+      col++; return true;
+    } else if (delim==='\n') {
+      row++; col=0; ret.push([]); return true;
+    } return false;
+  }
+  while (start<str.length&&increseRC(delim)) {
+    if ((str.substring(start, start+1))==='"') {
+      lastQuote.lastIndex=start+1;
+      if ((exec=lastQuote.exec(str))!==null) {
+        strElem=str.substring(start+1, lastQuote.lastIndex-2);
+        delim=exec[1];
+        start=delimiter.lastIndex=lastQuote.lastIndex;
+      } else {
+        strElem=str.substring(start+1);
+        delim="";
+        start=str.length;
+      }
+      strElem=strElem.replace(/""/g,'"');
+    } else {
+      if ((exec=delimiter.exec(str))!==null) {
+        strElem=exec[1];
+        delim=exec[2];
+        start=delimiter.lastIndex;
+      } else {
+        strElem=str.substring(start);
+        delim="";
+        start=str.length;
+      }
+    }
+    ret[row][col]=strElem;
+  }
+  if (colMap) {
+    const firstColSize=ret[0].length;
+    for (let i=0;i<ret.length;i++) {
+      let jMax=ret[i].length;
+      if (jMax>firstColSize) { jMax=firstColSize; }
+      for (let j=0;j<jMax;j++) {
+        let key=ret[0][j];
+        if (key!==undefined) {
+          ret[i][key]=ret[i][j];
+        }
+      }
+    }
+  }
+  if (rowMap) {
+    for (let i=0;i<ret.length;i++) {
+      let key=ret[i][0];
+      if (key!==undefined) {
+        ret[key]=ret[i];
+      }
+    }
+  }
+  return ret;
 };
 
 /////////////////////////////
@@ -784,7 +782,7 @@ $.fn.delayedLoad=function() {
 			this.css("background-image", "url("+this.attr("delayed-bgimage")+")");
 			this.removeAttr("delayed-bgimage");
 			done=true;
-		} 
+		}
 		// iframes or images
 		if (this.attr("delayed-src")) {
 			this.attr("src", this.attr("delayed-src"));
@@ -2709,7 +2707,7 @@ m.showDefs=function(r) {
 		$this.addClass("selected");
 		$input_title[0].value=m.unescapeHTML($this.html());
 	});
-	
+
 	var defCats=r["def-cats"].trim().split("\n");
 	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div><br>';
 	for (var i=0;i<defCats.length;i++) {
@@ -2959,7 +2957,7 @@ $button_reco.on("click", function(e) {
 		var strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
 		m.rmb_me(m.reco_do, {strRecoDo:strRecoDo, uri:uri});
-		
+
 	} else {
 		$error.html(errorMsg);
 		$button_reco.removeClass("disabled");
@@ -3467,7 +3465,7 @@ if (0<=i&&i<fs.shuffled.length) {
 		$uri_rendered.html('');
 		$rC_youtube_uri_rendered.hide();
 		$rC_video_uri_rendered.show();
-		
+
 		$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
 		$video=$("#video");
 		$video.on("ended", function() {
