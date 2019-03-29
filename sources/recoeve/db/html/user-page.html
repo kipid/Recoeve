@@ -190,6 +190,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #point-range-result {margin:1em; float:right; border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark #point-range-result {border-color:white}
 
+#numbers-of-recos {margin:1em 0; padding:.5em}
 .numbers-of-recos {margin:1em 0; padding:.5em}
 
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
@@ -324,6 +325,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="button enabled" id="show-recos-without-points">Show recos without points</div>
 	<div class="cBoth"></div>
 </div>
+<div class="side2" id="numbers-of-recos"></div>
 <div class="side2" id="headPlay">
 	<div class="button" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container" style="display:none">
@@ -428,6 +430,8 @@ $point_range_right=$("#point-range-right");
 $point_range_result=$("#point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
+
+$numbers_of_recos=$("#numbers-of-recos");
 
 $subCats=$("#subCats");
 $contents=$("#contents");
@@ -2174,7 +2178,12 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 	var fs=m.fsTitle;
 	var l=fs.fullList.length;
 	var strHTML="";
-	if (l>0) {
+	if (l<=0) {
+		var nOfRecos='No reco on cat='+m.escapeHTML(m.currentCat)+'.';
+		$numbers_of_recos.html(nOfRecos);
+		strHTML='<div class="numbers-of-recos">'+nOfRecos+'</div>';
+		$contents.html(strHTML);
+	} else {
 		if (from===undefined||from===null) {
 			from=l-1;
 		} else if (from.constructor===Number) {
@@ -2231,7 +2240,9 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 			}
 		}
 		if (from===l-1) {
-			strHTML+='<div class="numbers-of-recos">You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.currentCat+'.</div>';
+			var nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
+			$numbers_of_recos.html(nOfRecos);
+			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
 		}
 		// minus
 		var i=from;
@@ -2278,9 +2289,6 @@ m.showRecosOnCat=function(elem, from, minus, plus) {
 		var h1=$body.height();
 		var wST=$window.scrollTop();
 		$window.scrollTop(wST+h1-h0);
-	} else {
-		strHTML='<div class="numbers-of-recos">No reco on cat='+m.escapeHTML(m.currentCat)+'.</div>';
-		$contents.html(strHTML);
 	}
 	var $recos=$contents.find(".reco");
 	for (var i=0;i<$recos.length;i++) {
@@ -2451,6 +2459,16 @@ m.refresh=function(cats, option, uri) {
 			m.fdList=m.fdList.add( $newReco );
 			break;
 		case "changed" : case "deleted" :
+			if (uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
+				if (option==="changed") {
+					$reco_playing.html(m.recoHTML(m.userRecos[uri], true));
+					m.delayedElems=m.delayedElems.add( $reco_playing.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+					$window.trigger("scroll.delayedLoad");
+				} else if (option==="deleted") {
+					$reco_playing.html('');
+				}
+			}
 			var $recos=$contents.find(">.reco");
 			for (var i=0;i<$recos.length;i++) {
 				var $reco=$recos.eq(i);
@@ -2459,7 +2477,7 @@ m.refresh=function(cats, option, uri) {
 					if (option==="changed") {
 						var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 						$reco.replaceWith($newReco);
-						m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+						m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
 						m.fdList=m.fdList.add( $newReco );
@@ -3424,78 +3442,78 @@ m.fsTitle.toggleOneLoop=function(elem) {
 	}
 };
 m.fsTitle.getAndPlayVideo=function(cue) {
-var fs=m.fsTitle;
-fs.pauseVideo();
-var i=fs.currentIndex;
-if (0<=i&&i<fs.shuffled.length) {
-	var r=fs.fullList[fs.shuffled[i].i].reco;
-	$reco_playing.html(m.recoHTML(r, true));
-	var uriRendered=m.uriRendering(r.uri);
-	if (uriRendered.from==="youtube") {
-		$uri_rendered.html('');
-		$video.html('');
-		$rC_video_uri_rendered.hide();
-		$rC_youtube_uri_rendered.show();
-		if (m.YtPlayer) {
-			if (cue) {
-				m.YtPlayer.cueVideoById(uriRendered.videoId);
-			} else {
-				m.YtPlayer.loadVideoById(uriRendered.videoId);
-			}
-		} else if (YT!==undefined&&YT.Player) {
-			m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
-				, events:{
-					'onError':function(e) {
-						m.playListSetTimeout=setTimeout(function() {
-							fs.playNext(1);
-						}, 2500);
-					}, 'onStateChange':function(e) {
-						if (e.data===YT.PlayerState.ENDED) {
-							if (fs.oneLoop) {
-								m.YtPlayer.seekTo(0,true);
-							} else {
+	var fs=m.fsTitle;
+	fs.pauseVideo();
+	var i=fs.currentIndex;
+	if (0<=i&&i<fs.shuffled.length) {
+		var r=fs.fullList[fs.shuffled[i].i].reco;
+		$reco_playing.html(m.recoHTML(r, true));
+		var uriRendered=m.uriRendering(r.uri);
+		if (uriRendered.from==="youtube") {
+			$uri_rendered.html('');
+			$video.html('');
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.show();
+			if (m.YtPlayer) {
+				if (cue) {
+					m.YtPlayer.cueVideoById(uriRendered.videoId);
+				} else {
+					m.YtPlayer.loadVideoById(uriRendered.videoId);
+				}
+			} else if (YT!==undefined&&YT.Player) {
+				m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
+					, events:{
+						'onError':function(e) {
+							m.playListSetTimeout=setTimeout(function() {
 								fs.playNext(1);
+							}, 2500);
+						}, 'onStateChange':function(e) {
+							if (e.data===YT.PlayerState.ENDED) {
+								if (fs.oneLoop) {
+									m.YtPlayer.seekTo(0,true);
+								} else {
+									fs.playNext(1);
+								}
 							}
 						}
-					}
-				}}
-			);
-		}
-	} else if (uriRendered.from==="video") {
-		$uri_rendered.html('');
-		$rC_youtube_uri_rendered.hide();
-		$rC_video_uri_rendered.show();
-
-		$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
-		$video=$("#video");
-		$video.on("ended", function() {
-			if (fs.oneLoop) {
-				$video[0].play();
-			} else {
-				fs.playNext(1);
+					}}
+				);
 			}
-		});
-		if (!cue) {
-			$video[0].play();
+		} else if (uriRendered.from==="video") {
+			$uri_rendered.html('');
+			$rC_youtube_uri_rendered.hide();
+			$rC_video_uri_rendered.show();
+
+			$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
+			$video=$("#video");
+			$video.on("ended", function() {
+				if (fs.oneLoop) {
+					$video[0].play();
+				} else {
+					fs.playNext(1);
+				}
+			});
+			if (!cue) {
+				$video[0].play();
+			}
+		} else {
+			$uri_rendered.html(uriRendered.html);
+			$video.html('');
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.hide();
+			if (!cue) {
+				m.playListSetTimeout=setTimeout(function() {
+					fs.playNext(1);
+				}, 2500);
+			}
 		}
 	} else {
-		$uri_rendered.html(uriRendered.html);
+		$reco_playing.html('');
+		$uri_rendered.html('');
 		$video.html('');
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
-		if (!cue) {
-			m.playListSetTimeout=setTimeout(function() {
-				fs.playNext(1);
-			}, 2500);
-		}
 	}
-} else {
-	$reco_playing.html('');
-	$uri_rendered.html('');
-	$video.html('');
-	$rC_video_uri_rendered.hide();
-	$rC_youtube_uri_rendered.hide();
-}
 	m.delayedElems=m.delayedElems.add( $headPlay.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
