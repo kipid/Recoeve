@@ -31,15 +31,15 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
-		="172.31.13.32";
-		// ="localhost";
+		// ="172.31.13.32";
+		="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
 	static {
 		numberOfClients=0;
 	}
-	
+
 	@Override
 public void start() {
 	RecoeveDB db=new RecoeveDB();
@@ -77,17 +77,17 @@ public void start() {
 			}
 		}
 		// System.out.println("Referer Allowed : "+refererAllowed);
-		
+
 		final HttpMethod method=req.method();
 		final String path=req.path();
 		final String query=req.query();
 			System.out.println("Method : "+method);
 			System.out.println("Absolute URI : "+req.absoluteURI());
-		
+
 		final String ip=req.remoteAddress().toString();
 			System.out.println("IP : "+ip);
 			System.out.println("Local Address : "+req.localAddress());
-		
+
 		////////////////////////////////////
 		// Session cookie 확인.
 		////////////////////////////////////
@@ -95,7 +95,7 @@ public void start() {
 		final boolean sessionPassed=db.sessionCheck(cookie);
 			// System.out.println("Cookie : "+cookie);
 			System.out.println("Session passed? : "+sessionPassed);
-		
+
 		String tmpLang=req.params().get("lang");
 		if (tmpLang==null) {
 			tmpLang=cookie.get("lang");
@@ -103,7 +103,7 @@ public void start() {
 		}
 		final String lang=tmpLang;
 		System.out.println("Lang : "+lang);
-		
+
 		String img=FileMap.getImg(path);
 		if (img!=null) {
 			req.response().sendFile(img);
@@ -197,7 +197,7 @@ public void start() {
 							// Success: Session cookie and New token.
 							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING); // window.location.pathname="/reco";
 							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
-						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
+						} else { // if (setCookieRMB.startsWith("rmbdI="))
 							// Failed: Delete rmbd cookie.
 							req.response().end("You have failed to log in with remembered http-only cookies. Please <a href='/'>log-in</a> again.", ENCODING);
 							System.out.println("Sended fail message with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
@@ -218,7 +218,7 @@ public void start() {
 							// Success: Session cookie and New token.
 							req.response().end("Rmbd", ENCODING);
 							System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
-						} else { // if (setCookieRMB.startsWith("rmbdI=")) 
+						} else { // if (setCookieRMB.startsWith("rmbdI="))
 							// Failed: Delete rmbd cookie.
 							req.response().end("Failed", ENCODING);
 							System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
@@ -367,6 +367,20 @@ public void start() {
 				req.response().end(FileMap.get("to-log-in.html",lang), ENCODING); // window.location.pathname="/account/log-in";
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
+		} else if (path.equals("/multireco")) {
+			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
+			String[] querySplit=query.split("&");
+			Map<String,String> queryMap=new HashMap<String,String>();
+			for (int i=0;i<querySplit.length;i++) {
+				String[] keyValue=querySplit[i].split("=", 2);
+				if (keyValue.length>1) {
+					queryMap.put(keyValue[0], keyValue[1]);
+				} else {
+					queryMap.put(keyValue[0], "");
+				}
+			}
+			req.response().end(FileMapWithVar.get("multireco.html", lang, db.varMapUserPage(cookie, queryMap.get("user"))), ENCODING);
+			System.out.println("Sended multireco.html");
 		} else if (refererAllowed&&sessionPassed&&method==HttpMethod.POST&&path.startsWith("/reco/")) { // e.g. path=/reco/do
 			// String toDo=path.replaceFirst("^/reco/","");
 			String toDo=path.substring(6);
