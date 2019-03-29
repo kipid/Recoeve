@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<title>Recoeve.net</title>
+<script>
+window.m={};
+(function(m, undefined) {
+	m.myIndex="{--myIndex--}";
+	m.myId="{--myId--}";
+	m.pathName=window.location.pathname;
+	m.searchMap={};
+	var searchSplit=window.location.search.split("&");
+	for (var i in searchSplit) {
+		var keyValue=searchSplit[i].split("=", 2);
+		if (keyValue.length>1) {
+			m.searchMap[keyValue[0]]=decodeURIComponent(keyValue[1]);
+		} else {
+			m.searchMap[keyValue[0]]="";
+		}
+	}
+	m.userId=m.searchMap["user"];
+	m.myPage=(m.myId===m.userId);
+})(window.m);
+</script>
+<style>
+body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
+
+div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
+data {display:none}
+.none {display:none}
+.center {text-align:center}
+.right {text-align:right}
+.fLeft {float:left}
+.fRight {float:right}
+.cBoth {clear:both}
+img {min-width:1em; min-height:1em; max-width:100%}
+</style>
+</head>
+<body>
+<data id="data-myCatList">{--myCatList--}</data>
+<div id="container" class="dark">
+	<div>Language/언어/語言
+		<data id="data-lang">en	ko	ja	zh
+English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
+</div>
+</body>
+<div id="scripts"></div>
+<script src="/jquery.min.js"></script>
+<script>
+(function(m, $, undefined) {
+$data_myCatList=$("#data-myCatList");
+$data_lang=$("#data-lang");
+
+$window=$(window);
+$html=$("html");
+$body=$("body");
+
+m.delayPad=m.delayPad||256;
+m.wait=m.wait||512;
+m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+m.previous=Date.now();
+
+m.catList=[];
+m.myCatList=m.myPage?m.catList:[];
+m.currentCat=null;
+m.catUriList=[];
+m.userRecos={};
+m.myRecos=m.myPage?m.userRecos:{};
+m.maxShowReco=10;
+
+
+})(window.m, jQuery);
+</script>
+</html>

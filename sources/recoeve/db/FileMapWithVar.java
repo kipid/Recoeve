@@ -20,22 +20,23 @@ public class FileMapWithVar {
 			"user-page.html"
 			, "signed-up.html"
 			, "reco.html"
+			, "multireco.html"
 			// , "redirect.html", "remember-me.html"
 		};
 	private static final int fileMapSize=50;
 	private static final int fileLangMapSize=10;
-	
+
 	public static Map<String, Map<String, ArrayList<String>>> fileMap;
 		// fileMap.get("fileName").get("lang")
-	
+
 	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
 	public static final Pattern ptnVariable=Pattern.compile("\\{--[\\s\\S]+?--\\}");
-	
+
 	static {
 		fileMap=new HashMap<String, Map<String, ArrayList<String>>>(fileMapSize);
 		File file=null;
 		String fileStr=null;
-		
+
 		file=new File(filePath+"lang.txt");
 		if (file.exists()) { try {
 			StringBuilder sb=new StringBuilder();
@@ -54,7 +55,7 @@ public class FileMapWithVar {
 		StrArray langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
-		
+
 		for (String fileName: fileNames) {
 			file=new File(filePath+fileName);
 			if (file.exists()) { try {
@@ -71,12 +72,12 @@ public class FileMapWithVar {
 			} finally {
 				file=null;
 			} }
-			
+
 			if (fileStr!=null) {
 				// System.out.println("\nfileName : "+fileName);
 				fileMap.put(fileName, new HashMap<String, ArrayList<String>>(fileLangMapSize));
 				Map<String, ArrayList<String>> fileLangMap=fileMap.get(fileName);
-				
+
 				ArrayList<String> strListVars=new ArrayList<String>();
 				Matcher matchVariable=ptnVariable.matcher(fileStr); // default
 				int start=0;
@@ -91,7 +92,7 @@ public class FileMapWithVar {
 					}
 				}
 				fileLangMap.put("df", strListVars); // default.
-				
+
 				ArrayList<String> strList=new ArrayList<String>();
 				Matcher matchReplacer=ptnReplacer.matcher(fileStr);
 				start=0;
@@ -105,7 +106,7 @@ public class FileMapWithVar {
 						start=fileStr.length();
 					}
 				}
-				
+
 				if (strList.size()>1) {
 					int colSize=langMap.getColSizeAtRow(0);
 					for (int k=2;k<colSize;k++) {
@@ -148,9 +149,9 @@ public class FileMapWithVar {
 			}
 		}
 	}
-	
+
 	public FileMapWithVar() {}
-	
+
 	public static String get(String fileName, String lang, Map<String,String> varMap) {
 		Map<String, ArrayList<String>> fileLangMap=fileMap.get(fileName);
 		if (fileLangMap==null) {return null;}
@@ -171,12 +172,12 @@ public class FileMapWithVar {
 		}
 		return res;
 	}
-	
+
 	public static void main(String... args) {
 		Map<String,String> varMap=new HashMap<String,String>();
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
 		varMap.put("{--user email--}", "id@email.com");
-		// System.out.println(FileMapWithVar.get("signed-up.html", "en", varMap));
+		// System.out.println(FileMapWithVar.get("multireco.html", "df", null));
 	}
 }
