@@ -1793,6 +1793,15 @@ ptnURI.toIframe=function(uriRest) {
 	}
 	return false;
 };
+ptnURI=m.ptnURI["tv.kakao.com"]={};
+ptnURI.regEx=/^v\/([0-9]+)/i;
+ptnURI.toIframe=function(uriRest) {
+	var exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no"></iframe>'), from:"kakao", videoId:exec[1]};
+	}
+	return false;
+};
 ptnURI=m.ptnURI["tvpot.daum.net"]={};
 ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function(uriRest) {
@@ -1949,7 +1958,8 @@ m.slideToggle=function(elem) {
 m.slideUp=function(elem) {
 	var $elem=$(elem).parent().parent();
 	$elem.slideUp(1000);
-	$body.animate({scrollTop:'-='+$elem.height()}, 1000);
+	window.scrollBy(0,-$elem.outerHeight());
+	// $body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
 m.renderStrDescCmt=function(str) {
 	var res=[];
