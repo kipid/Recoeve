@@ -1,14 +1,18 @@
-import io.vertx.core.Verticle;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Verticle;
 
 // import org.vertx.java.core.Handler;
 // import org.vertx.java.core.http.HttpServer; // Interface
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.buffer.Buffer;
+// import io.vertx.core.http.ClientAuth;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.net.JksOptions;
+import io.vertx.core.net.TCPSSLOptions;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import java.net.URLDecoder;
 	// deprecated API?
@@ -43,10 +47,26 @@ public class Recoeve extends AbstractVerticle {
 	@Override
 public void start() {
 	RecoeveDB db=new RecoeveDB();
-	/////////////////////////////////////////////
-	// Lambda exp with chaining.
-	/////////////////////////////////////////////
-	vertx.createHttpServer().requestHandler( (HttpServerRequest req) -> {
+
+	vertx.createHttpServer(
+		new HttpServerOptions()
+			// .setSsl(true)
+			// .setKeyStoreOptions(new JksOptions()
+			// 	.setPath("C:/Recoeve/server-keystore.jks")
+			// 	.setPassword("wibble")
+			// )
+			// .setLogActivity(true)
+			// .setUseAlpn(true)
+			// .setTrustOptions(new JksOptions()
+			// 	.setPath("C:/Recoeve/keystore")
+			// 	.setPassword("Xs41Kipid$ps15")
+			// )
+			// .setClientAuthRequired(false)
+			// .setClientAuth(ClientAuth.NONE)
+			// .addEnabledSecureTransportProtocol(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS.get(1))
+			// .addEnabledSecureTransportProtocol("TLSv1.3")
+			// .setEnabledSecureTransportProtocols(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS)
+	).requestHandler( (HttpServerRequest req) -> {
 		////////////////////////////////////
 		// Console log.
 		////////////////////////////////////
