@@ -1,18 +1,42 @@
-@rem encoding must be EUC-KR with Korean folder name.
+@REM encoding must be EUC-KR with Korean folder name.
 @ECHO OFF
 
-set sp=C:\Recoeve\sources
-set cp=C:\Recoeve\classes
-@rem set CLASSPATH=.;C:\Program Files\Java\jdk1.8.0_25\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
-@rem mysql-connector.jar;javax.mail.jar
+:: destination of class to be created
+SET DC=C:\Recoeve\classes
 
-ECHO Compiling %~nx1.......
-javac -encoding utf8 -sourcepath "%sp%" %~nx1 -d "%cp%" -classpath "%CLASSPATH%"
+:: The whole CLASSPATH list splited by ";"
+SET CLASSPATH=.;C:\Program Files\Java\jdk-12.0.2\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar
+:: ;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
+@REM mysql-connector.jar;javax.mail.jar
+
+:: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
+ECHO Compiling %~nx1
+:: Compile %~nx1 with {filename:%~nx1, encoding:utf8, destination:%DC%, classpath:%CLASSPATH%}
+javac %~nx1 -encoding utf8 -d "%DC%" -classpath "%CLASSPATH%"
 
 IF NOT %ERRORLEVEL%==0 GOTO :EOF
-cd %cp%
-set packSD=%~dpn1
-set cn=%packSD:C:\Recoeve\sources\=%
-set cn=%cn:\=.%
-echo --- OUTPUT: %cn% %2 %3 %4 %5 %6 %7 %8 %9 ---
-java -Dfile.encoding=UTF8 -classpath "%CLASSPATH%" %cn% %2 %3 %4 %5 %6 %7 %8 %9
+
+:: source directory
+SET SD=%CD%
+@REM or SET SD=%~dp1
+
+:: %SD%\%~n1 gives [source directory]\file_name. e.g. "C:\Recoeve\sources\kipid\hello\HelloWorld".
+SET packSD=%SD%\%~n1
+@REM or SET packSD=%~dpn1
+
+:: Replace "C:\Recoeve\sources\" to "" [empty] of %packSD%. e.g. "kipid\hello\HelloWorld".
+SET CN=%packSD:C:\Recoeve\sources\=%
+
+:: Replace "\" to "." of %cn%. e.g. "kipid.hello.HelloWorld"
+:: This is a class name with JAVA package included.
+SET CN=%CN:\=.%
+
+ECHO --- OUTPUT: %CN% %2 %3 %4 %5 %6 %7 %8 %9 ---
+:: Change directory to the %DC% [destination of class to be created].
+CD %DC%
+
+:: Run/Execute the class created.
+java -Dfile.encoding=UTF8 -classpath "%CLASSPATH%" %CN% %2 %3 %4 %5 %6 %7 %8 %9
+
+:: Back to source directory
+CD %SD%
