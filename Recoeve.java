@@ -35,7 +35,7 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
-		// ="172.31.13.32";
+		// ="192.168.1.4";
 		="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
