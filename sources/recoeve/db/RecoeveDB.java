@@ -5,10 +5,10 @@ import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.h
 
 // import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 	// http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlDataSource.html
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 	// http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlConnectionPoolDataSource.html
 
-import javax.xml.bind.DatatypeConverter;
+// import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 
 // import java.net.URLDecoder;
@@ -57,23 +57,33 @@ public static byte[] randomBytes(int length) {
 	return rb;
 }
 
-public static String hex(byte[] bytes) {
-	return DatatypeConverter.printHexBinary(bytes);
-}
-public static byte[] unhex(String hexStr) {
-	return DatatypeConverter.parseHexBinary(hexStr);
-}
-// The below is from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
-// final protected static char[] hexArray = "0123456789abcdef".toCharArray();
 // public static String hex(byte[] bytes) {
-// 	char[] hexChars=new char[bytes.length*2];
-// 	for (int j=0; j<bytes.length; j++) {
-// 		int v=bytes[j]&0xFF;
-// 		hexChars[j*2]=hexArray[v>>>4];
-// 		hexChars[j*2+1]=hexArray[v&0x0F];
-// 	}
-// 	return new String(hexChars);
+// 	return DatatypeConverter.printHexBinary(bytes);
 // }
+// public static byte[] unhex(String hexStr) {
+// 	return DatatypeConverter.parseHexBinary(hexStr);
+// }
+// The below is from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
+final protected static char[] hexArray = "0123456789abcdef".toCharArray();
+public static String hex(byte[] bytes) {
+	char[] hexChars=new char[bytes.length*2];
+	for (int j=0; j<bytes.length; j++) {
+		int v=bytes[j]&0xFF;
+		hexChars[j*2]=hexArray[v>>>4];
+		hexChars[j*2+1]=hexArray[v&0x0F];
+	}
+	return new String(hexChars);
+}
+
+public static byte[] unhex(String s) {
+	int len = s.length();
+	byte[] data = new byte[len / 2];
+	for (int i = 0; i < len; i += 2) {
+		data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+								+ Character.digit(s.charAt(i+1), 16));
+	}
+	return data;
+}
 
 private static final MysqlConnectionPoolDataSource ds;
 static {
@@ -81,7 +91,7 @@ static {
 	ds.setServerName("localhost");
 	ds.setPort(3306);
 	ds.setDatabaseName("recoeve0.1");
-	// ds.setURL("serverName/dbName");
+	// ds.setURL("localhost:3306/recoeve0.1?serverTimezone=UTC");
 	ds.setUser("eve");
 	ds.setPassword("$repakeoco#eve");
 }
@@ -151,6 +161,7 @@ private PreparedStatement pstmtPutURIstatDefDesc;
 
 public RecoeveDB() {
 	try {
+		ds.setServerTimezone("UTC");
 		con=ds.getConnection();
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT timediff(?, ?)<?;");
@@ -1868,8 +1879,8 @@ public String putReco(long user_i, String recoStr) {
 public static void main(String... args) {
 	// RecoeveDB db=new RecoeveDB();
 	
-	// System.out.println(db.getCatList("kipid1"));
-	// System.out.println(db.getUriList("kipid1", new StrArray("cat\n[사회/정치/경제]--심리")));
+	// // System.out.println(db.getCatList("kipid1"));
+	// // System.out.println(db.getUriList("kipid1", new StrArray("cat\n[사회/정치/경제]--심리")));
 	
 	// /////////////////////////////////////////////
 	// // check : id, email
@@ -1930,14 +1941,14 @@ public static void main(String... args) {
 	// System.out.println(unhex(hex(rb)));
 	// System.out.println(hex(unhex(hex(rb))));
 	
-	// String id="kipid";
+	// id="kipid";
 	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
 	// id="anonymous";
 	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
 	// id="anony";
 	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
 	
-	// String email="kipid@hanmail.net";
+	// email="kipid@hanmail.net";
 	// System.out.println("E-mail: "+email+" is available? "+db.emailAvailable(email));
 	// email="anonymous@recoeve.com";
 	// System.out.println("E-mail: "+email+" is available? "+db.emailAvailable(email));
