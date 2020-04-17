@@ -5,7 +5,7 @@
 SET DC=C:\Recoeve\classes
 
 :: The whole CLASSPATH list splited by ";"
-SET CLASSPATH=.;C:\Program Files\Java\jdk-13\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Recoeve\classes\mysql-connector-java-8.0.19.jar;C:\Recoeve\classes\activation-1.1.1.jar
+SET CLASSPATH=.;C:\Program Files\Java\jdk-13\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Recoeve\classes\mysql-connector-java-8.0.19.jar;C:\Recoeve\classes\activation-1.1.1.jar;%VERTX_HOME%\conf;%VERTX_HOME%\lib\*
 :: ;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
 @REM mysql-connector.jar;javax.mail.jar
 
