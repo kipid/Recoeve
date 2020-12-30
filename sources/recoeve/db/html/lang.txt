@@ -1,6 +1,6 @@
 rp	i	en	ko	ja	zh	desc
 Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Description
-[--version--]	1	Ver. 0.2.3. (2017-07-22).				
+[--version--]	1	Ver. 0.3.0. (2019-04-30).				
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -20,7 +20,9 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Password confirm--]	13	Password confirm	비밀번호 확인	パスワードの確認	確認密碼	
 [--Remember me--]	14	Remember me	로그인 유지	ログインキープ	登录保持	
 [--Log in--]	15	Log in	로그인	ログイン	登入	
-[--Sign up for Recoeve--]	16	Sign up for Recoeve	Recoeve 가입하기	Recoeve 登録	Recoeve 注册	
+[--Forgot password--]	16	Forgot password	비밀번호 잊어버림	Forgot password	Forgot password	
+[--Sign up for Recoeve--]	17	Sign up for Recoeve	Recoeve 가입하기	Recoeve 登録	Recoeve 注册	
+[--Change password--]	18	Change password	비밀번호 변경하기	パスワードを変更する	更改密碼	
 [--ID or E-mail is empty.--]	20	ID or E-mail is empty.	아이디/이메일을 입력해주세요.	ID /メールアドレスを入力してください。	ID/請輸入您的電子郵件。	
 [--ID or E-mail is too short.--]	21	ID or E-mail is too short.	아이디/이메일이 너무 짧습니다.	ID /メールアドレスが短すぎます。	用戶名/電子郵件太短。	
 [--Password is empty.--]	22	Password is empty.	비밀번호를 입력해주세요.	パスワードを入力してください。	請輸入您的密碼。	
@@ -30,9 +32,11 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Checking ID/E-mail--]	30	Checking ID/E-mail	아이디/이메일을 확인중입니다.	ID /電子メールを確認しています。	ID/檢查電子郵件。	
 [--Request times out.--]	31	Request times out.	요청이 중단되었습니다.	リクエストが中断されました。	請求被中止。	
 [--Please click the Log-in button again.--]	32	Please click the Log-in button again.	로그인 버튼을 다시 클릭해주세요.	ログインボタンをもう一度クリックしてください。	再次登錄按鈕點擊。	
-[--Password is being encrypted.--]	33	Password is being encrypted.	비밀번호가 암호화되고 있습니다.	パスワードが暗号化されています。	你的密碼進行加密。	
-[--Logging in--]	34	Logging in	로그인 중입니다.	ログイン中です。	您登錄。	
-[--Please wait.--]	35	Please wait.	잠시만 기다려 주세요.	しばらくお待ちください。	請稍候	
+[--Please click the Forgot password button again.--]	33	Please click the Forgot password button again.	비밀번호 잊어버림 버튼을 다시 클릭해주세요.	Please click the Forgot password button again.	Please click the Forgot password button again.	
+[--Password is being encrypted.--]	34	Password is being encrypted.	비밀번호가 암호화되고 있습니다.	パスワードが暗号化されています。	你的密碼進行加密。	
+[--Logging in--]	35	Logging in	로그인 중입니다.	ログイン中です。	您登錄。	
+[--Sending an email--]	36	Sending an email	이메일을 보내는 중입니다.	Sending an email	Sending an email	
+[--Please wait.--]	37	Please wait.	잠시만 기다려 주세요.	しばらくお待ちください。	請稍候	
 [--ID is empty.--]	40	ID is empty.	아이디를 입력해주세요.	IDを入力してください。	請輸入您的用戶名。	
 [--ID is too short.--]	41	ID is too short.	아이디가 너무 짧습니다.	ユーザ名が短すぎます。	用戶名是太短了。	
 [--ID is too long.--]	42	ID is too long.	아이디가 너무 깁니다.	ユーザ名が長すぎます。	用戶名太長。	

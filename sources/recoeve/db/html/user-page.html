@@ -307,7 +307,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#new-reco -->
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
-	head : <a href="/account/log-out">[--Log out--]</a> / <a href="/account/log-in">[--Log in--]</a>
+	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
 	<!-- <div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div> -->
 	<div class="button" onclick="m.getNeighbors()">[--Get neighbors--]</div>
 	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
@@ -414,6 +414,8 @@ $button_edit=$("#button-edit");
 $button_del=$("#button-del");
 $button_back=$("#button-back");
 $button_close=$("#button-close");
+
+$a_log_in=$("#a-log-in");
 
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
@@ -833,8 +835,8 @@ if (m.sW<m.sH) {
 	m.sW=screen.height;
 	m.sH=screen.width;
 }
-m.str_rmb_me='log\tsW\tsH'
-	+'\nweb\t'+m.sW+'\t'+m.sH;
+m.str_rmb_me='log\tsW\tsH\n'
+	+'web\t'+m.sW+'\t'+m.sH;
 m.rmb_me=function(callback, args) {
 	if (m.docCookies.hasItem('tCjs')) {
 		callback(args);
@@ -2458,6 +2460,7 @@ m.refresh=function(cats, option, uri) {
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(c[k]);
 		window.history.pushState({cat:c[k]}, null, m.pathOfCat(c[k]));
+		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 	} else {
 		switch (option) {
 		case "recoed" :
@@ -2529,6 +2532,7 @@ m.openCat=function(cat, e) {
 		m.currentCat=cat;
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 		return false;
 	}
 };
@@ -2541,6 +2545,7 @@ for (var i=0;i<m.catList.length;i++) {
 window.onpopstate=function(e) {
 	if (e.state&&e.state.cat!==undefined) {
 		m.getUriListAndShowRecosOnCat(e.state.cat);
+		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 	}
 };
 m.getSearchVars=function(searchStr) {
@@ -3306,6 +3311,7 @@ if (vars.cat!==undefined) {
 	m.currentCat=cat;
 	m.getUriListAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+	$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 }
 if (vars.title!==undefined) {
 	var title=vars.title.val;

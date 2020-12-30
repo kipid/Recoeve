@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
-(function(m, undefined) {
-	var pathname=window.location.pathname;
-	var path="/account/log-in";
-	if (pathname!==path) {
-		window.history.replaceState(null, null, path+window.location.search+window.location.hash);
-	}
-})(m=window.m||{});
-</script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
 	<meta name="keywords" content="Recoeve.net"/>
@@ -53,37 +44,20 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 </head>
 <body>
 <div class="recoeve-container">
-<h1>[--welcome--]</h1>
+<h1>[--Change password--]</h1>
 
-<form class="form-login">
-<!-- <h2>Sign in</h2> -->
-	<input type="hidden" name="idType" value="id" id="input-idType"/>
-	<label for="userId">[--ID--] or [--E-mail--]</label>
-	<input class="user-id go-next" name="userId" id="input-userId" value="" placeholder="[--ID--] or [--E-mail--]" type="text" maxlength="50" tabindex="1"/>
-	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd" name="userPwd" id="log-in-userPwd" value="" placeholder="[--Password--]" type="password" maxlength="100" tabindex="2"/>
-	<label class="checkbox"><input name="rememberMe" class="checkbox" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label><!-- checked="checked" -->
-	<!-- <div>Forgot password?</div> -->
-	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
-	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-</form>
-
-<form class="form-login" action="./sign-up" accept-charset="UTF-8" method="post">
-<h2>[--Sign up for Recoeve--]</h2>
+<form class="form-login" action="./changePwd" accept-charset="UTF-8" method="post">
+<h2>[--Change password--]</h2>
 	<label for="userId">[--ID--]</label>
-	<input class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
+	<input id="input-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
 	<label for="userEmail">[--E-mail--]</label>
-	<input class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" maxlength="50" tabindex="6"/>
+	<input id="input-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" maxlength="50" tabindex="6"/>
 	<label for="userPwd">[--Password--]</label>
 	<input class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" maxlength="64" tabindex="7"/>
 	<label for="userPwdCfm">[--Password confirm--]</label>
 	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" maxlength="100" tabindex="8"/>
-	<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="9">[--Sign up for Recoeve--]</button>
+	<button id="button-changePwd" type="button" onclick="m.changePwd(this)" tabindex="9">[--Change password--]</button>
 </form>
-
-<div class="desc">
-[--desc--]
-</div>
 
 <div class="lang">
 	<div class="p">Language/언어/語言</div>
@@ -187,6 +161,14 @@ var vars=m.getSearchVars();
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang, Infinity, "/");
 }
+if (vars.id!==undefined) {
+	$("#input-userId")[0].value=vars.id;
+}
+$("#input-userId")[0].disabled=true;
+if (vars.email!==undefined) {
+	$("#input-userEmail")[0].value=vars.email;
+}
+$("#input-userEmail")[0].disabled=true;
 
 ////////////////////////////////////////////////////
 // String to Array (copied from user-page.html)
@@ -529,144 +511,7 @@ m.maxIdLength=21;
 m.minPwdLength=7;
 m.maxPwdLength=64;
 
-m.logIn=function(elem) {
-	var $elem=$(elem).eq(0);
-	$elem[0].disabled=true;
-	var $form=$elem.parent("form").eq(0);
-	var idType="id";
-	var userId=$form.find(".user-id")[0].value;
-	var userIdLength=m.byteCount(userId);
-	var userPwd=$form.find(".user-pwd")[0].value;
-	var err="";
-	var valid=false;
-	
-	if (userIdLength==0) {
-		err+="[--ID or E-mail is empty.--]";
-	} else if (userIdLength<m.minIdLength) {
-		err+="[--ID or E-mail is too short.--]";
-	} else if (userPwd.length==0) {
-		err+="[--Password is empty.--]";
-	} else if (userPwd.length<m.minPwdLength) {
-		err+="[--Password is too short.--]";
-	} else {
-		if (m.regExId.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="id"; valid=true;
-		} else if (m.regExEmail.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="email"; valid=true;
-		} else {
-			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
-		}
-	}
-	
-	if (valid) {
-		var form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\trememberMe\tuserPwd\n"
-			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId+"\t"+($("input:checkbox[name='rememberMe']").is(":checked")?"yes":"no")+"\t";
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
-		$.ajax("./pwd_iteration", {
-			type: "POST"
-			, data: idType+"\t"+userId
-		}).fail(function() {
-			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Log-in button again.--]") );
-			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: pwd_iteration or "No such id"	salt
-			var res=resp.split('\t');
-			var iter=Number(res[0]);
-			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error : "+res[0]) );
-				$elem[0].disabled=false;
-			} else {
-				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function() {
-					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
-					$elem.before( m.encloseErr("[--Logging in--] : [--Please wait.--]") );
-					$.ajax("./log-in.do", {
-						type: "POST"
-						, data: form_data
-					}).done(function(resp) {
-						$elem.before( m.encloseErr(resp) );
-						if (resp==="log-in success") {
-							if (vars.goto!==undefined) {
-								window.location.href=unescape(vars.goto);
-							} else {
-								window.location.pathname="/";
-							}
-						} else {
-							$elem[0].disabled=false;
-						}
-					});
-				}, 500);
-			}
-		});
-	} else {
-		$elem.before( m.encloseErr(err) );
-		$elem[0].disabled=false;
-	}
-	for (i=m.errCount-7;i>=0;i--) {
-		$("#error-msg-"+i).hide();
-	}
-};
-
-m.forgotPwd=function(elem) {
-	var $elem=$(elem).eq(0);
-	$elem[0].disabled=true;
-	var $form=$elem.parent("form").eq(0);
-	var idType="id";
-	var userId=$form.find(".user-id")[0].value;
-	var userIdLength=m.byteCount(userId);
-	var err="";
-	var valid=false;
-	
-	if (userIdLength==0) {
-		err+="[--ID or E-mail is empty.--]";
-	} else if (userIdLength<m.minIdLength) {
-		err+="[--ID or E-mail is too short.--]";
-	} else {
-		if (m.regExId.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="id"; valid=true;
-		} else if (m.regExEmail.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="email"; valid=true;
-		} else {
-			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
-		}
-	}
-	
-	if (valid) {
-		var form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
-			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId;
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
-		$.ajax("./pwd_iteration", {
-			type: "POST"
-			, data: idType+"\t"+userId
-		}).fail(function() {
-			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Forgot password button again.--]") );
-			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: pwd_iteration or "No such id"	salt
-			var res=resp.split('\t');
-			var iter=Number(res[0]);
-			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error : "+res[0]) );
-				$elem[0].disabled=false;
-			} else {
-				$elem.before( m.encloseErr("[--Sending an email--] : [--Please wait.--]") );
-				$.ajax("./forgotPwd", {
-					type: "POST"
-					, data: form_data
-				}).done(function(resp) {
-					$elem.before( m.encloseErr(resp) );
-					$elem[0].disabled=false;
-				});
-			}
-		});
-	} else {
-		$elem.before( m.encloseErr(err) );
-		$elem[0].disabled=false;
-	}
-	for (i=m.errCount-7;i>=0;i--) {
-		$("#error-msg-"+i).hide();
-	}
-};
-
-m.signUp=function(elem) {
+m.changePwd=function(elem) {
 	var $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
 	var $form=$elem.parent("form").eq(0);
@@ -741,14 +586,9 @@ m.signUp=function(elem) {
 	}
 };
 
-$("#log-in-userPwd").on("keyup", function(e) {
-	if (e.keyCode===13) { // Enter
-		$("#button-log-in").trigger("click");
-	}
-});
 $("#sign-up-userPwdCfm").on("keyup", function(e) {
 	if (e.keyCode===13) { // Enter
-		$("#button-sign-up").trigger("click");
+		$("#button-changePwd").trigger("click");
 	}
 });
 $("input.go-next").on("keyup", function(e) {

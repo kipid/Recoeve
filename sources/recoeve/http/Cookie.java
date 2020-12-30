@@ -22,7 +22,9 @@ public class Cookie{
 			String[] cookies=str.split("\\s*;\\s*");
 			for (String c: cookies){
 				int i=c.indexOf("=");
-				map.putIfAbsent(c.substring(0,i).trim(), c.substring(i+1).trim());
+				if (i>0) {
+					map.putIfAbsent(c.substring(0,i).trim(), c.substring(i+1).trim());
+				}
 			}
 		}
 	}
@@ -43,7 +45,7 @@ public class Cookie{
 	}
 	
 	public static void main(String... args){
-		Cookie cookie=new Cookie("a=b;a=c;a=d;key=value");
+		Cookie cookie=new Cookie("a=b;a=c;a=d;keyvalue");
 		System.out.println(cookie);
 		System.out.println("a=? "+cookie.get("a"));
 		System.out.println("a=? "+cookie.get("a"));

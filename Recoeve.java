@@ -12,6 +12,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import java.net.URLDecoder;
@@ -113,7 +114,7 @@ public void start() {
 		////////////////////////////////////
 		final Cookie cookie=new Cookie(req.headers().get("Cookie"));
 		final boolean sessionPassed=db.sessionCheck(cookie);
-			// System.out.println("Cookie : "+cookie);
+			System.out.println("Cookie : "+cookie);
 			System.out.println("Session passed? : "+sessionPassed);
 
 		String tmpLang=req.params().get("lang");
@@ -195,6 +196,10 @@ public void start() {
 			String toDo=path.substring(9); // faster than path.replaceFirst("^/account/","");
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
 			switch (toDo) {
+			case "changePwd": // path=/account/changePwd
+				req.response().end(FileMap.get("changePwd.html", lang), ENCODING);
+				System.out.println("Sended changePwd.html");
+				break;
 			case "log-in": // path=/account/log-in
 				if (sessionPassed) {
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
@@ -211,9 +216,11 @@ public void start() {
 				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
-						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-						req.response().putHeader("Set-Cookie", setCookieRMB);
-						if (setCookieRMB.startsWith("I=")) {
+						List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
+						for(io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
+							req.response().addCookie(singleCookie);
+						}
+						if (setCookieRMB.get(0).getName()=="I") {
 							// Success: Session cookie and New token.
 							req.response().end(FileMap.get("to-user-page.html", lang), ENCODING); // window.location.pathname="/reco";
 							System.out.println("Sended to-user-page.html with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
@@ -232,9 +239,11 @@ public void start() {
 				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						StrArray inputs=new StrArray(data.toString());
-						String setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-						req.response().putHeader("Set-Cookie", setCookieRMB);
-						if (setCookieRMB.startsWith("I=")) {
+						List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
+						for(io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
+							req.response().addCookie(singleCookie);
+						}
+						if (setCookieRMB.get(0).getName()=="I") {
 							// Success: Session cookie and New token.
 							req.response().end("Rmbd", ENCODING);
 							System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
@@ -278,10 +287,12 @@ public void start() {
 				if (method==HttpMethod.POST) {
 					req.bodyHandler( (Buffer data) -> {
 						StrArray inputs=new StrArray(data.toString());
-						String setCookieSSN=db.authUser(inputs, ip);
+						List<io.vertx.core.http.Cookie> setCookieSSN=db.authUser(inputs, ip);
 						if (setCookieSSN!=null) {
 							// Log-in success!
-							req.response().putHeader("Set-Cookie", setCookieSSN);
+							for(io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
+								req.response().addCookie(singleCookie);
+							}
 							req.response().end("log-in success", ENCODING);
 							System.out.println("Sended log-in success :: "+inputs.get(1, "idType")+" : "+inputs.get(1, "userId"));
 						} else {
@@ -296,11 +307,11 @@ public void start() {
 				}
 				break;
 			case "log-out": // path=/account/log-out
-				req.response().putHeader("Set-Cookie", db.logout());
-					// Delete UserSession if exists. (cookie check.)
-					// Delete UserRemember if exists. (cookie check.)
-					// Erase all cookies
-				req.response().end(FileMap.get("log-in.html",lang), ENCODING);
+				List<io.vertx.core.http.Cookie> setDelCookie=db.logout(cookie);
+				for(io.vertx.core.http.Cookie singleCookie: setDelCookie) {
+					req.response().addCookie(singleCookie);
+				}
+				req.response().end(FileMap.get("log-in.html", lang), ENCODING);
 				System.out.println("Sended log-in.html with Set-Cookie of deleting all cookies.");
 				break;
 			case "check": // path=/account/check
@@ -330,6 +341,20 @@ public void start() {
 					} );
 				} else {
 					System.out.println("check : invalid method "+method);
+					req.response().end(INVALID_ACCESS, ENCODING);
+				}
+				break;
+			case "forgotPwd": // path=/account/forgotPwd
+				req.response().putHeader("Content-Type","text/plain");
+				if (method==HttpMethod.POST) {
+					req.bodyHandler( (Buffer data) -> {
+						StrArray inputs=new StrArray(data.toString());
+						String forgotPwd=db.forgotPwd(inputs, lang);
+						req.response().end(forgotPwd, ENCODING);
+						System.out.println(forgotPwd);
+					} );
+				} else {
+					System.out.println("forgotPwd : invalid method "+method);
 					req.response().end(INVALID_ACCESS, ENCODING);
 				}
 				break;
