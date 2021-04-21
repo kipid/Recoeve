@@ -1,0 +1,892 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes" />
+
+<codeprint id="docuK-style">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+
+<link rel="stylesheet" href="https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css" />
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js" charset="utf-8"></script>
+</codeprint>
+
+<codeprint class="SEE">
+# Recoeve progress
+
+진행사항을 잡다하게 적자.
+
+
+
+## TOC
+
+
+
+## PH
+
+<ul>
+	<li>2021-04-19 : Ver. 0.3.0.</li>
+	<li>2017-07-04 : Ver. 0.1.11.</li>
+	<li>2015-02-07 : Ver. 0.1.10.</li>
+	<li>2014-08-29 : Log-in page.</li>
+</ul>
+
+
+
+## To do
+
+### 정리하기 전
+
+암호 바꾸기, 암호/비밀번호 잊어버렸을때 해결.
+
+/recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id.
+
+cat without reco 열때 뭔가 새로고침이 되는데... 해결합시다. (뭐 때문인지 잘 모르겄네 ㅡㅡ...)
+
+desc : bring, copy user_I 뭐 이런 명령어 만들어서 다른 사람 description 가져오기. (이거 생각보다 까다롭네. 유저가 이해하기 쉽도록 동작을 해야 하는데...)
+
+log-in page 에서 ?goto=/path 들어가면 로그인 후 이 페이지로 이동시키기.
+
+UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯?) 정렬 후 Save this order 도 있어야 할듯.
+
+Go 는 모든 SubCats 까지 검색하도록. (txt 는 "cat :: title" 형태로 fs 검색)<br />
+: G 키는 down 받은 reco 의 cats title 로 text 만들어놓고 cat 이동도 되도록 만들어 놓자. T 키는 현재 cat reco 들 이동하는 지금의 Go 구현으로 하고...
+T 는 해당 cat 만 검색. (range 를 거를까 말까?)
+
+desc 작성할때도 미리보기 보여주자? (이거 key value 로 나눠서 업데이트 된 부분만 refresh 하도록.)
+
+
+
+
+
+Recos 가져올때 갯수제한을 200 정도로 잡을까? 너무 한꺼번에 엄청 많이 요청하면 안좋긴 할테니... 그 이후꺼 가져올때나 검색할땐 버튼 누르도록. (검색이 javascript 단에서 할때가 있고, server 단에서 할때가 있고 할듯?)<br />
+: uri title 만 가져오고 나중에 전체 data 를 가져오는 방법도 있음.
+
+
+edit 이후에 $reco.replaceWith($newReco) 가 되어서 그런지, G/T 에서 scroll to reco 가 안먹힘.
+
+Related URIs 를 잘 처리해줘야 할거 같음.
+
+Reco edit 한 다음 delayed elems 가 update 가 제대로 안되는듯?
+
+새로운 reco 가 들어왔을때 YoutubeList 도 update.
+
+eve.recoToEve 에서 recoK for (i in recoK) {} 이런식으로 처리하고 valStr 으로 받자?
+
+
+PointsRange 랑 이런것들 cookie 에 저장해놓기?? Server 로 보낼 필요 없는 데이터들이긴 한데... secure cookie 에 넣으면 읽어들일수도 없는건가? (secure cookie 는 javascript 로 못 읽어드림. https 로 접속했을 때에만 javascript 로 읽어들일 수 있을듯? 이건 테스트 안해봐서 모르겄음.) 아니면 Local Storage API 를 써야하긴 하는데...
+
+
+로그인 안한채로 User page 에 왔다면 Account 부분에 Log-in 버튼 만들기. 여기서 back path 가 필요할듯? 오 back path= empty 해놓으면, 로그인 이후 다른 페이지로 이동 안하게 해놓으면 될듯? 이러면 reco/do 같은거에서도 바로 로그인 시키고 하던일 계속 하게 가능할래나?
+
+Account 부분 만들기. styles (bright/dark, font-size, font-family, line-height, and so on), shortkeys, settings, log-out 등이 들어가야 함. UI 만들어야. (우선 대충 #head 에 집어넣음. log-out, shortkeys 만.)
+
+User = log out, settings 등등 클릭하면 slide 로 나오도록.
+
+유투브 영상이 playlist 에 재생되면서 해당 영상의 reco description 및 comment 가 바로 아래에 뜨도록 만들어줄까? Playlist 에서 듣다가 바로 가사도 볼 수 있고, 수정도 가능하게?
+
+
+
+desc 가져오는거 관련.
+Description 남의것 가져올 수 있도록. 시스템을 잘 구상해야 할듯.
+
+UriList 위치 바꿀 수 있게. UriList 위치이동 가능하도록 UI/UX.
+
+Session 이 아웃되었을 때, /reco/do 같은 접속이 이루어지면? "You should log-in first" 같은 error 가 올때 ajax 로 다시 자동으로 로그인 시도하고 다시 /reco/do 를 하도록 하려면?
+
+
+
+reco page 만들기. query 로 받아서 어느정도 자동으로 채우고. 이미 reco 를 가지고 있으면 처리해 주는 등이 필요.
+
+
+
+cats 바뀌었을때 sim 업데이트 해야 하는데 set oldCats' superCats 랑 set newCats' superCats 비교해서 계산안해도 되는거 줄일 수 있을듯? cat "A--B--C" 에서 "A--B--C--D" 로 옮겼다고 치면, sim "A", "A--B", "A--B--C" 는 고칠필요 없고, "A--B--C--D" 만 추가하면 되니까? 새로운 neighbor 추가에 대해서는 계산이 필요하긴 할테고...
+
+"You are the first recoer on this uri=..." 요런 문구를 줄까? 그러면서 fin 지급?
+
+C:\Users\강수\AppData\Local\Temp 에 vertx.log 가 쌓이면 Can't load log handler "java.util.logging.FileHandler", java.io.IOException: Couldn't get lock for %t/vertx.log 가 발생하네. 어찌 해결하지?<br />
+: 이건 log 가 100개까지 쌓인 다음에 에러 발생하면 해결합시다. 당장은 어찌 해결해야 할지도 모르겄음. JAVA 나 LabVIEW 프로그래밍을 만들어 놓을까? 수작업보단 그냥 실행 한번 하면 지워지게?
+
+user-page.html 에 로그인 버튼 만들자. (비로그인일 때만 보이는) /account/log-in?back=/user/current-user 식으로 보내서 로그인 하고 나면 다시 이 페이지로 오도록 디자인.
+
+desc, cmt 에서 엔터 한번이 line-height 보단 크게 만들고. 엔터 두번째 부터는 1줄이 line-height 보다 작아지는 식으로 처리해주자. 이래야 text 를 어디선가 긁어오는 경우에도 깔끔하게 보일듯.
+
+desc, cmt 에 주석처리 가능하도록 할까? 뭔가 부작용이 있을거 같아서 빼놨던거 같긴한데... (이상한 문구를 심어놓는다던지 식으로?) 주석 처리하는 code 는 LabVIEW 에 이미 만들어져는 있음.
+
+Recoeve.net promotion 1 : Make your own flexible youtube playlist 요런거 만들기. 어떤식으로 쓸 수 있는지 Guide 형식으로 그림 삽입하고 똥글뱅이 쳐주고 하나하나씩 설명해주는 페이지 좀 만들어서 배포해야 할듯.
+
+
+
+History 를 따로 log 로 저장해 놓을까나? Undo 할 수 있도록? 뭐 Undo 까지는 아니더라도... 뭔가 저장해놓으면 쓸데는 있을지도? 그냥 용량만 차지할래나? text 가 대부분이긴 할텐데... Cloud 처럼 overwrite version 관리용으로 필요할거 같기도 하고. 같은 계정으로 여러 기기에서 접근해서 reco/edit 할텐데, 어느 요청이 먼저 들어왔냐에 따라서 뭔가 꼬일수도 있으니?
+
+Reco this user's page to mine 버튼도 만들자.
+
+link a href 로 바꿀때, https?:\/\/\S+ 이런 패턴으로 찾고. 뒤에 있는 text 를 <code class="prettyprint">&lt;a href="http://recoeve.net/"&gt;recoeve.net&lt;/a&gt;</code> 처럼 표시해주도록 하면 될듯? Wiki 처럼 아예 [] 로 둘러쌓으면 link 나타내는 걸로 만들어 버릴까?
+
+
+
+Server 의 time zone : Universial 로 어느 지역에서 서비스하던지 일치하는 시간 같도록. 그리고 javascript 단에서 time lap 은 바꾸도록?
+
+
+
+log-in.html 에서 password 입력할때 (sign-up password 포함), Caps Lock 이 켜져 있다던지, 키보드가 한글/일본어/한자 등 영어가 아닌 언어로 되어 있다던지 알려주는게 필요하긴 할듯?
+
+
+
+다른 user 가 "http://recoeve.net/user/kipid?&uri=yyy" 형태의 URI 를 가지고 reco 를 작성하면 해당 user 에게 멘션이 가는 형태로?
+
+user/kipid?cat=xxx&uri=yyy 이런 URI 접속하면 해당 reco 가 보이도록?
+
+cat 마다 desc 따로 저장할 수 있게 해놓을까나? (이거 그냥 그 cat 에 해당하는 URI 에 reco 작성하면 저장되는 식으로 할까?)
+
+/reco/do 같은 POST with data 를 실행하는데, session out 되었으면 어찌 처리해야 할까나? rmbd cookie 는 있는 상태라고 했을때?
+
+
+
+desc, cmt 에 img/a/div/span 정도 tag 는 쓸 수 있게 해놓을까?
+
+그냥 테스트 용으로 docuK.html 이랑, 동영상/사진 올려서 전송 제대로 되는지 테스트 해봅시다. path="/test.html" 로 할까?
+
+Outsider's Dev Story 기술뉴스 시리즈 보다가 생각난건데, cats="IT--기술뉴스--시리즈--#30--웹개발 관련;IT--기술뉴스--웹개발 관련" 와 같은 카테고리에 모아놓으면 cat="IT--기술뉴스--시리즈--#30" 에서 Render this cat to HTML 버튼 만들어서 blog 에 바로 posting 할 수 있는 HTML 나오도록 만들어 놔주면 정리하기 더 쉽지 않으실까 생각중. 이렇게 정리 잘하는 사람들 유저로 끌어들이는데도 좋을테고.<br />
+: 만들어놓고 테스트를 내가 해봐야 할듯? (허락은 받고 테스트를 해야할듯)
+
+
+
+가입하면 처음에 기본적인 reco 들을 넣어놓자? 점수 및 comment 는 빼고. 유명한 음악들 몇개랑 기본 카테고리별로 간단하게나마. 매번 업데이트 하면서?
+
+
+
+
+
+E-mail verification 이후에 reco 되도록 설정하기. (지금은 그냥 가입만하면 쓸 수 있게 되어있네?) 로그인 과정을 전반적으로 점검해 볼 필요가 있을듯. 깔끔하게 진행되도록.
+
+
+
+
+각 페이지에서 reco/edit/delete 등을 요청할 때, id 도 explicit 하게 같이 보내서 log-in session id 랑 요청때 id 가 일치하는지도 체크하고 넘어가야 할듯? Log in 되어있지 않을때 처리와도 연관이 있고.
+
+
+
+
+Exception: java.sql.SQLException: Operation not allowed after ResultSet closedjava.sql.SQLException: Operation not allowed after ResultSet closed<br />
+: cat 에 한글이 들어가 있어서 그런가? 몇개 reco 가 삭제가 제대로 안되네? 뭐가 문제지? 구체적으로는 cat="[과학]--뇌과학" 에 있는 reco 들이 안지워짐. desc, cmt, val 다 지운뒤 edit, 이후 del 하면 지워지던데... 뭐지?<br />
+: 이거 neighbor 계산이 문제 같긴 한데... neighbor 관련 process 를 disable 해놓으니까 문제가 사라진걸로 봐서.
+
+
+
+
+
+### 보류
+
+
+#### 오래 걸리는 작업이라 미뤄둔 것들.
+
+휴지통 개념을 만들까? 지우면 cat=trash 로 옮기고 서버에서 주기적으로 trash 안에 들어온지 30일이 지난 reco 들만 지우는 식으로 reco 를 보호하도록? 휴지통을 비우면 완전히 지워지는거고.
+
+Del 버튼 누를때, You cannot undo this. 경고 한번 더 띄울까? 추가로 Del button 위치 좀 바꿔야 할듯? Edit 이랑 붙어있어서 실수로 누르기 쉬운듯도... 그리고 빨간색 계열로 칠해놓을까나?
+
+트위터 트윗 링크를 URI 로 적으면 트위터 API 이용해서 트윗 원문 긁어오도록. (Youtube 비디오 iframe 으로 가져오는거랑 비슷. 이거 twitter js 에 function 을 알아내야 delayed loading 이 될텐데... 당장은 보류.)
+
+여러개 계정을 동시에 remember 해서 쓸 수 있도록 할까나? (DSP 의 경우 KARA, Rainbow, April 계정들 다 한사람이 관리할수도 있을텐데... 이 경우 매번 로그아웃, 로그인 반복하는건 여간 짜증날듯.)
+
+여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까?
+
+
+
+#### 정말 필요한지 안한지 헷갈려서 보류한 것들.
+
+pushState 에 scrollTop 위치도 기억해놓자?<br />
+: 이거 delayed-element 가 있어서... window.scrollTop 위치를 기억시켜놓으면 안되고... 해당 reco 위치를 reference 로 넣어놔야 함;;;; 복잡시러울지도??? =ㅂ=;; 두개의 uri 를 저장시켜놓고? uri1, uri2, relative-position 이런식으로? 중간중간 points range 가 바뀔수도 있긴한데... 이 경우에는? OutRange 로 사라졌을 경우, 가장 가까운 쪽 reco 로 이동? 아니면 scrollToTop?<br />
+: order 가 바뀔때도 있을듯? 시간순 정렬, points 순 정렬 이런것도 있을거라서...
+
+pushState 에 uri 정보까지 넣기?
+
+Reco edit/delete 할 때, last update date 확인해서 다른 창에서 edit 가 이루어진 뒤 다시 edit request 가 온거면 확인창 띄우도록 디자인해야 할듯.
+
+외부로 퍼갈때 cat onclick 이나 twitter, facebook 공유 이런게 다 제대로 동작하도록 하는 html code 쏴주기?
+
+points 에서 위아래 화살표 키로 points 랑 max 조정되도록. 커서 위치 따라서 적절히 스마트하게 바뀌도록.
+
+cats 에서 화살표 위아래 키로 cat 선택되도록 만들기. (tab 키도?)<br />
+: tab 키는 빼는게 좋긴 한듯. desc 로 옮겨갈때 쓰는 경우가 많을테니. 화살표 위아래도 뺍시다.
+
+UriList 순서 바꿀때, text 형태로 sublimetext 처럼 drag 이후 ctrl+shift+위아래 화살표로도 이동되도록 해볼까? 다른 text 편집키는 다 preventDefault() 로 막고. 몇가지만 키가 먹히도록 디자인?
+
+Del reco 할때 cat이 지워지면, FS 부분 cat 만 놔두고 #catList HTML 부분은 지워지도록 만들자.<br />
+: 뭔가 상위 cat 이 많을때만 안지워지나???
+
+Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
+
+😀❤ 이런 이모티콘 들어가면 reco 가 안되네? Encoding 문제인가???<br />
+: java.sql.SQLException: Incorrect string value: '\xF0\x9F\x98\x80\xE2\x9D...' for column 'uriList' at row 1<br />
+이게 뭔 에러다냐???
+
+Youtube list 에서 중복 v 가 안들어가도록 처리? 이건 유투브 재생될때 reco 같이 보여주는거 하면서 하면 될듯?
+
+현재 열린 cat 이 catList 에서 스크롤 바깥에 있을때 중앙으로 (? 그냥 in view 로?) 옮겨오기?
+
+catList 에서 subCat 들 padding-left 형식으로? 줄바꿈이 일어나면 왼쪽 맞춤이 깨지네.
+
+img 이거나 video 인데 URI 가 ".jpg/.mp4" 이렇게 안끝날때도 처리하는 방법을 만들어 놓을까?
+
+Toggle ES (Expand/Shrink) 버튼 만들까? 전체 ES 를 toggle 하는 버튼.
+
+Twitter 처럼 새로 업데이트 되는 reco 들 있으면 받아서 page 도 업데이트 해줄까? 주기적으로 server 에 update 된거 있는지 요청을 보내야 하는듯? (이건 급한것도 아니고 필수요소는 아니니 당장은 약간 보류.)
+
+FileMapWithVar 의 경우 variable 먼저 처리하고 이 처리한 곳 안에 lang 관련 대체할 것들이 있으면 또 대체하도록? 이거 뭔가 복잡해져서 효율이 안나올것도 같고? 약간 보류할까나?
+
+jquery 나 여러군데에 쓰일 code 같은 경우 [--jquery.js--] 같은걸로? 브라우저에 cashe 되어 있을 경우 다시 요청을 안보내긴 할텐데... 어떻게 해놓는게 더 통신비용을 절감시킬래나?<br />
+: 이거 그냥 구현해 놓은뒤에 쓰고싶은 방식대로 선택해서 쓰면 될거 같긴 함. 그닥 바쁘게 구현해야 할건 아니라서 당장은 보류.
+
+당장 reco 들이 많지 않을테니 보류. 당장은 유저간 연결보단 초기유저들의 개인정리가 잘되도록 하는데에 초점을.
+
+개인화 된 추천 javascript 로 계산. (우선 neighbors' sim and recoes 뽑아오는거.)
+
+URIstat 그래프로 표시. (우선은 버튼을 만들어서 눌렀을때만 보이도록 할까?)
+
+바로바로 reco 가 되는 페이지 들도 만들어봐야 할듯? 평가하고 싶은 리스트들을 주르륵 나열해놓고 한꺼번에 점수를 매긴다음 한꺼번에 reco 하는 식으로. 남의 페이지에서 reco 를 가져오는게 아주 간단하게 이루어지지 않아서...
+
+하나의 cat 안에 UriList 가 너무 많아지면 어떻게 처리할까나? (당장은 보류? 나중에는 문제가 커질듯도 한데... 해결하긴 해야할듯.)
+
+defaults 불러올때 "ORDER BY `count` DESC LIMIT 5" 형태로 매번 불러오는건 느릴것도 같은데, def update 할때마다 top 5 만 따로 저장해놓으면서 update 할까나? (약간 보류? 동작은 당장 하니까.)
+
+subCats 안의 UriList 들까지 모두 보여주기. (보류?)
+
+CatList 에서 cat 이름 바꾸기 가능하게? (이거 javascript 로 대부분 처리해놓고, reco/put 에 명령어 주르륵 보내면 될듯? 더 복잡해질라나? 그냥 changeCatName 으로 보내서 따로 server 에서 처리하는게 더 나을듯? 이건 대따 복잡할거 같으니까 천천히 생각합시다.)
+
+recentRecoers : "text" 로 저장할게 아니라 "bigint" (long) ArrayList 같은 byte 로 저장해야 더 속도가 빠를듯??? (당장 동작은 하니까 보류.)
+
+get-Recoes 갯수 제한 두기? (이것도 해결하긴 해야할듯 한데...)
+
+local storage 이용 좀 하자. (보류할까나?)
+
+fixed video 가 붙으면 sidebar (in Phone view) 가려지지 않도록 위에 padding 될만한거 붙이기? (보류)
+
+HOME 각 cat 별로 최근 recoes 3개씩 뽑아내기? (보류)
+
+Merge 관련해서도 생각해봐야 할때인듯. (youtube 같은 pattern 형식도 있을테고, 그닥 패턴이 없은는 URI 도 같은걸 가르킬 때가 있을듯. 이것도 당장은 보류하자. 언제라도 해결하긴 해야할듯 하지만.)
+
+Reco comment 에 up/down vote 가능하게... Up 이면 <code>sumSim+=120; nSim++;</code> 120 은 너무 많은가? Down 이면 <code>sumSim+=0; nSim++;</code> 이러면 될라나? 이거 따로 기록해둬야 나중에 이 factor 수정하기 쉬워질거 같긴한데... Cats 별로 다 따로따로 up/down 이 되어야 해서... 더 복잡해지기만 할듯도 하고. 중간에 error 없이 잘 계산되었는지 확인하려면, 기록이 되어있긴 해야할거 같고. 고민 좀 더 해봐야 하겄네. (보류?)
+
+
+
+### Users and Contents
+
+어떤식으로 database 를 구성할지 계속 고민해 봐야 함.
+
+특히나 user 쪽은 어떻게 보안을 향상시킬지를... Log 만 기록해 놓으면 무작위식으로 로그인 시도하는걸 못막을거 같고, 비번이 연속해서 5번 이상 틀리면 로그인을 막아놓고 이메일 확인을 다시 시킨다던지.
+
+로그인 시도들 (실패한 것들 포함) 볼 수 있는 페이지를 만들어야 할듯. '다음'에서 제공했던것도 같고...
+
+
+
+### Account/settings page
+
+프로필 편집, 암호 바꾸기, 아이디 바꾸기 등 Settings 페이지도 만들어야 함.
+
+
+
+
+### List up (ideas)
+
+우선 순위 정하는거 까다롭다. 전체적인 그림도 봐야하고, 먼 미래에 어떤 모습이 되어야 하는지도 생각하느라 ㅡ,.ㅡ;;;; 막상 결과물을 빠르게 보여주려면 가장 핵심적인 부분에 집중해서 우선 코딩을 해놔야 하는데, 코딩은 시간/노력이 많이 드는 일이라... 진도가 느리게 느껴지네.
+
+누구의 의견도 들어가지 않은 MAMA 동영상 모음이라던지 이런 페이지도 만들어주면 좋을듯? 평가하고 싶을때가 있을텐데... 다른 누군가가 정리해 놓은거에서 자신이 평가를 하면 뭔가 이 사람한테 영향을 받아서 자신의 평점이나 comment 가 결정될수도 있을테니. 아주 깔끔하게 그냥 영상만 모아서 보여주고. reco 가 쉽게 되도록 페이지를 만들어주면 좋을듯 함. 큰 이슈가 있을때마다 페이지를 예쁘게 만들어 줘야 할듯. CSS3 쓰고 막 이러면서??<br />
+: 음 이건 promotion 용으로 한번씩 만들면 괜찮을거 같긴한데... 기본적으로는 그냥 user 들이 만들어서 자신의 reco page 퍼다 나르는 식으로 하라고 해야할듯.
+
+그래프를 예쁘게 보여줘야 함. 전체 평점 분포랑. 내 neighbor 의 평점 분포랑. 평균치는 안보여주는게 나을지도?
+
+그냥 내 reco points 가지고만 neighbors 를 찾기보단 내가 좋아하는 사람을 선택할수도 있게 해줘야 할듯? 괜찮은 reco comment 에 추천을 해주는 식? 그리고 서로 소통도 되게 해야 함. reco comment 에 댓글 식으로 반응이 보여야 할듯? 내 reco 가 얼마나 퍼졌는지도 숫자로 알려주면 좋겠고... 얼마나 많은 사람들이 봤는지도 느끼게 해줘야 할 듯 싶고.
+
+내게 reco 가 오면 그 사람의 카테고리로 가서 전체적인 것들을 볼수도 있게 해줘야 할듯? MAMA 영상이 추천이 들어왔는데, 다른 영상들도 궁금하다. 이러면? MAMA 영상을 다 정리해 놓은 사람도 있을테니 그 사람의 music--MAMA category 화면을 보여주는 식. 아님 이 URI 자체를 추천을 주던가? 추천이 왔을때 몇 사람의 reco 가 나에게 보여질테니 그 reco 의 categories 에 a link 가 있어서 찾아갈 수 있게하면 될듯?
+
+사람들이 어떤식으로 reco 를 할지를 생각해 봅시다.
+<ul>
+	<li>
+		브라우저 add-on 처럼 만들어줘서 해당 사이트에 접속했을 때 바로 reco 할 수 있다면 좋겠고. (iframe 이랑 pop-up 식의 reco 화면으로 억지로 해결할수는 있을텐데... iframe 으로 load 안되게 막아놓는 사이트들도 많고 해서 어려워보임. 또한 a href 링크 타고 이동할때는 그냥 창에 열린다는게 add-on 보다 못한 점일듯. 그런데 애드온은 깔 사람이 그리 많지 않을테고...)
+	</li>
+	<li>
+		facebook, twitter widget 처럼 in pop-up 으로 공유할 수 있는 js 만들어서 배포해줘야 할듯. 각 사이트가 알아서 심도록? 이 경우에 URI 랑 Title, Desc 등은 자동으로 채워지도록 해주는게 좋은데.... Category 도?
+	</li>
+	<li>
+		다른 사용자가 잘 정리해 놓은 reco page 에서 보면서 자신의 reco 를 업데이트 할 경우도 많을듯. (MAMA 동영상들 잘 모아놓은 사람이 있다고 한다면 여기 찾아가서 자신이 좋아한 영상 reco 하는 식.)
+	</li>
+</ul>
+
+FinTech 도 접목시키자? 개인적인 경제 철학을 간단하게라도 보여주면 좋을듯? DailyPoints 같은 게임적인 요소도 좀 넣고...
+
+소통을 이어주는 것도 중요한 목표라서. reply table 도 만들어야 할듯? 다른 사람의 comment 에 연쇄적인 reply 로 chat 이 가능하게? 해당 URI 에 대한 반응들은 recent recoers 가져와서 보여주면 되겠고. 뭐 해당 URI 의 글쓴이에게 궁금한 것이나, 이 URI 에 관심있는 다른 사람들에게 무언가를 물어볼수도 있을테고... 이럴 경우 내 reco 만 정리해 놓는걸로는 부족할듯하니까.
+
+plug-in, widget: 이건 다른 문서에 좀 써놓은거 같은데...
+
+docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한데... (디자인은 다양화 되어야 할듯. 너무 획일적이면 매력이 없어 ㅡㅡ;;;;)
+
+내 reco 검색하기. 이것도 내가 검색엔진에 대한 지식이 별로 없어서 공부 좀 해봐야만 제대로 짤 수 있을듯. (indexing 같은걸 해놓으면 빠를텐데) 뭐 가장 무식하게는 SQL 에서 해당 user 로 필터링 한 뒤 SQL 검색기능 같은거 쓰는것일듯? Server 부담이 클거 같기도 한데... 검색 기능을 user 가 많이 쓰지는 않을테니 괜찮을거 같기도 하고. 남들 reco 구경하는 검색도 구현해놓을까?
+
+`#related URIs: 음악 같은 것 저장할때 대표 youtube URL 로 reco URI 를 저장하고 comment 에 #related tag 로 관련된 URI 들을 한꺼번에 저장할 수 있게 해야할듯? (특히나 중복해서 평가하고 싶지 않을 경우 이런걸 활용하면 좋을듯 함. Server 에서는 자동적으로 해당 related URIs 에 대한 reco 를 subCat (predesigned: --) 에 저장하면 좋을듯.) related URIs 들도 동영상은 쏴주는게 좋겠고. SubCat 내에서 새로운 추천이 떴을때 찾아주는 기능도 괜찮을거 같고...
+
+기업/벤쳐에서 to do list 같은 것들도 이렇게 저장해놓으면 괜찮을듯도 하고... 공개해도 되는 것들만. (비공개 옵션은 github 처럼 돈받고 팔까?) 중요도를 개개인이 평가할 수 있을테니, 통계내기도 좋고. 어떤 동료가 나랑 비슷한 평가를 했는지도 알 수 있고. 같이 공유되는/합의된 의견은 description 에 넣고, 개인의견은 comment 에 넣는 식으로...
+
+
+
+
+
+
+
+
+
+
+
+
+## Done
+
+### 정리하기 전
+
+Reco list play 정리. YouTube API 가 필요할때 delayed loading 되도록 만들고, "Toggle reco list play" 버튼이 깔끔하게 동작하도록 UX 를 만듬.
+
+/reco?uri=...&title=... 형태로 접속하면 reco 화면 띄우기. (로그인이 안되어 있을 경우도 잘 처리되도록.)
+
+desc 에 padding 없애기. div.p 같은데에다가 padding left/right 넣어놓고, related video 같은거 들어갈때는 꽉차도록 바꿉시다.
+
+youtube API 나 twitter API, MathJax API 등은 필요할 때만 load 되도록 디자인 합시다.<br />
+: script addChild 이런거 써서?
+
+Reco 를 10여개 정도만 html 로 만들고 (range 에 있는것만?) 나머지는 scroll event 로 delayed load 되도록.
+
+desc format 화 해봅시다. DISQUS 정리한거 참고해서 하면 좋을듯?
+
+desc 쪽에 "#2015년" 이런식으로 시작하는게 있으면 error 나는듯? 왜 때문이지??? "# abc" 같은걸 어찌 처리하고 있는지 잘 살펴봐야 할듯?
+
+Change orders 에서 cancel 눌렀을때, expand/shrink 기억해서 맞추기. subCatCollapsed, subCatExpanded
+
+input_cats 제대로 동작하도록 만들기.
+
+URI http://blog.naver.com/alsn76/220235940614 의 points 바꾸는데 error 가 뜸. (이런 문제가 꽤 있었던거 같긴한데... 로그인 유지 문제도 해결해야 하고.)<br />
+: updateNeighbor 쪽에 문제가 있었던듯?
+
+Mobile first form 으로.
+
+로그인 유지 시키기. (얼추 해놓긴 했는데... 제대로 동작하는지 확인해봐야 함. 대충은 해결한거 같긴 한데... rmbd cookie 는 있고, session cookie (I, tCreate, tCjs) 가 없을때가 문제일듯?)
+
+Youtube 말고 그냥 파일로 올린 영상도 연속재생 되도록 만들어 볼까나? 그 이외에도 다른 동영상 서비스들 API 도 좀 구현해볼까나?<br />
+: 이거 API 들을 안줘서 거의 불가능 ㅡ..ㅡ;;; 그냥 mp4 등 동영상 파일 URI 같은 경우는 유투브랑 같이 낑겨넣을수는 있을거 같긴한데... (그닥 급한건 아니라 좀 보류하자.)
+
+reco 에서 cat 부분 클릭하면 해당 cat 으로 이동되도록 onclick 구현.
+
+lang 선택 클릭하면 ?lang=xx 로 가서 user-page 보여주는게 아니라 cat 도 유지되도록 합시다.
+
+Youtube playlist 에서 list 갯수가 아마 64개로 제한이 있는듯? 이것도 감안해서 처리해야 할듯. 아예 Youtube playlist 쓰는게 아니라 그냥 end event 만 받아서 매번 다음 영상을 cue/load 하는 식으로 동작하게 하는게 나을거 같기도.
+
+카테고리가 추가되거나 삭제되었을때, fuzzy search cats 도 업데이트. (삭제되었을때는 빼지 말까나? 어차피 새로고침하면 사라지긴해도 당장 session 에서는 쓸수도 있으니까?)
+
+Cat Fuzzy search 할때 본인 CatList 참조해서 하기. (지금은 user page 꺼 참고해서 하도록 되어있음.)
+
+드디어(?) 하나의 cat 안의 reco 들을 다 html 화 하는거에서 느려기지기 시작함? 140여개 넘어가니까 이러는듯? K-Pop cat 인데... lyrics 가 많아서 그런지도?
+
+reco 들을 10개정도만 초반에 html 화 하고, 이후 것들은 on("scroll") 혹은 TOC, Go 로 갈때 delayed 되어서 html 화 하기.
+
+URI <code>http://videofarm.daum.net/controller/video/viewer/Video.html?vid=v51d2A2lLEE82M01juM41L1&play_loc=daum_storyball</code> rendering 할때 autoplay 처리랑 play_loc 이 없을때 영상 재생이 안되는거. (후자는 해결이 안될거 같긴한데, 왜 때문인지라도 정리 좀 해놔야 할듯.)
+
+우선 기존 code 들 정리 한번.
+
+Fuzzy search 더 검색에 가까운거대로 정렬? 이건 뭔 알고리즘을 적용해야 할까나?
+
+instagram 이 이제 "instagram.com" 에서 "www.instagram.com" 으로 바뀜. 이거 iframe 으로 바꾸는 rendering 에 포함시켜야 함. (그런데 왜 바꾼거지?)
+
+fake favicon.icon (favicon request 가 쓸데없이 너무 많은듯해서 이렇게 해봄. ajax 요청때도 favicon request 를 보내는듯??? 그냥 접속해도 favicon 요청이 3~5번이 오던데...)
+
+Vert.x 3.0.0 으로 upgrade. listen host 를 ip "172.31.13.32" 로 제한.
+
+Server 암호 바꾸기? AWS 가서 바꿔야 하는듯??? (윈도우 admin 암호 바꾸는 거였음. 뭔가 zc.qq.com 같은데에서 해킹이 들어온듯도???)
+
+long 에 음수 들어가면, Long.toHexString(long i) 랑 Long.parseLong(str, 16) 이랑 충돌 일어남.<br />
+: Exception in thread "main" java.lang.NumberFormatException: For input string: "ffffffffffffffff"<br />
+toString(str, 16) 으로 해결.
+
+SNS sharing 을 a href target="_blank" 링크로 만들어주기? 이미지도 외부 referer 에서 보이도록 해줄까?
+
+lang 부분도 a href with onclick 으로 만들자.
+
+.rC padding-bottom pb>70 일때는 position change 끄자. (추가로 soundcloud pb:40% 로 함.)
+
+Reco 에서 cats 에 a href onclick 구현해 놓읍시다. (CSS 도 조금 바꿔줘야할듯 하고, current cat 일 경우는 그냥 클릭을 disable 되도록 만듭시다. 그런데 긁어서 퍼갈땐 다시 클릭이 되도록 만들어야 할텐데...)
+
+Ted, soundcloud.com 영상도 iframe 으로 처리되도록.
+
+desc 에 related URI 들 formatURI 한번 돌린 뒤 처리하기.
+
+naver iframe URI 들어오면 적절하게 처리하기.<br />
+: tag 형식의 URI 가 들어오면, $() 으로 처리한 다음에 attr("src") 뽑아내서 처리함.
+
+myCatList 관련해서 update. (Reco to mine 할때나 reco/edit/del 할때에 myCatList, 특히 catFSFullList 가 잘 업데이트 되도록.)
+
+$change_catList_order_cancel 에서 selected cat 유지되도록.
+
+Cat 에 wheel click 했을때 새창에 띄워지도록 만듭시다. wheel click event 가 scroll 있을경우 trigger 가 잘 안되는듯? 그냥 dblclick event 에 새창띄우기 되도록 만들까? Wheel click 으로 동작하게 할거 아니면 그냥 하지 맙시다. UX 가 이상해질듯.<br />
+: single click 하고 double click 따로 동작하게 하는 방법은 <cite class="ref-click-and-dblclick"><a href="http://stackoverflow.com/questions/6330431/jquery-bind-double-click-and-single-click-separately/7845282#7845282">stackoverflow.com - Jquery bind double click and single click separately</a></cite> 참조. 여기 답변이 제일 쓸만한듯.<br />
+: a tag with onclick 으로 해결.
+
+cats 여러개일때 하나만 수정해도 다른 cat 에서의 UriList 에서도 top 으로 가버리네?<br />
+: 이거 RecoeveDB.java 에서도 수정해야 함.
+
+i	result<br />
+1	deleted<br />
+/user/kipid?cat=[Music/Break]--KARA--Fan%20site:1596 Uncaught TypeError: Cannot read property 'length' of undefined 에러 해결하기.<br />
+: 새로운 cat 이 추가되거나 지워질때 약간 이상하게 동작하네. reco delete 이후에 처리가 아직 제대로 안동작 하는듯? 제대로 안짜놨음.
+
+```
+// eve.deleteCatsUriFromList 에서
+while (cat!==null&&(!eve.catUriList[cat]||eve.catUriList[cat]["UriList"].length===0)&&eve.deleteCat(cat)) {
+	cat=eve.getSuperCat(cat);
+}
+// Uncaught TypeError: Cannot read property 'length' of undefined 에러난듯?
+// 해결된건가? 계속 테스트를 해봐야 할듯.
+```/
+
+
+String error (str===null||string===undefined) 를 (!str) 로 바꿈.
+
+youtube 등 regex 에서 ?search 부분 더 유연하게 처리하기. list 가 들어올때도 있는데... 이것도 처리.
+
+Delayed load 를 좀 더 유연하게 (flexible) 동작하게 업그레이드 합시다. class="to-be-executed" onclick="" (cmt/desc 같은데에 js 삽입 못하도록 onclick 에다가 넣어버릴까?) 같은거 만들어서 이 elem 가 걸리면, 어떠한 function 을 수행, 즉 trigger("click") 하도록 디자인.
+
+iframe 막기.<br />
+: 대충 구현하긴 했는데, 좀 더 깔끔하게 만들 필요는 있을듯.
+
+a href tag 에서 target="_blank" 추가? 이거 deprecated 되었다고 보긴 했는데... 불만이 많아져서 다시 부활한듯?
+
+n 눌렀을때 e.preventDefault() 넣어야할듯? URI 쪽에 n 이 입력되네?
+
+fixed video 위치를 왼쪽으로 바꾸고. lyrics 를 right align 으로 바꿉시다.<br />
+: 좀만 이상태로 써보다가 바꾸자.
+
+eve.recoToEve 에서 for (var prop in recoK) {} 로 처리.
+
+jQuery $.fn 에서 function 호출할때 바로 $(this) 가져오는 방법 없나?<br />
+: 없는듯? 뭐 엄청 빨라질거 같지도 않으니 포기? 그냥 this 자체가 $this 인건가??? 헐... this 가 jQuery element 였구나;;;
+
+숫자들 user 에게 explicit 하게 보여주는 것들이 아니라면 string 으로 변환시 hex 씁시다. (더 빠른 처리를 위해... 그닥 빨라지는 정도는 크게 차이는 없을거 같긴한데... 그래도 뭐ㅋ)<br />
+: RecoeveDB.java 에서 cookie 쪽에 저장되는 I 랑 rmbdI 만 바꾸긴 했는데.. 딴건 없겠지? (Recoeve.java 에서도 뭐 바꿔줘야 하나?, RecentRecoers.java 에서도 바꿈.)
+
+iframe 을 embed 로 바꾸기. (뭔 차이지???)<br />
+: embed 는 delayed loading 이 안되는거 같아서 다시 iframe 으로.
+
+FileMap 에서 imgMap 만들어서 img 쏴주기.
+
+new-reco 가 띄워지면 URI 쪽으로 focus and trigger("keyup").
+
+Scroll down 쪽만 pad 적용해서 미리 delayed load 받도록 하자.
+
+side 를 margin 이나 padding 으로 처리하지 말고 그냥 element scroll 되도록? 이러면 delayed load 도 바뀌어야 할지도???<br />
+: 이거 iframe 에서 스크롤이 먹통되는 등 안좋은 점이 많아서 보류.
+
+Toggle Lyrics 안먹히는거 처리. 한번 클릭시에는 disable 만들고 1초뒤에 푸는걸로...
+
+UriList 도 따로 delayed load 합시다. (지금은 user-page.html 쏴줄때 각 cat 에 해당하는 UriList 도 한꺼번에 다 쏴줌.)
+
+Default max Points (eve.fullPts) 10 으로 해놓자.
+
+uriToA 에서 eve.escapeHTML(decodeURIComponent(uri)) 하기.
+
+$html.on("mouseup") 에 touchend 도 넣기.
+
+jquery 최신버전으로 업그레이드.
+
+Change CatList Order 부분 전체적으로 수정<br />
+: updateCatFS 수정해야 하고. change_catList_order fail 했을때 처리.
+
+Cat 옮길때, $contents 에 Loading... 으로 만든뒤, 새 reco 들이 다운 되면 html replace 합시다. Delay 가 있으니까 UX 가 좋지 못한듯.
+
+모든 delayed elems 가 load 되면 scroll.delayedLoad 가 off 되는데, 새로운 reco 들어오거나 해서 [delayed-src] 가 있는게 들어올 경우 다시 켭시다.
+
+New Reco 혹은 Edit 에서 ESC 누르면 Close 되도록?
+
+Ctrl+Enter 치면 바로 reco/edit button 이 click 되도록? (트위터에서는 이렇게 동작함.)
+
+Range 정하는거 discrete 하게 말고 그냥 움직이도록. (숫자 표시만 toFixed(1) 정도로 만들까?) Points 가 없는 걸 보일지 말지도 선택할 수 있도록 버튼 하나 추가. "Show recos without point" 버튼이 될듯?
+
+Appsurprise 가 URI 에 들어가면 iframe 으로 쏴주도록.<br />
+: img 처리하는것도 pattern 바꿈.
+
+New reco 를 하거나 reco edit 했을때, reco cats 에 현재 URL cat 이 포함되어 있다면 전체를 refresh 하지 말고, 추가된 reco 혹은 수정된 reco 만 수정하는식으로 합시다.
+
+URI 가 255 자 넘어가면 error 남.<br />
+: <cite class="ref-count-bytes-of-string"><a href="http://stackoverflow.com/questions/2848462/count-bytes-in-textarea-using-javascript/12206089#12206089">Count bytes (UTF8) in textarea using javascript</a>, 2010-05-17, asked by mcintyre321.</cite>
+
+Reco 마다 twitter, facebook 으로 uri, title, cmt 정도 forwarding 할 수 있게 해놓을까나?<br />
+: cmt 는 낑기기 힘들듯도? myPage 인지 확인해서 twitter 만이라도 구현해 놓을까? Facebook 은 이런 기능 자체를 지원 안하는거 같고...
+
+한글 초성검색 가능하도록 만들기. 한/영 키를 잘못 눌렀을때도 한/영 키 변환 예측해서 fuzzy search 하기.
+
+Youtube playlist 바뀌었을때만 reload 되도록.
+
+str.replace functions 에서 에러 처리 해놓자.
+
+URI 에 무언가 들어갔다가 empty 로 돌아오면 undefined 가 채워지네? 해결됐던건가? 우선 업데이트 해보고 문제 계속 발생하면 고치자.<br />
+: 고쳐진듯? 뭐 reco 정리하면서 더 확인하긴 해야할듯. 당장은 별 문제 없어보임.
+
+desc 가 empty 이면 표시하지 않기.
+
+Points 0 점이면 별 표시 아예 하지 않기.
+
+CatList 보여줄때 초기상태는 가장 최상위 cat 들만 보이고 나머지는 hide 된 상태에 있도록 만들자. 하지만 하위 cat 들은 다 expand 상태에 있어서 클릭 한방이면 하위 cat 은 한꺼번에 보이도록.
+
+숨겨진 cat 을 열어야 하는 URL 로 접근하면 자동으로 이 cat 이 보이도록 parents().show() 해줘야 할듯.
+
+reco update 따라서 fuzzy search list 들 update 해줘야 함.
+
+reco/edit 했을때 후속 처리가 잘 안되고 있음.
+
+숫자를 직접 편집했을때, 별점 위치 움직이기.
+
+New reco 작성할때, cats=empty 이고 path search 에 cat 이 있으면 이 cat 을 자동으로 채워넣어 놓도록 합시다.
+
+.replace-reco-eve 인것만 색 입히는걸로.
+
+input 들 두줄로 넘어가면 height 늘어나도록 css 설정.<br />
+: 이거 설정이 까다롭네;;; input 을 그냥 textarea 로 다 바꿔버릴까? 엔터나 format 만 따로 처리해주면 될듯?
+
+로그인 때 lang 선택하면 cookie 에 lang 정보 저장해놓기.
+
+javascript eve.strToArray 에서도 class StrArray.java 와 마찬가지로 boolean colMap, boolean rowMap 받아서 처리하는걸로 합시다?
+
+user-page.html 이랑 log-in.html 의 언어팩 [--var--] lang.txt 설정.
+
+lang.txt transpose 하자. GitHub 에서 변화 추적하기가 힘듬. (1 line 이 길어져서 truncated 한채 보여줌.) 그리고 var name 정렬할때도 transpose 해놓은 상태가 더 좋은듯. 이거 JAVA 에서 lang Map code 도 바꿔야함.
+
+class StrArray.java colMap, rowMap 선택사항으로 되도록 만듬.
+
+URI 가 video 에 해당하는 URI (.mp4) 라면 video tag 로.
+
+URI 가 image 에 해당하는 URI 라면 image 표시해주기. (예를 들면 끝이 .jpg/.png 등으로 끝난다던지. hostname=imgur.com 이라던지가 있을듯.)
+
+map URI 는 어찌 못하겠음.<br />
+: google 은 개인 authorization 이 필요한듯 싶고, daum 껀 image 로 쏴주긴 하는데... 어차피 통일성 있게 reco 가 안될거라서 추천에 도움이 안될테니 하지 맙시다.
+
+daum video id 길이 따라서 '$' 가 붙을때가 있고 안붙을때가 있음.
+
+보안상 이유로 &lt; &gt; 으로 처리된 URI escapeHTML 하지 않기. script 넣을수도 있을테니.
+
+URL search 에 lang 이 들어가 있으면 javascript cookie 로 저장하도록.
+
+log-in.html 에서 error msg 띄우는거 버튼 위로 만들고. 새로운 에러가 아래쪽에 update 되도록 만들자.
+
+user-page.html CSS @media query 더 세분화. sidebar width 변화를 좀 더 세분화 해주면 좋을듯?
+
+Button disable 시킬때, button 모양 disable 에 맞춰서 회색빛 같은걸로 바꿔주기.
+
+button disabled=true 는 button tag 에서만 먹히는듯. div.button 으로 구성한 것들은 addClass("disabled") 식으로 바꿨음. css 에  넣고.
+
+rmbd cookie 는 path=/account/log-in 으로 되어 있어서. session 이 끝났을때 rmbd 로 다시 session 유지 가능한지 확인하려면 redirect 로 /account/log-in 으로 보내야만 함.
+
+Chrome 에서라도 scroll style 바꿔줄까?
+
+user-page.html body background 조정.
+
+Del 버튼 이후 처리가 제대로 안되고 있음.
+
+Emptify 이후 lastURI 도 비워주는거 깜빡한듯.
+
+New reco x button 약간 올리기? 미디어 쿼리로 width 별로 위치조정을 할까?<br />
+: 그냥 놔두자. 더 지저분해질듯.
+
+user-page.html foot padding 조정하기.
+
+스마트폰에서 input 에서 input 작성한 다음 "다음" 키 누르면 다음 input 으로 제대로 이동할래나? 이거 확인 필요.<br />
+: 스마트폰은 input 에서 키패드에 다음 버튼이 생성되는데, 실제로 쏘는 키값은 탭이 아니라 엔터인듯? 엔터에 next input 으로 가도록 해놔야겄네. (아이폰에서는 또 다를수도 있을거 같기도 하고;;;)
+
+docuK 인코딩이 뭔가 이상하네? docuK.js 파일 받아서 처리할때 encoding 정보가 없어서 멋대로 처리하는듯?<br />
+: script tag 에 charset 붙였음.
+
+sessionPassed==false 일때, db.varMapUserPage 가 어떻게 처리되는지 확인필요. (아마 user id 같은건 empty 로 들어가도록 잘 짜여져 있을거임.)<br />
+: cookie 에 "I" 가 없으면 {--user id--} 랑 {--index--} 에 emtpy 채워짐.
+
+
+title 에 userId 표시.
+
+password 에서 엔터 눌렀을 때 바로 로그인 button click 되도록? 그닥 급한건 아닐듯.
+
+user-page.html 각 element 에 tabindex 넣기. (New reco 띄워져 있을때 순환되도록 할 수 있나? 좀 테스트 해보고 넣어야 할듯?)
+
+Vertx HTTP Server 에서 listen 이후 제대로 종료되지 않으면 port 가 이전 실행된 Server 에 묶여있음. 이거 어떻게 unbound/release 시키지?<br />
+: Vertx verticle 실행중인 window console 찾아서 정지시키는 방법밖에 없을듯?
+
+signed-up.html 남은 시간 바뀌도록.
+
+log-in.html sign-up 에서 input 들 valid 하지 않을때 바로 button disable 풀리도록.
+
+log-in.html 로그인 암호 "Password is being encrypted." errorMsg 로 화면에 보여주기. 추가로 error msg 전반적으로 수정.
+
+log-in.html input 들에 tabindex 넣기.<br />
+: 스마트폰에서 "다음" 클릭이 제대로 먹힐래나 이제?
+
+로그인 페이지 스타일 좀 바꾸자. 완전 dark 하게 가거나. 좀 세련되게?
+
+to-user-page.html 같은 redirecting 대신 javascript window.history.replaceState 로 처리하자. 쓸데없이 통신량만 늘어나고 sessionCheck 도 반복하게 되는듯.<br />
+: rmbd cookie 의 path 문제 때문에 redirecting 도 가끔 필요하긴 한듯?
+
+스마트폰에서 동작확인 다시. (이건 뭐 꾸준히 한번씩 해야할듯.)
+
+log-in.html page 에도 foot 넣기. Recoeve version 이랑 supports 링크 등 들어가는.
+
+fuzzy search 할때 space 가 space 를 검색하는게 아니라 하나 건너띄고 검색하도록 만들자. "p m" 이걸 검색한다면 "pm" 은 검색에 안걸리지만 "pam", "[Physics/Math]" 등은 걸리도록.<br />
+: Regular Expressions - Match Anything 은 다음 참고 <cite class="ref-match-anything"><a href="http://stackoverflow.com/questions/6711971/regular-expressions-match-anything">stackoverflow.com - Regular Expressions - Match Anything</a></cite>.
+
+화살표 버튼 바꾸자. Encoding 문제인지 뭔지 스마트폰에서는 깨지거나 안보임. From ▾▸ to ▼▶.
+
+New Reco 버튼 단축키 (N) 으로 만들기.
+
+Recoeve.net Development progress reports.html 작성 및 공지.
+
+Recoeve.net Guides.html 만들기. 특히나 cat format, desc format 등 잘 설명해줘야 할듯? 아예 Reco page 에서 ? 버튼 클릭하면 연결되도록? 아니면 in pop-up 으로 뜨거나.
+
+user-page.html 에서 foot style 변경.
+
+user-page.html 에서 div#new-reco 위치 변경. z-index 추가.
+
+Foot 에 버전표시.
+
+MySQL connection 문제 대충 해결한거 같긴한데.. 제대로 해결된건지 내일쯤 다시 확인해봐야 함.<br />
+: 해결된듯? Remember me 가 제대로 안돌아가는듯 하긴 하지만... 이건 다른 문제인가?
+
+remember-me.html 에서 location.href 도 같이 보내던거 삭제. (이거 Referer 체크로 대체하는게 더 좋을듯도 하고, 이걸 체크하는게 별 필요도 없는거 같아서.)
+
+스마트폰에서 동작확인.<br />
+: 스마트폰 갤럭시s 에서는 브라우저가 꾸져서 그런가 이상하게 동작하는게 많네. (Change orders 도 잘 안먹히고, get-Recos 도 제대로 동작을 잘 안하는듯.)
+
+Exception: com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: No operations allowed after connection closed.<br />
+: MySQL 로그인이 8시간 (=28800sec) 동안 아무런 query 가 없으면 풀리나보네? =ㅇ=;;; <cite class="mysql-timeout"><a href="http://redutan.blogspot.kr/2013/12/no-operations-allowed-after-connection.html">http://redutan.blogspot.kr - No operations allowed after connection closed 오류 해결</a>, 2013-12-19<br />
+<a href="http://dev.mysql.com/doc/refman/5.0/en/server-system-variables.html#sysvar_wait_timeout">dev.mysql.com - 5.1.4 Server System Variables - #wait_timeout</a></cite> 우선 wait_timeout 을 3일 (=259200sec) 로 바꿔놓자? 해결된듯?
+
+MySQL my.cnf 파일 변경. MySQL dir 들이 잘못되어 있었음.
+
+Youtube 이어서 재생이 뭔가 막혔네?<br />
+: 다시 그냥 되는데? 유투브에서 자체적으로 고친듯?
+
+method HEAD 요청은 뭐지? 검색엔진들 봇이 들어오는건가?<br />
+: 웹서버가 응답시 리소스의 내용은 보내지 않고 HEADER만 보낸다. 즉, 해당 Resource가 존재하는지? 혹은 문제가 없이 제대로 처리가 되는지를 확인할 수 있을것 같다. <cite class="method-head"><a href="http://egloos.zum.com/dialup/v/139627">dialup.egloos.com - GET, POST외 HTTP의 기본 method들에 대해...</a></cite>
+
+/robots.txt 도 만들어야 할듯?<br />
+: 크롤러 (Crawler) 에 대한 지침용이라 그닥 필요없을듯. 강제하는것도 아니라서... <cite class="google-robots"><a href="https://support.google.com/webmasters/answer/6062608?hl=ko">support.google.com - robots.txt 파일에 대해 자세히 알아보기</a><br />
+<a href="https://support.google.com/webmasters/answer/6062596?hl=ko">support.google.com - robots.txt 파일 만들기</a></cite>
+
+user page 를 로그인 안한 사람도 볼 수 있도록 해놔야 할까? 막아놔야 할까? 초기에는 막지말고, 조금 규모가 커지면 막자. 트위터나 페이스북도 막는듯? 규모가 커진 뒤 가입 유도하려면 이래야 할듯...
+
+HTTP request path 에 ".." 들어갈 경우 처리?<br />
+: <code class="prettyprint">if (path.contains("..")) { path="invalid.html"; }</code> 같은 처리를 해야할래나? 뭐 그냥 invalid 로 갈듯?
+
+JAVA 랑 Javascript 에서 String split() 명령어가 어떻게 다른지 정리 좀 해놓자.<br />
+: <a href="C:\Users\강수\Documents\DaumCloud\Blog\IT\String.split() in JAVA and Javascript.html">C:\Users\강수\Documents\DaumCloud\Blog\IT\String.split() in JAVA and Javascript.html</a> 에 대충만 우선 정리함.
+
+path=="/" 일때, sessionPassed==false 이면 log-in page 바로 쏴주는걸로 합시다. URL 이상한건 my-page.html 처럼 replaceState 로 처리하고.
+
+URL 구조 정리하자.
+
+favicon.ico 만들기+파일보내기.
+
+Recoeve.java 에서 path type=final String 으로. 바뀌면 안되는거니까. 분석할땐 다른 변수 도입해서 조작.
+
+print log 에서 referer 확인할까나? 다른 URL 에서 reco/edit/delete 요청을 할 수 있는지? iframe 가능한지 등등 테스트 해봐야 함.
+
+get-Recoes 를 get-Recos 로 바꾸기. (일관성있게 reco 복수형은 recos 로 쓰자.)
+
+Recoeve.java verticle 에서 변하면 안되는 것들 final 로 지정하기.
+
+Console 에 log 찍는거 단순화.
+
+cat 이동했을때, URL 이 일치하지 않으면 pushState 가 되도록.
+
+스마트폰에서 별점 드래그 되도록 만들기. (mousedown 이랑 touchstart 등이 pointerdown 등으로 통합될 수 있는듯? 좀 공부해야 알 수 있을듯.)<br />
+: 대충 해놓긴 했는데 해결 됐을래나?
+
+Cat 에 reco 가 아무것도 없을때 표시해주기. (최하위 cat 에 reco 가 없으면 자동으로 지워지긴 함. 상위 cat 들의 경우 empty 라는걸 명시적으로 보여주긴 해야할듯.)
+
+id=new-reco 에서 오른쪽 위 X (exit/close) 버튼 위치 조정? 스마트폰에서 별점 이동이 잘 안먹힘.
+
+누구 페이지인지 왼쪽 위에 표시를 할까? (지저분할거 같기도 하지만;;;)
+
+New Reco 이후 title, cat 이 empty 되어야 함.
+
+Sign up 이후 뜨는 메세지 페이지 적절히 바꾸기. (redirecting 을 해주거나 log-in page link 를 줘야할듯?)
+
+접속 로그 찍는거에 시간도 찍히도록 해놓자 우선.
+
+Javascript error 해결하기 : eve.escapeAMP - Cannot read property 'replace' of undefined
+
+내 페이지일때랑 다른 사람 페이지일때 구분해서, 같은 html 파일로 같이 처리되도록? 다른 사람의 페이지에서 어떻게 동작하는지 좀 확인해 보긴 해야할듯.
+
+Recoeve progress.html 정리하기.
+
+E-mail verification 보낼때, host=recoeve.net 으로 바꾸기. E-mail verification 내용 조금 더 수정. HTML style (font 등) 수정.
+
+"This is alpha test service. Please give us feedbacks, error reports, and suggestions." 등의 문구 foot 에 추가하기.
+
+Category 입력할 때, sublime text 자동 완성처럼 pmp 입력하면 "[Physics/Math]--Physics" 같은 리스트들이 떠서 선택 되도록 만들기. Javascript 로 짜야 할듯? 어떻게 짜야할지 공부 좀 해봐야할듯. 무식하게는 category list 의 모든 가능성을 indexing 으로 저장해 놓고 뽑아 쓰는 것일텐데... "abcde" 가 있으면 "a", "b", "c", "d", "e", "ab", "ac", "ad", "ae", "bc", "bd", "be", "cd", "ce", "de", "abc", "abd", "abe", "acd", ...... 이런식으로.<br />
+조금 더 체계적으로는 {"abcde":{"a", "b", "c", "d", "e"}}  chainning 이나 recursive 쓰면 될거 같은데?<br />
+: chainning 쓰면 더 복잡해지는거 같아서 그냥 regex 검색으로 당장은 해결.
+
+defDesc 관련. format 화. SEE?
+
+deleteCatsUriFromList : 우선 UriList 에서만 URI 가 지워지도록 해놨는데... Reco 를 지우거나, Reco cats 를 바꿀때 빈 cat 들은 자동으로 지우도록. 지워졌을 경우 superCat 들도 비었는지 check 하면서 지워나가야 함.
+
+별 형태로 value 를 줄 수 있게 해야할듯? Text 로 입력했을 때에도 시각적으로 ratio 를 보여줘야 하고... (이것도 조금 나중에 생각할까?) 우선 sim 계산도 서버에서 처리하도록 만들어 놓자.
+
+http-url 입력하면 제목이랑 내용 자동으로 쏴주는 기능은 여기 저기 많은데... (twitter, facebook, kakao story, and so on) 이거 어찌 구현한걸까? Crawling (? 용어가 맞나?) 으로 그냥 자체 db 구현한건가? 그냥 구글 같은 검색엔진에 http-url 검색해서 제일 위에 뜨는 애들 제목, 내용, 날짜 긁어와서 쏴주는 식일지도 모르고. 귀차니즘 쩌는 사용자들을 위해서 자동으로 채워줘야 할텐데 말이지.<br />
+: 이건 def tables 로 어느정도 해결 중.
+
+다국어 지원도 생각해 봐야. Excel 같은 걸로 정리해서 한번에 업데이트 가능하게 구상해야 할듯?<br />
+: FileMapWithVar 로 해결 중.
+
+lang 처리하는거 조금 더 깔끔하게 만들기. [--bad--] 를 먼저 찾고, replace 하는 식으로. 아무것도 없으면 default 로만 있고.
+
+log-in.html 에서 log-in.js, log-in.css 불러올때 에러. 그냥 / 로 접속할때도 /account/log-in 으로 접속하도록 해놨는데, 이때 js, css 등이 제대로 load 안되는듯. =&gt; Redirect 로 해결. URI 는 항상 consistant 하게 유지되도록 이런식으로 만들자.
+
+eve.myPage 인지 확인해서 New reco 아래쪽에 내 reco 표현하기, edit 되도록 만들기.
+
+Log-out 이후 log-in 페이지로 다시 이동하도록.
+
+Reco 수정/삭제
+
+New Reco button 만들기.
+
+Reco put/change/delete 되면, HTML 에서도 CatList, UriList 업데이트 하기.
+
+do:
+overwrite (reco 가 있으면 바뀐것들 change, 없으면 put)
+, reco (reco 가 없을 경우에만 새로운 reco put)
+, change (reco 가 있을 경우에만 바뀐것들 change)
+, delete (reco 가 있을 경우 삭제)
+등 가능하게?
+
+cats 작성할때 fuzzy search 구현해주기. Cursor 위치 및 ";" 위치 따라서 적절한 위치에 fuzzy search list 가 띄워지도록?
+
+pushState 넣기. 해당 URL 로 접속했을때 같은 화면 보여지도록 만들기.
+
+uri 가 입력되면 내 reco 관련 정보와 default 에 관한 정보들 가져와서 적절히 처리해주기.
+
+CatList 위치 이동 UI/UX. (서버에서 에러났을때 처리빼고는 거의 다 함.)
+
+Fuzzy search 만들기. (Table of Contents 같은 역할도 함.)
+
+유투브 영상 한꺼번에 재생하기. playlist, loop. (shuffle, loop, 1-loop 등 버튼. Points 몇점 이상만 표시할때 playlist 도 맞춰서 바꾸기.)
+
+points 몇점 이상의 reco 만 표시하는 UI/UX.
+
+cmt, desc 등 empty 일때 표시하지 않기.
+
+별점이나 point range 이동할때, 마우스 드래그가 text selection 으로 넘어가는거 해결.
+
+youtube restricted in your country 같은 에러 떴을때 다음 리스트 재생하도록.
+
+val, points 별로 표시하기.
+
+uri &lt;a href link&gt; 만들기.
+
+desc 분석해서 lyrics 등 JSON 자료 만들기. 그걸로 페이지 이쁘게 꾸미기.
+
+Show/Hide subCats 계층 구조 만들기.
+
+단축키 만들기. (F, D 키만 우선.)
+
+cat 누르면, 그 안의 uriList recoes 보여주기.
+
+Ajax 로 catList 뽑아오기. Ajax 로 uriList 뽑아오기. Ajax 로 recoes on uriList 뽑아오기.
+
+Category tree 구조. JAVA class CatList. =&gt; 대충 만듬.
+
+Reco 할 때 recent recoers 에게 나를 neighbor 로 put 시키는 작업도 해야할듯? (곰곰히 생각해보니 내 neighbor 만 put 해서는 제일 먼저, 혹은 초기에 reco 를 한 사람들이 다른 사람들의 neighbor 가 되기 쉽지 않음. 이런 사람들이 다른 새로운 URI 도 찾아서 reco 할 확률이 높은데 말이지.) =&gt; 했음.
+
+
+
+### Domain 신청 및 관리
+
+2015-04-28 : 가비아의 네임플러스 서비스를 이용 recoeve.net 을 AWS Server 의 Public/Elastic IP 52.7.5.247 와 연결하였음.
+
+2014-11-20 : <a href="http://recoeve.net">http://recoeve.net</a> 도메인 신청했음. 2년동안만 신청한거라 2년뒤엔 반드시 갱신해야 함. 호스팅 업체 <a href="https://www.gabia.com/">https://www.gabia.com/</a> 에서 신청했음.
+
+주문번호 REG20141120-406721D<br />
+41,800원 (VAT 포함)<br />
+네임서버<br />
+ns.gabia.co.kr 211.234.118.50<br />
+ns1.gabia.co.kr 121.78.117.39<br />
+ns.gabia.net 110.45.166.50
+
+
+
+### Server
+
+2015-04-28 : <a href="https://aws.amazon.com/">AWS (Amazon Web Services)</a> - EC2 (Elastic Compute Cloud) 를 이용하여 서버 구성.
+
+2015-05-04 : 12개월간은 공짜일줄 알았는데, Total: $6.17 결제요청이 왔네? 뭐지? ㅡ..ㅡ;;;<br />
+문의 넣어놓긴 했는데, 이상한거에서 테클 들어와서 씁쓸하다. 뭐 당장 별 큰 돈은 아니지만...<br />
+Amazon Elastic Compute Cloud running Linux/UNIX - $0.013 per On Demand Linux t2.micro Instance Hour	411 Hrs	$5.34<br />
+EBS - $0.10 per GB-month of General Purpose (SSD) provisioned storage - US East (Northern Virginia)	8.275 GB-Mo	$0.83<br />
+쓰지도 않는 Linux instance 에서 왠 요금이... EBS 는 또 뭐여?
+
+
+
+### Log-in and Sign-up page
+
+Sign-up 에서 error 뜨는데... <code>Exception: com.mysql.jdbc.NotUpdatable: Result Set not updatable</code> 뭐 때문에 나는 에러지? ㅡ..ㅡ : 1. pstmtGetUserIndexToPut 부분이 문제였던듯. 2. Gmail 보내는것도 약간 문제였고. 아무튼 해결.
+
+2014-12-22 : 단방향 암호화 Hash 구현 했음.
+
+User database: malicious attack을 막는 방법 좀 강구. authToken. Remember me 구현. Cookie에서 뭔가 처리해야 할듯?
+
+Remember me 를 여러 device (5개까지만?) 에서 할수도 있게 해야 할듯?
+
+
+
+##[.hiden] Rocoeve 철학
+
+자동으로 소통 이어주기 : Recos, Votes 분석해서 자동으로 이어주기. 전문지식은 소수가 관심을 가지고 연구할 수 밖에 없으니... 연예, 가십성, 단순/자극적인거 말고. 정말 필요한 것들이 발전될 수 있도록. (뭐가 중요한지는 주관적인 면이 크니까, minor 한 집단끼리 잘 연결해주는 식.)
+
+Block 없애기, Abusing 막기 : 이야기하기 싫은 사람들과의 소통은 어느정도 줄이긴 해주더라도 완전히 차단하는식은 아닌듯. Abusing 계정들은 확실하게 차단해줘야함. (시스템으로 버거우면 고소 같은거 통해서라도.)
+
+Minor report 존중하기 : 반대되는 의견도 어느정도 전달은 되도록.
+
+Slow and Sincere communication : SEE docuK 같은 것들 이용해서 정리된 형태로 소통 및 발전이 되도록. (뭐 간단한 채팅/feedback이 즉각적으로 이루어지는 것도 필요하긴 할듯. 그냥 "Recos on URI" 를 정리해서 보여주면 될라나? 블로그 서비스 제공하면서?)
+
+One way talk 지양하기 : 트위터에서 유명인에게만 멘션이 몰리는 식 막기. 어차피 다 답변도 못할테니... "reply on other users' Reco" 같은건 지양하자. 멘션 날리는것도 빼는게 좋을듯?
+
+Lock-in 효과 지양 : 유명한 사람이 더 유명해지도록 하는 시스템이 안되도록. 각 개인이 모두 중요해 지도록. 자신의 neighbor 를 자신이 결정하는 식. 자신이 누구의 neighbor 가 될지도 자신이 결정하는 식. Reco 에 좋은 comment 를 남기거나, 자신이 좋아하는 사람들의 취향을 자신이 따라가거나. (자신이 지지하는 정치인들과 비슷한 사람들이 자신의 부모가 되고 친구고 시부모, 장인장모가 되라는 식임. 이런 지지는 시간따라, 상황따라 바뀌는 것이니.)
+
+가장 게으른 형태로 Reco 가 가능하도록 : 남들이 정리해 놓은 category 를 찾아가서 골라 잡는다거나 하는식으로. Reco 는 언제나 쉬워야 함. 최초 접근은 엄청 쉬워야 하고. 꽤나 정성들여 정리하고 싶은 사람들 맘에도 들어야 할테고. (이것도 최대한 최소의 노력을 들여서 최대 성과/결과가 나오도록.)
+
+새로운 update 정보들 알아서 잘 찾아주기 : 추천을 잘 해주는건 기본인데, 이미 reco 를 해놓은 것들에서도 내 neighbor 들의 새로운 반응이나 URI 내부에서의 변화, 직접 URI 에 관계된 다른 URI 들을 찾아준다던지 하는 식으로...
+
+그냥 Reco 만 하면 자동으로 이 reco 를 보고싶어 하는 사람들을 찾아서 전달해 주는 식이어야 함. 보통 트위터나 페이스북 같은 경우는 자신의 팔로워나 친구로 등록 된 사람들이 봐주기를 원해서 (뭐 그냥 개인이 떠들고 싶어서 신경 안쓰고 떠드는 경우도 많긴 하지만) 글을 작성하는 경우가 많을텐데... 그래서 리트윗 많이될만한거, like 많이 받을만한것만 고르고 고민하고 하면서 글을 눈치보면서 쓰는 경우가 많은듯. Recoeve 는 남 눈치보지 말고 본인이 누구인가 (Who am I?) 를 찾아가도록 해줘야. 이미 지인들이 아닌 자신과 비슷한 사람들과 연결되어서 더 자기 자신을 잘 찾을 수 있도록 도와주는. (뭐 악마는 악마끼리, 천사는 천사끼리 연결될래나? 뭐 악마/천사 구분도 0 아니면 1 은 아니니까... 괜찮은 사람들과 연결되고 싶으면 본인이 괜찮은 사람이 되어야 하겄지...)
+
+익명성이 어느정도 보장되면서, 본인 reco 에 어느정도 책임도 지는 식으로 닉세탁 같은게 쉽게는 안되도록... (완전 세탁하고 싶으면 새로 계정을 파면 됨. 닉 바꾸는거야 fin 내면서 바꾸도록 해주면 될듯?)
+
+
+
+## RRA
+
+<ol class="refs">
+	<li><a href="http://recoeve.net/">Recoeve.net</a></li>
+	<li><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a>, 2014-12-02</li>
+	<li id="ref-docuK"><a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">kipid's blog - HTML docuK format ver. 2.1</a>;<br />
+		// Updated regularly</li>
+<div class="subsec"><h3>Etc.</h3></div>
+</ol>
+</codeprint>
+
+<codeprint id="docuK-script">
+<script>
+kipid.wait=512;
+kipid.delayPad=0;
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+	skipStartupTypeset: true, // Skip startup typeset.
+	positionToHash: false, // No repositioning to #something anchor.
+	tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\[','\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \$
+		processEnvironments: false, // Ignore \begin ... \end
+	}
+});
+</script>
+
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
+</codeprint>
