@@ -46,7 +46,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <div class="recoeve-container">
 <h1>[--Change password--]</h1>
 
-<form class="form-login" action="./changePwd" accept-charset="UTF-8" method="post">
+<form class="form-login" action="./changePwd.do" accept-charset="UTF-8" method="post">
 <h2>[--Change password--]</h2>
 	<label for="userId">[--ID--]</label>
 	<input id="input-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
@@ -84,7 +84,7 @@ $(".replace-reco-eve").html(function(i, orgHtml) {
 m.getSearchVars=function() {
 	var searchStr=window.location.search;
 	var vars={};
-	if (searchStr!==0) {
+	if (searchStr.length!==0) {
 		if (searchStr.substring(0,1)==="?") {
 			searchStr=searchStr.substring(1);
 		}
@@ -255,10 +255,18 @@ m.strToJSON=function(str, colMap, rowMap) {
 
 var $dataLang=$("#data-lang");
 var dataLang=m.strToJSON( $dataLang.html().trim() );
-var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
+
+var originPathname=window.location.origin+window.location.pathname+'?';
+
 var htmlLang='<div class="p">';
 for (var i=0;i<dataLang[0].length;i++) {
-	htmlLang+='<a href="'+href+dataLang[0][i]+'">'+dataLang[1][i]+'</a><br>';
+	htmlLang+='<a href="'+originPathname;
+	vars.lang=dataLang[0][i];
+	var search='';
+	for (var p in vars) {
+		search+=p+'='+vars[p]+'&';
+	}
+	htmlLang+=search.substring(0,search.length-1)+'">'+dataLang[1][i]+'</a><br>';
 }
 htmlLang+='</div>';
 $dataLang.after(htmlLang);
@@ -523,17 +531,7 @@ m.changePwd=function(elem) {
 	var err="";
 	var valid=false;
 	
-	if (userIdLength==0) {
-		err+="[--ID is empty.--]";
-	} else if (userIdLength<m.minIdLength||userIdLength>m.maxIdLength) {
-		err+=(userIdLength<m.minIdLength?"[--ID is too short.--]":"[--ID is too long.--]")+" '"+userId+"':"+userIdLength+" ([--ID--].[--length--]:"+m.minIdLength+"~"+m.maxIdLength+")";
-	} else if (!m.regExId.test(userId)) {
-		err+="[--ID--] '"+userId+"' [--is of invalid form.--]";
-	} else if (userEmail.length==0) {
-		err+="[--E-mail is empty.--]";
-	} else if (!m.regExEmail.test(userEmail)) {
-		err+="[--E-mail--] '"+userEmail+"' [--is of invalid form.--]";
-	} else if (userPwd.length==0) {
+	if (userPwd.length==0) {
 		err+="[--Password is empty.--]";
 	} else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
 		err+=(userPwd.length<m.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")+" ([--Password--].[--length--]:"+m.minPwdLength+"~"+m.maxPwdLength+")";
@@ -545,37 +543,24 @@ m.changePwd=function(elem) {
 	
 	if (valid) {
 		$elem.before( m.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]") );
-		$.ajax("./check", {
+		$.ajax("./getNewSalt", {
 			type: "POST"
-			, data: userId+"\t"+userEmail
+			, data: userId+"\t"+vars["token"]
 		}).fail(function() {
-			$elem.before( m.encloseErr("[--Request time out.--] [--Please click the Sign-up button again.--]") );
+			$elem.before( m.encloseErr("[--Request time out.--] [--Please click the change password button again.--]") );
 			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
-			var res=resp.split('\t');
-			if (res[0]=="true"&&res[1]=="true") {
-				$form.prepend(
-					'<input type="hidden" name="tToken" value="'+res[2]+'"/>'
-					+'<input type="hidden" name="authToken" value="'+res[3]+'"/>'
-				);
-				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function() {
-					$form.find(".user-pwd")[0].value=m.encrypt(res[3], userPwd, m.iterFull); userPwd="";
-					$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
-					$elem.before( m.encloseErr("[--Signing up--] : [--Please wait.--]") );
-					$form.submit();
-				}, 500);
-			} else {
-				var errStr="";
-				if (res[0]=="false") {
-					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]<br>";
-				}
-				if (res[1]=="false") {
-					errStr+="[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]<br>";
-				}
-				$elem.before( m.encloseErr(errStr) );
-				$elem[0].disabled=false;
-			}
+		}).done(function(resp) { // resp: pwd_salt
+			$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
+			$form.prepend(
+				'<input type="hidden" name="token" value="'+vars["token"]+'"/>'
+				+'<input type="hidden" name="userId" value="'+vars["id"]+'"/>'
+			);
+			setTimeout(function() {
+				$form.find(".user-pwd")[0].value=m.encrypt(resp, userPwd, m.iterFull); userPwd="";
+				$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
+				$elem.before( m.encloseErr("[--Changing password--] : [--Please wait.--]") );
+				$form.submit();
+			}, 500);
 		});
 	} else {
 		$elem.before( m.encloseErr(err) );

@@ -197,8 +197,60 @@ public void start() {
 			req.response().putHeader("Content-Type","text/html; charset=utf-8");
 			switch (toDo) {
 			case "changePwd": // path=/account/changePwd
-				req.response().end(FileMap.get("changePwd.html", lang), ENCODING);
-				System.out.println("Sended changePwd.html");
+				if (db.checkChangePwdToken(req.params(), now)) {
+					req.response().end(FileMap.get("changePwd.html", lang), ENCODING);
+					System.out.println("Sended changePwd.html");
+				} else {
+					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS);
+				}
+				break;
+			case "getNewSalt": // path=/account/getNewSalt
+				if (method==HttpMethod.POST) {
+					req.bodyHandler( (Buffer data) -> {
+						String dataStr=data.toString();
+						int i=dataStr.indexOf("\t");
+						if (i>0) {
+							String id=dataStr.substring(0,i);
+							String token=dataStr.substring(i+1);
+							if (db.checkChangePwdToken(id, token, now)) {
+								String new_salt = db.getNewPwdSalt("id", id);
+								req.response().end(new_salt, ENCODING);
+								System.out.println("Sended new password_salt. :: "+new_salt);
+							} else {
+								req.response().end("Invalid token.", ENCODING);
+								System.out.println("Invalid token.");
+							}
+						}
+					});
+				} else {
+					req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (method:"+method+")");
+				}
+				break;
+			case "changePwd.do": // path=/account/changePwd.do
+				if (method==HttpMethod.POST) {
+					req.bodyHandler( (Buffer data) -> {
+						BodyData inputs=new BodyData(data.toString());
+						System.out.println("data :\n"+inputs);
+						if (db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), now)) {
+							System.out.println("Token is verified. "+inputs.get("userId"));
+							if (db.changePwd(inputs, ip, now)) {
+								// Map<String,String> varMap=new HashMap<String,String>();
+								// varMap.put("{--user email--}", inputs.get("userEmail"));
+								req.response().end("Your password is changed.", ENCODING);
+							} else {
+								req.response().end("Error occured during changing password. Please try again.", ENCODING);
+							}
+						} else {
+							System.out.println("Token is invalid.");
+							req.response().end("Token is invalid.", ENCODING);
+						}
+					} );
+				} else {
+					System.out.println("Change password : invalid method "+method);
+					req.response().end(INVALID_ACCESS, ENCODING);
+				}
 				break;
 			case "log-in": // path=/account/log-in
 				if (sessionPassed) {

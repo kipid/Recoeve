@@ -8,6 +8,8 @@ import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.h
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 	// http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlConnectionPoolDataSource.html
 
+import io.vertx.core.MultiMap;
+
 // import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 
@@ -403,6 +405,37 @@ public boolean checkAuthToken(BodyData inputs, String ip, String now) {
 	return false;
 }
 
+public boolean checkChangePwdToken(MultiMap params, String now) {
+	try{
+		ResultSet user=findUserById(params.get("id"));
+		if (user.next()) {
+			String from=user.getString("tChangePwd");
+			System.out.println(now+"\t"+from);
+			return from!=null
+				&& checkTimeDiff(now, from, "00:10:00")
+				&& Arrays.equals(unhex(params.get("token")), user.getBytes("tokenChangePwd"));
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
+public boolean checkChangePwdToken(String id, String token, String now) {
+	try{
+		ResultSet user=findUserById(id);
+		if (user.next()) {
+			String from=user.getString("tChangePwd");
+			System.out.println(now+"\t"+from);
+			return from!=null
+				&& checkTimeDiff(now, from, "00:10:00")
+				&& Arrays.equals(unhex(token), user.getBytes("tokenChangePwd"));
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
+
 public static byte[] pwdEncrypt(byte[] salt, String pwd)
 	throws Exception {
 		// NoSuchAlgorithmException, UnsupportedEncodingException
@@ -457,6 +490,38 @@ public boolean createUser(BodyData inputs, String ip, String now) {
 	}
 	try {
 		System.out.println("createUser done : "+done);
+		if (done) {
+			con.commit();
+		} else {
+			con.rollback();
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+	return done;
+}
+public boolean changePwd(BodyData inputs, String ip, String now) {
+	boolean done=false;
+	String id=inputs.get("userId");
+	String pwd=inputs.get("userPwd");
+	ResultSet user=null;
+	try {
+		con.setAutoCommit(false);
+		user=findUserById(id);
+		if (user.next()) {
+			byte[] pwd_salt=user.getBytes("pwd_salt");
+			user.updateBytes("pwd", pwdEncrypt(pwd_salt, pwd));
+			logs(user.getLong("i"), now, ip, "cpw", true); // change password
+			user.updateRow();
+		}
+		done=true;
+	} catch (SQLException e) {
+		err(e);
+	} catch (Exception e) {
+		System.out.println(e);
+	}
+	try {
+		System.out.println("Change password done : "+done);
 		if (done) {
 			con.commit();
 		} else {
@@ -540,6 +605,30 @@ public String getPwdIteration(String idType, String id) { // idType	"id or email
 	}
 	return "SQL Exception.";
 }
+public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
+	try {
+		con.setAutoCommit(false);
+		ResultSet user=null;
+		if (idType.equals("id")) {
+			user=findUserById(id);
+		} else if (idType.equals("email")) {
+			user=findUserByEmail(id);
+		}
+		if ( user!=null&&user.next() ) {
+			user.updateInt("pwd_iteration", Encrypt.iterFull-1);
+			byte[] new_salt=randomBytes(128);
+			user.updateBytes("pwd_salt", new_salt);
+			System.out.println("pwd_salt is renewed. :: "+hex(new_salt));
+			user.updateRow();
+			return hex(new_salt);
+		} else {
+			return "Cannot find a user from id/email.";
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+	return "SQL Exception.";
+}
 public String forgotPwd(StrArray inputs, String lang) {
 	String now=now();
 	String idType=inputs.get(1, "idType");
@@ -557,7 +646,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			id=user.getString("id");
 			String email=user.getString("email");
 			String from=user.getString("tChangePwd");
-			if (from!=null&&checkTimeDiff(now, from, "10:00")) {
+			if (from!=null&&checkTimeDiff(now, from, "00:10:00")) {
 				if (lang.equals("ko")) {
 					return "10분내로 이미 "+email+"로 이메일을 보냈습니다. 이메일을 우선 확인하시고 10분뒤에 다시 시도해 주세요.";
 				}
@@ -712,6 +801,8 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 					pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))
 					, user.getBytes("pwd")
 				) ) {
+				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
+				System.out.println(hex(user.getBytes("pwd")));
 				user.updateInt("pwd_iteration", iter-1);
 			// if (true) {
 				byte[] session=randomBytes(32);
@@ -732,6 +823,8 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 				user.updateRow();
 				logs(user_i, now, ip, "lgi", true, logDesc); // log-in success
 			} else {
+				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
+				System.out.println(hex(user.getBytes("pwd")));
 				logs(user_i, now, ip, "lgi", false); // log-in fail
 			}
 		} else {
