@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+
+<codeprint id="docuK-style">
+<script
+	src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+<!-- From kipid.tistory CDN -->
+<link rel="stylesheet" href="https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css">
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-style -->
+
+<codeprint class="SEE">
+# Recoeve setting
+
+
+
+## TOC
+
+
+
+## AWS
+
+AWS 같은 cloud server 에다가 인스턴스를 만들어서 windows server 를 돌리자.
+
+원격 접속한 다음 chrome browser <cite class="ref-chrome"><a target="_blank" href="https://www.google.com/intl/ko/chrome/">https://www.google.com/intl/ko/chrome/</a></cite> 를 우선 깔고,
+
+Github 깔고 <cite class="ref-github"><a target="_blank" href="https://desktop.github.com/">https://desktop.github.com/</a></cite> clone Recoeve 하고,
+
+MySQL 깔고 <cite class="ref-mysql"><a target="_blank" href="https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language">https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language</a></cite> (Connector-J 를 깔아야 하는데, 버전이 다른가? MysqlConnectionPoolDataSource 가 없는 class 라는듯.)
+
+JAVA 깔고 <cite class="ref-java-install"><a target="_blank" href="https://kipid.tistory.com/entry/Installing-and-Learning-JAVA">https://kipid.tistory.com/entry/Installing-and-Learning-JAVA</a></cite><cite class="ref-java"><a target="_blank" href="https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh">https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh</a></cite>
+
+Sublimetext 깔고 <cite class="ref-sublimetext"><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor">https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor</a></cite>
+
+Vert.X 도 깔고 <cite class="ref-vertx"><a target="_blank" href="https://kipid.tistory.com/entry/Learning-Vertx">https://kipid.tistory.com/entry/Learning-Vertx</a></cite>
+
+다 적당히 깔았는데, 에러가 뜨네 뭐지?
+
+
+
+## MySQL 설정
+
+그냥 <code>mysqld --console</code> 하면 에러가 뜨기 때문에
+
+```[.lang-sql]
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
+```/
+
+
+## RRA
+
+<ol class="refs">
+</ol>
+</codeprint><!-- SEE -->
+
+<codeprint id="docuK-script">
+<script>
+kipid.wait=512;
+kipid.delayPad=0;
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+	skipStartupTypeset: true, // Skip startup typeset.
+	positionToHash: false, // No repositioning to #something anchor.
+	tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\[','\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \$
+		processEnvironments: false, // Ignore \begin{something} ... \end{something}
+	}
+});
+</script>
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-script -->
