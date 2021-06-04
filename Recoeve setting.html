@@ -48,7 +48,23 @@ Vert.X 도 깔고 <cite class="ref-vertx"><a target="_blank" href="https://kipid
 그냥 <code>mysqld --console</code> 하면 에러가 뜨기 때문에
 
 ```[.lang-sql]
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
+mysqld --initialize --user=mysql --console
+
+// 중간에 temp pwd 있으니 잘 봐두고 접속
+
+mysql -u root -p
+
+ALTER USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
+
+FLUSH PRIVILEGES;
+
+
+
+mysql_config_editor set --login-path=backup --host=localhost --user=root --password
+
+mysql_config_editor print --all
+
+mysqldump recoeve0.1 -u root -p > mydump.sql
 ```/
 
 
