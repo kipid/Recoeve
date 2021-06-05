@@ -20,6 +20,7 @@ public class FileMap {
 	private static final String[] referersAllowed={
 			"localhost"
 			, "recoeve.net"
+			, "127.0.0.1"
 			// , "kipid.tistory.com"
 		};
 	
