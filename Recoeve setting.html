@@ -65,6 +65,8 @@ mysql_config_editor set --login-path=backup --host=localhost --user=root --passw
 mysql_config_editor print --all
 
 mysqldump recoeve0.1 -u root -p > mydump.sql
+
+mysql recoeve0.1 -u root -p < mydump.sql
 ```/
 
 
