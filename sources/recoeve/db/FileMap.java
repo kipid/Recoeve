@@ -21,6 +21,7 @@ public class FileMap {
 			"localhost"
 			, "recoeve.net"
 			, "127.0.0.1"
+			, "172.30.1.18"
 			// , "kipid.tistory.com"
 		};
 	

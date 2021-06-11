@@ -10,6 +10,7 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
+import io.vertx.ext.web.Router;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +37,9 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
+		="0.0.0.0";
 		// ="192.168.1.4";
-		="localhost";
+		// ="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
@@ -49,8 +51,12 @@ public class Recoeve extends AbstractVerticle {
 public void start() {
 	RecoeveDB db=new RecoeveDB();
 
-	vertx.createHttpServer(
-		new HttpServerOptions()
+	Router router = Router.router(vertx);
+
+	router.route().handler(ctx -> {
+		HttpServerRequest req=ctx.request();
+	// vertx.createHttpServer(
+		// new HttpServerOptions()
 			// .setSsl(true)
 			// .setKeyStoreOptions(new JksOptions()
 			// 	.setPath("C:/Recoeve/server-keystore.jks")
@@ -67,7 +73,7 @@ public void start() {
 			// .addEnabledSecureTransportProtocol(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS.get(1))
 			// .addEnabledSecureTransportProtocol("TLSv1.3")
 			// .setEnabledSecureTransportProtocols(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS)
-	).requestHandler( (HttpServerRequest req) -> {
+	// ).requestHandler( (HttpServerRequest req) -> {
 		////////////////////////////////////
 		// Console log.
 		////////////////////////////////////
@@ -532,6 +538,8 @@ public void start() {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}
-	}).listen(80, host); // RecoeveDB.port
+	});
+
+	vertx.createHttpServer().requestHandler(router).listen(80); // RecoeveDB.port
 } // public void start()
 } // public class Recoeve extends Verticle

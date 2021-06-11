@@ -309,8 +309,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="button" id="my-id"></div>
 	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
 	<!-- <div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div> -->
-	<div class="button" onclick="m.getNeighbors()">[--Get neighbors--]</div>
 	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
+	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
+	<div class="button" id="button-multireco-page" onclick="m.show_Multireco_Page(event)">[--Multireco page--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
 	<div>
 		[--Short Keys--]
@@ -377,6 +378,7 @@ $data_lang=$("#data-lang");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
+$button_multireco_page=$("#button-multireco-page");
 $button_new_reco=$("#button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
@@ -452,6 +454,20 @@ if (m.myIndex) {
 	$my_id.hide();
 	$button_new_reco.remove();
 }
+
+m.show_Multireco_Page=function(e){
+	if (e&&e.which===2) {
+		return true;
+	}
+	var currentCat=m.getSearchVars(window.location.search).cat;
+	if (currentCat) { currentCat=currentCat.val; }
+	if (window.history.state&&window.history.state.cat===cat) { return false; }
+	m.currentCat=cat;
+	m.getUriListAndShowRecosOnCat(cat);
+	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+	$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+	return false;
+};
 
 m.delayPad=m.delayPad||256;
 m.wait=m.wait||512;
@@ -1333,7 +1349,7 @@ m.change_catList_order_do=function(args) {
 		m.updateCatFS();
 		$change_catList_order.show();
 	});
-}
+};
 $change_catList_order_ok.on("click", function(e) {
 	var catListChanged=m.getCatListChanged();
 	if (catListChanged!==m.unescapeHTML($data_CatList.html())) {
@@ -2466,7 +2482,7 @@ m.refresh=function(cats, option, uri) {
 		case "recoed" :
 			var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 			$contents.prepend( $newReco );
-			m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage]") );
+			m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
 			m.fdList=m.fdList.add( $newReco );
@@ -2550,7 +2566,7 @@ window.onpopstate=function(e) {
 };
 m.getSearchVars=function(searchStr) {
 	var vars=[];
-	if (searchStr!==0) {
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
 		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
 		var j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
@@ -3613,7 +3629,7 @@ m.fsTitle.prepareRecoListPlay=function() {
 m.fsTitle.toggleRecoListPlay=function() {
 	var fs=m.fsTitle;
 	if ($playlist_container.is(":visible")) {
-		fs.pauseVideo();
+		// fs.pauseVideo();
 		$playlist_container.hide();
 	} else {
 		$playlist_container.show();
