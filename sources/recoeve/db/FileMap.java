@@ -22,7 +22,8 @@ public class FileMap {
 			, "recoeve.net"
 			, "127.0.0.1"
 			, "172.30.1.18"
-			// , "kipid.tistory.com"
+			, "3.34.108.192"
+			, "kipid.tistory.com"
 		};
 	
 	private static final String imgPath="C:/Recoeve/img";
