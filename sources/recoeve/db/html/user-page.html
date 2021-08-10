@@ -177,7 +177,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
 #new-reco .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-cat.selected {border-color:rgb(255,180,180)}
-#new-reco #add-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em;}
 #input-val-stars {margin:0 .5em -.4em 0}
 #new-reco .buttons {margin-top:1em; text-align:right}
 #new-reco #error-msg {margin:0}
@@ -280,7 +279,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div id="def-titles"></div>
 		<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
 	<label for="cats">[--Categories--]</label>
-		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div></div>
+		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div></div>
 		<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
@@ -2742,12 +2741,6 @@ m.emptifyReco=function () {
 	$input_val.trigger("keyup");
 	m.getAndShowDefsAndReco();
 };
-m.addCat=function () {
-	$input_cats[0].value+=";";
-	var l=$input_cats[0].value.length;
-	$input_cats.focus();
-	$input_cats[0].setSelectionRange(l,l);
-};
 m.showDefs=function (r) {
 	var defTitles=r["def-titles"].trim().split("\n");
 	var defTitlesHTML="";
@@ -2767,7 +2760,7 @@ m.showDefs=function (r) {
 	});
 
 	var defCats=r["def-cats"].trim().split("\n");
-	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div><br>';
+	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
 	for (var i=0;i<defCats.length;i++) {
 		var cat=defCats[i].trim();
 		if (cat.length!==0) {
@@ -2780,7 +2773,13 @@ m.showDefs=function (r) {
 		$defCat.removeClass("selected");
 		var $this=$(this);
 		$this.addClass("selected");
-		$input_cats[0].value=m.unescapeHTML($this.html());
+		let cursor=$input_cats[0].selectionStart;
+		let val=$input_cats[0].value;
+		let inserted=m.unescapeHTML($this.html());
+		$input_cats[0].value=`${val.substring(0,cursor)}${inserted}${val.substring(cursor)}`;
+		var l=$input_cats[0].value.length;
+		$input_cats.focus();
+		$input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
 	});
 };
 m.getAndShowDefsAndReco=function (noFormatURI) {
