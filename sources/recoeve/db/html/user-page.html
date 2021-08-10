@@ -113,7 +113,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 
 #fuzzy-search-container {
 	position:fixed; left:0; top:0;
-	z-index:100;
+	z-index:10010;
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left;
@@ -220,7 +220,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
 
 .rC, img {margin:.5em 0}
-.rC.fixed {position:fixed; z-index:100; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
+.rC.fixed {position:fixed; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
 	.dark .rC.fixed {background:black; border-color:white}
 .rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
@@ -1702,15 +1702,18 @@ m.uriToA=function (uri) {
 		return m.escapeHTML(uri);
 	}
 };
+m.zIndex=10000;
 m.togglePosition=function (elem) {
 	var $elem=$(elem);
 	var $parent=$elem.parent().parent();
 	if ($parent.hasClass("fixed")) {
 		$parent.removeClass("fixed");
+		$parent.css("z-index", 0);
 		window.scrollTo(0, $parent.offset().top);
 		$elem.text("▲ [--stick to the left top--]");
 	} else {
 		$parent.addClass("fixed");
+		$parent.css("z-index", m.zIndex--);
 		window.scrollBy(0, -$parent.height());
 		$elem.text("▲ [--return to the original position--]");
 	}
