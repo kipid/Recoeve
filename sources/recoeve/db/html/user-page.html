@@ -60,11 +60,12 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
-#sidebar-dragger {position:fixed; z-index:10; top:2em; bottom:0; left:0; width:1.5em; background:transparent}
+#sidebar-dragger {position:fixed; z-index:10; top:0; bottom:0; left:0; width:1.5em; background:transparent}
+#sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0;}
 #sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(230,230,230); color:black; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
 	.dark #sidebar {background:rgb(35,35,35); color:white}
 .side2 {padding:0}
-#sidebar-toggle {position: relative; top:-2em; width:2em; height:2em; background: black; border:white 2px solid;}
+#sidebar-toggle {width:2em; height:2em; background: black; border:white 2px solid;}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
 
@@ -256,7 +257,10 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
 <div id="container" class="dark">
-<div id="sidebar-dragger"><svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg></div>
+<div id="sidebar-dragger">
+	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
+	<div id="sidebar-dragger-in"></div>
+</div>
 <div id="sidebar">
 	<div id="user-noti"></div>
 	<div id="catList"></div>
@@ -383,6 +387,7 @@ $button_new_reco=$("#button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
 $sidebar_toggle=$("#sidebar-toggle");
+$sidebar_dragger_in=$("#sidebar-dragger-in");
 $sidebar=$("#sidebar");
 $sidebar_exit=$("#sidebar-exit");
 $catList=$("#catList");
@@ -626,10 +631,10 @@ m.sidebar_hide=(e) => {
 	$sidebar_toggle.on("click", m.sidebar_show);
 };
 $sidebar_toggle.on("click", m.sidebar_show);
-$sidebar_dragger.on("touchstart.sd", function (e) { // mousedown.sd
+$sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 	var touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	var relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
-	$html.on("touchmove.sd", function (e) { // mousemove.sd
+	$html.on("mousemove.sd touchmove.sd", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		// e.stopPropagation();
