@@ -60,11 +60,11 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
-#sidebar-dragger {position:fixed; z-index:10; top:0; bottom:0; left:0; width:1.5em; background:transparent}
+#sidebar-dragger {position:fixed; z-index:10; top:2em; bottom:0; left:0; width:1.5em; background:transparent}
 #sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(230,230,230); color:black; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
 	.dark #sidebar {background:rgb(35,35,35); color:white}
-#sidebar-exit {position:fixed; z-index:10; right:0; width:20%; top:20%; height:4em; background:red}
 .side2 {padding:0}
+#sidebar-toggle {position: relative; top:-2em; width:2em; height:2em; background: black; border:white 2px solid;}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
 
@@ -148,7 +148,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	color:rgb(170,250,170);
 }
 .exit {
-	z-index:100;
+	z-index:10010;
 	position:absolute; display:inline-block;
 	right:0; top:0;
 	margin:0;
@@ -164,7 +164,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	font-size:1.8em; line-height:1.0;
 }
 
-#new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
+#new-reco {z-index:10010; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
 #new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
 #new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
 #new-reco label:first-child {margin-top:0}
@@ -191,6 +191,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #numbers-of-recos {margin:1em 0; padding:.5em}
 .numbers-of-recos {margin:1em 0; padding:.5em}
+
+#my-id {margin-left:2.5em;}
 
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
@@ -235,7 +237,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#container {margin-left:14.9em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
 	#sidebar-dragger {display:none}
-	#sidebar-exit {display:none}
+	#my-id {margin-left:0;}
 	.side2 {padding:.5em}
 	.rC.fixed {width:646px; border-right:.15em solid black}
 	.lyrics {text-align:right}
@@ -254,7 +256,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
 <div id="container" class="dark">
-<div id="sidebar-dragger"></div>
+<div id="sidebar-dragger"><svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg></div>
 <div id="sidebar">
 	<div id="user-noti"></div>
 	<div id="catList"></div>
@@ -264,7 +266,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
 	</div>
 </div><!-- div#sidebar -->
-<div id="sidebar-exit" style="display:none">x</div>
 <div id="fuzzy-search-container" style="display:none">
 	<div id="fuzzy-search" contenteditable="true"></div>
 	<div id="fuzzy-search-list"></div>
@@ -381,6 +382,7 @@ $button_multireco_page=$("#button-multireco-page");
 $button_new_reco=$("#button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
+$sidebar_toggle=$("#sidebar-toggle");
 $sidebar=$("#sidebar");
 $sidebar_exit=$("#sidebar-exit");
 $catList=$("#catList");
@@ -611,10 +613,23 @@ $window.on("resize", function (e) {
 	}
 });
 $window.trigger("resize");
-$sidebar_dragger.on("mousedown.sd touchstart.sd", function (e) {
+m.sidebar_show=(e) => {
+	$sidebar.css({"margin-left":0});
+	$sidebar_dragger.css({"left":$sidebar.outerWidth()});
+	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	$sidebar_toggle.on("click", m.sidebar_hide);
+};
+m.sidebar_hide=(e) => {
+	$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+	$sidebar_dragger.css({"left":0});
+	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	$sidebar_toggle.on("click", m.sidebar_show);
+};
+$sidebar_toggle.on("click", m.sidebar_show);
+$sidebar_dragger.on("touchstart.sd", function (e) { // mousedown.sd
 	var touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	var relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
-	$html.on("mousemove.sd touchmove.sd", function (e) {
+	$html.on("touchmove.sd", function (e) { // mousemove.sd
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		// e.stopPropagation();
@@ -624,13 +639,9 @@ $sidebar_dragger.on("mousedown.sd touchstart.sd", function (e) {
 		$html.on("mouseup.sd touchend.sd", function () {
 			$html.off("mouseup.sd touchend.sd mousemove.sd touchmove.sd");
 			if (touch0.clientX-relativeX>$sidebar.outerWidth()/2) {
-				$sidebar.css({"margin-left":0});
-				$sidebar_dragger.css({"left":$sidebar.outerWidth()});
-				$sidebar_exit.show();
+				m.sidebar_show();
 			} else {
-				$sidebar.css({"margin-left":-$sidebar.outerWidth()});
-				$sidebar_dragger.css({"left":0});
-				$sidebar_exit.hide();
+				m.sidebar_hide();
 			}
 		});
 	})
