@@ -1834,12 +1834,52 @@ ptnURI.toIframe=function (uriRest) {
 	return false;
 };
 
+ptnURI=m.ptnURI["tv.naver.com"]={};
+ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest) {
+	var exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"naver", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["www.vlive.tv"]={};
+ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest) {
+	var exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["vlive.tv"]={};
+ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest) {
+	var exec=m.ptnURI["vlive.tv"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
+	}
+	return false;
+};
+
 ptnURI=m.ptnURI["tv.kakao.com"]={};
-ptnURI.regEx=/^v\/([0-9]+)/i;
+ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	var exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no"></iframe>'), from:"kakao", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["entertain.daum.net"]={};
+ptnURI.regEx=/video\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest) {
+	var exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
 	}
 	return false;
 };
@@ -1860,26 +1900,7 @@ ptnURI.toIframe=function (uriRest) {
 	var exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		var vars=m.getSearchVars(exec[1]);
-		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
-	}
-	return false;
-};
-
-ptnURI=m.ptnURI["serviceapi.rmcnmv.naver.com"]={};
-ptnURI.regEx=/^flash\/outKeyPlayer\.nhn(\?\S+)/i;
-ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		var lastPath="flash/outKeyPlayer.nhn?";
-		for (var i=0;i<vars.length;i++) {
-			if (vars[i].key==="isAutoPlay") {
-				lastPath+="isAutoPlay=false&";
-			} else {
-				lastPath+=vars[i].key+"="+vars[i].val+"&";
-			}
-		}
-		return {html:m.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+lastPath.substring(0,lastPath.length-1)+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
+		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
 };
@@ -1920,19 +1941,19 @@ ptnURI.toIframe=function (uriRest) {
 		if (vars&&vars.language) {
 			uriRest="lang/"+vars.language.val+"/"+uriRest;
 		}
-		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'.html" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"ted", videoId:v};
 	}
 	return false;
 };
 
-ptnURI=m.ptnURI["embed-ssl.ted.com"]={};
+ptnURI=m.ptnURI["embed.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["embed-ssl.ted.com"].regEx.exec(uriRest);
+	var exec=m.ptnURI["embed.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
 		var v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
-		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"ted", videoId:v};
 	}
 	return false;
 };
@@ -1951,7 +1972,7 @@ ptnURI.toIframe=function (uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:m.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"ted", videoId:vars.url&&vars.url.val};
+		return {html:m.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"soundcloud", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
@@ -2806,6 +2827,18 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	if (uriRendered.from==="youtube") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+	} else if (uriRendered.from==="naver") {
+		m.lastURI=uri;
+		uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
+	} else if (uriRendered.from==="vlive") {
+		m.lastURI=uri;
+		uri=elem.value=`https://www.vlive.tv/video/${uriRendered.videoId}`;
+	} else if (uriRendered.from==="kakao") {
+		m.lastURI=uri;
+		uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
+	} else if (uriRendered.from==="ted") {
+		m.lastURI=uri;
+		uri=elem.value=`https://www.ted.com/talks/${uriRest.videoId}`;
 	}
 	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
 	var r=m.userRecos[uri];
