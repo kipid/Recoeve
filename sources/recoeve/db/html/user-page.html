@@ -1916,7 +1916,7 @@ ptnURI.toIframe=function (uriRest) {
 };
 
 ptnURI=m.ptnURI["www.dailymotion.com"]={};
-ptnURI.regEx=/^video\/(\w+)/i;
+ptnURI.regEx=/video\/(\w+)/i;
 ptnURI.toIframe=function (uriRest) {
 	var exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
@@ -1982,7 +1982,7 @@ ptnURI.regEx=/^p\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	var exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113)};
+		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -2827,6 +2827,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	if (uriRendered.from==="youtube") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+	} else if (uriRendered.from="insta") {
+		m.lastURI=uri;
+		uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
 	} else if (uriRendered.from==="naver") {
 		m.lastURI=uri;
 		uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
@@ -2839,6 +2842,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	} else if (uriRendered.from==="ted") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
+	} else if (uriRendered.from==="dailymotion") {
+		m.lastURI=uri;
+		uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 	}
 	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
 	var r=m.userRecos[uri];
