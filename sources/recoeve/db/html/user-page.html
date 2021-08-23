@@ -2838,7 +2838,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
 	} else if (uriRendered.from==="ted") {
 		m.lastURI=uri;
-		uri=elem.value=`https://www.ted.com/talks/${uriRest.videoId}`;
+		uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
 	}
 	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
 	var r=m.userRecos[uri];
