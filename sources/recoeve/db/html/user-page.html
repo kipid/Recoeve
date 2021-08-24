@@ -2827,7 +2827,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	if (uriRendered.from==="youtube") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
-	} else if (uriRendered.from="insta") {
+	} else if (uriRendered.from==="insta") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
 	} else if (uriRendered.from==="naver") {
