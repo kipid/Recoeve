@@ -275,7 +275,7 @@ public void start() {
 					req.bodyHandler( (Buffer data) -> {
 						BodyData inputs=new BodyData(data.toString());
 						List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-						for(io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
+						for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 							req.response().addCookie(singleCookie);
 						}
 						if (setCookieRMB.get(0).getName()=="I") {
@@ -298,7 +298,7 @@ public void start() {
 					req.bodyHandler( (Buffer data) -> {
 						StrArray inputs=new StrArray(data.toString());
 						List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-						for(io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
+						for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 							req.response().addCookie(singleCookie);
 						}
 						if (setCookieRMB.get(0).getName()=="I") {
@@ -348,7 +348,7 @@ public void start() {
 						List<io.vertx.core.http.Cookie> setCookieSSN=db.authUser(inputs, ip);
 						if (setCookieSSN!=null) {
 							// Log-in success!
-							for(io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
+							for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
 								req.response().addCookie(singleCookie);
 							}
 							req.response().end("log-in success", ENCODING);
@@ -366,7 +366,7 @@ public void start() {
 				break;
 			case "log-out": // path=/account/log-out
 				List<io.vertx.core.http.Cookie> setDelCookie=db.logout(cookie);
-				for(io.vertx.core.http.Cookie singleCookie: setDelCookie) {
+				for (io.vertx.core.http.Cookie singleCookie: setDelCookie) {
 					req.response().addCookie(singleCookie);
 				}
 				req.response().end(FileMap.get("log-in.html", lang), ENCODING);

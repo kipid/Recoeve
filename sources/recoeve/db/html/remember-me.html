@@ -1,7 +1,6 @@
 <h1>Remembering you...</h1>
-<form class="form-login" action="/account/log-in/remember-me" accept-charset="UTF-8" method="post">
+<form id="form-login" action="/account/log-in/remember-me" accept-charset="UTF-8" method="post">
 </form>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 <script src="/jquery.min.js"></script>
 <script>
 (function(m, $, undefined){
@@ -11,12 +10,13 @@
 		sW=screen.height;
 		sH=screen.width;
 	}
-	$("form.form-login").prepend(
+	$form=$("#form-login");
+	$form.html(
 		'<input type="hidden" name="log" value="web"/>'
 		+'<input type="hidden" name="iehack" value="&#9760;"/>' // Encoding utf-8 in IE.
 		+'<input type="hidden" name="screenWidth" value="'+sW+'"/>'
 		+'<input type="hidden" name="screenHeight" value="'+sH+'"/>'
 	);
-	$("form").submit();
+	$form.submit();
 })(window.m=window.m||{}, jQuery);
 </script>
