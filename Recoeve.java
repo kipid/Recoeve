@@ -141,7 +141,7 @@ public void start() {
 			System.out.println("Sended jquery.min.js");
 		} else if (path.equals("/")) { // e.g. path=/
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-			if (sessionPassed) {
+			if (cookie.get("I")!=null||cookie.get("rmbdI")!=null) {
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
 			} else {
@@ -461,6 +461,10 @@ public void start() {
 					req.response().end(INVALID_ACCESS);
 				}
 			}
+		} else if (path.equals("/sessionIter")) {
+			String iter = db.sessionIter(cookie);
+			System.out.println("iter : "+iter);
+			req.response().end(iter);
 		} else if (path.equals("/reco")) {
 			req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (sessionPassed) {
@@ -484,7 +488,7 @@ public void start() {
 			}
 			req.response().end(FileMapWithVar.get("multireco.html", lang, db.varMapUserPage(cookie, queryMap.get("user"))), ENCODING);
 			System.out.println("Sended multireco.html");
-		} else if (refererAllowed&&sessionPassed&&method==HttpMethod.POST&&path.startsWith("/reco/")) { // e.g. path=/reco/do
+		} else if (refererAllowed&&method==HttpMethod.POST&&path.startsWith("/reco/")) { // e.g. path=/reco/do
 			// String toDo=path.replaceFirst("^/reco/","");
 			String toDo=path.substring(6);
 			switch (toDo) {
@@ -503,26 +507,26 @@ public void start() {
 				} );
 				break;
 			case "do": // path=/reco/do
-				req.response().putHeader("Content-Type","text/plain");
-				req.bodyHandler( (Buffer data) -> {
-					String res=db.recoDo(Long.parseLong(cookie.get("I"),16), data.toString());
-					req.response().end(res);
-				} );
+				if (sessionPassed) {
+					req.response().putHeader("Content-Type","text/plain");
+					req.bodyHandler( (Buffer data) -> {
+						String res=db.recoDo(Long.parseLong(cookie.get("I"),16), data.toString());
+						req.response().end(res);
+					} );
+				} else {
+					req.response().end("No session.");
+				}
 				break;
-			// case "reco-test":
-			// 	System.out.println("Reco-musics-test.html");
-			// 	req.response().putHeader("Content-Type","text/html; charset=utf-8");
-			// 	req.response().end(FileMap.get("Reco-musics-test.html",lang), ENCODING);
-			// 	break;
 			case "put": // path=/reco/put
-				req.response().putHeader("Content-Type","text/plain");
-				req.bodyHandler( (Buffer data) -> {
-					String res=db.putReco(Long.parseLong(cookie.get("I"),16), data.toString());
-					req.response().end(res);
-					// StrArray sa=new StrArray(data.toString());
-					// System.out.println(sa);
-					// req.response().end("Hello! This is response.");
-				} );
+				if (sessionPassed) {
+					req.response().putHeader("Content-Type","text/plain");
+					req.bodyHandler( (Buffer data) -> {
+						String res=db.putReco(Long.parseLong(cookie.get("I"),16), data.toString());
+						req.response().end(res);
+					} );
+				} else {
+					req.response().end("No session.");
+				}
 				break;
 			}
 		} else if (refererAllowed&&sessionPassed&&path.startsWith("/changeOrders/")) { // e.g. path=/changeOrders/CatList

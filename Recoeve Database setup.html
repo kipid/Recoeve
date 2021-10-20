@@ -851,6 +851,30 @@ req.headers().get("User-Agent"); // Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWeb
 
 </div><!-- table-UserSession -->
 
+<div id="table-UserSession1"><div class="number none">UserSession1</div>
+
+```[.linenums.lang-sql]
+CREATE TABLE `UserSession1` (
+	`user_i` bigint NOT NULL
+	, `tCreate` datetime NOT NULL
+	, `iter` smallint DEFAULT 1000
+	, `encryptedSSN` binary(64) NOT NULL
+	, `salt` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
+	, `ip` char(32) NOT NULL
+	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
+	, PRIMARY KEY (`user_i`, `tCreate`)
+);
+
+
+`ip`: Secondary check.
+# IP 가 중간에 바뀌는 경우도 많아서 (공유기? 혹은 mobile) 곁다리로만 확인해야 할듯.
+
+# User-Agent 를 저장해 놓을까? 그닥 보안에 도움이 안될듯?
+req.headers().get("User-Agent"); // Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.103 Safari/537.36
+```/
+
+</div><!-- table-UserSession1 -->
+
 
 
 #### TABLE `UserRemember`

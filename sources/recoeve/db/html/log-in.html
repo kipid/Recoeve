@@ -302,6 +302,10 @@ m.pad=function(str, max) {
 	str=str.toString();
 	return (str.length<max)?m.pad("0"+str,max):str;
 };
+
+////////////////////////////////////////////////////
+// hash encrypt
+////////////////////////////////////////////////////
 m.hash1=function(str) {
 	var h=-17-str.length;
 	for (var i=0;i<str.length;i++) {
@@ -522,7 +526,7 @@ m.iterFull=10000;
 // console.log("encrypt(' a528wdf329') : "+m.encrypt(salt, " a528wdf329",m.iterFull));
 // console.log("encrypt('347958416') : "+m.encrypt(salt, "347958416",m.iterFull));
 
-m.regExId=/^[a-zA-Z가-힣0-9-_.]+$/;
+m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
 m.regExEmail=/^[a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+$/;
 m.minIdLength=3;
 m.maxIdLength=21;

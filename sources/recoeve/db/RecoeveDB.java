@@ -176,13 +176,13 @@ public RecoeveDB() {
 		// pstmtIdC=con.prepareStatement("SELECT count(1) FROM `Users` WHERE `id`=? LIMIT 1;");
 		// pstmtEmailC=con.prepareStatement("SELECT count(1) FROM `Users` WHERE `email`=? LIMIT 1;");
 		
-		pstmtSession=con.prepareStatement("SELECT `session`, `token` FROM `UserSession` WHERE `user_i`=? and `tCreate`=?;");
+		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
 		pstmtCheckAuthToken=con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateUser=con.prepareStatement("INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtCreateEmailStat=con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
 		pstmtFindEmailStat=con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession` (`user_i`, `tCreate`, `session`, `token`, `ip`) VALUES (?, ?, ?, ?, ?);");
+		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`) VALUES (?, ?, ?, ?, ?);");
 		pstmtCreateUserRemember=con.prepareStatement("INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtCheckUserRemember=con.prepareStatement("SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		
@@ -513,8 +513,8 @@ public boolean changePwd(BodyData inputs, String ip, String now) {
 			user.updateBytes("pwd", pwdEncrypt(pwd_salt, pwd));
 			logs(user.getLong("i"), now, ip, "cpw", true); // change password
 			user.updateRow();
+			done=true;
 		}
-		done=true;
 	} catch (SQLException e) {
 		err(e);
 	} catch (Exception e) {
@@ -752,24 +752,51 @@ public Map<String,String> varMapMyPage(Cookie cookie) {
 	varMap.putIfAbsent("{--CatList--}", "");
 	return varMap;
 }
-public boolean sessionCheck(Cookie cookie) {
+public String sessionIter(Cookie cookie) {
 	if (cookie.get("I")!=null) {
 		long user_i=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
-		String session=cookie.get("SSN");
-		String token=cookie.get("token");
-		if (tCreate!=null&&session!=null&&token!=null) {
+		if (tCreate!=null) {
 			String now=now();
 			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
 				try {
 					pstmtSession.setLong(1, user_i);
 					pstmtSession.setString(2, tCreate);
 					ResultSet rs=pstmtSession.executeQuery();
-					return ( rs.next()
-						&&Arrays.equals(rs.getBytes("session"), unhex(session))
-						&&Arrays.equals(rs.getBytes("token"), unhex(token)) );
-					// No log for sessionCheck. Too much.
+					if (rs.next()) {
+						return Integer.toString(rs.getInt("iter"));
+					}
+					return "No session.";
 				} catch (SQLException e) {
+					err(e);
+				}
+			}
+			return "Expired.";
+		}
+		return "No tCreate.";
+	}
+	return "No user_i.";
+}
+public boolean sessionCheck(Cookie cookie) {
+	if (cookie.get("I")!=null) {
+		long user_i=Long.parseLong(cookie.get("I"), 16);
+		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
+		String session=cookie.get("SSN");
+		if (tCreate!=null&&session!=null) {
+			String now=now();
+			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
+				try {
+					pstmtSession.setLong(1, user_i);
+					pstmtSession.setString(2, tCreate);
+					ResultSet rs=pstmtSession.executeQuery();
+					if ( rs.next()
+						&&Arrays.equals(rs.getBytes("encryptedSSN"), pwdEncrypt(rs.getBytes("salt"), Encrypt.encryptSSNRest(hex(rs.getBytes("salt")), session, rs.getInt("iter")))) ) {
+						rs.updateInt("iter", rs.getInt("iter")-1);
+						rs.updateRow();
+						return true;
+					}
+					// No log for sessionCheck. Too much.
+				} catch (Exception e) {
 					err(e);
 				}
 			}
@@ -801,23 +828,20 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 					pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))
 					, user.getBytes("pwd")
 				) ) {
-				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
-				System.out.println(hex(user.getBytes("pwd")));
 				user.updateInt("pwd_iteration", iter-1);
-			// if (true) {
 				byte[] session=randomBytes(32);
-				byte[] token=randomBytes(32);
-				int ssnC=user.getInt("ssnC");
-				setCookie=createUserSession(user_i, now, session, token, ip);
-				user.updateInt("ssnC", ssnC+1);
+				byte[] saltSSN=randomBytes(32);
+				// int ssnC=user.getInt("ssnC");
+				setCookie=createUserSession(user_i, now, session, saltSSN, ip);
+				// user.updateInt("ssnC", ssnC+1);
 				String logDesc=null;
 				String rmb=inputs.get(1, "rememberMe");
 				if ( rmb!=null && rmb.equals("yes") ) {
 					byte[] rmbdAuth=randomBytes(32);
 					byte[] rmbdToken=randomBytes(32);
-					int rmbdC=user.getInt("rmbdC");
+					// int rmbdC=user.getInt("rmbdC");
 					setCookie.addAll(createUserRemember(user_i, now, rmbdAuth, rmbdToken, inputs, ip));
-					user.updateInt("rmbdC", rmbdC+1);
+					// user.updateInt("rmbdC", rmbdC+1);
 					logDesc="Remembered";
 				}
 				user.updateRow();
@@ -850,7 +874,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, BodyData inputs, String ip) {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
 			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
@@ -926,7 +950,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, BodyData 
 public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray inputs, String ip) {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
 			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
@@ -999,32 +1023,30 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	}}}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now, byte[] session, byte[] token, String ip)
+public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now, byte[] session, byte[] salt, String ip)
 	throws SQLException {
-	pstmtCreateUserSession.setLong(1, user_i);
-	pstmtCreateUserSession.setString(2, now);
-	pstmtCreateUserSession.setBytes(3, session);
-	pstmtCreateUserSession.setBytes(4, token);
-	pstmtCreateUserSession.setString(5, ip);
-	String now_=now.replaceAll("\\s","_");
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
-	if (pstmtCreateUserSession.executeUpdate()>0) {
-		// user.updateInt("ssnC", user.getInt("ssnC")+1);
-		setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i,16))
-				.setPath("/").setHttpOnly(true));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_)
-				.setPath("/").setHttpOnly(true));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("tCjs", now_)
-				.setPath("/").setMaxAge(secondsSSN));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("SSN", hex(session))
-				.setPath("/").setHttpOnly(true));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("token", hex(token))
-				.setPath("/").setHttpOnly(true).setMaxAge(secondsSSN));
-		// setCookie="I="+Long.toString(user_i,16)+cookieOptionSSN;
-		// setCookie+="\nSet-Cookie: tCreate="+now+cookieOptionSSN;
-		// setCookie+="\nSet-Cookie: tCjs="+now+jsCookieOptionSSN; // jsCookieOptionSSN=";max-age="+(hoursSSN*60*50)+";path=/";
-		// setCookie+="\nSet-Cookie: SSN="+hex(session)+cookieOptionSSN;
-		// setCookie+="\nSet-Cookie: token="+hex(token)+cookieOptionSSNtoken;
+	try {
+		pstmtCreateUserSession.setLong(1, user_i);
+		pstmtCreateUserSession.setString(2, now);
+		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3,11), Encrypt.iterSSNFull)));
+		pstmtCreateUserSession.setBytes(4, salt);
+		pstmtCreateUserSession.setString(5, ip);
+		String now_=now.replaceAll("\\s","_");
+		if (pstmtCreateUserSession.executeUpdate()>0) {
+			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i,16))
+					.setPath("/").setHttpOnly(true).setMaxAge(secondsSSN));
+			setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_)
+					.setPath("/").setMaxAge(secondsSSN-30));
+			// setCookie.add(io.vertx.core.http.Cookie.cookie("tCjs", now_)
+			// 		.setPath("/").setMaxAge(secondsSSN));
+			setCookie.add(io.vertx.core.http.Cookie.cookie("session", hex(session))
+					.setPath("/").setSecure(true).setMaxAge(secondsSSN));
+			setCookie.add(io.vertx.core.http.Cookie.cookie("salt", hex(salt))
+					.setPath("/").setSecure(true).setMaxAge(secondsSSN));
+		}
+	} catch (Exception e) {
+		err(e);
 	}
 	return setCookie;
 }
@@ -1043,17 +1065,13 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
 		// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_i,16))
-				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMB));
+				.setPath("/").setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_)
 				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", hex(rmbdAuth))
 				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(rmbdToken))
 				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMBtoken));
-		// setCookie+="\nSet-Cookie: rmbdI="+Long.toString(user_i,16)+cookieOptionRMB;
-		// setCookie+="\nSet-Cookie: rmbdT="+now+cookieOptionRMB;
-		// setCookie+="\nSet-Cookie: rmbdAuth="+hex(rmbdAuth)+cookieOptionRMB;
-		// setCookie+="\nSet-Cookie: rmbdToken="+hex(rmbdToken)+cookieOptionRMBtoken;
 	}
 	return setCookie;
 }
@@ -1092,31 +1110,23 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	}
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	setCookie.add(io.vertx.core.http.Cookie.cookie("I", "")
-			.setPath("/").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", "")
-			.setPath("/").setHttpOnly(true).setMaxAge(-100L));
-	setCookie.add(io.vertx.core.http.Cookie.cookie("tCjs", "")
 			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("SSN", "")
-			.setPath("/").setHttpOnly(true).setMaxAge(-100L));
-	setCookie.add(io.vertx.core.http.Cookie.cookie("token", "")
-			.setPath("/").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("salt", "")
+			.setPath("/").setSecure(true).setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("session", "")
+			.setPath("/").setSecure(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
 			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
 			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "")
 			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
-	// setCookie="I="+cookieOptionDelSSN;
-	// setCookie+="\nSet-Cookie: tCreate="+cookieOptionDelSSN;
-	// setCookie+="\nSet-Cookie: SSN="+cookieOptionDelSSN;
-	// setCookie+="\nSet-Cookie: token="+cookieOptionDelSSN;
-	// setCookie+="\nSet-Cookie: rmbdI="+cookieOptionDelRMB;
-	// setCookie+="\nSet-Cookie: rmbdT="+cookieOptionDelRMB;
-	// setCookie+="\nSet-Cookie: rmbdAuth="+cookieOptionDelRMB;
-	// setCookie+="\nSet-Cookie: rmbdToken="+cookieOptionDelRMB;
 	return setCookie;
 }
 

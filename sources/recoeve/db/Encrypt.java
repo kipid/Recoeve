@@ -4,6 +4,7 @@ package recoeve.db;
 
 public class Encrypt {
 	public static final int iterFull=10000;
+	public static final int iterSSNFull=1000;
 	public static String pad(String str, int max) {
 		return (str.length()<max)?pad("0"+str,max):str;
 	}
@@ -194,8 +195,14 @@ public class Encrypt {
 	public static String encryptRest(String salt, String pwd, int iter) {
 		return encrypt0(salt, pwd, iterFull-iter);
 	}
+	public static String encryptSSNRest(String salt, String pwd, int iter) {
+		return encrypt0(salt, pwd, iterSSNFull-iter);
+	}
 	
 	public static void main(String... args) {
+		// int h=-100;
+		// System.out.println(pad(Integer.toHexString(h), 8)); // ffffff9c
+
 		// String salt="14d95b54b8ac93af5891cca6fd09e81346fca2de72cfc4f2fa519b32ae4e41e720c2b70087d9775a8cb85bb756f2cc8bcbcb24d0";
 		// System.out.println("encrypt('Ef!%qKd3$2b') : "+encrypt(salt, "Ef!%qKd3$2b",iterFull));
 		// System.out.println("encrypt('3s9dkf@Q)34WKZ,e') : "+encrypt(salt, "3s9dkf@Q)34WKZ,e",iterFull));

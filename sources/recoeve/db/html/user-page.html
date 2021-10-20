@@ -599,6 +599,228 @@ m.toggleFK=function () {
 		// $toggle_floating_key.html("▲ Hide");
 	// }
 }
+
+////////////////////////////////////////////////////
+// hash encrypt
+////////////////////////////////////////////////////
+m.pad=function(str, max) {
+	str=str.toString();
+	return (str.length<max)?m.pad("0"+str,max):str;
+};
+m.hash1=function(str) {
+	var h=-17-str.length;
+	for (var i=0;i<str.length;i++) {
+		h+=str.charCodeAt(i);
+		h+=(h<<10);
+		h^=(h>>>6);
+	}
+	h+=(((h>>>0)%1318489)<<7);
+		// prime from http://www.gutenberg.org/cache/epub/65/pg65.html.utf8
+	h+=(h<<3);
+	h^=(h>>>11);
+	h+=(h<<15);
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash2=function(str) {
+	var h=str.length+1;
+	var tmp;
+	for (var i=0;i<str.length;i++) {
+		h+=str.charCodeAt(i);
+		tmp=(str.charCodeAt(str.length-1-i)<<11)^h;
+		h+=(h<<16)^tmp;
+		h^=(h>>>7);
+		h+=(h<<11);
+	}
+	h+=( ((h>>>0)%918679)<<11 );
+		// prime from http://www.gutenberg.org/cache/epub/65/pg65.html.utf8
+	h^=h<<3;
+	h+=h>>>5;
+	h^=h<<4;
+	h+=h>>>17;
+	h^=h<<25;
+	h+=h>>>6;
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash3=function(str) {
+	var h=-1023+str.length;
+	for (var i=0;i<str.length;i++) {
+		h^=(h<<5)+(h>>>2)+str.charCodeAt(i);
+	}
+	h^=h<<15;
+	h+=h<<15;
+	h+=( ((h>>>0)%1299451)<<2 );
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash4=function(str) {/* RS Hash Function */
+	var b=378551;
+	var a=63689;
+	var h=0;
+	for (var i=0;i<str.length;i++) {
+		var q=0;
+		for (var j=0;j<32;j++) {
+			if (a&(1<<j)) {
+				q=(q+(h<<j))>>>0;
+			}
+		}
+		h=(q+str.charCodeAt(i))>>>0;
+			// h=h*a+str.charCodeAt(i);
+		q=0;
+		for (var j=0;j<32;j++) {
+			if (b&(1<<j)) {
+				q=(q+(a<<j))>>>0;
+			}
+		}
+		a=q; // a=a*b;
+	}
+	return m.pad(h.toString(16), 8);
+};
+m.hash5=function(str) {/* JS Hash Function */
+	var h=1315423911;
+	for (var i=0;i<str.length;i++) {
+		h^=((h<<5)+str.charCodeAt(i)+(h>>2))>>>0;
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash6=function(str) {/* ELF Hash Function */
+	var h=0;
+	var x=0;
+	for (var i=0;i<str.length;i++) {
+		h=((h<<4)+str.charCodeAt(i))>>>0;
+		if ((x=h&0xf0000000)!=0) {
+			h^=(x>>24);
+		}
+		h&=~x;
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash7=function(str) {/* BKDR Hash Function */
+	var a=131; // 31 131 1313 13131 131313 etc..
+	var h=0;
+	for (var i=0;i<str.length;i++) {
+		var q=0;
+		for (var j=0;j<32;j++) {
+			if (a&(1<<j)) {
+				q=(q+(h<<j))>>>0;
+			}
+		}
+		h=(q+str.charCodeAt(i))>>>0;
+			// h=h*a+str.charCodeAt(i);
+	}
+	return m.pad(h.toString(16), 8);
+};
+m.hash8=function(str) {/* SDBM Hash Function */
+	var h=0;
+	for (var i=0;i<str.length;i++) {
+		h=(str.charCodeAt(i)+(h<<6)+(h<<16)-h)>>>0;
+	}
+	return m.pad(h.toString(16), 8);
+};
+m.hash9=function(str) {/* DJB Hash Function */
+	var h=5381;
+	for (var i=0;i<str.length;i++) {
+		h=(((h<<5)+h)+str.charCodeAt(i))>>>0;
+	}
+	return m.pad(h.toString(16), 8);
+};
+m.hash10=function(str) {/* DEK Hash Function */
+	var h=str.length;
+	for (var i=0;i<str.length;i++) {
+		h=((h<<5)^(h>>27))^str.charCodeAt(i);
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash11=function(str) {/* BP Hash Function */
+	var h=0;
+	for (var i=0;i<str.length;i++) {
+		h=h<<7^str.charCodeAt(i);
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash12=function(str) {/* FNV Hash Function */
+	var a=0x811C9DC5;
+	var h=0;
+	for (var i=0;i<str.length;i++) {
+		var q=0;
+		for (var j=0;j<32;j++) {
+			if (a&(1<<j)) {
+				q=(q+(h<<j))>>>0;
+			}
+		}
+		h=q>>>0;
+			// h=h*a;
+		h^=str.charCodeAt(i);
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.hash13=function(str) {/* AP Hash Function */
+	var h=0xAAAAAAAA;
+	for(var i=0;i<str.length;i++) {
+		if ((i&1)==0) {
+			h^=((h<<7)^str.charCodeAt(i)*(h>>3));
+		} else {
+			h^=(~((h<<11)+str.charCodeAt(i)^(h>>5)));
+		}
+	}
+	h=h>>>0;
+	return m.pad(h.toString(16), 8);
+};
+m.encrypt=function(salt, pwd, iter) {
+	iter=pwd.length+131+((iter&&iter.constructor==Number&&iter>=0)?iter:0);;
+	pwd=salt+pwd;
+	var h1=m.hash1(pwd);
+	var h2=m.hash2(pwd);
+	var h3=m.hash3(pwd);
+	var h4=m.hash4(pwd);
+	var h5=m.hash5(pwd);
+	var h6=m.hash6(pwd);
+	var h7=m.hash7(pwd);
+	var h8=m.hash8(pwd);
+	var h9=m.hash9(pwd);
+	var h10=m.hash10(pwd);
+	var h11=m.hash11(pwd);
+	var h12=m.hash12(pwd);
+	var h13=m.hash13(pwd);
+	var tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
+	for (var i=0;i<iter;i++) {
+		tmp1=h13+h12+h11+h10+h9+salt+h8+h7+h6+h5+h4+h3+h2+h1;
+		tmp2=h1+h3+salt+h2;
+		tmp3=salt+h2+h8+h1+h3;
+		tmp4=h7+salt+h5;
+		tmp5=h4+salt+h8;
+		tmp6=h10+h13+salt+h6;
+		tmp7=h6+h1+h9+salt;
+		tmp8=h9+salt+h10;
+		tmp9=h7+salt+h12;
+		tmp10=h11+salt+h5;
+		tmp11=h4+salt+h13+h2;
+		tmp12=h11+salt+h6;
+		tmp13=h4+h12+salt+h8;
+		h1=m.hash1(tmp1);
+		h2=m.hash2(tmp2);
+		h3=m.hash3(tmp3);
+		h4=m.hash4(tmp4);
+		h5=m.hash5(tmp5);
+		h6=m.hash6(tmp6);
+		h7=m.hash7(tmp7);
+		h8=m.hash8(tmp8);
+		h9=m.hash9(tmp9);
+		h10=m.hash10(tmp10);
+		h11=m.hash11(tmp11);
+		h12=m.hash12(tmp12);
+		h13=m.hash13(tmp13);
+	}
+	return h1+h2+h3+h4+h5+h6+h7+h8+h9+h10+h11+h12+h13;
+};
+m.iterSessionFull=1000;
+
 ////////////////////////////////////////////////////
 // Sidebar dragger and exit
 ////////////////////////////////////////////////////
@@ -869,17 +1091,35 @@ if (m.sW<m.sH) {
 m.str_rmb_me='log\tsW\tsH\n'
 	+'web\t'+m.sW+'\t'+m.sH;
 m.rmb_me=function (callback, args) {
-	if (m.docCookies.hasItem('tCjs')) {
-		callback(args);
-	} else {
+	let SSNencrypt = function (callback, args) {
+		$.ajax({
+			type:"GET", url:"/sessionIter"
+			, dataType:"text"
+		}).done(function (resp) {
+			let iter=Number(resp);
+			if (isNaN(iter)) {
+				console.log(resp);
+				callback(args, resp);
+			} else {
+				m.docCookies.setItem("SSN", m.encrypt(m.docCookies.getItem("salt"), m.docCookies.getItem("session").substring(3,11), iter), 10, "/");
+				m.docCookies.setItem("session", m.docCookies.getItem("session"), 3*3600, "/", null, true);
+				callback(args, null);
+				m.docCookies.removeItem("SSN");
+			}
+		});
+	};
+	if (m.docCookies.hasItem('tCreate')) {
+		SSNencrypt(callback, args);
+	} else if (m.docCookies.hasItem('rmbdI')) {
 		$.ajax({
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 			, dataType:"text"
 		}).done(function (resp) {
-			if (resp==="Rmbd") {
-				callback(args);
+			if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
+				SSNencrypt(callback, args);
 			} else {
 				console.log(resp);
+				callback(args, resp);
 			}
 		});
 	}
@@ -1351,19 +1591,26 @@ $change_catList_order.on("click", function (e) {
 		}
 	});
 });
-m.change_catList_order_do=function (args) {
-	$.ajax({
-		type:"POST", url:"/changeOrders/CatList", data:args
-		, dataType:"text"
-	}).fail(function () {
-		console.log("Changing CatList order has failed.");
-	}).done(function (resp) {
-		console.log(resp);
-	}).always(function () {
+m.change_catList_order_do=function (args, err) {
+	if (err) {
+		console.log(err);
 		$data_myCatList.html(m.escapeHTML(args));
 		m.updateCatFS();
 		$change_catList_order.show();
-	});
+	} else {
+		$.ajax({
+			type:"POST", url:"/changeOrders/CatList", data:args
+			, dataType:"text"
+		}).fail(function () {
+			console.log("Changing CatList order has failed.");
+		}).done(function (resp) {
+			console.log(resp);
+		}).always(function () {
+			$data_myCatList.html(m.escapeHTML(args));
+			m.updateCatFS();
+			$change_catList_order.show();
+		});
+	}
 };
 $change_catList_order_ok.on("click", function (e) {
 	var catListChanged=m.getCatListChanged();
@@ -2872,9 +3119,11 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		}).done(function (resp) {
 			var defs=m.strToJSON(resp);
 			r.defs=true;
-			r["def-cats"]=defs[1]["def-cats"];
-			r["def-titles"]=defs[1]["def-titles"];
-			m.showDefs(r);
+			if (defs[1]) {
+				r["def-cats"]=defs[1]["def-cats"];
+				r["def-titles"]=defs[1]["def-titles"];
+				m.showDefs(r);
+			}
 		});
 	}
 	if (m.myPage||uri==="") {
@@ -3011,7 +3260,12 @@ $button_back.on("click", function (e) {
 	m.showReco(r);
 });
 
-m.reco_do=function (args) {
+m.reco_do=function (args, err) {
+	if (err) {
+		$error.html("Reco failed. You may be not logged-in.");
+		$button_reco.removeClass("disabled");
+		return;
+	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
@@ -3031,12 +3285,10 @@ m.reco_do=function (args) {
 			}
 			setTimeout(function () {
 				m.emptifyReco();
-				// $button_reco.removeClass("disabled");
 				$button_close.trigger("click");
 			}, 1000);
 		} else {
 			$error.html(res[1]["result"]);
-			// $button_reco.removeClass("disabled");
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -3080,40 +3332,44 @@ $button_reco.on("click", function (e) {
 		$button_reco.removeClass("disabled");
 	}
 });
-m.reco_change_do=function (args) {
+m.reco_change_do=function (args, err) {
+	if (err) {
+		$error.html("Failed change. You may not be logged-in.");
+		$button_edit.removeClass("disabled");
+		return;
+	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function () {
 		$error.html("Failed change. You may not be logged-in.");
-		// $button_edit.removeClass("disabled");
 	}).done(function (resp) {
 		var res=m.strToJSON(resp);
-		if (res[1]["result"]==="changed") {
-			$error.html("Changed");
-			if (args.cats!==args.r["cats"]) {
-				m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
-				args.r["cats"]=args.cats;
+		if (res[1]) {
+			if (res[1]["result"]==="changed") {
+				$error.html("Changed");
+				if (args.cats!==args.r["cats"]) {
+					m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
+					args.r["cats"]=args.cats;
+				}
+				if (args.title!==args.r["title"]) { args.r["title"]=args.title; }
+				if (args.desc!==args.r["desc"]) {
+					args.r["desc"]=args.desc;
+					args.r["descR"]=m.renderStrDescCmt(args.desc);
+				}
+				if (args.cmt!==args.r["cmt"]) {
+					args.r["cmt"]=args.cmt;
+					args.r["cmtR"]=m.renderStrDescCmt(args.cmt);
+				}
+				if (args.val.str!==args.r["val"].str) { args.r["val"]=args.val; }
+				if (m.myPage) { m.refresh(args.cats, "changed", args.uri); }
+				setTimeout(function () {
+					m.emptifyReco();
+					$button_close.trigger("click");
+				}, 1000);
+			} else {
+				$error.html(res[1]["result"]);
 			}
-			if (args.title!==args.r["title"]) { args.r["title"]=args.title; }
-			if (args.desc!==args.r["desc"]) {
-				args.r["desc"]=args.desc;
-				args.r["descR"]=m.renderStrDescCmt(args.desc);
-			}
-			if (args.cmt!==args.r["cmt"]) {
-				args.r["cmt"]=args.cmt;
-				args.r["cmtR"]=m.renderStrDescCmt(args.cmt);
-			}
-			if (args.val.str!==args.r["val"].str) { args.r["val"]=args.val; }
-			if (m.myPage) { m.refresh(args.cats, "changed", args.uri); }
-			setTimeout(function () {
-				m.emptifyReco();
-				// $button_edit.removeClass("disabled");
-				$button_close.trigger("click");
-			}, 1000);
-		} else {
-			$error.html(res[1]["result"]);
-			// $button_edit.removeClass("disabled");
 		}
 	}).always(function () {
 		$button_edit.removeClass("disabled");
@@ -3177,12 +3433,16 @@ $button_edit.on("click", function (e) {
 		$button_edit.removeClass("disabled");
 	}
 });
-m.reco_delete_do=function (args) {
+m.reco_delete_do=function (args, err) {
+	if (err) {
+		$error.html("Failed delete. You may not be logged-in.");
+		$button_del.removeClass("disabled");
+		return;
+	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).done(function (resp) {
-		console.log(resp);
 		var res=m.strToJSON(resp);
 		if (res[1]["result"]==="deleted") {
 			$error.html("Deleted");
@@ -3193,12 +3453,10 @@ m.reco_delete_do=function (args) {
 				m.refresh(cats, "deleted", args.uri);
 			}
 			setTimeout(function () {
-				// $button_del.removeClass("disabled");
 				$button_close.trigger("click");
 			}, 1000);
 		} else {
 			$error.html(res[1]["result"]);
-			// $button_del.removeClass("disabled");
 		}
 	}).always(function () {
 		$button_del.removeClass("disabled");
