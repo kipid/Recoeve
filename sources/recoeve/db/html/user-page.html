@@ -466,7 +466,7 @@ m.show_Multireco_Page=function (e) {
 	if (e&&e.which===2) {
 		return true;
 	}
-	var currentCat=.cat;
+	// var currentCat=.cat;
 	if (currentCat) { currentCat=currentCat.val; }
 	if (window.history.state&&window.history.state.cat===cat) { return false; }
 	m.currentCat=cat;
@@ -1102,9 +1102,9 @@ m.rmb_me=function (callback, args) {
 				console.log(resp);
 				callback(args, resp);
 			} else {
-				m.docCookies.setItem("SSN", m.encrypt(m.docCookies.getItem("salt"), m.docCookies.getItem("session").substring(3,11), iter), 10, "/");
+				m.docCookies.setItem("SSN", m.encrypt(m.docCookies.getItem("salt"), m.docCookies.getItem("session").substring(3,11), iter), 3, "/");
 				callback(args, null);
-				m.docCookies.removeItem("SSN", "/");
+				// m.docCookies.removeItem("SSN", "/");
 			}
 		});
 	};
