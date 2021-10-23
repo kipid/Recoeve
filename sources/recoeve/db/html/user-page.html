@@ -1094,7 +1094,7 @@ m.str_rmb_me='log\tsW\tsH\n'
 m.saveSSN=function () {
 	m.saltSSN=m.docCookies.getItem("salt");
 	m.docCookies.removeItem("salt", "/");
-	m.session=m.docCookies.getItem("session").substring(3,11);
+	m.session=m.docCookies.getItem("session");
 	m.docCookies.removeItem("session", "/");
 };
 m.saveSSN();
@@ -1109,7 +1109,7 @@ m.rmb_me=function (callback, args) {
 				console.log(resp);
 				callback(args, resp);
 			} else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session, iter), 3, "/");
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/");
 				callback(args, null);
 				// m.docCookies.removeItem("SSN", "/");
 			}
