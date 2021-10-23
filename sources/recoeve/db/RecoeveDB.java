@@ -982,7 +982,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				byte[] session=randomBytes(32);
 				byte[] token=randomBytes(32);
 				ResultSet user=findUserByIndex(user_i);
-				if (user!=null && user.next()) {
+				if (user!=null&&user.next()) {
 					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
 					byte[] newToken=randomBytes(32);
 					rs.updateString("tLast", now);
@@ -1041,9 +1041,9 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 			// setCookie.add(io.vertx.core.http.Cookie.cookie("tCjs", now_)
 			// 		.setPath("/").setMaxAge(secondsSSN));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("session", hex(session))
-					.setPath("/").setSecure(true).setMaxAge(secondsSSN));
+					.setPath("/").setMaxAge(secondsSSN));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("salt", hex(salt))
-					.setPath("/").setSecure(true).setMaxAge(secondsSSN));
+					.setPath("/").setMaxAge(secondsSSN));
 		}
 	} catch (Exception e) {
 		err(e);
@@ -1116,9 +1116,9 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	setCookie.add(io.vertx.core.http.Cookie.cookie("SSN", "")
 			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("salt", "")
-			.setPath("/").setSecure(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("session", "")
-			.setPath("/").setSecure(true).setMaxAge(-100L));
+			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
 			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
