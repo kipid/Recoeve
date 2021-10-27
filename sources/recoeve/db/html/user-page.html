@@ -1133,7 +1133,6 @@ m.rmb_me=function (callback, args) {
 	}
 };
 
-
 /* Fuzzy search */
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
@@ -2623,7 +2622,7 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 		var uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
 		fs.fullList[uri].$listI=$recos.eq(i);
 	}
-	m.delayedElems=m.delayedElems.add( $contents.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
@@ -2782,7 +2781,7 @@ m.refresh=function (cats, option, uri) {
 		case "recoed" :
 			var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 			$contents.prepend( $newReco );
-			m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
 			m.fdList=m.fdList.add( $newReco );
@@ -2791,7 +2790,7 @@ m.refresh=function (cats, option, uri) {
 			if (uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 				if (option==="changed") {
 					$reco_playing.html(m.recoHTML(m.userRecos[uri], true));
-					m.delayedElems=m.delayedElems.add( $reco_playing.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+					m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 					$window.trigger("scroll.delayedLoad");
 				} else if (option==="deleted") {
@@ -2806,7 +2805,7 @@ m.refresh=function (cats, option, uri) {
 					if (option==="changed") {
 						var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 						$reco.replaceWith($newReco);
-						m.delayedElems=m.delayedElems.add( $newReco.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+						m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
 						m.fdList=m.fdList.add( $newReco );
@@ -3879,7 +3878,7 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 	}
-	m.delayedElems=m.delayedElems.add( $headPlay.find("[delayed-src], [delayed-bgimage], .to-be-executed") );
+	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 };
