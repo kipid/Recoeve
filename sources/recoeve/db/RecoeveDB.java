@@ -50,7 +50,7 @@ public static final long secondsSSN=hoursSSN*60*60L;
 // public static final String cookieOptionDelSSN=cookieDel+cookieOptionSSN;
 public static final int daysRMB=30;
 public static final long secondsRMB=daysRMB*24*60*60L;
-// public static final String cookieLogIn=";path=/account/log-in;HttpOnly"; // ;domain=recoeve.net
+// public static final String cookieLogIn=";path=/account;HttpOnly"; // ;domain=recoeve.net
 // public static final String cookieOptionRMB=";max-age="+(secondsRMB)+cookieLogIn;
 public static final int daysRMBtoken=10;
 public static final long secondsRMBtoken=daysRMBtoken*24*60*60L;
@@ -871,92 +871,16 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 	}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, BodyData inputs, String ip) {
-	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
-	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
-			.setPath("/").setMaxAge(-100L));
-	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
-	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
-	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
-	String now=now();
-	if (cookie.get("rmbdI")!=null) {
-	long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
-	String rmbdT=cookie.get("rmbdT").replaceAll("_", " ");
-	String rmbdAuth=cookie.get("rmbdAuth");
-	String rmbdToken=cookie.get("rmbdToken");
-	String log=inputs.get("log");
-	String screenWidth=inputs.get("screenWidth");
-	String screenHeight=inputs.get("screenHeight");
-	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && screenWidth!=null && screenHeight!=null ) {
-	try {
-		pstmtCheckUserRemember.setLong(1, user_i);
-		pstmtCheckUserRemember.setString(2, rmbdT);
-		ResultSet rs=pstmtCheckUserRemember.executeQuery();
-		String errMsg="Error: ";
-		if (rs.next()) {
-			if ( checkDateDiff(now, rmbdT, daysRMB)
-				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
-				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))
-				&&rs.getString("log").equals(log)
-				&&rs.getInt("sW")==Integer.parseInt(screenWidth)
-				&&rs.getInt("sH")==Integer.parseInt(screenHeight) ) {
-				byte[] session=randomBytes(32);
-				byte[] token=randomBytes(32);
-				ResultSet user=findUserByIndex(user_i);
-				if (user!=null && user.next()) {
-					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
-					byte[] newToken=randomBytes(32);
-					rs.updateString("tLast", now);
-					rs.updateBytes("token", newToken);
-					rs.updateRow();
-					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
-							.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMBtoken));
-					logs(user_i, now, ip, "rmb", true);
-					return setCookie;
-				}
-			} else {
-				// Failed: Delete rmbd cookie.
-				if (!checkDateDiff(now, rmbdT, daysRMB)) {
-					errMsg+="expired. ";
-				}
-				if (!Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))) {
-					errMsg+="auth. ";
-				}
-				if (!Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))) {
-					errMsg+="token. ";
-				}
-				if (!rs.getString("log").equals(log)) {
-					errMsg+="log. ";
-				}
-				if (!(rs.getInt("sW")==Integer.parseInt(screenWidth))) {
-					errMsg+="sW. ";
-				}
-				if (!(rs.getInt("sH")==Integer.parseInt(screenHeight))) {
-					errMsg+="sH. ";
-				}
-			}
-		} else {
-			errMsg+="Not remembered.";
-		}
-		logs(user_i, now, ip, "rmb", false, errMsg);
-	} catch (SQLException e) {
-		err(e);
-	}}}
-	return setCookie;
-}
 public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray inputs, String ip) {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
 			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	String now=now();
 	if (cookie.get("rmbdI")!=null) {
 	long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
@@ -973,7 +897,8 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
-			if ( checkDateDiff(now, rmbdT, daysRMB)
+			if ( ip.equals(rs.getString("ip"))
+				&&checkDateDiff(now, rmbdT, daysRMB)
 				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
 				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))
 				&&rs.getString("log").equals(log)
@@ -989,12 +914,15 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					rs.updateBytes("token", newToken);
 					rs.updateRow();
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
-							.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 					logs(user_i, now, ip, "rmb", true);
 					return setCookie;
 				}
 			} else {
 				// Failed: Delete rmbd cookie.
+				if (!ip.equals(rs.getString("ip"))) {
+					errMsg+="diff ip. ";
+				}
 				if (!checkDateDiff(now, rmbdT, daysRMB)) {
 					errMsg+="expired. ";
 				}
@@ -1067,11 +995,11 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_i,16))
 				.setPath("/").setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_)
-				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMB));
+				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", hex(rmbdAuth))
-				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMB));
+				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(rmbdToken))
-				.setPath("/account/log-in").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 	}
 	return setCookie;
 }
@@ -1122,11 +1050,11 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
 			.setPath("/").setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "")
-			.setPath("/account/log-in").setHttpOnly(true).setMaxAge(-100L));
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	return setCookie;
 }
 

@@ -8,22 +8,69 @@
 <script>
 window.m={};
 (function (m, undefined) {
-	m.myIndex="{--myIndex--}";
-	m.myId="{--myId--}";
-	m.pathName=window.location.pathname;
-	if (m.pathName.substring(0,6)!=="/user/") {
-		m.pathName="/user/"+m.myId;
-		if (window.location.pathname!=="/reco") {
-			window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
-		}
+m.myIndex="{--myIndex--}";
+m.myId="{--myId--}";
+m.pathName=window.location.pathname;
+if (m.pathName.substring(0,6)!=="/user/") {
+	m.pathName="/user/"+m.myId;
+	if (window.location.pathname!=="/reco") {
+		window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
 	}
-	m.userId=decodeURIComponent(m.pathName.substring(6));
-	var k=m.userId.indexOf("/");
-	if (k!==-1) {
-		m.userId=m.userId.substring(0,k);
-		// m.pathName="/user/"+m.userId;
+}
+m.userId=decodeURIComponent(m.pathName.substring(6));
+var k=m.userId.indexOf("/");
+if (k!==-1) {
+	m.userId=m.userId.substring(0,k);
+	// m.pathName="/user/"+m.userId;
+}
+m.myPage=(m.myId===m.userId);
+
+/////////////////////////////
+// cookies.js
+/////////////////////////////
+m.docCookies={
+	hasItem:function (sKey) {
+		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
 	}
-	m.myPage=(m.myId===m.userId);
+	, getItem:function (sKey) {
+		return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null;
+	}
+	, removeItem:function (sKey, sPath, sDomain, bSecure) {
+		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+		document.cookie=encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
+		return true;
+	}
+	, setItem:function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+		var sExpires="";
+		if (vEnd) { switch (vEnd.constructor) {
+			case Number:
+				sExpires=vEnd===Infinity?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+vEnd;
+				break;
+			case String:
+				sExpires="; expires="+vEnd;
+				break;
+			case Date:
+				sExpires="; expires="+vEnd.toUTCString();
+				break;
+		}}
+		document.cookie=encodeURIComponent(sKey)+"="+encodeURIComponent(sValue)+sExpires+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
+		return true;
+	}
+	, keys:function () {
+		var aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
+		for (var nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
+		return aKeys;
+	}
+};
+
+m.saveSSN=function () {
+	m.saltSSN=m.docCookies.getItem("salt");
+	m.docCookies.removeItem("salt", "/");
+	m.session=m.docCookies.getItem("session");
+	m.docCookies.removeItem("session", "/");
+};
+m.saveSSN();
 })(window.m);
 </script>
 <style>
@@ -978,45 +1025,6 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
   return ret;
 };
 
-/////////////////////////////
-// cookies.js
-/////////////////////////////
-m.docCookies={
-	hasItem:function (sKey) {
-		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
-	}
-	, getItem:function (sKey) {
-		return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null;
-	}
-	, removeItem:function (sKey, sPath, sDomain, bSecure) {
-		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-		document.cookie=encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
-		return true;
-	}
-	, setItem:function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-		var sExpires="";
-		if (vEnd) { switch (vEnd.constructor) {
-			case Number:
-				sExpires=vEnd===Infinity?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+vEnd;
-				break;
-			case String:
-				sExpires="; expires="+vEnd;
-				break;
-			case Date:
-				sExpires="; expires="+vEnd.toUTCString();
-				break;
-		}}
-		document.cookie=encodeURIComponent(sKey)+"="+encodeURIComponent(sValue)+sExpires+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
-		return true;
-	}
-	, keys:function () {
-		var aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
-		for (var nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
-		return aKeys;
-	}
-};
-
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
@@ -1091,13 +1099,6 @@ if (m.sW<m.sH) {
 }
 m.str_rmb_me='log\tsW\tsH\n'
 	+'web\t'+m.sW+'\t'+m.sH;
-m.saveSSN=function () {
-	m.saltSSN=m.docCookies.getItem("salt");
-	m.docCookies.removeItem("salt", "/");
-	m.session=m.docCookies.getItem("session");
-	m.docCookies.removeItem("session", "/");
-};
-m.saveSSN();
 m.rmb_me=function (callback, args) {
 	let SSNencrypt=function (callback, args) {
 		$.ajax({
