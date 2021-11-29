@@ -1123,11 +1123,16 @@ m.rmb_me=function (callback, args) {
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 			, dataType:"text"
 		}).done(function (resp) {
+			console.log(resp);
+			console.log(m.docCookies.hasItem('tCreate'));
 			if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
 				m.saveSSN();
-				SSNencrypt(callback, args);
+				if (m.saltSSN&&m.session) {
+					SSNencrypt(callback, args);
+				} else {
+					callback(args, resp);
+				}
 			} else {
-				console.log(resp);
 				callback(args, resp);
 			}
 		});
