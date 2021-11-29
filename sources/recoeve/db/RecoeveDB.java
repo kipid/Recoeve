@@ -897,7 +897,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
-			if ( ip.equals(rs.getString("ip"))
+			if ( ip.startsWith(rs.getString("ip").split(":")[0])
 				&&checkDateDiff(now, rmbdT, daysRMB)
 				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
 				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))

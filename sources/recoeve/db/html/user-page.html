@@ -1105,9 +1105,9 @@ m.rmb_me=function (callback, args) {
 			type:"GET", url:"/sessionIter"
 			, dataType:"text"
 		}).done(function (resp) {
+			console.log(resp);
 			let iter=Number(resp);
 			if (isNaN(iter)) {
-				console.log(resp);
 				callback(args, resp);
 			} else {
 				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/");
