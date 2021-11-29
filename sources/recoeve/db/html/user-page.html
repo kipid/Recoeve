@@ -65,10 +65,14 @@ m.docCookies={
 };
 
 m.saveSSN=function () {
-	m.saltSSN=m.docCookies.getItem("salt");
-	m.docCookies.removeItem("salt", "/");
-	m.session=m.docCookies.getItem("session");
-	m.docCookies.removeItem("session", "/");
+	if (m.docCookies.hasItem("salt")) {
+		m.saltSSN=m.docCookies.getItem("salt");
+		m.docCookies.removeItem("salt", "/");
+	}
+	if (m.docCookies.hasItem("session")) {
+		m.session=m.docCookies.getItem("session");
+		m.docCookies.removeItem("session", "/");
+	}
 };
 m.saveSSN();
 })(window.m);
