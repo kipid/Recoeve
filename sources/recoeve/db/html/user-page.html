@@ -2071,6 +2071,19 @@ ptnURI.toIframe=function (uriRest) {
 	return false;
 };
 
+ptnURI=m.ptnURI["youtube.com"]={};
+ptnURI.regEx=/^shorts\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest) {
+	var exec=m.ptnURI["youtube.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let v=exec[1];
+		if (v) {
+			return {html:m.YTiframe(v,null), from:"youtube", videoId:v};
+		}
+	}
+	return false;
+};
+
 ptnURI=m.ptnURI["youtu.be"]={};
 ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
 ptnURI.toIframe=function (uriRest) {
@@ -3089,8 +3102,8 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	if (elem.value!==uri) { elem.value=uri; }
 	let uriRendered=m.uriRendering(uri,true);
 	if (uriRendered.from==="youtube") {
-		// m.lastURI=uri;
-		// uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+		m.lastURI=uri;
+		uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
 	} else if (uriRendered.from==="insta") {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
