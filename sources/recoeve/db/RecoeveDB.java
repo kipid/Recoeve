@@ -945,6 +945,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 		} else {
 			errMsg+="Not remembered.";
 		}
+		System.out.println(errMsg);
 		logs(user_i, now, ip, "rmb", false, errMsg);
 	} catch (SQLException e) {
 		err(e);
