@@ -516,6 +516,7 @@ public void start() {
 				req.response().end("Not a proper access.");
 			}
 		} else {
+			System.out.println(INVALID_ACCESS);
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 		}

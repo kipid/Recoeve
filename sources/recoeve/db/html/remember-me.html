@@ -42,6 +42,7 @@ $.ajax({
 	type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 	, dataType:"text"
 }).done(function (resp) {
+	console.log(resp);
 	if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
 		if (vars.goto!==undefined) {
 			window.location.href=unescape(vars.goto);
