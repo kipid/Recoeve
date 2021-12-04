@@ -915,13 +915,14 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					rs.updateRow();
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+					System.out.println("Remembered.");
 					logs(user_i, now, ip, "rmb", true);
 					return setCookie;
 				}
 			} else {
 				// Failed: Delete rmbd cookie.
-				if (!ip.equals(rs.getString("ip"))) {
-					errMsg+="diff ip. ";
+				if (!ip.startsWith(rs.getString("ip").split(":")[0])) {
+					errMsg+="diff ip. "+rs.getString("ip")+" ";
 				}
 				if (!checkDateDiff(now, rmbdT, daysRMB)) {
 					errMsg+="expired. ";
