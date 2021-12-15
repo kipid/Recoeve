@@ -936,10 +936,10 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if (!rs.getString("log").equals(log)) {
 					errMsg+="log. ";
 				}
-				if (!(rs.getInt("sW")==Integer.parseInt(sW))) {
+				if ((rs.getInt("sW")!=Integer.parseInt(sW))) {
 					errMsg+="sW. ";
 				}
-				if (!(rs.getInt("sH")==Integer.parseInt(sH))) {
+				if ((rs.getInt("sH")!=Integer.parseInt(sH))) {
 					errMsg+="sH. ";
 				}
 			}
@@ -1002,6 +1002,15 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(rmbdToken))
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+	} else {
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "")
+				.setPath("/").setMaxAge(-100L));
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "")
+				.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "")
+				.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "")
+				.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	}
 	return setCookie;
 }
