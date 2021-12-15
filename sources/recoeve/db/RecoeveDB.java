@@ -290,8 +290,8 @@ public String now() {
 }
 public boolean checkTimeDiff(String now, String from, String lessThan) {
 	try {
-		pstmtCheckTimeDiff.setString(1, now);
-		pstmtCheckTimeDiff.setString(2, from);
+		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
+		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
 		pstmtCheckTimeDiff.setString(3, lessThan);
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
@@ -304,8 +304,8 @@ public boolean checkTimeDiff(String now, String from, String lessThan) {
 }
 public boolean checkDateDiff(String now, String from, int lessThan) {
 	try {
-		pstmtCheckDateDiff.setString(1, now);
-		pstmtCheckDateDiff.setString(2, from);
+		pstmtCheckDateDiff.setTimestamp(1, Timestamp.valueOf(now));
+		pstmtCheckDateDiff.setTimestamp(2, Timestamp.valueOf(from));
 		pstmtCheckDateDiff.setInt(3, lessThan);
 		ResultSet rs=pstmtCheckDateDiff.executeQuery();
 		if (rs.next()) {
@@ -354,7 +354,7 @@ public boolean emailAvailable(String email) {
 public boolean createAuthToken(String t, String ip, byte[] token) {
 	try {
 		con.setAutoCommit(true);
-		pstmtCreateAuthToken.setString(1, t);
+		pstmtCreateAuthToken.setTimestamp(1, Timestamp.valueOf(t));
 		pstmtCreateAuthToken.setString(2, ip);
 		pstmtCreateAuthToken.setBytes(3, token);
 		return (pstmtCreateAuthToken.executeUpdate()>0);
@@ -370,7 +370,7 @@ public boolean checkAuthToken(BodyData inputs, String ip, String now) {
 	String email=inputs.get("userEmail");
 	try {
 		con.setAutoCommit(true);
-		pstmtCheckAuthToken.setString(1, t);
+		pstmtCheckAuthToken.setTimestamp(1, Timestamp.valueOf(t));
 		pstmtCheckAuthToken.setString(2, ip);
 		ResultSet rs=pstmtCheckAuthToken.executeQuery();
 		String errMsg="Sign-up error: ";
@@ -472,8 +472,8 @@ public boolean createUser(BodyData inputs, String ip, String now) {
 		pstmtCreateUser.setBytes(5, pwdEncrypt(pwd_salt, pwd));
 		pstmtCreateUser.setString(6, veriKey);
 		pstmtCreateUser.setString(7, ip);
-		pstmtCreateUser.setString(8, now);
-		pstmtCreateUser.setString(9, now);
+		pstmtCreateUser.setTimestamp(8, Timestamp.valueOf(now));
+		pstmtCreateUser.setTimestamp(9, Timestamp.valueOf(now));
 		if (pstmtCreateUser.executeUpdate()>0) {
 			user=findUserById(id);
 			if (user.next()) {
@@ -761,7 +761,7 @@ public String sessionIter(Cookie cookie) {
 			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
 				try {
 					pstmtSession.setLong(1, user_i);
-					pstmtSession.setString(2, tCreate);
+					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
 					if (rs.next()) {
 						return Integer.toString(rs.getInt("iter"));
@@ -787,7 +787,7 @@ public boolean sessionCheck(Cookie cookie) {
 			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
 				try {
 					pstmtSession.setLong(1, user_i);
-					pstmtSession.setString(2, tCreate);
+					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
 					if ( rs.next()
 						&&Arrays.equals(rs.getBytes("encryptedSSN"), pwdEncrypt(rs.getBytes("salt"), Encrypt.encryptSSNRest(hex(rs.getBytes("salt")), session, rs.getInt("iter")))) ) {
@@ -893,7 +893,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
 	try {
 		pstmtCheckUserRemember.setLong(1, user_i);
-		pstmtCheckUserRemember.setString(2, rmbdT);
+		pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
@@ -910,7 +910,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if (user!=null&&user.next()) {
 					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
 					byte[] newToken=randomBytes(32);
-					rs.updateString("tLast", now);
+					rs.updateTimestamp("tLast", Timestamp.valueOf(now));
 					rs.updateBytes("token", newToken);
 					rs.updateRow();
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
@@ -958,7 +958,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	try {
 		pstmtCreateUserSession.setLong(1, user_i);
-		pstmtCreateUserSession.setString(2, now);
+		pstmtCreateUserSession.setTimestamp(2, Timestamp.valueOf(now));
 		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3,11), Encrypt.iterSSNFull)));
 		pstmtCreateUserSession.setBytes(4, salt);
 		pstmtCreateUserSession.setString(5, ip);
@@ -983,7 +983,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip)
 	throws SQLException {
 	pstmtCreateUserRemember.setLong(1, user_i);
-	pstmtCreateUserRemember.setString(2, now);
+	pstmtCreateUserRemember.setTimestamp(2, Timestamp.valueOf(now));
 	pstmtCreateUserRemember.setBytes(3, rmbdAuth);
 	pstmtCreateUserRemember.setBytes(4, rmbdToken);
 	pstmtCreateUserRemember.setString(5, inputs.get(1, "log"));
@@ -1021,7 +1021,7 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 		if (tCreate!=null) {
 			try {
 				pstmtSession.setLong(1, user_i);
-				pstmtSession.setString(2, tCreate);
+				pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 				ResultSet rs=pstmtSession.executeQuery();
 				if (rs.next()) {
 					rs.deleteRow();
@@ -1037,7 +1037,7 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 		if(rmbdT!=null) {
 			try {
 				pstmtCheckUserRemember.setLong(1, user_i);
-				pstmtCheckUserRemember.setString(2, rmbdT);
+				pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 				ResultSet rs=pstmtCheckUserRemember.executeQuery();
 				if (rs.next()) {
 					rs.deleteRow();
@@ -1075,7 +1075,7 @@ public boolean logs(long user_i, String t, String ip, String log, boolean succes
 public boolean logs(long user_i, String t, String ip, String log, boolean success, String desc)
 	throws SQLException {
 	pstmtLog.setLong(1, user_i);
-	pstmtLog.setString(2, t);
+	pstmtLog.setTimestamp(2, Timestamp.valueOf(t));
 	pstmtLog.setString(3, ip);
 	pstmtLog.setString(4, log);
 	pstmtLog.setBoolean(5, success);
@@ -1807,8 +1807,8 @@ public String recoDo(long user_i, String recoStr) {
 				case "put":
 					pstmtPutReco.setLong(1, user_i);
 					pstmtPutReco.setString(2, uri);
-					pstmtPutReco.setString(3, now);
-					pstmtPutReco.setString(4, now);
+					pstmtPutReco.setTimestamp(3, Timestamp.valueOf(now));
+					pstmtPutReco.setTimestamp(4, Timestamp.valueOf(now));
 					pstmtPutReco.setString(5, cats.toString());
 						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
 						updateDefCat(uri, cats, +1);
@@ -1978,8 +1978,8 @@ public String putReco(long user_i, String recoStr) {
 				} else {
 					pstmtPutReco.setLong(1, user_i);
 					pstmtPutReco.setString(2, uri);
-					pstmtPutReco.setString(3, now);
-					pstmtPutReco.setString(4, now);
+					pstmtPutReco.setTimestamp(3, Timestamp.valueOf(now));
+					pstmtPutReco.setTimestamp(4, Timestamp.valueOf(now));
 					pstmtPutReco.setString(5, cats.toString());
 						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
 						updateDefCat(uri, cats, +1);
