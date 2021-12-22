@@ -1128,17 +1128,19 @@ m.rmb_me=function (callback, args) {
 			, dataType:"text"
 		}).done(function (resp) {
 			console.log(resp);
-			console.log(m.docCookies.hasItem('tCreate'));
-			if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
-				m.saveSSN();
-				if (m.saltSSN&&m.session) {
-					SSNencrypt(callback, args);
+			setTimeout(function () {
+				console.log(m.docCookies.hasItem('tCreate'));
+				if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
+					m.saveSSN();
+					if (m.saltSSN&&m.session) {
+						SSNencrypt(callback, args);
+					} else {
+						callback(args, resp);
+					}
 				} else {
 					callback(args, resp);
 				}
-			} else {
-				callback(args, resp);
-			}
+			}, 500);
 		});
 	}
 };
