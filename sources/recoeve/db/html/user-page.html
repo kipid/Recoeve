@@ -18,7 +18,7 @@ if (m.pathName.substring(0,6)!=="/user/") {
 	}
 }
 m.userId=decodeURIComponent(m.pathName.substring(6));
-var k=m.userId.indexOf("/");
+let k=m.userId.indexOf("/");
 if (k!==-1) {
 	m.userId=m.userId.substring(0,k);
 	// m.pathName="/user/"+m.userId;
@@ -42,7 +42,7 @@ m.docCookies={
 	}
 	, setItem:function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
 		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-		var sExpires="";
+		let sExpires="";
 		if (vEnd) { switch (vEnd.constructor) {
 			case Number:
 				sExpires=vEnd===Infinity?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+vEnd;
@@ -58,8 +58,8 @@ m.docCookies={
 		return true;
 	}
 	, keys:function () {
-		var aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
-		for (var nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
+		let aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
+		for (let nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
 		return aKeys;
 	}
 };
@@ -241,24 +241,31 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #point-range-result {margin:1em; float:right; border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark #point-range-result {border-color:white}
 
-#numbers-of-recos {margin:1em 0; padding:.5em}
-.numbers-of-recos {margin:1em 0; padding:.5em}
+#numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
+.numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 
 #my-id {margin-left:2.5em;}
 
+.multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
+.multireco .reco {width:24%}
 .reco:last-child {margin:0}
 .reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer; background-size:100% 100%}
 .reco .SNS-img:first-child {border-left:.15em gray solid}
 .reco>.textURI, .reco>.YTVideoId {display:none}
 .reco>.uri {font-size:.5em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
+.multireco .reco>.uri {display:none}
 .reco>.title {font-size:1.1em; border:2px solid rgb(150,100,100); padding:.2em .5em}
+.multireco .reco>.title {clear:both; font-size:0.9em}
 .reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
+.multireco .reco>.cats {display:none}
 .reco>.cats>a {color:rgb(130,170,130)}
 .reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
+.multireco .reco>.desc {display:none}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(200,200,200); border-left:.3em solid rgb(10,80,80)} .dark .reco>.cmt {background:rgb(30,30,30)}
+.multireco .reco>.cmt {display:none}
 .stars-container {position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
@@ -267,6 +274,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.val>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark .reco>.val>.str {border-color:white}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
+.multireco .reco .tFirst, .multireco .reco .tLast {display:none}
 
 .lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
@@ -383,7 +391,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div>
 <div class="side2" id="numbers-of-recos"></div>
 <div class="side2" id="headPlay">
-	<div class="button" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
+	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container">
 		<div id="uri-rendered" style="display:none"></div>
 		<div class="rC" id="rC-video-uri-rendered" style="display:none">
@@ -449,6 +457,7 @@ $change_catList_order_cancel=$("#change-catList-order-cancel");
 $new_reco=$("#new-reco");
 
 $headPlay=$("#headPlay");
+$toggle_reco_list_play=$("#toggle-reco-list-play");
 $playlist_container=$("#playlist-container");
 $uri_rendered=$("#uri-rendered");
 $rC_video_uri_rendered=$("#rC-video-uri-rendered");
@@ -513,18 +522,25 @@ if (m.myIndex) {
 }
 
 m.show_Multireco_Page=function (e) {
-	let vars=m.getSearchVars(window.location.search);
-	if (e&&e.which===2) {
-		return true;
+	if ($contents.hasClass("multireco")) {
+		$contents.removeClass("multireco");
+	} else {
+		$contents.addClass("multireco");
+		$playlist_container.hide();
+		$toggle_reco_list_play.removeClass("enabled");
 	}
-	// var currentCat=.cat;
-	if (currentCat) { currentCat=currentCat.val; }
-	if (window.history.state&&window.history.state.cat===cat) { return false; }
-	m.currentCat=cat;
-	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
-	$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
-	return false;
+	// let vars=m.getSearchVars(window.location.search);
+	// if (e&&e.which===2) {
+	// 	return true;
+	// }
+	// let currentCat=vars.cat;
+	// if (currentCat) { currentCat=currentCat.val; }
+	// if (window.history.state&&window.history.state.cat===cat) { return false; }
+	// m.currentCat=cat;
+	// m.getUriListAndShowRecosOnCat(cat);
+	// window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+	// $a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+	// return false;
 };
 
 m.delayPad=m.delayPad||256;
@@ -595,11 +611,11 @@ m.neighbors={};
 ////////////////////////////////////////////////////
 m.getNeighbors=function () {
 	if (m.neighbors[m.currentCat]&&m.neighbors[m.currentCat].down) {
-		var req="user_i\tcat_i";
-		var neighbors=m.neighbors[m.currentCat]
-		for (var p in neighbors) {
+		let req="user_i\tcat_i";
+		let neighbors=m.neighbors[m.currentCat]
+		for (let p in neighbors) {
 			if (p!=="down") {
-				for (var q in neighbors[p]) {
+				for (let q in neighbors[p]) {
 					req+="\n"+p+"\t"+q;
 				}
 			}
@@ -612,17 +628,17 @@ m.getNeighbors=function () {
 			console.log(resp);
 		});
 	} else {
-		var req="cat_from\n"+m.currentCat;
+		let req="cat_from\n"+m.currentCat;
 		$.ajax({
 			type:"POST", url:m.pathName+"/get-Neighbors", data:req
 			, dataType:"text"
 		}).done(function (resp) {
-			var cat_froms=m.strToJSON(req);
-			for (var i=1;i<cat_froms.length;i++) {
+			let cat_froms=m.strToJSON(req);
+			for (let i=1;i<cat_froms.length;i++) {
 				m.neighbors[cat_froms[i].cat_from]={down:true};
 			}
-			var res=m.strToJSON(resp);
-			for (var i=1;i<res.length;i++) {
+			let res=m.strToJSON(resp);
+			for (let i=1;i<res.length;i++) {
 				m.neighbors[res[i].cat_from][res[i].user_i]={};
 				m.neighbors[res[i].cat_from][res[i].user_i][res[i].cat_i]=res[i];
 			}
@@ -660,8 +676,8 @@ m.pad=function(str, max) {
 	return (str.length<max)?m.pad("0"+str,max):str;
 };
 m.hash1=function(str) {
-	var h=-17-str.length;
-	for (var i=0;i<str.length;i++) {
+	let h=-17-str.length;
+	for (let i=0;i<str.length;i++) {
 		h+=str.charCodeAt(i);
 		h+=(h<<10);
 		h^=(h>>>6);
@@ -675,9 +691,9 @@ m.hash1=function(str) {
 	return m.pad(h.toString(16), 8);
 };
 m.hash2=function(str) {
-	var h=str.length+1;
-	var tmp;
-	for (var i=0;i<str.length;i++) {
+	let h=str.length+1;
+	let tmp;
+	for (let i=0;i<str.length;i++) {
 		h+=str.charCodeAt(i);
 		tmp=(str.charCodeAt(str.length-1-i)<<11)^h;
 		h+=(h<<16)^tmp;
@@ -696,8 +712,8 @@ m.hash2=function(str) {
 	return m.pad(h.toString(16), 8);
 };
 m.hash3=function(str) {
-	var h=-1023+str.length;
-	for (var i=0;i<str.length;i++) {
+	let h=-1023+str.length;
+	for (let i=0;i<str.length;i++) {
 		h^=(h<<5)+(h>>>2)+str.charCodeAt(i);
 	}
 	h^=h<<15;
@@ -707,12 +723,12 @@ m.hash3=function(str) {
 	return m.pad(h.toString(16), 8);
 };
 m.hash4=function(str) {/* RS Hash Function */
-	var b=378551;
-	var a=63689;
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+	let b=378551;
+	let a=63689;
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -720,7 +736,7 @@ m.hash4=function(str) {/* RS Hash Function */
 		h=(q+str.charCodeAt(i))>>>0;
 			// h=h*a+str.charCodeAt(i);
 		q=0;
-		for (var j=0;j<32;j++) {
+		for (let j=0;j<32;j++) {
 			if (b&(1<<j)) {
 				q=(q+(a<<j))>>>0;
 			}
@@ -730,17 +746,17 @@ m.hash4=function(str) {/* RS Hash Function */
 	return m.pad(h.toString(16), 8);
 };
 m.hash5=function(str) {/* JS Hash Function */
-	var h=1315423911;
-	for (var i=0;i<str.length;i++) {
+	let h=1315423911;
+	for (let i=0;i<str.length;i++) {
 		h^=((h<<5)+str.charCodeAt(i)+(h>>2))>>>0;
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
 m.hash6=function(str) {/* ELF Hash Function */
-	var h=0;
-	var x=0;
-	for (var i=0;i<str.length;i++) {
+	let h=0;
+	let x=0;
+	for (let i=0;i<str.length;i++) {
 		h=((h<<4)+str.charCodeAt(i))>>>0;
 		if ((x=h&0xf0000000)!=0) {
 			h^=(x>>24);
@@ -751,11 +767,11 @@ m.hash6=function(str) {/* ELF Hash Function */
 	return m.pad(h.toString(16), 8);
 };
 m.hash7=function(str) {/* BKDR Hash Function */
-	var a=131; // 31 131 1313 13131 131313 etc..
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+	let a=131; // 31 131 1313 13131 131313 etc..
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -766,41 +782,41 @@ m.hash7=function(str) {/* BKDR Hash Function */
 	return m.pad(h.toString(16), 8);
 };
 m.hash8=function(str) {/* SDBM Hash Function */
-	var h=0;
-	for (var i=0;i<str.length;i++) {
+	let h=0;
+	for (let i=0;i<str.length;i++) {
 		h=(str.charCodeAt(i)+(h<<6)+(h<<16)-h)>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
 m.hash9=function(str) {/* DJB Hash Function */
-	var h=5381;
-	for (var i=0;i<str.length;i++) {
+	let h=5381;
+	for (let i=0;i<str.length;i++) {
 		h=(((h<<5)+h)+str.charCodeAt(i))>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
 m.hash10=function(str) {/* DEK Hash Function */
-	var h=str.length;
-	for (var i=0;i<str.length;i++) {
+	let h=str.length;
+	for (let i=0;i<str.length;i++) {
 		h=((h<<5)^(h>>27))^str.charCodeAt(i);
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
 m.hash11=function(str) {/* BP Hash Function */
-	var h=0;
-	for (var i=0;i<str.length;i++) {
+	let h=0;
+	for (let i=0;i<str.length;i++) {
 		h=h<<7^str.charCodeAt(i);
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
 m.hash12=function(str) {/* FNV Hash Function */
-	var a=0x811C9DC5;
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+	let a=0x811C9DC5;
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -813,8 +829,8 @@ m.hash12=function(str) {/* FNV Hash Function */
 	return m.pad(h.toString(16), 8);
 };
 m.hash13=function(str) {/* AP Hash Function */
-	var h=0xAAAAAAAA;
-	for(var i=0;i<str.length;i++) {
+	let h=0xAAAAAAAA;
+	for(let i=0;i<str.length;i++) {
 		if ((i&1)==0) {
 			h^=((h<<7)^str.charCodeAt(i)*(h>>3));
 		} else {
@@ -827,21 +843,21 @@ m.hash13=function(str) {/* AP Hash Function */
 m.encrypt=function(salt, pwd, iter) {
 	iter=pwd.length+131+((iter&&iter.constructor==Number&&iter>=0)?iter:0);;
 	pwd=salt+pwd;
-	var h1=m.hash1(pwd);
-	var h2=m.hash2(pwd);
-	var h3=m.hash3(pwd);
-	var h4=m.hash4(pwd);
-	var h5=m.hash5(pwd);
-	var h6=m.hash6(pwd);
-	var h7=m.hash7(pwd);
-	var h8=m.hash8(pwd);
-	var h9=m.hash9(pwd);
-	var h10=m.hash10(pwd);
-	var h11=m.hash11(pwd);
-	var h12=m.hash12(pwd);
-	var h13=m.hash13(pwd);
-	var tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
-	for (var i=0;i<iter;i++) {
+	let h1=m.hash1(pwd);
+	let h2=m.hash2(pwd);
+	let h3=m.hash3(pwd);
+	let h4=m.hash4(pwd);
+	let h5=m.hash5(pwd);
+	let h6=m.hash6(pwd);
+	let h7=m.hash7(pwd);
+	let h8=m.hash8(pwd);
+	let h9=m.hash9(pwd);
+	let h10=m.hash10(pwd);
+	let h11=m.hash11(pwd);
+	let h12=m.hash12(pwd);
+	let h13=m.hash13(pwd);
+	let tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
+	for (let i=0;i<iter;i++) {
 		tmp1=h13+h12+h11+h10+h9+salt+h8+h7+h6+h5+h4+h3+h2+h1;
 		tmp2=h1+h3+salt+h2;
 		tmp3=salt+h2+h8+h1+h3;
@@ -906,13 +922,13 @@ m.sidebar_hide=(e) => {
 };
 $sidebar_toggle.on("click", m.sidebar_show);
 $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
-	var touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
-	var relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
 	$html.on("mousemove.sd touchmove.sd", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		// e.stopPropagation();
-		var touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
 		$sidebar.css({"margin-left":-$sidebar.outerWidth()+touch0.clientX-relativeX});
 		$sidebar_dragger.css({"left":touch0.clientX-relativeX});
 		$html.on("mouseup.sd touchend.sd", function () {
@@ -1034,17 +1050,17 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
 ////////////////////////////////////////////////////
 $.fn.inView=function () {
 	if (this.is(":visible")) {
-		var viewportHeight=window.innerHeight;
-		var scrollTop=$window.scrollTop();
-		var elemTop=this.offset().top-m.delayPad;
-		var elemBottom=elemTop+this.height()+m.delayPad;
+		let viewportHeight=window.innerHeight;
+		let scrollTop=$window.scrollTop();
+		let elemTop=this.offset().top-m.delayPad;
+		let elemBottom=elemTop+this.height()+m.delayPad;
 		return (scrollTop+viewportHeight>elemTop)&&(scrollTop<elemBottom);
 	} else {
 		return false;
 	}
 };
 $.fn.delayedLoad=function () {
-	var done=false;
+	let done=false;
 	if (this.inView()) {
 		if (this.hasClass("to-be-executed")) {
 			this.trigger("click");
@@ -1082,8 +1098,8 @@ m.delayedLoadAll=function () {
 };
 m.delayedLoadByScroll=function () {
 	$window.off("scroll.delayedLoad");
-	var now=Date.now();
-	var passed=now-m.previous;
+	let now=Date.now();
+	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.delayedLoadAll();
 	} else {
@@ -1154,7 +1170,7 @@ m.jamoKE=["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ",
 m.jamo=["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
 
 m.mapKE={"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
-for (var p in m.mapKE) {
+for (let p in m.mapKE) {
 	m.mapKE[m.mapKE[p]]=p;
 }
 
@@ -1168,17 +1184,17 @@ m.rJongKE=["", "ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄹ
 m.rJong=["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
 m.splitHangul=function (str) {
-	var res=[];
+	let res=[];
 	res.originalStr=str;
 	res.splitted3="";
 	res.splitted="";
 	res.pCho=[]; // position of word-start or 초성
-	var p=0;
+	let p=0;
 	res.pCho[p]=true;
-	var cho, jung, jong;
-	for (var i=0;i<str.length;i++) {
-		var c=str.charAt(i)
-		var n=str.charCodeAt(i);
+	let cho, jung, jong;
+	for (let i=0;i<str.length;i++) {
+		let c=str.charAt(i)
+		let n=str.charCodeAt(i);
 		if (n>=0x3131&&n<=0x3163) {
 			n-=0x3131;
 			res[i]={"char":c, "splitted3":c, "splitted":m.jamoKE[n]};
@@ -1215,11 +1231,11 @@ RegExp.quote=function (str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
 m.arrayRegExs=function (ptnSH) {
-	var str=ptnSH.splitted;
-	var res=[];
-	for (var i=0;i<str.length;i++) {
-		var c=str.charAt(i);
-		var mapKE=m.mapKE[c];
+	let str=ptnSH.splitted;
+	let res=[];
+	for (let i=0;i<str.length;i++) {
+		let c=str.charAt(i);
+		let mapKE=m.mapKE[c];
 		if (mapKE) {
 			res.push( new RegExp("["+c+mapKE+"]", "ig") );
 		} else {
@@ -1229,8 +1245,8 @@ m.arrayRegExs=function (ptnSH) {
 	return res;
 };
 m.highlightStrFromIndices=function (strSplitted, indices) {
-	var res="";
-	for (var i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
+	let res="";
+	for (let i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
 		while (j<indices.length&&indices[j-1].end===indices[j].start) {
 			j++;
 		}
@@ -1252,7 +1268,7 @@ m.highlightStrFromIndices=function (strSplitted, indices) {
 			}
 		}
 	}
-	for (var i=0;i<strSplitted.length;) {
+	for (let i=0;i<strSplitted.length;) {
 		if (strSplitted[i]["matched"]) {
 			res+='<span class="bold">';
 			while (i<strSplitted.length&&strSplitted[i]["matched"]) {
@@ -1270,19 +1286,19 @@ m.highlightStrFromIndices=function (strSplitted, indices) {
 	return res;
 };
 m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
-	var res=0;
-	for (var i=0;i<indices.length;i++) {
+	let res=0;
+	for (let i=0;i<indices.length;i++) {
 		if (strSH.pCho[indices[i].start])
 			res+=10;
 	}
-	for (var i=1;i<indices.length;i++) {
-		var diff=indices[i].start-indices[i-1].start;
+	for (let i=1;i<indices.length;i++) {
+		let diff=indices[i].start-indices[i-1].start;
 		if (diff<5) res+=8*(5-diff);
 	}
 	return res;
 };
 m.fuzzySearch=function (ptnSH, fs) {
-	var list=[];
+	let list=[];
 	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
 		fs[1]=fs[0];
 	} else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
@@ -1292,10 +1308,10 @@ m.fuzzySearch=function (ptnSH, fs) {
 	} else {
 		fs[1]=null;
 	}
-	var listIsFullList=false;
+	let listIsFullList=false;
 	if (fs[1]&&fs[1].sorted) {
-		var sorted=fs[1].sorted;
-		for (var i=0;i<sorted.length;i++) {
+		let sorted=fs[1].sorted;
+		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
 		}
 	} else {
@@ -1304,19 +1320,19 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}
 	fs[0]=[];
 	fs[0].ptnSH=ptnSH;
-	var regExs=m.arrayRegExs(ptnSH);
-	for (var i=0;i<list.length;i++) {
+	let regExs=m.arrayRegExs(ptnSH);
+	for (let i=0;i<list.length;i++) {
 	if (regExs.length>0) {
-		var txt=list[i].txt;
-		var txtS=txt.splitted;
+		let txt=list[i].txt;
+		let txtS=txt.splitted;
 		regExs[0].lastIndex=0;
-		var exec=regExs[0].exec(txtS);
-		var matched=(exec!==null);
-		var indices=[];
+		let exec=regExs[0].exec(txtS);
+		let matched=(exec!==null);
+		let indices=[];
 		if (matched) {
 			indices[0]={start:exec.index, end:regExs[0].lastIndex};
 		}
-		for (var j=1;matched&&(j<regExs.length);j++) {
+		for (let j=1;matched&&(j<regExs.length);j++) {
 			regExs[j].lastIndex=regExs[j-1].lastIndex;
 			exec=regExs[j].exec(txtS);
 			matched=(exec!==null);
@@ -1325,19 +1341,19 @@ m.fuzzySearch=function (ptnSH, fs) {
 			}
 		}
 		if (matched) {
-			var maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
-			var indicesMMS=[]; // indices of max match score
-			for (var p=0;p<indices.length;p++) {
+			let maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+			let indicesMMS=[]; // indices of max match score
+			for (let p=0;p<indices.length;p++) {
 				indicesMMS[p]=indices[p]; // hard copy of indices
 			}
-			for (var k=indices.length-2;k>=0;) {
+			for (let k=indices.length-2;k>=0;) {
 				regExs[k].lastIndex=indices[k].start+1;
 				exec=regExs[k].exec(txtS);
 				matched=(exec!==null);
 				if (matched) {
 					indices[k]={start:exec.index, end:regExs[k].lastIndex};
 				}
-				for (var j=k+1;matched&&(j<regExs.length);j++) {
+				for (let j=k+1;matched&&(j<regExs.length);j++) {
 					regExs[j].lastIndex=regExs[j-1].lastIndex;
 					exec=regExs[j].exec(txtS);
 					matched=(exec!==null);
@@ -1346,10 +1362,10 @@ m.fuzzySearch=function (ptnSH, fs) {
 					}
 				}
 				if (matched) {
-					var matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+					let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 					if (matchScore>maxMatchScore) {
 						maxMatchScore=matchScore;
-						for (var p=0;p<indices.length;p++) {
+						for (let p=0;p<indices.length;p++) {
 							indicesMMS[p]=indices[p]; // hard copy of indices
 						}
 					}
@@ -1363,17 +1379,17 @@ m.fuzzySearch=function (ptnSH, fs) {
 	} else {
 		fs[0].push({i:list[i].i, maxMatchScore:0});
 	}}
-	var sorted=fs[0].sorted=[];
-	for (var i=0;i<fs[0].length;i++) {
+	let sorted=fs[0].sorted=[];
+	for (let i=0;i<fs[0].length;i++) {
 		if (listIsFullList&&fs.desc) {
 			sorted[i]=fs[0].length-1-i;
 		} else {
 			sorted[i]=i;
 		}
 	}
-	for (var i=1;i<sorted.length;i++) {
-		var temp=sorted[i];
-		var j=i;
+	for (let i=1;i<sorted.length;i++) {
+		let temp=sorted[i];
+		let j=i;
 		for (;(j>0) && (fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--)
 			sorted[j]=sorted[j-1];
 		sorted[j]=temp;
@@ -1388,13 +1404,13 @@ m.pathOfCat=function (cat) {
 	return m.pathName+"?cat="+m.escapeAMP(cat);
 };
 m.getDepthOfTabs=function (str) {
-	var n=0;
+	let n=0;
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
 	return n;
 };
 m.getSuperCat=function (cat) {
 	if (cat&&cat.constructor===String) {
-		var i=cat.lastIndexOf("--");
+		let i=cat.lastIndexOf("--");
 		if (i!=-1) {
 			return cat.substring(0,i);
 		}
@@ -1402,7 +1418,7 @@ m.getSuperCat=function (cat) {
 	return null;
 };
 m.strCatListToJSON=function (strCatList, catList) {
-	var list=strCatList.trim().split("\n");
+	let list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
 		list=[];
 	}
@@ -1414,13 +1430,13 @@ m.strCatListToJSON=function (strCatList, catList) {
 			catList=m.catList=[];
 		}
 	}
-	var superCats=[];
-	for (var i=0;i<list.length;i++) {
-		var baseCat=list[i].trim();
-		var depth=m.getDepthOfTabs(list[i]);
+	let superCats=[];
+	for (let i=0;i<list.length;i++) {
+		let baseCat=list[i].trim();
+		let depth=m.getDepthOfTabs(list[i]);
 		superCats.splice(depth, superCats.length-depth, baseCat);
-		var cat=superCats[0];
-		for (var j=1;j<=depth;j++) {
+		let cat=superCats[0];
+		for (let j=1;j<=depth;j++) {
 			cat+="--"+superCats[j];
 		}
 		if (catList[cat]) {
@@ -1432,17 +1448,17 @@ m.strCatListToJSON=function (strCatList, catList) {
 	}
 };
 m.catListToHTML=function () {
-	var cL=m.catList;
-	var catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+m.pathOfCat("")+'" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>';
-	var i=1;
+	let cL=m.catList;
+	let catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+m.pathOfCat("")+'" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>';
+	let i=1;
 	for (;i<cL.length-1;i++) {
-		var beforeDepth=cL[i-1].depth;
-		var currentDepth=cL[i].depth;
-		var afterDepth=cL[i+1].depth;
+		let beforeDepth=cL[i-1].depth;
+		let currentDepth=cL[i].depth;
+		let afterDepth=cL[i+1].depth;
 		if (beforeDepth<currentDepth) { // open subCat
 			catListHTML+='<div class="subCat" style="display:none">';
 		} else {
-			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
+			for (let j=currentDepth;j<beforeDepth;j++) { // close subCats
 				catListHTML+='</div>';
 			}
 		}
@@ -1455,12 +1471,12 @@ m.catListToHTML=function () {
 		catListHTML+='<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML(cL[i].baseCat)+'</a>'+'</div>';
 	}
 	if (cL.length>1) {
-		var beforeDepth=cL[i-1].depth;
-		var currentDepth=cL[i].depth;
+		let beforeDepth=cL[i-1].depth;
+		let currentDepth=cL[i].depth;
 		if (beforeDepth<currentDepth) { // open subCat
 			catListHTML+='<div class="subCat" style="display:none">';
 		} else {
-			for (var j=currentDepth;j<beforeDepth;j++) { // close subCats
+			for (let j=currentDepth;j<beforeDepth;j++) { // close subCats
 				catListHTML+='</div>';
 			}
 		}
@@ -1468,7 +1484,7 @@ m.catListToHTML=function () {
 			+'<span class="noEC"></span>'
 			+'<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML( cL[i].baseCat )+'</a>'
 		+'</div>';
-		for (var j=0;j<currentDepth;j++) { // close subCats
+		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+='</div>';
 		}
 	}
@@ -1477,18 +1493,18 @@ m.catListToHTML=function () {
 if (m.myIndex) { m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList); }
 if (!m.myPage) { m.strCatListToJSON(m.unescapeHTML($data_CatList.html())); }
 m.catListToHTML();
-var $catECs=$catList.find(".cat:has(>.EC)");
-for (var i=$catECs.length-1;i>=0;i--) {
+let $catECs=$catList.find(".cat:has(>.EC)");
+for (let i=$catECs.length-1;i>=0;i--) {
 	m.catList[Number($catECs.eq(i).attr("id").substring(4))].subCatExpanded=false;
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
 		return '<a href="'+m.pathOfCat("")+'" onclick="return m.openCat(m.catList[0].cat, event)"'+(m.currentCat===""?' class="currentCat"':'')+'>[--Uncategorized--]</a>';
 	}
-	var arrayHTML=[];
-	var list=cats.split(";");
-	for (var i=0;i<list.length;i++) {
-		var cat=list[i];
+	let arrayHTML=[];
+	let list=cats.split(";");
+	for (let i=0;i<list.length;i++) {
+		let cat=list[i];
 		arrayHTML.push('<a href="'+m.pathOfCat(cat)+'" onclick="return m.openCat(m.catList['+m.catList[cat].i+'].cat, event)"'+(m.currentCat===cat?' class="currentCat"':'')+'>'+m.escapeHTML(cat)+'</a>');
 	}
 	return arrayHTML.join(" ; ");
@@ -1496,13 +1512,13 @@ m.catsToA=function (cats) {
 m.getCatListChanged=function () {
 	$change_catList_order_ok.hide();
 	$change_catList_order_cancel.hide();
-	var $cats=$("#catList .cat").not("#cat-0");
+	let $cats=$("#catList .cat").not("#cat-0");
 	$cats.removeClass("edit");
 	$cats.find('.edit-bar').remove();
-	var catListChanged="\n";
-	for (var i=0;i<$cats.length;i++) {
-		var catI=Number($cats.eq(i).attr("id").substring(4));
-		for (var j=0;j<m.catList[catI].depth;j++) {
+	let catListChanged="\n";
+	for (let i=0;i<$cats.length;i++) {
+		let catI=Number($cats.eq(i).attr("id").substring(4));
+		for (let j=0;j<m.catList[catI].depth;j++) {
 			catListChanged+="\t";
 		}
 		catListChanged+=m.catList[catI].baseCat+"\n";
@@ -1519,42 +1535,42 @@ $change_catList_order.on("click", function (e) {
 	$change_catList_order.hide();
 	$change_catList_order_ok.show();
 	$change_catList_order_cancel.show();
-	var $cats=$("#catList .cat").not("#cat-0");
+	let $cats=$("#catList .cat").not("#cat-0");
 	$cats.addClass("edit");
 	$cats.prepend('<div class="edit-bar"></div>');
 	$cats.append('<div class="edit-bar"></div>');
 	$("#catList .edit-bar").on("mousedown touchstart", function (e) {
-		var $catM=$(this).parent(); // cat-moving
-		var $catSiblings=$catM.siblings(".cat").not("#cat-0");
+		let $catM=$(this).parent(); // cat-moving
+		let $catSiblings=$catM.siblings(".cat").not("#cat-0");
 		if ($catSiblings.exists()) {
-			var touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
-			var relativeX=touch0.clientX-Math.round($catM.offset().left)+$window.scrollLeft();
-			var relativeY=touch0.clientY-Math.round($catM.offset().top)+$window.scrollTop();
-			var $subCat=$catM.next(".subCat");
-			var subCatIsVisible=false;
+			let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+			let relativeX=touch0.clientX-Math.round($catM.offset().left)+$window.scrollLeft();
+			let relativeY=touch0.clientY-Math.round($catM.offset().top)+$window.scrollTop();
+			let $subCat=$catM.next(".subCat");
+			let subCatIsVisible=false;
 			if ($subCat.exists()&&$subCat.is(":visible")) {
 				$subCat.hide();
 				subCatIsVisible=true;
 			}
-			var $lastSibling=$catSiblings.last();
-			var $lastSubCat=$lastSibling.next(".subCat");
+			let $lastSibling=$catSiblings.last();
+			let $lastSubCat=$lastSibling.next(".subCat");
 			if ($lastSubCat.exists()&&$lastSubCat.is(":visible")) { $lastSibling=$lastSubCat; }
 			$catM.css({width:$catM.outerWidth()});
 			$catM.addClass("move");
-			var catI=Number($catM.attr("id").substring(4));
-			var $catTo=$('<div id="cat-to-here" style="margin-left:'+(m.catList[catI].depth+0.5)+'em"></div>');
+			let catI=Number($catM.attr("id").substring(4));
+			let $catTo=$('<div id="cat-to-here" style="margin-left:'+(m.catList[catI].depth+0.5)+'em"></div>');
 			$catM.before($catTo);
-			var catTo=-1;
+			let catTo=-1;
 			$html.on("mousemove.mdInEB touchmove.mdInEB", function (e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
 				e.stopPropagation();
-				var touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+				let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
 				$catM.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
-				var wST=$window.scrollTop();
-				var sidebarTop=$sidebar.offset().top-wST;
-				var sidebarBottom=sidebarTop+$sidebar.outerHeight();
-				var scrollPad=20;
+				let wST=$window.scrollTop();
+				let sidebarTop=$sidebar.offset().top-wST;
+				let sidebarBottom=sidebarTop+$sidebar.outerHeight();
+				let scrollPad=20;
 				if (sidebarTop<0?touch0.clientY<scrollPad:touch0.clientY<sidebarTop+scrollPad) {
 					if (sidebarTop<0) {
 						$window.scrollTop(wST+touch0.clientY-scrollPad);
@@ -1568,12 +1584,12 @@ $change_catList_order.on("click", function (e) {
 						$sidebar.scrollTop($sidebar.scrollTop()+touch0.clientY-sidebarBottom+scrollPad);
 					}
 				}
-				var tops=[];
-				for (var i=1;i<$catSiblings.length;i++) {
+				let tops=[];
+				for (let i=1;i<$catSiblings.length;i++) {
 					tops.push(($catSiblings.eq(i-1).offset().top-wST+$catSiblings.eq(i).offset().top-wST)/2);
 				}
 				tops.push(($catSiblings.last().offset().top-wST+$lastSibling.offset().top+$lastSibling.outerHeight()-wST)/2);
-				var k=0;
+				let k=0;
 				for (;k<tops.length;k++) {
 					if (touch0.clientY<tops[k]) { break; }
 				}
@@ -1632,7 +1648,7 @@ m.change_catList_order_do=function (args, err) {
 	}
 };
 $change_catList_order_ok.on("click", function (e) {
-	var catListChanged=m.getCatListChanged();
+	let catListChanged=m.getCatListChanged();
 	if (catListChanged!==m.unescapeHTML($data_CatList.html())) {
 		if (m.myPage) {
 			m.rmb_me(m.change_catList_order_do, catListChanged);
@@ -1645,20 +1661,20 @@ $change_catList_order_ok.on("click", function (e) {
 	}
 });
 $change_catList_order_cancel.on("click", function (e) {
-	var catListChanged=m.getCatListChanged();
-	var catList=m.unescapeHTML($data_CatList.html());
+	let catListChanged=m.getCatListChanged();
+	let catList=m.unescapeHTML($data_CatList.html());
 	if (catListChanged!==catList) {
-		var $catSelected=$catList.find(".cat.selected");
-		var selected=[];
-		for (var i=0;i<$catSelected.length;i++) {
+		let $catSelected=$catList.find(".cat.selected");
+		let selected=[];
+		for (let i=0;i<$catSelected.length;i++) {
 			selected.push(m.catList[Number($catSelected.eq(i).attr("id").substring(4))].cat);
 		}
 		m.strCatListToJSON(catList);
 		m.catListToHTML();
-		for (var i=0;i<selected.length;i++) {
+		for (let i=0;i<selected.length;i++) {
 			$("#cat-"+m.catList[selected[i]].i).addClass("selected");
 		}
-		for (var i=m.catList.length-1;i>=0;i--) {
+		for (let i=m.catList.length-1;i>=0;i--) {
 			if (m.catList[i].subCatExpanded) {
 				$("#cat-"+i+">.EC").trigger("click");
 			}
@@ -1682,49 +1698,49 @@ m.updateCatFS=function () {
 	if (!m.myPage) {
 		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	}
-	for (var i=0;i<m.myCatList.length;i++) {
+	for (let i=0;i<m.myCatList.length;i++) {
 		m.putCatToFSFullList(i, m.myCatList[i].cat);
 	}
 };
 m.updateCatFS();
 m.chooseCat=function (elem, j) {
-	var $elem=$(elem);
-	var fs=m.fsCat;
+	let $elem=$(elem);
+	let fs=m.fsCat;
 	if ($elem.hasClass("selected")) {
 		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	} else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
-		var k=fs.k;
+		let k=fs.k;
 		fs.listOfCats[k]=fs.fullList[j].cat;
 		fs.$fs[0].value=fs.listOfCats.join(";");
-		var sStart=0;
-		for (var i=0;i<k;i++) {
+		let sStart=0;
+		for (let i=0;i<k;i++) {
 			sStart+=fs.listOfCats[i].length+1;
 		}
-		var sEnd=sStart+fs.listOfCats[k].length;
+		let sEnd=sStart+fs.listOfCats[k].length;
 		fs.$fs.focus();
 		fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	}
 };
 m.doFSCat=function (fs) {
-	var catsTxt=fs.$fs[0].value;
-	var sEnd=fs.$fs[0].selectionEnd;
-	var listOfCats=fs.listOfCats=catsTxt.split(";");
-	var l=catsTxt.length;
+	let catsTxt=fs.$fs[0].value;
+	let sEnd=fs.$fs[0].selectionEnd;
+	let listOfCats=fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
 	fs.k=0;
-	for (var i=listOfCats.length-1;i>=0;i--) {
+	for (let i=listOfCats.length-1;i>=0;i--) {
 		l-=listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
 			break;
 		}
 	}
-	var fsCatSH=m.splitHangul(listOfCats[fs.k]);
+	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
 	m.fuzzySearch(fsCatSH, fs);
-	var str="";
-	for (var i=0;i<fs[0].length;i++) {
-		var k=fs[0][fs[0].sorted[i]];
+	let str="";
+	for (let i=0;i<fs[0].length;i++) {
+		let k=fs[0][fs[0].sorted[i]];
 		str+='<div class="list-item" onclick="m.chooseCat(this,'+k.i+')">'
 				+'<div class="list-index">'+i+'</div>'
 				+fs.fullList[k.i].html
@@ -1736,8 +1752,8 @@ m.doFSCat=function (fs) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 m.fsCatOn=function () {
-	var now=Date.now();
-	var passed=now-m.previous;
+	let now=Date.now();
+	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
 		m.doFSCat(m.fsCat);
@@ -1765,10 +1781,10 @@ $input_cats.on("keydown.fs", function (e) {
 	// case 38: // up=38
 	// case 40: // down=40
 	// 	e.preventDefault();
-	// 	var $fsl=$cat_fs_list;
-	// 	var $lis=$fsl.find(".list-item");
-	// 	var $liSelected=$fsl.find(".list-item.selected").eq(0);
-	// 	var $liTo=null;
+	// 	let $fsl=$cat_fs_list;
+	// 	let $lis=$fsl.find(".list-item");
+	// 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
+	// 	let $liTo=null;
 	// 	if ($liSelected.exists()) {
 	// 		if (e.keyCode===38) {
 	// 			$liTo=$liSelected.prev();
@@ -1799,8 +1815,8 @@ $input_cats.on("keydown.fs", function (e) {
 	}
 });
 if (m.myIndex) {
-	for (var i=0;i<m.myCatList.length;i++) {
-		var cat=m.myCatList[i].cat;
+	for (let i=0;i<m.myCatList.length;i++) {
+		let cat=m.myCatList[i].cat;
 		m.fsCat.fullList[i]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 }
@@ -1813,28 +1829,28 @@ $input_cats.on("focus", function () {
 // Put/Delete/Change Cats
 //////////////////////////////////////
 m.putCat=function (cat) {
-	var res=false;
+	let res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=m.unescapeHTML($data_myCatList.html());
-	var levels=cat.split("--");
-	var pre="\n";
-	var start=0;
-	var end=fullCats.length;
-	for (var j=0;j<levels.length;j++) {
-		var subStr=fullCats.substring(start,end);
-		var toFind=pre+levels[j]+"\n";
-		var i=subStr.indexOf(toFind);
+	let fullCats=m.unescapeHTML($data_myCatList.html());
+	let levels=cat.split("--");
+	let pre="\n";
+	let start=0;
+	let end=fullCats.length;
+	for (let j=0;j<levels.length;j++) {
+		let subStr=fullCats.substring(start,end);
+		let toFind=pre+levels[j]+"\n";
+		let i=subStr.indexOf(toFind);
 		if (i!=-1) {
-			var ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
+			let ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
 			ptnEnd.lastIndex=i+toFind.length-1;
-			var matchEnd=ptnEnd.exec(subStr);
+			let matchEnd=ptnEnd.exec(subStr);
 			if (matchEnd!==null) {
 				end=start+matchEnd.index+1;
 			}
 			start+=i+toFind.length-1;
 			pre+="\t";
 		} else {
-			var toPut="";
+			let toPut="";
 			for (;j<levels.length;j++) {
 				toPut+=pre+levels[j];
 				pre+="\t";
@@ -1847,25 +1863,25 @@ m.putCat=function (cat) {
 	return res;
 };
 m.deleteCat=function (cat) {
-	var res=false;
+	let res=false;
 	if (cat===null||cat.length===0) { return res; }
-	var fullCats=m.unescapeHTML($data_myCatList.html());
-	var levels=cat.split("--");
-	var pre="\n";
-	var start0=0;
-	var start=0;
-	var end=fullCats.length;
-	var subStr="";
-	for (var j=0;j<levels.length;j++) {
+	let fullCats=m.unescapeHTML($data_myCatList.html());
+	let levels=cat.split("--");
+	let pre="\n";
+	let start0=0;
+	let start=0;
+	let end=fullCats.length;
+	let subStr="";
+	for (let j=0;j<levels.length;j++) {
 		subStr=fullCats.substring(start,end);
-		var toFind=pre+levels[j]+"\n";
-		var i=subStr.indexOf(toFind);
+		let toFind=pre+levels[j]+"\n";
+		let i=subStr.indexOf(toFind);
 		if (i===-1) {
 			return res;
 		} else {
-			var ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
+			let ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
 			ptnEnd.lastIndex=i+toFind.length-1;
-			var matchEnd=ptnEnd.exec(subStr);
+			let matchEnd=ptnEnd.exec(subStr);
 			if (matchEnd!==null) {
 				end=start+matchEnd.index+1;
 			}
@@ -1885,10 +1901,10 @@ m.deleteCat=function (cat) {
 	return res;
 };
 m.putCats_UriToLists=function (cats, uri) {
-	var catSplit=cats.split(";");
-	var catIsPut=false;
-	for (var i=0;i<catSplit.length;i++) {
-		var cat=catSplit[i];
+	let catSplit=cats.split(";");
+	let catIsPut=false;
+	for (let i=0;i<catSplit.length;i++) {
+		let cat=catSplit[i];
 		if (m.myPage) {
 			if (m.catUriList[cat]) {
 				if (m.catUriList[cat].has) {
@@ -1909,18 +1925,18 @@ m.putCats_UriToLists=function (cats, uri) {
 };
 m.delCats_UriFromLists=function (cats, uri) {
 if (m.myPage) {
-	var catSplit=cats.split(";");
-	var catIsDeleted=false;
-	for (var i=0;i<catSplit.length;i++) {
-		var cat=catSplit[i];
+	let catSplit=cats.split(";");
+	let catIsDeleted=false;
+	for (let i=0;i<catSplit.length;i++) {
+		let cat=catSplit[i];
 		if (m.catUriList[cat]&&m.catUriList[cat].has) {
-			var fullURIs="\n"+m.catUriList[cat]["UriList"]+"\n";
-			var k=fullURIs.indexOf("\n"+uri+"\n");
+			let fullURIs="\n"+m.catUriList[cat]["UriList"]+"\n";
+			let k=fullURIs.indexOf("\n"+uri+"\n");
 			if (k!==-1) {
 				m.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			}
 			if (m.catUriList[cat]["UriList"].length===0) {
-				var c=true;
+				let c=true;
 				while (cat!==null&&c) {
 					c=false;
 					if (m.catUriList[cat].has&&m.catUriList[cat]["UriList"].length===0) {
@@ -1939,15 +1955,15 @@ if (m.myPage) {
 }};
 m.catsChangedOnUri=function (oldCats, newCats, uri) {
 if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
-	var oldCatSplit=oldCats.split(";");
-	var newCatSplit=newCats.split(";");
-	var o=[];
-	var n=[];
-	for (var i=0;i<oldCatSplit.length;i++) {
+	let oldCatSplit=oldCats.split(";");
+	let newCatSplit=newCats.split(";");
+	let o=[];
+	let n=[];
+	for (let i=0;i<oldCatSplit.length;i++) {
 		o[oldCatSplit[i]]=true;
 	}
 	newCats="";
-	for (var i=0;i<newCatSplit.length;i++) {
+	for (let i=0;i<newCatSplit.length;i++) {
 		if (o[newCatSplit[i]]) {
 			o[newCatSplit[i]]=false;
 			n[newCatSplit[i]]=false;
@@ -1957,7 +1973,7 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 		}
 	}
 	oldCats="";
-	for (var p in o) {
+	for (let p in o) {
 		if (o[p]) { oldCats+=p+";"; }
 	}
 	if (oldCats.length>0) {
@@ -1976,7 +1992,7 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 ////////////////////////////////////////////////////
 m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
-	var exec=m.ptnURL.exec(uri);
+	let exec=m.ptnURL.exec(uri);
 	if (exec!==null) {
 		return '<a target="_blank" href="'+exec[0]+'">'+m.escapeHTML(decodeURIComponent(uri))+'</a>';
 	} else {
@@ -1985,8 +2001,8 @@ m.uriToA=function (uri) {
 };
 m.zIndex=10000;
 m.togglePosition=function (elem) {
-	var $elem=$(elem);
-	var $parent=$elem.parent().parent();
+	let $elem=$(elem);
+	let $parent=$elem.parent().parent();
 	if ($parent.hasClass("fixed")) {
 		$parent.removeClass("fixed");
 		$parent.css("z-index", 0);
@@ -2019,15 +2035,15 @@ m.rC=function (elemStr, pb) {
 m.uriRendering=function (uri, toA) {
 	if (uri&&uri.constructor===String) {
 		if (uri.substring(0,4).toLowerCase()==="http") {
-			var k=4;
+			let k=4;
 			if (uri.charAt(k).toLowerCase()==='s') {
 				k++;
 			}
 			if (uri.substring(k,k+3)==="://") {
 				k+=3;
-				var l=uri.indexOf('/',k);
-				var uriHost=null;
-				var uriRest='';
+				let l=uri.indexOf('/',k);
+				let uriHost=null;
+				let uriRest='';
 				if (l===-1) {
 					uriHost=uri.substring(k);
 				} else {
@@ -2035,13 +2051,13 @@ m.uriRendering=function (uri, toA) {
 					uriRest=uri.substring(l+1);
 				}
 				if (m.ptnURI[uriHost]) {
-					var result=m.ptnURI[uriHost].toIframe(uriRest);
+					let result=m.ptnURI[uriHost].toIframe(uriRest);
 					if (result) { return result; }
 				}
 			}
 		}
-		for (var i=0;i<m.ptnURI.length;i++) {
-			var result=m.ptnURI[i].toIframe(uri);
+		for (let i=0;i<m.ptnURI.length;i++) {
+			let result=m.ptnURI[i].toIframe(uri);
 			if (result) { return result; }
 		}
 	}
@@ -2052,15 +2068,15 @@ m.YTiframe=function (v, vars) {
 	return m.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+'" frameborder="0" allowfullscreen=""></iframe>');
 };
 
-var ptnURI;
+let ptnURI;
 ptnURI=m.ptnURI["www.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=null;
+		let vars=null;
 		if (exec[2]) { vars=m.getSearchVars(exec[2]); }
-		var v=null;
+		let v=null;
 		if (exec[1]) {
 			v=exec[1];
 		} else if (vars&&vars.v) {
@@ -2076,7 +2092,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["youtube.com"]={};
 ptnURI.regEx=/^shorts\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["youtube.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let v=exec[1];
 		if (v) {
@@ -2089,9 +2105,9 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["youtu.be"]={};
 ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
+	let exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=null;
+		let vars=null;
 		if (exec[2]) {
 			vars=m.getSearchVars(exec[2]);
 		}
@@ -2103,9 +2119,9 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["m.youtube.com"]={};
 ptnURI.regEx=/^watch(\?\S+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
+		let vars=m.getSearchVars(exec[1]);
 		if (vars.v&&vars.v.val) {
 			return {html:m.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
 		}
@@ -2116,7 +2132,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["tv.naver.com"]={};
 ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"naver", videoId:exec[1]};
 	}
@@ -2126,7 +2142,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["www.vlive.tv"]={};
 ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
+	let exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
 	}
@@ -2136,7 +2152,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["vlive.tv"]={};
 ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["vlive.tv"].regEx.exec(uriRest);
+	let exec=m.ptnURI["vlive.tv"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
 	}
@@ -2146,7 +2162,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["tv.kakao.com"]={};
 ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
 	}
@@ -2156,7 +2172,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["entertain.daum.net"]={};
 ptnURI.regEx=/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
+	let exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
 	}
@@ -2166,7 +2182,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["tvpot.daum.net"]={};
 ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
+	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
 	}
@@ -2176,9 +2192,9 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["videofarm.daum.net"]={};
 ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
+	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
+		let vars=m.getSearchVars(exec[1]);
 		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
@@ -2187,7 +2203,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["vimeo.com"]={};
 ptnURI.regEx=/^([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
 	}
@@ -2197,7 +2213,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["www.dailymotion.com"]={};
 ptnURI.regEx=/video\/(\w+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
 	}
@@ -2207,16 +2223,16 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["www.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
-		var k=uriRest.indexOf("?");
-		var vars=null;
+		let k=uriRest.indexOf("?");
+		let vars=null;
 		if (k!==-1) {
 			vars=m.getSearchVars(uriRest.substring(k));
 			uriRest=uriRest.substring(0,k);
 		}
-		var v=uriRest;
+		let v=uriRest;
 		if (vars&&vars.language) {
 			uriRest="lang/"+vars.language.val+"/"+uriRest;
 		}
@@ -2228,10 +2244,10 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["embed.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["embed.ted.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["embed.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
-		var v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
+		let v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
 		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"ted", videoId:v};
 	}
 	return false;
@@ -2240,11 +2256,11 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["w.soundcloud.com"]={};
 ptnURI.regEx=/^player\/(\?\S+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		var lastPath="player/?";
-		for (var i=0;i<vars.length;i++) {
+		let vars=m.getSearchVars(exec[1]);
+		let lastPath="player/?";
+		for (let i=0;i<vars.length;i++) {
 			if (vars[i].key==="auto_play") {
 				lastPath+="auto_play=false&";
 			} else {
@@ -2259,7 +2275,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
 ptnURI.regEx=/^p\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
-	var exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113), from:"insta", imgId:exec[1]};
 	}
@@ -2269,7 +2285,7 @@ ptnURI.toIframe=function (uriRest) {
 ptnURI=m.ptnURI[0]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri) {
-	var exec=m.ptnURI[0].regEx.exec(uri);
+	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:'<div class="center"><img delayed-src="'+exec[0]+'"/></div>'};
 	}
@@ -2279,7 +2295,7 @@ ptnURI.toIframe=function (uri) {
 ptnURI=m.ptnURI[1]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri) {
-	var exec=m.ptnURI[1].regEx.exec(uri);
+	let exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:m.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>'), from:'video', src:exec[0]};
 	}
@@ -2290,7 +2306,7 @@ ptnURI.toIframe=function (uri) {
 // desc and cmt rendering
 ////////////////////////////////////////////////////
 m.slideToggle=function (elem) {
-	var $elem=$(elem);
+	let $elem=$(elem);
 	$elem.addClass("disabled");
 	$elem.parent().next().slideToggle(1000);
 	setTimeout(function () {
@@ -2298,18 +2314,18 @@ m.slideToggle=function (elem) {
 	}, 1000);
 };
 m.slideUp=function (elem) {
-	var $elem=$(elem).parent().parent();
+	let $elem=$(elem).parent().parent();
 	$elem.slideUp(1000);
 	window.scrollBy(0,-$elem.outerHeight());
 	// $body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
 m.renderStrDescCmt=function (str) {
-	var res=[];
+	let res=[];
 	str=str.trim();
-	var key="#";
-	var i=0;
-	var start=0;
-	var exec;
+	let key="#";
+	let i=0;
+	let start=0;
+	let exec;
 	while ((exec=m.ptnDescCmt.exec(str))!==null) {
 		res[i++]=key;
 		res[key]=str.substring(start, exec.index).trim();
@@ -2328,13 +2344,13 @@ m.renderStrDescCmt=function (str) {
 // val, points, stars
 ////////////////////////////////////////////////////
 m.val=function (val) {
-	var res={};
+	let res={};
 	res.str=val;
 	if (val.length===0) {
 		res.valid=true;
 		res.val=-1;
 	} else {
-		var exec=m.ptnVal.exec(val);
+		let exec=m.ptnVal.exec(val);
 		if (exec!==null) {
 			res.num=Number(exec[1]);
 			res.divisor=Number(exec[2])
@@ -2349,25 +2365,25 @@ m.val=function (val) {
 	return res;
 };
 {
-	var r=12; // outer radius of star
-	var r0=6; // inner radius of star
-	var pad=1; // padding of star
-	var pad0=9; // left/right pad
-	var thetas=[];
-	var coss=[];
-	var sins=[];
-	for (var i=0;i<10;i++) {
+	let r=12; // outer radius of star
+	let r0=6; // inner radius of star
+	let pad=1; // padding of star
+	let pad0=9; // left/right pad
+	let thetas=[];
+	let coss=[];
+	let sins=[];
+	for (let i=0;i<10;i++) {
 		thetas.push(-Math.PI/2+2*Math.PI/10*i);
 		coss.push(Math.cos(thetas[i]));
 		sins.push(Math.sin(thetas[i]));
 	}
-	var str=pad0+',0 ';
-	var yc=pad+r;
-	var xc=pad0+pad+r;
-	for (var k=0;k<5;k++,xc+=2*r+pad) {
+	let str=pad0+',0 ';
+	let yc=pad+r;
+	let xc=pad0+pad+r;
+	for (let k=0;k<5;k++,xc+=2*r+pad) {
 		str+=xc+',0 ';
-		for (var i=0;i<10;i++) {
-			var rp=(i%2==0)?r:r0;
+		for (let i=0;i<10;i++) {
+			let rp=(i%2==0)?r:r0;
 			str+=(xc+rp*coss[i]).toFixed(1)+','+(yc+rp*sins[i]).toFixed(1)+' ';
 		}
 		str+=xc+','+pad+' '+xc+',0 ';
@@ -2411,11 +2427,11 @@ m.mmInPR=function (e) {
 	window.getSelection().removeAllRanges();
 	e.preventDefault();
 	e.stopPropagation();
-	var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-	var w=x-$point_range.offset().left+$window.scrollLeft();
+	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	let w=x-$point_range.offset().left+$window.scrollLeft();
 	w=(w>15)?w:15;
 	w=(w<m.PRw-15)?w:m.PRw-15;
-	var changed=false;
+	let changed=false;
 	if (m.mdInPRL) {
 		if (w>m.PRRw) { w=m.PRRw; }
 		if (m.PRLw!==w) {
@@ -2434,8 +2450,8 @@ m.mmInPR=function (e) {
 		}
 	}
 	if (changed) {
-		var PRL=m.PRtoFixed(m.PRLw);
-		var PRR=m.PRtoFixed(m.PRRw);
+		let PRL=m.PRtoFixed(m.PRLw);
+		let PRR=m.PRtoFixed(m.PRRw);
 		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
 		PRL=Number(PRL)/m.PRmax;
 		PRR=Number(PRR)/m.PRmax;
@@ -2470,22 +2486,22 @@ $point_range_right.on("mousedown touchstart", function (e) {
 // Show recos
 ////////////////////////////////////////////////////
 m.recoHTML=function (r, uriRenderDisable) {
-	var res="";
+	let res="";
 	if (r&&r["has"]) {
 		res+='<div class="reco">'
 			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
-			+((m.myIndex)?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+((m.myPage)?'Edit':'Reco to mine')+'</div>':'')
+			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
 			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
 			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
 			+(uriRenderDisable?"":m.uriRendering(r.uri).html);
 		if (r["desc"]) {
-			var descR=r["descR"];
+			let descR=r["descR"];
 			res+='<div class="desc">';
-			for (var l=0;l<descR.length;l++) {
-				var key=m.escapeHTML( descR[l] );
-				var value=m.escapeHTML( descR[descR[l]] );
+			for (let l=0;l<descR.length;l++) {
+				let key=m.escapeHTML( descR[l] );
+				let value=m.escapeHTML( descR[descR[l]] );
 				switch (key.toLowerCase()) {
 				case "#" : case "" :
 					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
@@ -2500,8 +2516,8 @@ m.recoHTML=function (r, uriRenderDisable) {
 					break;
 				case "related" :
 					res+='<div class="value"><span class="key">#'+key+'</span>';
-					var relateds=value.split("\n");
-					for (var p=0;p<relateds.length;p++) {
+					let relateds=value.split("\n");
+					for (let p=0;p<relateds.length;p++) {
 						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
 					}
 					res+='</div>';
@@ -2527,11 +2543,11 @@ m.recoHTML=function (r, uriRenderDisable) {
 	return res;
 };
 m.showRecosOnCat=function (elem, from, minus, plus) {
-	var fs=m.fsTitle;
-	var l=fs.fullList.length;
-	var strHTML="";
+	let fs=m.fsTitle;
+	let l=fs.fullList.length;
+	let strHTML="";
 	if (l<=0) {
-		var nOfRecos='No reco on cat='+m.escapeHTML(m.currentCat)+'.';
+		let nOfRecos='No reco on cat='+m.escapeHTML(m.currentCat)+'.';
 		$numbers_of_recos.html(nOfRecos);
 		strHTML='<div class="numbers-of-recos">'+nOfRecos+'</div>';
 		$contents.html(strHTML);
@@ -2564,13 +2580,13 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 		} else {
 			plus=m.maxShowReco;
 		}
-		var nHiden=0, nShown=0;
-		for (var k=0;k<l;k++) {
-			var fsFLk=fs.fullList[k];
-			var uri=fsFLk.uri;
-			var r=fsFLk.reco;
-			var val=r.val.val;
-			var titleSH=m.splitHangul(r.title);
+		let nHiden=0, nShown=0;
+		for (let k=0;k<l;k++) {
+			let fsFLk=fs.fullList[k];
+			let uri=fsFLk.uri;
+			let r=fsFLk.reco;
+			let val=r.val.val;
+			let titleSH=m.splitHangul(r.title);
 			fsFLk.txt=titleSH;
 			fsFLk.html=m.escapeHTML(r.title);
 			if (val===-1) {
@@ -2592,16 +2608,16 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 			}
 		}
 		if (from===l-1) {
-			var nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
+			let nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
 			$numbers_of_recos.html(nOfRecos);
 			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
 		}
 		// minus
-		var i=from;
-		var maxShowReco=-minus;
-		for (var k=0;0<=i&&i<l&&k<maxShowReco;i--) {
-			var fsFLi=fs.fullList[i];
-			var r=fsFLi.reco;
+		let i=from;
+		let maxShowReco=-minus;
+		for (let k=0;0<=i&&i<l&&k<maxShowReco;i--) {
+			let fsFLi=fs.fullList[i];
+			let r=fsFLi.reco;
 			if (fsFLi.inRange) {
 				if (fsFLi.$listI) { break; }
 				strHTML+=m.recoHTML(r);
@@ -2616,14 +2632,14 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 		} else {
 			$contents.html(strHTML);
 		}
-		var h0=$body.height();
+		let h0=$body.height();
 		strHTML="";
 		// plus
 		i=from+1;
 		maxShowReco=plus;
-		for (var k=1;0<=i&&i<l&&k<maxShowReco;i++) {
-			var fsFLi=fs.fullList[i];
-			var r=fsFLi.reco;
+		for (let k=1;0<=i&&i<l&&k<maxShowReco;i++) {
+			let fsFLi=fs.fullList[i];
+			let r=fsFLi.reco;
 			if (fsFLi.inRange) {
 				if (fsFLi.$listI) { break; }
 				strHTML=m.recoHTML(r)+strHTML;
@@ -2638,13 +2654,13 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 		} else {
 			$contents.prepend(strHTML);
 		}
-		var h1=$body.height();
-		var wST=$window.scrollTop();
+		let h1=$body.height();
+		let wST=$window.scrollTop();
 		$window.scrollTop(wST+h1-h0);
 	}
-	var $recos=$contents.find(".reco");
-	for (var i=0;i<$recos.length;i++) {
-		var uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
+	let $recos=$contents.find(".reco");
+	for (let i=0;i<$recos.length;i++) {
+		let uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
 		fs.fullList[uri].$listI=$recos.eq(i);
 	}
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
@@ -2655,9 +2671,9 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 	fs.$fs.trigger("keyup");
 };
 m.editOrRecoToMine=function (elem) {
-	var $reco=$(elem).parent(".reco");
-	var uri=m.unescapeHTML($reco.find(".textURI").html());
-	var r=m.userRecos[uri];
+	let $reco=$(elem).parent(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	let r=m.userRecos[uri];
 	$input_uri[0].value=r["uri"];
 	$input_uri[0].disabled=true;
 	$new_reco.show();
@@ -2670,23 +2686,23 @@ m.editOrRecoToMine=function (elem) {
 	});
 };
 m.recoDowned=function (urisStr, recos) {
-	var uris=urisStr.split("\n");
+	let uris=urisStr.split("\n");
 	for (k=0;k<uris.length;k++) {
-		var uri=uris[k];
-		var p=recos[uri];
+		let uri=uris[k];
+		let p=recos[uri];
 		if (!p) { p=recos[uri]={}; }
 		p.down=true;
 	}
 };
 m.recoToEve=function (resp, recos) {
-	var resp=m.strToJSON(resp);
-	for (var k=1;k<resp.length;k++) {
-		var recoK=resp[k];
-		var uri=recoK["uri"];
-		var p=recos[uri];
+	let resp=m.strToJSON(resp);
+	for (let k=1;k<resp.length;k++) {
+		let recoK=resp[k];
+		let uri=recoK["uri"];
+		let p=recos[uri];
 		if (!p) { p=recos[uri]={}; }
 		p["has"]=true;
-		for (var prop in recoK) {
+		for (let prop in recoK) {
 			if (isNaN(prop)) {
 				p[prop]=recoK[prop];
 			}
@@ -2703,17 +2719,17 @@ m.recoToEve=function (resp, recos) {
 	}
 };
 m.getAndShowRecosOnCat=function (cat) {
-	var uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
-	var uris=[];
+	let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
+	let uris=[];
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
-	var getRecosStr="uri";
-	var getRecosN=0;
-	var fs=m.fsTitle;
-	var fsFL=fs.fullList=[];
+	let getRecosStr="uri";
+	let getRecosN=0;
+	let fs=m.fsTitle;
+	let fsFL=fs.fullList=[];
 	fsFL.cat=cat;
-	for (var i=0;i<uris.length;i++) {
-		var uri=uris[i];
-		var r=m.userRecos[uri];
+	for (let i=0;i<uris.length;i++) {
+		let uri=uris[i];
+		let r=m.userRecos[uri];
 		if (!r) { r=m.userRecos[uri]={}; }
 		fsFL[uris.length-1-i]=fsFL[uri]={i:uris.length-1-i, uri:uri, reco:r};
 		if (!r.down) {
@@ -2744,23 +2760,23 @@ m.getAndShowRecosOnCat=function (cat) {
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
 	$contents.html("Loading recos in cat="+m.escapeHTML(cat)+"...");
-	var catList=m.catList[cat];
+	let catList=m.catList[cat];
 	if (catList) {
 		$catList.find(".cat").removeClass("selected");
-		var $cat=$("#cat-"+catList.i);
+		let $cat=$("#cat-"+catList.i);
 		$cat.addClass("selected");
-		var $parents=$cat.parents(".subCat");
-		for (var i=$parents.length-1;i>=0;i--) {
+		let $parents=$cat.parents(".subCat");
+		for (let i=$parents.length-1;i>=0;i--) {
 			if (!$parents.eq(i).is(":visible")) {
 				$parents.eq(i).prev().find(">.EC").trigger("click");
 			}
 		}
-		var catUriList=m.catUriList[cat];
+		let catUriList=m.catUriList[cat];
 		if (!catUriList) { catUriList=m.catUriList[cat]={}; }
 		if (catUriList.down) {
 			m.getAndShowRecosOnCat(cat);
 		} else {
-			var getUriListStr="cat\n"+(cat===""?"\tp":cat);
+			let getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
 				type:"POST", url:m.pathName+"/get-UriList", data:getUriListStr
 				, dataType:"text"
@@ -2768,12 +2784,12 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				$contents.html("get-UriList on "+m.escapeHTML(cat)+" has failed..");
 			}).done(function (resp) {
 				catUriList.down=true;
-				var resp=m.strToJSON(resp);
-				for (var i=1;i<resp.length;i++) {
-					var catUL=m.catUriList[resp[i].cat];
+				let resp=m.strToJSON(resp);
+				for (let i=1;i<resp.length;i++) {
+					let catUL=m.catUriList[resp[i].cat];
 					catUL.down=true;
 					catUL.has=true;
-					for (var p in resp[i]) {
+					for (let p in resp[i]) {
 						if (isNaN(p)) {
 							catUL[p]=resp[i][p];
 						}
@@ -2787,10 +2803,10 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 	}
 };
 m.refresh=function (cats, option, uri) {
-	var currentCat=m.getSearchVars(window.location.search).cat;
+	let currentCat=m.getSearchVars(window.location.search).cat;
 	if (currentCat) { currentCat=currentCat.val; }
-	var c=cats.split(";");
-	var k=0;
+	let c=cats.split(";");
+	let k=0;
 	if (currentCat!==undefined) {
 		for (k=c.length-1;k>0;k--) {
 			if (c[k]===currentCat) {break;}
@@ -2804,7 +2820,7 @@ m.refresh=function (cats, option, uri) {
 	} else {
 		switch (option) {
 		case "recoed" :
-			var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
+			let $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 			$contents.prepend( $newReco );
 			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -2822,13 +2838,13 @@ m.refresh=function (cats, option, uri) {
 					$reco_playing.html('');
 				}
 			}
-			var $recos=$contents.find(">.reco");
-			for (var i=0;i<$recos.length;i++) {
-				var $reco=$recos.eq(i);
-				var recoUri=m.unescapeHTML($reco.find(">.textURI").html());
+			let $recos=$contents.find(">.reco");
+			for (let i=0;i<$recos.length;i++) {
+				let $reco=$recos.eq(i);
+				let recoUri=m.unescapeHTML($reco.find(">.textURI").html());
 				if (recoUri===uri) {
 					if (option==="changed") {
-						var $newReco=$( m.recoHTML( m.userRecos[uri] ) );
+						let $newReco=$( m.recoHTML( m.userRecos[uri] ) );
 						$reco.replaceWith($newReco);
 						m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -2848,8 +2864,8 @@ m.refresh=function (cats, option, uri) {
 };
 
 m.ExpCol=function (elem, catEC) {
-	var $elem=$(elem);
-	var $next=$elem.parent().next();
+	let $elem=$(elem);
+	let $next=$elem.parent().next();
 	if ($next.is(":visible")) {
 		$next.hide();
 		$elem.html("▶");
@@ -2877,8 +2893,8 @@ m.openCat=function (cat, e) {
 	}
 };
 
-for (var i=0;i<m.catList.length;i++) {
-	var cat=m.catList[i].cat;
+for (let i=0;i<m.catList.length;i++) {
+	let cat=m.catList[i].cat;
 	m.catUriList[cat]={cat:cat, down:false};
 }
 
@@ -2889,16 +2905,16 @@ window.onpopstate=function (e) {
 	}
 };
 m.getSearchVars=function (searchStr) {
-	var vars=[];
+	let vars=[];
 	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
 		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
-		var j=searchStr.indexOf("#");
+		let j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
-		var splits=searchStr.replace(/&amp;/ig,"&").split("&");
-		for (var i=0;i<splits.length;i++) {
-			var key=splits[i];
-			var value="";
-			var k=key.indexOf("=");
+		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
+		for (let i=0;i<splits.length;i++) {
+			let key=splits[i];
+			let value="";
+			let k=key.indexOf("=");
 			if (k!==-1) {
 				value=decodeURIComponent(key.substring(k+1));
 				key=key.substring(0,k);
@@ -2914,9 +2930,9 @@ m.getSearchVars=function (searchStr) {
 // New Reco or Edit
 ////////////////////////////////////////////////////
 m.getUTF8Length=function (s) {
-	var len=0;
-	for (var i=0;i<s.length;i++) {
-		var code=s.charCodeAt(i);
+	let len=0;
+	for (let i=0;i<s.length;i++) {
+		let code=s.charCodeAt(i);
 		if (code<=0x7f) {
 			len+=1;
 		} else if (code<=0x7ff) {
@@ -2935,11 +2951,11 @@ m.getUTF8Length=function (s) {
 };
 m.formatURI=function (uri) {
 	uri=uri.trim().replace(/[\t\n]/g," ");
-	var exec=m.ptnTag.exec(uri);
+	let exec=m.ptnTag.exec(uri);
 	if (exec!==null) {
 		try {
-			var $uri=$(uri);
-			var src=$uri.attr("src");
+			let $uri=$(uri);
+			let src=$uri.attr("src");
 			if (src) {
 				uri=src;
 			} else {
@@ -2958,14 +2974,14 @@ m.formatCats=function (cats) {
 		return "";
 	}
 	cats=cats.trim().replace(/[\t\r\n]/g," ");
-	var list=cats.split(";");
-	for (var i=0;i<list.length;i++) {
-		var levels=list[i].split("--");
-		for (var j=0;j<levels.length;j++) {
+	let list=cats.split(";");
+	for (let i=0;i<list.length;i++) {
+		let levels=list[i].split("--");
+		for (let j=0;j<levels.length;j++) {
 			levels[j]=levels[j].replace(/^[\s-]+/,"").replace(/[\s-]+$/,"");
 		}
 		list[i]="";
-		var k=0;
+		let k=0;
 		for (;k<levels.length;k++) {
 			if (levels[k].length!==0) {
 				list[i]=levels[k];
@@ -2978,10 +2994,10 @@ m.formatCats=function (cats) {
 			}
 		}
 	}
-	var catsMap={};
+	let catsMap={};
 	catsMap[list[0]]=true;
 	cats=list[0];
-	for (var i=1;i<list.length;i++) {
+	for (let i=1;i<list.length;i++) {
 		if (catsMap[list[i]]) {
 		} else {
 			catsMap[list[i]]=true;
@@ -3004,10 +3020,10 @@ m.showMyReco=function (r) {
 		$button_edit.hide();
 		$button_del.hide();
 	}
-	var $mR=$("#my-reco");
+	let $mR=$("#my-reco");
 	$mR.html( m.recoHTML(r) ); // need to be edit.
 	if (r["has"]) {
-		var $edit=$mR.find(".button.edit");
+		let $edit=$mR.find(".button.edit");
 		$edit.html("Edit mine");
 		$edit.on("click", function (e) {
 			$input_title[0].value=r["title"];
@@ -3058,49 +3074,49 @@ m.emptifyReco=function () {
 	m.getAndShowDefsAndReco();
 };
 m.showDefs=function (r) {
-	var defTitles=r["def-titles"].trim().split("\n");
-	var defTitlesHTML="";
-	for (var i=0;i<defTitles.length;i++) {
-		var title=defTitles[i].trim();
+	let defTitles=r["def-titles"].trim().split("\n");
+	let defTitlesHTML="";
+	for (let i=0;i<defTitles.length;i++) {
+		let title=defTitles[i].trim();
 		if (title.length!==0) {
 			defTitlesHTML+='<div class="def-title">'+m.escapeHTML(title)+'</div>';
 		}
 	}
 	$def_titles.html(defTitlesHTML);
-	var $defTitle=$def_titles.find(".def-title");
+	let $defTitle=$def_titles.find(".def-title");
 	$defTitle.on("click", function (e) {
 		$defTitle.removeClass("selected");
-		var $this=$(this);
+		let $this=$(this);
 		$this.addClass("selected");
 		$input_title[0].value=m.unescapeHTML($this.html());
 	});
 
-	var defCats=r["def-cats"].trim().split("\n");
-	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
-	for (var i=0;i<defCats.length;i++) {
-		var cat=defCats[i].trim();
+	let defCats=r["def-cats"].trim().split("\n");
+	let defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
+	for (let i=0;i<defCats.length;i++) {
+		let cat=defCats[i].trim();
 		if (cat.length!==0) {
 			defCatsHTML+='<div class="def-cat">'+m.escapeHTML(cat)+'</div> ';
 		}
 	}
 	$def_cats.html(defCatsHTML);
-	var $defCat=$def_cats.find(".def-cat");
+	let $defCat=$def_cats.find(".def-cat");
 	$defCat.on("click", function (e) {
 		$defCat.removeClass("selected");
-		var $this=$(this);
+		let $this=$(this);
 		$this.addClass("selected");
 		let cursor=$input_cats[0].selectionStart;
 		let val=$input_cats[0].value;
 		let inserted=m.unescapeHTML($this.html());
 		$input_cats[0].value=`${val.substring(0,cursor)}${inserted}${val.substring(cursor)}`;
-		var l=$input_cats[0].value.length;
+		let l=$input_cats[0].value.length;
 		$input_cats.focus();
 		$input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
 	});
 };
 m.getAndShowDefsAndReco=function (noFormatURI) {
-	var elem=$input_uri[0];
-	var uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
+	let elem=$input_uri[0];
+	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
 	let uriRendered=m.uriRendering(uri,true);
 	if (uriRendered.from==="youtube") {
@@ -3126,12 +3142,12 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 	}
 	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
-	var r=m.userRecos[uri];
+	let r=m.userRecos[uri];
 	if (!r) { r=m.userRecos[uri]={}; }
 	if (r.down) {
 		m.showReco(r);
 	} else {
-		var getRecosStr="uri"+"\n"+uri;
+		let getRecosStr="uri"+"\n"+uri;
 		$.ajax({
 			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
 			, dataType:"text"
@@ -3149,7 +3165,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			type:"POST", url:"/reco/infos", data:uri
 			, dataType:"text"
 		}).done(function (resp) {
-			var defs=m.strToJSON(resp);
+			let defs=m.strToJSON(resp);
 			r.defs=true;
 			if (defs[1]) {
 				r["def-cats"]=defs[1]["def-cats"];
@@ -3162,12 +3178,12 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		$error.html("");
 	} else {
 		$error.html("Be careful! This is not your page. On this URI, you have");
-		var mR=m.myRecos[uri];
+		let mR=m.myRecos[uri];
 		if (!mR) { mR=m.myRecos[uri]={}; }
 		if (mR.down) {
 			m.showMyReco(mR);
 		} else {
-			var getRecosStr="uri"+"\n"+uri;
+			let getRecosStr="uri"+"\n"+uri;
 			$.ajax({
 				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
 				, dataType:"text"
@@ -3184,7 +3200,7 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 		$out_focus.focus();
 		$button_close.trigger("click");
 	} else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
-		var r=m.myRecos[$input_uri[0].value];
+		let r=m.myRecos[$input_uri[0].value];
 		if (r["has"]) {
 			$button_edit.trigger("click");
 		} else {
@@ -3194,7 +3210,7 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 });
 $input_cats.off("keydown.common");
 $input_uri.on("input.rd keyup.rd cut.rd paste.rd click.rd", function (e) {
-	var uri=this.value;
+	let uri=this.value;
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
@@ -3206,15 +3222,15 @@ m.lastVal=m.val("");
 $input_val.after($(m["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
 $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-	var $bar=$input_val_stars.find(".bar");
-	var barW=$bar.width();
-	var $val=$input_val[0];
+	let $bar=$input_val_stars.find(".bar");
+	let barW=$bar.width();
+	let $val=$input_val[0];
 	$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		e.stopPropagation();
-		var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-		var w=x-$bar.offset().left+$window.scrollLeft();
+		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let w=x-$bar.offset().left+$window.scrollLeft();
 		if (w<-15) {
 			w=-1;
 		} else if (w<0) {
@@ -3239,10 +3255,10 @@ $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 	});
 });
 $input_val_stars.on("click", function (e) {
-	var $bar=$(this).find(".bar");
-	var barW=$bar.width();
-	var $val=$input_val[0];
-	var w=e.clientX-$bar.offset().left+$window.scrollLeft();
+	let $bar=$(this).find(".bar");
+	let barW=$bar.width();
+	let $val=$input_val[0];
+	let w=e.clientX-$bar.offset().left+$window.scrollLeft();
 	if (w<0) {
 		w=0;
 	} else if (w>m["5stars-width"]) {
@@ -3256,8 +3272,8 @@ $input_val_stars.on("click", function (e) {
 });
 $input_val.on("keyup", function (e) {
 	if (this.value!==m.lastVal.str) {
-		var val=m.val(this.value);
-		var $bar=$("#input-val-stars .bar");
+		let val=m.val(this.value);
+		let $bar=$("#input-val-stars .bar");
 		if (val.valid&&val.str.length!==0) {
 			m.fullPts=val.divisor;
 			$bar.css({width:m["5stars-width"]*val.val});
@@ -3271,7 +3287,7 @@ $input_val.on("keyup", function (e) {
 $button_new_reco.on("click", function (e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
-	var cat=m.getSearchVars(window.location.search).cat;
+	let cat=m.getSearchVars(window.location.search).cat;
 	if (cat) { cat=cat.val; }
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
@@ -3288,7 +3304,7 @@ $button_close.on("click", function (e) {
 	$window.off("scroll.stop");
 });
 $button_back.on("click", function (e) {
-	var r=m.userRecos[$input_uri[0].value];
+	let r=m.userRecos[$input_uri[0].value];
 	m.showReco(r);
 });
 
@@ -3305,12 +3321,12 @@ m.reco_do=function (args, err) {
 		$error.html("Reco failed. You may be not logged-in.");
 		// $button_reco.removeClass("disabled");
 	}).done(function (resp) {
-		var res=m.strToJSON(resp);
+		let res=m.strToJSON(resp);
 		if (res[1]["result"]==="recoed") {
 			$error.html("Recoed");
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
-			var cats=m.myRecos[args.uri]["cats"];
+			let cats=m.myRecos[args.uri]["cats"];
 			m.putCats_UriToLists(cats, args.uri);
 			if (m.myPage) {
 				m.refresh(cats, "recoed", args.uri);
@@ -3328,10 +3344,10 @@ m.reco_do=function (args, err) {
 };
 $button_reco.on("click", function (e) {
 	$button_reco.addClass("disabled");
-	var uri=m.formatURI($input_uri[0].value);
-	var val=m.val($input_val[0].value.trim());
-	var errorMsg="";
-	var valid=true;
+	let uri=m.formatURI($input_uri[0].value);
+	let val=m.val($input_val[0].value.trim());
+	let errorMsg="";
+	let valid=true;
 	if (uri.length===0) {
 		valid=false;
 		errorMsg="URI is required.";
@@ -3343,8 +3359,8 @@ $button_reco.on("click", function (e) {
 		errorMsg="Points is of invalid form.";
 	}
 	if (valid) {
-		var strHeads="do"+"\t"+"uri";
-		var strContents="reco"+"\t"+m.encloseStr(uri);
+		let strHeads="do"+"\t"+"uri";
+		let strContents="reco"+"\t"+m.encloseStr(uri);
 		strHeads+="\t"+"title";
 		strContents+="\t"+m.encloseStr(m.formatTitle($input_title[0].value.trim()));
 		strHeads+="\t"+"cats";
@@ -3355,7 +3371,7 @@ $button_reco.on("click", function (e) {
 		strContents+="\t"+m.encloseStr($input_cmt[0].value.trim());
 		strHeads+="\t"+"val";
 		strContents+="\t"+m.encloseStr(val.str);
-		var strRecoDo=strHeads+"\n"+strContents;
+		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
 		m.rmb_me(m.reco_do, {strRecoDo, uri});
 	} else {
@@ -3375,7 +3391,7 @@ m.reco_change_do=function (args, err) {
 	}).fail(function () {
 		$error.html("Failed change. You may not be logged-in.");
 	}).done(function (resp) {
-		var res=m.strToJSON(resp);
+		let res=m.strToJSON(resp);
 		if (res[1]) {
 			if (res[1]["result"]==="changed") {
 				$error.html("Changed");
@@ -3408,32 +3424,32 @@ m.reco_change_do=function (args, err) {
 };
 $button_edit.on("click", function (e) {
 	$button_edit.addClass("disabled");
-	var uri=$input_uri[0].value;
-	var val=m.val($input_val[0].value.trim());
-	var r=m.myRecos[uri];
+	let uri=$input_uri[0].value;
+	let val=m.val($input_val[0].value.trim());
+	let r=m.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
-		var strHeads="do"+"\t"+"uri";
-		var strContents="change"+"\t"+m.encloseStr(uri);
-		var changed=false;
-		var title=m.formatTitle($input_title[0].value.trim());
+		let strHeads="do"+"\t"+"uri";
+		let strContents="change"+"\t"+m.encloseStr(uri);
+		let changed=false;
+		let title=m.formatTitle($input_title[0].value.trim());
 		if (title!==r["title"]) {
 			changed=true;
 			strHeads+="\t"+"title";
 			strContents+="\t"+m.encloseStr(title);
 		}
-		var cats=m.formatCats($input_cats[0].value.trim());
+		let cats=m.formatCats($input_cats[0].value.trim());
 		if (cats!==r["cats"]) {
 			changed=true;
 			strHeads+="\t"+"cats";
 			strContents+="\t"+m.encloseStr(cats);
 		}
-		var desc=$input_desc[0].value.trim();
+		let desc=$input_desc[0].value.trim();
 		if (desc!==r["desc"]) {
 			changed=true;
 			strHeads+="\t"+"desc";
 			strContents+="\t"+m.encloseStr(desc);
 		}
-		var cmt=$input_cmt[0].value.trim();
+		let cmt=$input_cmt[0].value.trim();
 		if (cmt!==r["cmt"]) {
 			changed=true;
 			strHeads+="\t"+"cmt";
@@ -3452,7 +3468,7 @@ $button_edit.on("click", function (e) {
 			$button_edit.removeClass("disabled");
 		}
 	} else {
-		var errorMsg="";
+		let errorMsg="";
 		if (uri.length===0) {
 			errorMsg="URI is required.";
 		} else if (!val.valid) {
@@ -3474,10 +3490,10 @@ m.reco_delete_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).done(function (resp) {
-		var res=m.strToJSON(resp);
+		let res=m.strToJSON(resp);
 		if (res[1]["result"]==="deleted") {
 			$error.html("Deleted");
-			var cats=args.r["cats"];
+			let cats=args.r["cats"];
 			delete m.myRecos[args.uri];
 			m.delCats_UriFromLists(cats, args.uri);
 			if (m.myPage) {
@@ -3495,14 +3511,14 @@ m.reco_delete_do=function (args, err) {
 };
 $button_del.on("click", function (e) {
 	$button_del.addClass("disabled");
-	var uri=$input_uri[0].value;
-	var r=m.myRecos[uri];
+	let uri=$input_uri[0].value;
+	let r=m.myRecos[uri];
 	if (uri.length!==0&&r) {
-		var strHeads="do"+"\t"+"uri";
-		var strContents="delete"+"\t"+m.encloseStr(uri);
+		let strHeads="do"+"\t"+"uri";
+		let strContents="delete"+"\t"+m.encloseStr(uri);
 		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri});
 	} else {
-		var errorMsg="";
+		let errorMsg="";
 		if (uri.length==0) {
 			errorMsg="URI is required.";
 		} else {
@@ -3528,10 +3544,10 @@ $fuzzy_search.on("keydown", function (e) {
 	case 38: // up=38
 	case 40: // down=40
 		e.preventDefault();
-		var $fsl=$fuzzy_search_list;
-		var $lis=$fsl.find(".list-item");
-		var $liSelected=$fsl.find(".list-item.selected").eq(0);
-		var $liTo=null;
+		let $fsl=$fuzzy_search_list;
+		let $lis=$fsl.find(".list-item");
+		let $liSelected=$fsl.find(".list-item.selected").eq(0);
+		let $liTo=null;
 		if ($liSelected.exists()) {
 			if (e.keyCode===38) {
 				$liTo=$liSelected.prev();
@@ -3564,29 +3580,29 @@ $fuzzy_search.on("keydown", function (e) {
 m.gotoLi=function (e, elem, k, fs) {
 if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 } else {
-	var $elem=$(elem);
-	var uri=fs.fullList[k].uri;
+	let $elem=$(elem);
+	let uri=fs.fullList[k].uri;
 	if ($elem.hasClass("selected")) {
 		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	} else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
 	}
-	var $listI=fs.fullList[k].$listI;
+	let $listI=fs.fullList[k].$listI;
 	if ($listI) {
 		$window.scrollTop($listI.offset().top);
 	} else {
-		var $insert=$('<div class="button">inserting...</div>');
-		var $loads=$contents.find(">.button.to-be-executed");
-		var i=0;
+		let $insert=$('<div class="button">inserting...</div>');
+		let $loads=$contents.find(">.button.to-be-executed");
+		let i=0;
 		for (;i<$loads.length-1;i++) {
-			var from0=Number($loads.eq(i).find(".from").html());
-			var to0=Number($loads.eq(i).find(".to").html());
+			let from0=Number($loads.eq(i).find(".from").html());
+			let to0=Number($loads.eq(i).find(".to").html());
 			if (to0<=k&&k<from0) {
 				$loads.eq(i).trigger("click");
 				break;
 			}
-			var to1=Number($loads.eq(i+1).find(".to").html());
+			let to1=Number($loads.eq(i+1).find(".to").html());
 			if (to1<=k&&k<from0) {
 				$loads.eq(i).after($insert);
 				$elem=m.showRecosOnCat($insert[0], k, 2, 3);
@@ -3594,8 +3610,8 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 			}
 		}
 		if (i===$loads.length-1) {
-			var from0=Number($loads.eq(i).find(".from").html());
-			var to0=Number($loads.eq(i).find(".to").html());
+			let from0=Number($loads.eq(i).find(".from").html());
+			let to0=Number($loads.eq(i).find(".to").html());
 			if (to0<=k&&k<from0) {
 				$loads.eq(i).trigger("click");
 			} else {
@@ -3609,17 +3625,17 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 	}
 }};
 m.doFSTitle=function (fs) {
-	var fsPtnSH=m.splitHangul(fs.$fs.text());
+	let fsPtnSH=m.splitHangul(fs.$fs.text());
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		m.fuzzySearch(fsPtnSH, fs);
-		var res=fs[0];
-		var sorted=res.sorted;
-		var str="";
-		for (var i=0;i<sorted.length;i++) {
-			var k=res[sorted[i]].i;
-			var fsFLk=fs.fullList[k];
+		let res=fs[0];
+		let sorted=res.sorted;
+		let str="";
+		for (let i=0;i<sorted.length;i++) {
+			let k=res[sorted[i]].i;
+			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
-				var uri=fsFLk.uri;
+				let uri=fsFLk.uri;
 				str+='<div class="list-item" onclick="m.gotoLi(event,this,'+k+',m.fsTitle)">'
 						+fs.fullList[k].html
 						+((res[sorted[i]].highlight!==undefined)?
@@ -3633,8 +3649,8 @@ m.doFSTitle=function (fs) {
 	}
 };
 m.fsTitleOn=function () {
-	var now=Date.now();
-	var passed=now-m.previous;
+	let now=Date.now();
+	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
 		m.doFSTitle(m.fsTitle);
@@ -3654,8 +3670,8 @@ $fuzzy_search.trigger("keyup");
 // Language/언어/語言
 ////////////////////////////////////////////////////
 m.changeLang=function (lang, e, elem) {
-	var search=window.location.search;
-	var href=m.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
+	let search=window.location.search;
+	let href=m.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
 	if (e&&e.which===2) {
 		$(elem).attr({"href":href});
 		return true;
@@ -3664,9 +3680,9 @@ m.changeLang=function (lang, e, elem) {
 		return false;
 	}
 };
-var dataLang=m.strToJSON( $data_lang.html().trim() );
-var htmlLang='<div>';
-for (var i=0;i<dataLang[0].length;i++) {
+let dataLang=m.strToJSON( $data_lang.html().trim() );
+let htmlLang='<div>';
+for (let i=0;i<dataLang[0].length;i++) {
 	htmlLang+='<a href="'+m.pathName+"?lang="+dataLang[0][i]+'" onclick="return m.changeLang(\''+dataLang[0][i]+'\',event,this)">'+dataLang[1][i]+'</a><br>';
 }
 htmlLang+='</div>';
@@ -3675,25 +3691,25 @@ $data_lang.after(htmlLang);
 ////////////////////////////////////////////////
 // Lang : set cookie, Cat : get ans show recos
 ////////////////////////////////////////////////
-var vars=m.getSearchVars(window.location.search);
+let vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
 if (vars.cat!==undefined) {
-	var cat=vars.cat.val;
+	let cat=vars.cat.val;
 	m.currentCat=cat;
 	m.getUriListAndShowRecosOnCat(cat);
 	window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
 	$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 }
 if (vars.title!==undefined) {
-	var title=vars.title.val;
+	let title=vars.title.val;
 	$input_title[0].value=title;
 	// $input_title.trigger("input");
 }
 if (vars.uri!==undefined) {
 	$new_reco.show();
-	var uri=vars.uri.val;
+	let uri=vars.uri.val;
 	$input_uri[0].value=uri;
 	$input_uri.trigger("input.rd");
 }
@@ -3705,11 +3721,11 @@ if (window.location.pathname==="/reco") {
 // SNS Sharing
 ////////////////////////////////////////////////////
 m.shareSNS=function (elem, service) {
-	var $reco=$(elem).parent(".reco");
-	var uri=encodeURIComponent(m.unescapeHTML($reco.find(".textURI").html()));
-	var title=encodeURIComponent( $reco.find(".title").text() );
+	let $reco=$(elem).parent(".reco");
+	let uri=encodeURIComponent(m.unescapeHTML($reco.find(".textURI").html()));
+	let title=encodeURIComponent( $reco.find(".title").text() );
 	// encodeURIComponent(window.location.href);
-	var open="";
+	let open="";
 	switch (service) {
 		case 'twitter':
 			open="https://twitter.com/intent/tweet"+"?text="+title+"&url="+uri;
@@ -3742,9 +3758,9 @@ m.processShortKey=function (e) {
 			break;
 		case 70: //F=70
 		case 68: //D=68
-			var scrollTop=$window.scrollTop();
-			var i, k=m.fdList.length;
-			var hI;
+			let scrollTop=$window.scrollTop();
+			let i, k=m.fdList.length;
+			let hI;
 			if (e.keyCode===70) {
 				scrollTop+=10;
 				for (i=0;i<k;i++) {
@@ -3774,7 +3790,7 @@ m.processShortKey=function (e) {
 	}
 }
 $window.on("keydown", m.processShortKey);
-var $shortkeyDesc=$("ul#shortkeys");
+let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
 		"<li>G,T: [--Fuzzy Search--] (Go), or Table of Recos</li>"
@@ -3794,14 +3810,14 @@ m.fsTitle.Following=function () {
 	m.fsTitle.playNext(1);
 };
 m.fsTitle.shuffle=function () {
-	var fs=m.fsTitle;
-	var shuffled=fs.shuffled;
-	for (var i=0;i<shuffled.length;i++) {
+	let fs=m.fsTitle;
+	let shuffled=fs.shuffled;
+	for (let i=0;i<shuffled.length;i++) {
 		shuffled[i].randomN=Math.random();
 	}
-	for (var i=1;i<shuffled.length;i++) {
-		var temp=shuffled[i];
-		var j=i;
+	for (let i=1;i<shuffled.length;i++) {
+		let temp=shuffled[i];
+		let j=i;
 		for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
 			shuffled[j]=shuffled[j-1];
 		}
@@ -3811,7 +3827,7 @@ m.fsTitle.shuffle=function () {
 	fs.playNext(1,true);
 };
 m.fsTitle.toggleLoop=function (elem) {
-	var $elem=$(elem);
+	let $elem=$(elem);
 	if ($elem.hasClass("enabled")) {
 		$elem.removeClass("enabled");
 		m.fsTitle.loop=false;
@@ -3821,7 +3837,7 @@ m.fsTitle.toggleLoop=function (elem) {
 	}
 };
 m.fsTitle.toggleOneLoop=function (elem) {
-	var $elem=$(elem);
+	let $elem=$(elem);
 	if ($elem.hasClass("enabled")) {
 		$elem.removeClass("enabled");
 		m.fsTitle.oneLoop=false;
@@ -3831,13 +3847,13 @@ m.fsTitle.toggleOneLoop=function (elem) {
 	}
 };
 m.fsTitle.getAndPlayVideo=function (cue) {
-	var fs=m.fsTitle;
+	let fs=m.fsTitle;
 	fs.pauseVideo();
-	var i=fs.currentIndex;
+	let i=fs.currentIndex;
 	if (0<=i&&i<fs.shuffled.length) {
-		var r=fs.fullList[fs.shuffled[i].i].reco;
+		let r=fs.fullList[fs.shuffled[i].i].reco;
 		$reco_playing.html(m.recoHTML(r, true));
-		var uriRendered=m.uriRendering(r.uri);
+		let uriRendered=m.uriRendering(r.uri);
 		if (uriRendered.from==="youtube") {
 			$uri_rendered.html('');
 			$video.html('');
@@ -3917,17 +3933,17 @@ m.fsTitle.pauseVideo=function () {
 };
 m.fsTitle.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
-	var fs=m.fsTitle;
+	let fs=m.fsTitle;
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=1; }
 	if (first) { fs.currentIndex=-1; }
-	var l=fs.shuffled.length;
+	let l=fs.shuffled.length;
 	if (l===0) {
 		if (first) { fs.getAndPlayVideo(cue); }
 	} else {
-		var count=first?0:1;
-		var i=fs.currentIndex+increment;
+		let count=first?0:1;
+		let i=fs.currentIndex+increment;
 		if (fs.loop) { i=(i+l)%l; }
-		var done=false;
+		let done=false;
 		while (0<=i&&i<l&&count<l) {
 			if (fs.fullList[fs.shuffled[i].i].inRange) {
 				fs.currentIndex=i;
@@ -3952,19 +3968,19 @@ m.fsTitle.playNext=function (increment, cue, first) {
 	}
 };
 m.fsTitle.prepareRecoListPlay=function () {
-	var fs=m.fsTitle;
-	var YtAPINeeded=false;
+	let fs=m.fsTitle;
+	let YtAPINeeded=false;
 	if (!m.YtAPILoaded) {
-		for (var i=0;i<fs.fullList.length;i++) {
-			var r=fs.fullList[i].reco;
-			var uriRendered=m.uriRendering(r.uri);
+		for (let i=0;i<fs.fullList.length;i++) {
+			let r=fs.fullList[i].reco;
+			let uriRendered=m.uriRendering(r.uri);
 			if (uriRendered.from==="youtube") {
 				YtAPINeeded=true;
 				break;
 			}
 		}
 		if (YtAPINeeded) {
-			var ytAPI=document.createElement('script');
+			let ytAPI=document.createElement('script');
 			ytAPI.src="http://www.youtube.com/player_api";
 			$scripts.append(ytAPI);
 			m.YtAPILoaded=true;
@@ -3972,7 +3988,7 @@ m.fsTitle.prepareRecoListPlay=function () {
 	}
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
 		fs.shuffled=[];
-		for (var i=0;i<fs.fullList.length;i++) {
+		for (let i=0;i<fs.fullList.length;i++) {
 			fs.shuffled[i]={"i":fs.fullList.length-1-i};
 		}
 		fs.currentIndex=-1;
@@ -3984,12 +4000,14 @@ m.fsTitle.prepareRecoListPlay=function () {
 	}
 };
 m.fsTitle.toggleRecoListPlay=function () {
-	var fs=m.fsTitle;
+	let fs=m.fsTitle;
 	if ($playlist_container.is(":visible")) {
 		// fs.pauseVideo();
 		$playlist_container.hide();
+		$toggle_reco_list_play.removeClass("enabled");
 	} else {
 		$playlist_container.show();
+		$toggle_reco_list_play.addClass("enabled");
 	}
 };
 })(window.m, jQuery);
