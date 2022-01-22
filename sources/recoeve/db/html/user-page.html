@@ -267,10 +267,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(200,200,200); border-left:.3em solid rgb(10,80,80)} .dark .reco>.cmt {background:rgb(30,30,30)}
 .multireco .reco>.cmt {display:none}
 .stars-container {position:relative; display:inline-block; cursor:text}
+.multireco .stars-container {display:none}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
 .reco>.val {margin:.5em 0 .3em}
+.multireco .reco>.val {display:none}
 .reco>.val>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
 	.dark .reco>.val>.str {border-color:white}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
@@ -354,7 +356,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<label for="cmt">[--Comment--]</label>
 		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
 	<label for="val">[--Points--]</label>
-		<input id="input-val" name="val" placeholder="Points (ex: 3/5)" type="text" tabindex="6"/>
+		<input id="input-val" name="val" placeholder="Points (ex: 7.5/10)" type="text" tabindex="6"/>
 	<div id="error-msg"></div>
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
@@ -544,7 +546,7 @@ m.show_Multireco_Page=function (e) {
 		$toggle_reco_list_play.removeClass("enabled");
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
-		if (!myPage) {
+		if (!m.myPage) {
 
 		}
 		let cat=m.currentCat;
@@ -595,7 +597,7 @@ m.show_Multireco_Page=function (e) {
 	}
 };
 
-if (!myPage) {
+if (!m.myPage) {
 	$hide_recoed_ones.removeClass("none");
 	$hide_recoed_ones.on("click", function () {
 		if ($hide_recoed_ones.hasClass("enabled")) {
@@ -990,7 +992,7 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 	$html.on("mousemove.sd touchmove.sd", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
-		// e.stopPropagation();
+		e.stopPropagation();
 		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
 		$sidebar.css({"margin-left":-$sidebar.outerWidth()+touch0.clientX-relativeX});
 		$sidebar_dragger.css({"left":touch0.clientX-relativeX});
@@ -2341,7 +2343,7 @@ ptnURI.regEx=/^(?:p|tv)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113), from:"insta", imgId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 130), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -3085,7 +3087,7 @@ m.showMyReco=function (r) {
 		$button_del.hide();
 	}
 	let $mR=$("#my-reco");
-	$mR.html( m.recoHTML(r) ); // need to be edit.
+	$mR.html( m.recoHTML(r, true) ); // need to be edit.
 	if (r["has"]) {
 		let $edit=$mR.find(".button.edit");
 		$edit.html("Edit mine");
