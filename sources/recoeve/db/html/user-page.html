@@ -2828,7 +2828,7 @@ m.refresh=function (cats, option, uri) {
 	} else {
 		switch (option) {
 		case "recoed" :
-			let $newReco=$( m.recoHTML( m.userRecos[uri] ) );
+			let $newReco=$( m.recoHTML( m.userRecos[uri], false, true ) );
 			$contents.prepend( $newReco );
 			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -2838,7 +2838,7 @@ m.refresh=function (cats, option, uri) {
 		case "changed" : case "deleted" :
 			if (uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 				if (option==="changed") {
-					$reco_playing.html(m.recoHTML(m.userRecos[uri], true));
+					$reco_playing.html(m.recoHTML(m.userRecos[uri], true, true));
 					m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 					$window.trigger("scroll.delayedLoad");
@@ -2852,7 +2852,7 @@ m.refresh=function (cats, option, uri) {
 				let recoUri=m.unescapeHTML($reco.find(">.textURI").html());
 				if (recoUri===uri) {
 					if (option==="changed") {
-						let $newReco=$( m.recoHTML( m.userRecos[uri] ) );
+						let $newReco=$( m.recoHTML( m.userRecos[uri], false, true ) );
 						$reco.replaceWith($newReco);
 						m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -3029,7 +3029,7 @@ m.showMyReco=function (r) {
 		$button_del.hide();
 	}
 	let $mR=$("#my-reco");
-	$mR.html( m.recoHTML(r, true) ); // need to be edit.
+	$mR.html( m.recoHTML(r, true, true) ); // need to be edit.
 	if (r["has"]) {
 		let $edit=$mR.find(".button.edit");
 		$edit.html("Edit mine");
@@ -3318,7 +3318,7 @@ $button_back.on("click", function (e) {
 
 m.reco_do=function (args, err) {
 	if (err) {
-		$error.html("Reco failed. You may be not logged-in.");
+		$error.html("Reco failed. You may be not logged-in. "+err);
 		$button_reco.removeClass("disabled");
 		return;
 	}
@@ -3327,7 +3327,7 @@ m.reco_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function () {
 		$error.html("Reco failed. You may be not logged-in.");
-		// $button_reco.removeClass("disabled");
+		$button_reco.removeClass("disabled");
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]["result"]==="recoed") {
@@ -3841,7 +3841,7 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 	let i=fs.currentIndex;
 	if (0<=i&&i<fs.shuffled.length) {
 		let r=fs.fullList[fs.shuffled[i].i].reco;
-		$reco_playing.html(m.recoHTML(r, true));
+		$reco_playing.html(m.recoHTML(r, true, true));
 		let uriRendered=m.uriRendering(r.uri);
 		if (uriRendered.from==="youtube") {
 			$uri_rendered.html('');
