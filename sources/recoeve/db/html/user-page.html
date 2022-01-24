@@ -91,7 +91,7 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.to-be-executed {display:block; max-width:15em; margin:25em auto}
+.button.to-be-executed {display:block; max-width:15em; margin:50em auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
@@ -3600,36 +3600,11 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 	if ($listI) {
 		$window.scrollTop($listI.offset().top);
 	} else {
-		let $insert=$('<div class="button">inserting...</div>');
-		let $loads=$contents.find(">.button.to-be-executed");
-		let i=0;
-		for (;i<$loads.length-1;i++) {
-			let from0=Number($loads.eq(i).find(".from").html());
-			let to0=Number($loads.eq(i).find(".to").html());
-			if (to0<=k&&k<from0) {
-				$loads.eq(i).trigger("click");
-				break;
-			}
-			let to1=Number($loads.eq(i+1).find(".to").html());
-			if (to1<=k&&k<from0) {
-				$loads.eq(i).after($insert);
-				$elem=m.showRecosOnCat($insert[0], k, 2, 3);
-				break;
-			}
-		}
-		if (i===$loads.length-1) {
-			let from0=Number($loads.eq(i).find(".from").html());
-			let to0=Number($loads.eq(i).find(".to").html());
-			if (to0<=k&&k<from0) {
-				$loads.eq(i).trigger("click");
-			} else {
-				$loads.eq(i).after($insert);
-				$elem=m.showRecosOnCat($insert[0], k, 2, 3);
-			}
-		}
+		let i=Math.floor((fs.fullList.length-1-k)/m.maxShowReco);
+		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function () {
 			$window.scrollTop(fs.fullList[k].$listI.offset().top);
-		}, 512);
+		}, 256);
 	}
 }};
 m.doFSTitle=function (fs) {
