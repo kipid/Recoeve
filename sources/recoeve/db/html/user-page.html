@@ -2551,10 +2551,10 @@ $point_range_right.on("mousedown touchstart", function (e) {
 ////////////////////////////////////////////////////
 // Show recos
 ////////////////////////////////////////////////////
-m.recoHTML=function (r, uriRenderDisable) {
+m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
-		res+='<div class="reco">'
+		res+=`<div class="reco${inRange?'':' none'}">`
 			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
 			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
@@ -2608,7 +2608,7 @@ m.recoHTML=function (r, uriRenderDisable) {
 	}
 	return res;
 };
-m.showRecosOnCat=function (elem, from, minus, plus) {
+m.showRecosOnCat=function (elem, from) {
 	let fs=m.fsTitle;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -2618,111 +2618,53 @@ m.showRecosOnCat=function (elem, from, minus, plus) {
 		strHTML='<div class="numbers-of-recos">'+nOfRecos+'</div>';
 		$contents.html(strHTML);
 	} else {
-		if (from===undefined||from===null) {
+		if (elem===undefined||elem===null) {
 			from=l-1;
-		} else if (from.constructor===Number) {
-			if (from>=l) {
-				from=l-1;
-			} else if (from<0) {
-				from=0;
-			}
-		} else if (from.constructor===String) {
-			// from==uri
-			from=fs.fullList[from].i;
-		} else {
-			from=l-1;
-		}
-		if (minus===undefined||minus===null) {
-			minus=-m.maxShowReco;
-		} else if (minus.constructor===Number) {
-			minus=minus>0?-minus:minus;
-		} else {
-			minus=-m.maxShowReco;
-		}
-		if (plus===undefined||plus===null) {
-			plus=m.maxShowReco;
-		} else if (plus.constructor===Number) {
-			plus=plus>0?plus:-plus;
-		} else {
-			plus=m.maxShowReco;
-		}
-		let nHiden=0, nShown=0;
-		for (let k=0;k<l;k++) {
-			let fsFLk=fs.fullList[k];
-			let uri=fsFLk.uri;
-			let r=fsFLk.reco;
-			let val=r.val.val;
-			let titleSH=m.splitHangul(r.title);
-			fsFLk.txt=titleSH;
-			fsFLk.html=m.escapeHTML(r.title);
-			if (val===-1) {
-				if (m.showRWOP) {
-					fsFLk.inRange=true;
-					nShown++;
+			let nHiden=0, nShown=0;
+			for (let k=0;k<l;k++) {
+				let fsFLk=fs.fullList[k];
+				let uri=fsFLk.uri;
+				let r=fsFLk.reco;
+				let val=r.val.val;
+				let titleSH=m.splitHangul(r.title);
+				fsFLk.txt=titleSH;
+				fsFLk.html=m.escapeHTML(r.title);
+				if (val===undefined||val===-1) {
+					if (m.showRWOP) {
+						fsFLk.inRange=true;
+						nShown++;
+					} else {
+						fsFLk.inRange=false;
+						nHiden++
+					}
 				} else {
-					fsFLk.inRange=false;
-					nHiden++
-				}
-			} else {
-				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
-					fsFLk.inRange=true;
-					nShown++;
-				} else {
-					fsFLk.inRange=false;
-					nHiden++;
+					if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
+						fsFLk.inRange=true;
+						nShown++;
+					} else {
+						fsFLk.inRange=false;
+						nHiden++;
+					}
 				}
 			}
-		}
-		if (from===l-1) {
 			let nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
 			$numbers_of_recos.html(nOfRecos);
 			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
-		}
-		// minus
-		let i=from;
-		let maxShowReco=-minus;
-		for (let k=0;0<=i&&i<l&&k<maxShowReco;i--) {
-			let fsFLi=fs.fullList[i];
-			let r=fsFLi.reco;
-			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { break; }
-				strHTML+=m.recoHTML(r);
-				k++;
+			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
+				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco:0}</span></div>`;
 			}
-		}
-		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML+='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',10,1)">Load more... from <span class="from">'+(i-9)+'</span> to <span class="to">'+(i+1)+'</span></div>';
-		}
-		if (elem) {
-			$(elem).after(strHTML);
-		} else {
 			$contents.html(strHTML);
-		}
-		let h0=$body.height();
-		strHTML="";
-		// plus
-		i=from+1;
-		maxShowReco=plus;
-		for (let k=1;0<=i&&i<l&&k<maxShowReco;i++) {
-			let fsFLi=fs.fullList[i];
-			let r=fsFLi.reco;
-			if (fsFLi.inRange) {
-				if (fsFLi.$listI) { break; }
-				strHTML=m.recoHTML(r)+strHTML;
-				k++;
-			}
-		}
-		if (0<=i&&i<l&&!(fs.fullList[i].$listI)) {
-			strHTML='<div class="button to-be-executed" onclick="m.showRecosOnCat(this,'+i+',1,10)">Load more... from <span class="from">'+(i)+'</span> to <span class="to">'+(i+10)+'</span></div>'+strHTML;
-		}
-		if (elem) {
-			$(elem).replaceWith(strHTML);
 		} else {
-			$contents.prepend(strHTML);
+			if (from!==undefined&&from!==null&&from.constructor===Number) {
+				for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
+					let fsFLi=fs.fullList[i];
+					let r=fsFLi.reco;
+					if (fsFLi.$listI) {continue;}
+					strHTML+=m.recoHTML(r, false, fsFLi.inRange);
+				}
+			}
+			$(elem).replaceWith(strHTML);
 		}
-		let h1=$body.height();
-		let wST=$window.scrollTop();
-		$window.scrollTop(wST+h1-h0);
 	}
 	let $recos=$contents.find(".reco");
 	for (let i=0;i<$recos.length;i++) {
