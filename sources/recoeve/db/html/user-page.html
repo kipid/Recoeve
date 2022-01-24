@@ -91,7 +91,7 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.to-be-executed {display:block; max-width:15em; margin:10em auto}
+.button.to-be-executed {display:block; max-width:15em; margin:25em auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
@@ -356,7 +356,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<label for="cmt">[--Comment--]</label>
 		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
 	<label for="val">[--Points--]</label>
-		<input id="input-val" name="val" placeholder="Points (ex: 7.5/10)" type="text" tabindex="6"/>
+		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="6"/>
 	<div id="error-msg"></div>
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
@@ -572,11 +572,11 @@ m.show_Multireco_Page=function (e) {
 				m.recoDowned(getRecosStr.substring(4), m.myRecos);
 				m.recoToEve(resp, m.myRecos);
 				m.showRecosOnCat();
-				fs.prepareRecoListPlay();
+				// fs.prepareRecoListPlay();
 			});
 		} else {
 			m.showRecosOnCat();
-			fs.prepareRecoListPlay();
+			// fs.prepareRecoListPlay();
 		}
 
 		let mR=m.myRecos[uri];
@@ -619,7 +619,7 @@ m.currentCat=null;
 m.catUriList=[];
 m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
-m.maxShowReco=10;
+m.maxShowReco=20;
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
