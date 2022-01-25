@@ -91,7 +91,7 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.to-be-executed {display:block; max-width:15em; margin:50em auto}
+.button.to-be-executed {display:block; width:100%; text-align:center; margin:50em auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
@@ -389,7 +389,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
 	</div>
 	<div class="button enabled" id="show-recos-without-points">[--Show recos without points--]</div>
-	<div class="button none" id="hide-recoed-ones">[--Hide recoed ones--]</div>
+	<div class="button" id="hide-recoed-ones">[--Hide recoed ones--]</div>
 	<div class="cBoth"></div>
 </div>
 <div class="side2" id="numbers-of-recos"></div>
@@ -547,58 +547,42 @@ m.show_Multireco_Page=function (e) {
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
 		if (!m.myPage) {
-
-		}
-		let cat=m.currentCat;
-		let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
-		let uris=[];
-		if (uriList.length!==0) { uris=uriList.split("\n"); }
-		let getRecosStr="uri";
-		let getRecosN=0;
-		for (let i=0;i<uris.length;i++) {
-			let uri=uris[i];
-			let r=m.myRecos[uri];
-			if (!r) { r=m.myRecos[uri]={}; }
-			if (!r.down) {
-				getRecosStr+="\n"+uri;
-				getRecosN++;
+			let cat=m.currentCat;
+			let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
+			let uris=[];
+			if (uriList.length!==0) { uris=uriList.split("\n"); }
+			let getRecosStr="uri";
+			let getRecosN=0;
+			for (let i=0;i<uris.length;i++) {
+				let uri=uris[i];
+				let r=m.myRecos[uri];
+				if (!r) { r=m.myRecos[uri]={}; }
+				if (!r.down) {
+					getRecosStr+="\n"+uri;
+					getRecosN++;
+				}
 			}
-		}
-		if (getRecosN>0) {
-			$.ajax({
-				type:"POST", url:`user/${myId}/get-Recos`, data:getRecosStr
-				, dataType:"text"
-			}).done(function (resp) {
-				m.recoDowned(getRecosStr.substring(4), m.myRecos);
-				m.recoToEve(resp, m.myRecos);
+			if (getRecosN>0) {
+				$.ajax({
+					type:"POST", url:`user/${myId}/get-Recos`, data:getRecosStr
+					, dataType:"text"
+				}).done(function (resp) {
+					m.recoDowned(getRecosStr.substring(4), m.myRecos);
+					m.recoToEve(resp, m.myRecos);
+					m.showRecosOnCat();
+					// fs.prepareRecoListPlay();
+				});
+			} else {
 				m.showRecosOnCat();
 				// fs.prepareRecoListPlay();
-			});
-		} else {
-			m.showRecosOnCat();
-			// fs.prepareRecoListPlay();
-		}
-
-		let mR=m.myRecos[uri];
-		if (!mR) { mR=m.myRecos[uri]={}; }
-		if (mR.down) {
-			m.showMyReco(mR);
-		} else {
-			let getRecosStr="uri"+"\n"+uri;
-			$.ajax({
-				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
-				, dataType:"text"
-			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
-				m.recoDowned(uri, m.myRecos);
-				m.recoToEve(resp, m.myRecos);
-				m.showMyReco(mR);
-			});
+			}
 		}
 	}
 };
 
-if (!m.myPage) {
-	$hide_recoed_ones.removeClass("none");
+if (m.myPage) {
+	$hide_recoed_ones.hide();
+} else {
 	$hide_recoed_ones.on("click", function () {
 		if ($hide_recoed_ones.hasClass("enabled")) {
 			$hide_recoed_ones.removeClass("enabled");
@@ -2527,7 +2511,7 @@ m.mmInPR=function (e) {
 			clearTimeout(m.timeOutRange);
 			m.timeOutRange=setTimeout(function () {
 				m.getUriListAndShowRecosOnCat(m.currentCat);
-			}, 800);
+			}, 1024);
 		}
 	}
 };
