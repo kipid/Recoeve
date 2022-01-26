@@ -91,7 +91,7 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.to-be-executed {display:block; width:100%; text-align:center; margin:50em auto}
+.button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
@@ -249,13 +249,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
-.multireco .reco {width:24%}
-.reco:last-child {margin:0}
+.multireco .reco {width:100%}
 .reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer; background-size:100% 100%}
 .reco .SNS-img:first-child {border-left:.15em gray solid}
 .reco>.textURI, .reco>.YTVideoId {display:none}
 .reco>.uri {font-size:.5em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
-.multireco .reco>.uri {display:none}
+.multireco .reco>.uri {font-size:.3em}
 .reco>.title {font-size:1.1em; border:2px solid rgb(150,100,100); padding:.2em .5em}
 .multireco .reco>.title {clear:both; font-size:0.9em}
 .reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
@@ -267,16 +266,21 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(200,200,200); border-left:.3em solid rgb(10,80,80)} .dark .reco>.cmt {background:rgb(30,30,30)}
 .multireco .reco>.cmt {display:none}
 .stars-container {position:relative; display:inline-block; cursor:text}
-.multireco .stars-container {display:none}
+.val {display:block}
+.multireco .val {display:none}
+.my-point {display:none}
+.multireco .my-point {display:block}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
 .reco>.val {margin:.5em 0 .3em}
 .multireco .reco>.val {display:none}
-.reco>.val>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
-	.dark .reco>.val>.str {border-color:white}
+.reco>.val>.str, .reco>.my-point>.str {border:.15em solid black; padding:.1em .5em; vertical-align:top}
+	.dark .reco>.val>.str, .dark .reco>.my-point>.str {border-color:white}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 .multireco .reco .tFirst, .multireco .reco .tLast {display:none}
+.reco .my-point {display:none}
+.multireco .reco .my-point {display:block}
 
 .lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
@@ -287,7 +291,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.dark .rC.fixed {background:black; border-color:white}
 .rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
-.pc {text-align:center; font-size:.85em} /* position change */
+.pc {text-align:center; font-size:.5em} /* position change */
 
 #foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
 
@@ -295,7 +299,14 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #floating-key div {}
 #toggle-floating-key {position:fixed; right:.5em; bottom:.5em; width:auto; height:2.2em}
 
+@media all and (min-width:400px) {
+	.multireco .reco {width:49%}
+}
+@media all and (min-width:600px) {
+	.multireco .reco {width:33%}
+}
 @media all and (min-width:701px) {
+	.multireco .reco {width:49%}
 	#container {margin-left:14.9em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
 	#sidebar-dragger {display:none}
@@ -306,9 +317,14 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
 @media all and (min-width:901px) {
+	.multireco .reco {width:33%}
 	#container {margin-left:19.9em}
 	#sidebar {width:20em}
 }
+@media all and (min-width:1210px) {
+	.multireco .reco {width:24%}
+}
+
 @media all and (min-height:500px) {
 	#fuzzy-search-list {max-height:430px;}
 }
@@ -2586,6 +2602,16 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 		if (r.tFirst!==r.tLast) {
 			res+='<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
 		}
+		if (m.myPage) {
+			res+='<div class="my-point">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
+		} else if (m.myRecos[r.uri]) {
+			let mR=m.myRecos[r.uri];
+			if (mR.has) {
+				res+='<div class="my-point">'+m["5stars"]( mR["val"].val )+' <span class="str">'+m.escapeHTML( mR["val"].str )+'</span></div>';
+			} else {
+				res+='<div class="my-point">'+m["5stars"](0)+' <span class="str"> </span></div>';
+			}
+		}
 		res+='</div>';
 	} else {
 		res+='<div class="reco">No Reco</div>';
@@ -2635,7 +2661,7 @@ m.showRecosOnCat=function (elem, from) {
 			$numbers_of_recos.html(nOfRecos);
 			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
 			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
-				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco:0}</span></div>`;
+				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 			}
 			$contents.html(strHTML);
 		} else {
@@ -2643,11 +2669,48 @@ m.showRecosOnCat=function (elem, from) {
 				for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
 					let fsFLi=fs.fullList[i];
 					let r=fsFLi.reco;
-					if (fsFLi.$listI) {continue;}
 					strHTML+=m.recoHTML(r, false, fsFLi.inRange);
 				}
 			}
 			$(elem).replaceWith(strHTML);
+			let $stars=$contents.find(".my-point>.stars-container");
+			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+				let $target=$(e.target);
+				if (!$target.hasClass("stars-container")) {
+					$target=$target.parents(".stars-container");
+				}
+				let $bar=$target.find(".bar");
+				let barW=$bar.width();
+				let $str=$target.siblings(".str");
+				$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+					window.getSelection().removeAllRanges();
+					e.preventDefault();
+					e.stopPropagation();
+					let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+					let w=x-$bar.offset().left+$window.scrollLeft();
+					if (w<-15) {
+						w=-1;
+					} else if (w<0) {
+						w=0;
+					} else if (w>m["5stars-width"]) {
+						w=m["5stars-width"];
+					}
+					if (w!==barW) {
+						barW=w;
+						if (w<0) {
+							$str.html(" ");
+							w=0;
+						} else {
+							$str.html(m.escapeHTML((w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts));
+						}
+						$bar.css({width:w});
+						m.lastVal=m.val($str.html());
+					}
+				});
+				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+				});
+			});
 		}
 	}
 	let $recos=$contents.find(".reco");
