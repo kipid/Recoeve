@@ -558,8 +558,6 @@ m.show_Multireco_Page=function (e) {
 	} else {
 		$button_multireco_page.addClass("enabled");
 		$contents.addClass("multireco");
-		$playlist_container.hide();
-		$toggle_reco_list_play.removeClass("enabled");
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
 		if (!m.myPage) {
