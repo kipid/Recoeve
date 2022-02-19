@@ -617,6 +617,7 @@ m.currentCat=null;
 m.catUriList=[];
 m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
+m.timeout={};
 m.maxShowReco=20;
 
 m.fsCat=[];
@@ -1199,14 +1200,18 @@ m.rmb_me=function (callback, args) {
 			}
 		});
 	};
-	if (m.docCookies.hasItem('tCreate')&&m.saltSSN&&m.session) {
+	if (m.docCookies.hasItem('tCreate')) {
+		if (m.saltSSN&&m.session) {
+		} else {
+			m.saveSSN();
+		}
 		SSNencrypt(callback, args);
 	} else if (m.docCookies.hasItem('rmbdI')) {
 		$.ajax({
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 			, dataType:"text"
 		}).done(function (resp) {
-			console.log(resp);
+			console.log("rmb_do : "+resp);
 			setTimeout(function () {
 				console.log(resp);
 				console.log("tCreate: "+m.docCookies.hasItem('tCreate'));
@@ -2418,7 +2423,7 @@ m.val=function (val) {
 		if (exec!==null) {
 			res.num=Number(exec[1]);
 			res.divisor=Number(exec[2])
-			res.valid=(res.num<=res.divisor);
+			res.valid=(res.num>=0&&res.num<=res.divisor);
 			if (res.valid) {
 				res.val=res.num/res.divisor;
 			} else {
@@ -2616,6 +2621,25 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	}
 	return res;
 };
+m.reco_pointChange_do=function (args, err) {
+	if (err) {
+		return;
+	}
+	$.ajax({
+		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
+		, dataType:"text"
+	}).fail(function (resp) {
+		// $error.html("Failed change. You may not be logged-in. "+resp);
+	}).done(function (resp) {
+		let res=m.strToJSON(resp);
+		if (res[1]&&res[1]["result"]==="changed") {
+			let val=m.myRecos[args.uri].val=m.val(args.valStr);
+			if (m.myPage&&val.valid&&fs.fullList[uri].$listI) {
+				fs.fullList[uri].$listI.find(".val .bar").css({width:m["5stars-width"]*val.val});
+			}
+		}
+	});
+};
 m.showRecosOnCat=function (elem, from) {
 	let fs=m.fsTitle;
 	let l=fs.fullList.length;
@@ -2677,6 +2701,8 @@ m.showRecosOnCat=function (elem, from) {
 				if (!$target.hasClass("stars-container")) {
 					$target=$target.parents(".stars-container");
 				}
+				let uri=unescapeHTML($target.parents(".reco").find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
 				let $bar=$target.find(".bar");
 				let barW=$bar.width();
 				let $str=$target.siblings(".str");
@@ -2696,17 +2722,26 @@ m.showRecosOnCat=function (elem, from) {
 					if (w!==barW) {
 						barW=w;
 						if (w<0) {
-							$str.html(" ");
+							$str.html("");
 							w=0;
 						} else {
 							$str.html(m.escapeHTML((w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts));
 						}
 						$bar.css({width:w});
-						m.lastVal=m.val($str.html());
 					}
 				});
 				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+					if (m.myPage) {
+						m.timeout[uri]=setTimeout(function () {
+							let valStr=$str.html();
+							if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+								let strHeads="do\turi\tval";
+								let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+								m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
+							}
+						}, 5000);
+					}
 				});
 			});
 		}
@@ -3434,15 +3469,15 @@ $button_reco.on("click", function (e) {
 });
 m.reco_change_do=function (args, err) {
 	if (err) {
-		$error.html("Failed change. You may not be logged-in.");
+		$error.html("Failed change. You may not be logged-in. "+err);
 		$button_edit.removeClass("disabled");
 		return;
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
-	}).fail(function () {
-		$error.html("Failed change. You may not be logged-in.");
+	}).fail(function (resp) {
+		$error.html("Failed change. You may not be logged-in. "+resp);
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]) {
