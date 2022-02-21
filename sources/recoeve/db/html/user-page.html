@@ -2701,7 +2701,7 @@ m.showRecosOnCat=function (elem, from) {
 				if (!$target.hasClass("stars-container")) {
 					$target=$target.parents(".stars-container");
 				}
-				let uri=unescapeHTML($target.parents(".reco").find(".textURI").html());
+				let uri=m.unescapeHTML($target.parents(".reco").find(".textURI").html());
 				clearTimeout(m.timeout[uri]);
 				let $bar=$target.find(".bar");
 				let barW=$bar.width();
