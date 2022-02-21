@@ -2634,6 +2634,7 @@ m.reco_pointChange_do=function (args, err) {
 		let res=m.strToJSON(resp);
 		if (res[1]&&res[1]["result"]==="changed") {
 			let val=m.myRecos[args.uri].val=m.val(args.valStr);
+			let fs=m.fsTitle;
 			if (m.myPage&&val.valid&&fs.fullList[uri].$listI) {
 				fs.fullList[uri].$listI.find(".val .bar").css({width:m["5stars-width"]*val.val});
 			}
