@@ -1201,12 +1201,15 @@ m.rmb_me=function (callback, args) {
 		});
 	};
 	if (m.docCookies.hasItem('tCreate')) {
-		if (m.saltSSN&&m.session) {
-		} else {
+		if (m.docCookies.hasItem("salt")||m.docCookies.hasItem("session")) {
 			m.saveSSN();
 		}
-		SSNencrypt(callback, args);
-	} else if (m.docCookies.hasItem('rmbdI')) {
+		if (m.saltSSN&&m.session) {
+			SSNencrypt(callback, args);
+			return;
+		}
+	}
+	if (m.docCookies.hasItem('rmbdI')) {
 		$.ajax({
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 			, dataType:"text"
