@@ -632,7 +632,7 @@ m.show_Multireco_Page=function (e) {
 			}
 			if (getRecosN>0) {
 				$.ajax({
-					type:"POST", url:`user/${myId}/get-Recos`, data:getRecosStr
+					type:"POST", url:`user/${m.myId}/get-Recos`, data:getRecosStr
 					, dataType:"text"
 				}).done(function (resp) {
 					m.recoDowned(getRecosStr.substring(4), m.myRecos);
