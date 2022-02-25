@@ -163,6 +163,41 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	color:rgb(170,250,170);
 }
 
+#multireco-cats-container {
+	position:fixed;
+	left:0; top:0;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left;
+}
+#multireco-cat-fs-container {
+	position:relative;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left;
+}
+#multireco-cat-fs-list {
+	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	border:.15em gray solid;
+	background:rgb(20,20,20);
+}
+#multireco-cat-fs-list .list-item {
+	background:black; color:white;
+	padding:.2em .5em .4em;
+}
+#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+#multireco-cat-fs-list .list-item .list-index {display:none}
+#multireco-cat-fs-list .list-item:nth-child(2n) {
+	background:rgb(40,40,40);
+}
+#multireco-cat-fs-list .list-item .cat {font-size:.9em;}
+#multireco-cat-fs-list .list-item .highlighted {
+	font-size:.5em; color:rgb(150,150,150);
+}
+#multireco-cat-fs-list .list-item .highlighted .bold {
+	color:rgb(170,250,170);
+}
+
 #fuzzy-search-container {
 	position:fixed; left:0; top:0;
 	z-index:10010;
@@ -386,6 +421,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 	</form>
 </div><!-- div#new-reco -->
+<div id="multireco-cats-container" style="display:none">
+	<label for="multireco-cats">[--Multireco Categories--]</label>
+		<div id="multireco-def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="multireco-add-cat" class="def-cat">;</div> <div id="multireco-sub-cat" class="def-cat">--</div></div>
+		<textarea id="input-cats" class="single-line" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
+		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
+			<div id="multireco-cat-fs-list"></div>
+			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+		</div>
+</div><!-- div#multireco-cats-container -->
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
 	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
@@ -513,6 +557,8 @@ $fuzzy_search_list=$("#fuzzy-search-list");
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
 
+$multireco_cats_container=("#multireco-cats-container");
+
 $point_range=$("#point-range");
 $point_range_bar=$("#point-range-bar");
 $point_range_left=$("#point-range-left");
@@ -554,13 +600,21 @@ m.show_Multireco_Page=function (e) {
 	if ($contents.hasClass("multireco")) {
 		$button_multireco_page.removeClass("enabled");
 		$contents.removeClass("multireco");
+		if (!m.myPage) {
+			$multireco_cats_container.hide();
+		}
 		window.history.pushState({cat:m.currentCat}, null, m.pathOfCat(m.currentCat));
 	} else {
 		$button_multireco_page.addClass("enabled");
 		$contents.addClass("multireco");
+		if (!m.myPage) {
+			$multireco_cats_container.show();
+		}
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
-		if (!m.myPage) {
+		if (m.myPage) {
+			m.showRecosOnCat();
+		} else {
 			let cat=m.currentCat;
 			let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
 			let uris=[];
@@ -584,11 +638,9 @@ m.show_Multireco_Page=function (e) {
 					m.recoDowned(getRecosStr.substring(4), m.myRecos);
 					m.recoToEve(resp, m.myRecos);
 					m.showRecosOnCat();
-					// fs.prepareRecoListPlay();
 				});
 			} else {
 				m.showRecosOnCat();
-				// fs.prepareRecoListPlay();
 			}
 		}
 	}
@@ -2683,6 +2735,19 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			}
+			if (!m.myPage&&$hide_recoed_ones.hasClass("enabled")) {
+				for (let k=0;k<l;k++) {
+					let fsFLk=fs.fullList[k];
+					let uri=fsFLk.uri;
+					if (m.myRecos[uri].has) {
+						if (fsFLk.inRange) {
+							nShown--;
+							nHiden++;
+						}
+						fsFLk.inRange=false;
+					}
+				}
+			}
 			let nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
 			$numbers_of_recos.html(nOfRecos);
 			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
@@ -2736,16 +2801,40 @@ m.showRecosOnCat=function (elem, from) {
 				});
 				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
-					if (m.myPage) {
-						m.timeout[uri]=setTimeout(function () {
-							let valStr=$str.html();
+					m.timeout[uri]=setTimeout(function () {
+						let valStr=$str.html();
+						if (m.myPage) {
 							if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
 								let strHeads="do\turi\tval";
 								let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 								m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
 							}
-						}, 5000);
-					}
+						} else {
+							if (m.myRecos[uri]&&m.myRecos[uri].has) {
+								if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+									let strHeads="do\turi\tval";
+									let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+									m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
+								}
+							} else {
+								let strHeads="do\turi";
+								let strContents="reco\t"+m.encloseStr(uri);
+								strHeads+="\tval";
+								strContents+="\t"+valStr;
+								let uR=m.userRecos[uri];
+								if (uR.title) {
+									strHeads+="\ttitle";
+									strContents+="\t"+uR.title;
+								}
+								if (uR.desc) {
+									strHeads+="\tdesc";
+									strContents+="\t"+uR.desc;
+								}
+								let strRecoDo=strHeads+"\n"+strContents;
+								m.rmb_me(m.reco_do, {strRecoDo, uri});
+							}
+						}
+					}, 5000);
 				});
 			});
 		}
@@ -2753,6 +2842,9 @@ m.showRecosOnCat=function (elem, from) {
 	let $recos=$contents.find(".reco");
 	for (let i=0;i<$recos.length;i++) {
 		let uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
+		if (!fs.fullList[uri]) {
+			fs.fullList[uri]={};
+		}
 		fs.fullList[uri].$listI=$recos.eq(i);
 	}
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
@@ -3451,17 +3543,17 @@ $button_reco.on("click", function (e) {
 		errorMsg="Points is of invalid form.";
 	}
 	if (valid) {
-		let strHeads="do"+"\t"+"uri";
-		let strContents="reco"+"\t"+m.encloseStr(uri);
-		strHeads+="\t"+"title";
+		let strHeads="do\turi";
+		let strContents="reco\t"+m.encloseStr(uri);
+		strHeads+="\ttitle";
 		strContents+="\t"+m.encloseStr(m.formatTitle($input_title[0].value.trim()));
-		strHeads+="\t"+"cats";
+		strHeads+="\tcats";
 		strContents+="\t"+m.encloseStr(m.formatCats($input_cats[0].value.trim()));
-		strHeads+="\t"+"desc";
+		strHeads+="\tdesc";
 		strContents+="\t"+m.encloseStr($input_desc[0].value.trim());
-		strHeads+="\t"+"cmt";
+		strHeads+="\tcmt";
 		strContents+="\t"+m.encloseStr($input_cmt[0].value.trim());
-		strHeads+="\t"+"val";
+		strHeads+="\tval";
 		strContents+="\t"+m.encloseStr(val.str);
 		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
