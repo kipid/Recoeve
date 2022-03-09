@@ -166,9 +166,31 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 #multireco-cats-container {
 	position:fixed;
 	left:0; top:0;
+	z-index:10000;
+	background:black;
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left;
+}
+#multireco-cats-container .def-cat {
+	display: inline-block;
+	margin: 0.2em 0;
+	border: 1px solid rgb(130,130,130);
+	padding: 1px 0.5em;
+	font-size: .9em;
+}
+#multireco-cats-container textarea {
+	display: block;
+	max-width: 100%;
+	width: 100%;
+	resize: vertical;
+	font: inherit;
+	font-weight: bold;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 0.2em 0.3em;
+	background: white;
+	color: rgb(50,50,50);
 }
 #multireco-cat-fs-container {
 	position:relative;
@@ -424,7 +446,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div id="multireco-cats-container" style="display:none">
 	<label for="multireco-cats">[--Multireco Categories--]</label>
 		<div id="multireco-def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="multireco-add-cat" class="def-cat">;</div> <div id="multireco-sub-cat" class="def-cat">--</div></div>
-		<textarea id="input-cats" class="single-line" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
+		<textarea id="multireco-input-cats" class="single-line" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
 		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
 			<div id="multireco-cat-fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
@@ -558,6 +580,10 @@ $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
 
 $multireco_cats_container=$("#multireco-cats-container");
+$multireco_def_cats=$("#multireco-def-cats");
+$multireco_input_cats=$("#multireco-input-cats");
+$multireco_cat_fs_container=$("#multireco-cat-fs-container");
+$multireco_cat_fs_list=$("#multireco-cat-fs-list");
 
 $point_range=$("#point-range");
 $point_range_bar=$("#point-range-bar");
@@ -609,6 +635,7 @@ m.show_Multireco_Page=function (e) {
 		$contents.addClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.show();
+			$multireco_input_cats[0].value=m.currentCat;
 		}
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
@@ -616,7 +643,16 @@ m.show_Multireco_Page=function (e) {
 			m.showRecosOnCat();
 		} else {
 			let cat=m.currentCat;
-			let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
+			let uriList="";
+			if (m.catUriList[cat]&&m.catUriList[cat].has) {
+				uriList=m.catUriList[cat].UriList.trim();
+			} else {
+				$contents.removeClass("multireco");
+				setTimeout(function () {
+					m.show_Multireco_Page(e);
+				}, 1000);
+				return;
+			}
 			let uris=[];
 			if (uriList.length!==0) { uris=uriList.split("\n"); }
 			let getRecosStr="uri";
@@ -632,7 +668,7 @@ m.show_Multireco_Page=function (e) {
 			}
 			if (getRecosN>0) {
 				$.ajax({
-					type:"POST", url:`user/${m.myId}/get-Recos`, data:getRecosStr
+					type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 					, dataType:"text"
 				}).done(function (resp) {
 					m.recoDowned(getRecosStr.substring(4), m.myRecos);
@@ -771,17 +807,18 @@ $toggle_floating_key=$("#toggle-floating-key");
 
 m.hideFK=function () {
 	$floating_key.hide();
-	// $toggle_floating_key.html("▲ Show");
-}
+	m.docCookies.setItem("hideFK", "y", Infinity, "/");
+};
 m.toggleFK=function () {
+	if ($floating_key.is(":visible")) {
+		m.docCookies.setItem("hideFK", "y", Infinity, "/");
+	} else {
+		m.docCookies.removeItem("hideFK", "/");
+	}
 	$floating_key.toggle();
-	// if ($floating_key.is(":visible")) {
-	// 	$floating_key.hide();
-		// $toggle_floating_key.html("▲ Show");
-	// } else {
-	// 	$floating_key.show();
-		// $toggle_floating_key.html("▲ Hide");
-	// }
+};
+if (m.docCookies.hasItem("hideFK")) {
+	$floating_key.hide();
 }
 
 ////////////////////////////////////////////////////
@@ -1847,6 +1884,26 @@ m.chooseCat=function (elem, j) {
 		fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	}
 };
+m.chooseMRCat=function (elem, j) {
+	let $elem=$(elem);
+	let fs=m.fsCat;
+	if ($elem.hasClass("selected")) {
+		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+	} else {
+		fs.$fsLis.removeClass("selected");
+		$elem.addClass("selected");
+		let k=fs.k;
+		fs.listOfCats[k]=fs.fullList[j].cat;
+		$multireco_input_cats[0].value=fs.listOfCats.join(";");
+		let sStart=0;
+		for (let i=0;i<k;i++) {
+			sStart+=fs.listOfCats[i].length+1;
+		}
+		let sEnd=sStart+fs.listOfCats[k].length;
+		$multireco_input_cats.focus();
+		$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
+	}
+};
 m.doFSCat=function (fs) {
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -1875,6 +1932,34 @@ m.doFSCat=function (fs) {
 	$cat_fs_list.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
+m.doMRFSCat=function (fs) {
+	let catsTxt=$multireco_input_cats[0].value;
+	let sEnd=$multireco_input_cats[0].selectionEnd;
+	let listOfCats=fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	fs.k=0;
+	for (let i=listOfCats.length-1;i>=0;i--) {
+		l-=listOfCats[i].length+1;
+		if (l<sEnd) {
+			fs.k=i;
+			break;
+		}
+	}
+	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
+	m.fuzzySearch(fsCatSH, fs);
+	let str="";
+	for (let i=0;i<fs[0].length;i++) {
+		let k=fs[0][fs[0].sorted[i]];
+		str+='<div class="list-item" onclick="m.chooseMRCat(this,'+k.i+')">'
+				+'<div class="list-index">'+i+'</div>'
+				+fs.fullList[k.i].html
+				+(k.highlight!==undefined?
+				'<div class="highlighted">'+'<span class="maxMatchScore">'+k.maxMatchScore+'</span> :: '+k.highlight+'</div>':'')
+			+'</div>';
+	}
+	$multireco_cat_fs_list.html(str);
+	fs.$fsLis=$multireco_cat_fs_list.find(".list-item");
+};
 m.fsCatOn=function () {
 	let now=Date.now();
 	let passed=now-m.previous;
@@ -1890,7 +1975,23 @@ m.fsCatOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
+m.fsMRCatOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doMRFSCat(m.fsCat);
+	} else {
+		$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		setTimeout(function () {
+			$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+			m.previous=Date.now();
+			m.doMRFSCat(m.fsCat);
+		}, m.wait*1.1-passed);
+	}
+};
 $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 $input_cats.on("keydown.fs", function (e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
@@ -1947,6 +2048,10 @@ if (m.myIndex) {
 $input_cats.trigger("keyup");
 $input_cats.on("focus", function () {
 	$cat_fs_container.show();
+});
+
+$multireco_input_cats.on("focus", function () {
+	$multireco_cat_fs_container.show();
 });
 
 //////////////////////////////////////
@@ -2687,8 +2792,9 @@ m.reco_pointChange_do=function (args, err) {
 		// $error.html("Failed change. You may not be logged-in. "+resp);
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
+		let uri=args.uri;
 		if (res[1]&&res[1]["result"]==="changed") {
-			let val=m.myRecos[args.uri].val=m.val(args.valStr);
+			let val=m.myRecos[uri].val=m.val(args.valStr);
 			let fs=m.fsTitle;
 			if (m.myPage&&val.valid&&fs.fullList[uri].$listI) {
 				fs.fullList[uri].$listI.find(".val .bar").css({width:m["5stars-width"]*val.val});
@@ -3298,6 +3404,19 @@ m.showDefs=function (r) {
 		$input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
 	});
 };
+let $defCat=$multireco_def_cats.find(".def-cat");
+$defCat.on("click", function (e) {
+	$defCat.removeClass("selected");
+	let $this=$(this);
+	$this.addClass("selected");
+	let cursor=$multireco_input_cats[0].selectionStart;
+	let val=$multireco_input_cats[0].value;
+	let inserted=m.unescapeHTML($this.html());
+	$multireco_input_cats[0].value=`${val.substring(0,cursor)}${inserted}${val.substring(cursor)}`;
+	let l=$multireco_input_cats[0].value.length;
+	$multireco_input_cats.focus();
+	$multireco_input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
+});
 m.getAndShowDefsAndReco=function (noFormatURI) {
 	let elem=$input_uri[0];
 	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
