@@ -2930,12 +2930,14 @@ m.showRecosOnCat=function (elem, from) {
 								let uR=m.userRecos[uri];
 								if (uR.title) {
 									strHeads+="\ttitle";
-									strContents+="\t"+uR.title;
+									strContents+="\t"+m.encloseStr(uR.title);
 								}
 								if (uR.desc) {
 									strHeads+="\tdesc";
-									strContents+="\t"+uR.desc;
+									strContents+="\t"+m.encloseStr(uR.desc);
 								}
+								strHeads+="\tcats";
+								strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
 								let strRecoDo=strHeads+"\n"+strContents;
 								m.rmb_me(m.reco_do, {strRecoDo, uri});
 							}
