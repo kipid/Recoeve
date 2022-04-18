@@ -220,14 +220,14 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	color:rgb(170,250,170);
 }
 
-#fuzzy-search-container {
+#fuzzy-search-container, #table-of-recos-container {
 	position:fixed; left:0; top:0;
 	z-index:10010;
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left;
 }
-#fuzzy-search {
+#fuzzy-search, #table-of-recos {
 	height:2em; max-height:5em; overflow-y:auto;
 	font:inherit; font-size:1.3em; color:black;
 	width:100%;
@@ -235,25 +235,25 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	border:.15em gray solid;
 	background:white;
 }
-#fuzzy-search-list {
+#fuzzy-search-list, #table-of-recos-list {
 	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
 	border:.15em gray solid;
 	background:rgb(20,20,20);
 }
-#fuzzy-search-list .list-item {
+#fuzzy-search-list .list-item, #table-of-recos-list .list-item {
 	background:black; color:white;
 	padding:.2em .5em .4em;
 }
-#fuzzy-search-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#fuzzy-search-list .list-item .list-index {display:none}
-#fuzzy-search-list .list-item:nth-child(2n) {
+#fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index {display:none}
+#fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n) {
 	background:rgb(40,40,40);
 }
-#fuzzy-search-list .list-item .cat {font-size:.9em;}
-#fuzzy-search-list .list-item .highlighted {
+#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat {font-size:.9em;}
+#fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted {
 	font-size:.5em; color:rgb(150,150,150);
 }
-#fuzzy-search-list .list-item .highlighted .bold {
+#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold {
 	color:rgb(170,250,170);
 }
 .exit {
@@ -350,7 +350,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:.5em} /* position change */
 
-#foot {clear:both; margin-top:1em; border-top:.15em solid white; padding:1em .5em}
+#foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 
 #floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
 #floating-key div {}
@@ -383,7 +383,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 }
 
 @media all and (min-height:500px) {
-	#fuzzy-search-list {max-height:430px;}
+	#fuzzy-search-list, #table-of-recos-list {max-height:430px}
 }
 </style>
 </head>
@@ -409,6 +409,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div id="fuzzy-search-list"></div>
 	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
+<div id="table-of-recos-container" style="display:none">
+	<div id="table-of-recos" contenteditable="true"></div>
+	<div id="table-of-recos-list"></div>
+	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+</div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
 	<form>
 	<label for="uri">URI <span class="desc">(required)</span></label>
@@ -452,6 +457,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 </div><!-- div#multireco-cats-container -->
+<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
+	<div>Language/언어/語言
+		<data id="data-lang">en	ko	ja	zh
+English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
+</div><!-- div#foot -->
+<div class="side2">
+	[--Short Keys--]
+	<ul id="shortkeys"></ul>
+</div>
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
 	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
@@ -460,10 +474,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
 	<div class="button" id="button-multireco-page" onclick="m.show_Multireco_Page(event)">[--Multireco page--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
-	<div>
-		[--Short Keys--]
-		<ul id="shortkeys"></ul>
-	</div>
 </div><!-- div#head -->
 <div class="side2" id="subCats">
 	<span id="point-range-result">0~10/10</span>
@@ -476,7 +486,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div>
 <div class="side2" id="numbers-of-recos"></div>
 <div class="side2" id="headPlay">
-	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsTitle.toggleRecoListPlay()">Toggle reco list play</div>
+	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container">
 		<div id="uri-rendered" style="display:none"></div>
 		<div class="rC" id="rC-video-uri-rendered" style="display:none">
@@ -487,27 +497,23 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="rSC"><div id="youtube"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
-		<div class="button" onclick="m.fsTitle.Preceding()">[--Preceding--]</div>
-		<div class="button" onclick="m.fsTitle.Following()">[--Following--]</div>
-		<div class="button" onclick="m.fsTitle.shuffle()">[--Shuffle--]</div>
-		<div class="button" onclick="m.fsTitle.toggleLoop(this)">[--Loop--]</div>
-		<div class="button" onclick="m.fsTitle.toggleOneLoop(this)">[--One-loop--]</div>
+		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
+		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
+		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
+		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
+		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
+		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToRs--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
 <div class="side2" id="contents"></div><!-- div#contents -->
-<div class="side2" id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
-	<div>Language/언어/語言
-		<data id="data-lang">en	ko	ja	zh
-English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
-</div><!-- div#foot -->
 <div id="floating-key">
 	<div class="button" onclick="m.hideFK()">▼ Hide</div>
-	<div class="button" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>Go</div>
-	<div class="button" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>ToC</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:71});">Go</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:84});">ToR</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:68})">Backward</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:70})">Forward</div>
-	<div class="button" onclick="$button_new_reco.trigger('click')">New Reco</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:78});">New Reco</div>
 </div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
@@ -575,6 +581,10 @@ $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
 $fuzzy_search=$("#fuzzy-search");
 $fuzzy_search_list=$("#fuzzy-search-list");
+
+$table_of_recos_container=$("#table-of-recos-container");
+$table_of_recos=$("#table-of-recos");
+$table_of_recos_list=$("#table-of-recos-list");
 
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
@@ -722,10 +732,15 @@ m.fsTitle.fullList=[];
 m.fsTitle.desc=true;
 m.fsTitle.$fs=$fuzzy_search;
 m.fsTitle.$fsl=$fuzzy_search_list;
-m.fsTitle.currentIndex=-1;
-m.fsTitle.shuffled=[];
-m.fsTitle.oneLoop=false;
-m.fsTitle.loop=false;
+
+m.fsToRs=[];
+m.fsToRs[0]=m.fsToRs[1]=[];
+m.fsToRs.fullList=[];
+m.fsToRs.desc=true;
+m.fsToRs.$fs=$table_of_recos;
+m.fsToRs.$fsl=$table_of_recos_list;
+m.fsToRs.oneLoop=false;
+m.fsToRs.loop=false;
 
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
@@ -1319,6 +1334,8 @@ m.rmb_me=function (callback, args) {
 				}
 			}, 1000);
 		});
+	} else {
+		callback(args);
 	}
 };
 
@@ -1387,6 +1404,7 @@ m.splitHangul=function (str) {
 ////////////////////////////////////////////////////
 m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
 =m.fsTitle[0].ptnSH=m.fsTitle[1].ptnSH
+=m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH
 =m.fsGo[0].ptnSH=m.fsGo[1].ptnSH=m.splitHangul("$!@#");
 RegExp.quote=function (str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
@@ -3017,13 +3035,18 @@ m.getAndShowRecosOnCat=function (cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs=m.fsTitle;
+	let fs1=m.fsToRs;
 	let fsFL=fs.fullList=[];
+	let fs1FL=fs1.fullList=[];
 	fsFL.cat=cat;
+	fs1FL.cat=cat;
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		if (!r) { r=m.userRecos[uri]={}; }
-		fsFL[uris.length-1-i]=fsFL[uri]={i:uris.length-1-i, uri:uri, reco:r};
+		fsFL[uris.length-1-i]=fsFL[uri]
+		=fs1FL[uris.length-1-i]=fs1FL[uri]
+		={i:uris.length-1-i, uri:uri, reco:r};
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
@@ -3037,17 +3060,23 @@ m.getAndShowRecosOnCat=function (cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			fs.prepareRecoListPlay();
+			m.fsToRs.prepareRecoListPlay();
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup");
+			fs1[1]=null;
+			fs1[0].ptnSH=m.splitHangul("$!@#");
+			fs1.$fs.trigger("keyup");
 		});
 	} else {
 		m.showRecosOnCat();
-		fs.prepareRecoListPlay();
+		m.fsToRs.prepareRecoListPlay();
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("keyup");
+		fs1[1]=null;
+		fs1[0].ptnSH=m.splitHangul("$!@#");
+		fs1.$fs.trigger("keyup");
 	}
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
@@ -3259,7 +3288,7 @@ m.formatURI=function (uri) {
 	return uri.replace(/&amp;/ig,"&").trim();
 };
 m.formatTitle=function (title) {
-	return title.trim().replace(/[\t\n]/g," ");
+	return title.trim().replace(/[\t\r\n]/g," ");
 };
 m.formatCats=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
@@ -3916,7 +3945,7 @@ m.doFSTitle=function (fs) {
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+='<div class="list-item" onclick="m.gotoLi(event,this,'+k+',m.fsTitle)">'
+				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsTitle)">`
 						+fs.fullList[k].html
 						+((res[sorted[i]].highlight!==undefined)?
 						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
@@ -3924,7 +3953,6 @@ m.doFSTitle=function (fs) {
 			}
 		}
 		fs.$fsl.html(str);
-		// fs.$fsl.scrollTop(0);
 		fs.$fsLis=fs.$fsl.find(".list-item");
 	}
 };
@@ -3945,6 +3973,76 @@ m.fsTitleOn=function () {
 };
 $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsTitleOn);
 $fuzzy_search.trigger("keyup");
+
+///////////////////////////////////////////
+// Fuzzy search on Table of Recos
+///////////////////////////////////////////
+m.playLi=function (e, elem, k, fs) {
+if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+} else {
+	let $elem=$(elem);
+	// let uri=fs.fullList[k].uri;
+	if ($elem.hasClass("selected")) {
+		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+	} else {
+		fs.currentIndex=k;
+		fs.getAndPlayVideo();
+	}
+}};
+m.doFSToRs=function (fs, shuffle) {
+	let fsPtnSH=m.splitHangul(fs.$fs.text());
+	if (shuffle||fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
+		m.fuzzySearch(fsPtnSH, fs);
+		let res=fs[0];
+		let sorted=res.sorted;
+		let str="";
+		let shuffled=fs.shuffled=[];
+		if (shuffle) {
+			for (let i=0;i<sorted.length;i++) {
+				shuffled[i]={i:i, randomN:Math.random()};
+			}
+			for (let i=1;i<shuffled.length;i++) {
+				let temp=shuffled[i];
+				let j=i;
+				for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
+					shuffled[j]=shuffled[j-1];
+				}
+				shuffled[j]=temp;
+			}
+		}
+		for (let i=0;i<sorted.length;i++) {
+			let k=shuffle?res[sorted[shuffled[i].i]].i:res[sorted[i]].i;
+			let fsFLk=fs.fullList[k];
+			if (fsFLk.inRange) {
+				let uri=fsFLk.uri;
+				str+=`<div id="toR-${k}" class="list-item" onclick="m.playLi(event,this,${k},m.fsToRs)">`
+						+fs.fullList[k].html
+						+((res[sorted[i]].highlight!==undefined)?
+						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
+					+'</div>';
+			}
+		}
+		fs.$fsl.html(str);
+		fs.$fsLis=fs.$fsl.find(".list-item");
+	}
+};
+m.fsToRsOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSToRs(m.fsToRs);
+	} else {
+		$table_of_recos.off("input.fs keyup.fs cut.fs paste.fs");
+		setTimeout(function () {
+			$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
+			m.previous=Date.now();
+			m.doFSToRs(m.fsToRs);
+		}, m.wait*1.1-passed);
+	}
+};
+$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
+$table_of_recos.trigger("keyup");
 
 ////////////////////////////////////////////////////
 // Language/언어/語言
@@ -4033,10 +4131,15 @@ m.processShortKey=function (e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
-		case 71: case 84: // G=71, T=84
+		case 71: // G=71
 			e.preventDefault();
 			$fuzzy_search_container.show();
 			$fuzzy_search.focus();
+			break;
+		case 84: // T=84
+			e.preventDefault();
+			$table_of_recos_container.show();
+			$table_of_recos.focus();
 			break;
 		case 78: // N=78
 			e.preventDefault();
@@ -4079,7 +4182,8 @@ $window.on("keydown", m.processShortKey);
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-		"<li>G,T: [--Fuzzy Search--] (Go), or Table of Recos</li>"
+		"<li>G: [--Fuzzy Search--] (Go)</li>"
+		+"<li>T: Table of Recos</li>"
 		+"<li>F: Forward [--Reco--]</li>"
 		+"<li>D: Previous [--Reco--]</li>"
 		+"<li>N: New [--Reco--]</li>"
@@ -4089,55 +4193,45 @@ if ($shortkeyDesc.exists()) {
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
-m.fsTitle.Preceding=function () {
-	m.fsTitle.playNext(-1);
+m.fsToRs.Preceding=function () {
+	m.fsToRs.playNext(1);
 };
-m.fsTitle.Following=function () {
-	m.fsTitle.playNext(1);
+m.fsToRs.Following=function () {
+	m.fsToRs.playNext();
 };
-m.fsTitle.shuffle=function () {
-	let fs=m.fsTitle;
-	let shuffled=fs.shuffled;
-	for (let i=0;i<shuffled.length;i++) {
-		shuffled[i].randomN=Math.random();
-	}
-	for (let i=1;i<shuffled.length;i++) {
-		let temp=shuffled[i];
-		let j=i;
-		for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
-			shuffled[j]=shuffled[j-1];
-		}
-		shuffled[j]=temp;
-	}
-	fs.currentIndex=-1;
-	fs.playNext(1,true);
+m.fsToRs.shuffle=function () {
+	let fs=m.fsToRs;
+	m.doFSToRs(fs,true);
+	fs.playNext(-1,true,true);
 };
-m.fsTitle.toggleLoop=function (elem) {
+m.fsToRs.toggleLoop=function (elem) {
 	let $elem=$(elem);
 	if ($elem.hasClass("enabled")) {
 		$elem.removeClass("enabled");
-		m.fsTitle.loop=false;
+		m.fsToRs.loop=false;
 	} else {
 		$elem.addClass("enabled");
-		m.fsTitle.loop=true;
+		m.fsToRs.loop=true;
 	}
 };
-m.fsTitle.toggleOneLoop=function (elem) {
+m.fsToRs.toggleOneLoop=function (elem) {
 	let $elem=$(elem);
 	if ($elem.hasClass("enabled")) {
 		$elem.removeClass("enabled");
-		m.fsTitle.oneLoop=false;
+		m.fsToRs.oneLoop=false;
 	} else {
 		$elem.addClass("enabled");
-		m.fsTitle.oneLoop=true;
+		m.fsToRs.oneLoop=true;
 	}
 };
-m.fsTitle.getAndPlayVideo=function (cue) {
-	let fs=m.fsTitle;
+m.fsToRs.getAndPlayVideo=function (cue) {
+	let fs=m.fsToRs;
 	fs.pauseVideo();
 	let i=fs.currentIndex;
-	if (0<=i&&i<fs.shuffled.length) {
-		let r=fs.fullList[fs.shuffled[i].i].reco;
+	if (0<=i&&i<fs.fullList.length) {
+		fs.$fsLis.removeClass("selected");
+		$(`#toR-${i}`).addClass("selected");
+		let r=fs.fullList[i].reco;
 		$reco_playing.html(m.recoHTML(r, true, true));
 		let uriRendered=m.uriRendering(r.uri);
 		if (uriRendered.from==="youtube") {
@@ -4156,14 +4250,14 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 					, events:{
 						'onError':function (e) {
 							m.playListSetTimeout=setTimeout(function () {
-								fs.playNext(1);
+								fs.playNext();
 							}, 7000);
 						}, 'onStateChange':function (e) {
 							if (e.data===YT.PlayerState.ENDED) {
 								if (fs.oneLoop) {
 									m.YtPlayer.seekTo(0,true);
 								} else {
-									fs.playNext(1);
+									fs.playNext();
 								}
 							}
 						}
@@ -4181,7 +4275,7 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 				if (fs.oneLoop) {
 					$video[0].play();
 				} else {
-					fs.playNext(1);
+					fs.playNext();
 				}
 			});
 			if (!cue) {
@@ -4194,7 +4288,7 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 			$rC_youtube_uri_rendered.hide();
 			if (!cue) {
 				m.playListSetTimeout=setTimeout(function () {
-					fs.playNext(1);
+					fs.playNext();
 				}, 7000);
 			}
 		}
@@ -4209,7 +4303,7 @@ m.fsTitle.getAndPlayVideo=function (cue) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 };
-m.fsTitle.pauseVideo=function () {
+m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
 		$video[0].pause();
 	}
@@ -4217,44 +4311,55 @@ m.fsTitle.pauseVideo=function () {
 		m.YtPlayer.pauseVideo();
 	}
 };
-m.fsTitle.playNext=function (increment, cue, first) {
+m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
-	let fs=m.fsTitle;
-	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=1; }
-	if (first) { fs.currentIndex=-1; }
-	let l=fs.shuffled.length;
-	if (l===0) {
-		if (first) { fs.getAndPlayVideo(cue); }
-	} else {
-		let count=first?0:1;
-		let i=fs.currentIndex+increment;
-		if (fs.loop) { i=(i+l)%l; }
-		let done=false;
-		while (0<=i&&i<l&&count<l) {
-			if (fs.fullList[fs.shuffled[i].i].inRange) {
-				fs.currentIndex=i;
-				fs.getAndPlayVideo(cue);
-				done=true;
-				break;
-			} else {
-				count++;
-				i+=increment; // i=fs.currentIndex+increment*(count+1);
-				if (fs.loop) { i=(i+l)%l; }
+	let fs=m.fsToRs;
+	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
+	if (first) {
+		let $li=fs.$fsLis.eq(0);
+		if ($li.exists()) {
+			fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
+			fs.getAndPlayVideo(cue);
+			return;
+		}
+	}
+	let $selected=fs.$fsLis.filter(".selected");
+	if ($selected.exists()) {
+		if (increment<0) {
+			let $next=$selected.next();
+			if ($next.exists()) {
+				$next.trigger("click");
+				fs.$fsl.scrollTop(fs.$fsl.scrollTop()+$next.offset().top-fs.$fsl.offset().top-100);
+			} else if (fs.loop) {
+				$next=fs.$fsLis.eq(0);
+				if ($next.exists()) {
+					$next.trigger("click");
+					fs.$fsl.scrollTop(0);
+				}
+			}
+		} else {
+			let $prev=$selected.prev();
+			if ($prev.exists()) {
+				$prev.trigger("click");
+				fs.$fsl.scrollTop(fs.$fsl.scrollTop()+$prev.offset().top-fs.$fsl.offset().top-100);
+			} else if (fs.loop) {
+				$prev=fs.$fsLis.last();
+				if ($prev.exits()) {
+					$prev.trigger("click");
+					fs.$fsl.scrollop(fs.$fsl[0].scrollHeight);
+				}
 			}
 		}
-		if (!done) {
-			if (first) {
-				fs.currentIndex=-1;
-				fs.getAndPlayVideo(cue);
-			}
-			if (!cue) {
-				m.fsTitle.pauseVideo();
-			}
+	} else {
+		$next=fs.$fsLis.eq(0);
+		if ($next.exists()) {
+			$next.trigger("click");
+			fs.$fsl.scrollTop(0);
 		}
 	}
 };
-m.fsTitle.prepareRecoListPlay=function () {
-	let fs=m.fsTitle;
+m.fsToRs.prepareRecoListPlay=function () {
+	let fs=m.fsToRs;
 	let YtAPINeeded=false;
 	if (!m.YtAPILoaded) {
 		for (let i=0;i<fs.fullList.length;i++) {
@@ -4275,20 +4380,18 @@ m.fsTitle.prepareRecoListPlay=function () {
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
 		fs.shuffled=[];
 		for (let i=0;i<fs.fullList.length;i++) {
-			fs.shuffled[i]={"i":fs.fullList.length-1-i};
+			fs.shuffled[i]={"i":i};
 		}
-		fs.currentIndex=-1;
-		fs.playNext(1,true,true);
+		fs.currentIndex=fs.fullList.length;
+		fs.playNext(-1,true,true);
 	} else {
 		setTimeout(function () {
 			fs.prepareRecoListPlay();
 		}, 1000);
 	}
 };
-m.fsTitle.toggleRecoListPlay=function () {
-	let fs=m.fsTitle;
+m.fsToRs.toggleRecoListPlay=function () {
 	if ($playlist_container.is(":visible")) {
-		// fs.pauseVideo();
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	} else {
