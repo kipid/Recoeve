@@ -741,6 +741,16 @@ m.fsToRs.fullList=[];
 m.fsToRs.desc=true;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
+m.fsToRs.$fsl.viewAndScroll=function ($next) {
+	let $fsl=m.fsToRs.$fsl;
+	if ($table_of_recos_container.is(":visible")) {
+		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+	} else {
+		$table_of_recos_container.show();
+		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		$table_of_recos_container.hide();
+	}
+};
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
 
@@ -4346,24 +4356,24 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			let $next=$selected.next();
 			if ($next.exists()) {
 				$next.trigger("click");
-				fs.$fsl.scrollTop(fs.$fsl.scrollTop()+$next.offset().top-fs.$fsl.offset().top-100);
+				fs.$fsl.viewAndScroll($next);
 			} else if (fs.loop) {
 				$next=fs.$fsLis.eq(0);
 				if ($next.exists()) {
 					$next.trigger("click");
-					fs.$fsl.scrollTop(0);
+					fs.$fsl.viewAndScroll($next);
 				}
 			}
 		} else {
 			let $prev=$selected.prev();
 			if ($prev.exists()) {
 				$prev.trigger("click");
-				fs.$fsl.scrollTop(fs.$fsl.scrollTop()+$prev.offset().top-fs.$fsl.offset().top-100);
+				fs.$fsl.viewAndScroll($prev);
 			} else if (fs.loop) {
 				$prev=fs.$fsLis.last();
 				if ($prev.exists()) {
 					$prev.trigger("click");
-					fs.$fsl.scrollTop(fs.$fsl[0].scrollHeight);
+					fs.$fsl.viewAndScroll($prev);
 				}
 			}
 		}
@@ -4371,7 +4381,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		$next=fs.$fsLis.eq(0);
 		if ($next.exists()) {
 			$next.trigger("click");
-			fs.$fsl.scrollTop(0);
+			fs.$fsl.viewAndScroll($next);
 		}
 	}
 };
