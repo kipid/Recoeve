@@ -407,12 +407,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div id="fuzzy-search-container" style="display:none">
 	<div id="fuzzy-search" contenteditable="true"></div>
 	<div id="fuzzy-search-list"></div>
-	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:71})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
 <div id="table-of-recos-container" style="display:none">
 	<div id="table-of-recos" contenteditable="true"></div>
 	<div id="table-of-recos-list"></div>
-	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:84})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
 	<form>
