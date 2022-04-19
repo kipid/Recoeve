@@ -1,6 +1,6 @@
 rp	i	en	ko	ja	zh	desc
 Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Description
-[--version--]	1	Ver. 0.5.0. (2022-04-17).				
+[--version--]	1	Ver. 0.5.1. (2022-04-19).				
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -59,12 +59,14 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Indifferent--]	112	Indifferent	관심없음	関心なし	沒興趣	
 [--Preceding--]	120	Preceding	전으로	前に	前	
 [--Following--]	121	Following	앞으로	これから	向前	
-[--Shuffle--]	122	Shuffle	순서섞기	シャッフル	洗牌	
-[--Loop--]	123	Loop	전체반복	全繰り返し	重複所有	
-[--One-loop--]	124	One-loop	한곡반복	曲を繰り返し	重複一首歌	
-[--ToRs--]	125	ToRs	목록	リスト	列表	
-[--return to the original position--]	126	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置	
-[--stick to the left top--]	127	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置	
+[--Backward--]	122	Backward	전으로	前に	前	
+[--Forward--]	123	Forward	앞으로	これから	向前	
+[--Shuffle--]	124	Shuffle	순서섞기	シャッフル	洗牌	
+[--Loop--]	125	Loop	전체반복	全繰り返し	重複所有	
+[--One-loop--]	126	One-loop	한곡반복	曲を繰り返し	重複一首歌	
+[--ToR--]	127	ToR	목록	リスト	列表	
+[--return to the original position--]	128	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置	
+[--stick to the left top--]	129	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置	
 [--Title--]	130	Title	제목	題名	標題	
 [--Categories--]	131	Categories	카테고리	カテゴリ	類別	
 [--Description--]	132	Description	설명	説明	解釋	

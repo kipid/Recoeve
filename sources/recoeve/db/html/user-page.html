@@ -470,7 +470,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 	<div class="button" id="my-id"></div>
 	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
 	<!-- <div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div> -->
-	<div class="button" id="out-focus" onclick='$fuzzy_search_container.show(); $fuzzy_search.focus();'>[--Fuzzy Search--]</div>
+	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
 	<div class="button" id="button-multireco-page" onclick="m.show_Multireco_Page(event)">[--Multireco page--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
@@ -502,18 +502,18 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToRs--]</div>
+		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key">
 	<div class="button" onclick="m.hideFK()">▼ Hide</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:71});">Go</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:84});">ToR</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:68})">Backward</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:70})">Forward</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:78});">New Reco</div>
+	<div class="button button-Go" onclick="$window.trigger({type:'keydown', keyCode:71});">Go</div>
+	<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:68})">[--Backward--]</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:70})">[--Forward--]</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:78});">[--New Reco--]</div>
 </div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
@@ -585,6 +585,8 @@ $fuzzy_search_list=$("#fuzzy-search-list");
 $table_of_recos_container=$("#table-of-recos-container");
 $table_of_recos=$("#table-of-recos");
 $table_of_recos_list=$("#table-of-recos-list");
+$button_Go=$(".button-Go");
+$button_ToR=$(".button-ToR");
 
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
@@ -4133,13 +4135,28 @@ m.processShortKey=function (e) {
 	switch (e.keyCode) {
 		case 71: // G=71
 			e.preventDefault();
-			$fuzzy_search_container.show();
-			$fuzzy_search.focus();
+			if ($fuzzy_search_container.is(":visible")) {
+				$fuzzy_search_container.hide();
+				$out_focus.focus();
+				$button_Go.removeClass("enabled");
+			} else {
+				$fuzzy_search_container.show();
+				$fuzzy_search.focus();
+				$button_Go.addClass("enabled");
+			}
 			break;
 		case 84: // T=84
 			e.preventDefault();
-			$table_of_recos_container.show();
-			$table_of_recos.focus();
+			if ($table_of_recos_container.is(":visible")) {
+				$table_of_recos_container.hide();
+				$out_focus.focus();
+				$button_ToR.removeClass("enabled");
+			} else {
+				$table_of_recos_container.show();
+				$table_of_recos.focus();
+				$button_ToR.addClass("enabled");
+
+			}
 			break;
 		case 78: // N=78
 			e.preventDefault();
@@ -4344,9 +4361,9 @@ m.fsToRs.playNext=function (increment, cue, first) {
 				fs.$fsl.scrollTop(fs.$fsl.scrollTop()+$prev.offset().top-fs.$fsl.offset().top-100);
 			} else if (fs.loop) {
 				$prev=fs.$fsLis.last();
-				if ($prev.exits()) {
+				if ($prev.exists()) {
 					$prev.trigger("click");
-					fs.$fsl.scrollop(fs.$fsl[0].scrollHeight);
+					fs.$fsl.scrollTop(fs.$fsl[0].scrollHeight);
 				}
 			}
 		}
