@@ -771,15 +771,28 @@ m.ptnTag=/^<\w+[\s\S]+>$/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
 
-m.ptsRangeFrom=0; // from <= pts <= to
-m.ptsRangeTo=1;
 m.mdInPRL=false; // mouse down in Point Range Left
 m.mdInPRR=false; // mouse down in Point Range Right
 m.PRmax=10;
-m.PRLw=15;
 m.PRw=$point_range.width();
-m.PRRw=m.PRw-15;
 m.fullPts=10;
+// from <= pts <= to
+if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
+	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
+	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
+	let PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+	$point_range_left.css({left:PRLw-15});
+	$point_range_bar.css({left:PRLw});
+	let PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+	$point_range_right.css({left:PRRw-5});
+	$point_range_bar.css({right:m.PRw-PRRw});
+	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
+} else {
+	m.ptsRangeFrom=0;
+	m.ptsRangeTo=1;
+	m.PRLw=15;
+	m.PRRw=m.PRw-15;
+}
 
 m.neighbors={};
 	// m.neighbors[cat_from]={down:true};
@@ -844,7 +857,7 @@ m.toggleFK=function () {
 	}
 	$floating_key.toggle();
 };
-if (m.docCookies.hasItem("hideFK")) {
+if (m.docCookies.getItem("hideFK")==="y") {
 	$floating_key.hide();
 }
 
@@ -2717,6 +2730,8 @@ m.mmInPR=function (e) {
 		if (m.ptsRangeFrom!==PRL||m.ptsRangeTo!==PRR) {
 			m.ptsRangeFrom=PRL;
 			m.ptsRangeTo=PRR;
+			m.docCookies.setItem("PRL", PRL, Infinity, "/");
+			m.docCookies.setItem("PRR", PRR, Infinity, "/");
 			clearTimeout(m.timeOutRange);
 			m.timeOutRange=setTimeout(function () {
 				m.getUriListAndShowRecosOnCat(m.currentCat);
