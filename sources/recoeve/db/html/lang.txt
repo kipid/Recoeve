@@ -52,6 +52,8 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Log out--]	100	Log out	로그아웃	ログアウト	登出	
 [--Fuzzy Search--]	101	Fuzzy Search	검색	検索	搜索	
 [--Toggle style--]	102	Toggle style	스타일 바꾸기	スタイルを変更する	改變風格	
+[--See neighbors--]	103	See neighbors	이웃 보기	近所を見る	鄰居視圖	
+[--Multireco page--]	104	Multireco page	멀티레코 페이지	マルチレコページ	Multireco 頁面	
 [--New Reco--]	103	New Reco	새 레코	新しいレコ	新Reco	
 [--Short Keys--]	104	Short Keys	단축키	ショートカット	快捷鍵	
 [--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類	
