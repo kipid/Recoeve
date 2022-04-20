@@ -4420,11 +4420,7 @@ m.fsToRs.prepareRecoListPlay=function () {
 		}
 	}
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
-		fs.shuffled=[];
-		for (let i=0;i<fs.fullList.length;i++) {
-			fs.shuffled[i]={"i":i};
-		}
-		fs.currentIndex=fs.fullList.length;
+		m.doFSToRs(fs);
 		fs.playNext(-1,true,true);
 	} else {
 		setTimeout(function () {
