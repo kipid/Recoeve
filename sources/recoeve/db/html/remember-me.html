@@ -45,7 +45,7 @@ $.ajax({
 }).done(function (resp) {
 	console.log(resp);
 	$("#err").html(resp);
-	if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
+	if (resp==="Rmbd") {
 		if (vars.goto!==undefined) {
 			window.location.href=unescape(vars.goto);
 		} else {
