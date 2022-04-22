@@ -38,7 +38,7 @@ if (sW<sH) {
 	sH=screen.width;
 }
 m.str_rmb_me='log\tsW\tsH\n'
-	+'web\t'+m.sW+'\t'+m.sH;
+	+'web\t'+sW+'\t'+sH;
 $.ajax({
 	type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
 	, dataType:"text"

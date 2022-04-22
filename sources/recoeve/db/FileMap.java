@@ -50,6 +50,7 @@ public class FileMap {
 		// imgMap.get("imgName")
 	public static Map<String, Map<String, String>> fileMap;
 		// fileMap.get("fileName").get("lang")
+	public static StrArray langMap;
 	
 	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
 	
@@ -83,7 +84,7 @@ public class FileMap {
 		} finally {
 			file=null;
 		} }
-		StrArray langMap=new StrArray(fileStr, true, true);
+		langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
 		
@@ -105,46 +106,16 @@ public class FileMap {
 			} }
 			
 			if (fileStr!=null) {
-				// System.out.println("\nfileName : "+fileName);
 				fileMap.put(fileName, new HashMap<String, String>(fileLangMapSize));
 				Map<String, String> fileLangMap=fileMap.get(fileName);
 				fileLangMap.put("df", fileStr); // default.
-				int start=0;
-				Matcher matchReplacer=ptnReplacer.matcher(fileStr);
-				ArrayList<String> strList=new ArrayList<String>();
-				while (start<fileStr.length()) {
-					if (matchReplacer.find(start)) {
-						strList.add(fileStr.substring(start, matchReplacer.start()));
-						strList.add(matchReplacer.group());
-						start=matchReplacer.end();
-					} else {
-						strList.add(fileStr.substring(start));
-						start=fileStr.length();
-					}
-				}
-				
+				ArrayList<String> strList=strToList(fileStr);
 				if (strList.size()>1) {
 					int colSize=langMap.getColSizeAtRow(0);
 					for (int k=2;k<colSize;k++) {
 						String lang=langMap.get(0,k);
 						if (!lang.equals("desc")) {
-							String strReplaced="";
-							String replaced=null;
-							for (int i=0;i<strList.size();i++) {
-								if (i%2==0) {
-									strReplaced+=strList.get(i);
-								} else {
-									replaced=langMap.get(strList.get(i), lang);
-									if (replaced==null||replaced.isEmpty()||replaced.equals("-")) {
-										replaced=langMap.get(strList.get(i), "en"); // "en" is default lang.
-									}
-									if (replaced==null) {
-										replaced=strList.get(i);
-									}
-									strReplaced+=replaced;
-								}
-							}
-							fileLangMap.put(lang, strReplaced); // after replacing langMap.
+							fileLangMap.put(lang, replaceStr(strList, lang)); // after replacing langMap.
 						}
 					}
 				}
@@ -162,6 +133,50 @@ public class FileMap {
 	public static String getImg(String imgName) {
 		return imgMap.get(imgName);
 	}
+
+	public static ArrayList<String> strToList(String fileStr) {
+		if (fileStr==null) {
+			return null;
+		}
+		int start=0;
+		Matcher matchReplacer=ptnReplacer.matcher(fileStr);
+		ArrayList<String> strList=new ArrayList<String>();
+		while (start<fileStr.length()) {
+			if (matchReplacer.find(start)) {
+				strList.add(fileStr.substring(start, matchReplacer.start()));
+				strList.add(matchReplacer.group());
+				start=matchReplacer.end();
+			} else {
+				strList.add(fileStr.substring(start));
+				start=fileStr.length();
+			}
+		}
+		return strList;
+	}
+
+	public static String replaceStr(ArrayList<String> strList, String lang) {
+		String strReplaced="";
+		String replaced=null;
+		for (int i=0;i<strList.size();i++) {
+			if (i%2==0) {
+				strReplaced+=strList.get(i);
+			} else {
+				replaced=langMap.get(strList.get(i), lang);
+				if (replaced==null||replaced.isEmpty()||replaced.equals("-")) {
+					replaced=langMap.get(strList.get(i), "en"); // "en" is default lang.
+				}
+				if (replaced==null) {
+					replaced=strList.get(i);
+				}
+				strReplaced+=replaced;
+			}
+		}
+		return strReplaced;
+	}
+
+	public static String replaceStr(String str, String lang) {
+		return replaceStr(strToList(str), lang);
+	}
 	
 	public static String get(String fileName, String lang) {
 		Map<String, String> fileLangMap=fileMap.get(fileName);
@@ -174,6 +189,7 @@ public class FileMap {
 	}
 	
 	public static void main(String... args) {
+		// System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
 		// System.out.println(FileMap.refererAllowed("localhost"));
 		// System.out.println(FileMap.get("AJAX post test (Cross orgin policy) and Reco test.html", "en"));
 		// System.out.println(Pattern.quote("[a-d]"));

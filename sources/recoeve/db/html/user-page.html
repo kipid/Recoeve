@@ -4070,6 +4070,16 @@ m.fsToRsOn=function () {
 };
 $table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
 $table_of_recos.trigger("keyup");
+$table_of_recos.on("keydown", function (e) {
+	e.stopPropagation();
+	switch (e.keyCode) {
+	case 27: // ESC=27
+		e.preventDefault();
+		$out_focus.focus();
+		$table_of_recos_container.hide();
+		break;
+	}
+});
 
 ////////////////////////////////////////////////////
 // Language/언어/語言

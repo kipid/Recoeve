@@ -647,20 +647,14 @@ public String forgotPwd(StrArray inputs, String lang) {
 			String email=user.getString("email");
 			String from=user.getString("tChangePwd");
 			if (from!=null&&checkTimeDiff(now, from, "00:10:00")) {
-				if (lang.equals("ko")) {
-					return "10분내로 이미 "+email+"로 이메일을 보냈습니다. 이메일을 우선 확인하시고 10분뒤에 다시 시도해 주세요.";
-				}
-				return "We have already sended an email to "+email+" within 10 minutes. Please check your email first, and try again after 10 minutes.";
+				return FileMap.replaceStr("[--pre already sended email to--]"+email+"[--post already sended email to--]", lang);
 			}
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
 			Gmail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
-			if (lang.equals("ko")) {
-				return email+"로 이메일을 보냈습니다. 10분내로 확인해주세요.";
-			}
-			return "We sended an email to "+email+". Check it within 10 minutes.";
+			return FileMap.replaceStr("[--pre sended email to--]"+email+"[--post sended email to--]", lang);
 		}
 	} catch (SQLException e) {
 		err(e);

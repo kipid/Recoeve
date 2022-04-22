@@ -29,6 +29,10 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Password is too short.--]	23	Password is too short.	비밀번호가 너무 짧습니다.	パスワードが短すぎます。	密碼太短。	
 [--Password is too long.--]	24	Password is too long.	비밀번호가 너무 깁니다.	パスワードが長すぎます。	密碼太長。	
 [--is of invalid form.--]	25	is of invalid form.	은 잘못된 형식입니다.	は無効な形式です。	這是錯誤的類型。	
+[--pre already sended email to--]	26	We have already sended an email to 	10분내로 이미 			
+[--post already sended email to--]	27	 within 10 minutes. Please check your email first, and try again after 10 minutes.	 로 이메일을 보냈습니다. 이메일을 우선 확인하시고 10분뒤에 다시 시도해 주세요.			
+[--pre sended email to--]	28	We sended an email to 	 			
+[--post sended email to--]	29	. Check it within 10 minutes.	 로 이메일을 보냈습니다. 10분내로 확인해주세요.			
 [--Checking ID/E-mail--]	30	Checking ID/E-mail	아이디/이메일을 확인중입니다.	ID /電子メールを確認しています。	ID/檢查電子郵件。	
 [--Request times out.--]	31	Request times out.	요청이 중단되었습니다.	リクエストが中断されました。	請求被中止。	
 [--Please click the Log-in button again.--]	32	Please click the Log-in button again.	로그인 버튼을 다시 클릭해주세요.	ログインボタンをもう一度クリックしてください。	再次登錄按鈕點擊。	
