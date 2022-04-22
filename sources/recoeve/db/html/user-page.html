@@ -3164,7 +3164,7 @@ m.refresh=function (cats, option, uri) {
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(c[k]);
 		window.history.pushState({cat:c[k]}, null, m.pathOfCat(c[k]));
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(c[k])));
 	} else {
 		switch (option) {
 		case "recoed" :
