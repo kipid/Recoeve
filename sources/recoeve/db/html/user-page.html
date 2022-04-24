@@ -845,7 +845,7 @@ m.getNeighbors=function () {
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $button_hideFK=$("#button-hideFK");
-if (!m.myPage&&m.myId) {
+if ((!m.myPage)&&m.myId) {
 	$button_hideFK.after(`<div class="button" onclick="window.open('/user/${m.myId}')">[--To my page--]</div>`);
 }
 
