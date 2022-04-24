@@ -508,7 +508,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 </div><!-- div#headPlay -->
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key">
-	<div class="button" onclick="m.hideFK()">▼ Hide</div>
+	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
 	<div class="button button-Go" onclick="$window.trigger({type:'keydown', keyCode:71});">Go</div>
 	<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:68})">[--Backward--]</div>
@@ -780,12 +780,12 @@ m.fullPts=10;
 if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
 	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
 	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
-	let PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:PRLw-15});
-	$point_range_bar.css({left:PRLw});
-	let PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({left:PRRw-5});
-	$point_range_bar.css({right:m.PRw-PRRw});
+	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+	$point_range_left.css({left:m.PRLw-15});
+	$point_range_bar.css({left:m.PRLw});
+	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+	$point_range_right.css({left:m.PRRw-5});
+	$point_range_bar.css({right:m.PRw-m.PRRw});
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 } else {
 	m.ptsRangeFrom=0;
@@ -844,6 +844,10 @@ m.getNeighbors=function () {
 ////////////////////////////////////////////////////
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
+$button_hideFK=$("#button-hideFK");
+if (!m.myPage&&m.myId) {
+	$button_hideFK.after(`<div class="button" onclick="window.open('/user/${m.myId}')">[--To my page--]</div>`);
+}
 
 m.hideFK=function () {
 	$floating_key.hide();
