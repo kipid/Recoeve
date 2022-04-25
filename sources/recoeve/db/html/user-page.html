@@ -472,7 +472,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 	<!-- <div class="button" onclick="$('#container').toggleClass('dark')">[--Toggle style--]</div> -->
 	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
-	<div class="button" id="button-multireco-page" onclick="m.show_Multireco_Page(event)">[--Multireco page--]</div>
+	<div class="button" id="button-multireco-mode" onclick="m.show_Multireco_Mode(event)">[--Multireco mode--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
 </div><!-- div#head -->
 <div class="side2" id="subCats">
@@ -533,7 +533,7 @@ $data_lang=$("#data-lang");
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
 $button_neighbors_page=$("#button-neighbors-page");
-$button_multireco_page=$("#button-multireco-page");
+$button_multireco_mode=$("#button-multireco-mode");
 $button_new_reco=$("#button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
@@ -634,16 +634,16 @@ m.see_Neighbors=function () {
 	}
 }
 
-m.show_Multireco_Page=function (e) {
+m.show_Multireco_Mode=function (e) {
 	if ($contents.hasClass("multireco")) {
-		$button_multireco_page.removeClass("enabled");
+		$button_multireco_mode.removeClass("enabled");
 		$contents.removeClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
 		window.history.pushState({cat:m.currentCat}, null, m.pathOfCat(m.currentCat));
 	} else {
-		$button_multireco_page.addClass("enabled");
+		$button_multireco_mode.addClass("enabled");
 		$contents.addClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.show();
@@ -661,7 +661,7 @@ m.show_Multireco_Page=function (e) {
 			} else {
 				$contents.removeClass("multireco");
 				setTimeout(function () {
-					m.show_Multireco_Page(e);
+					m.show_Multireco_Mode(e);
 				}, 1000);
 				return;
 			}
@@ -4123,7 +4123,7 @@ if (vars.cat!==undefined) {
 		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
 	} else if (vars.mode&&vars.mode.val==="multireco") {
 		m.getUriListAndShowRecosOnCat(cat);
-		$button_multireco_page.trigger("click");
+		$button_multireco_mode.trigger("click");
 	} else if (vars.mode&&vars.mode.val==="neighbors") {
 		$button_neighbors_page.trigger("click");
 	}
