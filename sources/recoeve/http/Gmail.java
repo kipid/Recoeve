@@ -31,8 +31,8 @@ public class Gmail{
         // Gmail.sendChangePwd("recoeve@gmail.com", "29riw7fus8dfu8348u48f8uf", "ko");
 	}
 
-    public static String host=//"recoeve.net";
-                            "localhost";
+    public static String host="recoeve.net";
+                            //"localhost";
 
     public static void sendChangePwd(String id, String email, String token, String lang) throws AddressException, MessagingException {
         String title="Forgot password on Recoeve.net?";
