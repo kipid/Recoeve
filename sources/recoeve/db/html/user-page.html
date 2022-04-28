@@ -3903,8 +3903,7 @@ $fuzzy_search.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$out_focus.focus();
-		$fuzzy_search_container.hide();
+		$window.trigger({type:"keydown", keyCode:71});
 		break;
 	case 38: // up=38
 	case 40: // down=40
@@ -4079,8 +4078,7 @@ $table_of_recos.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$out_focus.focus();
-		$table_of_recos_container.hide();
+		$window.trigger({type:"keydown", keyCode:84});
 		break;
 	}
 });
