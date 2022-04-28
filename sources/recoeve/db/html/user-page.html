@@ -488,7 +488,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 <div class="side2" id="headPlay">
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container">
-		<div id="uri-rendered" style="display:none"></div>
+		<div id="uri-rendered"></div>
 		<div class="rC" id="rC-video-uri-rendered" style="display:none">
 			<div class="rSC"><div id="video"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
@@ -4340,11 +4340,6 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
-			if (!cue) {
-				m.playListSetTimeout=setTimeout(function () {
-					fs.playNext();
-				}, 7000);
-			}
 		}
 	} else {
 		$reco_playing.html('');
