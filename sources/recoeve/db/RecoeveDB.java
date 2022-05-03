@@ -1605,8 +1605,12 @@ public void updateDefCat(String uri, Categories cats, int increment) throws SQLE
 		ResultSet rs=pstmtGetURIstatDefCat.executeQuery();
 		if (rs.next()) {
 			long count=rs.getLong("count")+increment;
-			rs.updateLong("count", count);
-			rs.updateRow();
+			if (count==0) {
+				rs.deleteRow();
+			} else {
+				rs.updateLong("count", count);
+				rs.updateRow();
+			}
 		} else {
 			pstmtPutURIstatDefCat.setString(2, cat);
 			pstmtPutURIstatDefCat.executeUpdate();
