@@ -277,6 +277,7 @@ public void start() {
 						List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
 						for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 							req.response().addCookie(singleCookie);
+							System.out.println(singleCookie);
 						}
 						if (setCookieRMB.get(0).getName()=="I") {
 							// Success: Session cookie and New token.

@@ -906,11 +906,11 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					byte[] newToken=randomBytes(32);
 					rs.updateTimestamp("tLast", Timestamp.valueOf(now));
 					rs.updateBytes("token", newToken);
-					rs.updateRow();
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 					System.out.println("Remembered.");
 					logs(user_i, now, ip, "rmb", true);
+					rs.updateRow();
 					return setCookie;
 				}
 			} else {
