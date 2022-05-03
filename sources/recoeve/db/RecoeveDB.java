@@ -887,7 +887,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
 	try {
 		pstmtCheckUserRemember.setLong(1, user_i);
-		pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
+		pstmtCheckUserRemember.setString(2, rmbdT);
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
