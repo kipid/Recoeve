@@ -904,7 +904,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if (user!=null&&user.next()) {
 					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
 					byte[] newToken=randomBytes(32);
-					rs.updateTimestamp("tLast", Timestamp.valueOf(now));
+					rs.updateString("tLast", now);
 					rs.updateBytes("token", newToken);
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
