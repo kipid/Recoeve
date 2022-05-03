@@ -45,19 +45,17 @@ $.ajax({
 }).done(function (resp) {
 	console.log(resp);
 	$("#err").html(resp);
-	if (resp==="Rmbd") {
-		setTimeout(function () {
+	setTimeout(function () {
+		if (resp==="Rmbd") {
 			if (vars.goto!==undefined) {
 				window.location.href=unescape(vars.goto);
 			} else {
 				window.location.pathname="/";
 			}
-		}, 2000);
-	} else {
-		setTimeout(function () {
+		} else {
 			window.location.pathname="/account/log-in";
-		}, 2000);
-	}
+		}
+	}, 2000);
 });
 })(window.m=window.m||{}, jQuery);
 </script>
