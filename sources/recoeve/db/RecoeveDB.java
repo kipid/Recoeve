@@ -887,7 +887,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
 	try {
 		pstmtCheckUserRemember.setLong(1, user_i);
-		pstmtCheckUserRemember.setString(2, rmbdT);
+		pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
@@ -904,7 +904,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if (user!=null&&user.next()) {
 					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
 					byte[] newToken=randomBytes(32);
-					rs.updateString("tLast", now);
+					rs.updateTimestamp("tLast", Timestamp.valueOf(now));
 					rs.updateBytes("token", newToken);
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken))
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
