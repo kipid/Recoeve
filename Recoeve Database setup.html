@@ -36,8 +36,8 @@ SELECT * FROM `LogInLogs` ORDER BY 't' DESC LIMIT 0,30;
 ## Dump
 
 ```
-mysqldump recoeve0.1 -u eve -p$repakeoco#eve &gt; mydump.sql
-mysql recoeve0.1 -u eve -p$repakeoco#eve &lt; mydump.sql
+mysqldump recoeve0.1 -u eve -p{--password--} &gt; mydump.sql
+mysql recoeve0.1 -u eve -p{--password--} &lt; mydump.sql
 ```/
 
 
@@ -1405,6 +1405,8 @@ INSERT INTO `URIstatDefCat` (`uri`, `cat`)
 
 # (`uri`, `cat`) set 이 이미 있다면,
 UPDATE `URIstatDefCat` SET `count`=`count`+1 WHERE `uri`=? and `cat`=?;
+
+DELETE FROM `URIstatDefCat` WHERE `count`=0;
 ```/
 
 </div><!-- table-URIstatDefCat -->
