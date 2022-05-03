@@ -46,15 +46,21 @@ $.ajax({
 	console.log(resp);
 	$("#err").html(resp);
 	if (resp==="Rmbd") {
-		if (vars.goto!==undefined) {
-			window.location.href=unescape(vars.goto);
-		} else {
-			window.location.pathname="/";
-		}
+		setTimeout(function () {
+			if (vars.goto!==undefined) {
+				window.location.href=unescape(vars.goto);
+			} else {
+				window.location.pathname="/";
+			}
+		}, 2000);
 	} else {
 		setTimeout(function () {
-			window.location.pathname="/";
-		}, 5000)
+			if (vars.goto!==undefined) {
+				window.location.pathname="/account/log-in?goto="+vars.goto;
+			} else {
+				window.location.pathname="/account/log-in";
+			}
+		}, 2000);
 	}
 });
 })(window.m=window.m||{}, jQuery);
