@@ -4040,12 +4040,13 @@ m.doFSToRs=function (fs, shuffle) {
 				shuffled[j]=temp;
 			}
 		}
+		let currentIndex=fs.currentIndex;
 		for (let i=0;i<sorted.length;i++) {
 			let k=shuffle?res[sorted[shuffled[i].i]].i:res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+=`<div id="toR-${k}" class="list-item" onclick="m.playLi(event,this,${k},m.fsToRs)">`
+				str+=`<div id="toR-${k}" class="list-item${k===currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
 						+fs.fullList[k].html
 						+((res[sorted[i]].highlight!==undefined)?
 						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
