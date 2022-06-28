@@ -68,7 +68,7 @@ Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 �
 
 Similarity 를 저장할 <refer class="table-Neighbors"></refer>.
 
-Reco 의 여러가지 stat 를 위해 <refer class="table-URIstat"></refer>, <refer class="table-URIstatDefCat"></refer>, <refer class="table-URIstatDefTitle"></refer>, <refer class="table-URIstatDefDesc"></refer>.
+Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
 
 <div class="p"></div>
 
@@ -1097,7 +1097,7 @@ INSERT INTO `Recos` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`
 # 어떤식으로 디자인 할지 고민 좀 해봐야 할듯.
 
 `title` varchar(255)
-# "#default" 가 입력되어 있으면 가장 많이 입력된 (`URIstatDefTitle` 참조해서) title 을 뽑아옴.
+# "#default" 가 입력되어 있으면 가장 많이 입력된 (`RecoStatDefTitle` 참조해서) title 을 뽑아옴.
 
 `desc` text
 # Default 로도 들어가도록 하고 싶은데...
@@ -1320,47 +1320,137 @@ URI list 의 순서도 user 가 정하는 경우가 많을테니 순서대로 UR
 
 
 
-### TABLE `URIstat`
+### TABLE `RecoStat`
 
-<div id="table-URIstat"><div class="number none">URIstat</div>
+<div id="table-RecoStat"><div class="number none">RecoStat</div>
 
-```[.linenums.lang-sql]
-CREATE TABLE `URIstat` (
+```[.linenums.scrollable.lang-sql]
+CREATE TABLE `RecoStat` (
 	`uri` varchar(255) NOT NULL
-	# , `recentRecoers` text DEFAULT NULL
-	# , `recentRecoersWithVal` text DEFAULT NULL
+	, `recentests` mediumtext DEFAULT NULL
 	, `tUpdate` datetime DEFAULT NULL
 	, `sumV100` bigint DEFAULT 0 # sum of round(value*100)
 	, `nV` bigint DEFAULT 0 # number of values (not including null, i.e. equal to the sum c0~9.)
 	# , `cIndif` bigint DEFAULT 0 # val=null, hasCatIndif() : in Cat (`indifferent`)
 	# , `cLater` bigint DEFAULT 0 # val=null, else hasCatLater() : in Cat (`later`)
-	, `cNull` bigint DEFAULT 0 # val=null, else
-	, `c0` bigint DEFAULT 0 # 0&lt;=`val`*10&lt;=1
-	, `c1` bigint DEFAULT 0
-	, `c2` bigint DEFAULT 0
-	, `c3` bigint DEFAULT 0
-	, `c4` bigint DEFAULT 0
-	, `c5` bigint DEFAULT 0
-	, `c6` bigint DEFAULT 0
-	, `c7` bigint DEFAULT 0
-	, `c8` bigint DEFAULT 0
-	, `c9` bigint DEFAULT 0 # 9&lt;`val`*10&lt;=10
+	, `nNull` bigint DEFAULT 0 # val=null, else
+	, `n0` bigint DEFAULT 0
+	, `n1` bigint DEFAULT 0
+	, `n2` bigint DEFAULT 0
+	, `n3` bigint DEFAULT 0
+	, `n4` bigint DEFAULT 0
+	, `n5` bigint DEFAULT 0
+	, `n6` bigint DEFAULT 0
+	, `n7` bigint DEFAULT 0
+	, `n8` bigint DEFAULT 0
+	, `n9` bigint DEFAULT 0
+	, `n10` bigint DEFAULT 0
+	, `n11` bigint DEFAULT 0
+	, `n12` bigint DEFAULT 0
+	, `n13` bigint DEFAULT 0
+	, `n14` bigint DEFAULT 0
+	, `n15` bigint DEFAULT 0
+	, `n16` bigint DEFAULT 0
+	, `n17` bigint DEFAULT 0
+	, `n18` bigint DEFAULT 0
+	, `n19` bigint DEFAULT 0
+	, `n20` bigint DEFAULT 0
+	, `n21` bigint DEFAULT 0
+	, `n22` bigint DEFAULT 0
+	, `n23` bigint DEFAULT 0
+	, `n24` bigint DEFAULT 0
+	, `n25` bigint DEFAULT 0
+	, `n26` bigint DEFAULT 0
+	, `n27` bigint DEFAULT 0
+	, `n28` bigint DEFAULT 0
+	, `n29` bigint DEFAULT 0
+	, `n30` bigint DEFAULT 0
+	, `n31` bigint DEFAULT 0
+	, `n32` bigint DEFAULT 0
+	, `n33` bigint DEFAULT 0
+	, `n34` bigint DEFAULT 0
+	, `n35` bigint DEFAULT 0
+	, `n36` bigint DEFAULT 0
+	, `n37` bigint DEFAULT 0
+	, `n38` bigint DEFAULT 0
+	, `n39` bigint DEFAULT 0
+	, `n40` bigint DEFAULT 0
+	, `n41` bigint DEFAULT 0
+	, `n42` bigint DEFAULT 0
+	, `n43` bigint DEFAULT 0
+	, `n44` bigint DEFAULT 0
+	, `n45` bigint DEFAULT 0
+	, `n46` bigint DEFAULT 0
+	, `n47` bigint DEFAULT 0
+	, `n48` bigint DEFAULT 0
+	, `n49` bigint DEFAULT 0
+	, `n50` bigint DEFAULT 0
+	, `n51` bigint DEFAULT 0
+	, `n52` bigint DEFAULT 0
+	, `n53` bigint DEFAULT 0
+	, `n54` bigint DEFAULT 0
+	, `n55` bigint DEFAULT 0
+	, `n56` bigint DEFAULT 0
+	, `n57` bigint DEFAULT 0
+	, `n58` bigint DEFAULT 0
+	, `n59` bigint DEFAULT 0
+	, `n60` bigint DEFAULT 0
+	, `n61` bigint DEFAULT 0
+	, `n62` bigint DEFAULT 0
+	, `n63` bigint DEFAULT 0
+	, `n64` bigint DEFAULT 0
+	, `n65` bigint DEFAULT 0
+	, `n66` bigint DEFAULT 0
+	, `n67` bigint DEFAULT 0
+	, `n68` bigint DEFAULT 0
+	, `n69` bigint DEFAULT 0
+	, `n70` bigint DEFAULT 0
+	, `n71` bigint DEFAULT 0
+	, `n72` bigint DEFAULT 0
+	, `n73` bigint DEFAULT 0
+	, `n74` bigint DEFAULT 0
+	, `n75` bigint DEFAULT 0
+	, `n76` bigint DEFAULT 0
+	, `n77` bigint DEFAULT 0
+	, `n78` bigint DEFAULT 0
+	, `n79` bigint DEFAULT 0
+	, `n80` bigint DEFAULT 0
+	, `n81` bigint DEFAULT 0
+	, `n82` bigint DEFAULT 0
+	, `n83` bigint DEFAULT 0
+	, `n84` bigint DEFAULT 0
+	, `n85` bigint DEFAULT 0
+	, `n86` bigint DEFAULT 0
+	, `n87` bigint DEFAULT 0
+	, `n88` bigint DEFAULT 0
+	, `n89` bigint DEFAULT 0
+	, `n90` bigint DEFAULT 0
+	, `n91` bigint DEFAULT 0
+	, `n92` bigint DEFAULT 0
+	, `n93` bigint DEFAULT 0
+	, `n94` bigint DEFAULT 0
+	, `n95` bigint DEFAULT 0
+	, `n96` bigint DEFAULT 0
+	, `n97` bigint DEFAULT 0
+	, `n98` bigint DEFAULT 0
+	, `n99` bigint DEFAULT 0
+	, `n100` bigint DEFAULT 0
 	, PRIMARY KEY (`uri`)
 );
 
-SELECT * FROM `URIstat` WHERE `uri`=?;
+SELECT * FROM `RecoStat` WHERE `uri`=?;
 
-INSERT INTO `URIstat` (`uri`, `tUpdate`) VALUES (?, ?);
+INSERT INTO `RecoStat` (`uri`, `tUpdate`) VALUES (?, ?);
 
 
 
-`c0`~`c9`: 10개 정도로 잘라서 stat 저장. 매번 SELECT count() 같은걸로 계산하는게 더 오래걸릴테니.
+`n0`~`n100`: 매번 SELECT count() 같은걸로 계산하는게 더 오래걸릴테니 점수 바뀔때마다 저장.
 
 `sumV` double or `sumV100` bigint
 # 100억 에 1 더하는 연산 같은것도 error 없이 잘 이루어 질래나? Error 뜰거 같으면 bigint 같은 datatype 쓰는게 더 나을듯도 한데...
 ```/
 
-</div><!-- table-URIstat -->
+</div><!-- table-RecoStat -->
 
 Personalized stat (stat of neighbors with weight) 는 javascript 로 user-side 에서 계산하도록 하는게 좋을듯.
 
@@ -1382,66 +1472,72 @@ Default 값 (category, title, description) 관련해서는 stat TABLE 을 따로
 
 
 
-#### TABLE `URIstatDefCat`: Statistics of URI's default category
+#### TABLE `RecoStatDefCat`: Statistics of URI's default category
 
-Category 관련해서는 평가가 이루어지는게 아니니 그냥 count 만 저장해놓으면 될듯? <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `cat`) 뽑아와서 <refer class="table-URIstatDefCat"></refer> 도 update. (`cat`=null or "" 인건 빼고. 이 경우는 추천해줄 category 도 없을테니?)
+Category 관련해서는 평가가 이루어지는게 아니니 그냥 count 만 저장해놓으면 될듯? <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `cat`) 뽑아와서 <refer class="table-RecoStatDefCat"></refer> 도 update. (`cat`=null or "" 인건 빼고. 이 경우는 추천해줄 category 도 없을테니?)
 
-<div id="table-URIstatDefCat"><div class="number none">URIstatDefCat</div>
+<div id="table-RecoStatDefCat"><div class="number none">RecoStatDefCat</div>
 
 ```[.linenums.lang-sql]
-CREATE TABLE `URIstatDefCat` (
+CREATE TABLE `RecoStatDefCat` (
 	`uri` varchar(255) NOT NULL
 	, `cat` varchar(255) NOT NULL # Default category candidate
 	, `count` bigint DEFAULT 1
 	, PRIMARY KEY (`uri`, `cat`)
 );
 
-SELECT * FROM `URIstatDefCat` WHERE `uri`=? and `cat`=?;
-SELECT * FROM `URIstatDefCat` WHERE `uri`=? ORDER BY `count` DESC LIMIT 5;
+SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;
+SELECT * FROM `RecoStatDefCat` WHERE `uri`=? ORDER BY `count` DESC LIMIT 5;
 
 # (`uri`, `cat`) set 이 없다면,
-INSERT INTO `URIstatDefCat` (`uri`, `cat`)
+INSERT INTO `RecoStatDefCat` (`uri`, `cat`)
 	VALUES (?, ?);
 
 # (`uri`, `cat`) set 이 이미 있다면,
-UPDATE `URIstatDefCat` SET `count`=`count`+1 WHERE `uri`=? and `cat`=?;
+UPDATE `RecoStatDefCat` SET `count`=`count`+1 WHERE `uri`=? and `cat`=?;
 
-DELETE FROM `URIstatDefCat` WHERE `count`=0;
+DELETE FROM `RecoStatDefCat` WHERE `count`=0;
 ```/
 
-</div><!-- table-URIstatDefCat -->
+</div><!-- table-RecoStatDefCat -->
 
-
-
-#### TABLE `URIstatDefTitle`: Statistics of URI's default title
-
-Title 관련해서도 평가가 이루어지지는 않을듯. <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `title`) 뽑아와서 <refer class="table-URIstatDefTitle"></refer> 도 update. (`title`=null or "" 인건 빼고. 이 경우는 추천해줄 title 도 없을테니?)
-
-<div id="table-URIstatDefTitle"><div class="number none">URIstatDefTitle</div>
+<div id="table-RecoStatDefCatSet"><div class="number none">RecoStatDefCatSet</div>
 
 ```[.linenums.lang-sql]
-CREATE TABLE `URIstatDefTitle` (
+
+```/
+
+</div><!-- table-RecoStatDefCatSet -->
+
+#### TABLE `RecoStatDefTitle`: Statistics of URI's default title
+
+Title 관련해서도 평가가 이루어지지는 않을듯. <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `title`) 뽑아와서 <refer class="table-RecoStatDefTitle"></refer> 도 update. (`title`=null or "" 인건 빼고. 이 경우는 추천해줄 title 도 없을테니?)
+
+<div id="table-RecoStatDefTitle"><div class="number none">RecoStatDefTitle</div>
+
+```[.linenums.lang-sql]
+CREATE TABLE `RecoStatDefTitle` (
 	`uri` varchar(255) NOT NULL
 	, `title` varchar(255) NOT NULL # Default title candidate
 	, `count` bigint DEFAULT 1
 	, PRIMARY KEY (`uri`, `title`)
 );
 
-SELECT * FROM `URIstatDefTitle` WHERE `uri`=? and `title`=?;
+SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;
 
 # (`uri`, `title`) set 이 없다면,
-INSERT INTO `URIstatDefTitle` (`uri`, `title`)
+INSERT INTO `RecoStatDefTitle` (`uri`, `title`)
 	VALUES (?, ?);
 
 # (`uri`, `title`) set 이 이미 있다면,
-UPDATE `URIstatDefTitle` SET `count`=`count`+1 WHERE `uri`=? and `title`=?;
+UPDATE `RecoStatDefTitle` SET `count`=`count`+1 WHERE `uri`=? and `title`=?;
 ```/
 
-</div><!-- table-URIstatDefTitle -->
+</div><!-- table-RecoStatDefTitle -->
 
 
 
-#### TABLE `URIstatDefDesc` and `RecoDefDesc`: Statistics of URI's default description
+#### TABLE `RecoStatDefDesc` and `RecoDefDesc`: Statistics of URI's default description
 
 Description 관련해서는 평가도 이루어 지도록 해놔서 refer 가 가능하도록 design 해야 할듯? 그냥 refer 만 하는 사람도 많을테니 많은 평가가 이루어지지는 않을듯하고...
 
@@ -1463,10 +1559,10 @@ CREATE TABLE `RecoDefDesc` (
 
 </div><!-- RecoDefDesc -->
 
-<div id="table-URIstatDefDesc"><div class="number none">URIstatDefDesc</div>
+<div id="table-RecoStatDefDesc"><div class="number none">RecoStatDefDesc</div>
 
 ```[.linenums.lang-sql]
-CREATE TABLE `URIstatDefDesc` (
+CREATE TABLE `RecoStatDefDesc` (
 	`user_i` bigint NOT NULL
 	, `uri` varchar(255) NOT NULL
 	, `count` bigint DEFAULT 1
@@ -1487,7 +1583,7 @@ CREATE TABLE `URIstatDefDesc` (
 );
 ```/
 
-</div><!-- table-URIstatDefDesc -->
+</div><!-- table-RecoStatDefDesc -->
 
 
 
