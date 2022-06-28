@@ -58,9 +58,10 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Toggle style--]	102	Toggle style	스타일 바꾸기	スタイルを変更する	改變風格	
 [--See neighbors--]	103	See neighbors	이웃 보기	近所を見る	鄰居視圖	
 [--Multireco mode--]	104	Multireco mode	멀티레코 모드	マルチレコモード	多記錄模式	
-[--New Reco--]	103	New Reco	새 레코	新しいレコ	新Reco	
-[--Short Keys--]	104	Short Keys	단축키	ショートカット	快捷鍵	
-[--Show recos without points--]	105	Show recos without points	점수 없는 레코 보이기	ポイントなしのレコを表示	顯示沒有積分的記錄	
+[--Multireco Categories--]	105	Multireco Categories	멀티레코 카테고리	マルチレコカテゴリー	Multireco 類別	
+[--New Reco--]	106	New Reco	새 레코	新しいレコ	新Reco	
+[--Short Keys--]	107	Short Keys	단축키	ショートカット	快捷鍵	
+[--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	ポイントなしのレコを表示	顯示沒有積分的記錄	
 [--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類	
 [--Later--]	111	Later	나중에	後で	之後	
 [--Indifferent--]	112	Indifferent	관심없음	関心なし	沒興趣	
