@@ -49,7 +49,7 @@ public class Recoeve extends AbstractVerticle {
 	}
 
 	@Override
-public void start() throws UnsupportedEncodingException {
+public void start() {
 	RecoeveDB db=new RecoeveDB();
 
 	Router router = Router.router(vertx);
@@ -83,7 +83,9 @@ public void start() throws UnsupportedEncodingException {
 		final String referer=req.headers().get("Referer");
 			System.out.println("Time : "+now);
 			try {
-				System.out.println("Referer : "+URLDecoder.decode(referer, "UTF-8"));
+				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "UTF-8"));
+				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "EUC-kr"));
+				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "MS949"));
 			} catch (UnsupportedEncodingException e) {
 				System.out.println(e);
 			}
