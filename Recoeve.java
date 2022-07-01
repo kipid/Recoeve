@@ -82,12 +82,12 @@ public void start() {
 		final String now=db.now();
 		final String referer=req.headers().get("Referer");
 			System.out.println("Time : "+now);
-			try {
-				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "UTF-8"));
-				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "EUC-kr"));
-				System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "MS949"));
-			} catch (UnsupportedEncodingException e) {
-				System.out.println(e);
+			if (referer!=null) {
+				try {
+					System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					System.out.println(e);
+				}
 			}
 		boolean refererAllowed=false;
 		if (referer==null) {
