@@ -22,6 +22,7 @@ import java.net.URLDecoder;
 // import java.io.File;
 // import java.io.FileReader;
 // import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 // import java.lang.StringBuffer;
 import java.lang.StringBuilder;
@@ -81,7 +82,7 @@ public void start() {
 		final String now=db.now();
 		final String referer=req.headers().get("Referer");
 			System.out.println("Time : "+now);
-			System.out.println("Referer : "+referer);
+			System.out.println("Referer : "+URLDecoder.decode(referer));
 		boolean refererAllowed=false;
 		if (referer==null) {
 			refererAllowed=true;
@@ -109,7 +110,7 @@ public void start() {
 		final String path=req.path();
 		final String query=req.query();
 			System.out.println("Method : "+method);
-			System.out.println("Absolute URI : "+req.absoluteURI());
+			System.out.println("Absolute URI : "+URLDecoder.decode(req.absoluteURI()));
 
 		final String ip=req.remoteAddress().toString();
 			System.out.println("IP : "+ip);
