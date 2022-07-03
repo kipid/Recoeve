@@ -84,7 +84,7 @@ public void start() {
 			System.out.println("Time : "+now);
 			if (referer!=null) {
 				try {
-					System.out.println("Referer 한글 : "+URLDecoder.decode(referer, "UTF-8"));
+					System.out.println("Referer : "+URLDecoder.decode(referer, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					System.out.println(e);
 				}
