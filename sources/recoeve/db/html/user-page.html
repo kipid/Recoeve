@@ -4200,6 +4200,10 @@ m.processShortKey=function (e) {
 			e.preventDefault();
 			$button_new_reco.trigger("click");
 			break;
+		case 77: // M=77
+			e.preventDefault();
+			$button_multireco_mode.trigger("click");
+			break;
 		case 70: //F=70
 		case 68: //D=68
 			let scrollTop=$window.scrollTop();
@@ -4242,6 +4246,7 @@ if ($shortkeyDesc.exists()) {
 		+"<li>F: Forward [--Reco--]</li>"
 		+"<li>D: Previous [--Reco--]</li>"
 		+"<li>N: New [--Reco--]</li>"
+		+"<li>M: [--Multireco mode--]</li>"
 	);
 }
 
