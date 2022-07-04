@@ -654,7 +654,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			user.updateBytes("tokenChangePwd", token);
 			// Gmail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
-			return FileMap.replaceStr("[--pre sended email to--]"+email+"[--post sended email to--] "+"http://recoeve.net/account/changePwd?id="+id+"&email="+email+"&token="/*+hex(token)*/, lang);
+			return FileMap.replaceStr("[--pre sended email to--]"+email+"[--post sended email to--] "+"http://recoeve.net/account/changePwd?id="+id+"&email="+email+"&token="+hex(token), lang);
 		}
 	} catch (SQLException e) {
 		err(e);
