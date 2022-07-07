@@ -332,6 +332,21 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 ### 정리하기 전
 
+전으로, 앞으로, 목록 등 버튼 margin 추가하기.
+
+<div class="cmt">
+Exception: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '22:59:28' at line 1<br>
+<br>
+<a href="https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html#sqlmode_allow_invalid_dates">https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html#sqlmode_allow_invalid_dates</a><br>
+<a href="https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html">https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html</a>
+</div>
+
+```[.lang-sql]
+SET GLOBAL sql_mode = "ALLOW_INVALID_DATES";
+SELECT @@GLOBAL.sql_mode;
+SELECT @@SESSION.sql_mode;
+```/
+
 M : Multireco mode 단축키 만들기.
 
 log 에서 Absolute URI 한글 unencode 해주기.
