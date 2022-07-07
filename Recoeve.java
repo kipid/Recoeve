@@ -38,8 +38,8 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
-		="0.0.0.0";
-		// ="192.168.1.4";
+		= "recoeve.net";
+		// ="0.0.0.0";
 		// ="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
@@ -527,6 +527,10 @@ public void start() {
 			} else {
 				req.response().end("Not a proper access.");
 			}
+		} else if (path.equals("/robots.txt")) {
+			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+			req.response().end(FileMap.get("robots.txt", "df"), ENCODING);
+			System.out.println("Sended robots.txt");
 		} else {
 			System.out.println(INVALID_ACCESS);
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
