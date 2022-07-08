@@ -332,6 +332,11 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 ### 정리하기 전
 
+/account/log-in?goto=/user/kipid%3Fcat%3D%5BMusic/Break%5D--KARA--%uC5EC%uC2E0%uB2D8<br>
+unescape 만 먹히네. decodeURIComponent: URIError: URI malformed 뜨고... 뭐가 문제일까나? encodeURIComponent() 로 바꿨음.
+
+floating-key 부분 버튼들 마진 0 조정. edit button, lyrics button 마진 0 조정. (.reco .button {})
+
 robots.txt 생성.
 
 전으로, 앞으로, 목록 등 버튼 margin 추가하기.
@@ -653,7 +658,6 @@ docuK 인코딩이 뭔가 이상하네? docuK.js 파일 받아서 처리할때 e
 
 sessionPassed==false 일때, db.varMapUserPage 가 어떻게 처리되는지 확인필요. (아마 user id 같은건 empty 로 들어가도록 잘 짜여져 있을거임.)<br />
 : cookie 에 "I" 가 없으면 {--user id--} 랑 {--index--} 에 emtpy 채워짐.
-
 
 title 에 userId 표시.
 
