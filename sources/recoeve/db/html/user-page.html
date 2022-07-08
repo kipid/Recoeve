@@ -505,6 +505,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
 		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
 		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
+		<div class="button" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
 		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
@@ -757,6 +758,7 @@ m.fsToRs.$fsl.viewAndScroll=function ($next) {
 		$table_of_recos_container.hide();
 	}
 };
+m.fsToRs.autoSkip=false;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
 
@@ -3097,13 +3099,17 @@ m.getAndShowRecosOnCat=function (cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			m.fsToRs.prepareRecoListPlay();
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup");
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("keyup");
+			let $li=fs.$fsLis.eq(0);
+			if ($li.exists()) {
+				fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
+			}
+			fs1.prepareRecoListPlay();
 		});
 	} else {
 		m.showRecosOnCat();
@@ -4270,6 +4276,16 @@ m.fsToRs.shuffle=function () {
 	m.doFSToRs(fs,true);
 	fs.playNext(-1,true,true);
 };
+m.fsToRs.autoSkip=function (elem) {
+	let $elem=$(elem);
+	if ($elem.hasClass("enabled")) {
+		$elem.removeClass("enabled");
+		m.fsToRs.skip=false;
+	} else {
+		$elem.addClass("enabled");
+		m.fsToRs.skip=true;
+	}
+};
 m.fsToRs.toggleLoop=function (elem) {
 	let $elem=$(elem);
 	if ($elem.hasClass("enabled")) {
@@ -4315,9 +4331,11 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 				m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
 					, events:{
 						'onError':function (e) {
-							m.playListSetTimeout=setTimeout(function () {
-								fs.playNext();
-							}, 7000);
+							if (fs.skip) {
+								m.playListSetTimeout=setTimeout(function () {
+									fs.playNext();
+								}, 5000);
+							}
 						}, 'onStateChange':function (e) {
 							if (e.data===YT.PlayerState.ENDED) {
 								if (fs.oneLoop) {
@@ -4352,6 +4370,12 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
+			if (fs.skip) {
+				clearTimeout(m.playListSetTimeout);
+				m.playListSetTimeout=setTimeout(function () {
+					fs.playNext();
+				}, 5000);
+			}
 		}
 	} else {
 		$reco_playing.html('');
