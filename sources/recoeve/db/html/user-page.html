@@ -1609,7 +1609,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 // CatList rendering
 ////////////////////////////////////////////////////
 m.pathOfCat=function (cat, mode) {
-	return m.pathName+"?cat="+(cat?m.encodeURIComponent(cat):"")+(mode&&mode==="multireco"?"&mode=multireco":(mode&&mode==="neighbors"?"&mode=neighbors":""));
+	return m.pathName+"?cat="+(cat?encodeURIComponent(cat):"")+(mode&&mode==="multireco"?"&mode=multireco":(mode&&mode==="neighbors"?"&mode=neighbors":""));
 };
 m.getDepthOfTabs=function (str) {
 	let n=0;
