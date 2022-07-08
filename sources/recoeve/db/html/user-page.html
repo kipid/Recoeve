@@ -650,7 +650,7 @@ m.show_Multireco_Mode=function (e) {
 			$multireco_input_cats[0].value=m.currentCat;
 		}
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(m.currentCat, "multireco")));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(m.currentCat, "multireco")));
 		if (m.myPage) {
 			m.showRecosOnCat();
 		} else {
@@ -3168,7 +3168,7 @@ m.refresh=function (cats, option, uri) {
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(c[k]);
 		window.history.pushState({cat:c[k]}, null, m.pathOfCat(c[k]));
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(c[k])));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(c[k])));
 	} else {
 		switch (option) {
 		case "recoed" :
@@ -3240,7 +3240,7 @@ m.openCat=function (cat, e) {
 		m.currentCat=cat;
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 		return false;
 	}
 };
@@ -3253,7 +3253,7 @@ for (let i=0;i<m.catList.length;i++) {
 window.onpopstate=function (e) {
 	if (e.state&&e.state.cat!==undefined) {
 		m.getUriListAndShowRecosOnCat(e.state.cat);
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	}
 };
 m.getSearchVars=function (searchStr) {
@@ -4119,7 +4119,7 @@ if (vars.cat!==undefined) {
 	if (vars.mode===undefined) {
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
-		$a_log_in.attr("href", "/account/log-in?goto="+escape(m.pathOfCat(cat)));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	} else if (vars.mode&&vars.mode.val==="multireco") {
 		m.getUriListAndShowRecosOnCat(cat);
 		$button_multireco_mode.trigger("click");
