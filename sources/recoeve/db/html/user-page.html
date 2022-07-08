@@ -351,6 +351,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:.5em} /* position change */
 
+#javascript-disable {font-size:3em; color:white}
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 
 #floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
@@ -458,6 +459,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 </div><!-- div#multireco-cats-container -->
+<div class="side2" id="javascript-disable">
+	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
+</div>
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
 		<data id="data-lang">en	ko	ja	zh
@@ -523,6 +527,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 <script src="/jquery.min.js"></script>
 <script>
 (function (m, $, undefined) {
+$("#javascript-disable").hide();
 /* Prerequisite */
 //////////////////
 // Variables
