@@ -70,6 +70,8 @@ Similarity 를 저장할 <refer class="table-Neighbors"></refer>.
 
 Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
 
+Defaults 추천해주기 위해 <refer class="table-RecoStatDefCatSet"></refer>, <refer class="table-RecoStatDefTitleSet"></refer>, <refer class="table-RecoStatDefDescSet"></refer>.
+
 <div class="p"></div>
 
 <div class="p">
@@ -1504,10 +1506,25 @@ DELETE FROM `RecoStatDefCat` WHERE `count`=0;
 <div id="table-RecoStatDefCatSet"><div class="number none">RecoStatDefCatSet</div>
 
 ```[.linenums.lang-sql]
+CREATE TABLE `RecoStatDefCatSet` (
+	`uri` varchar(255) NOT NULL
+	, `catSet` mediumtext DEFAULT NULL
+	, `nUpdate` int NOT NULL DEFAULT 0
+	, PRIMARY KEY (`uri`)
+);
 
+catSet=
+cat	n
+[Music/Break]--K-Pop	100
+[Music]	150
+
+# Sort by n,
+# when nUpdate%100==0.
 ```/
 
 </div><!-- table-RecoStatDefCatSet -->
+
+
 
 #### TABLE `RecoStatDefTitle`: Statistics of URI's default title
 
@@ -1535,9 +1552,34 @@ UPDATE `RecoStatDefTitle` SET `count`=`count`+1 WHERE `uri`=? and `title`=?;
 
 </div><!-- table-RecoStatDefTitle -->
 
+<div id="table-RecoStatDefTitleSet"><div class="number none">RecoStatDefTitleSet</div>
+
+```[.linenums.lang-sql]
+CREATE TABLE `RecoStatDefTitleSet` (
+	`uri` varchar(255) NOT NULL
+	, `titleSet` mediumtext DEFAULT NULL
+	, `nUpdate` int NOT NULL DEFAULT 0
+	, PRIMARY KEY (`uri`)
+);
+
+titleSet=
+title	n
+IZ*ONE (아이즈원) - So curious	100
+IZ*ONE - So curious	30
+
+# Sort by n,
+# when nUpdate%100==0.
+```/
+
+</div><!-- table-RecoStatDefTitleSet -->
+
 
 
 #### TABLE `RecoStatDefDesc` and `RecoDefDesc`: Statistics of URI's default description
+
+Desc 평가하는건 보류.
+
+<div class="cmt">
 
 Description 관련해서는 평가도 이루어 지도록 해놔서 refer 가 가능하도록 design 해야 할듯? 그냥 refer 만 하는 사람도 많을테니 많은 평가가 이루어지지는 않을듯하고...
 
@@ -1545,7 +1587,9 @@ Description 관련해서는 평가도 이루어 지도록 해놔서 refer 가 �
 
 Description 에 "#referDesc user_desc" 이 들어가도록 명령어를 만들까나?
 
-<div id="table-RecoDefDesc"><div class="number none">RecoDefDesc</div>
+</div>
+
+<!-- <div id="table-RecoDefDesc"><div class="number none">RecoDefDesc</div>
 
 ```[.linenums.lang-sql]
 CREATE TABLE `RecoDefDesc` (
@@ -1557,33 +1601,44 @@ CREATE TABLE `RecoDefDesc` (
 );
 ```/
 
-</div><!-- RecoDefDesc -->
+</div>RecoDefDesc -->
 
 <div id="table-RecoStatDefDesc"><div class="number none">RecoStatDefDesc</div>
 
 ```[.linenums.lang-sql]
 CREATE TABLE `RecoStatDefDesc` (
-	`user_i` bigint NOT NULL
-	, `uri` varchar(255) NOT NULL
+	`uri` varchar(255) NOT NULL
+	, `desc` text NOT NULL
 	, `count` bigint DEFAULT 1
-	, `nV` bigint DEFAULT 0 # number of values (equal to the sum c0~9.)
-	, `sumV100` bigint DEFAULT 0 # sum of round(value*100)
-	, `avgV100` double(5,2) DEFAULT 0 # average = sumV100/nV
-	, `c0` bigint DEFAULT 0 # 0&lt;=`val`*10&lt;=1
-	, `c1` bigint DEFAULT 0
-	, `c2` bigint DEFAULT 0
-	, `c3` bigint DEFAULT 0
-	, `c4` bigint DEFAULT 0
-	, `c5` bigint DEFAULT 0
-	, `c6` bigint DEFAULT 0
-	, `c7` bigint DEFAULT 0
-	, `c8` bigint DEFAULT 0
-	, `c9` bigint DEFAULT 0 # 9&lt;`val`*10&lt;=10
-	, PRIMARY KEY (`user_i`, `uri`)
+	, PRIMARY KEY (`uri`, `desc`)
 );
 ```/
 
 </div><!-- table-RecoStatDefDesc -->
+
+<div id="table-RecoStatDefDescSet"><div class="number none">RecoStatDefDescSet</div>
+
+```[.linenums.lang-sql]
+CREATE TABLE `RecoStatDefDescSet` (
+	`uri` varchar(255) NOT NULL
+	, `descSet` longtext DEFAULT NULL
+	, `nUpdate` int NOT NULL DEFAULT 0
+	, PRIMARY KEY (`uri`)
+);
+
+descSet=
+desc	n
+"#lyrics
+
+......"	2540
+"#date 2022-07-07
+..."	30
+
+# Sort by n,
+# when nUpdate%100==0.
+```/
+
+</div><!-- table-RecoStatDefDescSet -->
 
 
 
@@ -1599,11 +1654,11 @@ Anti-abusing. 확증편향은 조심. 반대되는 의견들도 연결시켜줘�
 
 ### TABLE `Neighbors`
 
-User_from 의 sim neighbor 로 몇명 정도가 적정할까나? 각 cat 당 1,000명 정도 limit?
+User_from 의 sim neighbor 로 몇명 정도가 적정할까나? 각 cat 당 200명 정도 limit?
 
 <div id="table-Neighbors"><div class="number none">Neighbors</div>
 
-```[.linenums.lang-sql]
+```[.linenums.lang-sql.scrollable]
 CREATE TABLE `Neighbors` (
 	`user_i` bigint NOT NULL
 	, `cat_i` varchar(255) NOT NULL
@@ -1657,6 +1712,26 @@ Reco 를 나중에 수정하기도 하는데 이걸 제대로 처리할 수 있�
 </ul>
 
 Reco 를 작성하거나 수정할때마다 바로바로 sim 을 update 해야 할듯? 이러면 쉽게 될수도 있을거 같긴 한데... (Error 가 발생하면 어찌 해결할 수 있나? 나와 neighbor 가 거의 동시에 reco 를 작성하거나 수정하면?)
+
+
+
+### TABLE `SimList`
+
+<div id="table-SimList"><div class="number none">SimList</div>
+
+```[.linenums.lang-sql.scrollable]
+CREATE TABLE `SimList` (
+	`user_from` bigint NOT NULL
+	, `cat_from` varchar(255) NOT NULL
+	, `userCatList` bigint NOT NULL
+	, `nSim` int NOT NULL
+	, `avgSim100` int NOT NULL
+	, `tUpdate` datetime NOT NULL
+	, PRIMARY KEY (`user_i`, `cat_i`, `user_from`, `cat_from`)
+);
+```/
+
+</div>
 
 
 
