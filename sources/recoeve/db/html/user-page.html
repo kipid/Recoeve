@@ -3105,10 +3105,7 @@ m.getAndShowRecosOnCat=function (cat) {
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("keyup");
-			let $li=fs1.$fsLis.eq(0);
-			if ($li.exists()) {
-				fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
-			}
+			fs1.currentIndex=fs1.fullList.length-1;
 			fs1.prepareRecoListPlay();
 		});
 	} else {
