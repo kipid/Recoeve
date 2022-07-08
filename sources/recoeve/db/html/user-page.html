@@ -714,7 +714,7 @@ if (m.myPage) {
 }
 
 m.delayPad=m.delayPad||256;
-m.wait=m.wait||2048;
+m.wait=m.wait||512;
 m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 m.previous=Date.now();
 
@@ -3105,8 +3105,10 @@ m.getAndShowRecosOnCat=function (cat) {
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("keyup");
-			fs1.currentIndex=fs1.fullList.length-1;
-			fs1.prepareRecoListPlay();
+			setTimeout(function () {
+				fs1.currentIndex=fs1.fullList.length-1;
+				fs1.prepareRecoListPlay();
+			}, m.wait*2);
 		});
 	} else {
 		m.showRecosOnCat();
