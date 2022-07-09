@@ -3107,18 +3107,25 @@ m.getAndShowRecosOnCat=function (cat) {
 			fs1.$fs.trigger("keyup");
 			setTimeout(function () {
 				fs1.currentIndex=fs1.fullList.length-1;
+				console.log("m.fsToRs.currentIndex: "+fs1.currentIndex);
 				fs1.prepareRecoListPlay();
-			}, m.wait*5);
+				console.log("m.fsToRs.prepareRecoListPlay()");
+			}, m.wait*2);
 		});
 	} else {
 		m.showRecosOnCat();
-		m.fsToRs.prepareRecoListPlay();
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("keyup");
 		fs1[1]=null;
 		fs1[0].ptnSH=m.splitHangul("$!@#");
 		fs1.$fs.trigger("keyup");
+		setTimeout(function () {
+			fs1.currentIndex=fs1.fullList.length-1;
+			console.log("m.fsToRs.currentIndex: "+fs1.currentIndex);
+			fs1.prepareRecoListPlay();
+			console.log("m.fsToRs.prepareRecoListPlay()");
+		}, m.wait*2);
 	}
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
