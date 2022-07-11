@@ -70,7 +70,7 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--To my page--]	122	To my page	내 페이지로	私のページへ	到我的頁面
 [--Backward--]	123	Backward	전으로	前に	前
 [--Forward--]	124	Forward	앞으로	これから	向前
-[--Auto skip--]	125
+[--Auto skip--]	125	Auto skip	자동 넘기기	自動スキップ	自動跳過
 [--Shuffle--]	126	Shuffle	순서섞기	シャッフル	洗牌
 [--Loop--]	127	Loop	전체반복	全繰り返し	重複所有
 [--One-loop--]	128	One-loop	한곡반복	曲を繰り返し	重複一首歌
