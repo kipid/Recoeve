@@ -29,7 +29,7 @@ public class FileMap {
 	private static final String imgPath="C:/Recoeve/img";
 	private static final String[] imgNames={
 			"/favicon.ico"
-			, "/icon-Twitter.png", "/icon-Facebook.png"
+			, "/icon-Twitter.png", "/icon-Facebook.png", "/icon-Kakao.png", "/icon-Recoeve.png"
 		};
 		
 	private static final String filePath="C:/Recoeve/sources/recoeve/db/html/";
