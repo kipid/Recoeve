@@ -2557,7 +2557,7 @@ ptnURI.toIframe=function (uriRest) {
 };
 
 ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
-ptnURI.regEx=/^(?:p|tv)\/([\w-]+)/i;
+ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
