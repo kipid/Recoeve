@@ -2928,7 +2928,7 @@ m.showRecosOnCat=function (elem, from) {
 			}
 			$(elem).replaceWith(strHTML);
 			let $stars=$contents.find(".my-point>.stars-container");
-			m.recoByOnlyStars=function () {
+			m.recoByOnlyStars=function ($str, uri) {
 				let valStr=$str.html();
 				if (m.myPage) {
 					if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
@@ -2964,7 +2964,7 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			};
-			$stars.on("click.mdInStars", function (e) {
+			$stars.on("click", function (e) {
 				let $target=$(e.target);
 				if (!$target.hasClass("stars-container")) {
 					$target=$target.parents(".stars-container");
@@ -2992,7 +2992,9 @@ m.showRecosOnCat=function (elem, from) {
 					}
 					$bar.css({width:w});
 				}
-				m.timeout[uri]=setTimeout(m.recoByOnlyStars, 5000);
+				m.timeout[uri]=setTimeout(function () {
+					m.recoByOnlyStars($str, uri);
+				}, 5000);
 			});
 			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 				let $target=$(e.target);
@@ -3030,7 +3032,9 @@ m.showRecosOnCat=function (elem, from) {
 				});
 				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
-					m.timeout[uri]=setTimeout(m.recoByOnlyStars, 5000);
+					m.timeout[uri]=setTimeout(function () {
+						m.recoByOnlyStars($str, uri);
+					}, 5000);
 				});
 			});
 		}
