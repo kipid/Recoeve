@@ -2928,6 +2928,72 @@ m.showRecosOnCat=function (elem, from) {
 			}
 			$(elem).replaceWith(strHTML);
 			let $stars=$contents.find(".my-point>.stars-container");
+			m.recoByOnlyStars=function () {
+				let valStr=$str.html();
+				if (m.myPage) {
+					if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+						let strHeads="do\turi\tval";
+						let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+						m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
+					}
+				} else {
+					if (m.myRecos[uri]&&m.myRecos[uri].has) {
+						if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+							let strHeads="do\turi\tval";
+							let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
+						}
+					} else {
+						let strHeads="do\turi";
+						let strContents="reco\t"+m.encloseStr(uri);
+						strHeads+="\tval";
+						strContents+="\t"+valStr;
+						let uR=m.userRecos[uri];
+						if (uR.title) {
+							strHeads+="\ttitle";
+							strContents+="\t"+m.encloseStr(uR.title);
+						}
+						if (uR.desc) {
+							strHeads+="\tdesc";
+							strContents+="\t"+m.encloseStr(uR.desc);
+						}
+						strHeads+="\tcats";
+						strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
+						let strRecoDo=strHeads+"\n"+strContents;
+						m.rmb_me(m.reco_do, {strRecoDo, uri});
+					}
+				}
+			};
+			$stars.on("click.mdInStars", function (e) {
+				let $target=$(e.target);
+				if (!$target.hasClass("stars-container")) {
+					$target=$target.parents(".stars-container");
+				}
+				let uri=m.unescapeHTML($target.parents(".reco").find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
+				let $bar=$target.find(".bar");
+				let barW=$bar.width();
+				let $str=$target.siblings(".str");
+				let w=e.clientX-$bar.offset().left+$window.scrollLeft();
+				if (w<-15) {
+					w=-1;
+				} else if (w<0) {
+					w=0;
+				} else if (w>m["5stars-width"]) {
+					w=m["5stars-width"];
+				}
+				if (w!==barW) {
+					barW=w;
+					if (w<0) {
+						$str.html("");
+						w=0;
+					} else {
+						$str.html(m.escapeHTML((w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts));
+					}
+					$bar.css({width:w});
+				}
+				m.timeout[uri]=setTimeout(m.recoByOnlyStars, 5000);
+			});
 			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 				let $target=$(e.target);
 				if (!$target.hasClass("stars-container")) {
@@ -2964,42 +3030,7 @@ m.showRecosOnCat=function (elem, from) {
 				});
 				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
-					m.timeout[uri]=setTimeout(function () {
-						let valStr=$str.html();
-						if (m.myPage) {
-							if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
-								let strHeads="do\turi\tval";
-								let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-								m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
-							}
-						} else {
-							if (m.myRecos[uri]&&m.myRecos[uri].has) {
-								if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
-									let strHeads="do\turi\tval";
-									let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-									m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
-								}
-							} else {
-								let strHeads="do\turi";
-								let strContents="reco\t"+m.encloseStr(uri);
-								strHeads+="\tval";
-								strContents+="\t"+valStr;
-								let uR=m.userRecos[uri];
-								if (uR.title) {
-									strHeads+="\ttitle";
-									strContents+="\t"+m.encloseStr(uR.title);
-								}
-								if (uR.desc) {
-									strHeads+="\tdesc";
-									strContents+="\t"+m.encloseStr(uR.desc);
-								}
-								strHeads+="\tcats";
-								strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
-								let strRecoDo=strHeads+"\n"+strContents;
-								m.rmb_me(m.reco_do, {strRecoDo, uri});
-							}
-						}
-					}, 5000);
+					m.timeout[uri]=setTimeout(m.recoByOnlyStars, 5000);
 				});
 			});
 		}
