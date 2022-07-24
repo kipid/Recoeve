@@ -4086,13 +4086,12 @@ m.doFSToRs=function (fs, shuffle) {
 		let res=fs[0];
 		let sorted=res.sorted;
 		let str="";
-		let currentIndex=fs.currentIndex;
 		for (let i=0;i<sorted.length;i++) {
 			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+=`<div id="toR-${k}" class="list-item${k===currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
+				str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
 						+fs.fullList[k].html
 						+((res[sorted[i]].highlight!==undefined)?
 						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
@@ -4101,7 +4100,7 @@ m.doFSToRs=function (fs, shuffle) {
 		}
 		fs.$fsl.html(str);
 		fs.$fsLis=fs.$fsl.find(".list-item");
-		fs.$fsl.viewAndScroll($("#toR-"+currentIndex));
+		fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
 	}
 };
 m.fsToRsOn=function () {
