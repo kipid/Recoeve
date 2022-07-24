@@ -66,7 +66,7 @@ Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-U
 
 Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
 
-Similarity 를 저장할 <refer class="table-Neighbors"></refer>.
+Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>, <refer class="table-NeighborListTo"></refer>.
 
 Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
 
@@ -81,6 +81,131 @@ Defaults 추천해주기 위해 <refer class="table-RecoStatDefCatSet"></refer>,
 
 
 ### Encoding settings
+
+명령어들
+
+```[.linenums]
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+# 이건 뭘 바꾸는거지?
+
+# Character set 보기.
+SELECT CCSA.character_set_name FROM information_schema.`TABLES` T,
+	information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` CCSA
+WHERE CCSA.collation_name = T.table_collation
+	AND T.table_schema = "recoeve0.1"
+	AND T.table_name = "recos";
+
+# Character set 바꾸기.
+# For each database:
+ALTER DATABASE
+	`recoeve0.1`
+	CHARACTER SET = utf8mb4
+	COLLATE = utf8mb4_unicode_ci;
+
+# For each table:
+ALTER TABLE
+	`recos`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+# For each column:
+ALTER TABLE
+	`recos`
+	CHANGE uri uri varchar(191)
+	CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+```/
+
+<div class="p"></div>
+
+각 table 의 character set & collate 변환.
+
+```[.linenums.scrollable]
+ALTER TABLE
+	`recos`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`authtoken`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`catlist`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`emailstat`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`fin`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`loginlogs`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`neighbors`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`urilist`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`uristat`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`uristatdefcat`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`uristatdefdesc`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`uristatdeftitle`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`userclass`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`userremember`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`users`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`usersession`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+	`usersession1`
+	CONVERT TO CHARACTER SET utf8mb4
+	COLLATE utf8mb4_unicode_ci;
+```/
 
 <div class="p">
 <code>my.ini</code>, <code>my.cnf</code> 파일로 encoding 설정.
@@ -1715,20 +1840,52 @@ Reco 를 작성하거나 수정할때마다 바로바로 sim 을 update 해야 �
 
 
 
-### TABLE `SimList`
+### TABLE `NeighborListFrom`
 
-<div id="table-SimList"><div class="number none">SimList</div>
+<div id="table-NeighborListFrom"><div class="number none">NeighborListFrom</div>
 
 ```[.linenums.lang-sql.scrollable]
-CREATE TABLE `SimList` (
+CREATE TABLE `NeighborListFrom` (
 	`user_from` bigint NOT NULL
 	, `cat_from` varchar(255) NOT NULL
 	, `userCatList` bigint NOT NULL
-	, `nSim` int NOT NULL
-	, `avgSim100` int NOT NULL
+	, `nUpdate` int NOT NULL DEFAULT 1
 	, `tUpdate` datetime NOT NULL
-	, PRIMARY KEY (`user_i`, `cat_i`, `user_from`, `cat_from`)
+	, PRIMARY KEY (`user_from`, `cat_from`)
 );
+
+`userCatList`=
+"user_to	cat_to	avgSim100
+df0017	[Music/Break]--K-Pop	10000"
+
+# Sort by avgSim100 desc
+# Cut 200 lis every nUpdate%50==0
+```/
+
+</div>
+
+
+
+### TABLE `NeighborListTo`
+
+<div id="table-NeighborListTo"><div class="number none">NeighborListTo</div>
+
+```[.linenums.lang-sql.scrollable]
+CREATE TABLE `NeighborListTo` (
+	`user_to` bigint NOT NULL
+	, `cat_to` varchar(255) NOT NULL
+	, `userCatList` bigint NOT NULL
+	, `nUpdate` int NOT NULL DEFAULT 1
+	, `tUpdate` datetime NOT NULL
+	, PRIMARY KEY (`user_to`, `cat_to`)
+);
+
+`userCatList`=
+"user_to	cat_to	avgSim100
+df0017	[Music/Break]--K-Pop	10000"
+
+# Sort by avgSim100 desc
+# Cut 200 lis every nUpdate%50==0
 ```/
 
 </div>
