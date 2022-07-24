@@ -3113,7 +3113,7 @@ m.getAndShowRecosOnCat=function (cat) {
 	let fs1FL=fs1.fullList=[];
 	fsFL.cat=cat;
 	fs1FL.cat=cat;
-	for (let i=0;i<uris.length;i++) {
+	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		if (!r) { r=m.userRecos[uri]={}; }
@@ -3133,29 +3133,25 @@ m.getAndShowRecosOnCat=function (cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
+			fs1.currentIndex=fs1.fullList.length-1;
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup");
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("keyup");
-			setTimeout(function () {
-				fs1.currentIndex=fs1.fullList.length-1;
- 				fs1.prepareRecoListPlay();
-			}, m.wait*2);
+			setTimeout(fs1.prepareRecoListPlay, m.wait*2);
 		});
 	} else {
 		m.showRecosOnCat();
+		fs1.currentIndex=fs1.fullList.length-1;
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("keyup");
 		fs1[1]=null;
 		fs1[0].ptnSH=m.splitHangul("$!@#");
 		fs1.$fs.trigger("keyup");
-		setTimeout(function () {
-			fs1.currentIndex=fs1.fullList.length-1;
- 			fs1.prepareRecoListPlay();
-		}, m.wait*2);
+		setTimeout(fs1.prepareRecoListPlay, m.wait*2);
 	}
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
@@ -4057,17 +4053,17 @@ $fuzzy_search.trigger("keyup");
 // Fuzzy search on Table of Recos
 ///////////////////////////////////////////
 m.playLi=function (e, elem, k, fs) {
-if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
-} else {
-	let $elem=$(elem);
-	// let uri=fs.fullList[k].uri;
-	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
-	} else {
-		fs.currentIndex=k;
-		fs.getAndPlayVideo();
+	if (!(e&&e.srcElement&&e.srcElement.nodeName=="A")) {
+		let $elem=$(elem);
+		// let uri=fs.fullList[k].uri;
+		if ($elem.hasClass("selected")) {
+			fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		} else {
+			fs.currentIndex=k;
+			fs.getAndPlayVideo();
+		}
 	}
-}};
+};
 m.doFSToRs=function (fs, shuffle) {
 	let fsPtnSH=m.splitHangul(fs.$fs.text());
 	if (shuffle||fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
