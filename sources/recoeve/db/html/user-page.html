@@ -735,12 +735,12 @@ m.fsCat.desc=false;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
-m.fsTitle=[];
-m.fsTitle[0]=m.fsTitle[1]=[];
-m.fsTitle.fullList=[];
-m.fsTitle.desc=true;
-m.fsTitle.$fs=$fuzzy_search;
-m.fsTitle.$fsl=$fuzzy_search_list;
+m.fsGo=[];
+m.fsGo[0]=m.fsGo[1]=[];
+m.fsGo.fullList=[];
+m.fsGo.desc=true;
+m.fsGo.$fs=$fuzzy_search;
+m.fsGo.$fsl=$fuzzy_search_list;
 
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
@@ -761,13 +761,6 @@ m.fsToRs.$fsl.viewAndScroll=function ($next) {
 m.fsToRs.autoSkip=false;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
-
-m.fsGo=[];
-m.fsGo[0]=m.fsGo[1]=[];
-m.fsGo.fullList=[];
-m.fsGo.desc=true;
-m.fsGo.$fs=$fuzzy_search;
-m.fsGo.$fsl=$fuzzy_search_list;
 
 YT=undefined;
 m.YtPlayer=null;
@@ -1163,14 +1156,6 @@ m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
-m.escapeAMP=function (str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
-};
-m.unescapeAMP=function (str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
-};
 
 ////////////////////////////
 // String to Array
@@ -1440,9 +1425,8 @@ m.splitHangul=function (str) {
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
 m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
-=m.fsTitle[0].ptnSH=m.fsTitle[1].ptnSH
-=m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH
-=m.fsGo[0].ptnSH=m.fsGo[1].ptnSH=m.splitHangul("$!@#");
+=m.fsGo[0].ptnSH=m.fsGo[1].ptnSH
+=m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH=m.splitHangul("$!@#");
 RegExp.quote=function (str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
@@ -2052,7 +2036,7 @@ $input_cats.on("keydown.fs", function (e) {
 	switch (e.keyCode) {
 	// case 9: // Tab=9
 	// 	e.preventDefault();
-	// 	m.fsTitle.$fsLis.eq(0).trigger("click");
+	// 	m.fsGo.$fsLis.eq(0).trigger("click");
 	// 	break;
 	case 27: // ESC=27
 		e.preventDefault();
@@ -2852,7 +2836,7 @@ m.reco_pointChange_do=function (args, err) {
 		let uri=args.uri;
 		if (res[1]&&res[1]["result"]==="changed") {
 			let val=m.myRecos[uri].val=m.val(args.valStr);
-			let fs=m.fsTitle;
+			let fs=m.fsGo;
 			if (m.myPage&&val.valid&&fs.fullList[uri].$listI) {
 				fs.fullList[uri].$listI.find(".val .bar").css({width:m["5stars-width"]*val.val});
 			}
@@ -2860,7 +2844,7 @@ m.reco_pointChange_do=function (args, err) {
 	});
 };
 m.showRecosOnCat=function (elem, from) {
-	let fs=m.fsTitle;
+	let fs=m.fsGo;
 	let l=fs.fullList.length;
 	let strHTML="";
 	if (l<=0) {
@@ -3108,7 +3092,7 @@ m.getAndShowRecosOnCat=function (cat) {
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	let getRecosStr="uri";
 	let getRecosN=0;
-	let fs=m.fsTitle;
+	let fs=m.fsGo;
 	let fs1=m.fsToRs;
 	let fsFL=fs.fullList=[];
 	let fs1FL=fs1.fullList=[];
@@ -4012,7 +3996,7 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 		}, 256);
 	}
 }};
-m.doFSTitle=function (fs) {
+m.doFSGo=function (fs) {
 	let fsPtnSH=m.splitHangul(fs.$fs.text());
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		m.fuzzySearch(fsPtnSH, fs);
@@ -4024,7 +4008,7 @@ m.doFSTitle=function (fs) {
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsTitle)">`
+				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">`
 						+fs.fullList[k].html
 						+((res[sorted[i]].highlight!==undefined)?
 						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
@@ -4035,22 +4019,22 @@ m.doFSTitle=function (fs) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 	}
 };
-m.fsTitleOn=function () {
+m.fsGoOn=function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doFSTitle(m.fsTitle);
+		m.doFSGo(m.fsGo);
 	} else {
 		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
 		setTimeout(function () {
-			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsTitleOn);
+			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
 			m.previous=Date.now();
-			m.doFSTitle(m.fsTitle);
+			m.doFSGo(m.fsGo);
 		}, m.wait*1.1-passed);
 	}
 };
-$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsTitleOn);
+$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
 $fuzzy_search.trigger("keyup");
 
 ///////////////////////////////////////////
