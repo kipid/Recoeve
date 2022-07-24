@@ -731,24 +731,25 @@ m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
-m.fsCat.desc=false;
+m.fsCat.descend=true;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
-m.fsGo.desc=true;
+m.fsGo.descend=true;
 m.fsGo.$fs=$fuzzy_search;
 m.fsGo.$fsl=$fuzzy_search_list;
 
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fullList=[];
-m.fsToRs.desc=true;
+m.fsToRs.descend=true;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fsl.viewAndScroll=function ($next) {
+if ($next.exists()) {
 	let $fsl=m.fsToRs.$fsl;
 	if ($table_of_recos_container.is(":visible")) {
 		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
@@ -757,7 +758,7 @@ m.fsToRs.$fsl.viewAndScroll=function ($next) {
 		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
 		$table_of_recos_container.hide();
 	}
-};
+}};
 m.fsToRs.autoSkip=false;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
@@ -1508,15 +1509,20 @@ m.fuzzySearch=function (ptnSH, fs) {
 	} else {
 		fs[1]=null;
 	}
-	let listIsFullList=false;
 	if (fs[1]&&fs[1].sorted) {
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
 		}
 	} else {
-		list=fs.fullList;
-		listIsFullList=true;
+		if (fs.shuffled) {
+			let shuffled=fs.shuffled;
+			for (let i=0;i<shuffled.length;i++) {
+				list.push(fs.fullList[shuffled[i].i]);
+			}
+		} else {
+			list=fs.fullList;
+		}
 	}
 	fs[0]=[];
 	fs[0].ptnSH=ptnSH;
@@ -1581,7 +1587,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}}
 	let sorted=fs[0].sorted=[];
 	for (let i=0;i<fs[0].length;i++) {
-		if (listIsFullList&&fs.desc) {
+		if (fs.descend) {
 			sorted[i]=fs[0].length-1-i;
 		} else {
 			sorted[i]=i;
@@ -3271,6 +3277,7 @@ m.openCat=function (cat, e) {
 	} else {
 		if (window.history.state&&window.history.state.cat===cat) { return false; }
 		m.currentCat=cat;
+		m.fsToRs.shuffled=null;
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
 		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
@@ -4055,16 +4062,13 @@ if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 m.doFSToRs=function (fs, shuffle) {
 	let fsPtnSH=m.splitHangul(fs.$fs.text());
 	if (shuffle||fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		m.fuzzySearch(fsPtnSH, fs);
-		let res=fs[0];
-		let sorted=res.sorted;
-		let str="";
-		let shuffled=fs.shuffled=[];
 		if (shuffle) {
-			for (let i=0;i<sorted.length;i++) {
+			let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
+			let l=fs.fullList.length;
+			for (let i=0;i<l;i++) {
 				shuffled[i]={i:i, randomN:Math.random()};
 			}
-			for (let i=1;i<shuffled.length;i++) {
+			for (let i=1;i<l;i++) {
 				let temp=shuffled[i];
 				let j=i;
 				for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
@@ -4073,9 +4077,13 @@ m.doFSToRs=function (fs, shuffle) {
 				shuffled[j]=temp;
 			}
 		}
+		m.fuzzySearch(fsPtnSH, fs);
+		let res=fs[0];
+		let sorted=res.sorted;
+		let str="";
 		let currentIndex=fs.currentIndex;
 		for (let i=0;i<sorted.length;i++) {
-			let k=shuffle?res[sorted[shuffled[i].i]].i:res[sorted[i]].i;
+			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
@@ -4088,6 +4096,7 @@ m.doFSToRs=function (fs, shuffle) {
 		}
 		fs.$fsl.html(str);
 		fs.$fsLis=fs.$fsl.find(".list-item");
+		fs.$fsl.viewAndScroll($("#toR-"+currentIndex));
 	}
 };
 m.fsToRsOn=function () {
