@@ -731,21 +731,21 @@ m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
-m.fsCat.descend=true;
+m.fsCat.descend=false;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
-m.fsGo.descend=true;
+m.fsGo.descend=false;
 m.fsGo.$fs=$fuzzy_search;
 m.fsGo.$fsl=$fuzzy_search_list;
 
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fullList=[];
-m.fsToRs.descend=true;
+m.fsToRs.descend=false;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fsl.viewAndScroll=function ($next) {
