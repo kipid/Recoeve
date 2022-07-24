@@ -749,16 +749,25 @@ m.fsToRs.descend=true;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fsl.viewAndScroll=function ($next) {
-if ($next.exists()) {
 	let $fsl=m.fsToRs.$fsl;
-	if ($table_of_recos_container.is(":visible")) {
-		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+	if ($next.exists()) {
+		if ($table_of_recos_container.is(":visible")) {
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		} else {
+			$table_of_recos_container.show();
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+			$table_of_recos_container.hide();
+		}
 	} else {
-		$table_of_recos_container.show();
-		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-		$table_of_recos_container.hide();
+		if ($table_of_recos_container.is(":visible")) {
+			$fsl.scrollTop(0);
+		} else {
+			$table_of_recos_container.show();
+			$fsl.scrollTop(0);
+			$table_of_recos_container.hide();
+		}
 	}
-}};
+};
 m.fsToRs.autoSkip=false;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
