@@ -1530,7 +1530,10 @@ m.fuzzySearch=function (ptnSH, fs) {
 				list.push(fs.fullList[shuffled[i].i]);
 			}
 		} else {
-			list=fs.fullList;
+			let l=fs.fullList.length;
+			for (let i=0;i<l;i++) {
+				list.push(fs.fullList[l-1-i]);
+			}
 		}
 	}
 	fs[0]=[];
