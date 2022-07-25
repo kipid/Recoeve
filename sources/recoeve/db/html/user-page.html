@@ -1605,8 +1605,9 @@ m.fuzzySearch=function (ptnSH, fs) {
 	for (let i=1;i<sorted.length;i++) {
 		let temp=sorted[i];
 		let j=i;
-		for (;(j>0) && (fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--)
+		for (;(j>0)&&(fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--) {
 			sorted[j]=sorted[j-1];
+		}
 		sorted[j]=temp;
 	}
 };
@@ -4066,42 +4067,42 @@ m.playLi=function (e, elem, k, fs) {
 };
 m.doFSToRs=function (fs, shuffle) {
 	let fsPtnSH=m.splitHangul(fs.$fs.text());
-	if (shuffle||fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		if (shuffle) {
-			let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
-			let l=fs.fullList.length;
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i:i, randomN:Math.random()};
-			}
-			for (let i=1;i<l;i++) {
-				let temp=shuffled[i];
-				let j=i;
-				for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
-					shuffled[j]=shuffled[j-1];
-				}
-				shuffled[j]=temp;
-			}
+	if (shuffle) {
+		let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
+		let l=fs.fullList.length;
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i:i, randomN:Math.random()};
 		}
-		m.fuzzySearch(fsPtnSH, fs);
-		let res=fs[0];
-		let sorted=res.sorted;
-		let str="";
-		for (let i=0;i<sorted.length;i++) {
-			let k=res[sorted[i]].i;
-			let fsFLk=fs.fullList[k];
-			if (fsFLk.inRange) {
-				let uri=fsFLk.uri;
-				str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
-						+fs.fullList[k].html
-						+((res[sorted[i]].highlight!==undefined)?
-						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
-					+'</div>';
+		for (let i=1;i<l;i++) {
+			let temp=shuffled[i];
+			let j=i;
+			for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
+				shuffled[j]=shuffled[j-1];
 			}
+			shuffled[j]=temp;
 		}
-		fs.$fsl.html(str);
-		fs.$fsLis=fs.$fsl.find(".list-item");
-		fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
+		fs[1]=null;
+		fs[0].ptnSH=m.splitHangul("$!@#");
 	}
+	m.fuzzySearch(fsPtnSH, fs);
+	let res=fs[0];
+	let sorted=res.sorted;
+	let str="";
+	for (let i=0;i<sorted.length;i++) {
+		let k=res[sorted[i]].i;
+		let fsFLk=fs.fullList[k];
+		if (fsFLk.inRange) {
+			let uri=fsFLk.uri;
+			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
+					+fs.fullList[k].html
+					+((res[sorted[i]].highlight!==undefined)?
+					'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
+				+'</div>';
+		}
+	}
+	fs.$fsl.html(str);
+	fs.$fsLis=fs.$fsl.find(".list-item");
+	fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
 };
 m.fsToRsOn=function () {
 	let now=Date.now();
