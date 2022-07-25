@@ -1508,20 +1508,23 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 	return res;
 };
 m.fuzzySearch=function (ptnSH, fs) {
-	let list=[];
-	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
+	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
+		return;
+	} else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
 		console.log("fs[1]=fs[0]");
 		fs[1]=fs[0];
 	} else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
 			console.log("fs[0]=fs[1]");
-			return fs[0]=fs[1];
+			fs[0]=fs[1];
+			return;
 		}
 		console.log("fs[1]");
 	} else {
 		console.log("fs[1]=null");
 		fs[1]=null;
 	}
+	let list=[];
 	if (fs[1]&&fs[1].sorted) {
 		console.log("fs[1].sorted");
 		let sorted=fs[1].sorted;
