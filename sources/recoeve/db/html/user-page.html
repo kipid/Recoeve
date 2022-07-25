@@ -1510,26 +1510,33 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 m.fuzzySearch=function (ptnSH, fs) {
 	let list=[];
 	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
+		console.log("fs[1]=fs[0]");
 		fs[1]=fs[0];
 	} else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
+			console.log("fs[0]=fs[1]");
 			return fs[0]=fs[1];
 		}
+		console.log("fs[1]");
 	} else {
+		console.log("fs[1]=null");
 		fs[1]=null;
 	}
 	if (fs[1]&&fs[1].sorted) {
+		console.log("fs[1].sorted");
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
 		}
 	} else {
 		if (fs.shuffled) {
+			console.log("fs.shuffled");
 			let shuffled=fs.shuffled;
 			for (let i=0;i<shuffled.length;i++) {
 				list.push(fs.fullList[shuffled[i].i]);
 			}
 		} else {
+			console.log("fs.fullList");
 			let l=fs.fullList.length;
 			for (let i=0;i<l;i++) {
 				list.push(fs.fullList[l-1-i]);
