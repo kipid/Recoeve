@@ -1537,12 +1537,12 @@ m.fuzzySearch=function (ptnSH, fs) {
 				list.push(fs.fullList[shuffled[i].i]);
 			}
 		} else {
-			console.log("list=fs.fullList");
-			list=fs.fullList;
-			// let l=fs.fullList.length;
-			// for (let i=0;i<l;i++) {
-			// 	list.push(fs.fullList[l-1-i]);
-			// }
+			console.log("list=fs.fullList reversed");
+			// list=fs.fullList;
+			let l=fs.fullList.length;
+			for (let i=0;i<l;i++) {
+				list.push(fs.fullList[l-1-i]);
+			}
 		}
 	}
 	fs[0]=[];
@@ -1609,7 +1609,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 	let sorted=fs[0].sorted=[];
 	for (let i=0;i<fs[0].length;i++) {
 		// sorted[i]=fs[0].length-1-i;
-		sorted[i]=i;
+		// sorted[i]=i;
+		sorted.push(i);
 	}
 	for (let i=1;i<sorted.length;i++) {
 		let temp=sorted[i];
