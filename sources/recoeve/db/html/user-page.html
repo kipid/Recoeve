@@ -731,21 +731,18 @@ m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
-m.fsCat.descend=true;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
-m.fsGo.descend=true;
 m.fsGo.$fs=$fuzzy_search;
 m.fsGo.$fsl=$fuzzy_search_list;
 
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fullList=[];
-m.fsToRs.descend=true;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fsl.viewAndScroll=function ($next) {
@@ -1509,6 +1506,7 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 };
 m.fuzzySearch=function (ptnSH, fs) {
 	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
+		console.log("No change on search pattern.");
 		return;
 	} else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
 		console.log("fs[1]=fs[0]");
@@ -1526,24 +1524,25 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}
 	let list=[];
 	if (fs[1]&&fs[1].sorted) {
-		console.log("fs[1].sorted");
+		console.log("list=fs[1].sorted");
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
 		}
 	} else {
 		if (fs.shuffled) {
-			console.log("fs.shuffled");
+			console.log("list=fs.shuffled");
 			let shuffled=fs.shuffled;
 			for (let i=0;i<shuffled.length;i++) {
 				list.push(fs.fullList[shuffled[i].i]);
 			}
 		} else {
-			console.log("fs.fullList");
-			let l=fs.fullList.length;
-			for (let i=0;i<l;i++) {
-				list.push(fs.fullList[l-1-i]);
-			}
+			console.log("list=fs.fullList");
+			list=fs.fullList;
+			// let l=fs.fullList.length;
+			// for (let i=0;i<l;i++) {
+			// 	list.push(fs.fullList[l-1-i]);
+			// }
 		}
 	}
 	fs[0]=[];
@@ -1609,11 +1608,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}}
 	let sorted=fs[0].sorted=[];
 	for (let i=0;i<fs[0].length;i++) {
-		if (fs.descend) {
-			sorted[i]=fs[0].length-1-i;
-		} else {
-			sorted[i]=i;
-		}
+		// sorted[i]=fs[0].length-1-i;
+		sorted[i]=i;
 	}
 	for (let i=1;i<sorted.length;i++) {
 		let temp=sorted[i];
