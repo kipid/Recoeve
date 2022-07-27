@@ -4449,6 +4449,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
+			fs.$fsl.viewAndScroll($li);
 			fs.getAndPlayVideo(cue);
 			return;
 		}
