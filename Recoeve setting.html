@@ -69,6 +69,14 @@ mysqldump recoeve0.1 -u root -p > mydump.sql
 mysql recoeve0.1 -u root -p < mydump.sql
 ```/
 
+Time error 나는거 해결해야 함.
+
+```[.lang-sql]
+SET GLOBAL sql_mode = "ALLOW_INVALID_DATES";
+SELECT @@GLOBAL.sql_mode;
+SELECT @@SESSION.sql_mode;
+```/
+
 
 
 ## Windows firewall
