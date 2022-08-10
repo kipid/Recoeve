@@ -103,7 +103,7 @@ static {
 }
 
 private Connection con;
-// private PreparedStatement pstmt;
+
 private PreparedStatement pstmtNow;
 private PreparedStatement pstmtCheckTimeDiff;
 private PreparedStatement pstmtCheckDateDiff;
@@ -111,9 +111,6 @@ private PreparedStatement pstmtCheckDateDiff;
 	// java.util.Date dt=new java.util.Date();
 	// java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	// String currentTime=sdf.format(dt);
-
-// private PreparedStatement pstmtIdC;
-// private PreparedStatement pstmtEmailC;
 
 private PreparedStatement pstmtSession;
 private PreparedStatement pstmtCreateAuthToken;
@@ -172,10 +169,7 @@ public RecoeveDB() {
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT timediff(?, ?)<?;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
-		
-		// pstmtIdC=con.prepareStatement("SELECT count(1) FROM `Users` WHERE `id`=? LIMIT 1;");
-		// pstmtEmailC=con.prepareStatement("SELECT count(1) FROM `Users` WHERE `email`=? LIMIT 1;");
-		
+
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
 		pstmtCheckAuthToken=con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -327,12 +321,7 @@ public boolean idExists(String id) {
 }
 public boolean idAvailable(String id) {
 	try {
-		return !findUserById(id).next();
-		// pstmtIdC.setString(1, id);
-		// ResultSet rs=pstmtIdC.executeQuery();
-		// if (rs.next()) {
-		// 	return (rs.getInt(1)==0);
-		// }
+		return !(findUserById(id).next());
 	} catch (SQLException e) {
 		err(e);
 	}
@@ -340,16 +329,11 @@ public boolean idAvailable(String id) {
 }
 public boolean emailAvailable(String email) {
 	try {
-		return !findUserByEmail(email).next();
-		// pstmtEmailC.setString(1, email);
-		// ResultSet rs=pstmtEmailC.executeQuery();
-		// if (rs.next()) {
-		// 	return (rs.getInt(1)==0);
-		// }
+		return !(findUserByEmail(email).next());
 	} catch (SQLException e) {
 		err(e);
 	}
-	return false;
+	return false; // if error occurs.
 }
 public boolean createAuthToken(String t, String ip, byte[] token) {
 	try {
@@ -2100,30 +2084,5 @@ public static void main(String... args) {
 	// inputs.put("screenHeight", "100");
 	
 	// System.out.println(db.authUser(inputs, "java"));
-	
-	// System.out.println(db.now());
-	// System.out.println(randomBytes(32));
-	// System.out.println(hex(randomBytes(32)));
-	// System.out.println(hex(randomBytes(32)));
-	
-	// byte[] rb=randomBytes(32);
-	// System.out.println("length: "+rb.length+"  "+rb);
-	// System.out.println(hex(rb));
-	// System.out.println(unhex(hex(rb)));
-	// System.out.println(hex(unhex(hex(rb))));
-	
-	// id="kipid";
-	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
-	// id="anonymous";
-	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
-	// id="anony";
-	// System.out.println("ID: "+id+" is available? "+db.idAvailable(id));
-	
-	// email="kipid@hanmail.net";
-	// System.out.println("E-mail: "+email+" is available? "+db.emailAvailable(email));
-	// email="anonymous@recoeve.com";
-	// System.out.println("E-mail: "+email+" is available? "+db.emailAvailable(email));
-	// email="anony@recoeve.com";
-	// System.out.println("E-mail: "+email+" is available? "+db.emailAvailable(email));
 }
 }// public class RecoeveDB
