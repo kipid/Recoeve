@@ -70,7 +70,7 @@ public static byte[] randomBytes(int length) {
 // 	return DatatypeConverter.parseHexBinary(hexStr);
 // }
 // The below is from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
-final protected static char[] hexArray = "0123456789abcdef".toCharArray();
+final protected static char[] hexArray="0123456789abcdef".toCharArray();
 public static String hex(byte[] bytes) {
 	char[] hexChars=new char[bytes.length*2];
 	for (int j=0; j<bytes.length; j++) {
@@ -82,10 +82,10 @@ public static String hex(byte[] bytes) {
 }
 
 public static byte[] unhex(String s) {
-	int len = s.length();
-	byte[] data = new byte[len / 2];
-	for (int i = 0; i < len; i += 2) {
-		data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	int len=s.length();
+	byte[] data=new byte[len/2];
+	for (int i=0; i<len; i+=2) {
+		data[i/2]=(byte) ((Character.digit(s.charAt(i), 16)<<4)
 								+ Character.digit(s.charAt(i+1), 16));
 	}
 	return data;
@@ -243,11 +243,11 @@ public static void err(Exception ex) {
 			if (strSQLState.equalsIgnoreCase("42Y55"))
 				System.err.println("Table already exists in schema");
 			System.err.println("Error Code: "+((SQLException)e).getErrorCode());
-			System.err.println("Message: " + e.getMessage());
-			Throwable t = ex.getCause();
-			while(t != null) {
-				System.out.println("Cause: " + t);
-				t = t.getCause();
+			System.err.println("Message: "+e.getMessage());
+			Throwable t=ex.getCause();
+			while(t!=null) {
+				System.out.println("Cause: "+t);
+				t=t.getCause();
 			}
 		}
 	}
@@ -257,15 +257,15 @@ public static void err(Exception ex) {
 // Statement stmt; stmt.getWarnings();
 public static void printWarnings(SQLWarning warning)
 	throws SQLException {
-	if (warning != null) {
+	if (warning!=null) {
 		System.out.println("\n---Warning---\n");
-		while (warning != null) {
-			System.out.println("Message: " + warning.getMessage());
-			System.out.println("SQLState: " + warning.getSQLState());
+		while (warning!=null) {
+			System.out.println("Message: "+warning.getMessage());
+			System.out.println("SQLState: "+warning.getSQLState());
 			System.out.print("Vendor error code: ");
 			System.out.println(warning.getErrorCode());
 			System.out.println("");
-			warning = warning.getNextWarning();
+			warning=warning.getNextWarning();
 		}
 	}
 }
@@ -420,11 +420,22 @@ public boolean checkChangePwdToken(String id, String token, String now) {
 	return false;
 }
 
+private static MessageDigest sha512;
+static {
+	try {
+		sha512=MessageDigest.getInstance("SHA-512");
+	} catch (Exception e) {
+		err(e);
+	}
+}
 public static byte[] pwdEncrypt(byte[] salt, String pwd)
 	throws Exception {
 		// NoSuchAlgorithmException, UnsupportedEncodingException
-	MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
 	return sha512.digest((new String(salt,"UTF-8")+pwd).getBytes("UTF-8"));
+}
+public static byte[] sha512(String str)
+	throws Exception {
+	return sha512.digest(str.getBytes("UTF-8"));
 }
 public void updateEmailStat(String emailHost, int increment)
 	throws SQLException {

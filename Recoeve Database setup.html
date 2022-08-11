@@ -66,7 +66,7 @@ Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-U
 
 Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
 
-Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>, <refer class="table-NeighborListTo"></refer>.
+Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>.
 
 Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
 
@@ -1700,7 +1700,7 @@ IZ*ONE - So curious	30
 
 
 
-#### TABLE `RecoStatDefDesc` and `RecoDefDesc`: Statistics of URI's default description
+#### TABLE `RecoStatDefDesc`: Statistics of URI's default description
 
 Desc 평가하는건 보류.
 
@@ -1714,28 +1714,15 @@ Description 에 "#referDesc user_desc" 이 들어가도록 명령어를 만들�
 
 </div>
 
-<!-- <div id="table-RecoDefDesc"><div class="number none">RecoDefDesc</div>
-
-```[.linenums.lang-sql]
-CREATE TABLE `RecoDefDesc` (
-	`user_i` bigint NOT NULL
-	, `user_desc` bigint NOT NULL
-	, `uri_desc` varchar(255) NOT NULL
-	, `val` varchar(10) NOT NULL
-	, PRIMARY KEY (`user_i`, `user_desc`, `uri_desc`)
-);
-```/
-
-</div>RecoDefDesc -->
-
 <div id="table-RecoStatDefDesc"><div class="number none">RecoStatDefDesc</div>
 
 ```[.linenums.lang-sql]
 CREATE TABLE `RecoStatDefDesc` (
 	`uri` varchar(255) NOT NULL
+	, `descHash` binary(64) NOT NULL # sha512 hash of `desc`
 	, `desc` text NOT NULL
 	, `count` bigint DEFAULT 1
-	, PRIMARY KEY (`uri`, `desc`)
+	, PRIMARY KEY (`uri`, `descHash`)
 );
 ```/
 
@@ -1752,12 +1739,12 @@ CREATE TABLE `RecoStatDefDescSet` (
 );
 
 descSet=
-desc	n
+desc
 "#lyrics
 
-......"	2540
+......"
 "#date 2022-07-07
-..."	30
+..."
 
 # Sort by n,
 # when nUpdate%100==0.
@@ -1791,7 +1778,7 @@ CREATE TABLE `Neighbors` (
 	, `cat_from` varchar(255) NOT NULL
 	, `sumSim` bigint NOT NULL
 	, `nSim` int NOT NULL
-	, `avgSim100` int NOT NULL
+	, `simAvg100` int NOT NULL
 	, `tUpdate` datetime NOT NULL
 	, PRIMARY KEY (`user_i`, `cat_i`, `user_from`, `cat_from`)
 );
@@ -1803,7 +1790,7 @@ CREATE TABLE `Neighbors` (
 
 `nSim`: Number of contents used to calculate the similarity, int, NOT NULL
 
-`avgSim100` = Math.round(100*sumSim/(nSim&gt;10?nSim:10));
+`simAvg100` = Math.round(100*sumSim/(nSim&gt;10?nSim:10));
 
 
 
@@ -1855,37 +1842,11 @@ CREATE TABLE `NeighborListFrom` (
 );
 
 `userCatList`=
-"user_to	cat_to	avgSim100
-df0017	[Music/Break]--K-Pop	10000"
+"user_to	cat_to
+df0017	[Music/Break]--K-Pop"
 
-# Sort by avgSim100 desc
-# Cut 200 lis every nUpdate%50==0
-```/
-
-</div>
-
-
-
-### TABLE `NeighborListTo`
-
-<div id="table-NeighborListTo"><div class="number none">NeighborListTo</div>
-
-```[.linenums.lang-sql.scrollable]
-CREATE TABLE `NeighborListTo` (
-	`user_to` bigint NOT NULL
-	, `cat_to` varchar(255) NOT NULL
-	, `userCatList` bigint NOT NULL
-	, `nUpdate` int NOT NULL DEFAULT 1
-	, `tUpdate` datetime NOT NULL
-	, PRIMARY KEY (`user_to`, `cat_to`)
-);
-
-`userCatList`=
-"user_to	cat_to	avgSim100
-df0017	[Music/Break]--K-Pop	10000"
-
-# Sort by avgSim100 desc
-# Cut 200 lis every nUpdate%50==0
+# Sort by simAvg100 desc : table `Neighbors` 에서 simAvg100 찾아서 비교.
+# Sort and Cut 200 lis every nUpdate%50==0
 ```/
 
 </div>
