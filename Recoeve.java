@@ -481,17 +481,10 @@ public void start() {
 			// String toDo=path.replaceFirst("^/reco/","");
 			String toDo=path.substring(6);
 			switch (toDo) {
-			case "infos": // path=/reco/infos
+			case "defs": // path=/reco/defs
 				req.response().putHeader("Content-Type","text/plain");
 				req.bodyHandler( (Buffer data) -> {
-					String res=db.recoInfos(data.toString());
-					req.response().end(res);
-				} );
-				break;
-			case "descs": // path=/reco/descs
-				req.response().putHeader("Content-Type","text/plain");
-				req.bodyHandler( (Buffer data) -> {
-					String res=db.recoDescs(data.toString());
+					String res=db.recoDefs(data.toString());
 					req.response().end(res);
 				} );
 				break;
