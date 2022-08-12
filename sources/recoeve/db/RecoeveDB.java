@@ -140,27 +140,27 @@ private PreparedStatement pstmtPutCatList;
 private PreparedStatement pstmtGetUriList;
 private PreparedStatement pstmtPutUriList;
 
-private PreparedStatement pstmtGetURIstatDefCats;
-private PreparedStatement pstmtGetURIstatDefCat;
-private PreparedStatement pstmtPutURIstatDefCat;
-private PreparedStatement pstmtGetURIstatDefTitles;
-private PreparedStatement pstmtGetURIstatDefTitle;
-private PreparedStatement pstmtPutURIstatDefTitle;
-private PreparedStatement pstmtGetURIstat;
-private PreparedStatement pstmtPutURIstat;
+private PreparedStatement pstmtPutNeighbors;
+private PreparedStatement pstmtGetNeighbors;
+private PreparedStatement pstmtPutNeighborListFrom;
+private PreparedStatement pstmtGetNeighborListFrom;
 
-private PreparedStatement pstmtGetURIstatDefDescs;
-private PreparedStatement pstmtGetURIstatDefDesc;
-private PreparedStatement pstmtPutURIstatDefDesc;
+private PreparedStatement pstmtPutRecoStat;
+private PreparedStatement pstmtGetRecoStat;
 
-// private PreparedStatement pstmtGetNeighbor;
-// private PreparedStatement pstmtGetFollower;
-// private PreparedStatement pstmtGetNeighbors;
-// private PreparedStatement pstmtGetNeighborsOrdered;
-// private PreparedStatement pstmtGetFollowers;
-// private PreparedStatement pstmtPutNeighbor;
+private PreparedStatement pstmtPutRecoStatDefCat;
+private PreparedStatement pstmtGetRecoStatDefCat;
+private PreparedStatement pstmtPutRecoStatDefTitle;
+private PreparedStatement pstmtGetRecoStatDefTitle;
+private PreparedStatement pstmtPutRecoStatDefDesc;
+private PreparedStatement pstmtGetRecoStatDefDesc;
 
-// private PreparedStatement pstmtGetRecentRecos;
+private PreparedStatement pstmtPutRecoStatDefCatSet;
+private PreparedStatement pstmtGetRecoStatDefCatSet;
+private PreparedStatement pstmtPutRecoStatDefTitleSet;
+private PreparedStatement pstmtGetRecoStatDefTitleSet;
+private PreparedStatement pstmtPutRecoStatDefDescSet;
+private PreparedStatement pstmtGetRecoStatDefDescSet;
 
 public RecoeveDB() {
 	try {
@@ -196,29 +196,28 @@ public RecoeveDB() {
 		pstmtPutCatList=con.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
 		pstmtGetUriList=con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutUriList=con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
-		
-		pstmtGetURIstatDefCats=con.prepareStatement("SELECT * FROM `URIstatDefCat` WHERE `uri`=? ORDER BY `count` DESC LIMIT 5;", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		pstmtGetURIstatDefCat=con.prepareStatement("SELECT * FROM `URIstatDefCat` WHERE `uri`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtPutURIstatDefCat=con.prepareStatement("INSERT INTO `URIstatDefCat` (`uri`, `cat`) VALUES (?, ?);");
-		pstmtGetURIstatDefTitles=con.prepareStatement("SELECT * FROM `URIstatDefTitle` WHERE `uri`=? ORDER BY `count` DESC LIMIT 5;", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		pstmtGetURIstatDefTitle=con.prepareStatement("SELECT * FROM `URIstatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtPutURIstatDefTitle=con.prepareStatement("INSERT INTO `URIstatDefTitle` (`uri`, `title`) VALUES (?, ?);");
-		pstmtGetURIstat=con.prepareStatement("SELECT * FROM `URIstat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtPutURIstat=con.prepareStatement("INSERT INTO `URIstat` (`uri`) VALUES (?);");
-		
-		pstmtGetURIstatDefDescs=con.prepareStatement("SELECT * FROM `URIstatDefDesc` WHERE `uri`=? ORDER BY `avgV100` DESC LIMIT 5;", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		pstmtGetURIstatDefDesc=con.prepareStatement("SELECT * FROM `URIstatDefDesc` WHERE `user_i`=? and `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtPutURIstatDefDesc=con.prepareStatement("INSERT INTO `URIstatDefDesc` (`user_i`, `uri`) VALUES (?, ?);");
-		
-		// pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		// pstmtGetFollower=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_from`=? and `cat_from`=? and `user_i`=? and `cat_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		// pstmtGetNeighbors=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		// pstmtGetNeighborsOrdered=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_from`=? and `cat_from`=? ORDER BY `simAvg100` DESC;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		// pstmtGetFollowers=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		// pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-		
-		// pstmtGetRecentRecos=con.prepareStatement("SELECT * FROM `Recos` WHERE `uri`=? LIMIT 100;" // ORDER BY `tLast` DESC
-		// 	, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+		pstmtPutNeighbors=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+		pstmtGetNeighbors=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+		pstmtGetNeighborListFrom=con.prepareStatement("SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+		pstmtPutRecoStat=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`) VALUES (?, ?, ?);");
+		pstmtGetRecoStat=con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+		pstmtPutRecoStatDefCat=con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
+		pstmtGetRecoStatDefCat=con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutRecoStatDefTitle=con.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
+		pstmtGetRecoStatDefTitle=con.prepareStatement("SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutRecoStatDefDesc=con.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
+		pstmtGetRecoStatDefDesc=con.prepareStatement("SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+		pstmtPutRecoStatDefCatSet=con.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
+		pstmtGetRecoStatDefCatSet=con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutRecoStatDefTitleSet=con.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
+		pstmtGetRecoStatDefTitleSet=con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutRecoStatDefDescSet=con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
+		pstmtGetRecoStatDefDescSet=con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	} catch (SQLException e) {
 		err(e);
 	}
@@ -431,7 +430,7 @@ static {
 public static byte[] pwdEncrypt(byte[] salt, String pwd)
 	throws Exception {
 		// NoSuchAlgorithmException, UnsupportedEncodingException
-	return sha512.digest((new String(salt,"UTF-8")+pwd).getBytes("UTF-8"));
+	return sha512.digest((new String(salt, "UTF-8")+pwd).getBytes("UTF-8"));
 }
 public static byte[] sha512(String str)
 	throws Exception {
@@ -473,7 +472,7 @@ public boolean createUser(BodyData inputs, String ip, String now) {
 			user=findUserById(id);
 			if (user.next()) {
 				Gmail.sendVeriKey(email, id, veriKey);
-				updateUserClass(0,+1); // 0: Not verified yet
+				updateUserClass(0, +1); // 0: Not verified yet
 				logs(user.getLong("i"), now, ip, "snu", true); // sign-up
 				done=true;
 			}
@@ -531,7 +530,7 @@ public boolean verifyUser(String cookieI, String path, String ip) {
 	boolean done=false;
 	long user_i=Long.parseLong(cookieI, 16);
 	int i=path.indexOf("/");
-	String id=path.substring(0,i);
+	String id=path.substring(0, i);
 	String veriKey=path.substring(i+1);
 	String now=now();
 	try {
@@ -543,12 +542,12 @@ public boolean verifyUser(String cookieI, String path, String ip) {
 			&&user.getInt("class")==0
 			&&checkTimeDiff(now, user.getString("tReg"), "24:00:00") ) {
 			// IP check is needed???
-			updateUserClass(0,-1); // 0: Not verified yet
+			updateUserClass(0, -1); // 0: Not verified yet
 			user.updateInt("class", 6);
-			updateUserClass(6,+1); // 6: Initial
-			updateUserClass(-2,+1); // -2: Total number of accounts
+			updateUserClass(6, +1); // 6: Initial
+			updateUserClass(-2, +1); // -2: Total number of accounts
 			String email=user.getString("email");
-			updateEmailStat(email.substring(email.indexOf("@")+1),+1);
+			updateEmailStat(email.substring(email.indexOf("@")+1), +1);
 			user.updateString("veriKey", null);
 			user.updateRow();
 			logs(user_i, now, ip, "vrf", true); // verified.
@@ -675,8 +674,8 @@ public boolean updateUserClass(int classI, int increment) throws SQLException {
 	return (pstmtUpdateUserClass.executeUpdate()>0);
 }
 
-public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
-	Map<String,String> varMap=new HashMap<String,String>();
+public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
+	Map<String, String> varMap=new HashMap<String, String>();
 	long my_i=-1;
 	String myIndex="";
 	if (cookie.get("I")!=null) {
@@ -714,8 +713,8 @@ public Map<String,String> varMapUserPage(Cookie cookie, String userId) {
 	varMap.putIfAbsent("{--CatList--}", "");
 	return varMap;
 }
-public Map<String,String> varMapMyPage(Cookie cookie) {
-	Map<String,String> varMap=new HashMap<String,String>();
+public Map<String, String> varMapMyPage(Cookie cookie) {
+	Map<String, String> varMap=new HashMap<String, String>();
 	String myIndex="";
 	if (cookie.get("I")!=null) {
 		myIndex=cookie.get("I");
@@ -948,12 +947,12 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 	try {
 		pstmtCreateUserSession.setLong(1, user_i);
 		pstmtCreateUserSession.setTimestamp(2, Timestamp.valueOf(now));
-		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3,11), Encrypt.iterSSNFull)));
+		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3, 11), Encrypt.iterSSNFull)));
 		pstmtCreateUserSession.setBytes(4, salt);
 		pstmtCreateUserSession.setString(5, ip);
-		String now_=now.replaceAll("\\s","_");
+		String now_=now.replaceAll("\\s", "_");
 		if (pstmtCreateUserSession.executeUpdate()>0) {
-			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i,16))
+			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i, 16))
 					.setPath("/").setHttpOnly(true).setMaxAge(secondsSSN));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_)
 					.setPath("/").setMaxAge(secondsSSN-30));
@@ -979,11 +978,11 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 	pstmtCreateUserRemember.setInt(6, Integer.parseInt(inputs.get(1, "screenWidth")));
 	pstmtCreateUserRemember.setInt(7, Integer.parseInt(inputs.get(1, "screenHeight")));
 	pstmtCreateUserRemember.setString(8, ip);
-	String now_=now.replaceAll("\\s","_");
+	String now_=now.replaceAll("\\s", "_");
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
 		// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
-		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_i,16))
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_i, 16))
 				.setPath("/").setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
@@ -1096,13 +1095,13 @@ public boolean logsCommit(long user_i, String t, String ip, String log, boolean 
 // 			for (int i=1;i<size;i++) {
 // 				ResultSet rs=getNeighbors(user_from, cat_froms.get(i, "cat_from"));
 // 				while (rs.next()) {
-// 					res+="\n"+Long.toString(rs.getLong("user_i"),16)
+// 					res+="\n"+Long.toString(rs.getLong("user_i"), 16)
 // 						+"\t"+rs.getString("cat_i")
-// 						+"\t"+Long.toString(user_from,16)
+// 						+"\t"+Long.toString(user_from, 16)
 // 						+"\t"+cat_froms.get(i, "cat_from")
-// 						+"\t"+Long.toString(rs.getLong("sumSim"),16)
-// 						+"\t"+Integer.toString(rs.getInt("nSim"),16)
-// 						+"\t"+Integer.toString(rs.getInt("simAvg100"),16)
+// 						+"\t"+Long.toString(rs.getLong("sumSim"), 16)
+// 						+"\t"+Integer.toString(rs.getInt("nSim"), 16)
+// 						+"\t"+Integer.toString(rs.getInt("simAvg100"), 16)
 // 						+"\t"+rs.getString("tUpdate");
 // 				}
 // 			}
@@ -1188,7 +1187,7 @@ public ResultSet getReco(long user_i, String uri) throws SQLException {
 // }
 
 // public Set<Long> setOfRecentRecoersWithVal(String uri) throws SQLException {
-// 	ResultSet rs=getURIstat(uri);
+// 	ResultSet rs=getRecoStat(uri);
 // 	RecentRecoers recentRecoersWithVal=new RecentRecoers(rs.getString("recentRecoersWithVal"));
 // 	return recentRecoersWithVal.setOfRecoers();
 // }
@@ -1482,8 +1481,8 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 		res+="cat\tUriList\tcutP\terr";
 		int size=catList.getRowSize();
 		for (int i=1;i<size;i++) {
-			String cat=catList.get(i,"cat");
-			res+="\n"+cat+"\t"+getUriList(user_i,cat).toStringEnclosed(catList.get(i,"from"), catList.get(i,"check"));
+			String cat=catList.get(i, "cat");
+			res+="\n"+cat+"\t"+getUriList(user_i, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 		}
 	} catch (SQLException e) {
 		err(e);
@@ -1500,7 +1499,7 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 // 			UriList uriL=getUriList(user_i, cat);
 // 			String strUriL=uriL.toString().trim();
 // 			if (!strUriL.isEmpty()) {
-// 				strUriL="\""+strUriL.replaceAll("\"","\"\"")+"\"";
+// 				strUriL="\""+strUriL.replaceAll("\"", "\"\"")+"\"";
 // 			}
 // 			res+=cat+"\t"+strUriL+"\n";
 // 		}
@@ -1585,152 +1584,366 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 				// newCats.setOfSuperCats.remove(newSuperCat);
 			}
 		}
-		updateURIstat(user_i, uri, oldPts, now, -1);
+		updateRecoStat(user_i, uri, oldPts, now, -1);
 		// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-		updateURIstat(user_i, uri, newPts, now, +1);
+		updateRecoStat(user_i, uri, newPts, now, +1);
 		// updateNeighbors(user_i, uri, newCats, newPts, catL, now, +1);
 	}
 }
 
+public static final int sortPer=100;
+
 public void updateDefCat(String uri, Categories cats, int increment) throws SQLException {
-	pstmtGetURIstatDefCat.setString(1, uri);
-	pstmtPutURIstatDefCat.setString(1, uri);
+if (cats!=null&&!(cats.toString().isEmpty())) {
+	pstmtGetRecoStatDefCat.setString(1, uri);
+	pstmtGetRecoStatDefCatSet.setString(1, uri);
 	for (String cat: cats.setOfCats) {
-		pstmtGetURIstatDefCat.setString(2, cat);
-		ResultSet rs=pstmtGetURIstatDefCat.executeQuery();
+		ResultSet catSet=pstmtGetRecoStatDefCatSet.executeQuery();
+		pstmtGetRecoStatDefCat.setString(2, cat);
+		ResultSet rs=pstmtGetRecoStatDefCat.executeQuery();
 		if (rs.next()) {
 			long count=rs.getLong("count")+increment;
 			if (count==0) {
 				rs.deleteRow();
+				if (catSet.next()) {
+					StrArray catSetArray=new StrArray(catSet.getString("catSet"), false, false);
+					int n=catSetArray.getRowSize();
+					boolean removed=false;
+					for (int i=n-1;i>=0;i--) {
+						if (catSetArray.get(i, 0).equals(cat)) {
+							catSetArray.removeRow(i);
+							removed=true;
+							break;
+						}
+					}
+					if (removed) {
+						String strCatSet=catSetArray.toString();
+						if (strCatSet.isEmpty()) {
+							catSet.deleteRow();
+						} else {
+							catSet.updateString("catSet", strCatSet);
+							catSet.updateRow();
+						}
+					}
+				}
 			} else {
 				rs.updateLong("count", count);
 				rs.updateRow();
+				if (catSet.next()) {
+					int nUpdate=catSet.getInt("nUpdate")+1;
+					catSet.updateInt("nUpdate", nUpdate);
+					if (nUpdate%sortPer==0) {
+						StrArray catSetArray=new StrArray(catSet.getString("catSet"), false, false);
+						int n=catSetArray.getRowSize();
+						int[] sorted=new int[n];
+						for (int i=0;i<n;i++) {
+							sorted[i]=i;
+						}
+						long[] counts=new long[n];
+						for (int i=0;i<n;i++) {
+							String catI=catSetArray.get(i, 0);
+							pstmtGetRecoStatDefCat.setString(1, uri);
+							pstmtGetRecoStatDefCat.setString(2, catI);
+							ResultSet rsI=pstmtGetRecoStatDefCat.executeQuery();
+							if (rsI.next()) {
+								counts[i]=rsI.getLong("count");
+							} else {
+								counts[i]=0;
+							}
+						}
+						for (int i=1;i<n;i++) {
+							int temp=sorted[i];
+							int j=i;
+							for (;(j>0)&&(counts[sorted[j-1]]<counts[temp]);j--) {
+								sorted[j]=sorted[j-1];
+							}
+							sorted[j]=temp;
+						}
+						catSet.updateString("catSet", catSetArray.toString(sorted));
+					}
+					catSet.updateRow();
+				}
+			}
+		} else if (increment==1) {
+			pstmtPutRecoStatDefCat.setString(1, uri);
+			pstmtPutRecoStatDefCat.setString(2, cat);
+			pstmtPutRecoStatDefCat.executeUpdate();
+			if (catSet.next()) {
+				catSet.updateString("catSet", catSet.getString("catSet")+"\n"+StrArray.enclose(cat));
+				catSet.updateRow();
+			} else {
+				pstmtPutRecoStatDefCatSet.setString(1, uri);
+				pstmtPutRecoStatDefCatSet.setString(2, StrArray.enclose(cat));
+				pstmtPutRecoStatDefCatSet.executeQuery();
+			}
+		}
+	}
+}}
+public void updateDefTitle(String uri, String title, int increment) throws SQLException {
+if (title!=null&&!(title.isEmpty())) {
+	pstmtGetRecoStatDefTitle.setString(1, uri);
+	pstmtGetRecoStatDefTitle.setString(2, title);
+	pstmtGetRecoStatDefTitleSet.setString(1, uri);
+	ResultSet titleSet=pstmtGetRecoStatDefTitleSet.executeQuery();
+	ResultSet rs=pstmtGetRecoStatDefTitle.executeQuery();
+	if (rs.next()) {
+		long count=rs.getLong("count")+increment;
+		if (count==0) {
+			rs.deleteRow();
+			if (titleSet.next()) {
+				StrArray titleSetArray=new StrArray(titleSet.getString("titleSet"), false, false);
+				int n=titleSetArray.getRowSize();
+				boolean removed=false;
+				for (int i=n-1;i>=0;i--) {
+					if (titleSetArray.get(i, 0).equals(title)) {
+						titleSetArray.removeRow(i);
+						removed=true;
+						break;
+					}
+				}
+				if (removed) {
+					String strTitleSet=titleSetArray.toString();
+					if (strTitleSet.isEmpty()) {
+						titleSet.deleteRow();
+					} else {
+						titleSet.updateString("titleSet", strTitleSet);
+						titleSet.updateRow();
+					}
+				}
 			}
 		} else {
-			pstmtPutURIstatDefCat.setString(2, cat);
-			pstmtPutURIstatDefCat.executeUpdate();
+			rs.updateLong("count", count);
+			rs.updateRow();
+			if (titleSet.next()) {
+				int nUpdate=titleSet.getInt("nUpdate")+1;
+				titleSet.updateInt("nUpdate", nUpdate);
+				if (nUpdate%sortPer==0) {
+					StrArray titleSetArray=new StrArray(titleSet.getString("titleSet"), false, false);
+					int n=titleSetArray.getRowSize();
+					int[] sorted=new int[n];
+					for (int i=0;i<n;i++) {
+						sorted[i]=i;
+					}
+					long[] counts=new long[n];
+					for (int i=0;i<n;i++) {
+						String titleI=titleSetArray.get(i, 0);
+						pstmtGetRecoStatDefTitle.setString(1, uri);
+						pstmtGetRecoStatDefTitle.setString(2, titleI);
+						ResultSet rsI=pstmtGetRecoStatDefTitle.executeQuery();
+						if (rsI.next()) {
+							counts[i]=rsI.getLong("count");
+						} else {
+							counts[i]=0;
+						}
+					}
+					for (int i=1;i<n;i++) {
+						int temp=sorted[i];
+						int j=i;
+						for (;(j>0)&&(counts[sorted[j-1]]<counts[temp]);j--) {
+							sorted[j]=sorted[j-1];
+						}
+						sorted[j]=temp;
+					}
+					titleSet.updateString("titleSet", titleSetArray.toString(sorted));
+				}
+				titleSet.updateRow();
+			}
+		}
+	} else if (increment==1) {
+		pstmtPutRecoStatDefTitle.setString(1, uri);
+		pstmtPutRecoStatDefTitle.setString(2, title);
+		pstmtPutRecoStatDefTitle.executeUpdate();
+		if (titleSet.next()) {
+			titleSet.updateString("titleSet", titleSet.getString("titleSet")+"\n"+StrArray.enclose(title));
+			titleSet.updateRow();
+		} else {
+			pstmtPutRecoStatDefTitleSet.setString(1, uri);
+			pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(title));
+			pstmtPutRecoStatDefTitleSet.executeQuery();
 		}
 	}
-}
-public void updateDefTitle(String uri, String title, int increment) throws SQLException {
-	pstmtGetURIstatDefTitle.setString(1, uri);
-	pstmtGetURIstatDefTitle.setString(2, title);
-	ResultSet rs=pstmtGetURIstatDefTitle.executeQuery();
+}}
+public void updateDefDesc(String uri, String desc, int increment) throws SQLException {
+if (desc!=null&&!(desc.isEmpty())) {
+	pstmtGetRecoStatDefDesc.setString(1, uri);
+	byte[] descHash;
+	try {
+		descHash=sha512(desc);
+	} catch (Exception e) {
+		err(e);
+		return;
+	}
+	pstmtGetRecoStatDefDesc.setBytes(2, descHash);
+	pstmtGetRecoStatDefDescSet.setString(1, uri);
+	ResultSet descSet=pstmtGetRecoStatDefDescSet.executeQuery();
+	ResultSet rs=pstmtGetRecoStatDefDesc.executeQuery();
 	if (rs.next()) {
 		long count=rs.getLong("count")+increment;
 		if (count==0) {
 			rs.deleteRow();
+			if (descSet.next()) {
+				StrArray descSetArray=new StrArray(descSet.getString("descSet"), false, false);
+				int n=descSetArray.getRowSize();
+				boolean removed=false;
+				for (int i=n-1;i>=0;i--) {
+					if (descSetArray.get(i, 0).equals(desc)) {
+						descSetArray.removeRow(i);
+						removed=true;
+						break;
+					}
+				}
+				if (removed) {
+					String strDescSet=descSetArray.toString();
+					if (strDescSet.isEmpty()) {
+						descSet.deleteRow();
+					} else {
+						descSet.updateString("descSet", strDescSet);
+						descSet.updateRow();
+					}
+				}
+			}
 		} else {
 			rs.updateLong("count", count);
 			rs.updateRow();
+			if (descSet.next()) {
+				int nUpdate=descSet.getInt("nUpdate")+1;
+				descSet.updateInt("nUpdate", nUpdate);
+				if (nUpdate%sortPer==0) {
+					StrArray descSetArray=new StrArray(descSet.getString("descSet"), false, false);
+					int n=descSetArray.getRowSize();
+					int[] sorted=new int[n];
+					for (int i=0;i<n;i++) {
+						sorted[i]=i;
+					}
+					long[] counts=new long[n];
+					for (int i=0;i<n;i++) {
+						String descI=descSetArray.get(i, 0);
+						byte[] descIHash;
+						try {
+							descIHash=sha512(descI);
+						} catch (Exception e) {
+							err(e);
+							return;
+						}
+						pstmtGetRecoStatDefDesc.setString(1, uri);
+						pstmtGetRecoStatDefDesc.setBytes(2, descIHash);
+						ResultSet rsI=pstmtGetRecoStatDefDesc.executeQuery();
+						if (rsI.next()) {
+							counts[i]=rsI.getLong("count");
+						} else {
+							counts[i]=0;
+						}
+					}
+					for (int i=1;i<n;i++) {
+						int temp=sorted[i];
+						int j=i;
+						for (;(j>0)&&(counts[sorted[j-1]]<counts[temp]);j--) {
+							sorted[j]=sorted[j-1];
+						}
+						sorted[j]=temp;
+					}
+					descSet.updateString("descSet", descSetArray.toString(sorted));
+				}
+				descSet.updateRow();
+			}
 		}
-	} else {
-		pstmtPutURIstatDefTitle.setString(1, uri);
-		pstmtPutURIstatDefTitle.setString(2, title);
-		pstmtPutURIstatDefTitle.executeUpdate();
-	}
-}
-public void updateDefDesc(long user_i, String uri, int increment) throws SQLException {
-	pstmtGetURIstatDefDesc.setLong(1, user_i);
-	pstmtGetURIstatDefDesc.setString(2, uri);
-	ResultSet rs=pstmtGetURIstatDefDesc.executeQuery();
-	if (rs.next()) {
-		long count=rs.getLong("count")+increment;
-		if (count==0) {
-			rs.deleteRow();
+	} else if (increment==1) {
+		pstmtPutRecoStatDefDesc.setString(1, uri);
+		pstmtPutRecoStatDefDesc.setBytes(2, descHash);
+		pstmtPutRecoStatDefDesc.setString(3, desc);
+		pstmtPutRecoStatDefDesc.executeUpdate();
+		if (descSet.next()) {
+			descSet.updateString("descSet", descSet.getString("descSet")+"\n"+StrArray.enclose(desc));
+			descSet.updateRow();
 		} else {
-			rs.updateLong("count", count);
-			rs.updateRow();
+			pstmtPutRecoStatDefTitleSet.setString(1, uri);
+			pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(desc));
+			pstmtPutRecoStatDefTitleSet.executeQuery();
 		}
-	} else {
-		pstmtPutURIstatDefDesc.setLong(1, user_i);
-		pstmtPutURIstatDefDesc.setString(2, uri);
-		pstmtPutURIstatDefDesc.executeUpdate();
 	}
-}
-public ResultSet getURIstat(String uri) throws SQLException {
-	pstmtGetURIstat.setString(1, uri);
-	ResultSet rs=pstmtGetURIstat.executeQuery();
+}}
+public ResultSet putAndGetRecoStat(String uri, long user_i, String now) throws SQLException {
+	pstmtGetRecoStat.setString(1, uri);
+	ResultSet rs=pstmtGetRecoStat.executeQuery();
 	if (rs.next()) {
 		return rs;
 	} else {
-		pstmtPutURIstat.setString(1, uri);
-		pstmtPutURIstat.executeUpdate();
-		rs=pstmtGetURIstat.executeQuery();
+		pstmtPutRecoStat.setString(1, uri);
+		pstmtPutRecoStat.setString(2, Long.toString(user_i, 16));
+		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
+		pstmtPutRecoStat.executeUpdate();
+		rs=pstmtGetRecoStat.executeQuery();
 		if (rs.next()) {
 			return rs;
-		} else {
-			throw new SQLException("URIstat is not put.");
 		}
+		throw new SQLException("No RecoStat on the uri.");
 	}
 }
-public void updateURIstat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
-	ResultSet uriStat=getURIstat(uri);
-	uriStat.updateString("tUpdate", now);
+public ResultSet getRecoStat(String uri) throws SQLException {
+	pstmtGetRecoStat.setString(1, uri);
+	ResultSet rs=pstmtGetRecoStat.executeQuery();
+	if (rs.next()) {
+		return rs;
+	}
+	throw new SQLException("No RecoStat on the uri.");
+}
+
+public static final int recoStatUpdatePer=50;
+public static final int recoStatMaxRecentests=200;
+
+public void updateRecoStat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
+	ResultSet recoStat=putAndGetRecoStat(uri, user_i, now);
+	recoStat.updateString("tUpdate", now);
+	long nV=recoStat.getLong("nV");
 	if (pts.valid()) {
 		long val100=pts.val100();
-		long sumV100=uriStat.getLong("sumV100")+val100*increment;
-		long nV=uriStat.getLong("nV")+increment;
-		uriStat.updateLong("sumV100", sumV100);
-		uriStat.updateLong("nV", nV);
-		String c="c";
-		if (val100<=10) { c+="0"; }
-		else if (val100<=20) { c+="1"; }
-		else if (val100<=30) { c+="2"; }
-		else if (val100<=40) { c+="3"; }
-		else if (val100<=50) { c+="4"; }
-		else if (val100<=60) { c+="5"; }
-		else if (val100<=70) { c+="6"; }
-		else if (val100<=80) { c+="7"; }
-		else if (val100<=90) { c+="8"; }
-		else { c+="9"; }
-		long cN=uriStat.getLong(c)+increment;
-		uriStat.updateLong(c, cN);
+		recoStat.updateLong("sumV100", recoStat.getLong("sumV100")+val100*increment);
+		nV+=increment;
+		recoStat.updateLong("nV", nV);
+		String nVal100="n"+Long.toString(val100);
+		recoStat.updateLong(nVal100, recoStat.getLong(nVal100)+increment);
 	} else {
-		long cNull=uriStat.getLong("cNull")+increment;
-		uriStat.updateLong("cNull", cNull);
+		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
 	}
-	uriStat.updateRow();
-}
-public String recoInfos(String uri) {
-	String res="";
-	try {
-		pstmtGetURIstatDefCats.setString(1, uri);
-		ResultSet defCats=pstmtGetURIstatDefCats.executeQuery();
-		String strDefCats="";
-		while (defCats.next()) {
-			strDefCats+="\n"+defCats.getString("cat");
-		}
-		String heads="def-cats";
-		String contents=StrArray.enclose(strDefCats.trim());
-		
-		pstmtGetURIstatDefTitles.setString(1, uri);
-		ResultSet defTitles=pstmtGetURIstatDefTitles.executeQuery();
-		String strDefTitles="";
-		while (defTitles.next()) {
-			strDefTitles+="\n"+defTitles.getString("title");
-		}
-		heads+="\t"+"def-titles";
-		contents+="\t"+StrArray.enclose(strDefTitles.trim());
-		res=heads+"\n"+contents;
-	} catch (SQLException e) {
-		err(e);
-	}
-	return res;
-}
-public String recoDescs(String uri) {
-	String res="";
-	try {
-		pstmtGetURIstatDefDescs.setString(1, uri);
-		ResultSet defDescs=pstmtGetURIstatDefDescs.executeQuery();
-		res="def-descs";
-		while (defDescs.next()) {
-			long user_i=defDescs.getLong("user_i");
-			ResultSet reco=getReco(user_i, uri);
-			if (reco.next()) {
-				res+="\n"+StrArray.enclose(reco.getString("desc").trim());
+	if (increment>0) {
+		String recentests=Long.toString(user_i, 16)+"\n"+recoStat.getString("recentests");
+		if (nV%recoStatUpdatePer==0) {
+			String[] recoers=recentests.split("\n");
+			Set<String> recoersSet=new HashSet<String>(recoStatMaxRecentests*2);
+			int n=0;
+			List<String> recoersList=new ArrayList<String>();
+			for (String recoer : recoers) {
+				if (recoersSet.add(recoer)) {
+					n++;
+					recoersList.add(recoer);
+					if (n==recoStatMaxRecentests) { break; }
+				}
 			}
+			recentests=String.join("\n", recoersList);
 		}
+		recoStat.updateString("recentests", recentests);
+	}
+	recoStat.updateRow();
+}
+public String recoDefs(String uri) {
+	String res="";
+	try {
+		pstmtGetRecoStatDefCatSet.setString(1, uri);
+		ResultSet defCats=pstmtGetRecoStatDefCatSet.executeQuery();
+		String heads="def-cats";
+		String contents=StrArray.enclose(defCats.getString("catSet"));
+
+		pstmtGetRecoStatDefTitleSet.setString(1, uri);
+		ResultSet defTitles=pstmtGetRecoStatDefTitleSet.executeQuery();
+		heads+="\t"+"def-titles";
+		contents+="\t"+StrArray.enclose(defTitles.getString("titleSet"));
+
+		pstmtGetRecoStatDefDescSet.setString(1, uri);
+		ResultSet defDescs=pstmtGetRecoStatDefDescSet.executeQuery();
+		heads+="\t"+"def-descs";
+		contents+="\t"+StrArray.enclose(defDescs.getString("descSet"));
+
+		res=heads+"\n"+contents;
 	} catch (SQLException e) {
 		err(e);
 	}
@@ -1808,7 +2021,7 @@ public String recoDo(long user_i, String recoStr) {
 					pstmtPutReco.setString(6, title); // Null can be put?
 						updateDefTitle(uri, title, +1);
 					pstmtPutReco.setString(7, desc); // Null can be put?
-						// Update `URIstatDefDesc`
+						updateDefDesc(uri, desc, +1);
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
@@ -1816,7 +2029,7 @@ public String recoDo(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-					updateURIstat(user_i, uri, pts, now, +1);
+					updateRecoStat(user_i, uri, pts, now, +1);
 						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 					break;
@@ -1826,7 +2039,8 @@ public String recoDo(long user_i, String recoStr) {
 					boolean equalityOfCats=(catsStr==null||cats.equals(oldCats));
 					String oldTitle=reco.getString("title");
 					boolean equalityOfTitle=(title==null||title.equals(oldTitle));
-					boolean equalityOfDesc=(desc==null||desc.equals(reco.getString("desc")));
+					String oldDesc=reco.getString("desc");
+					boolean equalityOfDesc=(desc==null||desc.equals(oldDesc));
 					boolean equalityOfCmt=(cmt==null||cmt.equals(reco.getString("cmt")));
 					Points oldPts=new Points(reco.getString("val")); // can be null.
 					boolean equalityOfPts=(sa.get(i, "val")==null||pts.equals(oldPts));
@@ -1835,9 +2049,9 @@ public String recoDo(long user_i, String recoStr) {
 						res+="no change";
 					} else {
 						if (!equalityOfValuesOfPts) {
-							updateURIstat(user_i, uri, oldPts, now, -1);
+							updateRecoStat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateURIstat(user_i, uri, pts, now, +1);
+							updateRecoStat(user_i, uri, pts, now, +1);
 							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
@@ -1854,6 +2068,8 @@ public String recoDo(long user_i, String recoStr) {
 						}
 						if (!equalityOfDesc) {
 							reco.updateString("desc", desc);
+							updateDefDesc(uri, oldDesc, -1);
+							updateDefDesc(uri, desc, +1);
 						}
 						if (!equalityOfCmt) {
 							reco.updateString("cmt", cmt);
@@ -1872,12 +2088,14 @@ public String recoDo(long user_i, String recoStr) {
 				case "delete":
 					oldCats=new Categories(reco.getString("cats"));
 					oldTitle=reco.getString("title");
+					oldDesc=reco.getString("desc");
 					oldPts=new Points(reco.getString("val")); // can be null.
 					System.out.println("deleting "+reco.getString("uri"));
 					deleteCatsUriFromList(user_i, oldCats, uri, catL);
 					updateDefCat(uri, oldCats, -1);
 					updateDefTitle(uri, oldTitle, -1);
-					updateURIstat(user_i, uri, oldPts, now, -1);
+					updateDefDesc(uri, oldDesc, -1);
+					updateRecoStat(user_i, uri, oldPts, now, -1);
 					// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 					reco.deleteRow();
 					res+="deleted";
@@ -1901,6 +2119,8 @@ public String recoDo(long user_i, String recoStr) {
 	}
 	return res;
 }
+
+// put or overwrite Reco
 public String putReco(long user_i, String recoStr) {
 	String res="i\tresult";
 	String now=now();
@@ -1926,7 +2146,8 @@ public String putReco(long user_i, String recoStr) {
 					boolean equalityOfCats=(catsStr==null||cats.equals(oldCats));
 					String oldTitle=reco.getString("title");
 					boolean equalityOfTitle=(title==null||title.equals(oldTitle));
-					boolean equalityOfDesc=(desc==null||desc.equals(reco.getString("desc")));
+					String oldDesc=reco.getString("desc");
+					boolean equalityOfDesc=(desc==null||desc.equals(oldDesc));
 					boolean equalityOfCmt=(cmt==null||cmt.equals(reco.getString("cmt")));
 					Points oldPts=new Points(reco.getString("val")); // can be null.
 					boolean equalityOfPts=(sa.get(i, "val")==null||pts.equals(oldPts));
@@ -1935,9 +2156,9 @@ public String putReco(long user_i, String recoStr) {
 						res+="no change";
 					} else {
 						if (!equalityOfValuesOfPts) {
-							updateURIstat(user_i, uri, oldPts, now, -1);
+							updateRecoStat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateURIstat(user_i, uri, pts, now, +1);
+							updateRecoStat(user_i, uri, pts, now, +1);
 							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
@@ -1954,6 +2175,8 @@ public String putReco(long user_i, String recoStr) {
 						}
 						if (!equalityOfDesc) {
 							reco.updateString("desc", desc);
+							updateDefDesc(uri, oldDesc, -1);
+							updateDefDesc(uri, desc, +1);
 						}
 						if (!equalityOfCmt) {
 							reco.updateString("cmt", cmt);
@@ -1979,7 +2202,7 @@ public String putReco(long user_i, String recoStr) {
 					pstmtPutReco.setString(6, title); // Null can be put?
 						updateDefTitle(uri, title, +1);
 					pstmtPutReco.setString(7, desc); // Null can be put?
-						// Update `URIstatDefDesc`
+						updateDefDesc(uri, desc, +1);
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
@@ -1987,7 +2210,7 @@ public String putReco(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-						updateURIstat(user_i, uri, pts, now, +1);
+						updateRecoStat(user_i, uri, pts, now, +1);
 						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 				}
@@ -2042,58 +2265,5 @@ public String putReco(long user_i, String recoStr) {
 
 public static void main(String... args) {
 	// RecoeveDB db=new RecoeveDB();
-	// System.out.println(db.now().replaceAll("\\s","_").replaceAll("_", " "));
-	// System.out.println(io.vertx.core.http.Cookie.cookie("t", "0-d920-23_cn_ab:cd").encode());
-	
-	// // System.out.println(db.getCatList("kipid1"));
-	// // System.out.println(db.getUriList("kipid1", new StrArray("cat\n[사회/정치/경제]--심리")));
-	
-	// /////////////////////////////////////////////
-	// // check : id, email
-	// /////////////////////////////////////////////
-	// String ip="java/test";
-	// String id="kipacti";
-	// String email="kipacti@gmail.com";
-	// boolean idAvailable=db.idAvailable(id);
-	// boolean emailAvailable=db.emailAvailable(email);
-	// System.out.println("Checking: "+id+" and "+email);
-	// System.out.println("Availability: "+idAvailable+"\t"+emailAvailable);
-	
-	// String now=db.now();
-	// System.out.println("now : "+now);
-	
-	// /////////////////////////////////////////////
-	// // Create a user.
-	// /////////////////////////////////////////////
-	// if (idAvailable&&emailAvailable) {
-	// 	byte[] token=db.randomBytes(128);
-	// 	String tokenStr=db.hex(token);
-	// 	System.out.println(
-	// 		idAvailable+"\t"+emailAvailable+"\t"+(db.createAuthToken(now, ip, token) ? now+"\t"+tokenStr:"Token is not created.")
-	// 	);
-		
-	// 	BodyData inputs=new BodyData();
-	// 	inputs.put("tToken", now);
-	// 	inputs.put("authToken", tokenStr);
-	// 	inputs.put("userId", id);
-	// 	inputs.put("userEmail", email);
-	// 	inputs.put("userPwd", Encrypt.encrypt(tokenStr, "password", Encrypt.iterFull));
-	// 	inputs.put("userPwdCfm", "confirmed");
-	// 	System.out.println(inputs);
-	// 	if (db.checkAuthToken(inputs, ip, now)) {
-	// 		System.out.println("Token is verified.");
-	// 		if (db.createUser(inputs, ip, now)) {
-	// 			System.out.println("User is created.");
-	// 		}
-	// 	}
-	// }
-	
-	
-	// inputs.put("rememberMe", "yes");
-	// inputs.put("log", "tst"); // test
-	// inputs.put("screenWidth", "100");
-	// inputs.put("screenHeight", "100");
-	
-	// System.out.println(db.authUser(inputs, "java"));
 }
 }// public class RecoeveDB
