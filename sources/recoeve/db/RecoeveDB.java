@@ -2291,11 +2291,3 @@ public static void main(String... args) {
 	// db.updateDefs();
 }
 }// public class RecoeveDB
-
-// TRUNCATE recostat;
-// TRUNCATE recostatdefcat;
-// TRUNCATE recostatdefcatset;
-// TRUNCATE recostatdefdesc;
-// TRUNCATE recostatdefdescset;
-// TRUNCATE recostatdeftitle;
-// TRUNCATE recostatdeftitleset;
