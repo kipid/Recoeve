@@ -3572,7 +3572,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	if (r.defs) {
 		m.showDefs(r);
 	} else {
-		m.showDefs({"def-titles":"", "def-cats":""});
+		m.showDefs({"def-titles":[[""]], "def-cats":[[""]], "def-descs":[[""]]});
 		$.ajax({
 			type:"POST", url:"/reco/defs", data:uri
 			, dataType:"text"

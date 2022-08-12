@@ -1931,17 +1931,26 @@ public String recoDefs(String uri) {
 		pstmtGetRecoStatDefCatSet.setString(1, uri);
 		ResultSet defCats=pstmtGetRecoStatDefCatSet.executeQuery();
 		String heads="def-cats";
-		String contents=StrArray.enclose(defCats.getString("catSet"));
+		String contents="";
+		if (defCats.next()) {
+			contents=StrArray.enclose(defCats.getString("catSet"));
+		}
 
 		pstmtGetRecoStatDefTitleSet.setString(1, uri);
 		ResultSet defTitles=pstmtGetRecoStatDefTitleSet.executeQuery();
 		heads+="\t"+"def-titles";
-		contents+="\t"+StrArray.enclose(defTitles.getString("titleSet"));
+		contents+="\t";
+		if (defTitles.next()) {
+			contents+=StrArray.enclose(defTitles.getString("titleSet"));
+		}
 
 		pstmtGetRecoStatDefDescSet.setString(1, uri);
 		ResultSet defDescs=pstmtGetRecoStatDefDescSet.executeQuery();
 		heads+="\t"+"def-descs";
-		contents+="\t"+StrArray.enclose(defDescs.getString("descSet"));
+		contents+="\t";
+		if (defDescs.next()) {
+			contents+=StrArray.enclose(defDescs.getString("descSet"));
+		}
 
 		res=heads+"\n"+contents;
 	} catch (SQLException e) {
