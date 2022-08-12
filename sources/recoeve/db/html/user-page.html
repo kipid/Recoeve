@@ -3482,10 +3482,10 @@ m.emptifyReco=function () {
 	m.getAndShowDefsAndReco();
 };
 m.showDefs=function (r) {
-	let defTitles=r["def-titles"].trim().split("\n");
+	let defTitles=r["def-titles"];
 	let defTitlesHTML="";
 	for (let i=0;i<defTitles.length;i++) {
-		let title=defTitles[i].trim();
+		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
 			defTitlesHTML+='<div class="def-title">'+m.escapeHTML(title)+'</div>';
 		}
@@ -3499,10 +3499,10 @@ m.showDefs=function (r) {
 		$input_title[0].value=m.unescapeHTML($this.html());
 	});
 
-	let defCats=r["def-cats"].trim().split("\n");
+	let defCats=r["def-cats"];
 	let defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
 	for (let i=0;i<defCats.length;i++) {
-		let cat=defCats[i].trim();
+		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
 			defCatsHTML+='<div class="def-cat">'+m.escapeHTML(cat)+'</div> ';
 		}
@@ -3589,8 +3589,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			let defs=m.strToJSON(resp);
 			r.defs=true;
 			if (defs[1]) {
-				r["def-cats"]=defs[1]["def-cats"];
-				r["def-titles"]=defs[1]["def-titles"];
+				r["def-cats"]=m.strToJSON(defs[1]["def-cats"], false);
+				r["def-titles"]=m.strToJSON(defs[1]["def-titles"], false);
+				r["def-descs"]=m.strToJSON(defs[1]["def-descs"], false);
 				m.showDefs(r);
 			}
 		});
