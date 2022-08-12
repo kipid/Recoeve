@@ -1674,7 +1674,7 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 			} else {
 				pstmtPutRecoStatDefCatSet.setString(1, uri);
 				pstmtPutRecoStatDefCatSet.setString(2, StrArray.enclose(cat));
-				pstmtPutRecoStatDefCatSet.executeQuery();
+				pstmtPutRecoStatDefCatSet.executeUpdate();
 			}
 		}
 	}
@@ -1759,7 +1759,7 @@ if (title!=null&&!(title.isEmpty())) {
 		} else {
 			pstmtPutRecoStatDefTitleSet.setString(1, uri);
 			pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(title));
-			pstmtPutRecoStatDefTitleSet.executeQuery();
+			pstmtPutRecoStatDefTitleSet.executeUpdate();
 		}
 	}
 }}
@@ -1856,9 +1856,9 @@ if (desc!=null&&!(desc.isEmpty())) {
 			descSet.updateString("descSet", descSet.getString("descSet")+"\n"+StrArray.enclose(desc));
 			descSet.updateRow();
 		} else {
-			pstmtPutRecoStatDefTitleSet.setString(1, uri);
-			pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(desc));
-			pstmtPutRecoStatDefTitleSet.executeQuery();
+			pstmtPutRecoStatDefDescSet.setString(1, uri);
+			pstmtPutRecoStatDefDescSet.setString(2, StrArray.enclose(desc));
+			pstmtPutRecoStatDefDescSet.executeUpdate();
 		}
 	}
 }}
@@ -2263,7 +2263,39 @@ public String putReco(long user_i, String recoStr) {
 // 	return false;
 // }
 
+public void updateDefs() {
+	try {
+		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs=pstmtGetAllRecos.executeQuery();
+		String now=now();
+		while (rs.next()) {
+			long user_i=rs.getLong("user_i");
+			String uri=rs.getString("uri");
+			String title=rs.getString("title");
+			String catsStr=rs.getString("cats");
+			Categories cats=new Categories(catsStr);
+			String desc=rs.getString("desc");
+			Points pts=new Points(rs.getString("val"));
+			updateDefCat(uri, cats, +1);
+			updateDefTitle(uri, title, +1);
+			updateDefDesc(uri, desc, +1);
+			updateRecoStat(user_i, uri, pts, now, +1);
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+}
+
 public static void main(String... args) {
 	// RecoeveDB db=new RecoeveDB();
+	// db.updateDefs();
 }
 }// public class RecoeveDB
+
+// TRUNCATE recostat;
+// TRUNCATE recostatdefcat;
+// TRUNCATE recostatdefcatset;
+// TRUNCATE recostatdefdesc;
+// TRUNCATE recostatdefdescset;
+// TRUNCATE recostatdeftitle;
+// TRUNCATE recostatdeftitleset;
