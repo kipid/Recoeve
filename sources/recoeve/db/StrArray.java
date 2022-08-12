@@ -3,6 +3,7 @@ package recoeve.db;
 import java.lang.StringBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Map;
@@ -166,16 +167,56 @@ public class StrArray {
 			}
 		}
 	}
+
+	public List<String> removeRow(int row) {
+		if (0<=row&&row<arrayArray.size()) {
+			return arrayArray.remove(row);
+		}
+		return null;
+	}
 	
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
-		for (int i=0;i<arrayArray.size();i++) {
-			for (int j=0;j<arrayArray.get(i).size();j++) {
-				sb.append(" "+i+","+j+" : "+arrayArray.get(i).get(j)+"\n");
+		int rowSize=this.getRowSize();
+		for (int i=0;i<rowSize;i++) {
+			int colSize=this.getColSizeAtRow(i);
+			sb.append(enclose(arrayArray.get(i).get(0)));
+			for (int j=1;j<colSize;j++) {
+				sb.append("\t"+enclose(arrayArray.get(i).get(j)));
+			}
+			sb.append("\n");
+		}
+		return sb.toString().trim();
+	}
+
+	public String toString(int[] sorted) {
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		if (sorted.length!=rowSize) {
+			return "";
+		}
+		for (int i=0;i<rowSize;i++) {
+			int colSize=this.getColSizeAtRow(sorted[i]);
+			sb.append(enclose(arrayArray.get(sorted[i]).get(0)));
+			for (int j=1;j<colSize;j++) {
+				sb.append("\t"+enclose(arrayArray.get(sorted[i]).get(j)));
+			}
+			sb.append("\n");
+		}
+		return sb.toString().trim();
+	}
+
+	public String toIndexedString() {
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		for (int i=0;i<rowSize;i++) {
+			int colSize=this.getColSizeAtRow(i);
+			for (int j=0;j<colSize;j++) {
+				sb.append(" "+i+","+j+" : "+enclose(arrayArray.get(i).get(j))+"\n");
 			}
 			if (arrayMap!=null) {
 				for (Map.Entry<String, String> entry: arrayMap.get(i).entrySet()) {
-					sb.append(" "+i+","+entry.getKey()+" : "+entry.getValue()+"\n");
+					sb.append(" "+i+","+enclose(entry.getKey())+" : "+enclose(entry.getValue())+"\n");
 				}
 			}
 			sb.append("\n");
@@ -214,6 +255,8 @@ public class StrArray {
 	
 	public static void main(String... args) {
 		// StrArray sa=new StrArray("replacer\ten\tkr\tjp\tcn\tkk\r\n[--welcome--]\t\tRecoeve 에 오신걸 환영합니다.\tRecoeve へようこそ\t欢迎来到 Recoeve\t");
+		// System.out.println(sa);
+		// sa.removeRow(1);
 		// System.out.println(sa);
 		
 		// System.out.println(sa.get(0,5));
