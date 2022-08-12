@@ -1457,7 +1457,7 @@ CREATE TABLE `RecoStat` (
 	, `recentests` mediumtext DEFAULT NULL
 	, `tUpdate` datetime DEFAULT NULL
 	, `sumV100` bigint DEFAULT 0 # sum of round(value*100)
-	, `nV` bigint DEFAULT 0 # number of values (not including null, i.e. equal to the sum c0~9.)
+	, `nV` bigint DEFAULT 0 # number of values (not including null, i.e. equal to the sum n0~n100.)
 	# , `cIndif` bigint DEFAULT 0 # val=null, hasCatIndif() : in Cat (`indifferent`)
 	# , `cLater` bigint DEFAULT 0 # val=null, else hasCatLater() : in Cat (`later`)
 	, `nNull` bigint DEFAULT 0 # val=null, else
@@ -1566,15 +1566,18 @@ CREATE TABLE `RecoStat` (
 );
 
 SELECT * FROM `RecoStat` WHERE `uri`=?;
+pstmtGetRecoStat=con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 INSERT INTO `RecoStat` (`uri`, `tUpdate`) VALUES (?, ?);
-
+pstmtPutRecoStat=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`) VALUES (?, ?, ?);");
 
 
 `n0`~`n100`: 매번 SELECT count() 같은걸로 계산하는게 더 오래걸릴테니 점수 바뀔때마다 저장.
 
 `sumV` double or `sumV100` bigint
 # 100억 에 1 더하는 연산 같은것도 error 없이 잘 이루어 질래나? Error 뜰거 같으면 bigint 같은 datatype 쓰는게 더 나을듯도 한데...
+
+`nV`%recoStatUpdatePer==0 일때 `recentests` update (unique and cut)
 ```/
 
 </div><!-- table-RecoStat -->
@@ -1615,10 +1618,12 @@ CREATE TABLE `RecoStatDefCat` (
 
 SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;
 SELECT * FROM `RecoStatDefCat` WHERE `uri`=? ORDER BY `count` DESC LIMIT 5;
+pstmtGetRecoStatDefCat=con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 # (`uri`, `cat`) set 이 없다면,
 INSERT INTO `RecoStatDefCat` (`uri`, `cat`)
 	VALUES (?, ?);
+pstmtPutRecoStatDefCat=con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
 
 # (`uri`, `cat`) set 이 이미 있다면,
 UPDATE `RecoStatDefCat` SET `count`=`count`+1 WHERE `uri`=? and `cat`=?;
@@ -1639,12 +1644,15 @@ CREATE TABLE `RecoStatDefCatSet` (
 );
 
 catSet=
-cat	n
-[Music/Break]--K-Pop	100
-[Music]	150
+"[Music/Break]--K-Pop
+[Music]"
 
 # Sort by n,
 # when nUpdate%100==0.
+
+pstmtGetRecoStatDefCatSet=con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+pstmtPutRecoStatDefCatSet=con.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
 ```/
 
 </div><!-- table-RecoStatDefCatSet -->
@@ -1673,6 +1681,10 @@ INSERT INTO `RecoStatDefTitle` (`uri`, `title`)
 
 # (`uri`, `title`) set 이 이미 있다면,
 UPDATE `RecoStatDefTitle` SET `count`=`count`+1 WHERE `uri`=? and `title`=?;
+
+pstmtPutRecoStatDefTitle=con.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
+
+pstmtGetRecoStatDefTitle=con.prepareStatement("SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 ```/
 
 </div><!-- table-RecoStatDefTitle -->
@@ -1688,12 +1700,15 @@ CREATE TABLE `RecoStatDefTitleSet` (
 );
 
 titleSet=
-title	n
-IZ*ONE (아이즈원) - So curious	100
-IZ*ONE - So curious	30
+"IZ*ONE (아이즈원) - So curious
+IZ*ONE - So curious"
 
 # Sort by n,
 # when nUpdate%100==0.
+
+pstmtGetRecoStatDefTitleSet=con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+pstmtPutRecoStatDefTitleSet=con.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
 ```/
 
 </div><!-- table-RecoStatDefTitleSet -->
@@ -1724,6 +1739,10 @@ CREATE TABLE `RecoStatDefDesc` (
 	, `count` bigint DEFAULT 1
 	, PRIMARY KEY (`uri`, `descHash`)
 );
+
+pstmtPutRecoStatDefDesc=con.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
+
+pstmtGetRecoStatDefDesc=con.prepareStatement("SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 ```/
 
 </div><!-- table-RecoStatDefDesc -->
@@ -1740,14 +1759,18 @@ CREATE TABLE `RecoStatDefDescSet` (
 
 descSet=
 desc
-"#lyrics
+"""#lyrics
 
-......"
-"#date 2022-07-07
-..."
+......""
+""#date 2022-07-07
+..."""
 
 # Sort by n,
 # when nUpdate%100==0.
+
+pstmtGetRecoStatDefDescSet=con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+pstmtPutRecoStatDefDescSet=con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
 ```/
 
 </div><!-- table-RecoStatDefDescSet -->
@@ -1796,6 +1819,7 @@ CREATE TABLE `Neighbors` (
 
 # Get an neighbor
 SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;
+pstmtGetNeighbors=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 # Get neighbors
 SELECT * FROM `Neighbors` WHERE `user_from`=? and `cat_from`=?;
@@ -1808,6 +1832,7 @@ SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=?;
 
 # Put an Neighbor
 INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+pstmtPutNeighbors=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 ```/
 
 </div>
@@ -1847,6 +1872,10 @@ df0017	[Music/Break]--K-Pop"
 
 # Sort by simAvg100 desc : table `Neighbors` 에서 simAvg100 찾아서 비교.
 # Sort and Cut 200 lis every nUpdate%50==0
+
+pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+
+pstmtGetNeighborListFrom=con.prepareStatement("SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 ```/
 
 </div>
