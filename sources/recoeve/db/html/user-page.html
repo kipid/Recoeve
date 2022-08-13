@@ -432,6 +432,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 	<label for="desc">[--Description--]</label>
+		<div id="def-descs"></div>
 		<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
 	<label for="cmt">[--Comment--]</label>
 		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
@@ -570,6 +571,7 @@ $def_titles=$("#def-titles");
 $input_title=$("#input-title");
 $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
+$def_descs=$("#def-descs");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
 $input_val=$("#input-val");
@@ -3478,7 +3480,7 @@ m.showDefs=function (r) {
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
-			defTitlesHTML+='<div class="def-title">'+m.escapeHTML(title)+'</div>';
+			defTitlesHTML+=`<div class="def-title">${m.escapeHTML(title)}</div>`;
 		}
 	}
 	$def_titles.html(defTitlesHTML);
@@ -3495,7 +3497,7 @@ m.showDefs=function (r) {
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
-			defCatsHTML+='<div class="def-cat">'+m.escapeHTML(cat)+'</div> ';
+			defCatsHTML+=`<div class="def-cat">${m.escapeHTML(cat)}</div> `;
 		}
 	}
 	$def_cats.html(defCatsHTML);
@@ -3511,6 +3513,27 @@ m.showDefs=function (r) {
 		let l=$input_cats[0].value.length;
 		$input_cats.focus();
 		$input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
+	});
+
+	let defDescs=r["def-descs"];
+	let defDescsHTML="";
+	for (let i=0;i<defDescs.length;i++) {
+		let desc=defDescs[i][0].trim();
+		if (desc.length!==0) {
+			if (desc.length<20) {
+				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc)}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+			} else {
+				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc.substring(0,10))} ... ${m.escapeHTML(desc.substring(desc.length-10))}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+			}
+		}
+	}
+	$def_descs.html(defDescsHTML);
+	let $defDesc=$def_descs.find(".def-desc");
+	$defDesc.on("click", function (e) {
+		$defDesc.removeClass("selected");
+		let $this=$(this);
+		$this.addClass("selected");
+		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
 let $defCat=$multireco_def_cats.find(".def-cat");
