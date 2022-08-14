@@ -3410,8 +3410,10 @@ m.formatCats=function (cats) {
 	return cats;
 };
 
-m.userRecos[""]={
-	has:false, down:true, defs:true, title:"", cats:"", desc:"", cmt:"", val:m.val(""), "def-titles":"", "def-cats":""
+m.myRecos[""]=m.userRecos[""]={
+	has:false, down:true, defs:true
+	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
+	, "def-titles":[[""]], "def-cats":[[""]], "def-descs":[[""]]
 };
 m.showMyReco=function (r) {
 	if (r["has"]) {
