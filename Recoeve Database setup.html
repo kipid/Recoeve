@@ -21,7 +21,7 @@ Time data must be saved as universal, not local, for globalization.
 간단히 초기 유저들 확인용.
 
 ```
-SELECT i,id,email,class,tReg,ipReg,pwd_iteration FROM `Users` LIMIT 30,30;
+SELECT i,id,email,class,tReg,ipReg,pwd_iteration FROM `Users` LIMIT 30,100;
 
 SELECT * FROM `LogInLogs` ORDER BY 't' DESC LIMIT 0,30;
 // 정렬이 잘 안됨.
@@ -1860,11 +1860,14 @@ Reco 를 작성하거나 수정할때마다 바로바로 sim 을 update 해야 �
 CREATE TABLE `NeighborListFrom` (
 	`user_from` bigint NOT NULL
 	, `cat_from` varchar(255) NOT NULL
-	, `userCatList` bigint NOT NULL
+	, `userCatList` mediumtext NOT NULL
 	, `nUpdate` int NOT NULL DEFAULT 1
 	, `tUpdate` datetime NOT NULL
 	, PRIMARY KEY (`user_from`, `cat_from`)
 );
+
+ALTER TABLE `NeighborListFrom` MODIFY COLUMN `userCatList` mediumtext NOT NULL;
+DESC `NeighborListFrom`;
 
 `userCatList`=
 "user_to	cat_to
