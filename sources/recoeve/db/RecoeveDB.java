@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import recoeve.http.Gmail;
+import recoeve.http.NaverMail;
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
 
@@ -140,8 +140,8 @@ private PreparedStatement pstmtPutCatList;
 private PreparedStatement pstmtGetUriList;
 private PreparedStatement pstmtPutUriList;
 
-private PreparedStatement pstmtPutNeighbors;
-private PreparedStatement pstmtGetNeighbors;
+private PreparedStatement pstmtPutNeighbor;
+private PreparedStatement pstmtGetNeighbor;
 private PreparedStatement pstmtPutNeighborListFrom;
 private PreparedStatement pstmtGetNeighborListFrom;
 
@@ -197,8 +197,8 @@ public RecoeveDB() {
 		pstmtGetUriList=con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutUriList=con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
-		pstmtPutNeighbors=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-		pstmtGetNeighbors=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+		pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
 		pstmtGetNeighborListFrom=con.prepareStatement("SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
@@ -471,7 +471,7 @@ public boolean createUser(BodyData inputs, String ip, String now) {
 		if (pstmtCreateUser.executeUpdate()>0) {
 			user=findUserById(id);
 			if (user.next()) {
-				Gmail.sendVeriKey(email, id, veriKey);
+				NaverMail.sendVeriKey(email, id, veriKey);
 				updateUserClass(0, +1); // 0: Not verified yet
 				logs(user.getLong("i"), now, ip, "snu", true); // sign-up
 				done=true;
@@ -646,7 +646,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
-			// Gmail.sendChangePwd(id, email, hex(token), lang);
+			NaverMail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
 			return FileMap.replaceStr("[--pre sended email to--]"+email+"[--post sended email to--] "+"http://recoeve.net/account/changePwd?id="+id+"&email="+email+"&token="/*+hex(token)*/, lang);
 		}
@@ -1145,58 +1145,82 @@ public ResultSet getReco(long user_i, String uri) throws SQLException {
 	return pstmtGetReco.executeQuery();
 }
 
-// public ResultSet getNeighbor(long user_i, String cat_i, long user_from, String cat_from) throws SQLException {
-// 	pstmtGetNeighbor.setLong(1, user_i);
-// 	pstmtGetNeighbor.setString(2, cat_i);
-// 	pstmtGetNeighbor.setLong(3, user_from);
-// 	pstmtGetNeighbor.setString(4, cat_from);
-// 	return pstmtGetNeighbor.executeQuery();
-// }
-// public ResultSet getFollower(long user_i, String cat_i, long user_from, String cat_from) throws SQLException {
-// 	pstmtGetFollower.setLong(1, user_i);
-// 	pstmtGetFollower.setString(2, cat_i);
-// 	pstmtGetFollower.setLong(3, user_from);
-// 	pstmtGetFollower.setString(4, cat_from);
-// 	return pstmtGetFollower.executeQuery();
-// }
-// public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat_from, long sumSim, int nSim, int simAvg100, String now) throws SQLException {
-// 	pstmtPutNeighbor.setLong(1, user_i);
-// 	pstmtPutNeighbor.setString(2, cat_i);
-// 	pstmtPutNeighbor.setLong(3, user_from);
-// 	pstmtPutNeighbor.setString(4, cat_from);
-// 	pstmtPutNeighbor.setLong(5, sumSim);
-// 	pstmtPutNeighbor.setInt(6, nSim);
-// 	pstmtPutNeighbor.setInt(7, simAvg100);
-// 	pstmtPutNeighbor.setString(8, now);
-// 	return pstmtPutNeighbor.executeUpdate()==1;
-// }
-// public ResultSet getNeighbors(long user_from, String cat_from) throws SQLException {
-// 	pstmtGetNeighbors.setLong(1, user_from);
-// 	pstmtGetNeighbors.setString(2, cat_from);
-// 	return pstmtGetNeighbors.executeQuery();
-// }
-// public ResultSet getNeighborsOrdered(long user_from, String cat_from) throws SQLException {
-// 	pstmtGetNeighborsOrdered.setLong(1, user_from);
-// 	pstmtGetNeighborsOrdered.setString(2, cat_from);
-// 	return pstmtGetNeighborsOrdered.executeQuery();
-// }
-// public ResultSet getFollowers(long user_i, String cat_i) throws SQLException {
-// 	pstmtGetFollowers.setLong(1, user_i);
-// 	pstmtGetFollowers.setString(2, cat_i);
-// 	return pstmtGetFollowers.executeQuery();
+public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat_from, long sumSim, int nSim, int simAvg100, String now) throws SQLException {
+	pstmtPutNeighbor.setLong(1, user_i);
+	pstmtPutNeighbor.setString(2, cat_i);
+	pstmtPutNeighbor.setLong(3, user_from);
+	pstmtPutNeighbor.setString(4, cat_from);
+	pstmtPutNeighbor.setLong(5, sumSim);
+	pstmtPutNeighbor.setInt(6, nSim);
+	pstmtPutNeighbor.setInt(7, simAvg100);
+	pstmtPutNeighbor.setString(8, now);
+	return pstmtPutNeighbor.executeUpdate()==1;
+}
+public ResultSet getNeighbor(long user_i, String cat_i, long user_from, String cat_from) throws SQLException {
+	pstmtGetNeighbor.setLong(1, user_i);
+	pstmtGetNeighbor.setString(2, cat_i);
+	pstmtGetNeighbor.setLong(3, user_from);
+	pstmtGetNeighbor.setString(4, cat_from);
+	return pstmtGetNeighbor.executeQuery();
+}
+public boolean putNeighborListFrom(long user_from, String cat_from, String userCatList, String now) throws SQLException {
+	pstmtPutNeighborListFrom.setLong(1, user_from);
+	pstmtPutNeighborListFrom.setString(2, cat_from);
+	pstmtPutNeighborListFrom.setString(3, userCatList);
+	pstmtPutNeighborListFrom.setTimestamp(4, Timestamp.valueOf(now));
+	return pstmtPutNeighborListFrom.executeUpdate()==1;
+}
+public ResultSet getNeighborListFrom(long user_from, String cat_from) throws SQLException {
+	pstmtGetNeighborListFrom.setLong(1, user_from);
+	pstmtGetNeighborListFrom.setString(2, cat_from);
+	ResultSet rs=pstmtGetNeighborListFrom.executeQuery();
+	return rs;
+	// if (rs.next()) {
+	// 	rs.getString("userCatList");
+	// }
+}
+public Set<Long> getRecentests(String uri) throws SQLException {
+	ResultSet rs=getRecoStat(uri);
+	String[] recentests=rs.getString("recentests").split("\n");
+	Set<Long> setOfRecentests=new HashSet<Long>(recentests.length*2);
+	for (int i=0;i<recentests.length;i++) {
+		setOfRecentests.add(Long.parseLong(recentests[i], 16));
+	}
+	return setOfRecentests;
+}
+// public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
+// 	if (pts.valid()) {
+// 		if (increment==1) {
+// 			//////////////////////////////////////////////////////
+// 			// Update existing neighbors and recentests.
+// 			//////////////////////////////////////////////////////
+// 			Set<Long> recentests=getRecentests(uri);
+// 			recentests.remove(user_from);
+// 			for (String cat_from: cats.setOfCats) {
+// 				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
+// 				for (Long user_to: recentests) {
+// 					ResultSet reco_to=getReco(user_to, uri);
+// 					if (reco_to.next()) {
+// 						Points pts_to=new Points(reco_to.getString("val"));
+// 						if (pts_to.valid()) {
+// 							Categories cats_to=new Categories(reco_to.getString("cats"));
+// 							for (String cat_to: cats_to.setOfCats) {
+// 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+// 								if (neighbor.next()) {
+// 									ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
+// 								} else {
+
+// 								}
+// 							}
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
 // }
 
-// public Set<Long> setOfRecentRecoersWithVal(String uri) throws SQLException {
-// 	ResultSet rs=getRecoStat(uri);
-// 	RecentRecoers recentRecoersWithVal=new RecentRecoers(rs.getString("recentRecoersWithVal"));
-// 	return recentRecoersWithVal.setOfRecoers();
-// }
-// public void updateNeighbors(long user_i, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
-// 	if (pts.valid()) {
-// 		//////////////////////////////////////////////////////
-// 		// Update existing neighbors and followers.
-// 		//////////////////////////////////////////////////////
-// 		for (String cat: cats.setOfSuperCats) {
+
 // 			ResultSet neighbors=getNeighbors(user_i, cat);
 // 			while (neighbors.next()) {
 // 				ResultSet reco=getReco(neighbors.getLong("user_i"), uri);
