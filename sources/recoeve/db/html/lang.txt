@@ -1,7 +1,7 @@
-rp	i	en	ko	ja	zh	desc
-Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Description
+rp	i	en	ko	ja	zh	es	desc
+Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es	Description
 [--version--]	1	Ver. 0.6.0. (2022-08-12).
-[--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve
+[--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	Bienvenido a Recoeve
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
 <div class=""p replace-reco-eve"">Things that worth spreading, but so specialized especially to a few experts, will be propagated through your neighbors of that particular fields/categories in Recoeve. (You do not have to send messages to them. Just reco it, then the recos will spread out, finding automatically which users might be interested in this.)</div>"	"<div class=""p replace-reco-eve"">관심있게 본 기사/뉴스, 즐겨듣는 음악, 재밌었던 영상, 다시 찾고싶은 사이트 등 평가를 내리고 싶은 어떤 것이든 기록 (Record Everything) 하세요. 그 평가들을 바탕으로 자동으로 당신과 비슷한 사람들과 연결되어 보세요. 그리고 그들로부터 당신에게 특화된 새로운 것들을 추천받아 보세요 (Recommendations for Everything).</div>
@@ -14,79 +14,80 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 <div class=""p replace-reco-eve"">尤其是那些高品质的专业等内容推荐好或有东西在一个艰难的扩散趋势的地区。通过有组织的与同一人连接的类别/部门 Recoeve 列在一个特定区域，并满足在这一领域的专业化，个性化的建议的故事。 （现在不需要派一个独立的建议，他们的消息。记录（Reco）只请。自动查找和人可能喜欢你的 Reco 将交付给你和其他人。）</div>
 <div class=""p"">Sorry for the machine translation. I am 99% sure that the above writing and possibly others elsewhere be flawed since I am terribly poor at the Chinese language. Please give us corrections and errata reports through <a href=""http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions"">this page</a>.</div>"
 [--foot--]	4	<a href="http://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. Please give us feedbacks, error or errata reports, and suggestions through <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">this blog page</a>.	<a href="http://recoeve.net/">Recoeve.net</a> 는 현재 알파 테스트 단계에 있습니다. 에러나 오타를 발견하시거나, 제안사항, 도움이 필요한 부분이 있으시면 <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">이 블로그 페이지</a>의 댓글을 통해 알려주세요.	<a href="http://recoeve.net/">Recoeve.net</a> は現在アルファテスト段階にあります。エラーやミスを発見していただくか、提案、助けが必要な部分がございましたら、<a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">このブログのページ</a>のコメントでお知らせください。	<a href="http://recoeve.net/">Recoeve.net</a> 目前處於alpha測試階段。或者發現錯誤或錯別字，建議，讓我知道，如果你有需要通過這個 <a href="http://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions">博客頁面</a> 的評論幫助任何地區。
-[--ID--]	10	ID	아이디	ユーザ名	用户名
-[--E-mail--]	11	E-mail	이메일	メール	电子邮件
-[--Password--]	12	Password	비밀번호	パスワード	密碼
-[--Password confirm--]	13	Password confirm	비밀번호 확인	パスワードの確認	確認密碼
-[--Remember me--]	14	Remember me	로그인 유지	ログインキープ	登录保持
-[--Log in--]	15	Log in	로그인	ログイン	登入
-[--Forgot password--]	16	Forgot password	비밀번호 잊어버림	パスワードを忘れた	忘記密碼
-[--Sign up for Recoeve--]	17	Sign up for Recoeve	Recoeve 가입하기	Recoeve 登録	Recoeve 注册
-[--Change password--]	18	Change password	비밀번호 변경하기	パスワードを変更する	更改密碼
-[--ID or E-mail is empty.--]	20	ID or E-mail is empty.	아이디/이메일을 입력해주세요.	ID /メールアドレスを入力してください。	ID/請輸入您的電子郵件。
-[--ID or E-mail is too short.--]	21	ID or E-mail is too short.	아이디/이메일이 너무 짧습니다.	ID /メールアドレスが短すぎます。	用戶名/電子郵件太短。
-[--Password is empty.--]	22	Password is empty.	비밀번호를 입력해주세요.	パスワードを入力してください。	請輸入您的密碼。
-[--Password is too short.--]	23	Password is too short.	비밀번호가 너무 짧습니다.	パスワードが短すぎます。	密碼太短。
-[--Password is too long.--]	24	Password is too long.	비밀번호가 너무 깁니다.	パスワードが長すぎます。	密碼太長。
-[--is of invalid form.--]	25	is of invalid form.	은 잘못된 형식입니다.	は無効な形式です。	這是錯誤的類型。
+[--ID--]	10	ID	아이디	ユーザ名	用户名	IDENTIFICACIÓN
+[--E-mail--]	11	E-mail	이메일	メール	电子邮件	Correo electrónico
+[--Password--]	12	Password	비밀번호	パスワード	密碼	Clave
+[--Password confirm--]	13	Password confirm	비밀번호 확인	パスワードの確認	確認密碼	Contraseña confirmada
+[--Remember me--]	14	Remember me	로그인 유지	ログインキープ	登录保持	Acuérdate de mí
+[--Log in--]	15	Log in	로그인	ログイン	登入	Iniciar sesión
+[--Forgot password--]	16	Forgot password	비밀번호 잊어버림	パスワードを忘れた	忘記密碼	Se te olvidó tu contraseña
+[--Sign up for Recoeve--]	17	Sign up for Recoeve	Recoeve 가입하기	Recoeve 登録	Recoeve 注册	Regístrese en Recoeve
+[--Change password--]	18	Change password	비밀번호 변경하기	パスワードを変更する	更改密碼	Cambia la contraseña
+[--ID or E-mail is empty.--]	20	ID or E-mail is empty.	아이디/이메일을 입력해주세요.	ID /メールアドレスを入力してください。	ID/請輸入您的電子郵件。	ID o correo electrónico está vacío.
+[--ID or E-mail is too short.--]	21	ID or E-mail is too short.	아이디/이메일이 너무 짧습니다.	ID /メールアドレスが短すぎます。	用戶名/電子郵件太短。	ID o correo electrónico es demasiado corto.
+[--Password is empty.--]	22	Password is empty.	비밀번호를 입력해주세요.	パスワードを入力してください。	請輸入您的密碼。	La contraseña está vacía.
+[--Password is too short.--]	23	Password is too short.	비밀번호가 너무 짧습니다.	パスワードが短すぎます。	密碼太短。	La contraseña es demasiado corta.
+[--Password is too long.--]	24	Password is too long.	비밀번호가 너무 깁니다.	パスワードが長すぎます。	密碼太長。	La contraseña es demasiado larga.
+[--is of invalid form.--]	25	is of invalid form.	은 잘못된 형식입니다.	は無効な形式です。	這是錯誤的類型。	es de forma inválida.
 [--pre already sended email to--]	26	We have already sended an email to 	10분내로 이미
 [--post already sended email to--]	27	 within 10 minutes. Please check your email first, and try again after 10 minutes.	 로 이메일을 보냈습니다. 이메일을 우선 확인하시고 10분뒤에 다시 시도해 주세요.
-[--pre sended email to--]	28	We sended an email to
+[--pre sended email to--]	28	We sended an email to	이메일 주소
 [--post sended email to--]	29	. Check it within 10 minutes.	 로 이메일을 보냈습니다. 10분내로 확인해주세요.
-[--Checking ID/E-mail--]	30	Checking ID/E-mail	아이디/이메일을 확인중입니다.	ID /電子メールを確認しています。	ID/檢查電子郵件。
-[--Request times out.--]	31	Request times out.	요청이 중단되었습니다.	リクエストが中断されました。	請求被中止。
-[--Please click the Log-in button again.--]	32	Please click the Log-in button again.	로그인 버튼을 다시 클릭해주세요.	ログインボタンをもう一度クリックしてください。	再次登錄按鈕點擊。
-[--Please click the Forgot password button again.--]	33	Please click the Forgot password button again.	비밀번호 잊어버림 버튼을 다시 클릭해주세요.	もう一度[パスワードを忘れた場合]ボタンをクリックしてください。	請再次單擊忘記密碼按鈕。
-[--Please click the change password button again.--]	34	Please click the change password button again.	비밀번호 바꾸기 버튼을 다시 눌러주세요.	もう一度パスワード変更ボタンをクリックしてください。	請再次單擊更改密碼按鈕。
-[--Password is being encrypted.--]	35	Password is being encrypted.	비밀번호가 암호화되고 있습니다.	パスワードが暗号化されています。	你的密碼進行加密。
-[--Logging in--]	36	Logging in	로그인 중입니다.	ログイン中です。	您登錄。
-[--Sending an email--]	37	Sending an email	이메일을 보내는 중입니다.	メールを送信する	發送電子郵件
-[--Please wait.--]	38	Please wait.	잠시만 기다려 주세요.	しばらくお待ちください。	請稍候
-[--ID is empty.--]	40	ID is empty.	아이디를 입력해주세요.	IDを入力してください。	請輸入您的用戶名。
-[--ID is too short.--]	41	ID is too short.	아이디가 너무 짧습니다.	ユーザ名が短すぎます。	用戶名是太短了。
-[--ID is too long.--]	42	ID is too long.	아이디가 너무 깁니다.	ユーザ名が長すぎます。	用戶名太長。
-[--length--]	43	length	길이	長さ	長度
-[--E-mail is empty.--]	44	E-mail is empty.	이메일을 입력해주세요.	メールアドレスを入力してください。	請輸入您的電子郵件。
-[--Confirm your password correctly.--]	50	Confirm your password correctly.	비밀번호가 일치하지 않습니다.	パスワードが一致しません。	密碼不匹配。
-[--Checking ID and E-mail--]	60	Checking ID and E-mail	아이디와 이메일을 확인중입니다.	ユーザ名とメールを確認しています。	檢查您的用戶名和電子郵件。
-[--Please click the Sign-up button again.--]	61	Please click the Sign-up button again.	가입하기 버튼을 다시 클릭해주세요.	登録ボタンをもう一度クリックしてください。	請再次點擊加入按鈕。
-[--Signing up--]	62	Signing up	가입 요청 중	登録要求の中で	登錄請求
-[--is already in use. Please try another ID.--]	63	is already in use. Please try another ID.	는 이미 사용중입니다.	は使用中です。	它已在使用中。
-[--is already registered. Please try another e-mail.--]	64	is already registered. Please try another e-mail.	는 이미 등록되어 있습니다.	はすでに登録されています。	它已被註冊。
-[--Log out--]	100	Log out	로그아웃	ログアウト	登出
-[--Fuzzy Search--]	101	Fuzzy Search	검색	検索	搜索
-[--Toggle style--]	102	Toggle style	스타일 바꾸기	スタイルを変更する	改變風格
-[--See neighbors--]	103	See neighbors	이웃 보기	近所を見る	鄰居視圖
-[--Multireco mode--]	104	Multireco mode	멀티레코 모드	マルチレコモード	多記錄模式
-[--Multireco Categories--]	105	Multireco Categories	멀티레코 카테고리	マルチレコカテゴリー	Multireco 類別
-[--New Reco--]	106	New Reco	새 레코	新しいレコ	新Reco
-[--Short Keys--]	107	Short Keys	단축키	ショートカット	快捷鍵
-[--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	ポイントなしのレコを表示	顯示沒有積分的記錄
-[--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類
-[--Later--]	111	Later	나중에	後で	之後
-[--Indifferent--]	112	Indifferent	관심없음	関心なし	沒興趣
-[--Preceding--]	120	Preceding	전으로	前に	前
-[--Following--]	121	Following	앞으로	これから	向前
-[--To my page--]	122	To my page	내 페이지로	私のページへ	到我的頁面
-[--Backward--]	123	Backward	전으로	前に	前
-[--Forward--]	124	Forward	앞으로	これから	向前
-[--Auto skip--]	125	Auto skip	자동 넘기기	自動スキップ	自動跳過
-[--Shuffle--]	126	Shuffle	순서섞기	シャッフル	洗牌
-[--Loop--]	127	Loop	전체반복	全繰り返し	重複所有
-[--One-loop--]	128	One-loop	한곡반복	曲を繰り返し	重複一首歌
-[--ToR--]	129	ToR	목록	リスト	列表
-[--return to the original position--]	130	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置
-[--stick to the left top--]	131	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置
-[--Title--]	140	Title	제목	題名	標題
-[--Categories--]	141	Categories	카테고리	カテゴリ	類別
-[--Description--]	142	Description	설명	説明	解釋
-[--Comment--]	143	Comment	의견	コメント	評論
-[--Points--]	144	Points	점수	ポイント	點
-[--Reco--]	150	Reco	레코	レコ	Reco
-[--Edit--]	151	Edit	수정	編集	編輯
-[--Del--]	152	Del	삭제	削除	刪除
-[--Close--]	153	Close	닫기	閉じる	關閉
-[--Back--]	154	Back	원래대로	元に	起初
-[--Change orders--]	160	Change orders	순서 바꾸기	順序を変更	更改訂單
-[--OK--]	161	OK	확인	確認	確認
-[--Cancel--]	162	Cancel	취소	キャンセル	取消
+[--Checking ID/E-mail--]	30	Checking ID/E-mail	아이디/이메일을 확인중입니다.	ID /電子メールを確認しています。	ID/檢查電子郵件。	Verificación de identificación/correo electrónico
+[--Request times out.--]	31	Request times out.	요청이 중단되었습니다.	リクエストが中断されました。	請求被中止。	Solicitar los tiempos de salida.
+[--Please click the Log-in button again.--]	32	Please click the Log-in button again.	로그인 버튼을 다시 클릭해주세요.	ログインボタンをもう一度クリックしてください。	再次登錄按鈕點擊。	Haga clic en el botón de inicio de sesión nuevamente.
+[--Please click the Forgot password button again.--]	33	Please click the Forgot password button again.	비밀번호 잊어버림 버튼을 다시 클릭해주세요.	もう一度[パスワードを忘れた場合]ボタンをクリックしてください。	請再次單擊忘記密碼按鈕。	Haga clic en el botón Olvidó la contraseña de nuevo.
+[--Please click the change password button again.--]	34	Please click the change password button again.	비밀번호 바꾸기 버튼을 다시 눌러주세요.	もう一度パスワード変更ボタンをクリックしてください。	請再次單擊更改密碼按鈕。	Haga clic en el botón Cambiar contraseña nuevamente.
+[--Password is being encrypted.--]	35	Password is being encrypted.	비밀번호가 암호화되고 있습니다.	パスワードが暗号化されています。	你的密碼進行加密。	La contraseña está siendo encriptada.
+[--Logging in--]	36	Logging in	로그인 중입니다.	ログイン中です。	您登錄。	Iniciando sesión
+[--Sending an email--]	37	Sending an email	이메일을 보내는 중입니다.	メールを送信する	發送電子郵件	Enviando un correo electrónico
+[--Please wait.--]	38	Please wait.	잠시만 기다려 주세요.	しばらくお待ちください。	請稍候	Espere por favor.
+[--ID is empty.--]	40	ID is empty.	아이디를 입력해주세요.	IDを入力してください。	請輸入您的用戶名。	La identificación está vacía.
+[--ID is too short.--]	41	ID is too short.	아이디가 너무 짧습니다.	ユーザ名が短すぎます。	用戶名是太短了。	ID es demasiado corto.
+[--ID is too long.--]	42	ID is too long.	아이디가 너무 깁니다.	ユーザ名が長すぎます。	用戶名太長。	ID es demasiado largo.
+[--length--]	43	length	길이	長さ	長度	longitud
+[--E-mail is empty.--]	44	E-mail is empty.	이메일을 입력해주세요.	メールアドレスを入力してください。	請輸入您的電子郵件。	El correo electrónico está vacío.
+[--Confirm your password correctly.--]	50	Confirm your password correctly.	비밀번호가 일치하지 않습니다.	パスワードが一致しません。	密碼不匹配。	Confirme su contraseña correctamente.
+[--Checking ID and E-mail--]	60	Checking ID and E-mail	아이디와 이메일을 확인중입니다.	ユーザ名とメールを確認しています。	檢查您的用戶名和電子郵件。	Verificación de identificación y correo electrónico
+[--Please click the Sign-up button again.--]	61	Please click the Sign-up button again.	가입하기 버튼을 다시 클릭해주세요.	登録ボタンをもう一度クリックしてください。	請再次點擊加入按鈕。	Haga clic en el botón de registro nuevamente.
+[--Signing up--]	62	Signing up	가입 요청 중	登録要求の中で	登錄請求	Registrando
+[--is already in use. Please try another ID.--]	63	is already in use. Please try another ID.	는 이미 사용중입니다.	は使用中です。	它已在使用中。	Esta en uso. Pruebe con otra identificación.
+[--is already registered. Please try another e-mail.--]	64	is already registered. Please try another e-mail.	는 이미 등록되어 있습니다.	はすでに登録されています。	它已被註冊。	ya esta registrado. Pruebe con otro correo electrónico.
+[--Log out--]	100	Log out	로그아웃	ログアウト	登出	Cerrar sesión
+[--Fuzzy Search--]	101	Fuzzy Search	검색	検索	搜索	Búsqueda borrosa
+[--Toggle style--]	102	Toggle style	스타일 바꾸기	スタイルを変更する	改變風格	Estilo de palanca
+[--See neighbors--]	103	See neighbors	이웃 보기	近所を見る	鄰居視圖	Ver vecinos
+[--Multireco mode--]	104	Multireco mode	멀티레코 모드	マルチレコモード	多記錄模式	Modo multireco
+[--Multireco Categories--]	105	Multireco Categories	멀티레코 카테고리	マルチレコカテゴリー	Multireco 類別	Categorías multireco
+[--New Reco--]	106	New Reco	새 레코	新しいレコ	新Reco	Nuevo Reco
+[--Short Keys--]	107	Short Keys	단축키	ショートカット	快捷鍵	Llaves cortas
+[--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	ポイントなしのレコを表示	顯示沒有積分的記錄	Mostrar recos sin puntos
+[--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類	Sin categoría
+[--Later--]	111	Later	나중에	後で	之後	Luego
+[--Indifferent--]	112	Indifferent	관심없음	関心なし	沒興趣	Indiferente
+[--Preceding--]	120	Preceding	전으로	前に	前	Anterior
+[--Following--]	121	Following	앞으로	これから	向前	Siguiendo
+[--To my page--]	122	To my page	내 페이지로	私のページへ	到我的頁面	A mi página
+[--Backward--]	123	Backward	전으로	前に	前	Hacia atrás
+[--Forward--]	124	Forward	앞으로	これから	向前	Delantero
+[--Auto skip--]	125	Auto skip	자동 넘기기	自動スキップ	自動跳過	Saltar automáticamente
+[--Shuffle--]	126	Shuffle	순서섞기	シャッフル	洗牌	Barajar
+[--Loop--]	127	Loop	전체반복	全繰り返し	重複所有	Círculo
+[--One-loop--]	128	One-loop	한곡반복	曲を繰り返し	重複一首歌	De un bucle
+[--ToR--]	129	ToR	목록	リスト	列表	Colina
+[--return to the original position--]	130	click me to return to the original position (static position)	클릭 - 원래 위치로	クリック - 元の場所に	點擊 - 到其初始位置	Haz clic en mí para volver a la posición original (posición estática)
+[--stick to the left top--]	131	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	クリック - 左上の固定位置に	點擊 - 左上在固定位置	Haz clic en mí para seguir con la parte superior izquierda (posición fija)
+[--Title--]	140	Title	제목	題名	標題	Título
+[--Categories--]	141	Categories	카테고리	カテゴリ	類別	Categorías
+[--Description--]	142	Description	설명	説明	解釋	Descripción
+[--Comment--]	143	Comment	의견	コメント	評論	Comentario
+[--Points--]	144	Points	점수	ポイント	點	Puntos
+[--Reco--]	150	Reco	레코	レコ	Reco	Acomodar
+[--Stash--]	151	Stash	치워두기	消す	擱置	Reserva
+[--Edit--]	152	Edit	수정	編集	編輯	Editar
+[--Del--]	153	Del	삭제	削除	刪除	Dele
+[--Close--]	154	Close	닫기	閉じる	關閉	Cerca
+[--Back--]	155	Back	원래대로	元に	起初	atrás
+[--Change orders--]	160	Change orders	순서 바꾸기	順序を変更	更改訂單	Cambiar ordenes
+[--OK--]	161	OK	확인	確認	確認	OK
+[--Cancel--]	162	Cancel	취소	キャンセル	取消	Cancelar
