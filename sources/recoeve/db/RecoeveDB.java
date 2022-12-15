@@ -641,14 +641,14 @@ public String forgotPwd(StrArray inputs, String lang) {
 			String email=user.getString("email");
 			String from=user.getString("tChangePwd");
 			if (from!=null&&checkTimeDiff(now, from, "00:10:00")) {
-				return FileMap.replaceStr("[--pre already sended email to--]"+email+"[--post already sended email to--]", lang);
+				return FileMap.replaceStr("[--pre already sended email to--] "+email+"[--post already sended email to--]", lang);
 			}
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
 			NaverMail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
-			return FileMap.replaceStr("[--pre sended email to--]"+email+"[--post sended email to--] "+"http://recoeve.net/account/changePwd?id="+id+"&email="+email+"&token="/*+hex(token)*/, lang);
+			return FileMap.replaceStr("[--pre sended email to--] "+email+"[--post sended email to--]", lang);
 		}
 	} catch (SQLException e) {
 		err(e);
