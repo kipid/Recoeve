@@ -49,7 +49,7 @@ public class NaverMail{
 	}
 
 	private static final String username="kipid84";
-	private static final String password="comnascarekl12";
+	private static final String amho="************";
 	private static final Properties prop = new Properties();
 	static {
 		prop.put("mail.smtp.host", "smtp.naver.com");
@@ -60,7 +60,7 @@ public class NaverMail{
 	private static final Session session = Session.getInstance(
 		prop, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
+				return new PasswordAuthentication(username, amho);
 			}
 		}
 	);
