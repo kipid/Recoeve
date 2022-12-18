@@ -655,7 +655,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			user.updateBytes("tokenChangePwd", token);
 			NaverMail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
-			return FileMap.replaceStr("[--pre sended email to--] "+email+"[--post sended email to--]", lang);
+			return FileMap.replaceStr("[--pre sended email to--] "+encryptEmail(email)+"[--post sended email to--]", lang);
 		}
 	} catch (SQLException e) {
 		err(e);
