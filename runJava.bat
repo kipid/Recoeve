@@ -6,8 +6,6 @@ SET DC=C:\Recoeve\classes
 
 :: The whole CLASSPATH list splited by ";"
 SET CLASSPATH=.;C:\Program Files\Java\jdk-17.0.2\lib;C:\Recoeve\classes;C:\Recoeve\classes\javax.mail.jar;C:\Recoeve\classes\mysql-connector-java-8.0.19.jar;C:\Recoeve\classes\activation-1.1.1.jar;%VERTX_HOME%\conf;%VERTX_HOME%\lib\*
-:: ;C:\Program Files (x86)\MySQL\Connector.J 5.1\mysql-connector-java-5.1.33-bin.jar
-@REM mysql-connector.jar;javax.mail.jar
 
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
