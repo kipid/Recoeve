@@ -623,6 +623,13 @@ public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
 	}
 	return "SQL Exception.";
 }
+public static String encryptEmail(String email) {
+	int i=email.indexOf("@");
+	if (i!=-1) {
+		return email.substring(0,(i>2?2:i))+"****"+email.substring(i);
+	}
+	return email;
+}
 public String forgotPwd(StrArray inputs, String lang) {
 	String now=now();
 	String idType=inputs.get(1, "idType");
@@ -641,7 +648,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			String email=user.getString("email");
 			String from=user.getString("tChangePwd");
 			if (from!=null&&checkTimeDiff(now, from, "00:10:00")) {
-				return FileMap.replaceStr("[--pre already sended email to--] "+email+"[--post already sended email to--]", lang);
+				return FileMap.replaceStr("[--pre already sended email to--] "+encryptEmail(email)+"[--post already sended email to--]", lang);
 			}
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
