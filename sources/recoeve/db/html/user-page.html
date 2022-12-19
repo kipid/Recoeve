@@ -1920,7 +1920,7 @@ m.updateCatFS=function () {
 		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	}
 	let l=m.myCatList.length;
-	for (let i=0;i<l;i++) {
+	for (let i=l-1;i>=0;i--) {
 		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat);
 	}
 };
@@ -2101,9 +2101,10 @@ $input_cats.on("keydown.fs", function (e) {
 	}
 });
 if (m.myIndex) {
-	for (let i=0;i<m.myCatList.length;i++) {
+	let l=m.myCatList.length;
+	for (let i=l-1;i>=0;i--) {
 		let cat=m.myCatList[i].cat;
-		m.fsCat.fullList[i]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+		m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 }
 $input_cats.trigger("keyup");
