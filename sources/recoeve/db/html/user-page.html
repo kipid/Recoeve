@@ -1915,12 +1915,13 @@ m.putCatToFSFullList=function (i, cat) {
 	}
 };
 m.updateCatFS=function () {
-	m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
+	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
 	if (!m.myPage) {
 		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	}
-	for (let i=0;i<m.myCatList.length;i++) {
-		m.putCatToFSFullList(i, m.myCatList[i].cat);
+	let l=m.myCatList.length;
+	for (let i=0;i<l;i++) {
+		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat);
 	}
 };
 m.updateCatFS();
