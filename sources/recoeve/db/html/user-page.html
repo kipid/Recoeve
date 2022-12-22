@@ -528,10 +528,20 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 </div><!-- div#container -->
 </body>
 <div id="scripts"></div>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="/jquery.min.js"></script>
 <script>
 (function (m, $, undefined) {
 $("#javascript-disable").hide();
+m.kakaoInitDo=function () {
+	if (typeof Kakao!=='undefined') {
+		clearInterval(m.kakaoInit);
+		if (!Kakao.isInitialized()) {
+			Kakao.init('f076e37310bc101c5c50c9e2714b59ca');
+		}
+	}
+};
+m.kakaoInit=setInterval(m.kakaoInitDo, 2000);
 /* Prerequisite */
 //////////////////
 // Variables
@@ -2782,7 +2792,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
 		res+=`<div class="reco${inRange?'':' none'}">`
-			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a>'
+			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Kakao.png\')" target="_blank" href="/" onclick="m.shareSNS(this, \'kakao\')"></a>'
 			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
@@ -4231,12 +4241,27 @@ m.shareSNS=function (elem, service) {
 	switch (service) {
 		case 'twitter':
 			open="https://twitter.com/intent/tweet"+"?text="+title+"&url="+uri;
+			window.open(open);
 			break;
 		case 'facebook':
 			open="https://www.facebook.com/sharer/sharer.php"+"?u="+uri;
+			window.open(open);
+			break;
+		case 'kakao':
+			Kakao.Share.sendDefault({
+				objectType: 'feed',
+				content: {
+					title: title,
+					description: '',
+					imageUrl: '', // No image.
+					link: {
+						mobileWebUrl: uri,
+						webUrl: uri,
+					},
+				},
+			});
 			break;
 	}
-	window.open(open);
 };
 
 ////////////////////////////////////////////////////
