@@ -2792,7 +2792,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
 		res+=`<div class="reco${inRange?'':' none'}">`
-			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Kakao.png\')" target="_blank" href="/" onclick="m.shareSNS(this, \'kakao\')"></a>'
+			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a><img class="SNS-img" src="/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
 			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
