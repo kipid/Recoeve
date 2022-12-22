@@ -2792,7 +2792,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
 		res+=`<div class="reco${inRange?'':' none'}">`
-			+'<a class="SNS-img" style="background-image:url(\'/icon-Twitter.png\')" target="_blank" href="https://twitter.com/intent/tweet?text='+encodeURIComponent(r.title)+'&url='+encodeURIComponent(r.uri)+'"></a><a class="SNS-img" style="background-image:url(\'/icon-Facebook.png\')" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(r.uri)+'"></a><img class="SNS-img" src="/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
+			+'<img class="SNS-img" src="/icon-Twitter.png" onclick="m.shareSNS(this, \'twitter\')"><img class="SNS-img" src="/icon-Facebook.png" onclick="m.shareSNS(this, \'facebook\')"><img class="SNS-img" src="/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
 			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
@@ -4234,18 +4234,16 @@ if (window.location.pathname==="/reco") {
 ////////////////////////////////////////////////////
 m.shareSNS=function (elem, service) {
 	let $reco=$(elem).parent(".reco");
-	let uri=encodeURIComponent(m.unescapeHTML($reco.find(".textURI").html()));
-	let title=encodeURIComponent( $reco.find(".title").text() );
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	let title=$reco.find(".title").text();
 	// encodeURIComponent(window.location.href);
 	let open="";
 	switch (service) {
 		case 'twitter':
-			open="https://twitter.com/intent/tweet"+"?text="+title+"&url="+uri;
-			window.open(open);
+			open="https://twitter.com/intent/tweet"+"?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(uri);
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php"+"?u="+uri;
-			window.open(open);
+			open="https://www.facebook.com/sharer/sharer.php"+"?u="+encodeURIComponent(uri);
 			break;
 		case 'kakao':
 			Kakao.Share.sendDefault({
@@ -4260,8 +4258,9 @@ m.shareSNS=function (elem, service) {
 					},
 				},
 			});
-			break;
+			return;
 	}
+	window.open(open);
 };
 
 ////////////////////////////////////////////////////
