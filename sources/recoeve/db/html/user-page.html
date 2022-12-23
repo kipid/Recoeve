@@ -80,7 +80,7 @@ m.saveSSN();
 <style>
 body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
 
-div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
+div, form, input, textarea {box-sizing:border-box; max-width:100%}
 data {display:none}
 .none {display:none}
 .center {text-align:center}
@@ -310,8 +310,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
 	.dark .reco {border-color:rgb(100,100,100); background:black}
 .multireco .reco {width:100%}
-.reco .SNS-img {display:inline-block; margin:0; float:left; width:2em; height:2em; border:.15em gray solid; border-left:0; cursor:pointer; background-size:100% 100%}
-.reco .SNS-img:first-child {border-left:.15em gray solid}
+.reco .SNS-img {box-sizing:content-box; width:36px; height:36px; border:2px gray solid; border-left:0; cursor:pointer}
+.reco .SNS-img:first-child {border-left:2px gray solid}
 .reco>.textURI, .reco>.YTVideoId {display:none}
 .reco>.uri {font-size:.5em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
 .multireco .reco>.uri {font-size:.3em}
@@ -349,7 +349,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC, img {margin:.5em 0}
 .rC.fixed {position:fixed; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
 	.dark .rC.fixed {background:black; border-color:white}
-.rC>.rSC {box-sizing:content-box; -moz-box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
+.rC>.rSC {box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:9px !important} /* position change */
 
