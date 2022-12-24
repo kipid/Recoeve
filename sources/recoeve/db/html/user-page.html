@@ -4249,8 +4249,8 @@ m.shareSNS=function (elem, service) {
 			Kakao.Share.sendDefault({
 				objectType: 'feed',
 				content: {
-					title: escapeHTML(title),
-					description: desc?escapeHTML(desc):'',
+					title: m.escapeHTML(title),
+					description: desc?m.escapeHTML(desc):'',
 					imageUrl: '', // No image.
 					link: {
 						mobileWebUrl: uri,
