@@ -4236,7 +4236,7 @@ m.shareSNS=function (elem, service) {
 	let $reco=$(elem).parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
 	let title=$reco.find(".title").text();
-	// encodeURIComponent(window.location.href);
+	let desc=$reco.find(".desc").text();
 	let open="";
 	switch (service) {
 		case 'twitter':
@@ -4249,8 +4249,8 @@ m.shareSNS=function (elem, service) {
 			Kakao.Share.sendDefault({
 				objectType: 'feed',
 				content: {
-					title: title,
-					description: '',
+					title: escapeHTML(title),
+					description: desc?escapeHTML(desc):'',
 					imageUrl: '', // No image.
 					link: {
 						mobileWebUrl: uri,
