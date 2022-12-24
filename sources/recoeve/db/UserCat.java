@@ -1,7 +1,5 @@
 package recoeve.db;
 
-import java.util.*;
-
 public class UserCat {
 	public long user_i;
 	public String cat_i;
