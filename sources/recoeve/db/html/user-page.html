@@ -508,7 +508,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
 		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
 		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
-		<div class="button" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
+		<div class="button enabled" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
 		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
@@ -779,7 +779,7 @@ m.fsToRs.$fsl.viewAndScroll=function ($next) {
 		}
 	}
 };
-m.fsToRs.autoSkip=false;
+m.fsToRs.autoSkip=true;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
 
