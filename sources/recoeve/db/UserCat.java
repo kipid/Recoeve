@@ -6,6 +6,11 @@ public class UserCat {
 
 	private static final int prime=31;
 
+	public UserCat(long user, String cat) {
+		user_i=user;
+		cat_i=cat;
+	}
+
 	@Override
 	public int hashCode() {
 		int result=1;
@@ -25,6 +30,10 @@ public class UserCat {
 			if (other.cat_i!=null) {return false;}
 		} else if (!cat_i.equals(other.cat_i)) {return false;}
 		return true;
+	}
+
+	public String toString() {
+		return Long.toString(user_i, 16)+"\t"+cat_i;
 	}
 
 	public static void main(String... args) {
