@@ -41,21 +41,14 @@ public static final String domain="recoeve.net";
 	// "localhost:"+port;
 
 	// domain="localhost" does not works in cookie.
-// public static final String cookieDel=";max-age=-100";
 public static final int hoursSSN=3;
 public static final long secondsSSN=hoursSSN*60*60L;
-// public static final String cookieOptionSSN=";path=/;HttpOnly"; // ;domain=recoeve.net
-// public static final String jsCookieOptionSSN=";max-age="+(secondsSSN)+";path=/"; // ;domain=recoeve.net
-// public static final String cookieOptionSSNtoken=";max-age="+(secondsSSN)+cookieOptionSSN;
-// public static final String cookieOptionDelSSN=cookieDel+cookieOptionSSN;
+
 public static final int daysRMB=30;
 public static final long secondsRMB=daysRMB*24*60*60L;
-// public static final String cookieLogIn=";path=/account;HttpOnly"; // ;domain=recoeve.net
-// public static final String cookieOptionRMB=";max-age="+(secondsRMB)+cookieLogIn;
+
 public static final int daysRMBtoken=10;
 public static final long secondsRMBtoken=daysRMBtoken*24*60*60L;
-// public static final String cookieOptionRMBtoken=";max-age="+(secondsRMBtoken)+cookieLogIn;
-// public static final String cookieOptionDelRMB=cookieDel+cookieLogIn;
 
 public static byte[] randomBytes(int length) {
 	byte[] rb=new byte[length];
@@ -63,12 +56,6 @@ public static byte[] randomBytes(int length) {
 	return rb;
 }
 
-// public static String hex(byte[] bytes) {
-// 	return DatatypeConverter.printHexBinary(bytes);
-// }
-// public static byte[] unhex(String hexStr) {
-// 	return DatatypeConverter.parseHexBinary(hexStr);
-// }
 // The below is from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
 final protected static char[] hexArray="0123456789abcdef".toCharArray();
 public static String hex(byte[] bytes) {
