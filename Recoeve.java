@@ -38,7 +38,7 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
-		= "recoeve.net";
+		="recoeve.net";
 		// ="0.0.0.0";
 		// ="localhost";
 	public static final String ENCODING="UTF-8";
@@ -52,7 +52,7 @@ public class Recoeve extends AbstractVerticle {
 public void start() {
 	RecoeveDB db=new RecoeveDB();
 
-	Router router = Router.router(vertx);
+	Router router=Router.router(vertx);
 
 	router.route().handler(ctx -> {
 		HttpServerRequest req=ctx.request();
@@ -231,7 +231,7 @@ public void start() {
 							String id=dataStr.substring(0,i);
 							String token=dataStr.substring(i+1);
 							if (db.checkChangePwdToken(id, token, now)) {
-								String new_salt = db.getNewPwdSalt("id", id);
+								String new_salt=db.getNewPwdSalt("id", id);
 								req.response().end(new_salt, ENCODING);
 								System.out.println("Sended new password_salt. :: "+new_salt);
 							} else {
@@ -451,7 +451,7 @@ public void start() {
 				}
 			}
 		} else if (path.equals("/sessionIter")) {
-			String iter = db.sessionIter(cookie);
+			String iter=db.sessionIter(cookie);
 			System.out.println("iter : "+iter);
 			req.response().end(iter);
 		} else if (path.equals("/reco")) {
