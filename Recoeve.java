@@ -56,25 +56,6 @@ public void start() {
 
 	router.route().handler(ctx -> {
 		HttpServerRequest req=ctx.request();
-	// vertx.createHttpServer(
-		// new HttpServerOptions()
-			// .setSsl(true)
-			// .setKeyStoreOptions(new JksOptions()
-			// 	.setPath("C:/Recoeve/server-keystore.jks")
-			// 	.setPassword("wibble")
-			// )
-			// .setLogActivity(true)
-			// .setUseAlpn(true)
-			// .setTrustOptions(new JksOptions()
-			// 	.setPath("C:/Recoeve/keystore")
-			// 	.setPassword("Xs41Kipid$ps15")
-			// )
-			// .setClientAuthRequired(false)
-			// .setClientAuth(ClientAuth.NONE)
-			// .addEnabledSecureTransportProtocol(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS.get(1))
-			// .addEnabledSecureTransportProtocol("TLSv1.3")
-			// .setEnabledSecureTransportProtocols(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS)
-	// ).requestHandler( (HttpServerRequest req) -> {
 		////////////////////////////////////
 		// Console log.
 		////////////////////////////////////
@@ -532,5 +513,24 @@ public void start() {
 	});
 
 	vertx.createHttpServer().requestHandler(router).listen(80); // RecoeveDB.port
+	// vertx.createHttpServer(
+		// new HttpServerOptions()
+			// .setSsl(true)
+			// .setKeyStoreOptions(new JksOptions()
+			// 	.setPath("C:/Recoeve/server-keystore.jks")
+			// 	.setPassword("wibble")
+			// )
+			// .setLogActivity(true)
+			// .setUseAlpn(true)
+			// .setTrustOptions(new JksOptions()
+			// 	.setPath("C:/Recoeve/keystore")
+			// 	.setPassword("Xs41Kipid$ps15")
+			// )
+			// .setClientAuthRequired(false)
+			// .setClientAuth(ClientAuth.NONE)
+			// .addEnabledSecureTransportProtocol(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS.get(1))
+			// .addEnabledSecureTransportProtocol("TLSv1.3")
+			// .setEnabledSecureTransportProtocols(TCPSSLOptions.DEFAULT_ENABLED_SECURE_TRANSPORT_PROTOCOLS)
+	// ).requestHandler(router).listen(80);
 } // public void start()
 } // public class Recoeve extends Verticle
