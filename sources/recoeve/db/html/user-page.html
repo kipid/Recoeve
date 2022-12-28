@@ -2483,7 +2483,7 @@ ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2494,7 +2494,7 @@ ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
-		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:vars.vid.val};
+		return {html:m.rC('<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
 };
@@ -2504,7 +2504,7 @@ ptnURI.regEx=/^([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2514,7 +2514,7 @@ ptnURI.regEx=/video\/(\w+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
@@ -4546,7 +4546,7 @@ m.fsToRs.prepareRecoListPlay=function () {
 		}
 		if (YtAPINeeded) {
 			let ytAPI=document.createElement('script');
-			ytAPI.src="http://www.youtube.com/player_api";
+			ytAPI.src="https://www.youtube.com/player_api";
 			$scripts.append(ytAPI);
 			m.YtAPILoaded=true;
 		}
