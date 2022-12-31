@@ -873,11 +873,11 @@ if ((!m.myPage)&&m.myId) {
 
 m.hideFK=function () {
 	$floating_key.hide();
-	m.docCookies.setItem("hideFK", "y", Infinity, "/");
+	m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
 };
 m.toggleFK=function () {
 	if ($floating_key.is(":visible")) {
-		m.docCookies.setItem("hideFK", "y", Infinity, "/");
+		m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
 	} else {
 		m.docCookies.removeItem("hideFK", "/");
 	}
@@ -1339,7 +1339,7 @@ m.rmb_me=function (callback, args) {
 			if (isNaN(iter)) {
 				callback(args, resp);
 			} else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/");
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null);
 				// m.docCookies.removeItem("SSN", "/");
 			}
@@ -2757,8 +2757,8 @@ m.mmInPR=function (e) {
 		if (m.ptsRangeFrom!==PRL||m.ptsRangeTo!==PRR) {
 			m.ptsRangeFrom=PRL;
 			m.ptsRangeTo=PRR;
-			m.docCookies.setItem("PRL", PRL, Infinity, "/");
-			m.docCookies.setItem("PRR", PRR, Infinity, "/");
+			m.docCookies.setItem("PRL", PRL, Infinity, "/", false, true);
+			m.docCookies.setItem("PRR", PRR, Infinity, "/", false, true);
 			clearTimeout(m.timeOutRange);
 			m.timeOutRange=setTimeout(function () {
 				m.getUriListAndShowRecosOnCat(m.currentCat);
@@ -4197,7 +4197,7 @@ $data_lang.after(htmlLang);
 ////////////////////////////////////////////////
 let vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
-	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
+	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
 }
 if (vars.cat!==undefined) {
 	let cat=vars.cat.val;
