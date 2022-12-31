@@ -67,11 +67,11 @@ m.docCookies={
 m.saveSSN=function () {
 	if (m.docCookies.hasItem("salt")) {
 		m.saltSSN=m.docCookies.getItem("salt");
-		m.docCookies.removeItem("salt", "/");
+		m.docCookies.removeItem("salt", "/", false, true);
 	}
 	if (m.docCookies.hasItem("session")) {
 		m.session=m.docCookies.getItem("session");
-		m.docCookies.removeItem("session", "/");
+		m.docCookies.removeItem("session", "/", false, true);
 	}
 };
 m.saveSSN();
@@ -879,7 +879,7 @@ m.toggleFK=function () {
 	if ($floating_key.is(":visible")) {
 		m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
 	} else {
-		m.docCookies.removeItem("hideFK", "/");
+		m.docCookies.removeItem("hideFK", "/", false, true);
 	}
 	$floating_key.toggle();
 };
@@ -1341,7 +1341,7 @@ m.rmb_me=function (callback, args) {
 			} else {
 				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null);
-				// m.docCookies.removeItem("SSN", "/");
+				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
 		});
 	};
