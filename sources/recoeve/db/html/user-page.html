@@ -4421,7 +4421,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 						'onError':function (e) {
 							if (fs.skip) {
 								m.playListSetTimeout=setTimeout(function () {
-									fs.playNext();
+									if (fs.skip) { fs.playNext(); }
 								}, 5000);
 							}
 						}, 'onStateChange':function (e) {
@@ -4461,7 +4461,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			if (fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
-					fs.playNext();
+					if (fs.skip) { fs.playNext(); }
 				}, 5000);
 			}
 		}
