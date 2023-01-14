@@ -4422,7 +4422,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 							if (fs.skip) {
 								m.playListSetTimeout=setTimeout(function () {
 									if (fs.skip) { fs.playNext(); }
-								}, 5000);
+								}, 7000);
 							}
 						}, 'onStateChange':function (e) {
 							if (e.data===YT.PlayerState.ENDED) {
@@ -4462,7 +4462,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
 					if (fs.skip) { fs.playNext(); }
-				}, 5000);
+				}, 7000);
 			}
 		}
 	} else {
