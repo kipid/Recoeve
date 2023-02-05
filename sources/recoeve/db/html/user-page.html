@@ -420,24 +420,24 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
 	<form>
-	<label for="uri">URI <span class="desc">(required)</span></label>
-		<textarea id="input-uri" class="single-line" name="uri" placeholder="Unique Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
+	<label for="uri">URI <span class="desc">([--required--])</span></label>
+		<textarea id="input-uri" class="single-line" name="uri" placeholder="[--placeholder URI--]" type="text" tabindex="1"></textarea>
 		<div id="show-URI"></div>
 	<label for="title">[--Title--]</label>
 		<div id="def-titles"></div>
-		<textarea id="input-title" class="single-line" name="title" placeholder="Title" type="text" tabindex="2"></textarea>
+		<textarea id="input-title" class="single-line" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div></div>
-		<textarea id="input-cats" class="single-line" name="cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text" tabindex="3"></textarea>
+		<textarea id="input-cats" class="single-line" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 	<label for="desc">[--Description--]</label>
 		<div id="def-descs"></div>
-		<textarea id="input-desc" class="multi-line" name="desc" placeholder="Objective Description: you can refer a good description of others. In other words, you can provide a good description to the others." tabindex="4"></textarea>
+		<textarea id="input-desc" class="multi-line" name="desc" placeholder="[--placeholder Description--]" tabindex="4"></textarea>
 	<label for="cmt">[--Comment--]</label>
-		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="Comment: your personal description or opinion on this URI." tabindex="5"></textarea>
+		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="[--placeholder Comment--]" tabindex="5"></textarea>
 	<label for="val">[--Points--]</label>
 		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="6"/>
 	<div id="error-msg"></div>
@@ -467,8 +467,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div>
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
-		<data id="data-lang">en	ko	ja	zh
-English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
+		<data id="data-lang">en	ko	ja	zh	es
+English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es</data></div>
 </div><!-- div#foot -->
 <div class="side2">
 	[--Short Keys--]
