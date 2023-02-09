@@ -104,7 +104,7 @@ public void start() {
 			}
 
 		final String ip=req.remoteAddress().toString();
-			System.out.println("IP : "+ip);
+			System.out.println("User IP : "+ip);
 			System.out.println("Local Address : "+req.localAddress());
 
 		////////////////////////////////////
