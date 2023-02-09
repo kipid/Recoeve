@@ -36,6 +36,85 @@
 
 ### 정리하기 전
 
+아래 에러 해결하자.
+
+```
+Exception: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
+java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
+        at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+        at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+        at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+        at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+        at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:1003)
+        at com.mysql.cj.jdbc.result.UpdatableResultSet.refreshRow(UpdatableResultSet.java:1050)
+        at com.mysql.cj.jdbc.result.UpdatableResultSet.refreshRow(UpdatableResultSet.java:990)
+        at com.mysql.cj.jdbc.result.UpdatableResultSet.updateRow(UpdatableResultSet.java:1174)
+        at recoeve.db.RecoeveDB.authUserFromRmbd(RecoeveDB.java:901)
+        at Recoeve.lambda$start$4(Recoeve.java:269)
+        at io.vertx.core.http.HttpServerRequest.lambda$bodyHandler$0(HttpServerRequest.java:216)
+        at io.vertx.core.http.impl.Http2ServerRequestImpl.handleEnd(Http2ServerRequestImpl.java:196)
+        at io.vertx.core.http.impl.VertxHttp2Stream.lambda$new$1(VertxHttp2Stream.java:68)
+        at io.vertx.core.streams.impl.InboundBuffer.handleEvent(InboundBuffer.java:237)
+        at io.vertx.core.streams.impl.InboundBuffer.write(InboundBuffer.java:127)
+        at io.vertx.core.http.impl.VertxHttp2Stream.onEnd(VertxHttp2Stream.java:107)
+        at io.vertx.core.http.impl.VertxHttp2Stream.onEnd(VertxHttp2Stream.java:100)
+        at io.vertx.core.http.impl.Http2ConnectionBase.lambda$onDataRead$10(Http2ConnectionBase.java:333)
+        at io.vertx.core.impl.ContextImpl.executeTask(ContextImpl.java:369)
+        at io.vertx.core.impl.EventLoopContext.execute(EventLoopContext.java:43)
+        at io.vertx.core.impl.ContextImpl.executeFromIO(ContextImpl.java:232)
+        at io.vertx.core.impl.ContextImpl.executeFromIO(ContextImpl.java:224)
+        at io.vertx.core.http.impl.Http2ConnectionBase.onDataRead(Http2ConnectionBase.java:333)
+        at io.vertx.core.http.impl.Http2ServerConnection.onDataRead(Http2ServerConnection.java:42)
+        at io.netty.handler.codec.http2.Http2FrameListenerDecorator.onDataRead(Http2FrameListenerDecorator.java:36)
+        at io.netty.handler.codec.http2.Http2EmptyDataFrameListener.onDataRead(Http2EmptyDataFrameListener.java:49)
+        at io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder$FrameReadListener.onDataRead(DefaultHttp2ConnectionDecoder.java:292)
+        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.readDataFrame(DefaultHttp2FrameReader.java:422)
+        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.processPayloadState(DefaultHttp2FrameReader.java:251)
+        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.readFrame(DefaultHttp2FrameReader.java:160)
+        at io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder.decodeFrame(DefaultHttp2ConnectionDecoder.java:174)
+        at io.netty.handler.codec.http2.DecoratingHttp2ConnectionDecoder.decodeFrame(DecoratingHttp2ConnectionDecoder.java:63)
+        at io.netty.handler.codec.http2.Http2ConnectionHandler$FrameDecoder.decode(Http2ConnectionHandler.java:378)
+        at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:438)
+        at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
+        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
+        at io.vertx.core.http.impl.VertxHttp2ConnectionHandler.channelRead(VertxHttp2ConnectionHandler.java:417)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+        at io.netty.handler.ssl.SslHandler.unwrap(SslHandler.java:1486)
+        at io.netty.handler.ssl.SslHandler.decodeJdkCompatible(SslHandler.java:1235)
+        at io.netty.handler.ssl.SslHandler.decode(SslHandler.java:1282)
+        at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
+        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+        at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+        at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163)
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:714)
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:650)
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:576)
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:493)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:989)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Thread.java:833)
+SQLState: 42000
+Error Code: 1064
+Message: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
+I : 5f5e100
+tCreate : 2023-02-08_01:45:08
+session : 58dc8f05094428f8e264ce308f318b7a36b558ffd423a8deedabccb43ea86db6
+salt : fe91a820ca06efa6a5f781d8b2a93bcd0640126e063737a6b3332e47085af81d
+rmbdToken : 3d2739646c6091af85ac898d5556a7ba8ca7e0ad319e596f634e62ceeec56b7e
+Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)
+```/
+
 추천해주기. Neighbor 통한 추천.
 
 /recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id.
