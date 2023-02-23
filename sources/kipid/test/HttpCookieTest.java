@@ -5,7 +5,7 @@ import java.net.HttpCookie;
 
 public class HttpCookieTest {
 	public static void main(String... args){
-		HttpCookie hc = new HttpCookie("name", "value");
+		HttpCookie hc=new HttpCookie("name", "value");
 		hc.setMaxAge((long)1000);
 		hc.setPath("/");
 		hc.setDomain("tistory.com");
