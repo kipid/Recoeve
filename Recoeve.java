@@ -232,7 +232,7 @@ public void start() {
 				if (refererAllowed&&method==HttpMethod.POST) {
 					switch (pathSplit[2]) {
 						case "defs": // path=/reco/defs
-							req.response().putHeader("Content-Type","text/plain");
+							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.bodyHandler((Buffer data) -> {
 								String res=db.recoDefs(data.toString());
 								req.response().end(res);
@@ -240,7 +240,7 @@ public void start() {
 							break;
 						case "do": // path=/reco/do
 							if (sessionPassed) {
-								req.response().putHeader("Content-Type","text/plain");
+								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.bodyHandler((Buffer data) -> {
 									String res=db.recoDo(Long.parseLong(cookie.get("I"),16), data.toString());
 									req.response().end(res);
@@ -251,7 +251,7 @@ public void start() {
 							break;
 						case "put": // path=/reco/put
 							if (sessionPassed) {
-								req.response().putHeader("Content-Type","text/plain");
+								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.bodyHandler((Buffer data) -> {
 									String res=db.putReco(Long.parseLong(cookie.get("I"),16), data.toString());
 									req.response().end(res);
@@ -345,6 +345,7 @@ public void start() {
 								System.out.println("Sended log-in.html. (No rmbd cookie)");
 							}
 						} else {
+						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						switch (pathSplit[3]) {
 							case "remember-me.do": // path=/account/log-in/remember-me.do
 								if (method==HttpMethod.POST) {
@@ -357,7 +358,7 @@ public void start() {
 										}
 										if (setCookieRMB.get(0).getName()=="I") {
 											// Success: Session cookie and New token.
-											req.response().end("You are remembered.", ENCODING);
+											req.response().end("Rmbd", ENCODING);
 											System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 										} else { // if (setCookieRMB.startsWith("rmbdI="))
 											// Failed: Delete rmbd cookie.
@@ -376,7 +377,7 @@ public void start() {
 						}}
 						break;
 					case "pwd_iteration": // path=/account/pwd_iteration
-						req.response().putHeader("Content-Type","text/plain");
+						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						if (sessionPassed) {
 							req.response().end("pwd_iteration: You are already logged in Recoeve.", ENCODING);
 							System.out.println("Sended 'You are already logged in Recoeve.'");
@@ -433,7 +434,7 @@ public void start() {
 						break;
 					case "check": // path=/account/check
 						if (method==HttpMethod.POST) {
-							// req.response().putHeader("Content-Type","text/plain");
+							// req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.bodyHandler((Buffer data) -> {
 								String dataStr=data.toString();
 								int i=dataStr.indexOf("\t");
@@ -462,7 +463,7 @@ public void start() {
 						}
 						break;
 					case "forgotPwd": // path=/account/forgotPwd
-						req.response().putHeader("Content-Type","text/plain");
+						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						if (method==HttpMethod.POST) {
 							req.bodyHandler((Buffer data) -> {
 								StrArray inputs=new StrArray(data.toString());
