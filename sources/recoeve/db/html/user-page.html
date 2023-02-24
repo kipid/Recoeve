@@ -349,7 +349,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC, img {margin:.5em 0}
 .rC.fixed {position:fixed; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:white; border-bottom:.15em solid black}
 	.dark .rC.fixed {background:black; border-color:white}
-.rC>.rSC {box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
+.rC>.rSC {box-sizing:content-box; position:relative; height:1em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:9px !important} /* position change */
 
@@ -2321,12 +2321,7 @@ m.rC=function (elemStr, pb) {
 	} else {
 		pb=null;
 	}
-	return '<div class="rC">'
-		+'<div class="rSC"'+(pb?' style="padding-bottom:'+pb+'%"':'')+'>'
-			+elemStr
-		+'</div>'
-		+(pb&&pb>70?'':'<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>')
-	+'</div>';
+	return `<div class="rC"><div class="rSC"${(pb?' style="padding-bottom:'+pb+'%"':'')}>${elemStr}</div>${(pb&&pb>70?'':'<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>')}</div>`;
 };
 m.uriRendering=function (uri, toA) {
 	if (uri&&uri.constructor===String) {
@@ -2573,7 +2568,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 130), from:"insta", imgId:exec[1]};
+		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 195), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
