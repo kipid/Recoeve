@@ -2782,7 +2782,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
 		res+=`<div class="reco${inRange?'':' none'}">`
-			+'<img class="SNS-img" src="/icon-Twitter.png" onclick="m.shareSNS(this, \'twitter\')"><img class="SNS-img" src="/icon-Facebook.png" onclick="m.shareSNS(this, \'facebook\')"><img class="SNS-img" src="/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
+			+'<img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, \'twitter\')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, \'facebook\')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
 			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
 			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
 			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
