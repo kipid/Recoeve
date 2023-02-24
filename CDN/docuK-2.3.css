@@ -134,7 +134,7 @@ codeprint.SEE {display:none}
 	border:2px rgb(80, 80, 80) solid;
 	background-color:rgb(30,30,30); color:white
 }
-.fixed>.exit {position:fixed; top:unset; bottom:280px}
+#docuK-log.fixed>.exit {position:fixed; top:unset; bottom:230px}
 .exit>svg {
 	width:100%; height:100%;
 	font-size:1.8em; line-height:1.0
@@ -209,4 +209,5 @@ codeprint.SEE {display:none}
 	.docuK {font-size:10px; line-height:1.6}
 	.docuK>.sec {border-left:2px rgb(25,60,25) solid; border-right:2px rgb(25,60,25) solid}
 	#docuK-log {max-width:500px; max-height:300px}
+	#docuK-log.fixed>.exit {bottom:280px}
 }

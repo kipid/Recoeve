@@ -312,6 +312,6 @@ window.MathJax={
 
 	// Closing docuK Log.
 	kipid.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
-	setTimeout(function () {kipid.log.hide();}, 300);
+	setTimeout(function () {kipid.$log.hide();}, 300);
 });
 })(window.kipid, jQuery);
