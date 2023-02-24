@@ -1,6 +1,6 @@
 rp	i	en	ko	ja	zh	es	desc
 Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es	Description
-[--version--]	1	Ver. 0.7.1. (2023-02-23).
+[--version--]	1	Ver. 0.7.2. (2023-02-24).
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	Bienvenido a Recoeve
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -51,6 +51,9 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--length--]	43	length	길이	長さ	長度	longitud
 [--E-mail is empty.--]	44	E-mail is empty.	이메일을 입력해주세요.	メールアドレスを入力してください。	請輸入您的電子郵件。	El correo electrónico está vacío.
 [--Confirm your password correctly.--]	50	Confirm your password correctly.	비밀번호가 일치하지 않습니다.	パスワードが一致しません。	密碼不匹配。	Confirme su contraseña correctamente.
+[--Your password is changed.--]	51	Your password is changed.	비밀번호가 변경되었습니다.	パスワードが変更されました。	您的密码已更改。	Su contraseña se cambia.
+[--Error occured during changing password. Please try again.--]	52	Error occured during changing password. Please try again.	비밀번호 변경 중 오류가 발생했습니다. 다시 시도해 주세요.	パスワードの変更中にエラーが発生しました。もう一度やり直してください。	更改密码时发生错误。请再试一次。	Se produjo un error durante el cambio de contraseña. Inténtalo de nuevo.
+[--Token is invalid.--]	53	Token is invalid.	토큰이 유효하지 않습니다.	トークンは無効です。	令牌无效。	El token no es válido.
 [--Checking ID and E-mail--]	60	Checking ID and E-mail	아이디와 이메일을 확인중입니다.	ユーザ名とメールを確認しています。	檢查您的用戶名和電子郵件。	Verificación de identificación y correo electrónico
 [--Please click the Sign-up button again.--]	61	Please click the Sign-up button again.	가입하기 버튼을 다시 클릭해주세요.	登録ボタンをもう一度クリックしてください。	請再次點擊加入按鈕。	Haga clic en el botón de registro nuevamente.
 [--Signing up--]	62	Signing up	가입 요청 중	登録要求の中で	登錄請求	Registrando
