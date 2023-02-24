@@ -1,6 +1,6 @@
 rp	i	en	ko	ja	zh	es	desc
 Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es	Description
-[--version--]	1	Ver. 0.7.0. (2023-02-05).
+[--version--]	1	Ver. 0.7.1. (2023-02-23).
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	Recoeve へようこそ	欢迎来到 Recoeve	Bienvenido a Recoeve
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -56,6 +56,7 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--Signing up--]	62	Signing up	가입 요청 중	登録要求の中で	登錄請求	Registrando
 [--is already in use. Please try another ID.--]	63	is already in use. Please try another ID.	는 이미 사용중입니다.	は使用中です。	它已在使用中。	Esta en uso. Pruebe con otra identificación.
 [--is already registered. Please try another e-mail.--]	64	is already registered. Please try another e-mail.	는 이미 등록되어 있습니다.	はすでに登録されています。	它已被註冊。	ya esta registrado. Pruebe con otro correo electrónico.
+[--User does not exist.--]	65	User does not exist.	유저가 존재하지 않습니다.	ユーザーは存在しません。	用户不存在。	El usuario no existe.
 [--Log out--]	100	Log out	로그아웃	ログアウト	登出	Cerrar sesión
 [--Fuzzy Search--]	101	Fuzzy Search	검색	検索	搜索	Búsqueda borrosa
 [--Toggle style--]	102	Toggle style	스타일 바꾸기	スタイルを変更する	改變風格	Estilo de palanca
