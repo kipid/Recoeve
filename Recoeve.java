@@ -262,7 +262,7 @@ public void start() {
 							break;
 						default:
 							req.response().end(INVALID_ACCESS, ENCODING);
-							System.out.println(INVALID_ACCESS+" (Not valid URI.)");
+							System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 					}
 				} else {
 					req.response().end(INVALID_ACCESS, ENCODING);
@@ -333,40 +333,47 @@ public void start() {
 						}
 						break;
 					case "log-in": // path=/account/log-in
-						if (sessionPassed) {
-							req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
-							System.out.println("Sended user-page.html. (already logged-in)");
-						} else if (cookie.get("rmbdI")!=null) {
-							req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
-							System.out.println("Sended remember-me.html.");
+						if (pathSplit.length==3) {
+							if (sessionPassed) {
+								req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+								System.out.println("Sended user-page.html. (already logged-in)");
+							} else if (cookie.get("rmbdI")!=null) {
+								req.response().end(FileMap.get("remember-me.html",lang), ENCODING);
+								System.out.println("Sended remember-me.html.");
+							} else {
+								req.response().end(FileMap.get("log-in.html",lang), ENCODING);
+								System.out.println("Sended log-in.html. (No rmbd cookie)");
+							}
 						} else {
-							req.response().end(FileMap.get("log-in.html",lang), ENCODING);
-							System.out.println("Sended log-in.html. (No rmbd cookie)");
-						}
-						break;
-					case "log-in/remember-me.do": // path=/account/log-in/remember-me.do
-						if (method==HttpMethod.POST) {
-							req.bodyHandler((Buffer data) -> {
-								StrArray inputs=new StrArray(data.toString());
-								List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
-								for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
-									req.response().addCookie(singleCookie);
-									System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
+						switch (pathSplit[3]) {
+							case "remember-me.do": // path=/account/log-in/remember-me.do
+								if (method==HttpMethod.POST) {
+									req.bodyHandler((Buffer data) -> {
+										StrArray inputs=new StrArray(data.toString());
+										List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(cookie, inputs, ip);
+										for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
+											req.response().addCookie(singleCookie);
+											System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
+										}
+										if (setCookieRMB.get(0).getName()=="I") {
+											// Success: Session cookie and New token.
+											req.response().end("You are remembered.", ENCODING);
+											System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
+										} else { // if (setCookieRMB.startsWith("rmbdI="))
+											// Failed: Delete rmbd cookie.
+											req.response().end("Remembering you failed.", ENCODING);
+											System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
+										}
+									});
+								} else {
+									req.response().end(INVALID_ACCESS, ENCODING);
+									System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
 								}
-								if (setCookieRMB.get(0).getName()=="I") {
-									// Success: Session cookie and New token.
-									req.response().end("You are remembered.", ENCODING);
-									System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
-								} else { // if (setCookieRMB.startsWith("rmbdI="))
-									// Failed: Delete rmbd cookie.
-									req.response().end("Remembering you failed.", ENCODING);
-									System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
-								}
-							});
-						} else {
-							req.response().end(INVALID_ACCESS, ENCODING);
-							System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
-						}
+								break;
+							default:
+								req.response().end(INVALID_ACCESS, ENCODING);
+								System.out.println(INVALID_ACCESS+" (Invalid URI.)");
+						}}
 						break;
 					case "pwd_iteration": // path=/account/pwd_iteration
 						req.response().putHeader("Content-Type","text/plain");
@@ -525,7 +532,7 @@ public void start() {
 						break;
 					default:
 						req.response().end(INVALID_ACCESS, ENCODING);
-						System.out.println(INVALID_ACCESS+" (Not valid URI.)");
+						System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 				}} else {
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Referer not allowed, or not sessionPassed, or invalid method: "+method+")");
@@ -533,7 +540,7 @@ public void start() {
 				break;
 			default:
 				req.response().end(INVALID_ACCESS, ENCODING);
-				System.out.println(INVALID_ACCESS+" (Not valid URI.)");
+				System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 		}} else {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
