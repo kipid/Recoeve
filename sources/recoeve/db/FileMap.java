@@ -191,9 +191,8 @@ public class FileMap {
 	}
 	
 	public static void main(String... args) {
-		// System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
+		System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
 		// System.out.println(FileMap.refererAllowed("localhost"));
-		// System.out.println(FileMap.get("AJAX post test (Cross orgin policy) and Reco test.html", "en"));
 		// System.out.println(Pattern.quote("[a-d]"));
 	}
 }
