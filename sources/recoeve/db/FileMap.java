@@ -26,31 +26,31 @@ public class FileMap {
 			, "kipid.tistory.com"
 		};
 	
-	private static final String imgPath="C:/Recoeve/img";
-	private static final String[] imgNames={
-			"/favicon.ico"
-			, "/icon-Twitter.png", "/icon-Facebook.png", "/icon-Kakao.png", "/icon-Recoeve.png"
+	private static final String filePath="C:/Recoeve/CDN/";
+	private static final String[] fileNames={
+			"favicon.ico"
+			, "icon-Twitter.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png"
+			, "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js"
 		};
 		
-	private static final String filePath="C:/Recoeve/sources/recoeve/db/html/";
-	private static final String[] fileNames={
+	private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
+	private static final String[] txtFileNames={
 			"jquery.min.js"
 			, "robots.txt"
-			, "log-in.html", "to-log-in.html" //, "log-in.css", "log-in.js"
+			, "log-in.html", "to-log-in.html"
 			, "changePwd.html"
 			, "log-out.html"
 			, "user-page.html", "to-user-page.html"
 			, "redirect.html", "remember-me.html"
-			, "AJAX post test (Cross orgin policy) and Reco test.html", "Reco-musics-test.html"
 		};
-	private static final int fileMapSize=50;
-	private static final int fileLangMapSize=10;
+	private static final int txtFileMapSize=50;
+	private static final int fileLangMapSize=10; // # of languages translated to support.
 	
 	public static Set<String> refererSet;
-	public static Map<String, String> imgMap;
-		// imgMap.get("imgName")
-	public static Map<String, Map<String, String>> fileMap;
-		// fileMap.get("fileName").get("lang")
+	public static Map<String, String> fileMap;
+		// fileMap.get("fileName")
+	public static Map<String, Map<String, String>> txtFileMap;
+		// txtFileMap.get("txtFileName").get("lang")
 	public static StrArray langMap;
 	
 	public static final Pattern ptnReplacer=Pattern.compile("\\[--[\\s\\S]+?--\\]");
@@ -61,16 +61,16 @@ public class FileMap {
 			refererSet.add(referer);
 		}
 		
-		imgMap=new HashMap<String, String>();
-		for (String imgName: imgNames) {
-			imgMap.put(imgName, imgPath+imgName);
+		fileMap=new HashMap<String, String>();
+		for (String fileName: fileNames) {
+			fileMap.put(fileName, filePath+fileName);
 		}
 		
-		fileMap=new HashMap<String, Map<String, String>>(fileMapSize);
+		txtFileMap=new HashMap<String, Map<String, String>>(txtFileMapSize);
 		File file=null;
 		String fileStr=null;
 		
-		file=new File(filePath+"lang.txt");
+		file=new File(txtFilePath+"lang.txt");
 		if (file.exists()) { try {
 			StringBuilder sb=new StringBuilder();
 			int ch;
@@ -89,8 +89,8 @@ public class FileMap {
 		// System.out.println(langMap);
 		fileStr=null;
 		
-		for (String fileName: fileNames) {
-			file=new File(filePath+fileName);
+		for (String txtFileName: txtFileNames) {
+			file=new File(txtFilePath+txtFileName);
 			if (file.exists()) { try {
 				StringBuilder sb=new StringBuilder();
 				int ch;
@@ -107,8 +107,8 @@ public class FileMap {
 			} }
 			
 			if (fileStr!=null) {
-				fileMap.put(fileName, new HashMap<String, String>(fileLangMapSize));
-				Map<String, String> fileLangMap=fileMap.get(fileName);
+				txtFileMap.put(txtFileName, new HashMap<String, String>(fileLangMapSize));
+				Map<String, String> fileLangMap=txtFileMap.get(txtFileName);
 				fileLangMap.put("df", fileStr); // default.
 				ArrayList<String> strList=strToList(fileStr);
 				if (strList.size()>1) {
@@ -131,8 +131,8 @@ public class FileMap {
 		return refererSet.contains(host);
 	}
 	
-	public static String getImg(String imgName) {
-		return imgMap.get(imgName);
+	public static String getCDNFile(String fileName) {
+		return fileMap.get(fileName);
 	}
 
 	public static ArrayList<String> strToList(String fileStr) {
@@ -179,8 +179,8 @@ public class FileMap {
 		return replaceStr(strToList(str), lang);
 	}
 	
-	public static String get(String fileName, String lang) {
-		Map<String, String> fileLangMap=fileMap.get(fileName);
+	public static String get(String txtFileName, String lang) {
+		Map<String, String> fileLangMap=txtFileMap.get(txtFileName);
 		if (fileLangMap==null) {return null;}
 		String res=fileLangMap.get(lang);
 		if (res==null) {
