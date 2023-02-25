@@ -243,42 +243,32 @@ public void start() {
 				}
 				break;
 			case "CDN": // e.g. path=/CDN/icon-Recoeve.png
-				System.out.println(pathSplit[1]);
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
-					System.out.println(pathSplit[2]);
 					String fileName=FileMap.getCDNFile(pathSplit[2]);
-					String[] fileNameSplit=pathSplit[2].split(".");
-					System.out.println(fileName);
-					System.out.println(fileNameSplit[fileNameSplit.length-1]);
+					String[] fileNameSplit=pathSplit[2].split("\\.");
 					switch (fileNameSplit[fileNameSplit.length-1]) {
 						case "ico":
 							req.response().putHeader("Content-Type","image/x-icon");
-							req.response().sendFile(fileName);
 							break;
 						case "png":
 							req.response().putHeader("Content-Type","image/png");
-							req.response().sendFile(fileName);
 							break;
 						case "jpeg": case "jpg":
 							req.response().putHeader("Content-Type","image/jpeg");
-							req.response().sendFile(fileName);
 							break;
 						case "css":
 							req.response().putHeader("Content-Type","text/css; charset=utf-8");
-							req.response().sendFile(fileName);
 							break;
 						case "js":
 							req.response().putHeader("Content-Type","text/javascript; charset=utf-8");
-							req.response().sendFile(fileName);
 							break;
 						case "webm":
 							req.response().putHeader("Content-Type","video/webm");
-							req.response().sendFile(fileName);
 							break;
 						default:
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-							req.response().sendFile(fileName);
 					}
+					req.response().sendFile(fileName);
 					System.out.println("Sended "+fileName+".");
 				} else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
