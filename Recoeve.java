@@ -568,20 +568,21 @@ public void start() {
 					case "sign-up": // path=/account/sign-up
 						if (method==HttpMethod.POST) {
 							req.bodyHandler((Buffer data) -> {
-								BodyData inputs=new BodyData(data.toString());
-								System.out.println("data:\n"+inputs);
+								StrArray inputs=new StrArray(data.toString());
 								if (db.checkAuthToken(inputs, ip, now)) {
 									System.out.println("Token is verified.");
 									if (db.createUser(inputs, ip, now)) {
 										Map<String,String> varMap=new HashMap<String,String>();
-										varMap.put("{--user email--}", inputs.get("userEmail"));
+										varMap.put("{--user id--}", inputs.get(1, "userId"));
+										varMap.put("{--user email--}", inputs.get(1, "userEmail"));
 										req.response().putHeader("Content-Type","text/html; charset=utf-8");
 										req.response().end(FileMapWithVar.get("signed-up.html", lang, varMap), ENCODING);
 										System.out.println("Sended signed-up.html.");
 									} else {
-										req.response().putHeader("Content-Type","text/html; charset=utf-8");
-										req.response().end("Error occured during registration. Please sign-up again.", ENCODING);
-										System.out.println("Sended 'Error occured during registration. Please sign-up again.'.");
+										final String res=FileMap.replaceStr("[--Error occured during registration. Please sign-up again.--]", lang);
+										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+										req.response().end(res, ENCODING);
+										System.out.println("Sended "+res);
 									}
 								} else {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
