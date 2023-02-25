@@ -268,8 +268,8 @@ public void start() {
 						default:
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					}
+					System.out.println("Sended "+fileName+" with header: "+req.response().getHeader("Content-Type"));
 					req.response().sendFile(fileName);
-					System.out.println("Sended "+fileName+".");
 				} else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
