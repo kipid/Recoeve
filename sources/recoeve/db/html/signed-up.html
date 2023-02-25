@@ -1,23 +1,5 @@
-<style>
-body {font-size:16px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif;}
-h1 {font-size:1.1em}
-span.email {color:rgb(20,20,150)}
-div {margin:1em 0}
-</style>
-<body>
-<h1>Your account is created.</h1>
-<div>Thanks for your registration. We sent a verification key to your email (<span class="email">{--user email--}</span>). Log in <a href="http://recoeve.net/">Recoeve.net</a> first, then click the verification link in your email.</div>
-<div>You have to verify your account within a day. Otherwise your sign-up will be evicted/canceled.</div>
-<div>This page will move back to the <a href="/account/log-in">log-in page</a> after <span id="time-left"></span> sec.</div>
-</body>
-<script>
-var t=20;
-var elem=document.getElementById("time-left");
-elem.innerHTML=t;
-setInterval(function() {
-	elem.innerHTML=t--;
-	if (t<0) {
-		window.location.pathname="/account/log-in";
-	}
-}, 1000);
-</script>
+<h1>[--Your account is created.--]</h1>
+<div>[--Thanks for your registration. We sent a verification key to your email.--]</div>
+<div>[--ID--]: <span class="id">{--user id--}</span>, [--E-mail--]: <span class="email">{--user email--}</span></div>
+<dib>[--Log in first, then click the verification link in your email.--]</div>
+<div>[--You have to verify your account within a day. Otherwise your sign-up will be evicted/canceled.--]</div>
