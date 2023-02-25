@@ -246,6 +246,8 @@ public void start() {
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
 					String fileName=FileMap.getCDNFile(pathSplit[2]);
 					String[] fileNameSplit=pathSplit[2].split(".");
+					System.out.println(fileName);
+					System.out.println(fileNameSplit[fileNameSplit.length-1]);
 					switch (fileNameSplit[fileNameSplit.length-1]) {
 						case "ico":
 							req.response().putHeader("Content-Type","image/x-icon");
