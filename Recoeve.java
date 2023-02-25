@@ -243,7 +243,9 @@ public void start() {
 				}
 				break;
 			case "CDN": // e.g. path=/CDN/icon-Recoeve.png
+				System.out.println(pathSplit[1]);
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
+					System.out.println(pathSplit[2]);
 					String fileName=FileMap.getCDNFile(pathSplit[2]);
 					String[] fileNameSplit=pathSplit[2].split(".");
 					System.out.println(fileName);
