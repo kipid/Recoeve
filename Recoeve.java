@@ -249,27 +249,33 @@ public void start() {
 					switch (fileNameSplit[fileNameSplit.length-1]) {
 						case "ico":
 							req.response().putHeader("Content-Type","image/x-icon");
+							req.response().sendFile(fileName);
 							break;
 						case "png":
 							req.response().putHeader("Content-Type","image/png");
+							req.response().sendFile(fileName);
 							break;
 						case "jpeg": case "jpg":
 							req.response().putHeader("Content-Type","image/jpeg");
+							req.response().sendFile(fileName);
 							break;
 						case "css":
 							req.response().putHeader("Content-Type","text/css; charset=utf-8");
+							req.response().sendFile(fileName);
 							break;
 						case "js":
 							req.response().putHeader("Content-Type","text/javascript; charset=utf-8");
+							req.response().sendFile(fileName);
 							break;
 						case "webm":
 							req.response().putHeader("Content-Type","video/webm");
+							req.response().sendFile(fileName);
 							break;
 						default:
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+							req.response().sendFile(fileName);
 					}
-					System.out.println("Sended "+fileName+" with header: "+req.getHeader("Content-Type"));
-					req.response().sendFile(fileName);
+					System.out.println("Sended "+fileName+".");
 				} else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
