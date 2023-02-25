@@ -30,7 +30,7 @@ public class FileMap {
 	private static final String[] fileNames={
 			"favicon.ico"
 			, "icon-Twitter.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png"
-			, "copyright-attribution.png", "copyright-no-profit.png", "copyright-equal.png"
+			, "cc.png", "by.png", "nc.png", "nd.png"
 			, "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js"
 		};
 		
