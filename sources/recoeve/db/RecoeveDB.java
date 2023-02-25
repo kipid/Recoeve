@@ -333,25 +333,25 @@ public boolean createAuthToken(String t, String ip, byte[] token) {
 	}
 	return false;
 }
-public boolean checkAuthToken(BodyData inputs, String ip, String now) {
-	String t=inputs.get("tToken");
-	String token=inputs.get("authToken");
-	String id=inputs.get("userId");
-	String email=inputs.get("userEmail");
+public boolean checkAuthToken(StrArray inputs, String ip, String now) {
+	String tToken=inputs.get(1, "tToken");
+	String token=inputs.get(1, "authToken");
+	String id=inputs.get(1, "userId");
+	String email=inputs.get(1, "userEmail");
 	try {
 		con.setAutoCommit(true);
-		pstmtCheckAuthToken.setTimestamp(1, Timestamp.valueOf(t));
+		pstmtCheckAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
 		pstmtCheckAuthToken.setString(2, ip);
 		ResultSet rs=pstmtCheckAuthToken.executeQuery();
 		String errMsg="Sign-up error: ";
 		if (rs.next()) {
 			boolean newC=rs.getBoolean("new");
 			boolean tokenC=Arrays.equals(rs.getBytes("token"), unhex(token));
-			boolean timeC=checkTimeDiff(now, t, "00:01:30");
+			boolean timeC=checkTimeDiff(now, tToken, "00:01:30");
 			if (newC&&tokenC&&timeC) {
 				rs.updateBoolean("new", false);
 				rs.updateRow();
-				logs(1, now, ip, "tkn", true, "tToken: "+t);
+				logs(1, now, ip, "tkn", true, "tToken: "+tToken);
 				return true;
 			} else {
 				if (!newC) {
@@ -367,7 +367,7 @@ public boolean checkAuthToken(BodyData inputs, String ip, String now) {
 		} else {
 			errMsg+="no token.";
 		}
-		errMsg+="\nID: "+id+", E-mail: "+email+". tToken: "+t;
+		errMsg+="\nID: "+id+", E-mail: "+email+". tToken: "+tToken;
 		logs(1, now, ip, "tkn", false, errMsg);
 	} catch (SQLException e) {
 		err(e);
@@ -436,12 +436,12 @@ public void updateEmailStat(String emailHost, int increment)
 		pstmtCreateEmailStat.executeUpdate();
 	}
 }
-public boolean createUser(BodyData inputs, String ip, String now) {
+public boolean createUser(StrArray inputs, String ip, String now) {
 	boolean done=false;
-	String id=inputs.get("userId");
-	byte[] pwd_salt=unhex( inputs.get("authToken") );
-	String pwd=inputs.get("userPwd");
-	String email=inputs.get("userEmail");
+	String id=inputs.get(1, "userId");
+	byte[] pwd_salt=unhex( inputs.get(1, "authToken") );
+	String pwd=inputs.get(1, "userPwd");
+	String email=inputs.get(1, "userEmail");
 	String veriKey=hex(randomBytes(32));
 	ResultSet user=null;
 	try {
@@ -1182,37 +1182,42 @@ public Set<Long> getRecentests(String uri) throws SQLException {
 	}
 	return setOfRecentests;
 }
-// public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
-// 	if (pts.valid()) {
-// 		if (increment==1) {
-// 			//////////////////////////////////////////////////////
-// 			// Update existing neighbors and recentests.
-// 			//////////////////////////////////////////////////////
-// 			Set<Long> recentests=getRecentests(uri);
-// 			recentests.remove(user_from);
-// 			for (String cat_from: cats.setOfCats) {
-// 				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
-// 				for (Long user_to: recentests) {
-// 					ResultSet reco_to=getReco(user_to, uri);
-// 					if (reco_to.next()) {
-// 						Points pts_to=new Points(reco_to.getString("val"));
-// 						if (pts_to.valid()) {
-// 							Categories cats_to=new Categories(reco_to.getString("cats"));
-// 							for (String cat_to: cats_to.setOfCats) {
-// 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
-// 								if (neighbor.next()) {
-// 									ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
-// 								} else {
+public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
+	if (pts.valid()) {
+		if (increment==1) {
+			//////////////////////////////////////////////////////
+			// Update existing neighbors and recentests.
+			//////////////////////////////////////////////////////
+			Set<Long> recentests=getRecentests(uri);
+			recentests.remove(user_from);
+			for (String cat_from: cats.setOfCats) {
+				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
+				for (Long user_to: recentests) {
+					ResultSet reco_to=getReco(user_to, uri);
+					if (reco_to.next()) {
+						Points pts_to=new Points(reco_to.getString("val"));
+						if (pts_to.valid()) {
+							Categories cats_to=new Categories(reco_to.getString("cats"));
+							for (String cat_to: cats_to.setOfCats) {
+								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+								if (neighbor.next()) {
+									ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
+								} else {
 
-// 								}
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+								}
+							}
+						}
+					}
+				}
+			}
+		} else if (increment==-1) {
+			// for (String cat_from: cats.setOfCats) {
+			// 	getNeighborListFrom(user_from, cat_from);
+			// 	getNeighborListTo(user_from, cat_from);
+			// }
+		}
+	}
+}
 
 
 // 			ResultSet neighbors=getNeighbors(user_i, cat);
