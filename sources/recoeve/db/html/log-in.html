@@ -2,9 +2,9 @@
 <html>
 <head>
 <script>
-(function(m, undefined) {
-	var pathname=window.location.pathname;
-	var path="/account/log-in";
+(function (m, undefined) {
+	let pathname=window.location.pathname;
+	let path="/account/log-in";
 	if (pathname!==path) {
 		window.history.replaceState(null, null, path+window.location.search+window.location.hash);
 	}
@@ -97,8 +97,8 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 <script src="/jquery.min.js"></script>
 <script>
-(function(m, $, undefined) {
-$(".replace-reco-eve").html(function(i, orgHtml) {
+(function (m, $, undefined) {
+$(".replace-reco-eve").html(function (i, orgHtml) {
 	return orgHtml
 		.replace(/reco/ig,'<span class="reco bold">$&</span>')
 		.replace(/eve/ig,'<span class="eve bold">$&</span>');
@@ -107,18 +107,18 @@ $(".replace-reco-eve").html(function(i, orgHtml) {
 //////////////////////////////////////////
 // path.search rendering
 //////////////////////////////////////////
-m.getSearchVars=function() {
-	var searchStr=window.location.search;
-	var vars={};
+m.getSearchVars=function () {
+	let searchStr=window.location.search;
+	let vars={};
 	if (searchStr!==0) {
 		if (searchStr.substring(0,1)==="?") {
 			searchStr=searchStr.substring(1);
 		}
-		var splits=searchStr.split("&");
-		for (var i=0;i<splits.length;i++) {
-			var key=splits[i];
-			var value="";
-			var k=splits[i].indexOf("=");
+		let splits=searchStr.split("&");
+		for (let i=0;i<splits.length;i++) {
+			let key=splits[i];
+			let value="";
+			let k=splits[i].indexOf("=");
 			if (k!==-1) {
 				key=splits[i].substring(0,k);
 				value=decodeURIComponent(splits[i].substring(k+1));
@@ -152,7 +152,7 @@ m.docCookies={
   },
   setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
     if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-    var sExpires = "";
+    let sExpires = "";
     if (vEnd) {
       switch (vEnd.constructor) {
         case Number:
@@ -178,12 +178,12 @@ m.docCookies={
     return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=")).test(document.cookie);
   },
   keys: /* optional method: you can safely remove it! */ function () {
-    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
-    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+    let aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (let nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
     return aKeys;
   }
 };
-var vars=m.getSearchVars();
+let vars=m.getSearchVars();
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang, Infinity, "/");
 }
@@ -191,7 +191,7 @@ if (vars.lang!==undefined) {
 ////////////////////////////////////////////////////
 // String to Array (copied from user-page.html)
 ////////////////////////////////////////////////////
-m.encloseStr=function(str) {
+m.encloseStr=function (str) {
 	if (str===undefined||str===null||str.constructor!==String) { return ""; }
 	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
 		return '"'+str.replace(/"/g,'""')+'"';
@@ -199,7 +199,7 @@ m.encloseStr=function(str) {
 		return str;
 	}
 };
-m.strToJSON=function(str, colMap, rowMap) {
+m.strToJSON=function (str, colMap, rowMap) {
 	if (str===undefined||str===null||str.constructor!==String) { return []; }
 	if (colMap===undefined||colMap===null) { colMap=true; }
 	if (rowMap===undefined||rowMap===null) { rowMap=false; }
@@ -207,13 +207,13 @@ m.strToJSON=function(str, colMap, rowMap) {
 	if (str.charAt(str.length-1)!=="\n") {
 		str+="\n";
 	}
-	var ret=[];
-	var delimiter=/([^\t\n]*)([\t\n])/g;
-	var lastQuote=/[^"](?:"")*"([\t\n])/g;
-	var exec;
-	var start=0;
-	var row=-1, col=-1, delim="\n";
-	var strElem="";
+	let ret=[];
+	let delimiter=/([^\t\n]*)([\t\n])/g;
+	let lastQuote=/[^"](?:"")*"([\t\n])/g;
+	let exec;
+	let start=0;
+	let row=-1, col=-1, delim="\n";
+	let strElem="";
 	function increseRC(str) {
 		if (str==='\t') {
 			col++; return true;
@@ -248,12 +248,12 @@ m.strToJSON=function(str, colMap, rowMap) {
 		ret[row][col]=strElem;
 	}
 	if (colMap) {
-		var firstColSize=ret[0].length;
-		for (var i=0;i<ret.length;i++) {
-			var jMax=ret[i].length;
+		let firstColSize=ret[0].length;
+		for (let i=0;i<ret.length;i++) {
+			let jMax=ret[i].length;
 			if (jMax>firstColSize) { jMax=firstColSize; }
-			for (var j=0;j<jMax;j++) {
-				var key=ret[0][j];
+			for (let j=0;j<jMax;j++) {
+				let key=ret[0][j];
 				if (key!==undefined) {
 					ret[i][key]=ret[i][j];
 				}
@@ -261,8 +261,8 @@ m.strToJSON=function(str, colMap, rowMap) {
 		}
 	}
 	if (rowMap) {
-		for (var i=0;i<ret.length;i++) {
-			var key=ret[i][0];
+		for (let i=0;i<ret.length;i++) {
+			let key=ret[i][0];
 			if (key!==undefined) {
 				ret[key]=ret[i];
 			}
@@ -271,11 +271,11 @@ m.strToJSON=function(str, colMap, rowMap) {
 	return ret;
 };
 
-var $dataLang=$("#data-lang");
-var dataLang=m.strToJSON( $dataLang.html().trim() );
-var href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
-var htmlLang='<div class="p">';
-for (var i=0;i<dataLang[0].length;i++) {
+let $dataLang=$("#data-lang");
+let dataLang=m.strToJSON( $dataLang.html().trim() );
+let href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
+let htmlLang='<div class="p">';
+for (let i=0;i<dataLang[0].length;i++) {
 	htmlLang+='<a href="'+href+dataLang[0][i]+'">'+dataLang[1][i]+'</a><br>';
 }
 htmlLang+='</div>';
@@ -284,21 +284,21 @@ $dataLang.after(htmlLang);
 //////////////////////////////////////////////////////////
 // Form handling. (Validity check, encrypt, and submit)
 //////////////////////////////////////////////////////////
-var sW=screen.width;
-var sH=screen.height;
+let sW=screen.width;
+let sH=screen.height;
 if (sW<sH) {
 	sW=screen.height;
 	sH=screen.width;
 }
 
 m.errCount=0;
-m.encloseErr=function(msg) {
+m.encloseErr=function (msg) {
 	return '<div id="error-msg-'+(m.errCount++)+'" class="error-msg">'+msg+'</div>';
 };
-m.byteCount=function(str) {
+m.byteCount=function (str) {
 	return encodeURI(str).split(/%..|./).length-1;
 };
-m.pad=function(str, max) {
+m.pad=function (str, max) {
 	str=str.toString();
 	return (str.length<max)?m.pad("0"+str,max):str;
 };
@@ -306,9 +306,9 @@ m.pad=function(str, max) {
 ////////////////////////////////////////////////////
 // hash encrypt
 ////////////////////////////////////////////////////
-m.hash1=function(str) {
-	var h=-17-str.length;
-	for (var i=0;i<str.length;i++) {
+m.hash1=function (str) {
+	let h=-17-str.length;
+	for (let i=0;i<str.length;i++) {
 		h+=str.charCodeAt(i);
 		h+=(h<<10);
 		h^=(h>>>6);
@@ -321,10 +321,10 @@ m.hash1=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash2=function(str) {
-	var h=str.length+1;
-	var tmp;
-	for (var i=0;i<str.length;i++) {
+m.hash2=function (str) {
+	let h=str.length+1;
+	let tmp;
+	for (let i=0;i<str.length;i++) {
 		h+=str.charCodeAt(i);
 		tmp=(str.charCodeAt(str.length-1-i)<<11)^h;
 		h+=(h<<16)^tmp;
@@ -342,9 +342,9 @@ m.hash2=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash3=function(str) {
-	var h=-1023+str.length;
-	for (var i=0;i<str.length;i++) {
+m.hash3=function (str) {
+	let h=-1023+str.length;
+	for (let i=0;i<str.length;i++) {
 		h^=(h<<5)+(h>>>2)+str.charCodeAt(i);
 	}
 	h^=h<<15;
@@ -353,13 +353,13 @@ m.hash3=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash4=function(str) {/* RS Hash Function */
-	var b=378551;
-	var a=63689;
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+m.hash4=function (str) {/* RS Hash Function */
+	let b=378551;
+	let a=63689;
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -367,7 +367,7 @@ m.hash4=function(str) {/* RS Hash Function */
 		h=(q+str.charCodeAt(i))>>>0;
 			// h=h*a+str.charCodeAt(i);
 		q=0;
-		for (var j=0;j<32;j++) {
+		for (let j=0;j<32;j++) {
 			if (b&(1<<j)) {
 				q=(q+(a<<j))>>>0;
 			}
@@ -376,18 +376,18 @@ m.hash4=function(str) {/* RS Hash Function */
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash5=function(str) {/* JS Hash Function */
-	var h=1315423911;
-	for (var i=0;i<str.length;i++) {
+m.hash5=function (str) {/* JS Hash Function */
+	let h=1315423911;
+	for (let i=0;i<str.length;i++) {
 		h^=((h<<5)+str.charCodeAt(i)+(h>>2))>>>0;
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash6=function(str) {/* ELF Hash Function */
-	var h=0;
-	var x=0;
-	for (var i=0;i<str.length;i++) {
+m.hash6=function (str) {/* ELF Hash Function */
+	let h=0;
+	let x=0;
+	for (let i=0;i<str.length;i++) {
 		h=((h<<4)+str.charCodeAt(i))>>>0;
 		if ((x=h&0xf0000000)!=0) {
 			h^=(x>>24);
@@ -397,12 +397,12 @@ m.hash6=function(str) {/* ELF Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash7=function(str) {/* BKDR Hash Function */
-	var a=131; // 31 131 1313 13131 131313 etc..
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+m.hash7=function (str) {/* BKDR Hash Function */
+	let a=131; // 31 131 1313 13131 131313 etc..
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -412,42 +412,42 @@ m.hash7=function(str) {/* BKDR Hash Function */
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash8=function(str) {/* SDBM Hash Function */
-	var h=0;
-	for (var i=0;i<str.length;i++) {
+m.hash8=function (str) {/* SDBM Hash Function */
+	let h=0;
+	for (let i=0;i<str.length;i++) {
 		h=(str.charCodeAt(i)+(h<<6)+(h<<16)-h)>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash9=function(str) {/* DJB Hash Function */
-	var h=5381;
-	for (var i=0;i<str.length;i++) {
+m.hash9=function (str) {/* DJB Hash Function */
+	let h=5381;
+	for (let i=0;i<str.length;i++) {
 		h=(((h<<5)+h)+str.charCodeAt(i))>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash10=function(str) {/* DEK Hash Function */
-	var h=str.length;
-	for (var i=0;i<str.length;i++) {
+m.hash10=function (str) {/* DEK Hash Function */
+	let h=str.length;
+	for (let i=0;i<str.length;i++) {
 		h=((h<<5)^(h>>27))^str.charCodeAt(i);
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash11=function(str) {/* BP Hash Function */
-	var h=0;
-	for (var i=0;i<str.length;i++) {
+m.hash11=function (str) {/* BP Hash Function */
+	let h=0;
+	for (let i=0;i<str.length;i++) {
 		h=h<<7^str.charCodeAt(i);
 	}
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash12=function(str) {/* FNV Hash Function */
-	var a=0x811C9DC5;
-	var h=0;
-	for (var i=0;i<str.length;i++) {
-		var q=0;
-		for (var j=0;j<32;j++) {
+m.hash12=function (str) {/* FNV Hash Function */
+	let a=0x811C9DC5;
+	let h=0;
+	for (let i=0;i<str.length;i++) {
+		let q=0;
+		for (let j=0;j<32;j++) {
 			if (a&(1<<j)) {
 				q=(q+(h<<j))>>>0;
 			}
@@ -459,9 +459,9 @@ m.hash12=function(str) {/* FNV Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash13=function(str) {/* AP Hash Function */
-	var h=0xAAAAAAAA;
-	for(var i=0;i<str.length;i++) {
+m.hash13=function (str) {/* AP Hash Function */
+	let h=0xAAAAAAAA;
+	for(let i=0;i<str.length;i++) {
 		if ((i&1)==0) {
 			h^=((h<<7)^str.charCodeAt(i)*(h>>3));
 		} else {
@@ -471,24 +471,24 @@ m.hash13=function(str) {/* AP Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.encrypt=function(salt, pwd, iter) {
+m.encrypt=function (salt, pwd, iter) {
 	iter=pwd.length+131+((iter&&iter.constructor==Number&&iter>=0)?iter:0);;
 	pwd=salt+pwd;
-	var h1=m.hash1(pwd);
-	var h2=m.hash2(pwd);
-	var h3=m.hash3(pwd);
-	var h4=m.hash4(pwd);
-	var h5=m.hash5(pwd);
-	var h6=m.hash6(pwd);
-	var h7=m.hash7(pwd);
-	var h8=m.hash8(pwd);
-	var h9=m.hash9(pwd);
-	var h10=m.hash10(pwd);
-	var h11=m.hash11(pwd);
-	var h12=m.hash12(pwd);
-	var h13=m.hash13(pwd);
-	var tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
-	for (var i=0;i<iter;i++) {
+	let h1=m.hash1(pwd);
+	let h2=m.hash2(pwd);
+	let h3=m.hash3(pwd);
+	let h4=m.hash4(pwd);
+	let h5=m.hash5(pwd);
+	let h6=m.hash6(pwd);
+	let h7=m.hash7(pwd);
+	let h8=m.hash8(pwd);
+	let h9=m.hash9(pwd);
+	let h10=m.hash10(pwd);
+	let h11=m.hash11(pwd);
+	let h12=m.hash12(pwd);
+	let h13=m.hash13(pwd);
+	let tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
+	for (let i=0;i<iter;i++) {
 		tmp1=h13+h12+h11+h10+h9+salt+h8+h7+h6+h5+h4+h3+h2+h1;
 		tmp2=h1+h3+salt+h2;
 		tmp3=salt+h2+h8+h1+h3;
@@ -519,7 +519,7 @@ m.encrypt=function(salt, pwd, iter) {
 	return h1+h2+h3+h4+h5+h6+h7+h8+h9+h10+h11+h12+h13;
 };
 m.iterFull=10000;
-// var salt="14d95b54b8ac93af5891cca6fd09e81346fca2de72cfc4f2fa519b32ae4e41e720c2b70087d9775a8cb85bb756f2cc8bcbcb24d0";
+// let salt="14d95b54b8ac93af5891cca6fd09e81346fca2de72cfc4f2fa519b32ae4e41e720c2b70087d9775a8cb85bb756f2cc8bcbcb24d0";
 // console.log("encrypt('Ef!%qKd3$2b') : "+m.encrypt(salt, "Ef!%qKd3$2b",m.iterFull));
 // console.log("encrypt('3s9dkf@Q)34WKZ,e') : "+m.encrypt(salt, "3s9dkf@Q)34WKZ,e",m.iterFull));
 // console.log("encrypt('c,DksEI%@8WE^% sq') : "+m.encrypt(salt, "c,DksEI%@8WE^% sq",m.iterFull));
@@ -533,16 +533,16 @@ m.maxIdLength=255;
 m.minPwdLength=6;
 m.maxPwdLength=255;
 
-m.logIn=function(elem) {
-	var $elem=$(elem).eq(0);
+m.logIn=function (elem) {
+	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
-	var $form=$elem.parent("form").eq(0);
-	var idType="id";
-	var userId=$form.find(".user-id")[0].value.trim();
-	var userIdLength=m.byteCount(userId);
-	var userPwd=$form.find(".user-pwd")[0].value;
-	var err="";
-	var valid=false;
+	let $form=$elem.parent("form").eq(0);
+	let idType="id";
+	let userId=$form.find(".user-id")[0].value.trim();
+	let userIdLength=m.byteCount(userId);
+	let userPwd=$form.find(".user-pwd")[0].value;
+	let err="";
+	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID or E-mail is empty.--]";
@@ -563,30 +563,30 @@ m.logIn=function(elem) {
 	}
 	
 	if (valid) {
-		var form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\trememberMe\tuserPwd\n"
-			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId+"\t"+($("input:checkbox[name='rememberMe']").is(":checked")?"yes":"no")+"\t";
+		let form_data=`log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
+web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberMe']").is(":checked")?"yes":"no")}	`;
 		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
-		}).fail(function() {
+		}).fail(function () {
 			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Log-in button again.--]") );
 			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: pwd_iteration or "No such id"	salt
-			var res=resp.split('\t');
-			var iter=Number(res[0]);
+		}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
+			let res=resp.split('\t');
+			let iter=Number(res[0]);
 			if (isNaN(iter)) {
 				$elem.before( m.encloseErr("Error : "+res[0]) );
 				$elem[0].disabled=false;
 			} else {
 				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function() {
+				setTimeout(function () {
 					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
 					$elem.before( m.encloseErr("[--Logging in--] : [--Please wait.--]") );
 					$.ajax("./log-in.do", {
 						type: "POST"
 						, data: form_data
-					}).done(function(resp) {
+					}).done(function (resp) {
 						$elem.before( m.encloseErr(resp) );
 						if (resp==="log-in success") {
 							if (vars.goto!==undefined) {
@@ -610,15 +610,15 @@ m.logIn=function(elem) {
 	}
 };
 
-m.forgotPwd=function(elem) {
-	var $elem=$(elem).eq(0);
+m.forgotPwd=function (elem) {
+	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
-	var $form=$elem.parent("form").eq(0);
-	var idType="id";
-	var userId=$form.find(".user-id")[0].value.trim();
-	var userIdLength=m.byteCount(userId);
-	var err="";
-	var valid=false;
+	let $form=$elem.parent("form").eq(0);
+	let idType="id";
+	let userId=$form.find(".user-id")[0].value.trim();
+	let userIdLength=m.byteCount(userId);
+	let err="";
+	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID or E-mail is empty.--]";
@@ -635,18 +635,18 @@ m.forgotPwd=function(elem) {
 	}
 	
 	if (valid) {
-		var form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
+		let form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
 			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId;
 		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
-		}).fail(function() {
+		}).fail(function () {
 			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Forgot password button again.--]") );
 			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: pwd_iteration or "No such id"	salt
-			var res=resp.split('\t');
-			var iter=Number(res[0]);
+		}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
+			let res=resp.split('\t');
+			let iter=Number(res[0]);
 			if (isNaN(iter)) {
 				$elem.before( m.encloseErr("Error : "+res[0]) );
 				$elem[0].disabled=false;
@@ -655,7 +655,7 @@ m.forgotPwd=function(elem) {
 				$.ajax("./forgotPwd", {
 					type: "POST"
 					, data: form_data
-				}).done(function(resp) {
+				}).done(function (resp) {
 					$elem.before( m.encloseErr(resp) );
 					$elem[0].disabled=false;
 				});
@@ -670,17 +670,17 @@ m.forgotPwd=function(elem) {
 	}
 };
 
-m.signUp=function(elem) {
-	var $elem=$(elem).eq(0);
+m.signUp=function (elem) {
+	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
-	var $form=$elem.parent("form").eq(0);
-	var userId=$form.find(".user-id")[0].value.trim();
-	var userIdLength=m.byteCount(userId);
-	var userEmail=$form.find(".user-Email")[0].value.trim();
-	var userPwd=$form.find(".user-pwd")[0].value;
-	var userPwdCfm=$form.find(".user-pwd")[1].value;
-	var err="";
-	var valid=false;
+	let $form=$elem.parent("form").eq(0);
+	let userId=$form.find(".user-id")[0].value.trim();
+	let userIdLength=m.byteCount(userId);
+	let userEmail=$form.find(".user-Email")[0].value.trim();
+	let userPwd=$form.find(".user-pwd")[0].value;
+	let userPwdCfm=$form.find(".user-pwd")[1].value;
+	let err="";
+	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID is empty.--]";
@@ -707,25 +707,30 @@ m.signUp=function(elem) {
 		$.ajax("./check", {
 			type: "POST"
 			, data: userId+"\t"+userEmail
-		}).fail(function() {
+		}).fail(function () {
 			$elem.before( m.encloseErr("[--Request time out.--] [--Please click the Sign-up button again.--]") );
 			$elem[0].disabled=false;
-		}).done(function(resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
-			var res=resp.split('\t');
-			if (res[0]=="true"&&res[1]=="true") {
-				$form.prepend(
-					'<input type="hidden" name="tToken" value="'+res[2]+'"/>'
-					+'<input type="hidden" name="authToken" value="'+res[3]+'"/>'
-				);
+		}).done(function (resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
+			let res=resp.split('\t');
+			if (res&&res.length>2&&res[0]=="true"&&res[1]=="true") {
 				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function() {
-					$form.find(".user-pwd")[0].value=m.encrypt(res[3], userPwd, m.iterFull); userPwd="";
-					$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
+				setTimeout(function () {
+					let userPwd=$form.find(".user-pwd")[0].value=m.encrypt(res[3], userPwd, m.iterFull);
+					let userPwdCfm=$form.find(".user-pwd")[1].value="confirmed";
 					$elem.before( m.encloseErr("[--Signing up--] : [--Please wait.--]") );
-					$form.submit();
+					let form_data=`userId	userEmail	tToken	authToken	userPwd	userPwdCfm
+${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
+					userPwd=null; userPwdCfm=null;
+					$.ajax("./sign-up", {
+						type: "POST"
+						, data: form_data
+					}).done(function (resp) {
+						$elem.before( m.encloseErr(resp) );
+						$elem[0].disabled=false;
+					});
 				}, 500);
 			} else {
-				var errStr="";
+				let errStr="";
 				if (res[0]=="false") {
 					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]<br>";
 				}
@@ -745,17 +750,17 @@ m.signUp=function(elem) {
 	}
 };
 
-$("#log-in-userPwd").on("keyup", function(e) {
+$("#log-in-userPwd").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-log-in").trigger("click");
 	}
 });
-$("#sign-up-userPwdCfm").on("keyup", function(e) {
+$("#sign-up-userPwdCfm").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-sign-up").trigger("click");
 	}
 });
-$("input.go-next").on("keyup", function(e) {
+$("input.go-next").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$(this).next().next("input").focus();
 	}
