@@ -245,31 +245,37 @@ public void start() {
 			case "CDN": // e.g. path=/CDN/icon-Recoeve.png
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
 					String fileName=FileMap.getCDNFile(pathSplit[2]);
-					String[] fileNameSplit=pathSplit[2].split("\\.");
-					switch (fileNameSplit[fileNameSplit.length-1]) {
-						case "ico":
-							req.response().putHeader("Content-Type","image/x-icon");
-							break;
-						case "png":
-							req.response().putHeader("Content-Type","image/png");
-							break;
-						case "jpeg": case "jpg":
-							req.response().putHeader("Content-Type","image/jpeg");
-							break;
-						case "css":
-							req.response().putHeader("Content-Type","text/css; charset=utf-8");
-							break;
-						case "js":
-							req.response().putHeader("Content-Type","text/javascript; charset=utf-8");
-							break;
-						case "webm":
-							req.response().putHeader("Content-Type","video/webm");
-							break;
-						default:
-							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+					if (fileName!=null) {
+						String[] fileNameSplit=pathSplit[2].split("\\.");
+						switch (fileNameSplit[fileNameSplit.length-1]) {
+							case "ico":
+								req.response().putHeader("Content-Type","image/x-icon");
+								break;
+							case "png":
+								req.response().putHeader("Content-Type","image/png");
+								break;
+							case "jpeg": case "jpg":
+								req.response().putHeader("Content-Type","image/jpeg");
+								break;
+							case "css":
+								req.response().putHeader("Content-Type","text/css; charset=utf-8");
+								break;
+							case "js":
+								req.response().putHeader("Content-Type","text/javascript; charset=utf-8");
+								break;
+							case "webm":
+								req.response().putHeader("Content-Type","video/webm");
+								break;
+							default:
+								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+						}
+						req.response().sendFile(fileName);
+						System.out.println("Sended "+fileName+".");
+					} else {
+						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+						req.response().end(INVALID_ACCESS, ENCODING);
+						System.out.println(INVALID_ACCESS+" (No file.)");
 					}
-					req.response().sendFile(fileName);
-					System.out.println("Sended "+fileName+".");
 				} else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
