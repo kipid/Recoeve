@@ -745,14 +745,6 @@ m.ClineHeight=function (increment) {
 	}
 	return false;
 };
-$window.on("resize.deviceInfo", function () {
-	if (window.innerWidth!==m.browserWidth) {
-		m.browserWidth=window.innerWidth;
-		m.fontSize=parseInt(m.$container.css("font-size"));
-		// m.TFontSize.html((m.fontSize*1.8).toFixed(1)+"px");
-		m.printDeviceInfo();
-	}
-});
 
 $("title").html(m.userId+" on Recoeve.net");
 $user_noti.html(m.userId+"'s recos");
