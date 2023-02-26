@@ -2136,12 +2136,12 @@ m.doFSCat=function (fs) {
 	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
 	m.fuzzySearch(fsCatSH, fs);
 	let str="";
+	console.log("fs[0]: ", fs[0]);
+	console.log("fs.fullList: ", fs.fullList);
 	for (let i=0;i<fs[0].length;i++) {
-		console.log("fs[0]: ", fs[0]);
 		let k=fs[0][fs[0].sorted[i]];
-		console.log("k: ", k);
-		console.log("fs.fullList: ", fs.fullList);
-		console.log("fs.fullList[k.i]: ", fs.fullList[k.i]);
+		console.log(`k=fs[0][fs[0].sorted[${i}]]: `, k);
+		console.log(`fs.fullList[${k.i}]: `, fs.fullList[k.i]);
 		str+='<div class="list-item" onclick="m.chooseCat(this,'+k.i+')">'
 				+'<div class="list-index">'+i+'</div>'
 				+fs.fullList[k.i].html
