@@ -272,12 +272,11 @@ m.strToJSON=function (str, colMap, rowMap) {
 
 let $dataLang=$("#data-lang");
 let dataLang=m.strToJSON( $dataLang.html().trim() );
-let href=window.location.href.replace(/\?\S*$/, "")+"?lang=";
-let htmlLang='<div class="p">';
+let htmlLang=`<div class="p">`;
 for (let i=0;i<dataLang[0].length;i++) {
-	htmlLang+='<a href="'+href+dataLang[0][i]+'">'+dataLang[1][i]+'</a><br>';
+	htmlLang+=`<a href="?lang=${dataLang[0][i]}">${dataLang[1][i]}</a><br>`;
 }
-htmlLang+='</div>';
+htmlLang+=`</div>`;
 $dataLang.after(htmlLang);
 
 //////////////////////////////////////////////////////////
