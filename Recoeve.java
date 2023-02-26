@@ -137,7 +137,7 @@ public void start() {
 		System.out.println("Lang: "+lang);
 
 		String[] pathSplit=path.split("/");
-		if (pathSplit.length==0) { // path=/
+		if (pathSplit.length<=1) { // path=/
 			if (cookie.get("I")!=null||cookie.get("rmbdI")!=null) {
 				req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
