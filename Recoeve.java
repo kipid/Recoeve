@@ -116,7 +116,7 @@ public void start() {
 		final boolean sessionPassed=db.sessionCheck(cookie);
 		System.out.println("Cookie: "+cookie);
 		System.out.println("Session passed?: "+sessionPassed);
-		final String user_i=cookie.get("I");
+		final String user_i=cookie.get("rmbdI");
 		if (user_i!=null) {
 			try {
 				ResultSet user=db.findUserByIndex(Long.parseLong(user_i, 16));
