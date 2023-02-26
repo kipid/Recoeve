@@ -103,13 +103,18 @@ data {display:none}
 img {min-width:1em; min-height:1em; max-width:100%}
 
 .button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
+	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
 .reco .button {margin:0}
 .button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
+	.bright .button.disabled {background:rgb(100,100,100); color:rgb(25,25,25)}
 .button.left {float:left; margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
+	.bright .button:active {background:rgb(100,180,180)}
 .button.enabled {background:rgb(50,140,80)}
+	.bright .button.enabled {background:rgb(120,210,150)}
 .button.enabled:active {background:rgb(70,70,70)}
+	.bright .button.enabled:active {background:rgb(190,190,190)}
 
 a {text-decoration:none}
 a:link {color:rgb(190,190,235)}
@@ -147,9 +152,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #catList .cat.edit>.edit-bar:last-child {right:0}
 #catList .cat.selected {border:1px solid white}
 	.bright #catList .cat.selected {border-color:black}
-#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer}
-#catList .cat>.baseCat {color:white}
+#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer; color:white}
+	.bright #catList .cat>.baseCat, .bright #catList .cat>.EC {color:black}
 #catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,210,210)}
+	.bright #catList .cat.selected>.baseCat {color:rgb(50,0,0)}
 #catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
@@ -486,7 +492,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
 </div><!-- div#javascript-disable -->
 <div class="side2" id="change-style">
-	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
+	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset style</button></form>
 	<form><input id="button-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
 	</input><input id="button-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
 	<form><input id="input-font-family" class="bold" type="text" name="font" value="맑은 고딕" style="font-family:'맑은 고딕'; font-size:1.2em; width:73px; height:23px; text-align:center" onchange="m.CfontFamily(this.value)"></input></form>
