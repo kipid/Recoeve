@@ -188,9 +188,9 @@ public void start() {
 				System.out.println(INVALID_ACCESS);
 		}} else if (pathSplit.length>2) {
 		switch (pathSplit[1]) {
-			case "user": // e.g. path=/user/kipid/?...
+			case "user": // e.g. path=/user/kipid/mode/multireco?cat=...
 				String user=URLDecoder.decode(pathSplit[2]);
-				if (pathSplit.length==3) { // e.g. path=/user/kipid
+				if (pathSplit.length==3) { // e.g. path=/user/kipid?cat=...
 					if (db.idExists(user)) {
 						req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapUserPage(cookie, user)), ENCODING);
