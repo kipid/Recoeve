@@ -147,7 +147,8 @@ public void start() {
 				req.response().end(FileMap.get("to-log-in.html", lang), ENCODING); // window.location.pathname="/account/log-in";
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
-		} else if (pathSplit.length==2&&refererAllowed) { // e.g. path=/jquery.min.js
+		} else if (pathSplit.length==2) { // e.g. path=/jquery.min.js
+		if (refererAllowed) {
 		switch (pathSplit[1]) {
 			case "sessionIter": // e.g. path=/sessionIter
 				String iter=db.sessionIter(cookie);
@@ -186,7 +187,7 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				req.response().end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS);
-		}} else if (pathSplit.length>2) {
+		}}} else if (pathSplit.length>2) {
 		switch (pathSplit[1]) {
 			case "user": // e.g. path=/user/kipid/mode/multireco?cat=...
 				String user=URLDecoder.decode(pathSplit[2]);
