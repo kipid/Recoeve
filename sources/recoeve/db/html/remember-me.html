@@ -6,28 +6,28 @@
 //////////////////////////////////////////
 // path.search rendering
 //////////////////////////////////////////
-m.getSearchVars=function() {
-	var searchStr=window.location.search;
-	var vars={};
-	if (searchStr!==0) {
-		if (searchStr.substring(0,1)==="?") {
-			searchStr=searchStr.substring(1);
-		}
-		var splits=searchStr.split("&");
-		for (var i=0;i<splits.length;i++) {
-			var key=splits[i];
-			var value="";
-			var k=splits[i].indexOf("=");
+m.getSearchVars=function (searchStr) {
+	let vars=[];
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
+		let j=searchStr.indexOf("#");
+		if (j!==-1) { searchStr=searchStr.substring(0,j); }
+		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
+		for (let i=0;i<splits.length;i++) {
+			let key=splits[i];
+			let value="";
+			let k=key.indexOf("=");
 			if (k!==-1) {
-				key=splits[i].substring(0,k);
-				value=decodeURIComponent(splits[i].substring(k+1));
+				value=decodeURIComponent(key.substring(k+1));
+				key=key.substring(0,k);
 			}
-			vars[key]=value;
+			key=decodeURIComponent(key);
+			vars[i]=vars[key]={key:key, val:value};
 		}
 	}
 	return vars;
 };
-let vars=m.getSearchVars();
+m.searchVars=m.getSearchVars(window.location.search);
 
 let sW=screen.width;
 let sH=screen.height;
@@ -45,15 +45,15 @@ $.ajax({
 	$("#err").html(resp);
 	setTimeout(function () {
 		if (resp==="Rmbd") {
-			if (vars.goto!==undefined) {
-				window.location.href=decodeURIComponent(vars.goto);
+			if (m.searchVars.goto!==undefined) {
+				window.location.href=m.searchVars.goto.val;
 			} else {
 				window.location.pathname="/";
 			}
 		} else {
-			window.location.pathname="/account/log-in";
+			window.location.href="/account/log-in"+window.location.search+window.location.hash;
 		}
-	}, 2000);
+	}, 1024);
 });
 })(window.m=window.m||{}, jQuery);
 </script>
