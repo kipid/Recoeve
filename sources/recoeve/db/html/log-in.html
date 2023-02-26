@@ -91,7 +91,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es</data>
 </div>
 
-<div id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a></div>
+<div id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making: Recoeve.net</a></div>
 </div><!-- recoeve-container -->
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
@@ -107,29 +107,29 @@ $(".replace-reco-eve").html(function (i, orgHtml) {
 //////////////////////////////////////////
 // path.search rendering
 //////////////////////////////////////////
-m.getSearchVars=function () {
-	let searchStr=window.location.search;
-	let vars={};
-	if (searchStr!==0) {
-		if (searchStr.substring(0,1)==="?") {
-			searchStr=searchStr.substring(1);
-		}
-		let splits=searchStr.split("&");
+m.getSearchVars=function (searchStr) {
+	let vars=[];
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
+		let j=searchStr.indexOf("#");
+		if (j!==-1) { searchStr=searchStr.substring(0,j); }
+		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
 		for (let i=0;i<splits.length;i++) {
 			let key=splits[i];
 			let value="";
-			let k=splits[i].indexOf("=");
+			let k=key.indexOf("=");
 			if (k!==-1) {
-				key=splits[i].substring(0,k);
-				value=decodeURIComponent(splits[i].substring(k+1));
+				value=decodeURIComponent(key.substring(k+1));
+				key=key.substring(0,k);
 			}
-			vars[key]=value;
+			key=decodeURIComponent(key);
+			vars[i]=vars[key]={key:key, val:value};
 		}
 	}
 	return vars;
 };
 
-/*  :: cookies.js :: Slightly edited by kipid at 2014-09-03.
+/*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
 |*|
 |*|  A complete cookies reader/writer framework with full unicode support.
 |*|
@@ -145,47 +145,46 @@ m.getSearchVars=function () {
 |*|  * docCookies.removeItem(name[, path], domain)
 |*|  * docCookies.hasItem(name)
 |*|  * docCookies.keys()
-*/
+ */
 m.docCookies={
-  getItem: function (sKey) {
-    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
-  },
-  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-    let sExpires = "";
-    if (vEnd) {
-      switch (vEnd.constructor) {
-        case Number:
-          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age="+vEnd;
-          break;
-        case String:
-          sExpires = "; expires="+vEnd;
-          break;
-        case Date:
-          sExpires = "; expires="+vEnd.toUTCString();
-          break;
-      }
-    }
-    document.cookie = encodeURIComponent(sKey)+"="+encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
-    return true;
-  },
-  removeItem: function (sKey, sPath, sDomain, bSecure) {
-    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)/* || !this.hasItem(sKey)*/) { return false; }
-    document.cookie = encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain="+sDomain : "") + (sPath ? "; path="+sPath : "") + (bSecure ? "; secure" : "");
-    return true;
-  },
-  hasItem: function (sKey) {
-    return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&")+"\\s*\\=")).test(document.cookie);
-  },
-  keys: /* optional method: you can safely remove it! */ function () {
-    let aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
-    for (let nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
-    return aKeys;
-  }
+	hasItem:function (sKey) {
+		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
+	}
+	, getItem:function (sKey) {
+		return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null;
+	}
+	, removeItem:function (sKey, sPath, sDomain, bSecure) {
+		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+		document.cookie=encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
+		return true;
+	}
+	, setItem:function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+		let sExpires="";
+		if (vEnd) { switch (vEnd.constructor) {
+			case Number:
+				sExpires=vEnd===Infinity?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+vEnd;
+				break;
+			case String:
+				sExpires="; expires="+vEnd;
+				break;
+			case Date:
+				sExpires="; expires="+vEnd.toUTCString();
+				break;
+		}}
+		document.cookie=encodeURIComponent(sKey)+"="+encodeURIComponent(sValue)+sExpires+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
+		return true;
+	}
+	, keys:function () {
+		let aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
+		for (let nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
+		return aKeys;
+	}
 };
-let vars=m.getSearchVars();
-if (vars.lang!==undefined) {
-	m.docCookies.setItem("lang", vars.lang, Infinity, "/");
+
+m.searchVars=m.getSearchVars(window.location.search);
+if (m.searchVars.lang!==undefined) {
+	m.docCookies.setItem("lang", m.searchVars.lang.value, Infinity, "/");
 }
 
 ////////////////////////////////////////////////////
@@ -519,12 +518,6 @@ m.encrypt=function (salt, pwd, iter) {
 	return h1+h2+h3+h4+h5+h6+h7+h8+h9+h10+h11+h12+h13;
 };
 m.iterFull=10000;
-// let salt="14d95b54b8ac93af5891cca6fd09e81346fca2de72cfc4f2fa519b32ae4e41e720c2b70087d9775a8cb85bb756f2cc8bcbcb24d0";
-// console.log("encrypt('Ef!%qKd3$2b') : "+m.encrypt(salt, "Ef!%qKd3$2b",m.iterFull));
-// console.log("encrypt('3s9dkf@Q)34WKZ,e') : "+m.encrypt(salt, "3s9dkf@Q)34WKZ,e",m.iterFull));
-// console.log("encrypt('c,DksEI%@8WE^% sq') : "+m.encrypt(salt, "c,DksEI%@8WE^% sq",m.iterFull));
-// console.log("encrypt(' a528wdf329') : "+m.encrypt(salt, " a528wdf329",m.iterFull));
-// console.log("encrypt('347958416') : "+m.encrypt(salt, "347958416",m.iterFull));
 
 m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
 m.regExEmail=/^[a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+$/;
@@ -565,7 +558,7 @@ m.logIn=function (elem) {
 	if (valid) {
 		let form_data=`log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
 web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberMe']").is(":checked")?"yes":"no")}	`;
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
+		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
@@ -576,21 +569,21 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 			let res=resp.split('\t');
 			let iter=Number(res[0]);
 			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error : "+res[0]) );
+				$elem.before( m.encloseErr("Error: "+res[0]) );
 				$elem[0].disabled=false;
 			} else {
 				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
 				setTimeout(function () {
 					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
-					$elem.before( m.encloseErr("[--Logging in--] : [--Please wait.--]") );
+					$elem.before( m.encloseErr("[--Logging in--]: [--Please wait.--]") );
 					$.ajax("./log-in.do", {
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
 						$elem.before( m.encloseErr(resp) );
 						if (resp==="log-in success") {
-							if (vars.goto!==undefined) {
-								window.location.href=decodeURIComponent(vars.goto);
+							if (m.searchVars.goto!==undefined) {
+								window.location.href=m.searchVars.goto.value;
 							} else {
 								window.location.pathname="/";
 							}
@@ -637,7 +630,7 @@ m.forgotPwd=function (elem) {
 	if (valid) {
 		let form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
 			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId;
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--] : [--Please wait.--]") );
+		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
@@ -648,10 +641,10 @@ m.forgotPwd=function (elem) {
 			let res=resp.split('\t');
 			let iter=Number(res[0]);
 			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error : "+res[0]) );
+				$elem.before( m.encloseErr("Error: "+res[0]) );
 				$elem[0].disabled=false;
 			} else {
-				$elem.before( m.encloseErr("[--Sending an email--] : [--Please wait.--]") );
+				$elem.before( m.encloseErr("[--Sending an email--]: [--Please wait.--]") );
 				$.ajax("./forgotPwd", {
 					type: "POST"
 					, data: form_data
@@ -703,7 +696,7 @@ m.signUp=function (elem) {
 	}
 	
 	if (valid) {
-		$elem.before( m.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]") );
+		$elem.before( m.encloseErr("[--Checking ID and E-mail--]: [--Please wait.--]") );
 		$.ajax("./check", {
 			type: "POST"
 			, data: userId+"\t"+userEmail
@@ -717,7 +710,7 @@ m.signUp=function (elem) {
 				setTimeout(function () {
 					let userPwd=$form.find(".user-pwd")[0].value=m.encrypt(res[3], userPwd, m.iterFull);
 					let userPwdCfm=$form.find(".user-pwd")[1].value="confirmed";
-					$elem.before( m.encloseErr("[--Signing up--] : [--Please wait.--]") );
+					$elem.before( m.encloseErr("[--Signing up--]: [--Please wait.--]") );
 					let form_data=`userId	userEmail	tToken	authToken	userPwd	userPwdCfm
 ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					userPwd=null; userPwdCfm=null;
