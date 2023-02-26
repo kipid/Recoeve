@@ -184,7 +184,7 @@ m.docCookies={
 
 m.searchVars=m.getSearchVars(window.location.search);
 if (m.searchVars.lang!==undefined) {
-	m.docCookies.setItem("lang", m.searchVars.lang.value, Infinity, "/");
+	m.docCookies.setItem("lang", m.searchVars.lang.val, Infinity, "/");
 }
 
 ////////////////////////////////////////////////////
@@ -583,7 +583,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 						$elem.before( m.encloseErr(resp) );
 						if (resp==="log-in success") {
 							if (m.searchVars.goto!==undefined) {
-								window.location.href=m.searchVars.goto.value;
+								window.location.href=m.searchVars.goto.val;
 							} else {
 								window.location.pathname="/";
 							}
