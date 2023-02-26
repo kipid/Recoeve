@@ -678,6 +678,7 @@ m.mode="Dark";
 m.fontFamily="맑은 고딕";
 m.fontSize=15;
 m.lineHeight10=16;
+m.defaultStyles={mode:m.mode, fontFamily:m.fontFamily, fontSize:m.fontSize, lineHeight10:m.lineHeight10};
 m.$deviceInfo=$(".deviceInfo");
 m.$container=$("#container");
 
@@ -688,10 +689,10 @@ m.printDeviceInfo=function () {
 };
 
 m.resetStyle=function () {
-	m.Cmode("Dark");
-	m.CfontFamily("맑은 고딕");
-	m.CfontSize(15-m.fontSize);
-	m.ClineHeight(16-m.lineHeight10);
+	m.Cmode(m.defaultStyles.mode);
+	m.CfontFamily(m.defaultStyles.fontFamily);
+	m.CfontSize(m.defaultStyles.fontSize-m.fontSize);
+	m.ClineHeight(m.defaultStyles.lineHeight10-m.lineHeight10);
 }
 m.Cmode=function (modeI) {
 	if (modeI=="Dark") {
@@ -703,27 +704,39 @@ m.Cmode=function (modeI) {
 	}
 	m.mode=modeI;
 	m.printDeviceInfo();
-	m.docCookies.setItem("m.mode", m.mode, m.expire, "/");
+	if (m.mode===m.defaultStyles.mode) {
+		m.docCookies.removeItem("m.mode", "/");
+	} else {
+		m.docCookies.setItem("m.mode", m.mode, m.expire, "/");
+	}
 	return true;
 };
 m.CfontFamily=function (font) {
 	m.$container.css({fontFamily:font});
 	m.fontFamily=font;
 	m.printDeviceInfo();
-	m.docCookies.setItem("m.fontFamily", m.fontFamily, m.expire, "/");
+	if (m.fontFamily===m.defaultStyles.fontFamily) {
+		m.docCookies.removeItem("m.fontFamily", "/");
+	} else {
+		m.docCookies.setItem("m.fontFamily", m.fontFamily, m.expire, "/");
+	}
 	return true;
 };
 m.CfontSize=function (increment) {
 	if (increment.constructor===Number&&!isNaN(increment)) {
 		m.fontSize+=increment;
-		if (m.fontSize<3) {
-			m.fontSize=3;
-		} else if (m.fontSize>30) {
-			m.fontSize=30;
+		if (m.fontSize<8) {
+			m.fontSize=8;
+		} else if (m.fontSize>27) {
+			m.fontSize=27;
 		}
 		m.$container.css({"font-size":m.fontSize.toFixed(1)+"px"});
 		m.printDeviceInfo();
-		m.docCookies.setItem("m.fontSize", m.fontSize.toFixed(1), m.expire, "/");
+		if (m.fontSize===m.defaultStyles.fontSize) {
+			m.docCookies.removeItem("m.fontSize", "/");
+		} else {
+			m.docCookies.setItem("m.fontSize", m.fontSize.toFixed(1), m.expire, "/");
+		}
 		return true;
 	}
 	return false;
@@ -738,13 +751,39 @@ m.ClineHeight=function (increment) {
 			m.lineHeight10=25;
 			return false;
 		}
-		m.$container.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)} !important`);
+		m.$container.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)}`);
 		m.printDeviceInfo();
-		m.docCookies.setItem("m.lineHeight10", m.lineHeight10, m.expire, "/");
+		if (m.lineHeight10===m.defaultStyles.lineHeight10) {
+			m.docCookies.removeItem("m.lineHeight10", "/");
+		} else {
+			m.docCookies.setItem("m.lineHeight10", m.lineHeight10, m.expire, "/");
+		}
 		return true;
 	}
 	return false;
 };
+
+let cookieItem;
+cookieItem=m.docCookies.getItem("m.mode");
+if (cookieItem!==null) {
+	m.Cmode(cookieItem);
+} else {
+	m.Cmode("Dark");
+}
+$(`#button-${m.mode}`).prop('checked', true);
+cookieItem=m.docCookies.getItem("m.fontFamily");
+if (cookieItem!==null) {
+	m.CfontFamily(cookieItem);
+	$(`#input-font-family`)[0].value=m.fontFamily;
+}
+cookieItem=m.docCookies.getItem("m.fontSize");
+if (cookieItem!==null) {
+	m.CfontSize(Number(cookieItem)-15);
+}
+cookieItem=m.docCookies.getItem("m.lineHeight10");
+if (cookieItem!==null) {
+	m.ClineHeight(Number(cookieItem)-16);
+}
 
 $("title").html(m.userId+" on Recoeve.net");
 $user_noti.html(m.userId+"'s recos");
