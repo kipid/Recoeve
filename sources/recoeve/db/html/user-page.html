@@ -25,9 +25,23 @@ if (k!==-1) {
 }
 m.myPage=(m.myId===m.userId);
 
-/////////////////////////////
-// cookies.js
-/////////////////////////////
+/*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
+|*|
+|*|  A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|  This framework is released under the GNU Public License, version 3 or later.
+|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|  Syntaxes:
+|*|
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.getItem(name)
+|*|  * docCookies.removeItem(name[, path], domain)
+|*|  * docCookies.hasItem(name)
+|*|  * docCookies.keys()
+ */
 m.docCookies={
 	hasItem:function (sKey) {
 		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
@@ -3312,7 +3326,7 @@ window.onpopstate=function (e) {
 m.getSearchVars=function (searchStr) {
 	let vars=[];
 	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
-		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
+		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
 		let j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
 		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
