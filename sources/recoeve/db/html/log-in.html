@@ -581,17 +581,20 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 						, data: form_data
 					}).done(function (resp) {
 						$elem.before( m.encloseErr(resp) );
-						if (resp==="log-in success") {
-							if (m.searchVars.goto!==undefined) {
-								window.location.href=m.searchVars.goto.val;
+						// wait until saving session/rmb cookies.
+						setTimeout(function () {
+							if (resp==="log-in success") {
+								if (m.searchVars.goto!==undefined) {
+									window.location.href=m.searchVars.goto.val;
+								} else {
+									window.location.pathname="/";
+								}
 							} else {
-								window.location.pathname="/";
+								$elem[0].disabled=false;
 							}
-						} else {
-							$elem[0].disabled=false;
-						}
+						}, 1024);
 					});
-				}, 500);
+				}, 512);
 			}
 		});
 	} else {

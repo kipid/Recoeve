@@ -43,6 +43,7 @@ $.ajax({
 }).done(function (resp) {
 	console.log(resp);
 	$("#err").html(resp);
+	// wait until saving session/rmb cookies.
 	setTimeout(function () {
 		if (resp==="Rmbd") {
 			if (m.searchVars.goto!==undefined) {
