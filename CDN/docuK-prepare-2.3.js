@@ -479,10 +479,10 @@ kipid.CfontFamily=function (font) {
 kipid.CfontSize=function (increment) {
 	if (increment.constructor===Number&&!isNaN(increment)) {
 		kipid.fontSize+=increment;
-		if (kipid.fontSize<7) {
-			kipid.fontSize=7;
-		} else if (kipid.fontSize>20) {
-			kipid.fontSize=20;
+		if (kipid.fontSize<3) {
+			kipid.fontSize=3;
+		} else if (kipid.fontSize>30) {
+			kipid.fontSize=30;
 		}
 		kipid.docuK.css({"font-size":kipid.fontSize.toFixed(1)+"px"});
 		kipid.printDeviceInfo();
@@ -530,7 +530,7 @@ kipid.shareSNS=function (service) {
 			open="https://www.facebook.com/sharer/sharer.php"+"?u="+url;
 			break;
 		case 'recoeve':
-			open="http://recoeve.net/reco?"+"uri="+url+"&title="+title;
+			open="https://recoeve.net/reco?"+"uri="+url+"&title="+title;
 			break;
 		case 'kakao':
 			kipid.popUpKakao();
