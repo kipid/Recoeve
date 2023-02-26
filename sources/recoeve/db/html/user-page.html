@@ -3,7 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <title>Recoeve.net</title>
 <script>
 window.m={};
@@ -11,17 +10,16 @@ window.m={};
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
 m.pathName=window.location.pathname;
-if (m.pathName.substring(0,6)!=="/user/") {
+if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
 	m.pathName="/user/"+m.myId;
 	if (window.location.pathname!=="/reco") {
-		window.history.replaceState(null, null, m.pathName+window.location.search+window.location.hash);
+		window.history.replaceState(null, "My page", m.pathName+window.location.search+window.location.hash);
 	}
 }
 m.userId=decodeURIComponent(m.pathName.substring(6));
 let k=m.userId.indexOf("/");
 if (k!==-1) {
 	m.userId=m.userId.substring(0,k);
-	// m.pathName="/user/"+m.userId;
 }
 m.myPage=(m.myId===m.userId);
 
@@ -104,7 +102,7 @@ data {display:none}
 .cBoth {clear:both}
 img {min-width:1em; min-height:1em; max-width:100%}
 
-.button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
+.button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 .reco .button {margin:0}
 .button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
@@ -127,11 +125,11 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
 #sidebar-dragger {position:fixed; z-index:10; top:0; bottom:0; left:0; width:1.5em; background:transparent}
-#sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0;}
+#sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0}
 #sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(230,230,230); color:black; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
 	.dark #sidebar {background:rgb(35,35,35); color:white}
 .side2 {padding:0}
-#sidebar-toggle {width:2em; height:2em; background: black; border:white 2px solid;}
+#sidebar-toggle {width:2em; height:2em; background: black; border:white 2px solid}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
 
@@ -154,85 +152,28 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	position:relative;
 	width:25em; max-width:100%;
 	height:auto;
-	text-align:left;
+	text-align:left
 }
 #cat-fs-list {
 	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
 	border:.15em gray solid;
-	background:rgb(20,20,20);
+	background:rgb(20,20,20)
 }
 #cat-fs-list .list-item {
 	background:black; color:white;
-	padding:.2em .5em .4em;
+	padding:.2em .5em .4em
 }
 #cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
 #cat-fs-list .list-item .list-index {display:none}
 #cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40);
+	background:rgb(40,40,40)
 }
-#cat-fs-list .list-item .cat {font-size:.9em;}
+#cat-fs-list .list-item .cat {font-size:.9em}
 #cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150);
+	font-size:.5em; color:rgb(150,150,150)
 }
 #cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170);
-}
-
-#multireco-cats-container {
-	position:fixed;
-	left:0; top:0;
-	z-index:10000;
-	background:black;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left;
-}
-#multireco-cats-container .def-cat {
-	display: inline-block;
-	margin: 0.2em 0;
-	border: 1px solid rgb(130,130,130);
-	padding: 1px 0.5em;
-	font-size: .9em;
-}
-#multireco-cats-container textarea {
-	display: block;
-	max-width: 100%;
-	width: 100%;
-	resize: vertical;
-	font: inherit;
-	font-weight: bold;
-	overflow-x: hidden;
-	overflow-y: auto;
-	padding: 0.2em 0.3em;
-	background: white;
-	color: rgb(50,50,50);
-}
-#multireco-cat-fs-container {
-	position:relative;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left;
-}
-#multireco-cat-fs-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20);
-}
-#multireco-cat-fs-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em;
-}
-#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#multireco-cat-fs-list .list-item .list-index {display:none}
-#multireco-cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40);
-}
-#multireco-cat-fs-list .list-item .cat {font-size:.9em;}
-#multireco-cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150);
-}
-#multireco-cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170);
+	color:rgb(170,250,170)
 }
 
 #fuzzy-search-container, #table-of-recos-container {
@@ -240,7 +181,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	z-index:10010;
 	width:25em; max-width:100%;
 	height:auto;
-	text-align:left;
+	text-align:left
 }
 #fuzzy-search, #table-of-recos {
 	height:2em; max-height:5em; overflow-y:auto;
@@ -248,28 +189,28 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	width:100%;
 	padding:.1em 2em 0 .2em;
 	border:.15em gray solid;
-	background:white;
+	background:white
 }
 #fuzzy-search-list, #table-of-recos-list {
 	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
 	border:.15em gray solid;
-	background:rgb(20,20,20);
+	background:rgb(20,20,20)
 }
 #fuzzy-search-list .list-item, #table-of-recos-list .list-item {
 	background:black; color:white;
-	padding:.2em .5em .4em;
+	padding:.2em .5em .4em
 }
 #fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected {border:.15em solid rgb(210,150,150)}
 #fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index {display:none}
 #fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40);
+	background:rgb(40,40,40)
 }
-#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat {font-size:.9em;}
+#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat {font-size:.9em}
 #fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150);
+	font-size:.5em; color:rgb(150,150,150)
 }
 #fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold {
-	color:rgb(170,250,170);
+	color:rgb(170,250,170)
 }
 .exit {
 	z-index:10010;
@@ -281,11 +222,11 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	/*border-radius:.4em;*/
 	cursor:pointer;
 	border:.15em rgb(80, 80, 80) solid;
-	background-color:rgb(30,30,30); color:white;
+	background-color:rgb(30,30,30); color:white
 }
 .exit>svg {
 	width:100%; height:100%;
-	font-size:1.8em; line-height:1.0;
+	font-size:1.8em; line-height:1.0
 }
 
 #new-reco {z-index:10010; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
@@ -307,7 +248,69 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .buttons {margin-top:1em; text-align:right}
 #new-reco #error-msg {margin:0}
 
-#point-range {margin:1em 0; position:relative; display:inline-block; float:right; width:300px; height:30px; background:rgb(200,100,100)}
+#multireco-cats-container {
+	position:fixed;
+	left:0; top:0;
+	z-index:10000;
+	background:black;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left
+}
+#multireco-cats-container .def-cat {
+	display: inline-block;
+	margin: 0.2em 0;
+	border: 1px solid rgb(130,130,130);
+	padding: 1px 0.5em;
+	font-size: .9em
+}
+#multireco-cats-container textarea {
+	display: block;
+	max-width: 100%;
+	width: 100%;
+	resize: vertical;
+	font: inherit;
+	font-weight: bold;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 0.2em 0.3em;
+	background: white;
+	color: rgb(50,50,50)
+}
+#multireco-cat-fs-container {
+	position:relative;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left
+}
+#multireco-cat-fs-list {
+	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	border:.15em gray solid;
+	background:rgb(20,20,20)
+}
+#multireco-cat-fs-list .list-item {
+	background:black; color:white;
+	padding:.2em .5em .4em
+}
+#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+#multireco-cat-fs-list .list-item .list-index {display:none}
+#multireco-cat-fs-list .list-item:nth-child(2n) {
+	background:rgb(40,40,40)
+}
+#multireco-cat-fs-list .list-item .cat {font-size:.9em}
+#multireco-cat-fs-list .list-item .highlighted {
+	font-size:.5em; color:rgb(150,150,150)
+}
+#multireco-cat-fs-list .list-item .highlighted .bold {
+	color:rgb(170,250,170)
+}
+
+#javascript-disable {font-size:3em}
+
+#change-style {font-size:12px; line-height:1.6; text-align:right; margin-top:1.5em; padding:.5em; color:white; background:black}
+
+
+#point-range {margin:1em 0; margin-left:2em; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
 #point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
 #point-range-left, #point-range-right {position:absolute; width:20px; top:0; bottom:10px; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
 #point-range-left {left:0}
@@ -318,7 +321,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 .numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 
-#my-id {margin-left:2.5em;}
+#my-id {margin-left:2.5em}
 
 .multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
 .reco {margin:0 0 1em; border-bottom:.15em solid black; background:rgb(230,230,230)}
@@ -367,7 +370,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:9px !important} /* position change */
 
-#javascript-disable {font-size:3em; color:white}
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 
 #floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
@@ -382,7 +384,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#container {margin-left:14.9em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
 	#sidebar-dragger {display:none}
-	#my-id {margin-left:0;}
+	#my-id {margin-left:0}
 	.side2 {padding:.5em}
 	.rC.fixed {width:646px; border-right:.15em solid black}
 	.lyrics {text-align:right}
@@ -475,7 +477,17 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#multireco-cats-container -->
 <div class="side2" id="javascript-disable">
 	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
-</div>
+</div><!-- div#javascript-disable -->
+<div class="side2" id="change-style">
+	<form><button type="button" onclick="kipid.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
+	<form><input id="button-Dark" type="radio" name="mode" value="Dark" onclick="kipid.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
+	</input><input id="button-Bright" type="radio" name="mode" value="Bright" onclick="kipid.Cmode(this.value)"><label for="button-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
+	<form><input id="input-font-family" class="bold" type="text" name="font" value="맑은 고딕" style="font-family:'맑은 고딕'; font-size:1.2em; width:73px; height:23px; text-align:center" onchange="kipid.CfontFamily(this.value)"></input></form>
+	<form><button type="button" onclick="kipid.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="kipid.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
+	<form><button type="button" onclick="kipid.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="kipid.ClineHeight(1)" style="font-size:1.6em">=</button></form>
+	<form><button type="button" onclick="kipid.$log.toggle()" style="width:auto; padding:0 .5em">DocuK Log</button></form>
+	<div class="deviceInfo"></div>
+</div><!-- div#change-style -->
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
 		<data id="data-lang">en	ko	ja	zh	es
@@ -4191,11 +4203,11 @@ m.changeLang=function (lang, e, elem) {
 	}
 };
 let dataLang=m.strToJSON( $data_lang.html().trim() );
-let htmlLang='<div>';
+let htmlLang=`<div>`;
 for (let i=0;i<dataLang[0].length;i++) {
-	htmlLang+='<a href="'+m.pathName+"?lang="+dataLang[0][i]+'" onclick="return m.changeLang(\''+dataLang[0][i]+'\',event,this)">'+dataLang[1][i]+'</a><br>';
+	htmlLang+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
 }
-htmlLang+='</div>';
+htmlLang+=`</div>`;
 $data_lang.after(htmlLang);
 
 ////////////////////////////////////////////////
