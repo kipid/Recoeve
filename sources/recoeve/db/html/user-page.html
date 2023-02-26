@@ -671,28 +671,21 @@ $.fn.exists=function () { return this.length!==0; };
 // Changing Styles of Recoeve.net
 m.mode="Dark";
 m.fontFamily="맑은 고딕";
-m.fontSize=10;
+m.fontSize=15;
 m.lineHeight10=16;
 m.$deviceInfo=$(".deviceInfo");
 m.$container=$("#container");
 
 m.printDeviceInfo=function () {
 	if (m.$deviceInfo) {
-		m.$deviceInfo.html(
-			"Mode:"+m.mode
-			+"; Font:"+m.fontFamily
-			+"; font-size:"+(m.fontSize*1.8).toFixed(1)+"px("+m.fontSize.toFixed(1)+")"
-			+"; line-height:"+(m.lineHeight10/10).toFixed(1)
-			+";<br>width: "+m.browserWidth
-			+", height: "+window.innerHeight
-		);
+		m.$deviceInfo.html(`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize).toFixed(1)}px; line-height: ${(m.lineHeight10/10).toFixed(1)};<br>width: ${m.browserWidth}, height: ${window.innerHeight}`);
 	}
 };
 
 m.resetStyle=function () {
 	m.Cmode("Dark");
 	m.CfontFamily("맑은 고딕");
-	m.CfontSize(10-m.fontSize);
+	m.CfontSize(15-m.fontSize);
 	m.ClineHeight(16-m.lineHeight10);
 }
 m.Cmode=function (modeI) {
