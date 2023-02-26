@@ -414,7 +414,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
-<div id="container" class="dark">
+<div id="container">
 <div id="sidebar-dragger">
 	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
 	<div id="sidebar-dragger-in"></div>
@@ -674,6 +674,7 @@ m.fontFamily="맑은 고딕";
 m.fontSize=10;
 m.lineHeight10=16;
 m.$deviceInfo=$(".deviceInfo");
+m.$container=$("#container");
 
 m.printDeviceInfo=function () {
 	if (m.$deviceInfo) {
@@ -696,9 +697,9 @@ m.resetStyle=function () {
 }
 m.Cmode=function (modeI) {
 	if (modeI=="Dark") {
-		m.docuK.removeClass("bright");
+		m.$container.removeClass("bright");
 	} else if (modeI=="Bright") {
-		m.docuK.addClass("bright");
+		m.$container.addClass("bright");
 	} else {
 		return false;
 	}
@@ -708,7 +709,7 @@ m.Cmode=function (modeI) {
 	return true;
 };
 m.CfontFamily=function (font) {
-	m.docuK.css({fontFamily:font});
+	m.$container.css({fontFamily:font});
 	m.fontFamily=font;
 	m.printDeviceInfo();
 	m.docCookies.setItem("m.fontFamily", m.fontFamily, m.expire, "/");
@@ -722,7 +723,7 @@ m.CfontSize=function (increment) {
 		} else if (m.fontSize>30) {
 			m.fontSize=30;
 		}
-		m.docuK.css({"font-size":m.fontSize.toFixed(1)+"px"});
+		m.$container.css({"font-size":m.fontSize.toFixed(1)+"px"});
 		m.printDeviceInfo();
 		m.docCookies.setItem("m.fontSize", m.fontSize.toFixed(1), m.expire, "/");
 		return true;
@@ -739,7 +740,7 @@ m.ClineHeight=function (increment) {
 			m.lineHeight10=25;
 			return false;
 		}
-		m.docuK.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)} !important`);
+		m.$container.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)} !important`);
 		m.printDeviceInfo();
 		m.docCookies.setItem("m.lineHeight10", m.lineHeight10, m.expire, "/");
 		return true;
@@ -749,7 +750,7 @@ m.ClineHeight=function (increment) {
 $window.on("resize.deviceInfo", function () {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
-		m.fontSize=parseInt(m.docuK.css("font-size"));
+		m.fontSize=parseInt(m.$container.css("font-size"));
 		// m.TFontSize.html((m.fontSize*1.8).toFixed(1)+"px");
 		m.printDeviceInfo();
 	}
