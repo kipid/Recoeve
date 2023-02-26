@@ -673,5 +673,7 @@ public void start() {
 				.setPassword("Kd8#j$LL0@OM1")
 			)
 	).requestHandler(router).listen(443);
+	vertx.createHttpServer()
+		.requestHandler(router).listen(80);
 } // public void start()
 } // public class Recoeve extends Verticle
