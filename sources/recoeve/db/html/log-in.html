@@ -725,10 +725,10 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 			} else {
 				let errStr="";
 				if (res[0]=="false") {
-					errStr+="[--ID--] '"+userId+"' [--is already in use. Please try another ID.--]<br>";
+					errStr+=`[--ID is already in use. Please try another ID.--]<br>`; // userId is handled.
 				}
 				if (res[1]=="false") {
-					errStr+="[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]<br>";
+					errStr+=`[--E-mail--] '"+userEmail+"' [--is already registered. Please try another e-mail.--]<br>`; // userEmail is handled.
 				}
 				$elem.before( m.encloseErr(errStr) );
 				$elem[0].disabled=false;
