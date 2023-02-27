@@ -3628,9 +3628,9 @@ m.showDefs=function (r) {
 		}
 	}
 	$def_titles.html(defTitlesHTML);
-	let $defTitle=$def_titles.find(".def-title");
-	$defTitle.on("click", function (e) {
-		$defTitle.removeClass("selected");
+	let $defTitles=$def_titles.find(".def-title");
+	$defTitles.on("click", function (e) {
+		$defTitles.removeClass("selected");
 		let $this=$(this);
 		$this.addClass("selected");
 		$input_title[0].value=m.unescapeHTML($this.html());
@@ -3645,18 +3645,18 @@ m.showDefs=function (r) {
 		}
 	}
 	$def_cats.html(defCatsHTML);
-	let $defCat=$def_cats.find(".def-cat");
-	$defCat.on("click", function (e) {
-		$defCat.removeClass("selected");
+	let $defCats=$def_cats.find(".def-cat");
+	$defCats.on("click", function (e) {
+		$defCats.removeClass("selected");
 		let $this=$(this);
 		$this.addClass("selected");
-		let cursor=$input_cats[0].selectionStart;
+		let sStart=$input_cats[0].selectionStart;
 		let val=$input_cats[0].value;
 		let inserted=m.unescapeHTML($this.html());
-		$input_cats[0].value=`${val.substring(0,cursor)}${inserted}${val.substring(cursor)}`;
+		$input_cats[0].value=`${val.substring(0,sStart)}${inserted}${val.substring(sStart)}`;
 		let l=$input_cats[0].value.length;
 		$input_cats.focus();
-		$input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
+		$input_cats[0].setSelectionRange(sStart+inserted.length,sStart+inserted.length);
 	});
 
 	let defDescs=r["def-descs"];
@@ -3680,18 +3680,18 @@ m.showDefs=function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
-let $defCat=$multireco_def_cats.find(".def-cat");
-$defCat.on("click", function (e) {
-	$defCat.removeClass("selected");
+let $defCats=$multireco_def_cats.find(".def-cat");
+$defCats.on("click", function (e) {
+	$defCats.removeClass("selected");
 	let $this=$(this);
 	$this.addClass("selected");
-	let cursor=$multireco_input_cats[0].selectionStart;
+	let sStart=$multireco_input_cats[0].selectionStart;
 	let val=$multireco_input_cats[0].value;
 	let inserted=m.unescapeHTML($this.html());
-	$multireco_input_cats[0].value=`${val.substring(0,cursor)}${inserted}${val.substring(cursor)}`;
+	$multireco_input_cats[0].value=`${val.substring(0,sStart)}${inserted}${val.substring(sStart)}`;
 	let l=$multireco_input_cats[0].value.length;
 	$multireco_input_cats.focus();
-	$multireco_input_cats[0].setSelectionRange(cursor+inserted.length,cursor+inserted.length);
+	$multireco_input_cats[0].setSelectionRange(sStart+inserted.length,sStart+inserted.length);
 });
 m.getAndShowDefsAndReco=function (noFormatURI) {
 	let elem=$input_uri[0];
