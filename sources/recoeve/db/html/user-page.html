@@ -809,7 +809,7 @@ m.show_Multireco_Mode=function (e) {
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
-		window.history.pushState({cat:m.currentCat}, null, m.pathOfCat(m.currentCat));
+		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
 	} else {
 		$button_multireco_mode.addClass("enabled");
 		$contents.addClass("multireco");
@@ -817,8 +817,8 @@ m.show_Multireco_Mode=function (e) {
 			$multireco_cats_container.show();
 			$multireco_input_cats[0].value=m.currentCat;
 		}
-		window.history.pushState({cat:m.currentCat, mode:"multireco"}, null, m.pathOfCat(m.currentCat, "multireco"));
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(m.currentCat, "multireco")));
+		window.history.pushState({cat:m.currentCat, mode:"multireco"}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(m.currentCat, "multireco"))); // TODO: onclick 이벤트로 처리 되도록 만들자.
 		if (m.myPage) {
 			m.showRecosOnCat();
 		} else {
@@ -2091,27 +2091,37 @@ m.completeCat=function (elem, j) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.chooseMRCat=function (elem, j) {
+m.completeMRCat=function (elem, j) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
-	if ($elem.hasClass("selected")) {
-		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
-	} else {
-		fs.$fsLis.removeClass("selected");
-		$elem.addClass("selected");
-		let k=fs.k;
-		fs.listOfCats[k]=fs.fullList[j].cat;
-		$multireco_input_cats[0].value=fs.listOfCats.join(";");
-		let sStart=0;
-		for (let i=0;i<k;i++) {
-			sStart+=fs.listOfCats[i].length+1;
-		}
-		let sEnd=sStart+fs.listOfCats[k].length;
-		$multireco_input_cats.focus();
-		$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k=fs.k; // index of cat on sEnd.
+	fs.listOfCats[k]=fs.fullList[j].cat;
+	$multireco_input_cats[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
 	}
+	let sEnd=sStart+fs.listOfCats[k].length;
+	$multireco_input_cats.focus();
+	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function (fs) {
+m.doFSCat=function (fs, $input) {
+	if ($input===undefined||$input===null) {
+		$input=$input_cats;
+	}
+	if ($input!==fs.$fs) { // If fs.$fs is different from previous $input.
+		fs.$fs=$input;
+		if ($input===$multireco_input_cats) {
+			fs.$fsl=$multireco_cat_fs_list;
+		} else if ($input===$input_cats) {
+			fs.$fsl=$cat_fs_list;
+		} else {
+			fs.$fsl=$("#nothing");
+		}
+		m.fuzzySearch(m.splitHangul("!@#$"), fs);
+	}
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
 	let listOfCats=fs.listOfCats=catsTxt.split(";");
@@ -2135,32 +2145,7 @@ m.doFSCat=function (fs) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 m.doMRFSCat=function (fs) {
-	let catsTxt=$multireco_input_cats[0].value;
-	let sEnd=$multireco_input_cats[0].selectionEnd;
-	let listOfCats=fs.listOfCats=catsTxt.split(";");
-	let l=catsTxt.length;
-	fs.k=0;
-	for (let i=listOfCats.length-1;i>=0;i--) {
-		l-=listOfCats[i].length+1;
-		if (l<sEnd) {
-			fs.k=i;
-			break;
-		}
-	}
-	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
-	m.fuzzySearch(fsCatSH, fs);
-	let str="";
-	for (let i=0;i<fs[0].length;i++) {
-		let k=fs[0][fs[0].sorted[i]];
-		str+='<div class="list-item" onclick="m.chooseMRCat(this,'+k.i+')">'
-				+'<div class="list-index">'+i+'</div>'
-				+fs.fullList[k.i].html
-				+(k.highlight!==undefined?
-				'<div class="highlighted">'+'<span class="maxMatchScore">'+k.maxMatchScore+'</span> :: '+k.highlight+'</div>':'')
-			+'</div>';
-	}
-	$multireco_cat_fs_list.html(str);
-	fs.$fsLis=$multireco_cat_fs_list.find(".list-item");
+	m.doFSCat(fs, $multireco_input_cats);
 };
 m.fsCatOn=function () {
 	let now=Date.now();
@@ -2250,7 +2235,7 @@ $input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function () {
 	$cat_fs_container.show();
 });
-
+$multireco_input_cats.trigger("keyup.fs");
 $multireco_input_cats.on("focus", function () {
 	$multireco_cat_fs_container.show();
 });
@@ -3353,7 +3338,7 @@ m.refresh=function (cats, option, uri) {
 	m.currentCat=c[k];
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(c[k]);
-		window.history.pushState({cat:c[k]}, null, m.pathOfCat(c[k]));
+		window.history.pushState({cat:c[k]}, c[k], m.pathOfCat(c[k]));
 		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(c[k])));
 	} else {
 		switch (option) {
@@ -3426,7 +3411,7 @@ m.openCat=function (cat, e) {
 		m.currentCat=cat;
 		m.fsToRs.shuffled=null;
 		m.getUriListAndShowRecosOnCat(cat);
-		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
 		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 		return false;
 	}
@@ -4351,7 +4336,7 @@ if (vars.cat!==undefined) {
 	m.currentCat=cat;
 	if (vars.mode===undefined) {
 		m.getUriListAndShowRecosOnCat(cat);
-		window.history.pushState({cat:cat}, null, m.pathOfCat(cat));
+		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
 		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	} else if (vars.mode&&vars.mode.val==="multireco") {
 		m.getUriListAndShowRecosOnCat(cat);
