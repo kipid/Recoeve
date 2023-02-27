@@ -353,7 +353,8 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 				rs.updateRow();
 				logs(1, now, ip, "tkn", true, "tToken: "+tToken);
 				return true;
-			} else {
+			}
+			else {
 				if (!newC) {
 					errMsg+="used token";
 				}errMsg+=", ";
@@ -364,7 +365,8 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 					errMsg+="expired token";
 				}errMsg+=".";
 			}
-		} else {
+		}
+		else {
 			errMsg+="no token.";
 		}
 		errMsg+="\nID: "+id+", E-mail: "+email+". tToken: "+tToken;
@@ -431,7 +433,8 @@ public void updateEmailStat(String emailHost, int increment)
 		long count=rs.getLong("count");
 		rs.updateLong("count", count+increment);
 		rs.updateRow();
-	} else {
+	}
+	else {
 		pstmtCreateEmailStat.setString(1, emailHost);
 		pstmtCreateEmailStat.executeUpdate();
 	}
@@ -473,7 +476,8 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 		System.out.println("createUser done : "+done);
 		if (done) {
 			con.commit();
-		} else {
+		}
+		else {
 			con.rollback();
 		}
 	} catch (SQLException e) {
@@ -505,7 +509,8 @@ public boolean changePwd(BodyData inputs, String ip, String now) {
 		System.out.println("Change password done : "+done);
 		if (done) {
 			con.commit();
-		} else {
+		}
+		else {
 			con.rollback();
 		}
 	} catch (SQLException e) {
@@ -572,13 +577,15 @@ public String getPwdIteration(String idType, String id) { // idType	"id or email
 		ResultSet user=null;
 		if (idType.equals("id")) {
 			user=findUserById(id);
-		} else if (idType.equals("email")) {
+		}
+		else if (idType.equals("email")) {
 			user=findUserByEmail(id);
 		}
 		if ( user!=null&&user.next() ) {
 			return Integer.toString( user.getInt("pwd_iteration") )
 				+"\t"+hex( user.getBytes("pwd_salt") );
-		} else {
+		}
+		else {
 			return "Cannot find a user from id/email.";
 		}
 	} catch (SQLException e) {
@@ -592,7 +599,8 @@ public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
 		ResultSet user=null;
 		if (idType.equals("id")) {
 			user=findUserById(id);
-		} else if (idType.equals("email")) {
+		}
+		else if (idType.equals("email")) {
 			user=findUserByEmail(id);
 		}
 		if ( user!=null&&user.next() ) {
@@ -602,7 +610,8 @@ public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
 			System.out.println("pwd_salt is renewed. :: "+hex(new_salt));
 			user.updateRow();
 			return hex(new_salt);
-		} else {
+		}
+		else {
 			return "Cannot find a user from id/email.";
 		}
 	} catch (SQLException e) {
@@ -625,9 +634,11 @@ public String forgotPwd(StrArray inputs, String lang) {
 		ResultSet user=null;
 		if (idType.equals("email")) {
 			user=findUserByEmail(id);
-		} else if (idType.equals("id")) {
+		}
+		else if (idType.equals("id")) {
 			user=findUserById(id);
-		} else {
+		}
+		else {
 			return "Invalid idType.";
 		}
 		if (user.next()) {
@@ -658,7 +669,8 @@ public long getUserIndexToPut() throws SQLException {
 		rs.updateLong("count", indexToPut+1);
 		rs.updateRow();
 		return indexToPut;
-	} else {
+	}
+	else {
 		throw new SQLException("User index to put (class=-1) is not found.");
 	}
 }
@@ -674,7 +686,8 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 	String myIndex="";
 	if (cookie.get("rmbdI")!=null) {
 		myIndex=cookie.get("rmbdI");
-	} else if (cookie.get("I")!=null) {
+	}
+	else if (cookie.get("I")!=null) {
 		myIndex=cookie.get("I");
 	}
 	if (!myIndex.isEmpty()) {
@@ -712,7 +725,8 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 	String myIndex="";
 	if (cookie.get("I")!=null) {
 		myIndex=cookie.get("I");
-	} else if (cookie.get("rmbdI")!=null) {
+	}
+	else if (cookie.get("rmbdI")!=null) {
 		myIndex=cookie.get("rmbdI");
 	}
 	if (!myIndex.isEmpty()) {
@@ -828,12 +842,14 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 				}
 				user.updateRow();
 				logs(user_i, now, ip, "lgi", true, logDesc); // log-in success
-			} else {
+			}
+			else {
 				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
 				System.out.println(hex(user.getBytes("pwd")));
 				logs(user_i, now, ip, "lgi", false); // log-in fail
 			}
-		} else {
+		}
+		else {
 			logs(user_i, now, ip, "lgi", false); // user_i=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
 		}
 		done=true;
@@ -845,7 +861,8 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 	try {
 		if (done) {
 			con.commit();
-		} else {
+		}
+		else {
 			con.rollback();
 		}
 	} catch (SQLException e) {
@@ -901,7 +918,8 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					rs.updateRow();
 					return setCookie;
 				}
-			} else {
+			}
+			else {
 				// Failed: Delete rmbd cookie.
 				if (!ip.startsWith(rs.getString("ip").split(":")[0])) {
 					errMsg+="diff ip. "+rs.getString("ip")+" ";
@@ -925,7 +943,8 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					errMsg+="sH. ";
 				}
 			}
-		} else {
+		}
+		else {
 			errMsg+="Not remembered.";
 		}
 		System.out.println(errMsg);
@@ -984,7 +1003,8 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(rmbdToken)).setSecure(true)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
-	} else {
+	}
+	else {
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
 				.setPath("/").setMaxAge(-100L));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "").setSecure(true)
@@ -1202,7 +1222,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 								if (neighbor.next()) {
 									ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
-								} else {
+								}
+								else {
 
 								}
 							}
@@ -1210,7 +1231,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 					}
 				}
 			}
-		} else if (increment==-1) {
+		}
+		else if (increment==-1) {
 			// for (String cat_from: cats.setOfCats) {
 			// 	getNeighborListFrom(user_from, cat_from);
 			// 	getNeighborListTo(user_from, cat_from);
@@ -1309,7 +1331,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 // 									if (myNeighbor.getInt("simAvg100")==myFollower.getInt("simAvg100")) {
 // 										cat_n=Categories.getSuperCat(cat_n);
 // 										continue;
-// 									} else {
+// 									}
+// 									else {
 // 										System.out.println("Two symmetric sims are different!");
 // 									}
 // 								}
@@ -1346,7 +1369,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 // 										myNeighbor.updateInt("simAvg100", simAvg100);
 // 										myNeighbor.updateRow();
 // 									}
-// 								} else {
+// 								}
+// 								else {
 // 									putNeighbor(user_n, cat_n, user_i, cat, sumSim, nSim, simAvg100, now);
 // 								}
 // 								if (eHisN) {
@@ -1358,7 +1382,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 // 										myFollower.updateInt("simAvg100", simAvg100);
 // 										myFollower.updateRow();
 // 									}
-// 								} else {
+// 								}
+// 								else {
 // 									putNeighbor(user_i, cat, user_n, cat_n, sumSim, nSim, simAvg100, now);
 // 								}
 // 								cat_n=Categories.getSuperCat(cat_n);
@@ -1390,7 +1415,8 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 // 					i++;
 // 				}
 // 				i=max_NN;
-// 			} else {
+// 			}
+// 			else {
 // 				i=size;
 // 			}
 // 			while (i>min_NN&&neighbors.absolute(i)&&neighbors.getInt("simAvg100")<simAvg100Cutoff) {
@@ -1460,7 +1486,8 @@ public boolean updateCatList(long user_i, String listName, CatList catL) throws 
 		rs.updateString("catList", catL.toString());
 		rs.updateRow();
 		return true;
-	} else {
+	}
+	else {
 		return putCatList(user_i, listName, catL);
 	}
 }
@@ -1556,7 +1583,8 @@ public void putCatsUriToList(long user_i, Categories cats, String uri, CatList c
 			uriL.putURI(uri);
 			rs.updateString("uriList", uriL.toString());
 			rs.updateRow();
-		} else {
+		}
+		else {
 			catL.putCat(cat);
 			UriList uriL=new UriList();
 			uriL.putURI(uri);
@@ -1578,7 +1606,8 @@ public void deleteCatsUriFromList(long user_i, Categories cats, String uri, CatL
 				while (cat!=null&&getUriList(user_i, cat).isEmpty()&&catL.deleteCat(cat)) {
 					cat=Categories.getSuperCat(cat);
 				}
-			} else {
+			}
+			else {
 				rs.updateString("uriList", uriL.toString());
 				rs.updateRow();
 			}
@@ -1643,13 +1672,15 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 						String strCatSet=catSetArray.toString();
 						if (strCatSet.isEmpty()) {
 							catSet.deleteRow();
-						} else {
+						}
+						else {
 							catSet.updateString("catSet", strCatSet);
 							catSet.updateRow();
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				rs.updateLong("count", count);
 				rs.updateRow();
 				if (catSet.next()) {
@@ -1670,7 +1701,8 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 							ResultSet rsI=pstmtGetRecoStatDefCat.executeQuery();
 							if (rsI.next()) {
 								counts[i]=rsI.getLong("count");
-							} else {
+							}
+							else {
 								counts[i]=0;
 							}
 						}
@@ -1687,14 +1719,16 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 					catSet.updateRow();
 				}
 			}
-		} else if (increment==1) {
+		}
+		else if (increment==1) {
 			pstmtPutRecoStatDefCat.setString(1, uri);
 			pstmtPutRecoStatDefCat.setString(2, cat);
 			pstmtPutRecoStatDefCat.executeUpdate();
 			if (catSet.next()) {
 				catSet.updateString("catSet", catSet.getString("catSet")+"\n"+StrArray.enclose(cat));
 				catSet.updateRow();
-			} else {
+			}
+			else {
 				pstmtPutRecoStatDefCatSet.setString(1, uri);
 				pstmtPutRecoStatDefCatSet.setString(2, StrArray.enclose(cat));
 				pstmtPutRecoStatDefCatSet.executeUpdate();
@@ -1728,13 +1762,15 @@ if (title!=null&&!(title.isEmpty())) {
 					String strTitleSet=titleSetArray.toString();
 					if (strTitleSet.isEmpty()) {
 						titleSet.deleteRow();
-					} else {
+					}
+					else {
 						titleSet.updateString("titleSet", strTitleSet);
 						titleSet.updateRow();
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			rs.updateLong("count", count);
 			rs.updateRow();
 			if (titleSet.next()) {
@@ -1755,7 +1791,8 @@ if (title!=null&&!(title.isEmpty())) {
 						ResultSet rsI=pstmtGetRecoStatDefTitle.executeQuery();
 						if (rsI.next()) {
 							counts[i]=rsI.getLong("count");
-						} else {
+						}
+						else {
 							counts[i]=0;
 						}
 					}
@@ -1772,14 +1809,16 @@ if (title!=null&&!(title.isEmpty())) {
 				titleSet.updateRow();
 			}
 		}
-	} else if (increment==1) {
+	}
+	else if (increment==1) {
 		pstmtPutRecoStatDefTitle.setString(1, uri);
 		pstmtPutRecoStatDefTitle.setString(2, title);
 		pstmtPutRecoStatDefTitle.executeUpdate();
 		if (titleSet.next()) {
 			titleSet.updateString("titleSet", titleSet.getString("titleSet")+"\n"+StrArray.enclose(title));
 			titleSet.updateRow();
-		} else {
+		}
+		else {
 			pstmtPutRecoStatDefTitleSet.setString(1, uri);
 			pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(title));
 			pstmtPutRecoStatDefTitleSet.executeUpdate();
@@ -1819,13 +1858,15 @@ if (desc!=null&&!(desc.isEmpty())) {
 					String strDescSet=descSetArray.toString();
 					if (strDescSet.isEmpty()) {
 						descSet.deleteRow();
-					} else {
+					}
+					else {
 						descSet.updateString("descSet", strDescSet);
 						descSet.updateRow();
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			rs.updateLong("count", count);
 			rs.updateRow();
 			if (descSet.next()) {
@@ -1853,7 +1894,8 @@ if (desc!=null&&!(desc.isEmpty())) {
 						ResultSet rsI=pstmtGetRecoStatDefDesc.executeQuery();
 						if (rsI.next()) {
 							counts[i]=rsI.getLong("count");
-						} else {
+						}
+						else {
 							counts[i]=0;
 						}
 					}
@@ -1870,7 +1912,8 @@ if (desc!=null&&!(desc.isEmpty())) {
 				descSet.updateRow();
 			}
 		}
-	} else if (increment==1) {
+	}
+	else if (increment==1) {
 		pstmtPutRecoStatDefDesc.setString(1, uri);
 		pstmtPutRecoStatDefDesc.setBytes(2, descHash);
 		pstmtPutRecoStatDefDesc.setString(3, desc);
@@ -1878,7 +1921,8 @@ if (desc!=null&&!(desc.isEmpty())) {
 		if (descSet.next()) {
 			descSet.updateString("descSet", descSet.getString("descSet")+"\n"+StrArray.enclose(desc));
 			descSet.updateRow();
-		} else {
+		}
+		else {
 			pstmtPutRecoStatDefDescSet.setString(1, uri);
 			pstmtPutRecoStatDefDescSet.setString(2, StrArray.enclose(desc));
 			pstmtPutRecoStatDefDescSet.executeUpdate();
@@ -1890,7 +1934,8 @@ public ResultSet putAndGetRecoStat(String uri, long user_i, String now) throws S
 	ResultSet rs=pstmtGetRecoStat.executeQuery();
 	if (rs.next()) {
 		return rs;
-	} else {
+	}
+	else {
 		pstmtPutRecoStat.setString(1, uri);
 		pstmtPutRecoStat.setString(2, Long.toString(user_i, 16));
 		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
@@ -1925,7 +1970,8 @@ public void updateRecoStat(long user_i, String uri, Points pts, String now, int 
 		recoStat.updateLong("nV", nV);
 		String nVal100="n"+Long.toString(val100);
 		recoStat.updateLong(nVal100, recoStat.getLong(nVal100)+increment);
-	} else {
+	}
+	else {
 		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
 	}
 	if (increment>0) {
@@ -2008,7 +2054,8 @@ public String recoDo(long user_i, String recoStr) {
 					if (hasReco) {
 						// error.
 						res+="Reco on this uri exists already.";
-					} else {
+					}
+					else {
 						// put a reco.
 						toDo="put";
 					}
@@ -2017,7 +2064,8 @@ public String recoDo(long user_i, String recoStr) {
 					if (hasReco) {
 						// change a reco.
 						toDo="change";
-					} else {
+					}
+					else {
 						// error.
 						res+="Reco on the uri does not exist.";
 					}
@@ -2026,7 +2074,8 @@ public String recoDo(long user_i, String recoStr) {
 					if (hasReco) {
 						// change a reco.
 						toDo="change";
-					} else {
+					}
+					else {
 						// put a reco.
 						toDo="put";
 					}
@@ -2035,7 +2084,8 @@ public String recoDo(long user_i, String recoStr) {
 					if (hasReco) {
 						// delete a reco.
 						toDo="delete";
-					} else {
+					}
+					else {
 						// error.
 						res+="Reco on the uri does not exist.";
 					}
@@ -2057,7 +2107,8 @@ public String recoDo(long user_i, String recoStr) {
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
-					} else {
+					}
+					else {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
@@ -2079,7 +2130,8 @@ public String recoDo(long user_i, String recoStr) {
 					boolean equalityOfValuesOfPts=(sa.get(i, "val")==null||pts.equalValue(oldPts));
 					if (equalityOfStringOfCats&&equalityOfTitle&&equalityOfDesc&&equalityOfCmt&&equalityOfPts) {
 						res+="no change";
-					} else {
+					}
+					else {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
@@ -2109,7 +2161,8 @@ public String recoDo(long user_i, String recoStr) {
 						if (!equalityOfPts) {
 							if (pts.valid()) {
 								reco.updateString("val", pts.str());
-							} else {
+							}
+							else {
 								reco.updateString("val", null);
 							}
 						}
@@ -2186,7 +2239,8 @@ public String putReco(long user_i, String recoStr) {
 					boolean equalityOfValuesOfPts=(sa.get(i, "val")==null||pts.equalValue(oldPts));
 					if (equalityOfStringOfCats&&equalityOfTitle&&equalityOfDesc&&equalityOfCmt&&equalityOfPts) {
 						res+="no change";
-					} else {
+					}
+					else {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
 							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
@@ -2216,14 +2270,16 @@ public String putReco(long user_i, String recoStr) {
 						if (!equalityOfPts) {
 							if (pts.valid()) {
 								reco.updateString("val", pts.str());
-							} else {
+							}
+							else {
 								reco.updateString("val", null);
 							}
 						}
 						reco.updateRow();
 						res+="changed";
 					}
-				} else {
+				}
+				else {
 					pstmtPutReco.setLong(1, user_i);
 					pstmtPutReco.setString(2, uri);
 					pstmtPutReco.setTimestamp(3, Timestamp.valueOf(now));
@@ -2238,7 +2294,8 @@ public String putReco(long user_i, String recoStr) {
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
-					} else {
+					}
+					else {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();

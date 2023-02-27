@@ -75,7 +75,8 @@ public void start() {
 		boolean refererAllowed=false;
 		if (referer==null) {
 			refererAllowed=true;
-		} else if (referer.substring(0,4).toLowerCase().equals("http")) {
+		}
+		else if (referer.substring(0,4).toLowerCase().equals("http")) {
 			int k=4;
 			if (referer.charAt(k)=='s'||referer.charAt(k)=='S') {
 				k++;
@@ -86,7 +87,8 @@ public void start() {
 				String refererHost=null;
 				if (l==-1) {
 					refererHost=referer.substring(k);
-				} else {
+				}
+				else {
 					refererHost=referer.substring(k,l);
 				}
 				refererAllowed=FileMap.refererAllowed(refererHost);
@@ -142,12 +144,14 @@ public void start() {
 				req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 				System.out.println("Sended user-page.html");
-			} else {
+			}
+			else {
 				req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 				req.response().end(FileMap.get("to-log-in.html", lang), ENCODING); // window.location.pathname="/account/log-in";
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
-		} else if (pathSplit.length==2) { // e.g. path=/jquery.min.js
+		}
+		else if (pathSplit.length==2) { // e.g. path=/jquery.min.js
 		if (refererAllowed) {
 		switch (pathSplit[1]) {
 			case "sessionIter": // e.g. path=/sessionIter
@@ -161,7 +165,8 @@ public void start() {
 					req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
-				} else {
+				}
+				else {
 					req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 					req.response().end(FileMap.get("to-log-in.html", lang), ENCODING); // window.location.href="/account/log-in?goto="+encodeURIComponent(fullPath);
 					System.out.println("Sended to-log-in.html."); // redirecting to /account/log-in since rmbd cookie is to be checked too.
@@ -187,7 +192,8 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				req.response().end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS);
-		}}} else if (pathSplit.length>2) {
+		}}}
+		else if (pathSplit.length>2) {
 		switch (pathSplit[1]) {
 			case "user": // e.g. path=/user/kipid/mode/multireco?cat=...
 				String user=URLDecoder.decode(pathSplit[2]);
@@ -196,13 +202,15 @@ public void start() {
 						req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapUserPage(cookie, user)), ENCODING);
 						System.out.println("Sended user-page.html");
-					} else {
+					}
+					else {
 						String res=FileMap.replaceStr("<h1>[--User does not exist.--]</h1>", lang);
 						req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						req.response().end(res, ENCODING);
 						System.out.println("Sended '"+res+"'");
 					}
-				} else if (pathSplit.length==4&&method==HttpMethod.POST) { // e.g. path=/user/kipid/get-Recos
+				}
+				else if (pathSplit.length==4&&method==HttpMethod.POST) { // e.g. path=/user/kipid/get-Recos
 					switch (pathSplit[3]) {
 						case "get-Recos": // e.g. path=/user/kipid/get-Recos
 							req.bodyHandler((Buffer data) -> {
@@ -237,7 +245,8 @@ public void start() {
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS);
 					}
-				} else {
+				}
+				else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -272,12 +281,14 @@ public void start() {
 						}
 						req.response().sendFile(fileName);
 						System.out.println("Sended "+fileName+".");
-					} else {
+					}
+					else {
 						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						req.response().end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (No file.)");
 					}
-				} else {
+				}
+				else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Referer not allowed.)");
@@ -304,7 +315,8 @@ public void start() {
 									req.response().end(res);
 									System.out.println("Do reco:\n"+recoStr);
 								});
-							} else {
+							}
+							else {
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("No session.");
 								System.out.println("No session.");
@@ -319,7 +331,8 @@ public void start() {
 									req.response().end(res);
 									System.out.println("Put reco:\n"+recoStr);
 								});
-							} else {
+							}
+							else {
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("No session.");
 								System.out.println("No session.");
@@ -330,7 +343,8 @@ public void start() {
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 					}
-				} else {
+				}
+				else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Referer not allowed, or method: "+method+")");
@@ -344,7 +358,8 @@ public void start() {
 							req.response().putHeader("Content-Type","text/html; charset=utf-8");
 							req.response().end(FileMap.get("changePwd.html", lang), ENCODING);
 							System.out.println("Sended changePwd.html.");
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS);
@@ -363,18 +378,21 @@ public void start() {
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end(new_salt, ENCODING);
 										System.out.println("Sended new password_salt: "+new_salt+".");
-									} else {
+									}
+									else {
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end("Invalid token.", ENCODING);
 										System.out.println("Invalid token.");
 									}
-								} else {
+								}
+								else {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end(INVALID_ACCESS, ENCODING);
 									System.out.println(INVALID_ACCESS+" (Invalid form: no tab)");
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -392,20 +410,23 @@ public void start() {
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end(res, ENCODING);
 										System.out.println("Sended "+res);
-									} else {
+									}
+									else {
 										final String res=FileMap.replaceStr("[--Error occured during changing password. Please try again.--]", lang);
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end(res, ENCODING);
 										System.out.println("Sended "+res);
 									}
-								} else {
+								}
+								else {
 									final String res=FileMap.replaceStr("[--Token is invalid.--]", lang);
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -417,16 +438,19 @@ public void start() {
 								req.response().putHeader("Content-Type","text/html; charset=utf-8");
 								req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 								System.out.println("Sended user-page.html. (already logged-in)");
-							} else if (cookie.get("rmbdI")!=null) {
+							}
+							else if (cookie.get("rmbdI")!=null) {
 								req.response().putHeader("Content-Type","text/html; charset=utf-8");
 								req.response().end(FileMap.get("remember-me.html", lang), ENCODING);
 								System.out.println("Sended remember-me.html.");
-							} else {
+							}
+							else {
 								req.response().putHeader("Content-Type","text/html; charset=utf-8");
 								req.response().end(FileMap.get("log-in.html", lang), ENCODING);
 								System.out.println("Sended log-in.html. (No rmbd cookie)");
 							}
-						} else {
+						}
+						else {
 						switch (pathSplit[3]) {
 							case "remember-me.do": // path=/account/log-in/remember-me.do
 								if (method==HttpMethod.POST) {
@@ -442,14 +466,16 @@ public void start() {
 											req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 											req.response().end("Rmbd", ENCODING);
 											System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
-										} else { // if (setCookieRMB.startsWith("rmbdI="))
+										}
+										else { // if (setCookieRMB.startsWith("rmbdI="))
 											// Failed: Delete rmbd cookie.
 											req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 											req.response().end("Remembering you failed.", ENCODING);
 											System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 										}
 									});
-								} else {
+								}
+								else {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end(INVALID_ACCESS, ENCODING);
 									System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -466,7 +492,8 @@ public void start() {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end("pwd_iteration: You are already logged in Recoeve.", ENCODING);
 							System.out.println("Sended 'You are already logged in Recoeve.'");
-						} else if (method==HttpMethod.POST) {
+						}
+						else if (method==HttpMethod.POST) {
 							req.bodyHandler((Buffer data) -> {
 								String dataStr=data.toString();
 								int i=dataStr.indexOf("\t");
@@ -476,13 +503,15 @@ public void start() {
 									String iter=db.getPwdIteration(idType, id);
 									req.response().end(iter, ENCODING);
 									System.out.println("Sended pwd_iteration for "+idType+" "+id+": "+iter);
-								} else {
+								}
+								else {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end("Invalid form of data (no tab).", ENCODING);
 									System.out.println("Invalid form of data (no tab). dataStr: "+dataStr);
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -501,14 +530,16 @@ public void start() {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end("log-in success", ENCODING);
 									System.out.println("Sended log-in success: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
-								} else {
+								}
+								else {
 									// Log-in failed.
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end("log-in fail", ENCODING);
 									System.out.println("log-in fail: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS+" (Invalid method: "+method+")");
@@ -541,7 +572,8 @@ public void start() {
 										idAvailable+"\t"+emailAvailable+"\t"+(db.createAuthToken(now, ip, token)?now+"\t"+db.hex(token):"Token is not created.")
 									, ENCODING);
 									System.out.println("Both ID: "+id+" and email: "+email+" are available. So a token is created.");
-								} else {
+								}
+								else {
 									db.logsCommit(1 // `user_i`=1 for anonymous.
 										, now, ip, "chk", false, "ID: "+id+" ["+idAvailable+"] and E-mail: "+email+" ["+emailAvailable+"] availability check.");
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
@@ -551,7 +583,8 @@ public void start() {
 									System.out.println("ID: "+id+" is available? "+idAvailable+", and email: "+email+" is available? "+emailAvailable);
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println("check: invalid method "+method);
@@ -566,7 +599,8 @@ public void start() {
 								req.response().end(forgotPwd, ENCODING);
 								System.out.println("Sended forgotPwd: "+forgotPwd);
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println("forgotPwd: invalid method "+method);
@@ -585,19 +619,22 @@ public void start() {
 										req.response().putHeader("Content-Type","text/html; charset=utf-8");
 										req.response().end(FileMapWithVar.get("signed-up.html", lang, varMap), ENCODING);
 										System.out.println("Sended signed-up.html.");
-									} else {
+									}
+									else {
 										final String res=FileMap.replaceStr("[--Error occured during registration. Please sign-up again.--]", lang);
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end(res, ENCODING);
 										System.out.println("Sended "+res);
 									}
-								} else {
+								}
+								else {
 									req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									req.response().end("Token is invalid.", ENCODING);
 									System.out.println("Token is invalid.");
 								}
 							});
-						} else {
+						}
+						else {
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end(INVALID_ACCESS, ENCODING);
 							System.out.println("sign-up: invalid method "+method);
@@ -611,13 +648,15 @@ public void start() {
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("You are verified.", ENCODING);
 								System.out.println("Sended 'You are verified.'.");
-							} else {
+							}
+							else {
 								// User is NOT verified.
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("Wrong verification key.", ENCODING);
 								System.out.println("Sended 'Wrong verification key.'.");
 							}
-						} else {
+						}
+						else {
 							// Log-in 유도.
 							req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							req.response().end("Please log in first to verify your account.", ENCODING);
@@ -627,7 +666,8 @@ public void start() {
 						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						req.response().end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid URI/path.)");
-				}} else {
+				}}
+				else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Referer not allowed.)");
@@ -648,7 +688,8 @@ public void start() {
 						req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						req.response().end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid URI/path.)");
-				}} else {
+				}}
+				else {
 					req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					req.response().end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Referer not allowed, or not sessionPassed, or invalid method: "+method+")");
@@ -658,7 +699,8 @@ public void start() {
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				req.response().end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS+" (Invalid URI.)");
-		}} else {
+		}}
+		else {
 			req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			req.response().end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Invalid path.)");
