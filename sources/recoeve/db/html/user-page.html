@@ -2180,6 +2180,7 @@ m.fsMRCatOn=function () {
 $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
+	clearTimeout(m.setTimeoutTargetOn);
 	let $target=$(e.target);
 	$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	e.stopPropagation();
@@ -2226,11 +2227,13 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 			}
 			break;
 	}
-	if ($target===$input_cats) {
-		$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-	} else if ($target===$multireco_input_cats) {
-		$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-	}
+	m.setTimeoutTargetOn=setTimeout(function () {
+		if ($target===$input_cats) {
+			$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+		} else if ($target===$multireco_input_cats) {
+			$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+		}
+	}, 1024);
 }
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, $cat_fs_list, $cat_fs_container);
@@ -3694,18 +3697,39 @@ m.showDefs=function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
-let $replaceCats=$multireco_def_cats.find(".replace-cat");
-$replaceCats.on("click", function (e) {
-	$replaceCats.removeClass("selected");
+let $multirecoDefCats=$multireco_def_cats.find(".def-cat");
+let $multirecoReplaceCats=$multireco_def_cats.find(".replace-cat");
+$multirecoReplaceCats.on("click", function (e) {
 	let $this=$(this);
+	let fs=m.fsCat;
+	$multirecoDefCats.removeClass("selected");
+	$this.addClass("selected");
+	let k=fs.k;
+	fs.listOfCats[k]=m.unescapeHTML($this.html());
+	fs.$fs[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
+	}
+	let sEnd=sStart+fs.listOfCats[k].length;
+	fs.$fs.focus();
+	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+});
+let $multirecoAddTxts=$multireco_def_cats.find(".add-txt");
+$multirecoAddTxts.on("click", function (e) {
+	let $this=$(this);
+	$multirecoDefCats.removeClass("selected");
 	$this.addClass("selected");
 	let sStart=$multireco_input_cats[0].selectionStart;
+	let sEnd=$multireco_input_cats[0].selectionEnd;
 	let inputValue=$multireco_input_cats[0].value;
 	let inserted=m.unescapeHTML($this.html());
-	$multireco_input_cats[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sStart)}`;
+	$multireco_input_cats[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
 	let l=$multireco_input_cats[0].value.length;
 	$multireco_input_cats.focus();
-	$multireco_input_cats[0].setSelectionRange(sStart+inserted.length,sStart+inserted.length);
+	sEnd=sStart+inserted.length;
+	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
+	$multireco_input_cats.trigger("keyup.fs");
 });
 m.getAndShowDefsAndReco=function (noFormatURI) {
 	let elem=$input_uri[0];
