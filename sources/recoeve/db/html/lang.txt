@@ -74,6 +74,7 @@ Replacer	0	English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/�
 [--New Reco--]	106	New Reco	새 레코	新しいレコ	新Reco	Nuevo Reco
 [--Short Keys--]	107	Short Keys	단축키	ショートカット	快捷鍵	Llaves cortas
 [--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	ポイントなしのレコを表示	顯示沒有積分的記錄	Mostrar recos sin puntos
+[--Show only unrecoed on mine--]	109	Show only unrecoed on mine	내가 레코 안한 것만 보기	私が持っていなかったものだけを見てください	仅在我的	Mostrar solo sin recordar el mío
 [--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類	Sin categoría
 [--Later--]	111	Later	나중에	後で	之後	Más tarde
 [--Indifferent--]	112	Indifferent	관심없음	関心なし	沒興趣	Indiferente

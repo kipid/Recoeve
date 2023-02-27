@@ -524,7 +524,7 @@ English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(�
 		<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
 	</div>
 	<div class="button enabled" id="show-recos-without-points">[--Show recos without points--]</div>
-	<div class="button" id="hide-recoed-ones">[--Hide recoed ones--]</div>
+	<div class="button" id="show-only-unrecoed">[--Show only unrecoed on mine--]</div>
 	<div class="cBoth"></div>
 </div>
 <div class="side2" id="numbers-of-recos"></div>
@@ -660,7 +660,7 @@ $point_range_right=$("#point-range-right");
 $point_range_result=$("#point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
-$hide_recoed_ones=$("#hide-recoed-ones");
+$show_only_unrecoed=$("#show-only-unrecoed");
 
 $numbers_of_recos=$("#numbers-of-recos");
 
@@ -863,13 +863,13 @@ m.show_Multireco_Mode=function (e) {
 };
 
 if (m.myPage) {
-	$hide_recoed_ones.hide();
+	$show_only_unrecoed.hide();
 } else {
-	$hide_recoed_ones.on("click", function () {
-		if ($hide_recoed_ones.hasClass("enabled")) {
-			$hide_recoed_ones.removeClass("enabled");
+	$show_only_unrecoed.on("click", function () {
+		if ($show_only_unrecoed.hasClass("enabled")) {
+			$show_only_unrecoed.removeClass("enabled");
 		} else {
-			$hide_recoed_ones.addClass("enabled");
+			$show_only_unrecoed.addClass("enabled");
 		}
 	});
 }
@@ -3036,7 +3036,7 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			}
-			if (!m.myPage&&$hide_recoed_ones.hasClass("enabled")) {
+			if (!m.myPage&&$show_only_unrecoed.hasClass("enabled")) {
 				for (let k=0;k<l;k++) {
 					let fsFLk=fs.fullList[k];
 					let uri=fsFLk.uri;
