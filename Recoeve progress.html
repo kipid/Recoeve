@@ -412,7 +412,9 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 ### 정리하기 전
 
-유튜브의 Access-Control-Allow-Origin 문제: <a target="_blank" href="https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin">https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin</a> (그냥 놔둘까나? 약간 보류.)
+URI path=/reco?uri=...&cats=... 같은 걸로 접근했을 때, log-in 안되어 있으면 /account/log-in?goto=... 으로 보내기.
+
+유튜브의 Access-Control-Allow-Origin 문제: <a target="_blank" href="https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin">https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin</a> (그냥 놔둘까나? 약간 보류. Youtube API 에서도 뭘 설정해줘야 하는듯???) 일반 iframe 에서는 <code>embed/...?origin=https://recoeve.net</code> 넣어서 해결.
 
 Style 바꾸는거 가능하도록 (Dark, Bright, + Blue, Pink? 같은것도?). DocuK 비슷하게... cookie 에 저장하고 page load 할 때 저장된 style 적용.
 
