@@ -504,7 +504,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 	<div>Language/언어/語言
 		<data id="data-lang">en	ko	ja	zh	es
-English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh	Spanish/스페인어/es</data></div>
+English/영어/英語/en	Korean/한국어/韓語/ko	Japanese/일본어/日語/ja	Chinese/중국어(번체)/中文/zh	Spanish/스페인어/西班牙語/es</data></div>
 </div><!-- div#foot -->
 <div class="side2">
 	[--Short Keys--]
@@ -3091,10 +3091,16 @@ m.showRecosOnCat=function (elem, from) {
 	let l=fs.fullList.length;
 	let strHTML="";
 	if (l<=0) {
-		let nOfRecos='No reco on cat='+m.escapeHTML(m.currentCat)+'.';
+		let nOfRecos=`No reco on cat=${m.escapeHTML(m.currentCat)}.`;
 		$numbers_of_recos.html(nOfRecos);
-		strHTML='<div class="numbers-of-recos">'+nOfRecos+'</div>';
+		strHTML=`<div class="numbers-of-recos">${nOfRecos}</div>`;
 		$contents.html(strHTML);
+
+		$reco_playing.html('');
+		$uri_rendered.html('');
+		$video.html('');
+		$rC_video_uri_rendered.hide();
+		$rC_youtube_uri_rendered.hide();
 	}
 	else {
 		if (elem===undefined||elem===null) {
@@ -3290,6 +3296,7 @@ m.showRecosOnCat=function (elem, from) {
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
+	$(".to-be-executed").eq(0).trigger("click");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	fs.$fs.trigger("keyup");
@@ -4423,7 +4430,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo();
+			fs.getAndPlayVideo(); // cue or not?
 		}
 	}
 };
@@ -4797,10 +4804,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
-			if (fs.skip) {
+			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
-					if (fs.skip) { fs.playNext(); }
+					if (fs.skip) { fs.playNext(-1, cue); }
 				}, 7000);
 			}
 		}
