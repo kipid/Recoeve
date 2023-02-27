@@ -1798,7 +1798,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 	if (strCatList.length===0) {
 		list=[];
 	}
-	list.unshift("");
+	list.unshift(""); // cat=uncategorized : empty cat.
 	if (catList===undefined||catList===null) {
 		if (m.catList) {
 			catList=m.catList;
@@ -1815,12 +1815,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 		for (let j=1;j<=depth;j++) {
 			cat+="--"+superCats[j];
 		}
-		if (catList[cat]) {
-			catList[cat].i=i;
-			catList[i]=catList[cat];
-		} else {
-			catList[i]=catList[cat]={i:i, cat:cat, baseCat:baseCat, depth:depth};
-		}
+		catList[i]=catList[cat]={i, cat, baseCat, depth};
 	}
 };
 m.catListToHTML=function () {
@@ -2066,7 +2061,7 @@ m.putCatToFSFullList=function (i, cat) {
 	if (m.fsCat.fullList[cat]) {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
 	} else {
-		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 };
 m.updateCatFS=function () {
@@ -2136,12 +2131,12 @@ m.doFSCat=function (fs) {
 	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
 	m.fuzzySearch(fsCatSH, fs);
 	let str="";
-	console.log("fs[0]: ", fs[0]);
-	console.log("fs.fullList: ", fs.fullList);
+	// console.log("fs[0]: ", fs[0]);
+	// console.log("fs.fullList: ", fs.fullList);
 	for (let i=0;i<fs[0].length;i++) {
 		let k=fs[0][fs[0].sorted[i]];
-		console.log(`k=fs[0][fs[0].sorted[${i}]]: `, k);
-		console.log(`fs.fullList[${k.i}]: `, fs.fullList[k.i]);
+		// console.log(`k=fs[0][fs[0].sorted[${i}]]: `, k);
+		// console.log(`fs.fullList[${k.i}]: `, fs.fullList[k.i]);
 		str+='<div class="list-item" onclick="m.chooseCat(this,'+k.i+')">'
 				+'<div class="list-index">'+i+'</div>'
 				+fs.fullList[k.i].html
@@ -2259,12 +2254,10 @@ $input_cats.on("keydown.fs", function (e) {
 	// 	break;
 	}
 });
-if (m.myIndex) {
-	let l=m.myCatList.length;
-	for (let i=l-1;i>=0;i--) {
-		let cat=m.myCatList[i].cat;
-		m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
-	}
+let l=m.myCatList.length;
+for (let i=l-1;i>=0;i--) {
+	let cat=m.myCatList[i].cat;
+	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 }
 $input_cats.trigger("keyup");
 $input_cats.on("focus", function () {
