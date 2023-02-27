@@ -3645,7 +3645,7 @@ m.showDefs=function (r) {
 	let $replaceCats=$def_cats.find(".replace-cat");
 	$replaceCats.on("click", function (e) {
 		let $this=$(this);
-		let fs=fs.fsCat;
+		let fs=m.fsCat;
 		$defCats.removeClass("selected");
 		$this.addClass("selected");
 		let k=fs.k;
