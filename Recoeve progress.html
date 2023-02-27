@@ -36,6 +36,8 @@
 
 ### 정리하기 전
 
+path=<code>/changeOrders/UriList</code> 도 구현. UriList 시간순으로 sort, 점수순으로 sort, 알파벳 순으로 sort 등 구현해주고. 이 sorted 된 UriList 를 저장할 것인지 놔둘 것인지 user 가 결정하도록.
+
 Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 만들어 주기.
 
 아래 에러 해결하자.
@@ -412,13 +414,15 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 ### 정리하기 전
 
+lang 한문 추가.
+
 'else' after 'if' with newLine.
 
 Recoeve.net 장부 (Money flow) 공개하기.
 
 reco, multireco Fuzzy Search Cat 통합. (비슷한 코드라 하나로 합쳐서 동작되도록 고침.)
 
-Cats ("#input-cats", "multireco-input-cats") 넣을 때 클릭으로 <code>;</code>, <code>Later</code> 등 클릭하면 fuzzy search 도 적절히 다시 rendering 되도록. <code>.add-txt</code>, <code>.replace-cat</code>, <code>m.completeCat()</code> 등으로 해결.
+Cats ("#input-cats", "multireco-input-cats") 넣을 때 클릭으로 <code>;</code>, <code>Later</code> 등 클릭하면 fuzzy search 도 적절히 다시 rendering 되도록. <code>.add-txt</code>, <code>.replace-cat</code>, <code>m.completeCat()</code> 등으로 해결. Cats default 버튼으로 입력할때, ; 구분자 내에서 replace 되도록 만들자. 지금은 그냥 ctrl+v 됨.
 
 URI path=/reco?uri=...&cats=... 같은 걸로 접근했을 때, log-in 안되어 있으면 /account/log-in?goto=... 으로 보내기.
 
