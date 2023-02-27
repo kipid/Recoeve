@@ -2078,22 +2078,18 @@ m.updateCatFS();
 m.chooseCat=function (elem, j) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
-	if ($elem.hasClass("selected")) {
-		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
-	} else {
-		fs.$fsLis.removeClass("selected");
-		$elem.addClass("selected");
-		let k=fs.k;
-		fs.listOfCats[k]=fs.fullList[j].cat;
-		fs.$fs[0].value=fs.listOfCats.join(";");
-		let sStart=0;
-		for (let i=0;i<k;i++) {
-			sStart+=fs.listOfCats[i].length+1;
-		}
-		let sEnd=sStart+fs.listOfCats[k].length;
-		fs.$fs.focus();
-		fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k=fs.k;
+	fs.listOfCats[k]=fs.fullList[j].cat;
+	fs.$fs[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
 	}
+	let sEnd=sStart+fs.listOfCats[k].length;
+	fs.$fs.focus();
+	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
 m.chooseMRCat=function (elem, j) {
 	let $elem=$(elem);
