@@ -1,5 +1,5 @@
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Verticle;
+// import io.vertx.core.Verticle;
 
 // import org.vertx.java.core.Handler;
 // import org.vertx.java.core.http.HttpServer; // Interface
@@ -72,6 +72,10 @@ public void start() {
 					System.out.println(e);
 				}
 			}
+			else {
+				System.out.println("Referer: null");
+			}
+
 		boolean refererAllowed=false;
 		if (referer==null) {
 			refererAllowed=true;
@@ -719,4 +723,4 @@ public void start() {
 	vertx.createHttpServer()
 		.requestHandler(router).listen(80);
 } // public void start()
-} // public class Recoeve extends Verticle
+} // public class Recoeve extends AbstractVerticle
