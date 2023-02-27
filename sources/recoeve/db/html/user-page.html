@@ -454,7 +454,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div id="def-titles"></div>
 		<textarea id="input-title" class="single-line" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="cats">[--Categories--]</label>
-		<div id="def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div></div>
+		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div></div>
 		<textarea id="input-cats" class="single-line" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
@@ -482,7 +482,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#new-reco -->
 <div id="multireco-cats-container" style="display:none">
 	<label for="multireco-cats">[--Multireco Categories--]</label>
-		<div id="multireco-def-cats"><div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="multireco-add-cat" class="def-cat">;</div> <div id="multireco-sub-cat" class="def-cat">--</div></div>
+		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="multireco-add-cat" class="def-cat add-txt">;</div> <div id="multireco-sub-cat" class="def-cat add-txt">--</div></div>
 		<textarea id="multireco-input-cats" class="single-line" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
 		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
 			<div id="multireco-cat-fs-list"></div>
@@ -2075,7 +2075,7 @@ m.updateCatFS=function () {
 	}
 };
 m.updateCatFS();
-m.chooseCat=function (elem, j) {
+m.completeCat=function (elem, j) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
 	fs.$fsLis.removeClass("selected");
@@ -2129,7 +2129,7 @@ m.doFSCat=function (fs) {
 	let str="";
 	for (let i=0;i<fs[0].length;i++) {
 		let k=fs[0][fs[0].sorted[i]];
-		str+=`<div class="list-item" onclick="m.chooseCat(this,${k.i})"><div class="list-index">${i}</div>${fs.fullList[k.i].html}${(k.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${k.maxMatchScore}</span> :: ${k.highlight}</div>`:'')}</div>`;
+		str+=`<div class="list-item" onclick="m.completeCat(this,${k.i})"><div class="list-index">${i}</div>${fs.fullList[k.i].html}${(k.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${k.maxMatchScore}</span> :: ${k.highlight}</div>`:'')}</div>`;
 	}
 	$cat_fs_list.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -3633,17 +3633,17 @@ m.showDefs=function (r) {
 	});
 
 	let defCats=r["def-cats"];
-	let defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
+	let defCatsHTML='<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
-			defCatsHTML+=`<div class="def-cat">${m.escapeHTML(cat)}</div> `;
+			defCatsHTML+=`<div class="def-cat replace-cat">${m.escapeHTML(cat)}</div> `;
 		}
 	}
 	$def_cats.html(defCatsHTML);
-	let $defCats=$def_cats.find(".def-cat");
-	$defCats.on("click", function (e) {
-		$defCats.removeClass("selected");
+	let $replaceCats=$def_cats.find(".replace-cat");
+	$replaceCats.on("click", function (e) {
+		$replaceCats.removeClass("selected");
 		let $this=$(this);
 		$this.addClass("selected");
 		let sStart=$input_cats[0].selectionStart;
@@ -3676,9 +3676,9 @@ m.showDefs=function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
-let $defCats=$multireco_def_cats.find(".def-cat");
-$defCats.on("click", function (e) {
-	$defCats.removeClass("selected");
+let $replaceCats=$multireco_def_cats.find(".replace-cat");
+$replaceCats.on("click", function (e) {
+	$replaceCats.removeClass("selected");
 	let $this=$(this);
 	$this.addClass("selected");
 	let sStart=$multireco_input_cats[0].selectionStart;
