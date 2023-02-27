@@ -2080,7 +2080,7 @@ m.completeCat=function (elem, j) {
 	let fs=m.fsCat;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	let k=fs.k;
+	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=fs.fullList[j].cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
@@ -2246,7 +2246,7 @@ for (let i=l-1;i>=0;i--) {
 	let cat=m.myCatList[i].cat;
 	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 }
-$input_cats.trigger("keyup");
+$input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function () {
 	$cat_fs_container.show();
 });
@@ -3633,7 +3633,7 @@ m.showDefs=function (r) {
 	});
 
 	let defCats=r["def-cats"];
-	let defCatsHTML='<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat">;</div> <div id="sub-cat" class="def-cat">--</div><br>';
+	let defCatsHTML='<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div><br>';
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
@@ -3641,18 +3641,39 @@ m.showDefs=function (r) {
 		}
 	}
 	$def_cats.html(defCatsHTML);
+	let $defCats=$def_cats.find(".def-cat");
 	let $replaceCats=$def_cats.find(".replace-cat");
 	$replaceCats.on("click", function (e) {
-		$replaceCats.removeClass("selected");
 		let $this=$(this);
+		let fs=fs.fsCat;
+		$defCats.removeClass("selected");
+		$this.addClass("selected");
+		let k=fs.k;
+		fs.listOfCats[k]=m.unescapeHTML($this.html());
+		fs.$fs[0].value=fs.listOfCats.join(";");
+		let sStart=0;
+		for (let i=0;i<k;i++) {
+			sStart+=fs.listOfCats[i].length+1;
+		}
+		let sEnd=sStart+fs.listOfCats[k].length;
+		fs.$fs.focus();
+		fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	});
+	let $addTxts=$def_cats.find(".add-txt");
+	$addTxts.on("click", function (e) {
+		let $this=$(this);
+		$defCats.removeClass("selected");
 		$this.addClass("selected");
 		let sStart=$input_cats[0].selectionStart;
-		let val=$input_cats[0].value;
+		let sEnd=$input_cats[0].selectionEnd;
+		let inputValue=$input_cats[0].value;
 		let inserted=m.unescapeHTML($this.html());
-		$input_cats[0].value=`${val.substring(0,sStart)}${inserted}${val.substring(sStart)}`;
+		$input_cats[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
 		let l=$input_cats[0].value.length;
 		$input_cats.focus();
-		$input_cats[0].setSelectionRange(sStart+inserted.length,sStart+inserted.length);
+		sEnd=sStart+inserted.length;
+		$input_cats[0].setSelectionRange(sEnd,sEnd);
+		$input_cats.trigger("keyup.fs");
 	});
 
 	let defDescs=r["def-descs"];
@@ -3682,9 +3703,9 @@ $replaceCats.on("click", function (e) {
 	let $this=$(this);
 	$this.addClass("selected");
 	let sStart=$multireco_input_cats[0].selectionStart;
-	let val=$multireco_input_cats[0].value;
+	let inputValue=$multireco_input_cats[0].value;
 	let inserted=m.unescapeHTML($this.html());
-	$multireco_input_cats[0].value=`${val.substring(0,sStart)}${inserted}${val.substring(sStart)}`;
+	$multireco_input_cats[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sStart)}`;
 	let l=$multireco_input_cats[0].value.length;
 	$multireco_input_cats.focus();
 	$multireco_input_cats[0].setSelectionRange(sStart+inserted.length,sStart+inserted.length);
