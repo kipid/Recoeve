@@ -2180,6 +2180,8 @@ m.fsMRCatOn=function () {
 $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
+	let $target=$(e.target);
+	$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	e.stopPropagation();
 	let $lis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
@@ -2223,6 +2225,11 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 				}
 			}
 			break;
+	}
+	if ($target===$input_cats) {
+		$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+	} else if ($target===$multireco_input_cats) {
+		$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	}
 }
 $input_cats.on("keydown.fs", function (e) {
