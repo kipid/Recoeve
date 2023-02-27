@@ -2141,7 +2141,7 @@ m.doFSCat=function (fs, $input) {
 		let k=fs[0][fs[0].sorted[i]];
 		str+=`<div class="list-item" onclick="m.completeCat(this,${k.i})"><div class="list-index">${i}</div>${fs.fullList[k.i].html}${(k.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${k.maxMatchScore}</span> :: ${k.highlight}</div>`:'')}</div>`;
 	}
-	$cat_fs_list.html(str);
+	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 m.doMRFSCat=function (fs) {
