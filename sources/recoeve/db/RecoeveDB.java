@@ -672,10 +672,10 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 	Map<String, String> varMap=new HashMap<String, String>();
 	long my_i=-1;
 	String myIndex="";
-	if (cookie.get("I")!=null) {
-		myIndex=cookie.get("I");
-	} else if (cookie.get("rmbdI")!=null) {
+	if (cookie.get("rmbdI")!=null) {
 		myIndex=cookie.get("rmbdI");
+	} else if (cookie.get("I")!=null) {
+		myIndex=cookie.get("I");
 	}
 	if (!myIndex.isEmpty()) {
 		varMap.put("{--myIndex--}", myIndex);
@@ -683,7 +683,7 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 		try {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
-				varMap.put("{--myId--}", user.getString("id"));
+				varMap.put("{--myId--}", HTMLString.escapeHTML(user.getString("id")));
 				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
 			}
 		} catch (SQLException e) {
@@ -694,7 +694,7 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
 			long user_i=user.getLong("i");
-			if (cookie.get("I")==null&&cookie.get("rmbdI")==null||user_i!=my_i) {
+			if ((cookie.get("I")==null&&cookie.get("rmbdI")==null)||user_i!=my_i) {
 				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
 			}
 		}
