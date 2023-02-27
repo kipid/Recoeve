@@ -2228,11 +2228,8 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 			break;
 	}
 	m.setTimeoutTargetOn=setTimeout(function () {
-		if ($target===$input_cats) {
-			$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-		} else if ($target===$multireco_input_cats) {
-			$target.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-		}
+		$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+		$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	}, 1024);
 }
 $input_cats.on("keydown.fs", function (e) {
