@@ -4072,7 +4072,7 @@ m.reco_do=function (args, err) {
 		$button_reco.removeClass("disabled");
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		if (res[1]["result"]==="recoed") {
+		if (res[1]&&res[1]["result"]==="recoed") {
 			$error.html("Recoed");
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
@@ -4087,7 +4087,7 @@ m.reco_do=function (args, err) {
 			}, 1000);
 		}
 		else {
-			$error.html(res[1]["result"]);
+			$error.html(res[1]&&res[1]["result"]);
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -4170,7 +4170,7 @@ m.reco_change_do=function (args, err) {
 				}, 1000);
 			}
 			else {
-				$error.html(res[1]["result"]);
+				$error.html(res[1]&&res[1]["result"]);
 			}
 		}
 	}).always(function () {
@@ -4250,7 +4250,7 @@ m.reco_delete_do=function (args, err) {
 		, dataType:"text"
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		if (res[1]["result"]==="deleted") {
+		if (res[1]&&res[1]["result"]==="deleted") {
 			$error.html("Deleted");
 			let cats=args.r["cats"];
 			delete m.myRecos[args.uri];
@@ -4263,7 +4263,7 @@ m.reco_delete_do=function (args, err) {
 			}, 1000);
 		}
 		else {
-			$error.html(res[1]["result"]);
+			$error.html(res[1]&&res[1]["result"]);
 		}
 	}).always(function () {
 		$button_del.removeClass("disabled");
