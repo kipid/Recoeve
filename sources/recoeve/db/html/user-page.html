@@ -16,12 +16,11 @@ if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /acco
 		window.history.replaceState(null, "My page", m.pathName+window.location.search+window.location.hash);
 	}
 }
-m.userId=decodeURIComponent(m.pathName.substring(6));
-let k=m.userId.indexOf("/");
-if (k!==-1) {
-	m.userId=m.userId.substring(0,k);
-}
+m.pathNameSplit=m.pathName.split("/");
+m.userId=decodeURIComponent(m.pathNameSplit[2]);
 m.myPage=(m.myId===m.userId);
+m.userPath=`/user/${encodeURIComponent(m.userId)}`;
+m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
 
 /*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
 |*|
@@ -355,10 +354,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)} .bright .reco>.cmt {background:rgb(200,200,200)}
 .multireco .reco>.cmt {display:none}
 .stars-container {position:relative; display:inline-block; cursor:text}
-.val {display:block}
-.multireco .val {display:none}
-.my-point {display:none}
-.multireco .my-point {display:block}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
@@ -368,6 +363,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 .multireco .reco .tFirst, .multireco .reco .tLast {display:none}
+.reco .val {display:block}
+.multireco .reco .val {display:none}
 .reco .my-point {display:none}
 .multireco .reco .my-point {display:block}
 
@@ -1006,7 +1003,7 @@ m.getNeighbors=function () {
 		}
 		console.log(req);
 		$.ajax({
-			type:"POST", url:m.pathName+"/get-URI-cats-val", data:req
+			type:"POST", url:m.userPath+"/get-URI-cats-val", data:req
 			, dataType:"text"
 		}).done(function (resp) {
 			console.log(resp);
@@ -1015,7 +1012,7 @@ m.getNeighbors=function () {
 	else {
 		let req="cat_from\n"+m.currentCat;
 		$.ajax({
-			type:"POST", url:m.pathName+"/get-Neighbors", data:req
+			type:"POST", url:m.userPath+"/get-Neighbors", data:req
 			, dataType:"text"
 		}).done(function (resp) {
 			let cat_froms=m.strToJSON(req);
@@ -1715,7 +1712,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
 		fs[1]=fs[0];
 	}
-	else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
+	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
 			fs[0]=fs[1];
 			return;
@@ -1728,7 +1725,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	if (fs[1]&&fs[1].sorted) {
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
-			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
+			list.push(fs.fullList[fs[1][sorted[i]].i]);
 		}
 	}
 	else {
@@ -1828,8 +1825,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-m.pathOfCat=function (cat, mode) {
-	return m.pathName+"?cat="+(cat?encodeURIComponent(cat):"")+(mode&&mode==="multireco"?"&mode=multireco":(mode&&mode==="neighbors"?"&mode=neighbors":""));
+m.pathOfCat=function (cat, mode, lang) {
+	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:"")}${lang?`&lang=${lang}`:""}`;
 };
 m.getDepthOfTabs=function (str) {
 	let n=0;
@@ -1873,46 +1870,43 @@ m.strCatListToJSON=function (strCatList, catList) {
 };
 m.catListToHTML=function () {
 	let cL=m.catList;
-	let catListHTML='<div class="cat" id="cat-0" style="margin-left:'+cL[0].depth+'em"><span class="noEC"></span><a href="'+m.pathOfCat("")+'" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>';
+	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:${cL[0].depth}em"><span class="noEC"></span><a href="${m.pathOfCat("")}" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		let beforeDepth=cL[i-1].depth;
 		let currentDepth=cL[i].depth;
 		let afterDepth=cL[i+1].depth;
 		if (beforeDepth<currentDepth) { // open subCat
-			catListHTML+='<div class="subCat" style="display:none">';
+			catListHTML+=`<div class="subCat" style="display:none">`;
 		}
 		else {
 			for (let j=currentDepth;j<beforeDepth;j++) { // close subCats
-				catListHTML+='</div>';
+				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">';
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em">`;
 		if (currentDepth<afterDepth) {
-			catListHTML+='<span class="EC" onclick="m.ExpCol(this,m.catList['+i+'])">▶</span>';
+			catListHTML+=`<span class="EC" onclick="m.ExpCol(this,m.catList[${i}])">▶</span>`;
 		}
 		else {
-			catListHTML+='<span class="noEC"></span>';
+			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+='<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML(cL[i].baseCat)+'</a>'+'</div>';
+		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat(m.catList[${i}].cat, event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		let beforeDepth=cL[i-1].depth;
 		let currentDepth=cL[i].depth;
 		if (beforeDepth<currentDepth) { // open subCat
-			catListHTML+='<div class="subCat" style="display:none">';
+			catListHTML+=`<div class="subCat" style="display:none">`;
 		}
 		else {
 			for (let j=currentDepth;j<beforeDepth;j++) { // close subCats
-				catListHTML+='</div>';
+				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+='<div class="cat" id="cat-'+i+'" style="margin-left:'+cL[i].depth+'em">'
-			+'<span class="noEC"></span>'
-			+'<a href="'+m.pathOfCat(cL[i].cat)+'" class="baseCat" onclick="return m.openCat(m.catList['+i+'].cat, event)">'+m.escapeHTML( cL[i].baseCat )+'</a>'
-		+'</div>';
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat(m.catList[${i}].cat, event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
-			catListHTML+='</div>';
+			catListHTML+=`</div>`;
 		}
 	}
 	$catList.html(catListHTML);
@@ -1926,13 +1920,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return '<a href="'+m.pathOfCat("")+'" onclick="return m.openCat(m.catList[0].cat, event)"'+(m.currentCat===""?' class="currentCat"':'')+'>[--Uncategorized--]</a>';
+		return `<a href="${m.pathOfCat("")}" onclick="return m.openCat(m.catList[0].cat, event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push('<a href="'+m.pathOfCat(cat)+'" onclick="return m.openCat(m.catList['+m.catList[cat].i+'].cat, event)"'+(m.currentCat===cat?' class="currentCat"':'')+'>'+m.escapeHTML(cat)+'</a>');
+		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat(m.catList[${m.catList[cat].i}].cat, event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeHTML(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -1985,7 +1979,7 @@ $change_catList_order.on("click", function (e) {
 			$catM.css({width:$catM.outerWidth()});
 			$catM.addClass("move");
 			let catI=Number($catM.attr("id").substring(4));
-			let $catTo=$('<div id="cat-to-here" style="margin-left:'+(m.catList[catI].depth+0.5)+'em"></div>');
+			let $catTo=$(`<div id="cat-to-here" style="margin-left:${m.catList[catI].depth+0.5}em"></div>`);
 			$catM.before($catTo);
 			let catTo=-1;
 			$html.on("mousemove.mdInEB touchmove.mdInEB", function (e) {
@@ -2499,7 +2493,7 @@ m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	let exec=m.ptnURL.exec(uri);
 	if (exec!==null) {
-		return '<a target="_blank" href="'+exec[0]+'">'+m.escapeHTML(decodeURIComponent(uri))+'</a>';
+		return `<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a>`;
 	}
 	else {
 		return m.escapeHTML(uri);
@@ -2545,13 +2539,13 @@ m.uriRendering=function (uri, toA) {
 					uriRest=uri.substring(l+1);
 				}
 				if (m.ptnURI[uriHost]) {
-					let result=m.ptnURI[uriHost].toIframe(uriRest);
+					let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest);
 					if (result) { return result; }
 				}
 			}
 		}
 		for (let i=0;i<m.ptnURI.length;i++) {
-			let result=m.ptnURI[i].toIframe(uri);
+			let result=m.ptnURI[i].toIframe(uri); // img or video
 			if (result) { return result; }
 		}
 	}
@@ -2578,7 +2572,7 @@ ptnURI.toIframe=function (uriRest) {
 			v=vars.v.val;
 		}
 		if (v) {
-			return {html:m.YTiframe(v,vars), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v, vars), from:"youtube", videoId:v};
 		}
 	}
 	return false;
@@ -2591,7 +2585,7 @@ ptnURI.toIframe=function (uriRest) {
 	if (exec!==null) {
 		let v=exec[1];
 		if (v) {
-			return {html:m.YTiframe(v,null), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v, null), from:"youtube", videoId:v};
 		}
 	}
 	return false;
@@ -2606,7 +2600,7 @@ ptnURI.toIframe=function (uriRest) {
 		if (exec[2]) {
 			vars=m.getSearchVars(exec[2]);
 		}
-		return {html:m.YTiframe(exec[1],vars), from:"youtube", videoId:exec[1]};
+		return {html:m.YTiframe(exec[1], vars), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2618,7 +2612,7 @@ ptnURI.toIframe=function (uriRest) {
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
 		if (vars.v&&vars.v.val) {
-			return {html:m.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
+			return {html:m.YTiframe(vars.v.val, vars), from:"youtube", videoId:vars.v.val};
 		}
 	}
 	return false;
@@ -2659,7 +2653,7 @@ ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"kakao", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2669,7 +2663,7 @@ ptnURI.regEx=/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/'+exec[1]+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"kakao", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"kakao", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2679,7 +2673,7 @@ ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="no"></iframe>`), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2690,7 +2684,7 @@ ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
-		return {html:m.rC('<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:vars.vid.val};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="no"></iframe>`), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
 };
@@ -2700,7 +2694,7 @@ ptnURI.regEx=/^([0-9]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2710,7 +2704,7 @@ ptnURI.regEx=/video\/(\w+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
@@ -2763,7 +2757,7 @@ ptnURI.toIframe=function (uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:m.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>', `soundcloud`), from:"soundcloud", videoId:vars.url&&vars.url.val};
+		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="no" frameborder="no"></iframe>`, `soundcloud`), from:"soundcloud", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
@@ -2773,7 +2767,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', `instagram`), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, `instagram`), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -2783,7 +2777,7 @@ ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/
 ptnURI.toIframe=function (uri) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:'<div class="center"><img delayed-src="'+exec[0]+'"/></div>'};
+		return {html:`<div class="center"><img delayed-src="${exec[0]}"/></div>`};
 	}
 	return false;
 };
@@ -2793,7 +2787,7 @@ ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:m.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>'), from:'video', src:exec[0]};
+		return {html:m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`), from:'video', src:exec[0]};
 	}
 	return false;
 };
@@ -2889,16 +2883,10 @@ m.val=function (val) {
 	xc-=r;
 	yc+=r*sins[4]+pad;
 	str+=xc+',0 '+xc+','+yc.toFixed(1)+' '+pad0+','+yc.toFixed(1);
-	m["5stars-pre"]='<div class="stars-container" style="width:'+(xc+pad0)+'px; height:'+yc.toFixed(1)+'px"><div class="bar" style="left:'+(pad0+1)+'px; width:';
-	m["5stars-width"]=xc-pad0-2;
-	m["5stars-pad0+1"]=pad0+1;
-	m["5stars-post"]='px"></div><svg class="out-stars">'
-			+'<polygon points="'+str+'"/>'
-		+'</svg></div>';
 	m["5stars"]=function (val) {
 		if (val<0) { val=0; }
 		else if (val>1) { val=1; }
-		return m["5stars-pre"]+(m["5stars-width"]*val).toFixed(1)+m["5stars-post"];
+		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${((xc-pad0-2)*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
 	}
 }
 
@@ -2990,70 +2978,72 @@ $point_range_right.on("mousedown touchstart", function (e) {
 m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r["has"]) {
-		res+=`<div class="reco${inRange?'':' none'}">`
-			+'<img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, \'twitter\')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, \'facebook\')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, \'kakao\')"/>'
-			+(m.myIndex?'<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">'+(m.myPage?'Edit':'Reco to mine')+'</div>':'')
-			+'<div class="textURI">'+m.escapeHTML(r.uri)+'</div>'
-			+'<div class="uri cBoth">'+m.uriToA(r.uri)+'</div>'
-			+'<div class="title">'+m.escapeHTML(r.title)+'</div>'
-			+'<div class="cats">'+m.catsToA(r.cats)+'</div>'
-			+(uriRenderDisable?"":m.uriRendering(r.uri).html);
+		res+=`<div class="reco${inRange?'':' none'}">
+	<img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
+	${m.myIndex?`<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">${m.myPage?'Edit':'Reco to mine'}</div>`:''}
+	<div class="textURI">${m.escapeHTML(r.uri)}</div>
+	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
+	<div class="title">${m.escapeHTML(r.title)}</div>
+	<div class="cats">${m.catsToA(r.cats)}</div>
+	${uriRenderDisable?"":m.uriRendering(r.uri).html}`;
 		if (r["desc"]) {
 			let descR=r["descR"];
-			res+='<div class="desc">';
+			res+=`<div class="desc">`;
 			for (let l=0;l<descR.length;l++) {
 				let key=m.escapeHTML( descR[l] );
 				let value=m.escapeHTML( descR[descR[l]] );
 				switch (key.toLowerCase()) {
 				case "#" : case "" :
-					res+='<div class="value">'+value.replace(/\n/g,"<br>")+'</div>';
+					res+=`<div class="value">${value.replace(/\n/g,"<br>")}</div>`;
 					break;
 				case "lyrics" : case "lyric" : case "가사" :
-					res+='<div class="value"><div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>'
-						+'<div class="lyricsC" style="display:none">'
-							+'<div class="lyricsArrow"></div>'
-							+'<div class="lyrics">'+value.replace(/\n/g,"<br>")+'</div>'
-							+'<div class="right"><div class="button" onclick="m.slideUp(this)">▲ Hide lyrics</div></div>'
-						+'</div></div>';
+					res+=`<div class="value">
+	<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>
+	<div class="lyricsC" style="display:none">
+		<div class="lyricsArrow"></div>
+		<div class="lyrics">${value.replace(/\n/g,"<br>")}</div>
+		<div class="right"><div class="button" onclick="m.slideUp(this)">▲ Hide lyrics</div></div>
+	</div>
+</div>`;
 					break;
 				case "related" :
-					res+='<div class="value"><span class="key">#'+key+'</span>';
+					res+=`<div class="value"><span class="key">#${key}</span>`;
 					let relateds=value.split("\n");
 					for (let p=0;p<relateds.length;p++) {
-						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]),true).html;
+						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]), true).html;
 					}
-					res+='</div>';
+					res+=`</div>`;
 					break;
 				default :
-					res+='<div class="value"><span class="key">#'+key+' </span>'+value.replace(/\n/g,"<br>")+'</div>';
+					res+=`<div class="value"><span class="key">#${key} </span>${value.replace(/\n/g,"<br>")}</div>`;
 				}
 			}
-			res+='</div>';
+			res+=`</div>`;
 		}
-		res+=(r["cmt"].length!==0?('<div class="cmt">'+m.escapeHTML( r["cmt"] ).replace(/\n/g,"<br>")+'</div>'):"");
+		res+=(r["cmt"]&&r["cmt"].length!==0?(`<div class="cmt">${m.escapeHTML(r["cmt"]).replace(/\n/g,"<br>")}</div>`):"");
 		if (r["val"].str) {
-			res+='<div class="val">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
+			res+=`<div class="val">${m["5stars"](r["val"].val)} <span class="str">${m.escapeHTML(r["val"].str)}</span></div>`;
 		}
-		res+='<div class="tFirst">Firstly Recoed at '+r.tFirst+'</div><div class="cBoth"></div>';
+		res+=`<div class="tFirst">Firstly Recoed at ${r.tFirst}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
-			res+='<div class="tLast">Lastly Editted at '+r.tLast+'</div><div class="cBoth"></div>';
+			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
 		if (m.myPage) {
-			res+='<div class="my-point">'+m["5stars"]( r["val"].val )+' <span class="str">'+m.escapeHTML( r["val"].str )+'</span></div>';
+			res+=`<div class="my-point">${m["5stars"](r["val"].val)} <span class="str">${m.escapeHTML(r["val"].str)}</span></div>`;
 		}
 		else if (m.myRecos[r.uri]) {
 			let mR=m.myRecos[r.uri];
 			if (mR.has) {
-				res+='<div class="my-point">'+m["5stars"]( mR["val"].val )+' <span class="str">'+m.escapeHTML( mR["val"].str )+'</span></div>';
+				res+=`<div class="my-point">${m["5stars"](mR["val"].val)} <span class="str">${m.escapeHTML(mR["val"].str)}</span></div>`;
 			}
 			else {
-				res+='<div class="my-point">'+m["5stars"](0)+' <span class="str"> </span></div>';
+				res+=`<div class="my-point">${m["5stars"](0)} <span class="str"></span></div>`;
 			}
 		}
-		res+='</div>';
+		res+=`</div>`;
 	}
 	else {
-		res+='<div class="reco">No Reco</div>';
+		res+=`<div class="reco">No Reco</div>`;
 	}
 	return res;
 };
@@ -3083,11 +3073,10 @@ m.showRecosOnCat=function (elem, from) {
 	let l=fs.fullList.length;
 	let strHTML="";
 	if (l<=0) {
-		let nOfRecos=`No reco on cat=${m.escapeHTML(m.currentCat)}.`;
+		let nOfRecos=`No reco in cat=${m.escapeHTML(m.currentCat)}.`;
 		$numbers_of_recos.html(nOfRecos);
 		strHTML=`<div class="numbers-of-recos">${nOfRecos}</div>`;
 		$contents.html(strHTML);
-
 		$reco_playing.html('');
 		$uri_rendered.html('');
 		$video.html('');
@@ -3140,9 +3129,9 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			}
-			let nOfRecos='You have '+l+' recos ('+nShown+' to be shown, and '+nHiden+' hiden.) on cat='+m.escapeHTML(m.currentCat)+'.';
+			let nOfRecos=`You have ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeHTML(m.currentCat)}.`;
 			$numbers_of_recos.html(nOfRecos);
-			strHTML+='<div class="numbers-of-recos">'+nOfRecos+'</div>';
+			strHTML+=`<div class="numbers-of-recos">${nOfRecos}</div>`;
 			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 			}
@@ -3367,7 +3356,7 @@ m.getAndShowRecosOnCat=function (cat) {
 	}
 	if (getRecosN>0) {
 		$.ajax({
-			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
+			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function (resp) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
@@ -3416,7 +3405,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 		else {
 			let getUriListStr="cat\n"+(cat===""?"\tp":cat);
 			$.ajax({
-				type:"POST", url:m.pathName+"/get-UriList", data:getUriListStr
+				type:"POST", url:m.userPath+"/get-UriList", data:getUriListStr
 				, dataType:"text"
 			}).fail(function () {
 				$contents.html("get-UriList on "+m.escapeHTML(cat)+" has failed..");
@@ -3889,7 +3878,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	else {
 		let getRecosStr="uri"+"\n"+uri;
 		$.ajax({
-			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
+			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
 			m.recoDowned(uri, m.userRecos);
@@ -4498,7 +4487,7 @@ $table_of_recos.on("keydown", function (e) {
 ////////////////////////////////////////////////////
 m.changeLang=function (lang, e, elem) {
 	let search=window.location.search;
-	let href=m.pathName+(search?search+"&":"?")+"lang="+lang+window.location.hash;
+	let href=`${m.pathName}${search?`${search}&`:"?")}${lang?`lang=${lang}`:""}${window.location.hash}`;
 	if (e&&e.which===2) {
 		$(elem).attr({"href":href});
 		return true;
