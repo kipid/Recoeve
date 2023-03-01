@@ -3443,7 +3443,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 };
 m.refresh=function (cats, option, uri) {
 	let currentCat=m.getSearchVars(window.location.search).cat;
-	if (currentCat) { currentCat=currentCat.val; }
+	if (currentCat) { currentCat=decodeURIComponent(currentCat.val); }
 	let c=cats.split(";");
 	let k=0;
 	if (currentCat!==undefined) {
@@ -4039,7 +4039,7 @@ $button_new_reco.on("click", function (e) {
 	$input_uri[0].disabled=false;
 	$new_reco.show();
 	let cat=m.getSearchVars(window.location.search).cat;
-	if (cat) { cat=cat.val; }
+	if (cat) { cat=decodeURIComponent(cat.val); }
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
 	}
