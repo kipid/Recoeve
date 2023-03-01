@@ -1826,7 +1826,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 // CatList rendering
 ////////////////////////////////////////////////////
 m.pathOfCat=function (cat, mode, lang) {
-	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:"")}${lang?`&lang=${lang}`:""}`;
+	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}`;
 };
 m.getDepthOfTabs=function (str) {
 	let n=0;
@@ -2993,10 +2993,10 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 				let key=m.escapeHTML( descR[l] );
 				let value=m.escapeHTML( descR[descR[l]] );
 				switch (key.toLowerCase()) {
-				case "#" : case "" :
+				case "#": case "":
 					res+=`<div class="value">${value.replace(/\n/g,"<br>")}</div>`;
 					break;
-				case "lyrics" : case "lyric" : case "가사" :
+				case "lyrics": case "lyric": case "가사":
 					res+=`<div class="value">
 	<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ Toggle lyrics</div></div>
 	<div class="lyricsC" style="display:none">
@@ -3006,7 +3006,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	</div>
 </div>`;
 					break;
-				case "related" :
+				case "related":
 					res+=`<div class="value"><span class="key">#${key}</span>`;
 					let relateds=value.split("\n");
 					for (let p=0;p<relateds.length;p++) {
@@ -3282,7 +3282,7 @@ m.showRecosOnCat=function (elem, from) {
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.trigger("keyup");
+	fs.$fs.trigger("input.fs");
 };
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
@@ -3367,10 +3367,10 @@ m.getAndShowRecosOnCat=function (cat) {
 			fs1.currentIndex=fs1.fullList.length-1;
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
-			fs.$fs.trigger("keyup");
+			fs.$fs.trigger("input.fs");
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
-			fs1.$fs.trigger("keyup");
+			fs1.$fs.trigger("input.fs");
 			setTimeout(fs1.prepareRecoListPlay, m.wait*2);
 		});
 	}
@@ -3379,10 +3379,10 @@ m.getAndShowRecosOnCat=function (cat) {
 		fs1.currentIndex=fs1.fullList.length-1;
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
-		fs.$fs.trigger("keyup");
+		fs.$fs.trigger("input.fs");
 		fs1[1]=null;
 		fs1[0].ptnSH=m.splitHangul("$!@#");
-		fs1.$fs.trigger("keyup");
+		fs1.$fs.trigger("input.fs");
 		setTimeout(fs1.prepareRecoListPlay, m.wait*2);
 	}
 };
@@ -3445,29 +3445,52 @@ m.refresh=function (cats, option, uri) {
 	m.currentCat=c[k];
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(c[k]);
-		window.history.pushState({cat:c[k]}, c[k], m.pathOfCat(c[k]));
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(c[k])));
+		let path=m.pathOfCat(c[k]);
+		window.history.pushState({cat:c[k]}, c[k], path);
+		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(path));
 	}
 	else {
 		switch (option) {
-		case "recoed" :
-			let $newReco=$( m.recoHTML( m.userRecos[uri], false, true ) );
-			$contents.prepend( $newReco );
+		case "recoed":
+			let r=m.userRecos[uri];
+			let $newReco=$(m.recoHTML(r, false, true));
+			$contents.prepend($newReco);
 			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
-			m.fdList=m.fdList.add( $newReco );
+			m.fdList=m.fdList.add($newReco);
+
+			let fs=m.fsGo;
+			fs.fullList[uri]={i:fs.fullList.length, r:r, $listI:$newReco, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
+			fs.fullList.push(fs.fullList[uri]); // or .splice(0, item)?
+			fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			fs[1]=null;
+			fs[0].ptnSH=m.splitHangul("$!@#");
+			fs.$fs.trigger("input.fs");
+
+			fs=m.fsToRs;
+			fs.fullList[uri]={i:fs.fullList.length, r:r, $listI:$newReco, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
+			fs.fullList.push(fs.fullList[uri]);
+			fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			fs[1]=null;
+			fs[0].ptnSH=m.splitHangul("$!@#");
+			fs.$fs.trigger("input.fs");
 			break;
-		case "changed" : case "deleted" :
+		case "changed": case "deleted":
 			if (uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 				if (option==="changed") {
-					$reco_playing.html(m.recoHTML(m.userRecos[uri], true, true));
+					let r=m.userRecos[uri];
+					$reco_playing.html(m.recoHTML(r, true, true));
 					m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 					$window.trigger("scroll.delayedLoad");
 				}
 				else if (option==="deleted") {
 					$reco_playing.html('');
+					$uri_rendered.html('');
+					$video.html('');
+					$rC_video_uri_rendered.hide();
+					$rC_youtube_uri_rendered.hide();
 				}
 			}
 			let $recos=$contents.find(">.reco");
@@ -3476,15 +3499,37 @@ m.refresh=function (cats, option, uri) {
 				let recoUri=m.unescapeHTML($reco.find(">.textURI").html());
 				if (recoUri===uri) {
 					if (option==="changed") {
-						let $newReco=$( m.recoHTML( m.userRecos[uri], false, true ) );
+						let r=m.userRecos[uri];
+						let $newReco=$(m.recoHTML(r, false, true));
 						$reco.replaceWith($newReco);
 						m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
-						m.fdList=m.fdList.add( $newReco );
+						m.fdList=m.fdList.add($newReco);
+
+						let fs=m.fsGo;
+						let fsFLk=fs.fullList[uri];
+						fsFLk.$listI=$newReco;
+						fsFLk.txt=m.splitHangul(r.title);
+						fsFLk.html=m.escapeHTML(r.title);
+						fsFLk.inRange=true;
+						fs[1]=null;
+						fs[0].ptnSH=m.splitHangul("$!@#");
+						fs.$fs.trigger("input.fs");
+
+						fs=m.fsToRs;
+						fsFLk=fs.fullList[uri];
+						fsFLk.$listI=$newReco;
+						fsFLk.txt=m.splitHangul(r.title);
+						fsFLk.html=m.escapeHTML(r.title);
+						fsFLk.inRange=true;
+						fs[1]=null;
+						fs[0].ptnSH=m.splitHangul("$!@#");
+						fs.$fs.trigger("input.fs");
 					}
 					else if (option==="deleted") {
 						$reco.remove();
+						// fs.splice(i, 1)? // i from id attr?
 					}
 					break;
 				}
@@ -4399,7 +4444,7 @@ m.fsGoOn=function () {
 	}
 };
 $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
-$fuzzy_search.trigger("keyup");
+$fuzzy_search.trigger("input.fs");
 
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos
@@ -4473,7 +4518,7 @@ m.fsToRsOn=function () {
 	}
 };
 $table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
-$table_of_recos.trigger("keyup");
+$table_of_recos.trigger("input.fs");
 $table_of_recos.on("keydown", function (e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
