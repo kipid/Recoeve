@@ -2194,13 +2194,13 @@ m.doFSCat=function (fs, $input) {
 			fs.k=i;
 			break;
 		}
-	} // picking cat index k of the current selectionEnd.
+	} // Picking cat index k of the current selectionEnd.
 	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
 	m.fuzzySearch(fsCatSH, fs);
 	let str="";
 	for (let i=0;i<fs[0].length;i++) {
-		let k=fs[0][fs[0].sorted[i]];
-		str+=`<div class="list-item" onclick="m.completeCat(this,${k.i})"><div class="list-index">${i}</div>${fs.fullList[k.i].html}${(k.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${k.maxMatchScore}</span> :: ${k.highlight}</div>`:'')}</div>`;
+		let fsSortedI=fs[0][fs[0].sorted[i]];
+		str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -2244,14 +2244,14 @@ $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
 	clearTimeout(m.setTimeoutTargetOn);
-	let $target=$(e.target);
-	$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-	e.stopPropagation();
 	let $lis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
 		case 9: // Tab=9
 			e.preventDefault();
+			e.stopPropagation();
+			let $target=$(e.target);
+			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 			$lis.eq(0).trigger("click");
 			break;
 		case 27: // ESC=27
@@ -2261,6 +2261,9 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 		case 38: // up=38
 		case 40: // down=40
 			e.preventDefault();
+			e.stopPropagation();
+			let $target=$(e.target);
+			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 			let $liTo=null;
 			if ($liSelected.exists()) {
 				if (e.keyCode===38) {
@@ -2297,7 +2300,7 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 	m.setTimeoutTargetOn=setTimeout(function () {
 		$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 		$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-	}, 1024);
+	}, 512);
 }
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, $cat_fs_list, $cat_fs_container);
@@ -4524,7 +4527,7 @@ $table_of_recos.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:"keydown", keyCode:84});
+		$window.trigger({type:"keydown", keyCode:84}); // T=84
 		break;
 	}
 });
