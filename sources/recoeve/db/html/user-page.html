@@ -3136,6 +3136,9 @@ m.showRecosOnCat=function (elem, from) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 			}
 			$contents.html(strHTML);
+			setTimeout(function () {
+				$(".to-be-executed").eq(0).trigger("click");
+			}, 1024);
 		}
 		else {
 			if (from!==undefined&&from!==null&&from.constructor===Number) {
@@ -3277,7 +3280,6 @@ m.showRecosOnCat=function (elem, from) {
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	$(".to-be-executed").eq(0).trigger("click");
 	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	fs.$fs.trigger("keyup");
