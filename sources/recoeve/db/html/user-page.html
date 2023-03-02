@@ -2244,13 +2244,13 @@ $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
 	clearTimeout(m.setTimeoutTargetOn);
+	let $target=$(e.target);
 	let $lis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
 		case 9: // Tab=9
 			e.preventDefault();
 			e.stopPropagation();
-			let $target=$(e.target);
 			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 			$lis.eq(0).trigger("click");
 			break;
@@ -2262,7 +2262,6 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 		case 40: // down=40
 			e.preventDefault();
 			e.stopPropagation();
-			let $target=$(e.target);
 			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 			let $liTo=null;
 			if ($liSelected.exists()) {
@@ -4556,7 +4555,7 @@ htmlLang+=`</div>`;
 $data_lang.after(htmlLang);
 
 ////////////////////////////////////////////////
-// Lang : set cookie, Cat : get ans show recos
+// Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 let vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
