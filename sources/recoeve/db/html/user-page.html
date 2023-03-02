@@ -4564,16 +4564,16 @@ if (vars.lang!==undefined) {
 if (vars.cat!==undefined) {
 	let cat=vars.cat.val;
 	m.currentCat=cat;
-	if (vars.mode===undefined) {
+	if (m.recoMode==="") {
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
 		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	}
-	else if (vars.mode&&vars.mode.val==="multireco") {
+	else if (m.recoMode==="multireco") {
 		m.getUriListAndShowRecosOnCat(cat);
 		$button_multireco_mode.trigger("click");
 	}
-	else if (vars.mode&&vars.mode.val==="neighbors") {
+	else if (m.recoMode==="neighbors") {
 		$button_neighbors_page.trigger("click");
 	}
 }
