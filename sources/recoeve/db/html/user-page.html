@@ -3373,7 +3373,9 @@ m.getAndShowRecosOnCat=function (cat) {
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("input.fs");
-			setTimeout(fs1.prepareRecoListPlay, m.wait*2);
+			setTimeout(function () {
+				fs1.playNext(-1, true, true);
+			}, m.wait*2);
 		});
 	}
 	else {
@@ -3385,7 +3387,9 @@ m.getAndShowRecosOnCat=function (cat) {
 		fs1[1]=null;
 		fs1[0].ptnSH=m.splitHangul("$!@#");
 		fs1.$fs.trigger("input.fs");
-		setTimeout(fs1.prepareRecoListPlay, m.wait*2);
+		setTimeout(function () {
+			fs1.playNext(-1, true, true);
+		}, m.wait*2);
 	}
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
@@ -4339,7 +4343,7 @@ $fuzzy_search.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:"keydown", keyCode:71});
+		$window.trigger({type:"keydown", keyCode:71}); // G=71
 		break;
 	case 38: // up=38
 	case 40: // down=40
@@ -4395,7 +4399,7 @@ else {
 		$elem.addClass("selected");
 	}
 	let $listI=fs.fullList[k].$listI;
-	if ($listI) {
+	if ($listI&&$listI.is(":visible")) {
 		$window.scrollTop($listI.offset().top);
 	}
 	else {
@@ -4418,11 +4422,7 @@ m.doFSGo=function (fs) {
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">`
-						+fs.fullList[k].html
-						+((res[sorted[i]].highlight!==undefined)?
-						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
-					+'</div>';
+				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
@@ -4460,7 +4460,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(); // cue or not?
+			fs.getAndPlayVideo(); // cue or not? not!
 		}
 	}
 };
@@ -4728,8 +4728,8 @@ m.fsToRs.Following=function () {
 };
 m.fsToRs.shuffle=function () {
 	let fs=m.fsToRs;
-	m.doFSToRs(fs,true);
-	fs.playNext(-1,true,true);
+	m.doFSToRs(fs, true);
+	fs.playNext(-1, true, true);
 };
 m.fsToRs.autoSkip=function (elem) {
 	let $elem=$(elem);
@@ -4809,6 +4809,9 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 					}}
 				);
 			}
+			else {
+				fs.prepareRecoListPlay(true);
+			}
 		}
 		else if (uriRendered.from==="video") {
 			$uri_rendered.html('');
@@ -4876,69 +4879,44 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	}
 	let $selected=fs.$fsLis.filter(".selected");
 	if ($selected.exists()) {
+		let $next=null;
 		if (increment<0) {
-			let $next=$selected.next();
-			if ($next.exists()) {
-				$next.trigger("click");
-				fs.$fsl.viewAndScroll($next);
-			}
-			else if (fs.loop) {
+			$next=$selected.next();
+			if ((!$next.exists())&&fs.loop) {
 				$next=fs.$fsLis.eq(0);
-				if ($next.exists()) {
-					$next.trigger("click");
-					fs.$fsl.viewAndScroll($next);
-				}
 			}
 		}
 		else {
-			let $prev=$selected.prev();
-			if ($prev.exists()) {
-				$prev.trigger("click");
-				fs.$fsl.viewAndScroll($prev);
-			}
-			else if (fs.loop) {
-				$prev=fs.$fsLis.last();
-				if ($prev.exists()) {
-					$prev.trigger("click");
-					fs.$fsl.viewAndScroll($prev);
-				}
+			$next=$selected.prev();
+			if ((!$next.exists())&&fs.loop) {
+				$next=fs.$fsLis.last();
 			}
 		}
 	}
 	else {
 		$next=fs.$fsLis.eq(0);
-		if ($next.exists()) {
-			$next.trigger("click");
-			fs.$fsl.viewAndScroll($next);
-		}
+	}
+	if ($next.exists()) {
+		$next.trigger("click");
+		fs.$fsl.viewAndScroll($next);
 	}
 };
-m.fsToRs.prepareRecoListPlay=function () {
+m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 	let fs=m.fsToRs;
-	let YtAPINeeded=false;
 	if (!m.YtAPILoaded) {
-		for (let i=0;i<fs.fullList.length;i++) {
-			let r=fs.fullList[i].reco;
-			let uriRendered=m.uriRendering(r.uri);
-			if (uriRendered.from==="youtube") {
-				YtAPINeeded=true;
-				break;
-			}
-		}
 		if (YtAPINeeded) {
-			let ytAPI=document.createElement('script');
-			ytAPI.src="https://www.youtube.com/player_api";
-			$scripts.append(ytAPI);
+			let $ytAPI=$(`<script id="YouTube-API" src="https://www.youtube.com/player_api"></`+`script>`); // Avoid closing script
+			$scripts.append($ytAPI);
 			m.YtAPILoaded=true;
 		}
 	}
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
 		m.doFSToRs(fs);
-		fs.playNext(-1,true,true);
+		fs.playNext(-1, true, true);
 	}
 	else {
 		setTimeout(function () {
-			fs.prepareRecoListPlay();
+			fs.prepareRecoListPlay(YtAPINeeded);
 		}, 1000);
 	}
 };
