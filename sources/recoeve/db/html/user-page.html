@@ -4343,7 +4343,7 @@ $fuzzy_search.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:"keydown", keyCode:71});
+		$window.trigger({type:"keydown", keyCode:71}); // G=71
 		break;
 	case 38: // up=38
 	case 40: // down=40
@@ -4399,7 +4399,7 @@ else {
 		$elem.addClass("selected");
 	}
 	let $listI=fs.fullList[k].$listI;
-	if ($listI) {
+	if ($listI&&$listI.is(":visible")) {
 		$window.scrollTop($listI.offset().top);
 	}
 	else {
@@ -4422,11 +4422,7 @@ m.doFSGo=function (fs) {
 			let fsFLk=fs.fullList[k];
 			if (fsFLk.inRange) {
 				let uri=fsFLk.uri;
-				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">`
-						+fs.fullList[k].html
-						+((res[sorted[i]].highlight!==undefined)?
-						'<div class="highlighted">'+'<span class="maxMatchScore">'+res[sorted[i]].maxMatchScore+'</span> :: '+res[sorted[i]].highlight+'</div>':'')
-					+'</div>';
+				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
