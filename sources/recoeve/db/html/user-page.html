@@ -4878,8 +4878,8 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		}
 	}
 	let $selected=fs.$fsLis.filter(".selected");
+	let $next=null;
 	if ($selected.exists()) {
-		let $next=null;
 		if (increment<0) {
 			$next=$selected.next();
 			if ((!$next.exists())&&fs.loop) {
@@ -4896,7 +4896,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	else {
 		$next=fs.$fsLis.eq(0);
 	}
-	if ($next.exists()) {
+	if ($next&&$next.exists()) {
 		$next.trigger("click");
 		fs.$fsl.viewAndScroll($next);
 	}
