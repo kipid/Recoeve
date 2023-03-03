@@ -364,10 +364,7 @@ kipid.printCode=function (codeId) {
 	const $pre=$("pre#pre-"+codeId);
 	const $code=$("#"+codeId);
 	if ($pre.exists()) {
-		let html=// ('<codeprint id="'+codeId+'">'+
-			kipid.indentsRemove($code.html())
-			// +'</codeprint><!-- '+codeId+' -->')
-			.trim();
+		let html=kipid.indentsRemove($code.html()).trim();
 		if (!$code.is(".noEscapeHTML")) {
 			html=kipid.escapeHTML(html);
 		}
@@ -715,8 +712,7 @@ kipid.docuKProcess=function docuK(kipid, $, docuKI, undefined) {
 	let eqqs, eqN="", eqC="", figs;
 	function fTocHtml(numbering) {
 		let secN=(numbering===undefined||numbering)?"secN":"none";
-		return `<h${hN}>"
-		+"<a class="jump" id="toc${docuKI}-${secId}" href="#secId${docuKI}-${secId}"><span class="${secN}"><span class="number">${secPreTxt}</span>.</span>${txt}</a></h${hN}>`;
+		return `<h${hN}><a class="jump" id="toc${docuKI}-${secId}" href="#secId${docuKI}-${secId}"><span class="${secN}"><span class="number">${secPreTxt}</span>.</span>${txt}</a></h${hN}>`;
 	}
 	function fSecHtml(numbering) {
 		let secN="none", endA0="", endA1="</a>";
@@ -734,7 +730,7 @@ kipid.docuKProcess=function docuK(kipid, $, docuKI, undefined) {
 		if (secIH2.exists() && !secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
 			hN="2"; txt=secIH2.html();
 			if (secIH2.is(".no-sec-N")||secI.is(".no-sec-N")) {
-				secPreTxt=secId=secITxt=(secIH2.is("[id]"))?secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):"secPreTxt"+docuKI+"-"+i;
+				secPreTxt=secId=secITxt=(secIH2.is("[id]"))?secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):`secPreTxt${docuKI}-${i}`;
 				tocHtml+=fTocHtml(false);
 				secIH2.html(fSecHtml(false));
 			} else {
