@@ -129,7 +129,7 @@ kipid.splitHangul=function(str) {
 ////////////////////////////////////////////////////
 kipid.fsGo=[];
 kipid.fsGo[0]=kipid.fsGo[1]=[];
-kipid.fsGo[0]["ptnSH"]=kipid.fsGo[1]["ptnSH"]=kipid.splitHangul("$!@#");
+kipid.fsGo[0].ptnSH=kipid.fsGo[1].ptnSH=kipid.splitHangul("$!@#");
 kipid.fsGo.fullList=[];
 kipid.fsGo.$fs=$fuzzy_search;
 kipid.fsGo.$fsl=$fuzzy_search_list;
@@ -160,17 +160,17 @@ kipid.highlightStrFromIndices=function(strSplitted, indices) {
 		}
 		for (;k<strSplitted.length;k++) {
 			p1=p2;
-			p2=p1+strSplitted[k]["splitted"].length;
+			p2=p1+strSplitted[k].splitted.length;
 			if (p2<=indices[i].start) {
-				strSplitted[k]["matched"]=false;
+				strSplitted[k].matched=false;
 			}
 			else if (p1<indices[j-1].end) {
-				strSplitted[k]["matched"]=true;
+				strSplitted[k].matched=true;
 			}
 			else {
 				if (j===indices.length) {
 					for (;k<strSplitted.length;k++) {
-						strSplitted[k]["matched"]=false;
+						strSplitted[k].matched=false;
 					}
 				}
 				p2=p1;
@@ -179,17 +179,17 @@ kipid.highlightStrFromIndices=function(strSplitted, indices) {
 		}
 	}
 	for (let i=0;i<strSplitted.length;) {
-		if (strSplitted[i]["matched"]) {
+		if (strSplitted[i].matched) {
 			res+='<span class="bold">';
-			while (i<strSplitted.length&&strSplitted[i]["matched"]) {
-				res+=kipid.escapeHTML(strSplitted[i]["char"]);
+			while (i<strSplitted.length&&strSplitted[i].matched) {
+				res+=kipid.escapeHTML(strSplitted[i].char);
 				i++;
 			}
 			res+='</span>';
 		}
 		else {
-			while (i<strSplitted.length&&!strSplitted[i]["matched"]) {
-				res+=kipid.escapeHTML(strSplitted[i]["char"]);
+			while (i<strSplitted.length&&!strSplitted[i].matched) {
+				res+=kipid.escapeHTML(strSplitted[i].char);
 				i++;
 			}
 		}
@@ -422,6 +422,34 @@ kipid.fsGoOn=function() {
 	}
 };
 $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", kipid.fsGoOn);
+
+//////////////////////////////////////////
+// Fuzzy search fullList
+//////////////////////////////////////////
+let $list=$(".docuK .p, .docuK li");
+for (let i=0;i<$list.length;i++) {
+	let $listI=$list.eq(i);
+	let $sec=$listI.parents(".docuK>.sec");
+	let txt="";
+	let html="";
+	if ($sec.exists()) {
+		let cat=$sec.find("h2:first-child .head-txt").text();
+		let $subsec=$listI.parents(".subsec");
+		if ($subsec.exists()) {
+			cat+="\n&nbsp; -- "+$subsec.find("h3:first-child .head-txt").text();
+			let $subsubsec=$listI.parents(".subsubsec");
+			if ($subsubsec.exists()) {
+				cat+="\n&nbsp; &nbsp; -- "+$subsubsec.find("h4:first-child .head-txt").text();
+			}
+		}
+		txt=cat.replace(/\n&nbsp; &nbsp;/g,"").replace(/\n&nbsp;/g,"")+"\n";
+		html='<div class="cat">'+cat.replace(/\n/g, "<br>")+'</div>';
+	}
+	txt+="* "+$listI.text();
+	html+=`<div class="li">* ${$listI.html()}</div>`;
+	kipid.fsGo.fullList[$list.length-1-i]={i:$list.length-1-i, txt:kipid.splitHangul(txt), html:html, $listI:$listI};
+}
+
 $fuzzy_search.trigger("keyup.fs");
 $button_Go=$(".button-Go");
 $button_log=$(".button-log");
