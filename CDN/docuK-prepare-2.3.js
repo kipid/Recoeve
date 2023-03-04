@@ -564,7 +564,7 @@ kipid.shareSNS=function (service) {
 
 // Delayed Loading. (Copied from user-page.html)
 kipid.delayPad=kipid.delayPad||1024;
-kipid.wait=kipid.wait||512;
+kipid.wait=kipid.wait||1024;
 kipid.$delayedElems=$("#nothing");
 kipid.previous=Date.now();
 $.fn.inView=function () {
@@ -667,15 +667,15 @@ kipid.docuKProcess=function docuK(kipid, $, docuKI, undefined) {
 <div class="shortkey">
 	Short Keys
 	<ul>
-		<li onclick="kipid.processShortKey({keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search)</li>
-		<li onclick="kipid.processShortKey({keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log</li>
-		<li onclick="kipid.processShortKey({keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section</li>
-		<li onclick="kipid.processShortKey({keyCode:'D'.charCodeAt(0)})"><span class="bold underline">D</span>: Previous Section</li>
-		<li onclick="kipid.processShortKey({keyCode:'T'.charCodeAt(0)})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents</li>
-		<li onclick="kipid.processShortKey({keyCode:'R'.charCodeAt(0)})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences</li>
-		<li onclick="kipid.processShortKey({keyCode:'L'.charCodeAt(0)})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists]</li>
-		<li onclick="kipid.processShortKey({keyCode:'Z'.charCodeAt(0)})"><span class="bold underline">Z</span>: Tistory comments</li>
-		<li onclick="kipid.processShortKey({keyCode:'X'.charCodeAt(0)})"><span class="bold underline">X</span>: DISQUS comments</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:71})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search)</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:75})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold underline">D</span>: Previous Section</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists]</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold underline">Z</span>: Tistory comments</li>
+		<li onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold underline">X</span>: DISQUS comments</li>
 	</ul>
 </div>`);
 	docuK.after(`<div class="copyright"><ul>
@@ -833,7 +833,7 @@ kipid.docuKProcess=function docuK(kipid, $, docuKI, undefined) {
 	for (i=0;i<refers.length;i++) {
 		referI=refers.eq(i);
 		if (referI.is("[class]")) {
-			refered=docuK.find("#"+referI.attr("class")+postId);
+			refered=docuK.find(`#${referI.attr("class")}${postId}`);
 			if (refered.exists()) {
 				citeN=(i+1).toString()+"-"+referI.attr("class")+postId;
 				refHtml=refered.html().trim().replace(/\bid\s*=/gi,'psudoId=');
