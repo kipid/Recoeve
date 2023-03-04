@@ -262,6 +262,8 @@ Exception: java.sql.SQLException: Operation not allowed after ResultSet closedja
 
 #### 오래 걸리는 작업이라 미뤄둔 것들.
 
+블로그 서비스도 개발해볼까? 일정앱 (Calendar app) 이랑 Memorizer 도? 좀 미루긴 하자 이런건...
+
 휴지통 개념을 만들까? 지우면 cat=trash 로 옮기고 서버에서 주기적으로 trash 안에 들어온지 30일이 지난 reco 들만 지우는 식으로 reco 를 보호하도록? 휴지통을 비우면 완전히 지워지는거고.
 
 Del 버튼 누를때, You cannot undo this. 경고 한번 더 띄울까? 추가로 Del button 위치 좀 바꿔야 할듯? Edit 이랑 붙어있어서 실수로 누르기 쉬운듯도... 그리고 빨간색 계열로 칠해놓을까나?
@@ -413,6 +415,22 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ##[.hiden] Done
 
 ### 정리하기 전
+
+Fuzzy search 할때 string 이 길어지면 기하 급수적으로 느려짐. 해결하자.
+
+URI 통일성 있게 만들기. <code class="prettyprint">/user/kipid/mode/multireco?cat=[Music/break]&lang=ko</code> 등으로.
+
+Cat 열면 최근 recos 바로 load 해놓기. <code class="prettyprint">$(".to-be-executed").eq(0).trigger("click")</code> 으로 해결.
+
+Cookie 에서 recoeve.net style 불러오기 저장하기.
+
+Fuzzy search 에서 preventDefault() 를 특정 key 에서만 막아야 할듯?
+
+multireco mode 일 때 description 특히 #related 보이게 만들기.
+
+Stick to the left top 일 때, 인스타 같이 길쭉한 애들이 overflow 나길래 .fixed 의 width 를 줄였음. 아님 div 를 한겹 덧씌워서 scroll 되도록 만들까나???
+
+Instagram iframe ratio height width 별로 다르게? 그냥 <code>height:4em; padding-bottom:150%</code> 로 하니까 어떤 size 에서든 잘 보이는듯.
 
 SSL HTTPS 인증서 (Certificate) 등록. <a target="_blank" href="https://www.sslcert.co.kr/products/Ads?g_matchtype=b&g_device=c&g_network=g&g_c=629748691824&g_keyword=ssl%20%EC%9D%B8%EC%A6%9D%EC%84%9C&g_adposition=&gclid=CjwKCAiAxvGfBhB-EiwAMPakqh3PjiZHSz5j2nz-R5tAxTcV-SvF3w3jHoqBdMo6nsd258vmKAKnshoCJw8QAvD_BwE">https://www.sslcert.co.kr/products/Ads?g_matchtype=b&g_device=c&g_network=g&g_c=629748691824&g_keyword=ssl%20%EC%9D%B8%EC%A6%9D%EC%84%9C&g_adposition=&gclid=CjwKCAiAxvGfBhB-EiwAMPakqh3PjiZHSz5j2nz-R5tAxTcV-SvF3w3jHoqBdMo6nsd258vmKAKnshoCJw8QAvD_BwE</a>
 
