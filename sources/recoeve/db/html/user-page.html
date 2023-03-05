@@ -330,7 +330,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #point-range-result {margin:1em; float:right; border:.15em solid white; padding:.1em .5em; vertical-align:top}
 	.bright #point-range-result {border-color:black}
 
-#numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 .numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 
 #my-id {margin-left:2.5em}
@@ -527,7 +526,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Japanese/일본어/日語/ja
 	<div class="button" id="show-only-unrecoed">[--Show only unrecoed on mine--]</div>
 	<div class="cBoth"></div>
 </div>
-<div class="side2" id="numbers-of-recos"></div>
+<div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="headPlay">
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">Toggle reco list play</div>
 	<div id="playlist-container">
@@ -550,6 +549,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Japanese/일본어/日語/ja
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
+<div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key">
 	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
@@ -662,7 +662,7 @@ $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
 $show_only_unrecoed=$("#show-only-unrecoed");
 
-$numbers_of_recos=$("#numbers-of-recos");
+$numbers_of_recos=$(".numbers-of-recos");
 
 $subCats=$("#subCats");
 $contents=$("#contents");
@@ -3118,7 +3118,6 @@ m.showRecosOnCat=function (elem, from) {
 	if (l<=0) {
 		let nOfRecos=`No reco in cat=${m.escapeHTML(m.currentCat)}.`;
 		$numbers_of_recos.html(nOfRecos);
-		strHTML=`<div class="numbers-of-recos">${nOfRecos}</div>`;
 		$contents.html(strHTML);
 		$reco_playing.html('');
 		$uri_rendered.html('');
@@ -3174,7 +3173,6 @@ m.showRecosOnCat=function (elem, from) {
 			}
 			let nOfRecos=`You have ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeHTML(m.currentCat)}.`;
 			$numbers_of_recos.html(nOfRecos);
-			strHTML+=`<div class="numbers-of-recos">${nOfRecos}</div>`;
 			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 			}
@@ -3434,7 +3432,7 @@ m.getAndShowRecosOnCat=function (cat) {
 	}
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
-	$contents.html("Loading recos in cat="+m.escapeHTML(cat)+"...");
+	$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
 	let catList=m.catList[cat];
 	if (catList) {
 		$catList.find(".cat").removeClass("selected");
@@ -3457,7 +3455,8 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				type:"POST", url:m.userPath+"/get-UriList", data:getUriListStr
 				, dataType:"text"
 			}).fail(function () {
-				$contents.html("get-UriList on "+m.escapeHTML(cat)+" has failed..");
+				$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+				$contents.html("");
 			}).done(function (resp) {
 				catUriList.down=true;
 				resp=m.strToJSON(resp);
@@ -3476,7 +3475,8 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 		}
 	}
 	else {
-		$contents.html("Category \""+m.escapeHTML(cat)+"\" does not exist.");
+		$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
+		$contents.html("");
 	}
 };
 m.refresh=function (cats, option, uri) {
