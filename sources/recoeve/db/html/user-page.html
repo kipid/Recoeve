@@ -2912,24 +2912,25 @@ m.val=function (val) {
 		coss.push(Math.cos(thetas[i]));
 		sins.push(Math.sin(thetas[i]));
 	}
-	let str=pad0+',0 ';
+	let str=`${pad0},0 `;
 	let yc=pad+r;
 	let xc=pad0+pad+r;
 	for (let k=0;k<5;k++,xc+=2*r+pad) {
-		str+=xc+',0 ';
+		str+=`${xc},0 `;
 		for (let i=0;i<10;i++) {
 			let rp=(i%2==0)?r:r0;
-			str+=(xc+rp*coss[i]).toFixed(1)+','+(yc+rp*sins[i]).toFixed(1)+' ';
+			str+=`${(xc+rp*coss[i]).toFixed(1)},${(yc+rp*sins[i]).toFixed(1)} `;
 		}
-		str+=xc+','+pad+' '+xc+',0 ';
+		str+=`${xc},${pad} ${xc},0 `;
 	}
 	xc-=r;
 	yc+=r*sins[4]+pad;
-	str+=xc+',0 '+xc+','+yc.toFixed(1)+' '+pad0+','+yc.toFixed(1);
+	str+=`${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
+	m["5stars-width"]=xc-pad0-2;
 	m["5stars"]=function (val) {
 		if (val<0) { val=0; }
 		else if (val>1) { val=1; }
-		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${((xc-pad0-2)*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
+		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${(m["5stars-width"]*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
 	}
 }
 
