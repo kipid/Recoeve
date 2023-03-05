@@ -491,6 +491,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="javascript-disable">
 	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
 </div><!-- div#javascript-disable -->
+<div class="side2" style="padding:.5em"></div>
 <div class="side2" id="change-style">
 	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset style</button></form>
 	<form><input id="button-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
@@ -1707,15 +1708,14 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 };
 m.fuzzySearch=function (ptnSH, fs) {
 	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
-		return;
+		return fs[0];
 	}
-	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
+	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)!==-1) {
 		fs[1]=fs[0];
 	}
-	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
+	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)!==-1) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
-			fs[0]=fs[1];
-			return;
+			return fs[1];
 		}
 	}
 	else {
@@ -1745,10 +1745,16 @@ m.fuzzySearch=function (ptnSH, fs) {
 	fs[0]=[];
 	fs[0].ptnSH=ptnSH;
 	let regExs=m.arrayRegExs(ptnSH);
+	let regExsReversed=[];
+	for (let i=0;i<regExs.length;i++) {
+		regExsReversed[i]=regExs[regExs.length-1-i];
+	}
 	for (let i=0;i<list.length;i++) {
+		let listI=list[i];
 	if (regExs.length>0) {
-		let txt=list[i].txt;
+		let txt=listI.txt;
 		let txtS=txt.splitted;
+		let txtSReversed=txtS.split("").reverse().join("");
 		regExs[0].lastIndex=0;
 		let exec=regExs[0].exec(txtS);
 		let matched=(exec!==null);
@@ -1764,46 +1770,80 @@ m.fuzzySearch=function (ptnSH, fs) {
 				indices[j]={start:exec.index, end:regExs[j].lastIndex};
 			}
 		}
+		let maxMatchScore=0;
 		if (matched) {
-			let maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+			maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 			let indicesMMS=[]; // indices of max match score
 			for (let p=0;p<indices.length;p++) {
 				indicesMMS[p]=indices[p]; // hard copy of indices
 			}
-			for (let k=indices.length-2;k>=0;) {
-				regExs[k].lastIndex=indices[k].start+1;
-				exec=regExs[k].exec(txtS);
-				matched=(exec!==null);
-				if (matched) {
-					indices[k]={start:exec.index, end:regExs[k].lastIndex};
-				}
-				for (let j=k+1;matched&&(j<regExs.length);j++) {
-					regExs[j].lastIndex=regExs[j-1].lastIndex;
-					exec=regExs[j].exec(txtS);
+			if (txt.length<255) {
+				for (let k=indices.length-2;k>=0;) {
+					regExs[k].lastIndex=indices[k].start+1;
+					exec=regExs[k].exec(txtS);
 					matched=(exec!==null);
 					if (matched) {
-						indices[j]={start:exec.index, end:regExs[j].lastIndex};
+						indices[k]={start:exec.index, end:regExs[k].lastIndex};
+					}
+					for (let j=k+1;matched&&(j<regExs.length);j++) {
+						regExs[j].lastIndex=regExs[j-1].lastIndex;
+						exec=regExs[j].exec(txtS);
+						matched=(exec!==null);
+						if (matched) {
+							indices[j]={start:exec.index, end:regExs[j].lastIndex};
+						}
+					}
+					if (matched) {
+						let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+						if (matchScore>maxMatchScore) {
+							maxMatchScore=matchScore;
+							indicesMMS=[];
+							for (let p=0;p<indices.length;p++) {
+								indicesMMS[p]=indices[p]; // hard copy of indices
+							}
+						}
+						k=indices.length-2;
+					}
+					else {
+						k--;
+					}
+				}
+			}
+			else {
+				// Reverse match and compare only two results.
+				regExsReversed[0].lastIndex=0;
+				exec=regExsReversed[0].exec(txtSReversed);
+				matched=(exec!==null);
+				let indicesReversed=[];
+				if (matched) {
+					indicesReversed[0]={start:exec.index, end:regExsReversed[0].lastIndex};
+				}
+				for (let j=1;matched&&(j<regExsReversed.length);j++) {
+					regExsReversed[j].lastIndex=regExsReversed[j-1].lastIndex;
+					exec=regExsReversed[j].exec(txtSReversed);
+					matched=(exec!==null);
+					if (matched) {
+						indicesReversed[j]={start:exec.index, end:regExsReversed[j].lastIndex};
 					}
 				}
 				if (matched) {
+					indices=[];
+					for (let j=0;j<indicesReversed.length;j++) {
+						let iR=indicesReversed[indicesReversed.length-1-j];
+						indices[j]={start:(txtSReversed.length-iR.end), end:(txtSReversed.length-iR.start)};
+					}
 					let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 					if (matchScore>maxMatchScore) {
 						maxMatchScore=matchScore;
-						for (let p=0;p<indices.length;p++) {
-							indicesMMS[p]=indices[p]; // hard copy of indices
-						}
+						indicesMMS=indices;
 					}
-					k=indices.length-2;
-				}
-				else {
-					k--;
 				}
 			}
-			fs[0].push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
+			fs[0].push({i:listI.i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
 		}
 	}
 	else {
-		fs[0].push({i:list[i].i, maxMatchScore:0});
+		fs[0].push({i:listI.i, maxMatchScore:0});
 	}}
 	let sorted=fs[0].sorted=[];
 	for (let i=0;i<fs[0].length;i++) {
@@ -1819,6 +1859,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 		sorted[j]=temp;
 	}
+	return fs[0];
 };
 
 /* CatList */
@@ -2195,11 +2236,11 @@ m.doFSCat=function (fs, $input) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	let fsCatSH=m.splitHangul(listOfCats[fs.k]);
-	m.fuzzySearch(fsCatSH, fs);
+	let fsCatSH=m.splitHangul(listOfCats[fs.k].trim());
+	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
-	for (let i=0;i<fs[0].length;i++) {
-		let fsSortedI=fs[0][fs[0].sorted[i]];
+	for (let i=0;i<res.length;i++) {
+		let fsSortedI=res[res.sorted[i]];
 		str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 	}
 	fs.$fsl.html(str);
@@ -4411,10 +4452,9 @@ else {
 	}
 }};
 m.doFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text());
+	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		m.fuzzySearch(fsPtnSH, fs);
-		let res=fs[0];
+		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
 		let str="";
 		for (let i=0;i<sorted.length;i++) {
@@ -4465,7 +4505,7 @@ m.playLi=function (e, elem, k, fs) {
 	}
 };
 m.doFSToRs=function (fs, shuffle) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text());
+	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
 	if (shuffle) {
 		let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
 		let l=fs.fullList.length;
@@ -4483,8 +4523,7 @@ m.doFSToRs=function (fs, shuffle) {
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
 	}
-	m.fuzzySearch(fsPtnSH, fs);
-	let res=fs[0];
+	let res=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=res.sorted;
 	let str="";
 	for (let i=0;i<sorted.length;i++) {
