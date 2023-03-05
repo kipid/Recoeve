@@ -140,6 +140,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #sidebar-toggle {width:2em; height:2em; background:black; border:white 2px solid}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
+.bright #user-noti {color:rgb(50,50,190)}
 
 #catList {margin-bottom:1em}
 #catList .cat {border:1px solid transparent; margin-bottom:.15em}
@@ -3511,7 +3512,9 @@ m.refresh=function (cats, option, uri) {
 			let fs=m.fsGo;
 			fs.fullList[uri]={i:fs.fullList.length, r:r, $listI:$newReco, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]); // or .splice(0, item)?
-			fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			if (fs.shuffled) {
+				fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			}
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("input.fs");
@@ -3519,7 +3522,9 @@ m.refresh=function (cats, option, uri) {
 			fs=m.fsToRs;
 			fs.fullList[uri]={i:fs.fullList.length, r:r, $listI:$newReco, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
-			fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			if (fs.shuffled) {
+				fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+			}
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("input.fs");
