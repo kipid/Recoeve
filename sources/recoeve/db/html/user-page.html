@@ -550,7 +550,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Japanese/일본어/日語/ja
 </div>
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
-	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in">[--Log in--]</a>
+	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
 	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
 	<div class="button" id="button-multireco-mode" onclick="m.show_Multireco_Mode(event)">[--Multireco mode--]</div>
@@ -843,6 +843,16 @@ else {
 	$my_id.hide();
 	$button_new_reco.remove();
 }
+m.a_log_in=function (e, elem) {
+	let href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
+	if (e&&e.which===2) {
+		$a_log_in.attr("href", href);
+		return true;
+	} else {
+		window.location.href=href;
+		return false;
+	}
+};
 
 m.see_Neighbors=function () {
 	if ($button_neighbors_page.hasClass("enabled")) {
@@ -870,7 +880,6 @@ m.show_Multireco_Mode=function (e) {
 			$multireco_input_cats[0].value=m.currentCat;
 		}
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(m.currentCat, "multireco"))); // TODO: onclick 이벤트로 처리 되도록 만들자.
 		if (m.myPage) {
 			m.showRecosOnCat();
 		}
@@ -3578,7 +3587,6 @@ m.refresh=function (cats, option, uri) {
 		m.getUriListAndShowRecosOnCat(c[k]);
 		let path=m.pathOfCat(c[k]);
 		window.history.pushState({cat:c[k]}, c[k], path);
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(path));
 	}
 	else {
 		switch (option) {
@@ -3704,7 +3712,6 @@ m.openCat=function (cat, e) {
 		m.fsToRs.shuffled=null;
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 		return false;
 	}
 };
@@ -3719,7 +3726,6 @@ window.onpopstate=function (e) {
 		let cat=e.state.cat;
 		m.getUriListAndShowRecosOnCat(cat);
 		$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	}
 };
 m.getSearchVars=function (searchStr) {
@@ -4675,7 +4681,7 @@ m.changeLang=function (lang, e, elem) {
 		return false;
 	}
 };
-let dataLang=m.strToJSON( $data_lang.html().trim() );
+let dataLang=m.strToJSON($data_lang.html().trim());
 let htmlLang=`<div>`;
 for (let i=0;i<dataLang[0].length;i++) {
 	htmlLang+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
@@ -4696,7 +4702,6 @@ if (vars.cat!==undefined) {
 	if (m.recoMode==="") {
 		m.getUriListAndShowRecosOnCat(cat);
 		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
-		$a_log_in.attr("href", "/account/log-in?goto="+encodeURIComponent(m.pathOfCat(cat)));
 	}
 	else if (m.recoMode==="multireco") {
 		m.getUriListAndShowRecosOnCat(cat);
