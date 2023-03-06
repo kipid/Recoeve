@@ -278,6 +278,8 @@ Del 버튼 누를때, You cannot undo this. 경고 한번 더 띄울까? 추가�
 
 #### 정말 필요한지 안한지 헷갈려서 보류한 것들.
 
+이미지 URI 이후 해쉬값까지 가져오기? (페이스북/구글이 불펌을 막는 방법인듯. 어차피 hash 값도 계속 바뀔거 같아서 의미가 없을듯.)
+
 pushState 에 scrollTop 위치도 기억해놓자?<br>
 : 이거 delayed-element 가 있어서... window.scrollTop 위치를 기억시켜놓으면 안되고... 해당 reco 위치를 reference 로 넣어놔야 함;;;; 복잡시러울지도??? =ㅂ=;; 두개의 uri 를 저장시켜놓고? uri1, uri2, relative-position 이런식으로? 중간중간 points range 가 바뀔수도 있긴한데... 이 경우에는? OutRange 로 사라졌을 경우, 가장 가까운 쪽 reco 로 이동? 아니면 scrollToTop?<br>
 : order 가 바뀔때도 있을듯? 시간순 정렬, points 순 정렬 이런것도 있을거라서...
@@ -415,6 +417,10 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ##[.hiden] Done
 
 ### 정리하기 전
+
+a_log_in onclick return 으로 처리하기.
+
+Cat 의 UriList 의 마지막 reco of inRange/shown 가 YouTube URI 라면 재생대기 (cue), YouTube 가 아니라면 그 reco 만 보여주고 stop.
 
 sidebar-dragger 안가리게 side2 쪽에 padding-left:1em 정도 띄웠음.
 
