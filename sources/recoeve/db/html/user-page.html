@@ -550,7 +550,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Japanese/일본어/日語/ja
 </div>
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
-	head : <a href="/account/log-out">[--Log out--]</a> / <a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
+	<a id="a-log-out" href="/account/log-out">[--Log out--]</a>
+	<a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
 	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
 	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
 	<div class="button" id="button-multireco-mode" onclick="m.show_Multireco_Mode(event)">[--Multireco mode--]</div>
@@ -670,6 +671,7 @@ $button_back=$("#button-back");
 $button_close=$("#button-close");
 
 $a_log_in=$("#a-log-in");
+$a_log_out=$("#a-log-out");
 
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
@@ -842,6 +844,12 @@ if (m.myIndex) {
 else {
 	$my_id.hide();
 	$button_new_reco.remove();
+}
+if (m.myIndex) {
+	$a_log_in.hide();
+}
+else {
+	$a_log_out.hide();
 }
 m.a_log_in=function (e, elem) {
 	let href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
