@@ -384,9 +384,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 	.bright #foot {border-color:black}
 
-#floating-key {position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
-#floating-key div.button {text-align:center; margin:0; width:90px; height:2.3em}
-#toggle-floating-key {position:fixed; right:.5em; bottom:.5em; width:auto; height:2.2em; margin:0}
+#floating-key {display:flex; flex-wrap:wrap; position:fixed; right:.5em; bottom:2.7em; width:6em; height:auto}
+#floating-key div.button {text-align:center; margin:0; width:90px; height:auto}
+#toggle-floating-key {position:fixed; right:.5em; bottom:.5em; width:auto; height:auto; margin:0}
 
 @media all and (min-width:600px) {
 	.multireco .reco {width:33%}
