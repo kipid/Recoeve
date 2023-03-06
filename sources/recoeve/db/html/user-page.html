@@ -435,13 +435,51 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div>
 </div><!-- div#sidebar -->
 <div id="fuzzy-search-container" style="display:none">
+	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
+		<line x1="80%" y1="40%" x2="90%" y2="50%"></line>
+		<line x1="80%" y1="60%" x2="90%" y2="50%"></line>
+		<line x1="50%" y1="10%" x2="50%" y2="90%"></line>
+		<line x1="50%" y1="10%" x2="40%" y2="20%"></line>
+		<line x1="50%" y1="10%" x2="60%" y2="20%"></line>
+		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
+		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
+	</g></svg></div>
 	<div id="fuzzy-search" contenteditable="true"></div>
 	<div id="fuzzy-search-list"></div>
+	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
+		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
+		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
+		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
+		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
+	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:71})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
 <div id="table-of-recos-container" style="display:none">
+	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
+		<line x1="80%" y1="40%" x2="90%" y2="50%"></line>
+		<line x1="80%" y1="60%" x2="90%" y2="50%"></line>
+		<line x1="50%" y1="10%" x2="50%" y2="90%"></line>
+		<line x1="50%" y1="10%" x2="40%" y2="20%"></line>
+		<line x1="50%" y1="10%" x2="60%" y2="20%"></line>
+		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
+		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
+	</g></svg></div>
 	<div id="table-of-recos" contenteditable="true"></div>
 	<div id="table-of-recos-list"></div>
+	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
+		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
+		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
+		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
+		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
+	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:84})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
@@ -636,10 +674,12 @@ $a_log_in=$("#a-log-in");
 
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
+$fuzzy_search_container_move=$("#fuzzy-search-container>.move");
 $fuzzy_search=$("#fuzzy-search");
 $fuzzy_search_list=$("#fuzzy-search-list");
 
 $table_of_recos_container=$("#table-of-recos-container");
+$table_of_recos_container_move=$("#table-of-recos-container>.move");
 $table_of_recos=$("#table-of-recos");
 $table_of_recos_list=$("#table-of-recos-list");
 $button_Go=$(".button-Go");
@@ -1566,6 +1606,49 @@ m.rmb_me=function (callback, args) {
 };
 
 /* Fuzzy search */
+// Fuzzy search, Table of Recos move and reset
+$fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($fuzzy_search_container_move.offset().left)+$window.scrollLeft();
+	let relativeY=touch0.clientY-Math.round($fuzzy_search_container_move.offset().top)+$window.scrollTop();
+	$html.on("mousemove.move touchmove.move", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		$fuzzy_search_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$html.on("mouseup.move touchend.move", function () {
+			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+		});
+	});
+});
+$("#fuzzy-search-container>.reset").on("click.reset", function (e) {
+	$fuzzy_search.html("");
+	$fuzzy_search.focus();
+	$fuzzy_search.trigger("input.fs");
+});
+
+$table_of_recos_container_move.on("mousedown.move touchstart.move", function (e) {
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($table_of_recos_container_move.offset().left)+$window.scrollLeft();
+	let relativeY=touch0.clientY-Math.round($table_of_recos_container_move.offset().top)+$window.scrollTop();
+	$html.on("mousemove.move touchmove.move", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		$table_of_recos_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$html.on("mouseup.move touchend.move", function () {
+			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+		});
+	});
+});
+$("#table-of-recos-container>.reset").on("click.reset", function (e) {
+	$table_of_recos.html("");
+	$table_of_recos.focus();
+	$table_of_recos.trigger("input.fs");
+});
+
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
 // KE : Korean Expanded
