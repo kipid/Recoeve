@@ -23,7 +23,7 @@ public class FileMap {
 			// , "www.recoeve.net"
 			// , "127.0.0.1"
 			// , "172.30.1.18"
-			, "kipid.tistory.com"
+			, "kipid.tistory.com", "tistory1.daumcdn.net"
 		};
 	
 	private static final String filePath="C:/Recoeve/CDN/";
