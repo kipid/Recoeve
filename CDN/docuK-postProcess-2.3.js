@@ -5,7 +5,7 @@ for (let i=0;i<$SEE.length;i++) {
 	let $SEEi=$SEE.eq(i);
 	let SEEiHTML=$SEEi.html().trim();
 	$SEEi.html("");
-	$SEEi.after(kipid.renderToDocuK( SEEiHTML ));
+	$SEEi.after(kipid.renderToDocuK(SEEiHTML));
 }
 $("pre.prettyprint.scrollable").addClass("linenums");
 
@@ -58,11 +58,6 @@ $inRefs.on("mouseenter.delayedLoad", function () {
 });
 
 // Fuzzy Search
-$out_focus=$("#out-focus");
-$fuzzy_search_container=$("#fuzzy-search-container");
-$fuzzy_search=$("#fuzzy-search");
-$fuzzy_search_list=$("#fuzzy-search-list");
-
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
 // KE : Korean Expanded
@@ -562,11 +557,10 @@ $(document).ready(function () {
 	}, 2000);
 
 	// Disqus js script
-	kipid.disqus_js_id='disqus-js';
-	if (!$(`#${kipid.disqus_js_id}`)) {
-		let $disqus_js=$(`<script id="${kipid.disqus_js_id}" src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
-		$headOrBody.append($disqus_js);
-	}
+	let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
+	$headOrBody.append($disqus_js);
+	kipid.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
+
 	// Kakao js script (from kakao.com CDN) is added.
 	kipid.kakao_js_id='kakao-jssdk';
 	if (!$(`#${kipid.kakao_js_id}`)) {
@@ -754,7 +748,7 @@ window.MathJax={
 				break;
 			case 90: // Z=90
 				if ($("div.comments").exists()) $window.scrollTop($("div.comments").offset().top);
-				kipid.HandleAhrefInComment();
+				// kipid.HandleAhrefInComment();
 				break;
 			case 88: // X=88
 				if ($("#disqus_thread").exists()) $window.scrollTop($("#disqus_thread").offset().top);
