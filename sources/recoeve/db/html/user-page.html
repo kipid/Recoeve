@@ -4744,11 +4744,20 @@ m.shareSNS=function (elem, service) {
 	let desc=$reco.find(".desc").text();
 	let open="";
 	switch (service) {
+		case 'link':
+			let written=`${uri}\n${title}`;
+			navigator.clipboard.writeText(written).then(function () {
+				alert(`The following is copied!\n"${written}"`);
+			}
+			, function (err) {
+				alert(`Could not copy text: ${err}`);
+			});
+			return;
 		case 'twitter':
-			open="https://twitter.com/intent/tweet"+"?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(uri);
+			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(uri);
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php"+"?u="+encodeURIComponent(uri);
+			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(uri);
 			break;
 		case 'kakao':
 			Kakao.Share.sendDefault({
