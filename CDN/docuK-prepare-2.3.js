@@ -1,5 +1,6 @@
 (function (kipid, $, undefined) {
 $window=$(window);
+$document=$(document);
 $html=$("html");
 
 $.fn.exists=function () { return this.length!==0; };
@@ -595,21 +596,32 @@ $window.on("resize.deviceInfo", function () {
 
 // Share a link through SNS
 kipid.shareSNS=function (service) {
-	let title=encodeURIComponent( $("title").html() );
-	let url=encodeURIComponent(window.location.href);
+	let title=$("title").eq(0).html();
+	let url=window.location.href;
 	let open="";
 	switch (service) {
+		case 'link':
+			let written=`${url}\n${title}`;
+			navigator.clipboard.writeText(written).then(function () {
+				alert(`The following is copied!\n"${written}"`);
+			}
+			, function (err) {
+				alert(`Could not copy text: ${err}`);
+			});
+			return;
 		case 'twitter':
-			open="https://twitter.com/intent/tweet"+"?via=kipacti"+"&text="+title+"&url="+url;
+			open="https://twitter.com/intent/tweet?via=kipacti&text="+encodeURIComponent(title)+"&url="+encodeURIComponent(url);
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php"+"?u="+url;
+			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
 			break;
 		case 'recoeve':
-			open="https://recoeve.net/reco?"+"uri="+url+"&title="+title;
+			open="https://recoeve.net/reco?uri="+encodeURIComponent(url)+"&title="+encodeURIComponent(title);
 			break;
 		case 'kakao':
 			kipid.popUpKakao();
+			return;
+		default:
 			return;
 	}
 	window.open(open);
@@ -663,7 +675,7 @@ kipid.delayedLoadAll=function () {
 		kipid.$delayedElems.each(function () {
 			if ($(this).delayedLoad()) {
 				kipid.$delayedElems=kipid.$delayedElems.not(this);
-				kipid.logPrint(`<br><span class="emph">${this} at vertical position of ${(100*$(this).offset().top/$(document).height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${kipid.$delayedElems.length} of $delayedElems are remained.<br>`);
+				kipid.logPrint(`<br><span class="emph">${this} at vertical position of ${(100*$(this).offset().top/$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${kipid.$delayedElems.length} of $delayedElems are remained.<br>`);
 			}
 		});
 		$window.on("scroll.delayedLoad", kipid.delayedLoadByScroll);
@@ -751,9 +763,9 @@ kipid.docuKProcess=function docuK(kipid, $, docuKI, undefined) {
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
 	</div>
-<div class="SNS-top"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="kipid.shareSNS('twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="kipid.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="kipid.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="kipid.shareSNS('kakao')"></div>`
+<div class="SNS-top"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="kipid.shareSNS('link')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="kipid.shareSNS('twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="kipid.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="kipid.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="kipid.shareSNS('kakao')"></div>`
 	);
-	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="kipid.shareSNS('twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="kipid.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="kipid.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="kipid.shareSNS('kakao')"></div>`);
+	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="kipid.shareSNS('link')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="kipid.shareSNS('twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="kipid.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="kipid.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="kipid.shareSNS('kakao')"></div>`);
 
 	// Scrollable switching of 'pre.prettyprint'.
 	docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="kipid.toggleHeight(this)"></div>');
