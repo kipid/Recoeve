@@ -46,7 +46,7 @@ $.ajax({
 	// wait until saving session/rmb cookies.
 	setTimeout(function () {
 		if (resp==="Rmbd") {
-			if (m.searchVars.goto!==undefined) {
+			if (m.searchVars?.goto) {
 				window.location.href=m.searchVars.goto.val;
 			} else {
 				window.location.pathname="/";
