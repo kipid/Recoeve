@@ -165,7 +165,7 @@ public void start() {
 				System.out.println("iter: "+iter);
 				break;
 			case "reco": // e.g. path=/reco
-				if (sessionPassed) {
+				if (cookie.get("rmbdI")!=null) {
 					req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
 					System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
