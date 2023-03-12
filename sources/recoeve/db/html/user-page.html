@@ -376,8 +376,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC.fixed {position:fixed; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
 	.bright .rC.fixed {background:white; border-color:black}
 .rC>.rSC {box-sizing:content-box; position:relative; height:4em; padding-bottom:63%}
-.rC>.rSC.soundcloud {padding-bottom:20%}
-.rC>.rSC.instagram {padding-bottom:150%}
+.rC.soundcloud>.rSC {padding-bottom:20%}
+.rC.instagram>.rSC {padding-bottom:150%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .pc {text-align:center; font-size:9px !important} /* position change */
 
@@ -399,7 +399,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#change-style {margin-top:0}
 	#my-id {margin-left:0}
 	.side2 {padding:.5em !important}
-	.rC.fixed {width:360px; border-right:.15em solid white}
+	.rC.fixed {width:600px; border-right:.15em solid white}
+	.rC.instagram.fixed {width:360px}
 	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
@@ -508,7 +509,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
-		<div class="button" id="button-del" tabindex="11">[--Del--]</div>
+		<div class="button" id="button-del" tabindex="11" style="background:#ff7600">[--Del--]</div>
 		<div class="button left" id="button-close" tabindex="9">[--Close--]</div>
 		<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
 		<div class="cBoth"></div>
@@ -2660,7 +2661,7 @@ m.togglePosition=function (elem) {
 	}
 };
 m.rC=function (elemStr, option) {
-	return `<div class="rC"><div class="rSC${(option?` ${option}`:'')}">${elemStr}</div><div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`;
+	return `<div class="rC${(option?` ${option}`:'')}"><div class="rSC">${elemStr}</div><div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`;
 };
 m.uriRendering=function (uri, toA) {
 	if (uri&&uri.constructor===String) {
