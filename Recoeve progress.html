@@ -14,6 +14,11 @@
 
 진행사항을 잡다하게 적자. 다른 할 일은 Works to do 참조 <cite class="ref-works"><a target="_blank" href="https://kipid.tistory.com/entry/Works-to-do">kipid's blog :: Works to do</a></cite>.
 
+<figure><div class="fig">
+	<div class="caption">츄츄스타그램 recoeve.net 에 정리한 것 <cite class="ref-chuchu"><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 of kipid's recoeve.net</a></cite>.</div>
+	<img delayed-src="https://blog.kakaocdn.net/dn/d1xgrD/btr3eW1UBs8/I6Pdcej4WMJT7KUcukP1B0/img.png">
+</div></figure>
+
 
 
 ## TOC
@@ -23,11 +28,12 @@
 ## PH
 
 <ul>
-	<li>2022-07-12 : Ver. 0.5.3.</li>
-	<li>2021-04-19 : Ver. 0.3.0.</li>
-	<li>2017-07-04 : Ver. 0.1.11.</li>
-	<li>2015-02-07 : Ver. 0.1.10.</li>
-	<li>2014-08-29 : Log-in page.</li>
+<li>2023-03-12: Ver. 0.7.5.</li>
+<li>2022-07-12: Ver. 0.5.3.</li>
+<li>2021-04-19: Ver. 0.3.0.</li>
+<li>2017-07-04: Ver. 0.1.11.</li>
+<li>2015-02-07: Ver. 0.1.10.</li>
+<li>2014-08-29: Log-in page.</li>
 </ul>
 
 
@@ -36,13 +42,72 @@
 
 ### 정리하기 전
 
-path=<code>/changeOrders/UriList</code> 도 구현. UriList 시간순으로 sort, 점수순으로 sort, 알파벳 순으로 sort 등 구현해주고. 이 sorted 된 UriList 를 저장할 것인지 놔둘 것인지 user 가 결정하도록.
+fixed position 으로 갈 때, instagram 만 width 줄이고 나머진 width 키우기.
 
-Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 만들어 주기.
+추천해주기. Neighbor 통한 추천.
+
+hide recoed ones.
+
+copy to clipboard, ctrl+c. and 카카오톡 공유 버튼 추가하기 (언어별로 한국어는 카카오톡, 일본은 라인, 중국은 WeChat? 등으로 바꿔줘야 할듯도?) 미국은 뭐 쓰지?
+
+아래에 있는 레코 올릴때, 삭제 후 리레코 하면 되는데... 이게 순조롭게 안됨. Edit Del 버튼으로 남아있고 ToR 에서도 위치 안바뀌고 등등.
+
+Recoeve.net 소개하는 포스팅에서 gif 들 활용하기. 사용/활용 설명서 개념으로...
+
+로그인 암호 바꾼후 "password is changed." 출력 후 log-in 페이지로 redirect.
+
+기존 reco edit/del 할때, URI 자동으로 바꿔주는 것 때문에 edit/del 이 사라지고 reco 버튼으로 뜸. 고치자.
+
+Reco 작성하다가 로그인 문제 생기거나 rmb 가 안되었을때, 작성 중이었던 URI, title, description, comment 등 쿠키에 저장했다가 다시 New reco 했을 때 채워주기. (Grip review 작성시 불편했던 점에서 아이디어 얻었음.)
+
+list play 에서(만) 유튜브 URI 일때, description 이나 comment 에 00:00 같은거 있으면 그 시간대로 jump 되도록 만들자. iframe 은 seekTo 안통하니까...
+
+Reco to mine, Toggle lyrics 등 번역해주기. Introducing 어쩌구 한글로도 작성하기.
+
+그리고 현재 페이지 바로 공유할 수 있게 SNS share 버튼 fixed 로 어딘가에 붙여놓고...
+
+인스타 다이렉트 메세지 보내는것도 추가.
+
+아래에서 부터 drag 해서 올라올 때, scrollTop 적절하게 해주기. (inView 가 1/3 위쪽에서 trigger 된 거라면, scrollHeight 전과 load 후 비교해서 scrollTop(원래 scrollTop + load 후 - 전) 해주기.)
+
+Reco list play 할 때, 특정 조건 (해당 reco detail 내의 scroll 위치라면) 에서는 scrollTop 으로 적당하게 scrollTop 해주고, lyrics 펴서 주기. scrollTop 할때 play position 따라서 다르게 동작하도록.
+
+Remember 할 때, cookie 이용하는데 ip 주소도 저장해놓고, ip 가 바뀌면 보안상 이유로 rmbd 가 안되었다고 알려주기? 아니다. ip 바뀌어도 로그인은 유지시켜 주는데... 이메일로 알려주자 ip 가 바뀌었다고 rmbd 할때 (중간에 누군가 해킹을 한 것 일수도 있습니다. ip 가 1.3.4.2 에서 112.23.2.1 로 바뀌었습니다. 이동 중이시라면 가능성이 있는 일이고)
+
+ads.txt 는 뭐 쏴줘야 하는거지? 어디에 쓰이는거야? 요청이 들어왔었음.
+
+이웃들 보다 당신의 점수가 박하네요. 이웃들 보다 당신의 점수가 후하네요. 같은 것도 알려주자. Reco 추천만 주는게 아니라. Slow/Sincere/Sexy communication 이 되도록.
+
+It is recommended that the compiler be upgraded.
+자바 compiler upgrade 필요함. <code>C:\Recoeve\classes\recoeve\http\NaverMail.class: major version 62 is newer than 61, the highest major version supported by this compiler.</code>
+
+IP statics 이용해서 DDOS 공격 막아놓기.
+
+Go 는 이제까지 load 한 모든 userRecos 에서 검색하도록 하자. Point range 도 거르지 말고 동작하게. txt 는 "cat :: title" 형태로 fs 검색.<br>
+Go 로 특정 reco on cat=... and URI=Some... 으로 갈 때 window.location.href=pathName?cat=...#SomeURIEncoded 같은 형태로 해당 reco 로 바로 갈수 있도록 디자인. pushState 이용. Cat 이 바뀌어야 되는 경우도 잘 동작하도록.<br>
+T 는 현재 cat (m.currentCat) 만 검색. Point range 도 걸러서.
+
+카톡으로 공유하기 할때 카카오 개발자 설정에 등록 안된 uri 는 링크가 안걸림. 두가지 옵션으로 해결하자. recoeve.net 이랑 YouTube 는 개발자 설정에 등록해서 그대로 공유해주고 다른 uri 들은 ?cat=...#uriEncoded 으로 연결해서 해당 uri 로 go 되도록. 유튜브도 가사 같이 봐야 하니까 recoeve.net 쪽으로 유도할까나?
+
+/recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id 등 나열. 말 그대로 statistics of reco on uri=...
+
+UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point/점수 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯? 구글 스프레드시트 참고.) 정렬 후 Save this order 도 있어야 할듯? path=<code>/changeOrders/UriList</code> 로 구현.<br>
+UriList 순서 바꿀때 Set of URIs 가 같은지 한번은 체크 해야함.<br>
+중간 몇개만 바꿀때는 substring(start, end) 잡아서 이 내에서만 Set of URIs 체크하고 이 부분만 순서 바꿔서 저장해주는 방식이 되어도 됨. (그런데 이런 경우가 거의 없을거라서... 그냥 넘어가고 다음에 생각하는게 좋을듯?)
+
+Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 만들어 주기. (현재는 #related 아래 있을때만 이렇게 처리함.)
+
+Multireco 일때 별 드래그 하면 Your point is changed. or You are not logged-in. 등의 메세지 언어별로 쏴주기.
+
+multireco mode 변환할 때 새 reco 들 안보이는거 해결하기.
+
+검색 google 에서 "site:recoeve.net/user/kipid 검색어" 식으로 검색 대신 해주는거 input 만들어 주기.
+
+New reco 이거나 Edit/Delete reco 일 때, ToRs/Go update 바로 해주기.
 
 아래 에러 해결하자.
 
-```
+```[.scrollable]
 Exception: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
 java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
         at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
@@ -119,44 +184,15 @@ rmbdToken : 3d2739646c6091af85ac898d5556a7ba8ca7e0ad319e596f634e62ceeec56b7e
 Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)
 ```/
 
-추천해주기. Neighbor 통한 추천.
-
-/recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id.
-
-cat without reco 열때 뭔가 새로고침이 되는데... 해결합시다. (뭐 때문인지 잘 모르겄네 ㅡㅡ...)
-
-desc : bring, copy user_I 뭐 이런 명령어 만들어서 다른 사람 description 가져오기. (이거 생각보다 까다롭네. 유저가 이해하기 쉽도록 동작을 해야 하는데...)<br>
-desc statistics 를 만들어서 처리할까?
-
-UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯?) 정렬 후 Save this order 도 있어야 할듯.
-
-Go 는 모든 SubCats 까지 검색하도록. (txt 는 "cat :: title" 형태로 fs 검색)<br>
-: G 키는 down 받은 reco 의 cats title 로 text 만들어놓고 cat 이동도 되도록 만들어 놓자. T 키는 현재 cat reco 들 이동하는 지금의 Go 구현으로 하고...
-T 는 해당 cat 만 검색. (range 를 거를까 말까?)
-
-desc 작성할때도 미리보기 보여주자? (이거 key value 로 나눠서 업데이트 된 부분만 refresh 하도록.)
-
-
-
-
-
-Recos 가져올때 갯수제한을 200 정도로 잡을까? 너무 한꺼번에 엄청 많이 요청하면 안좋긴 할테니... 그 이후꺼 가져올때나 검색할땐 버튼 누르도록. (검색이 javascript 단에서 할때가 있고, server 단에서 할때가 있고 할듯?)<br>
-: uri title 만 가져오고 나중에 전체 data 를 가져오는 방법도 있음.
-
-
 edit 이후에 $reco.replaceWith($newReco) 가 되어서 그런지, G/T 에서 scroll to reco 가 안먹힘.
 
-Related URIs 를 잘 처리해줘야 할거 같음.
 
-Reco edit 한 다음 delayed elems 가 update 가 제대로 안되는듯?
 
 새로운 reco 가 들어왔을때 YoutubeList 도 update.
 
 eve.recoToEve 에서 recoK for (i in recoK) {} 이런식으로 처리하고 valStr 으로 받자?
 
-
 PointsRange 랑 이런것들 cookie 에 저장해놓기?? Server 로 보낼 필요 없는 데이터들이긴 한데... secure cookie 에 넣으면 읽어들일수도 없는건가? (secure cookie 는 javascript 로 못 읽어드림. https 로 접속했을 때에만 javascript 로 읽어들일 수 있을듯? 이건 테스트 안해봐서 모르겄음.) 아니면 Local Storage API 를 써야하긴 하는데...
-
 
 로그인 안한채로 User page 에 왔다면 Account 부분에 Log-in 버튼 만들기. 여기서 back path 가 필요할듯? 오 back path= empty 해놓으면, 로그인 이후 다른 페이지로 이동 안하게 해놓으면 될듯? 이러면 reco/do 같은거에서도 바로 로그인 시키고 하던일 계속 하게 가능할래나?
 
@@ -166,8 +202,6 @@ User = log out, settings 등등 클릭하면 slide 로 나오도록.
 
 유투브 영상이 playlist 에 재생되면서 해당 영상의 reco description 및 comment 가 바로 아래에 뜨도록 만들어줄까? Playlist 에서 듣다가 바로 가사도 볼 수 있고, 수정도 가능하게?
 
-
-
 desc 가져오는거 관련.
 Description 남의것 가져올 수 있도록. 시스템을 잘 구상해야 할듯.
 
@@ -175,11 +209,7 @@ UriList 위치 바꿀 수 있게. UriList 위치이동 가능하도록 UI/UX.
 
 Session 이 아웃되었을 때, /reco/do 같은 접속이 이루어지면? "You should log-in first" 같은 error 가 올때 ajax 로 다시 자동으로 로그인 시도하고 다시 /reco/do 를 하도록 하려면?
 
-
-
 reco page 만들기. query 로 받아서 어느정도 자동으로 채우고. 이미 reco 를 가지고 있으면 처리해 주는 등이 필요.
-
-
 
 cats 바뀌었을때 sim 업데이트 해야 하는데 set oldCats' superCats 랑 set newCats' superCats 비교해서 계산안해도 되는거 줄일 수 있을듯? cat "A--B--C" 에서 "A--B--C--D" 로 옮겼다고 치면, sim "A", "A--B", "A--B--C" 는 고칠필요 없고, "A--B--C--D" 만 추가하면 되니까? 새로운 neighbor 추가에 대해서는 계산이 필요하긴 할테고...
 
@@ -196,23 +226,15 @@ desc, cmt 에 주석처리 가능하도록 할까? 뭔가 부작용이 있을거
 
 Recoeve.net promotion 1 : Make your own flexible youtube playlist 요런거 만들기. 어떤식으로 쓸 수 있는지 Guide 형식으로 그림 삽입하고 똥글뱅이 쳐주고 하나하나씩 설명해주는 페이지 좀 만들어서 배포해야 할듯.
 
-
-
 History 를 따로 log 로 저장해 놓을까나? Undo 할 수 있도록? 뭐 Undo 까지는 아니더라도... 뭔가 저장해놓으면 쓸데는 있을지도? 그냥 용량만 차지할래나? text 가 대부분이긴 할텐데... Cloud 처럼 overwrite version 관리용으로 필요할거 같기도 하고. 같은 계정으로 여러 기기에서 접근해서 reco/edit 할텐데, 어느 요청이 먼저 들어왔냐에 따라서 뭔가 꼬일수도 있으니?
 
 Reco this user's page to mine 버튼도 만들자.
 
 link a href 로 바꿀때, https?:\/\/\S+ 이런 패턴으로 찾고. 뒤에 있는 text 를 <code class="prettyprint">&lt;a href="https://recoeve.net/"&gt;recoeve.net&lt;/a&gt;</code> 처럼 표시해주도록 하면 될듯? Wiki 처럼 아예 [] 로 둘러쌓으면 link 나타내는 걸로 만들어 버릴까?
 
-
-
 Server 의 time zone : Universial 로 어느 지역에서 서비스하던지 일치하는 시간 같도록. 그리고 javascript 단에서 time lap 은 바꾸도록?
 
-
-
 log-in.html 에서 password 입력할때 (sign-up password 포함), Caps Lock 이 켜져 있다던지, 키보드가 한글/일본어/한자 등 영어가 아닌 언어로 되어 있다던지 알려주는게 필요하긴 할듯?
-
-
 
 다른 user 가 "https://recoeve.net/user/kipid?&uri=yyy" 형태의 URI 를 가지고 reco 를 작성하면 해당 user 에게 멘션이 가는 형태로?
 
@@ -222,8 +244,6 @@ cat 마다 desc 따로 저장할 수 있게 해놓을까나? (이거 그냥 그 
 
 /reco/do 같은 POST with data 를 실행하는데, session out 되었으면 어찌 처리해야 할까나? rmbd cookie 는 있는 상태라고 했을때?
 
-
-
 desc, cmt 에 img/a/div/span 정도 tag 는 쓸 수 있게 해놓을까?
 
 그냥 테스트 용으로 docuK.html 이랑, 동영상/사진 올려서 전송 제대로 되는지 테스트 해봅시다. path="/test.html" 로 할까?
@@ -231,36 +251,37 @@ desc, cmt 에 img/a/div/span 정도 tag 는 쓸 수 있게 해놓을까?
 Outsider's Dev Story 기술뉴스 시리즈 보다가 생각난건데, cats="IT--기술뉴스--시리즈--#30--웹개발 관련;IT--기술뉴스--웹개발 관련" 와 같은 카테고리에 모아놓으면 cat="IT--기술뉴스--시리즈--#30" 에서 Render this cat to HTML 버튼 만들어서 blog 에 바로 posting 할 수 있는 HTML 나오도록 만들어 놔주면 정리하기 더 쉽지 않으실까 생각중. 이렇게 정리 잘하는 사람들 유저로 끌어들이는데도 좋을테고.<br>
 : 만들어놓고 테스트를 내가 해봐야 할듯? (허락은 받고 테스트를 해야할듯)
 
-
-
 가입하면 처음에 기본적인 reco 들을 넣어놓자? 점수 및 comment 는 빼고. 유명한 음악들 몇개랑 기본 카테고리별로 간단하게나마. 매번 업데이트 하면서?
-
-
-
-
 
 E-mail verification 이후에 reco 되도록 설정하기. (지금은 그냥 가입만하면 쓸 수 있게 되어있네?) 로그인 과정을 전반적으로 점검해 볼 필요가 있을듯. 깔끔하게 진행되도록.
 
-
-
-
 각 페이지에서 reco/edit/delete 등을 요청할 때, id 도 explicit 하게 같이 보내서 log-in session id 랑 요청때 id 가 일치하는지도 체크하고 넘어가야 할듯? Log in 되어있지 않을때 처리와도 연관이 있고.
-
-
-
 
 Exception: java.sql.SQLException: Operation not allowed after ResultSet closedjava.sql.SQLException: Operation not allowed after ResultSet closed<br>
 : cat 에 한글이 들어가 있어서 그런가? 몇개 reco 가 삭제가 제대로 안되네? 뭐가 문제지? 구체적으로는 cat="[과학]--뇌과학" 에 있는 reco 들이 안지워짐. desc, cmt, val 다 지운뒤 edit, 이후 del 하면 지워지던데... 뭐지?<br>
 : 이거 neighbor 계산이 문제 같긴 한데... neighbor 관련 process 를 disable 해놓으니까 문제가 사라진걸로 봐서.
 
+개인화 된 추천 javascript 로 계산. (우선 neighbors' sim and recoes 뽑아오는거.)
 
+URIstat 그래프로 표시. (우선은 버튼을 만들어서 눌렀을때만 보이도록 할까?)
 
 
 
 ### 보류
 
 
+
 #### 오래 걸리는 작업이라 미뤄둔 것들.
+
+Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. 첫 recoer 에게 reco 할거 같은 URI 받으면 그때 crawler 가 동작해서 title, desc 등 긁어오면 될듯? (Crawling 하는 법을 아직 몰라서... 배우는데 좀 걸릴듯?)
+
+여러 포스팅들 영어로도 업로드 하기. (최저임금 환산기/계산기랑 텐서란 무엇인가? 정도... 기타 잘 팔릴거 같은 글들 위주로 번역해서 올리기.) docuK 에 recoeve.net 광고 삽입하기.
+
+Cats 바꾸는거 간단하게 여러개 동시에 쉽게 할 수 있도록 디자인하기.
+
+점수 분포도 보여주기?
+
+탈퇴하는 페이지 만들기.
 
 블로그 서비스도 개발해볼까? 일정앱 (Calendar app) 이랑 Memorizer 도? 좀 미루긴 하자 이런건...
 
@@ -268,15 +289,31 @@ Exception: java.sql.SQLException: Operation not allowed after ResultSet closedja
 
 Del 버튼 누를때, You cannot undo this. 경고 한번 더 띄울까? 추가로 Del button 위치 좀 바꿔야 할듯? Edit 이랑 붙어있어서 실수로 누르기 쉬운듯도... 그리고 빨간색 계열로 칠해놓을까나?
 
-트위터 트윗 링크를 URI 로 적으면 트위터 API 이용해서 트윗 원문 긁어오도록. (Youtube 비디오 iframe 으로 가져오는거랑 비슷. 이거 twitter js 에 function 을 알아내야 delayed loading 이 될텐데... 당장은 보류.)
+트위터 트윗 링크를 URI 로 적으면 트위터 API 이용해서 트윗 원문 긁어오도록. (Youtube 비디오 iframe 으로 가져오는거랑 비슷. 이거 twitter js 에 function 을 알아내야 delayed loading 이 될텐데...)
 
 여러개 계정을 동시에 remember 해서 쓸 수 있도록 할까나? (DSP 의 경우 KARA, Rainbow, April 계정들 다 한사람이 관리할수도 있을텐데... 이 경우 매번 로그아웃, 로그인 반복하는건 여간 짜증날듯.)
 
-여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까?
+여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까?<br>
+여러 URI 한꺼번에 stat 볼 수 있도록, path=/recostat?uri=... 에서 uri 에 /user/kipid?cat=SomeCat 들어오면 이 SomeCat 에 있는 URI 들 모두의 stat 을 정리해서 보여주면 좋을듯? 너무 많은 URI 를 한꺼번에 통계내면 서버 부하가 클테니 첫 100개 정도의 stat 만?
+
 
 
 
 #### 정말 필요한지 안한지 헷갈려서 보류한 것들.
+
+로그인 보안 올리기. (구글 꺼 참고: 어느 기기에서 로그인 했는지, 몇 일전 로그인 했는지 등)<br>
+로그인 없이 multireco mode 들어가면, 별점 줄때 "로그인이 필요합니다." 메세지 보내고 로그인 페이지로 보내기. 추가로 로그인, 가입 후 바로 원래 multireco mode 페이지로 돌아올 수 있도록 만들기.<br>
+로그인, 세션 풀리는 이유 알려주기. (보안에 문제될라나?)
+
+처음 가입한 사람에게 multireco 할만한 /user/kipid?cat=[Music/Break]--K-Pop&mode=multireco 페이지 같은것들 리스트 카테고리 분류없음에 넣어주고, 그 카테고리 분류없음 페이지 바로 보여주기.
+
+desc 작성할때도 미리보기 보여주자? (이거 key value 로 나눠서 업데이트 된 부분만 refresh 하도록.)
+
+Recos 가져올때 갯수제한을 200 정도로 잡을까? 너무 한꺼번에 엄청 많이 요청하면 안좋긴 할테니... 그 이후꺼 가져올때나 검색할땐 버튼 누르도록. (검색이 javascript 단에서 할때가 있고, server 단에서 할때가 있고 할듯?)<br>
+: uri title 만 가져오고 나중에 전체 data 를 가져오는 방법도 있음.
+
+desc : bring, copy user_I 뭐 이런 명령어 만들어서 다른 사람 description 가져오기. (이거 생각보다 까다롭네. 유저가 이해하기 쉽도록 동작을 해야 하는데...)<br>
+desc statistics 를 만들어서 처리할까? 그냥 hard copy 가 나을듯 여러 면에서.. (수정도 쉽게 되고, 통계도 내기 쉬울듯? Format 화를 해서 사소하게 틀린 desc 는 하나로 통합되어서 stat 이 나와야 함.)
 
 각 계정이나 IP 별로 request 가 얼마나 들어왔는지, traffic 을 얼마나 썼는지 등을 알아내고 저장해서 하루에 너무 많은 traffic 을 쓴 경우 접속을 차단합시다. (DDOS 공격 차단?)
 
@@ -318,42 +355,36 @@ img 이거나 video 인데 URI 가 ".jpg/.mp4" 이렇게 안끝날때도 처리�
 
 Toggle ES (Expand/Shrink) 버튼 만들까? 전체 ES 를 toggle 하는 버튼.
 
-Twitter 처럼 새로 업데이트 되는 reco 들 있으면 받아서 page 도 업데이트 해줄까? 주기적으로 server 에 update 된거 있는지 요청을 보내야 하는듯? (이건 급한것도 아니고 필수요소는 아니니 당장은 약간 보류.)
+Twitter 처럼 새로 업데이트 되는 reco 들 있으면 받아서 page 도 업데이트 해줄까? 주기적으로 server 에 update 된거 있는지 요청을 보내야 하는듯? (이건 급한것도 아니고 필수요소는 아니니..)
 
-FileMapWithVar 의 경우 variable 먼저 처리하고 이 처리한 곳 안에 lang 관련 대체할 것들이 있으면 또 대체하도록? 이거 뭔가 복잡해져서 효율이 안나올것도 같고? 약간 보류할까나?
+FileMapWithVar 의 경우 variable 먼저 처리하고 이 처리한 곳 안에 lang 관련 대체할 것들이 있으면 또 대체하도록? 이거 뭔가 복잡해져서 효율이 안나올것도 같고?
 
 jquery 나 여러군데에 쓰일 code 같은 경우 [--jquery.js--] 같은걸로? 브라우저에 cashe 되어 있을 경우 다시 요청을 안보내긴 할텐데... 어떻게 해놓는게 더 통신비용을 절감시킬래나?<br>
-: 이거 그냥 구현해 놓은뒤에 쓰고싶은 방식대로 선택해서 쓰면 될거 같긴 함. 그닥 바쁘게 구현해야 할건 아니라서 당장은 보류.
-
-당장 reco 들이 많지 않을테니 보류. 당장은 유저간 연결보단 초기유저들의 개인정리가 잘되도록 하는데에 초점을.
-
-개인화 된 추천 javascript 로 계산. (우선 neighbors' sim and recoes 뽑아오는거.)
-
-URIstat 그래프로 표시. (우선은 버튼을 만들어서 눌렀을때만 보이도록 할까?)
+: 이거 그냥 구현해 놓은뒤에 쓰고싶은 방식대로 선택해서 쓰면 될거 같긴 함.
 
 바로바로 reco 가 되는 페이지 들도 만들어봐야 할듯? 평가하고 싶은 리스트들을 주르륵 나열해놓고 한꺼번에 점수를 매긴다음 한꺼번에 reco 하는 식으로. 남의 페이지에서 reco 를 가져오는게 아주 간단하게 이루어지지 않아서...
 
-하나의 cat 안에 UriList 가 너무 많아지면 어떻게 처리할까나? (당장은 보류? 나중에는 문제가 커질듯도 한데... 해결하긴 해야할듯.)
+하나의 cat 안에 UriList 가 너무 많아지면 어떻게 처리할까나? (나중에는 문제가 커질듯도 한데... 해결하긴 해야할듯.)
 
-defaults 불러올때 "ORDER BY `count` DESC LIMIT 5" 형태로 매번 불러오는건 느릴것도 같은데, def update 할때마다 top 5 만 따로 저장해놓으면서 update 할까나? (약간 보류? 동작은 당장 하니까.)
+defaults 불러올때 "ORDER BY `count` DESC LIMIT 5" 형태로 매번 불러오는건 느릴것도 같은데, def update 할때마다 top 5 만 따로 저장해놓으면서 update 할까나? (동작은 당장 하니까.)
 
-subCats 안의 UriList 들까지 모두 보여주기. (보류?)
+subCats 안의 UriList 들까지 모두 보여주기.
 
 CatList 에서 cat 이름 바꾸기 가능하게? (이거 javascript 로 대부분 처리해놓고, reco/put 에 명령어 주르륵 보내면 될듯? 더 복잡해질라나? 그냥 changeCatName 으로 보내서 따로 server 에서 처리하는게 더 나을듯? 이건 대따 복잡할거 같으니까 천천히 생각합시다.)
 
-recentRecoers : "text" 로 저장할게 아니라 "bigint" (long) ArrayList 같은 byte 로 저장해야 더 속도가 빠를듯??? (당장 동작은 하니까 보류.)
+recentRecoers : "text" 로 저장할게 아니라 "bigint" (long) ArrayList 같은 byte 로 저장해야 더 속도가 빠를듯???
 
 get-Recoes 갯수 제한 두기? (이것도 해결하긴 해야할듯 한데...)
 
-local storage 이용 좀 하자. (보류할까나?)
+local storage 이용 좀 하자.
 
-fixed video 가 붙으면 sidebar (in Phone view) 가려지지 않도록 위에 padding 될만한거 붙이기? (보류)
+fixed video 가 붙으면 sidebar (in Phone view) 가려지지 않도록 위에 padding 될만한거 붙이기?
 
-HOME 각 cat 별로 최근 recoes 3개씩 뽑아내기? (보류)
+HOME 각 cat 별로 최근 recoes 3개씩 뽑아내기?
 
-Merge 관련해서도 생각해봐야 할때인듯. (youtube 같은 pattern 형식도 있을테고, 그닥 패턴이 없은는 URI 도 같은걸 가르킬 때가 있을듯. 이것도 당장은 보류하자. 언제라도 해결하긴 해야할듯 하지만.)
+Merge 관련해서도 생각해봐야 할때인듯. (youtube 같은 pattern 형식도 있을테고, 그닥 패턴이 없은는 URI 도 같은걸 가르킬 때가 있을듯. 언제라도 해결하긴 해야할듯.)
 
-Reco comment 에 up/down vote 가능하게... Up 이면 <code>sumSim+=120; nSim++;</code> 120 은 너무 많은가? Down 이면 <code>sumSim+=0; nSim++;</code> 이러면 될라나? 이거 따로 기록해둬야 나중에 이 factor 수정하기 쉬워질거 같긴한데... Cats 별로 다 따로따로 up/down 이 되어야 해서... 더 복잡해지기만 할듯도 하고. 중간에 error 없이 잘 계산되었는지 확인하려면, 기록이 되어있긴 해야할거 같고. 고민 좀 더 해봐야 하겄네. (보류?)
+Reco comment 에 up/down vote 가능하게... Up 이면 <code>sumSim+=120; nSim++;</code> 120 은 너무 많은가? Down 이면 <code>sumSim+=0; nSim++;</code> 이러면 될라나? 이거 따로 기록해둬야 나중에 이 factor 수정하기 쉬워질거 같긴한데... Cats 별로 다 따로따로 up/down 이 되어야 해서... 더 복잡해지기만 할듯도 하고. 중간에 error 없이 잘 계산되었는지 확인하려면, 기록이 되어있긴 해야할거 같고. 고민 좀 더 해봐야 하겄네.
 
 
 
@@ -420,6 +451,19 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 ### 정리하기 전
 
+블로그 글 "동영상 연속 재생하기"에 recoeve 추천하는 내용 추가하기.
+
+Multireco mode 일 때, 인스타그램 높이 비율 좀만 높이자 아래쪽이 조금 잘리네. (<code>height:4em; padding-bottom:150%</code> 로 해결함.)
+
+그리고 ?mode=multireco 이렇게 하지 말고, /user/kipid/mode/multireco?cat=[Music/Break]&lang=ko 이런 식으로 바꿀까?
+
+[href]=[protocol]//[hostname]:[port][/pathname][?search][#hash]<br>
+에서 search 부분 alphabetical order 로 정렬해서 항상 일관된 URI 가 되도록 만들자. search 부분 cat=, lang= (이 순서대로) 만 쓰자. 나머진 다르게 해결하고...
+
+Reco edit 한 다음 delayed elems 가 update 가 제대로 안되는듯? 매번 <code>m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");</code> 로 불러들여서 해결.
+
+cat without reco 열때 뭔가 새로고침이 되는데... 해결합시다. (뭐 때문인지 잘 모르겄네 ㅡㅡ...) 이거 얼떨결에 해결 된듯도???
+
 No reco 인 cat 열 때, playlist 비우기.
 
 Browser width 판단해서 point range width 를 적절히 조정해주기. 왼쪽 카테고리 드레그랑 안겹치게...
@@ -474,7 +518,7 @@ Cats ("#input-cats", "multireco-input-cats") 넣을 때 클릭으로 <code>;</co
 
 URI path=/reco?uri=...&cats=... 같은 걸로 접근했을 때, log-in 안되어 있으면 /account/log-in?goto=... 으로 보내기.
 
-유튜브의 Access-Control-Allow-Origin 문제: <a target="_blank" href="https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin">https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin</a> (그냥 놔둘까나? 약간 보류. Youtube API 에서도 뭘 설정해줘야 하는듯???) 일반 iframe 에서는 <code>embed/...?origin=https://recoeve.net</code> 넣어서 해결.
+유튜브의 Access-Control-Allow-Origin 문제: <a target="_blank" href="https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin">https://stackoverflow.com/questions/51480196/youtube-embeded-video-error-no-access-control-allow-origin</a> (그냥 놔둘까나? Youtube API 에서도 뭘 설정해줘야 하는듯???) 일반 iframe 에서는 <code>embed/...?origin=https://recoeve.net</code> 넣어서 해결.
 
 Style 바꾸는거 가능하도록 (Dark, Bright, + Blue, Pink? 같은것도?). DocuK 비슷하게... cookie 에 저장하고 page load 할 때 저장된 style 적용.
 
@@ -642,7 +686,7 @@ Mobile first form 으로.
 로그인 유지 시키기. (얼추 해놓긴 했는데... 제대로 동작하는지 확인해봐야 함. 대충은 해결한거 같긴 한데... rmbd cookie 는 있고, session cookie (I, tCreate, tCjs) 가 없을때가 문제일듯?)
 
 Youtube 말고 그냥 파일로 올린 영상도 연속재생 되도록 만들어 볼까나? 그 이외에도 다른 동영상 서비스들 API 도 좀 구현해볼까나?<br>
-: 이거 API 들을 안줘서 거의 불가능 ㅡ..ㅡ;;; 그냥 mp4 등 동영상 파일 URI 같은 경우는 유투브랑 같이 낑겨넣을수는 있을거 같긴한데... (그닥 급한건 아니라 좀 보류하자.)
+: 이거 API 들을 안줘서 거의 불가능 ㅡ..ㅡ;;; 그냥 mp4 등 동영상 파일 URI 같은 경우는 유투브랑 같이 낑겨넣을수는 있을거 같긴한데...
 
 reco 에서 cat 부분 클릭하면 해당 cat 으로 이동되도록 onclick 구현.
 
@@ -751,7 +795,7 @@ new-reco 가 띄워지면 URI 쪽으로 focus and trigger("keyup").
 Scroll down 쪽만 pad 적용해서 미리 delayed load 받도록 하자.
 
 side 를 margin 이나 padding 으로 처리하지 말고 그냥 element scroll 되도록? 이러면 delayed load 도 바뀌어야 할지도???<br>
-: 이거 iframe 에서 스크롤이 먹통되는 등 안좋은 점이 많아서 보류.
+: 이거 iframe 에서 스크롤이 먹통되는 등 안좋은 점이 많아서... (다시 읽어보니 무슨 뜻으로 쓴건지 모르겠네 ㅡ,.ㅡ;;;)
 
 Toggle Lyrics 안먹히는거 처리. 한번 클릭시에는 disable 만들고 1초뒤에 푸는걸로...
 
