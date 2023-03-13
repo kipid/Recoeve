@@ -83,6 +83,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Multireco mode--]	104	Multireco mode	멀티레코 모드	多記錄模式	マルチレコモード	Mode multiréco	Modo multireco	मल्टीरको विधा	وضع MultiReco	Multireco Mode
 [--Multireco Categories--]	105	Multireco Categories	멀티레코 카테고리	Multireco 類別	マルチレコカテゴリー	Catégories multiricoles	Categorías multireco	मल्टीरको श्रेणी	فئات MultiReco	Категории мультиреко
 [--New Reco--]	106	New Reco	새 레코	新Reco	新しいレコ	Nouveau reco	Nuevo RECO	न्यू लेको	ريكو جديد	Новый реко
+[--Toggle reco list play--]	107	Toggle reco list play	레코목록 재생 보이기/숨기기	切换reco列表播放	再生して再生/非表示にします	Player la liste Recco Toggle	Jugar de la lista de reco de alternar	खेलने/छिपाने के लिए रिप्ले	تبديل قائمة Reco Play	Перевернуть список Reco Play
 [--Short Keys--]	107	Short Keys	단축키	快捷鍵	ショートカット	Clés courtes	Llaves cortas	छोटा रास्ता	مفاتيح قصيرة	Короткие ключи
 [--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	顯示沒有積分的記錄	ポイントなしのレコを表示	Afficher les recos sans points	Mostrar recos sin puntos	अनावश्यक स्कोर के लिए दृश्यमान	عرض Recos بدون نقاط	Показать Recos без очков
 [--Show only unrecoed on mine--]	109	Show only unrecoed on mine	내가 레코 안한 것만 보기	仅在我的	私がしなかったことだけを見てください	Montrer uniquement non recoé sur le mien	Mostrar solo no lo recorre en el mío	केवल वही देखें जो मैंने नहीं किया	أظهر فقط غير محدد على الألغام	Покажите только безвкусно на моем
