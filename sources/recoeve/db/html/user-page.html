@@ -425,7 +425,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <data id="data-CatList">{--CatList--}</data>
 <div id="container">
 <div id="sidebar-dragger">
-	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
+	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
 	<div id="sidebar-dragger-in"></div>
 </div>
 <div id="sidebar">
@@ -556,8 +556,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<a id="a-log-out" href="/account/log-out">[--Log out--]</a>
 	<a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
 	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
-	<div class="button" id="button-neighbors-page" onclick="m.see_Neighbors()">[--See neighbors--]</div>
-	<div class="button" id="button-multireco-mode" onclick="m.show_Multireco_Mode(event)">[--Multireco mode--]</div>
+	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--See neighbors--]</div>
+	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
 </div><!-- div#head -->
 <div class="side2" id="subCats">
@@ -571,7 +571,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 <div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="headPlay">
-	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">Toggle reco list play</div>
+	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
 	<div id="playlist-container">
 		<div id="uri-rendered"></div>
 		<div class="rC" id="rC-video-uri-rendered" style="display:none">
@@ -588,7 +588,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div class="button enabled" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84});">[--ToR--]</div>
+		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84})">[--ToR--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
@@ -596,11 +596,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key">
 	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hide--]</div>
-	<div class="button button-Go" style="width:50px" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});">Go</div><div class="button button-ToR" style="width:80px" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});">[--ToR--]</div>
+	<div class="button button-Go" style="width:50px" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">Go</div><div class="button button-ToR" style="width:80px" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">[--Backward--]</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">[--Forward--]</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});">[--Multireco mode--]</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});">[--New Reco--]</div>
+	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--New Reco--]</div>
 </div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
@@ -630,8 +630,9 @@ $data_lang=$("#data-lang");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
-$button_neighbors_page=$("#button-neighbors-page");
-$button_multireco_mode=$("#button-multireco-mode");
+$button_mode=$(".button-mode");
+$button_neighbors_mode=$(".button-neighbors-mode");
+$button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$("#button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
@@ -866,31 +867,45 @@ m.a_log_in=function (e, elem) {
 	}
 };
 
-m.see_Neighbors=function () {
-	if ($button_neighbors_page.hasClass("enabled")) {
-		$button_neighbors_page.removeClass("enabled");
+m.toggleNeighborsMode=function () {
+	if ($button_neighbors_mode.hasClass("enabled")) {
+		$button_mode.removeClass("enabled");
+		m.showRecosOnCat();
+		$playlist_container.show();
+		$toggle_reco_list_play.addClass("enabled");
+		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
-		$button_neighbors_page.addClass("enabled");
+		$button_mode.removeClass("enabled");
+		$button_neighbors_mode.addClass("enabled");
+		$playlist_container.hide();
+		$toggle_reco_list_play.removeClass("enabled");
+		$contents.html("Load neighbors datas, and plot charts.");
+		window.history.pushState({cat:m.currentCat, mode:"neighbors"}, m.currentCat, m.pathOfCat(m.currentCat, "neighbors"));
 	}
 }
 
-m.show_Multireco_Mode=function (e) {
-	if ($contents.hasClass("multireco")) {
-		$button_multireco_mode.removeClass("enabled");
+m.toggleMultirecoMode=function () {
+	if ($button_multireco_mode.hasClass("enabled")) {
+		$button_mode.removeClass("enabled");
 		$contents.removeClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
+		$playlist_container.show();
+		$toggle_reco_list_play.addClass("enabled");
 		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
+		$button_mode.removeClass("enabled");
 		$button_multireco_mode.addClass("enabled");
 		$contents.addClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.show();
 			$multireco_input_cats[0].value=m.currentCat;
 		}
+		$playlist_container.hide();
+		$toggle_reco_list_play.removeClass("enabled");
 		window.history.pushState({cat:m.currentCat, mode:"multireco"}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
 		if (m.myPage) {
 			m.showRecosOnCat();
@@ -900,13 +915,6 @@ m.show_Multireco_Mode=function (e) {
 			let uriList="";
 			if (m.catUriList[cat]&&m.catUriList[cat].has) {
 				uriList=m.catUriList[cat].UriList.trim();
-			}
-			else {
-				$contents.removeClass("multireco");
-				setTimeout(function () {
-					m.show_Multireco_Mode(e);
-				}, 1000);
-				return;
 			}
 			let uris=[];
 			if (uriList.length!==0) { uris=uriList.split("\n"); }
@@ -1362,13 +1370,13 @@ $window.trigger("resize");
 m.sidebar_show=(e) => {
 	$sidebar.css({"margin-left":0});
 	$sidebar_dragger.css({"left":$sidebar.outerWidth()});
-	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	$sidebar_toggle.on("click", m.sidebar_hide);
 };
 m.sidebar_hide=(e) => {
 	$sidebar.css({"margin-left":-$sidebar.outerWidth()});
 	$sidebar_dragger.css({"left":0});
-	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round;"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	$sidebar_toggle.on("click", m.sidebar_show);
 };
 $sidebar_toggle.on("click", m.sidebar_show);
@@ -3217,16 +3225,16 @@ m.reco_pointChange_do=function (args, err) {
 	});
 };
 m.showRecosOnCat=function (elem, from) {
-	let fs=m.fsGo;
+	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
 	if (l<=0) {
-		let nOfRecos=`No reco in cat=${m.escapeHTML(m.currentCat)}.`;
-		$numbers_of_recos.html(nOfRecos);
+		$numbers_of_recos.html(`No reco in cat=${m.escapeHTML(m.currentCat)}.`);
 		$contents.html(strHTML);
 		$reco_playing.html('');
 		$uri_rendered.html('');
 		$video.html('');
+		// TODO: Should I stop the video and youtube?
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 	}
@@ -3446,25 +3454,25 @@ m.editOrRecoToMine=function (elem) {
 	});
 };
 m.recoDowned=function (urisStr, recos) {
-	let uris=urisStr.split("\n");
+	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
 		let p=recos[uri];
 		if (!p) { p=recos[uri]={}; }
-		p.down=true;
+		p.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
 m.recoToEve=function (resp, recos) {
 	resp=m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
-		let recoK=resp[k];
-		let uri=recoK["uri"];
+		let respK=resp[k];
+		let uri=respK.uri;
 		let p=recos[uri];
 		if (!p) { p=recos[uri]={}; }
-		p["has"]=true;
-		for (let prop in recoK) {
+		p.has=true; // User has a reco on the uri.
+		for (let prop in respK) {
 			if (isNaN(prop)) {
-				p[prop]=recoK[prop];
+				p[prop]=respK[prop];
 			}
 		}
 		if (p.desc!==undefined) {
@@ -3486,17 +3494,16 @@ m.getAndShowRecosOnCat=function (cat) {
 	let getRecosN=0;
 	let fs=m.fsGo;
 	let fs1=m.fsToRs;
-	let fsFL=fs.fullList=[];
+	let fsFL=fs.fullList=fs.fullList||[];
 	let fs1FL=fs1.fullList=[];
-	fsFL.cat=cat;
+	// fsFL.cat=cat;
 	fs1FL.cat=cat;
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		if (!r) { r=m.userRecos[uri]={}; }
-		fsFL[uris.length-1-i]=fsFL[uri]
-		=fs1FL[uris.length-1-i]=fs1FL[uri]
-		={i:uris.length-1-i, uri:uri, reco:r};
+		fsFL[uri]=fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
+		fsFL.push(fsFL[uri]);
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
@@ -4679,66 +4686,6 @@ $table_of_recos.on("keydown", function (e) {
 });
 
 ////////////////////////////////////////////////////
-// Language/언어/語言
-////////////////////////////////////////////////////
-m.changeLang=function (lang, e, elem) {
-	let search=window.location.search;
-	let href=`${m.pathName}${search?`${search}&`:"?"}${lang?`lang=${lang}`:""}${window.location.hash}`;
-	if (e&&e.which===2) {
-		$(elem).attr({"href":href});
-		return true;
-	}
-	else {
-		window.location.href=href;
-		return false;
-	}
-};
-let dataLang=m.strToJSON($data_lang.html().trim());
-let htmlLang=`<div>`;
-for (let i=0;i<dataLang[0].length;i++) {
-	htmlLang+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
-}
-htmlLang+=`</div>`;
-$data_lang.after(htmlLang);
-
-////////////////////////////////////////////////
-// Lang : set cookie, Cat : get and show recos
-////////////////////////////////////////////////
-let vars=m.getSearchVars(window.location.search);
-if (vars.lang!==undefined) {
-	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
-}
-if (vars.cat!==undefined) {
-	let cat=vars.cat.val;
-	m.currentCat=cat;
-	if (m.recoMode==="") {
-		m.getUriListAndShowRecosOnCat(cat);
-		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
-	}
-	else if (m.recoMode==="multireco") {
-		m.getUriListAndShowRecosOnCat(cat);
-		$button_multireco_mode.trigger("click");
-	}
-	else if (m.recoMode==="neighbors") {
-		$button_neighbors_page.trigger("click");
-	}
-}
-if (vars.title!==undefined) {
-	let title=vars.title.val;
-	$input_title[0].value=title;
-}
-if (vars.uri!==undefined) {
-	$new_reco.show();
-	let uri=vars.uri.val;
-	$input_uri[0].value=uri;
-	$input_uri.trigger("input.rd");
-}
-if (window.location.pathname==="/reco") {
-	$new_reco.show();
-}
-$title.html(`${m.currentCat?`${m.escapeHTML(m.currentCat)} of `:""}${m.userId}'s recoeve.net`);
-
-////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
 m.shareSNS=function (elem, service) {
@@ -4818,6 +4765,14 @@ m.processShortKey=function (e) {
 
 			}
 			break;
+		case 66: // B=66
+			e.preventDefault();
+			m.toggleNeighborsMode();
+			break;
+		case 77: // M=77
+			e.preventDefault();
+			m.toggleMultirecoMode();
+			break;
 		case 78: // N=78
 			e.preventDefault();
 			$button_new_reco.trigger("click");
@@ -4872,6 +4827,66 @@ if ($shortkeyDesc.exists()) {
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--Multireco mode--]</span></li>`
 	);
 }
+
+////////////////////////////////////////////////////
+// Language/언어/語言
+////////////////////////////////////////////////////
+m.changeLang=function (lang, e, elem) {
+	let search=window.location.search;
+	let href=`${m.pathName}${search?`${search}&`:"?"}${lang?`lang=${lang}`:""}${window.location.hash}`;
+	if (e&&e.which===2) {
+		$(elem).attr({"href":href});
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+let dataLang=m.strToJSON($data_lang.html().trim());
+let htmlLang=`<div>`;
+for (let i=0;i<dataLang[0].length;i++) {
+	htmlLang+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+}
+htmlLang+=`</div>`;
+$data_lang.after(htmlLang);
+
+////////////////////////////////////////////////
+// Lang : set cookie, Cat : get and show recos
+////////////////////////////////////////////////
+let vars=m.getSearchVars(window.location.search);
+if (vars.lang!==undefined) {
+	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
+}
+if (vars.cat!==undefined) {
+	let cat=vars.cat.val;
+	m.currentCat=cat;
+	if (m.recoMode==="") {
+		m.getUriListAndShowRecosOnCat(cat);
+		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
+	}
+	else if (m.recoMode==="multireco") {
+		m.getUriListAndShowRecosOnCat(cat);
+		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
+	}
+	else if (m.recoMode==="neighbors") {
+		$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
+	}
+}
+if (vars.title!==undefined) {
+	let title=vars.title.val;
+	$input_title[0].value=title;
+}
+if (vars.uri!==undefined) {
+	$new_reco.show();
+	let uri=vars.uri.val;
+	$input_uri[0].value=uri;
+	$input_uri.trigger("input.rd");
+}
+if (window.location.pathname==="/reco") {
+	$new_reco.show();
+}
+$title.html(`${m.currentCat?`${m.escapeHTML(m.currentCat)} of `:""}${m.userId}'s recoeve.net`);
 
 ////////////////////////////////////////////////////
 // YouTube API
