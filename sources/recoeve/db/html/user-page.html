@@ -3593,7 +3593,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 };
 m.refresh=function (cats, option, uri) {
 	let currentCat=m.getSearchVars(window.location.search).cat;
-	if (currentCat) { currentCat=decodeURIComponent(currentCat.val); }
+	if (currentCat) { currentCat=currentCat.val; }
 	let c=cats.split(";");
 	let k=0;
 	if (currentCat!==undefined) {
@@ -3603,9 +3603,9 @@ m.refresh=function (cats, option, uri) {
 	}
 	m.currentCat=c[k];
 	if (c[k]!==currentCat) {
-		m.getUriListAndShowRecosOnCat(c[k]);
-		let path=m.pathOfCat(c[k]);
-		window.history.pushState({cat:c[k]}, c[k], path);
+		m.getUriListAndShowRecosOnCat(m.currentCat);
+		let path=m.pathOfCat(m.currentCat);
+		window.history.pushState({cat:m.currentCat}, m.currentCat, path);
 	}
 	else {
 		switch (option) {
