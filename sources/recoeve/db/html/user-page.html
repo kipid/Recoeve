@@ -4861,12 +4861,12 @@ $window.on("keydown", m.processShortKey);
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-		"<li>G: [--Fuzzy Search--] (Go)</li>"
-		+"<li>T: Table of Recos</li>"
-		+"<li>F: Forward [--Reco--]</li>"
-		+"<li>D: Previous [--Reco--]</li>"
-		+"<li>N: New [--Reco--]</li>"
-		+"<li>M: [--Multireco mode--]</li>"
+`<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] (Go)</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--Forward--] Reco</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backward--] Reco</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})"><span class="bold">N</span>: [--New Reco--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--Multireco mode--]</span></li>`
 	);
 }
 
