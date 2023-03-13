@@ -115,6 +115,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Back--]	156	Back	원래대로	起初	元に	Dos	Atrás	मौलिक रूप से	خلف	Назад
 [--Toggle lyrics--]	157	Toggle lyrics	가사 보이기/숨기기	切换歌词	歌詞を切り替えます	Toggle	Letra de alternar	गीत देखें/छिपाएं	تبديل كلمات	Toggle Trics
 [--Hide lyrics--]	158	Hide lyrics	가사 숨기기	隐藏歌词	歌詞	Hide paroles	Letra de escondite	बोल	إخفاء كلمات	Скрыть тексты песен
+[--Hide--]	159	Hide	숨기기	隐藏	隠蔽	Cacher	Esconder	छुपा रहे है	يخفي	Скрывать
 [--Change orders--]	160	Change orders	순서 바꾸기	更改訂單	順序を変更	Changer les commandes	Cambiar ordenes	आदेश बदलना	تغيير أوامر	Изменить заказы
 [--OK--]	161	OK	확인	確認	確認	D'ACCORD	DE ACUERDO	जाँच करना	نعم	ХОРОШО
 [--Cancel--]	162	Cancel	취소	取消	キャンセル	Annuler	Cancelar	रद्द	يلغي	Отмена
