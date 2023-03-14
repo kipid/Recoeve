@@ -3434,7 +3434,7 @@ m.showRecosOnCat=function (elem, from) {
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.fdList=$("#sidebar, #head, #contents .reco, #foot");
+	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	fs.$fs.trigger("input.fs");
 };
@@ -3604,8 +3604,8 @@ m.refresh=function (cats, option, uri) {
 	m.currentCat=c[k];
 	if (c[k]!==currentCat) {
 		m.getUriListAndShowRecosOnCat(m.currentCat);
-		let path=m.pathOfCat(m.currentCat);
-		window.history.pushState({cat:m.currentCat}, m.currentCat, path);
+		// $button_mode.removeClass("enabled");
+		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
 		switch (option) {
@@ -3616,7 +3616,7 @@ m.refresh=function (cats, option, uri) {
 			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 			$window.trigger("scroll.delayedLoad");
-			m.fdList=m.fdList.add($newReco);
+			m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
 
 			let fs=m.fsGo;
 			fs.fullList[uri]={i:fs.fullList.length, r:r, $listI:$newReco, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
@@ -3667,7 +3667,7 @@ m.refresh=function (cats, option, uri) {
 						m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 						$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 						$window.trigger("scroll.delayedLoad");
-						m.fdList=m.fdList.add($newReco);
+						m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
 
 						let fs=m.fsGo;
 						let fsFLk=fs.fullList[uri];
@@ -4731,7 +4731,7 @@ m.shareSNS=function (elem, service) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
-m.fdList=$("#sidebar, #head, #contents .reco, #foot"); // Ordered automatically by jQuery.
+m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
 	switch (e.target.nodeName) {
