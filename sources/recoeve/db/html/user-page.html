@@ -3292,7 +3292,7 @@ m.showRecosOnCat=function (elem, from) {
 			$contents.html(strHTML);
 			setTimeout(function () {
 				$(".to-be-executed").eq(0).trigger("click");
-			}, 1024);
+			}, 256);
 		}
 		else {
 			if (from!==undefined&&from!==null&&from.constructor===Number) {
@@ -3307,7 +3307,7 @@ m.showRecosOnCat=function (elem, from) {
 			m.recoByOnlyStars=function ($str, uri) {
 				let valStr=$str.html();
 				if (m.myPage) {
-					if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+					if (!(m.myRecos[uri]?.val&&m.myRecos[uri].val.str===valStr)) {
 						let strHeads="do\turi\tval";
 						let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 						m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
@@ -3315,7 +3315,7 @@ m.showRecosOnCat=function (elem, from) {
 				}
 				else {
 					if (m.myRecos[uri]&&m.myRecos[uri].has) {
-						if (!(m.myRecos[uri].val&&m.myRecos[uri].val.str===valStr)) {
+						if (!(m.myRecos[uri]?.val&&m.myRecos[uri].val.str===valStr)) {
 							let strHeads="do\turi\tval";
 							let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
