@@ -132,11 +132,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
-#sidebar-dragger {position:fixed; z-index:10; top:0; bottom:0; left:0; width:1.5em; background:transparent}
+#sidebar-dragger {position:fixed; z-index:10; top:0; height:200px; left:0; width:1.5em; background:transparent}
 #sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0}
 #sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(35,35,35); color:white; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
 	.bright #sidebar {background:rgb(230,230,230); color:black; border-color:black}
-.side2 {padding-left:1em !important}
 #sidebar-toggle {width:2em; height:2em; background:black; border:white 2px solid}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
@@ -400,7 +399,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#sidebar-dragger {display:none}
 	#change-style {margin-top:0}
 	#my-id {margin-left:0}
-	.side2 {padding:.5em !important}
+	.side2 {padding:.5em}
 	.rC.fixed {width:600px; border-right:.15em solid white}
 	.rC.instagram.fixed {width:360px}
 	.lyrics {text-align:right}
@@ -438,7 +437,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div>
 </div><!-- div#sidebar -->
 <div id="fuzzy-search-container" style="display:none">
-	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
@@ -3207,19 +3206,33 @@ m.reco_pointChange_do=function (args, err) {
 	if (err) {
 		return;
 	}
+	let fs=m.fsGo;
+	let uri=args.uri;
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
-		// $error.html("Failed change. You may not be logged-in. "+resp);
+		if (fs.fullList[uri]?.$listI) {
+			fs.fullList[uri].$listI.append(`<div class="result">Failed change. You may not be logged-in.: ${resp}</div>`);
+			setTimeout(function () {
+				fs.fullList[uri].$listI.find(".result").remove();
+			}, 4096);
+		}
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		let uri=args.uri;
-		if (res[1]&&res[1]["result"]==="changed") {
+		if (res[1]?.result==="changed") {
 			let val=m.myRecos[uri].val=m.val(args.valStr);
-			let fs=m.fsGo;
-			if (m.myPage&&val.valid&&fs.fullList[uri].$listI) {
+			if (m.myPage&&val.valid&&fs.fullList[uri]?.$listI) {
+				fs.fullList[uri].$listI.append(`<div class="result">Your point on this URI is changed.</div>`);
+				setTimeout(function () {
+					fs.fullList[uri].$listI.find(".result").remove();
+				}, 4096);
 				fs.fullList[uri].$listI.find(".val .bar").css({width:m["5stars-width"]*val.val});
+			}
+		}
+		else {
+			if (fs.fullList[uri]?.$listI) {
+				fs.fullList[uri].$listI.append(`<div class="result">${res[1]?.result}</div>`);
 			}
 		}
 	});
@@ -3271,7 +3284,7 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			}
-			if (!m.myPage&&$show_only_unrecoed.hasClass("enabled")) {
+			if ((!m.myPage)&&$show_only_unrecoed.hasClass("enabled")) {
 				for (let k=0;k<l;k++) {
 					let fsFLk=fs.fullList[k];
 					let uri=fsFLk.uri;
@@ -3307,15 +3320,15 @@ m.showRecosOnCat=function (elem, from) {
 			m.recoByOnlyStars=function ($str, uri) {
 				let valStr=$str.html();
 				if (m.myPage) {
-					if (!(m.myRecos[uri]?.val&&m.myRecos[uri].val.str===valStr)) {
+					if (!(m.myRecos[uri]?.val?.str===valStr)) {
 						let strHeads="do\turi\tval";
 						let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 						m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
 					}
 				}
 				else {
-					if (m.myRecos[uri]&&m.myRecos[uri].has) {
-						if (!(m.myRecos[uri]?.val&&m.myRecos[uri].val.str===valStr)) {
+					if (m.myRecos[uri]?.has) {
+						if (!(m.myRecos[uri]?.val?.str===valStr)) {
 							let strHeads="do\turi\tval";
 							let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
@@ -3487,7 +3500,7 @@ m.recoToEve=function (resp, recos) {
 	}
 };
 m.getAndShowRecosOnCat=function (cat) {
-	let uriList=(m.catUriList[cat].has?m.catUriList[cat].UriList:"").trim();
+	let uriList=(m.catUriList[cat]?.has?m.catUriList[cat].UriList:"").trim();
 	let uris=[];
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	let getRecosStr="uri";
@@ -4271,7 +4284,7 @@ m.reco_do=function (args, err) {
 		$button_reco.removeClass("disabled");
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		if (res[1]&&res[1]["result"]==="recoed") {
+		if (res[1]?.result==="recoed") {
 			$error.html("Recoed");
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
@@ -4286,7 +4299,7 @@ m.reco_do=function (args, err) {
 			}, 1000);
 		}
 		else {
-			$error.html(res[1]&&res[1]["result"]);
+			$error.html(res[1]?.result);
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -4369,7 +4382,7 @@ m.reco_change_do=function (args, err) {
 				}, 1000);
 			}
 			else {
-				$error.html(res[1]&&res[1]["result"]);
+				$error.html(res[1]?.result);
 			}
 		}
 	}).always(function () {
@@ -4449,7 +4462,7 @@ m.reco_delete_do=function (args, err) {
 		, dataType:"text"
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		if (res[1]&&res[1]["result"]==="deleted") {
+		if (res[1]?.result==="deleted") {
 			$error.html("Deleted");
 			let cats=args.r["cats"];
 			delete m.myRecos[args.uri];
@@ -4462,7 +4475,7 @@ m.reco_delete_do=function (args, err) {
 			}, 1000);
 		}
 		else {
-			$error.html(res[1]&&res[1]["result"]);
+			$error.html(res[1]?.result);
 		}
 	}).always(function () {
 		$button_del.removeClass("disabled");
