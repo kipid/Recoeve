@@ -1635,6 +1635,8 @@ m.rmb_me=function (callback, args) {
 /* Fuzzy search */
 // Fuzzy search, Table of Recos move and reset
 $fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	let relativeX=touch0.clientX-Math.round($fuzzy_search_container_move.offset().left)+$window.scrollLeft();
 	let relativeY=touch0.clientY-Math.round($fuzzy_search_container_move.offset().top)+$window.scrollTop();
@@ -1656,6 +1658,8 @@ $("#fuzzy-search-container>.reset").on("click.reset", function (e) {
 });
 
 $table_of_recos_container_move.on("mousedown.move touchstart.move", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	let relativeX=touch0.clientX-Math.round($table_of_recos_container_move.offset().left)+$window.scrollLeft();
 	let relativeY=touch0.clientY-Math.round($table_of_recos_container_move.offset().top)+$window.scrollTop();
@@ -1888,7 +1892,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 			for (let p=0;p<indices.length;p++) {
 				indicesMMS[p]=indices[p]; // hard copy of indices
 			}
-			if (txt.length<128) {
+			if (txt.length<256) {
 				for (let k=indices.length-2;k>=0;) {
 					regExs[k].lastIndex=indices[k].start+1;
 					exec=regExs[k].exec(txtS);
