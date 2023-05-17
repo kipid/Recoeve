@@ -3264,8 +3264,7 @@ m.showRecosOnCat=function (elem, from) {
 				let uri=fsFLk.uri;
 				let r=fsFLk.reco;
 				let val=r.val.val;
-				let titleSH=m.splitHangul(r.title);
-				fsFLk.txt=titleSH;
+				fsFLk.txt=m.splitHangul(r.title);
 				fsFLk.html=m.escapeHTML(r.title);
 				if (val===undefined||val===-1) {
 					if (m.showRWOP) {
@@ -3502,6 +3501,19 @@ m.recoToEve=function (resp, recos) {
 			p.val=m.val(p.val);
 		}
 	}
+	if (recos===m.userRecos) {
+		let fs=m.fsGo;
+		let fsFL=fs.fullList=fs.fullList||[];
+		for (let k=resp.length-1;k>=1;k--) {
+			let respK=resp[k];
+			let uri=respK.uri;
+			let r=recos[uri];
+			let fsFLk=fsFL[uri]={uri:uri, reco:r};
+			fsFL.push(fsFLk);
+			fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
+			fsFLk.html=m.escapeHTML(r.title);
+		}
+	}
 };
 m.getAndShowRecosOnCat=function (cat) {
 	let uriList=(m.catUriList[cat]?.has?m.catUriList[cat].UriList:"").trim();
@@ -3509,23 +3521,21 @@ m.getAndShowRecosOnCat=function (cat) {
 	if (uriList.length!==0) { uris=uriList.split("\n"); }
 	let getRecosStr="uri";
 	let getRecosN=0;
-	let fs=m.fsGo;
 	let fs1=m.fsToRs;
-	let fsFL=fs.fullList=fs.fullList||[];
 	let fs1FL=fs1.fullList=[];
-	// fsFL.cat=cat;
 	fs1FL.cat=cat;
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		if (!r) { r=m.userRecos[uri]={}; }
-		fsFL[uri]=fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
-		fsFL.push(fsFL[uri]);
+		fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
 		}
 	}
+	let fs=m.fsGo;
+	let fsFL=fs.fullList=fs.fullList||[];
 	if (getRecosN>0) {
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
@@ -3534,10 +3544,10 @@ m.getAndShowRecosOnCat=function (cat) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
 			m.recoToEve(resp, m.userRecos);
 			m.showRecosOnCat();
-			fs1.currentIndex=fs1.fullList.length-1;
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("input.fs");
+			fs1.currentIndex=fs1.fullList.length-1;
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
 			fs1.$fs.trigger("input.fs");
