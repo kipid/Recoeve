@@ -617,6 +617,9 @@ m.kakaoInitDo=function () {
 	}
 };
 m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
+
+
+
 /* Prerequisite */
 //////////////////
 // Variables
@@ -717,6 +720,8 @@ $html=$("html");
 $title=$("title");
 $body=$("body");
 $.fn.exists=function () { return this.length!==0; };
+
+
 
 // Changing Styles of Recoeve.net
 m.mode="Dark";
@@ -1049,6 +1054,9 @@ m.neighbors={};
 	// m.neighbors[cat_from]={down:true};
 	// m.neighbors[cat_from][user_i]={}
 	// m.neighbors[cat_from][user_i][cat_i]={sumSim:sumSim, nSim:nSim, simAvg100:simAvg100, tUpdate:tUpdate};
+
+
+
 ////////////////////////////////////////////////////
 // Get neighbors
 ////////////////////////////////////////////////////
@@ -1091,6 +1099,8 @@ m.getNeighbors=function () {
 	}
 };
 
+
+
 ////////////////////////////////////////////////////
 // Floating key
 ////////////////////////////////////////////////////
@@ -1117,6 +1127,8 @@ m.toggleFK=function () {
 if (m.docCookies.getItem("hideFK")==="y") {
 	$floating_key.hide();
 }
+
+
 
 ////////////////////////////////////////////////////
 // hash encrypt
@@ -1338,6 +1350,8 @@ m.encrypt=function(salt, pwd, iter) {
 };
 m.iterSessionFull=1000;
 
+
+
 ////////////////////////////////////////////////////
 // Sidebar dragger and exit
 ////////////////////////////////////////////////////
@@ -1399,6 +1413,8 @@ $sidebar_exit.on("click", function () {
 	$sidebar_dragger.css({"left":0});
 });
 
+
+
 ////////////////////////////////////////////////////
 // Escape and Unescape HTML string.
 ////////////////////////////////////////////////////
@@ -1410,6 +1426,8 @@ m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
+
+
 
 ////////////////////////////
 // String to Array
@@ -1492,6 +1510,8 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
   }
   return ret;
 };
+
+
 
 ////////////////////////////////////////////////////
 // Delayed Loading.
@@ -1625,6 +1645,8 @@ m.rmb_me=function (callback, args) {
 	}
 };
 
+
+
 /* Fuzzy search */
 // Fuzzy search, Table of Recos move and reset
 $fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
@@ -1672,6 +1694,8 @@ $("#table-of-recos-container>.reset").on("click.reset", function (e) {
 	$table_of_recos.focus();
 	$table_of_recos.trigger("input.fs");
 });
+
+
 
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
@@ -1733,6 +1757,8 @@ m.splitHangul=function (str) {
 	}
 	return res;
 };
+
+
 
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
@@ -1970,6 +1996,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 	return fs[0];
 };
 
+
+
 /* CatList */
 ////////////////////////////////////////////////////
 // CatList rendering
@@ -2095,6 +2123,8 @@ m.getCatListChanged=function () {
 	}
 	return catListChanged;
 };
+
+
 
 //////////////////////////////////////
 // CatList order
@@ -2260,6 +2290,8 @@ $change_catList_order_cancel.on("click", function (e) {
 	}
 	$change_catList_order.show();
 });
+
+
 
 //////////////////////////////////////
 // Fuzzy search on Cat
@@ -2469,6 +2501,8 @@ $multireco_input_cats.trigger("keyup.fs");
 $multireco_input_cats.on("focus", function () {
 	$multireco_cat_fs_container.show();
 });
+
+
 
 //////////////////////////////////////
 // Put/Delete/Change Cats
@@ -2947,6 +2981,8 @@ ptnURI.toIframe=function (uri) {
 	return false;
 };
 
+
+
 ////////////////////////////////////////////////////
 // desc and cmt rendering
 ////////////////////////////////////////////////////
@@ -3046,6 +3082,8 @@ m.val=function (val) {
 	}
 }
 
+
+
 ////////////////////////////////////////////////////
 // Point range
 ////////////////////////////////////////////////////
@@ -3130,6 +3168,8 @@ $point_range_right.on("mousedown touchstart", function (e) {
 		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
+
+
 
 ////////////////////////////////////////////////////
 // Show recos
@@ -3774,6 +3814,8 @@ m.ExpCol=function (elem, catEC) {
 	}
 };
 
+
+
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
@@ -3824,6 +3866,8 @@ m.getSearchVars=function (searchStr) {
 	}
 	return vars;
 };
+
+
 
 ////////////////////////////////////////////////////
 // New Reco or Edit
@@ -4736,6 +4780,8 @@ m.fsGoOn=function () {
 $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
 $fuzzy_search.trigger("input.fs");
 
+
+
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos
 ///////////////////////////////////////////
@@ -4818,6 +4864,8 @@ $table_of_recos.on("keydown", function (e) {
 	}
 });
 
+
+
 ////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
@@ -4860,6 +4908,8 @@ m.shareSNS=function (elem, service) {
 	}
 	window.open(open);
 };
+
+
 
 ////////////////////////////////////////////////////
 // ShortKeys
@@ -4961,6 +5011,8 @@ if ($shortkeyDesc.exists()) {
 	);
 }
 
+
+
 ////////////////////////////////////////////////////
 // Language/언어/語言
 ////////////////////////////////////////////////////
@@ -4983,6 +5035,8 @@ for (let i=0;i<dataLang[0].length;i++) {
 }
 htmlLang+=`</div>`;
 $data_lang.after(htmlLang);
+
+
 
 ////////////////////////////////////////////////
 // Lang : set cookie, Cat : get and show recos
@@ -5018,6 +5072,8 @@ if (window.location.pathname==="/reco") {
 	$new_reco.show();
 }
 $title.html(`${m.currentCat?`${m.escapeHTML(m.currentCat)} of `:""}${m.userId}'s recoeve.net`);
+
+
 
 ////////////////////////////////////////////////////
 // YouTube API
