@@ -62,9 +62,9 @@
 
 multireco mode 변환할 때 새 reco 들 안보이는거 해결하기.
 
-New reco 이거나 Edit/Delete reco 일 때, ToRs/Go update 바로 해주기.
+multireco mode 로 처음 접속할때, 별 드래그들 안보임.
 
-Multireco 일때 별 드래그 하면 Your point is changed. or You are not logged-in. 등의 메세지 언어별로 쏴주기.
+Multireco 모드에서 별 드래그로 점수 바꿀때, Recoing to yours; Changing your points; Changed your points; You are not logged-in 등 표시해주기.
 
 UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point/점수 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯? 구글 스프레드시트 참고.) 정렬 후 Save this order 도 있어야 할듯? path=<code>/changeOrders/UriList</code> 로 구현.<br>
 UriList 순서 바꿀때 Set of URIs 가 같은지 한번은 체크 해야함.<br>
@@ -444,6 +444,24 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ##[.hiden] Done (애ㅜㄷ)
 
 ### 정리하기 전
+
+New reco 이거나 Edit/Delete reco 일 때, ToRs/Go update 바로 해주기.
+
+// TODO 주석 처리한것들 하기. 대부분 translate.
+
+cats 지우기/Delete 버튼 만들기. 해당 cursor 위치에 있는 cat 하나를 지워주기. ";" 포함.
+
+Reco 를 Delete 했을때, fs.fullList[uri].deleted=true 같은걸로 처리할까나? Undo 할 수 있게?
+추가로 deleted $reco.addClass("deleted"). css 는 border 붉은계열로 해놓자.
+
+첫 로딩때 openCat from searchVars 가 제대로 동작 안함.
+아래 코드 빼서 해결하긴 했는데, 이 query 넣으면 안되는건가? =ㅇ=
+
+```
+if (window.history.state?.cat===cat) {
+	return false;
+}
+```/
 
 Short keys onclick=$window.trigger 등록.
 
