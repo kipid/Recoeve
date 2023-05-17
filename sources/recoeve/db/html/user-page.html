@@ -251,13 +251,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco input#input-val {display:inline-block; width:8.5em}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
-#new-reco .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-cat.selected {border-color:rgb(255,180,180)}
 #new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-desc.selected {border-color:rgb(255,180,180)}
 #input-val-stars {margin:0 .5em -.4em 0}
 #new-reco .buttons {margin-top:1em; text-align:right}
 #new-reco #error-msg {margin:0}
+
+#new-reco .def-cat, #multireco-cats-container .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
+#delete-cat, #multireco-delete-cat {background:#ff7600}
 
 #multireco-cats-container {
 	position:fixed;
@@ -267,13 +269,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left
-}
-#multireco-cats-container .def-cat {
-	display:inline-block;
-	margin:0.2em 0;
-	border:1px solid rgb(130,130,130);
-	padding:1px 0.5em;
-	font-size:.9em
 }
 #multireco-cats-container textarea {
 	display:block;
