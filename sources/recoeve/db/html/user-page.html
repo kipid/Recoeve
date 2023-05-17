@@ -911,12 +911,10 @@ m.toggleMultirecoMode=function () {
 		}
 		else {
 			let cat=m.currentCat;
-			let uriList="";
-			if (m.catUriList[cat]&&m.catUriList[cat].has) {
-				uriList=m.catUriList[cat].UriList.trim();
-			}
 			let uris=[];
-			if (uriList.length!==0) { uris=uriList.split("\n"); }
+			if (m.catUriList[cat]?.has) {
+				uris=m.catUriList[cat].uris;
+			}
 			let getRecosStr="uri";
 			let getRecosN=0;
 			for (let i=0;i<uris.length;i++) {
@@ -2562,12 +2560,13 @@ m.putCats_UriToLists=function (cats, uri) {
 		if (m.myPage) {
 			if (m.catUriList[cat]) {
 				if (m.catUriList[cat].has) {
-					m.catUriList[cat]["UriList"]=uri+"\n"+m.catUriList[cat]["UriList"];
+					m.catUriList[cat].UriList=uri+"\n"+m.catUriList[cat].UriList;
+					m.catUriList[cat].uris.splice(0, 0, uri);
 				}
 			}
 			else {
 				catIsPut=m.putCat(cat)||catIsPut;
-				m.catUriList[cat]={cat:cat, down:true, has:true, UriList:uri};
+				m.catUriList[cat]={cat:cat, down:true, has:true, UriList:uri, uris:[uri]};
 			}
 		}
 		else {
@@ -2586,16 +2585,17 @@ if (m.myPage) {
 	for (let i=0;i<catSplit.length;i++) {
 		let cat=catSplit[i];
 		if (m.catUriList[cat]&&m.catUriList[cat].has) {
-			let fullURIs="\n"+m.catUriList[cat]["UriList"]+"\n";
+			let fullURIs="\n"+m.catUriList[cat].UriList+"\n";
 			let k=fullURIs.indexOf("\n"+uri+"\n");
 			if (k!==-1) {
-				m.catUriList[cat]["UriList"]=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
+				m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
+				// Intentionally no change on m.catUriList[cat].uris;
 			}
-			if (m.catUriList[cat]["UriList"].length===0) {
+			if (m.catUriList[cat].UriList.length===0) {
 				let c=true;
 				while (cat!==null&&c) {
 					c=false;
-					if (m.catUriList[cat].has&&m.catUriList[cat]["UriList"].length===0) {
+					if (m.catUriList[cat].has&&m.catUriList[cat].UriList.length===0) {
 						c=m.deleteCat(cat);
 						catIsDeleted=catIsDeleted||c;
 					}
@@ -3110,6 +3110,9 @@ m.mmInPR=function (e) {
 			clearTimeout(m.timeOutRange);
 			m.timeOutRange=setTimeout(function () {
 				m.getUriListAndShowRecosOnCat(m.currentCat);
+				let fs=m.fsToRs;
+				fs[0].ptnSH=m.splitHangul("$!@#");
+				fs.$fs.trigger("input.fs");
 			}, 1024);
 		}
 	}
@@ -3440,19 +3443,18 @@ m.showRecosOnCat=function (elem, from) {
 		}
 	}
 	let $recos=$contents.find(".reco");
+	let fs0=m.fsGo;
 	for (let i=0;i<$recos.length;i++) {
 		let uri=m.unescapeHTML($recos.eq(i).find(".textURI").html());
-		if (!fs.fullList[uri]) {
-			fs.fullList[uri]={};
+		if (!fs0.fullList[uri]) {
+			fs0.fullList[uri]={};
 		}
-		fs.fullList[uri].$listI=$recos.eq(i);
+		fs0.fullList[uri].$listI=$recos.eq(i);
 	}
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
-	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.trigger("input.fs");
 };
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
@@ -3478,7 +3480,7 @@ m.recoDowned=function (urisStr, recos) {
 		p.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
-m.recoToEve=function (resp, recos) {
+m.recoToEve=function (resp, recos, cat, uris) {
 	resp=m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
 		let respK=resp[k];
@@ -3501,17 +3503,28 @@ m.recoToEve=function (resp, recos) {
 			p.val=m.val(p.val);
 		}
 	}
+	let fs=m.fsGo;
+	let fsFL=fs.fullList=fs.fullList||[];
 	if (recos===m.userRecos) {
-		let fs=m.fsGo;
-		let fsFL=fs.fullList=fs.fullList||[];
-		for (let k=resp.length-1;k>=1;k--) {
+		for (let k=1;k<resp.length;k++) {
 			let respK=resp[k];
 			let uri=respK.uri;
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={uri:uri, reco:r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:r.cats.split(";"), uri:uri, reco:r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
 			fsFLk.html=m.escapeHTML(r.title);
+		}
+		fs[1]=null;
+		fs[0].ptnSH=m.splitHangul("$!@#");
+		fs.$fs.trigger("input.fs");
+	}
+	if (cat&&uris) {
+		for (k=0;k<uris.length;k++) {
+			let uri=uris[k];
+			let kOfUriList=fs.fullList[uri]?.kOfUriList||{};
+			kOfUriList[cat]=uris.length-1-k;
+			fs.fullList[uri].kOfUriList=kOfUriList;
 		}
 	}
 };
@@ -3534,19 +3547,14 @@ m.getAndShowRecosOnCat=function (cat) {
 			getRecosN++;
 		}
 	}
-	let fs=m.fsGo;
-	let fsFL=fs.fullList=fs.fullList||[];
 	if (getRecosN>0) {
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function (resp) {
 			m.recoDowned(getRecosStr.substring(4), m.userRecos);
-			m.recoToEve(resp, m.userRecos);
+			m.recoToEve(resp, m.userRecos, cat, uris);
 			m.showRecosOnCat();
-			fs[1]=null;
-			fs[0].ptnSH=m.splitHangul("$!@#");
-			fs.$fs.trigger("input.fs");
 			fs1.currentIndex=fs1.fullList.length-1;
 			fs1[1]=null;
 			fs1[0].ptnSH=m.splitHangul("$!@#");
@@ -3559,9 +3567,6 @@ m.getAndShowRecosOnCat=function (cat) {
 	else {
 		m.showRecosOnCat();
 		fs1.currentIndex=fs1.fullList.length-1;
-		fs[1]=null;
-		fs[0].ptnSH=m.splitHangul("$!@#");
-		fs.$fs.trigger("input.fs");
 		fs1[1]=null;
 		fs1[0].ptnSH=m.splitHangul("$!@#");
 		fs1.$fs.trigger("input.fs");
@@ -3607,6 +3612,10 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 						if (isNaN(p)) {
 							catUL[p]=resp[i][p];
 						}
+					}
+					catUL.uris=[];
+					if (catUL.UriList?.length!==0) {
+						catUL.uris=catUL.UriList.split("\n");
 					}
 				}
 				m.getAndShowRecosOnCat(cat);
@@ -3752,14 +3761,17 @@ m.openCat=function (cat, e) {
 	if (e&&e.which===2) {
 		return true;
 	}
-	else {
-		if (window.history.state&&window.history.state.cat===cat) { return false; }
-		m.currentCat=cat;
-		m.fsToRs.shuffled=null;
-		m.getUriListAndShowRecosOnCat(cat);
-		window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
+	if (window.history.state?.cat===cat) {
 		return false;
 	}
+	m.currentCat=cat;
+	m.fsToRs.shuffled=null;
+	for (let l=0;l<m.fsGo.fullList.length;l++) {
+		m.fsGo.fullList[l].$listI=null;
+	}
+	m.getUriListAndShowRecosOnCat(cat);
+	window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
+	return false;
 };
 
 for (let i=0;i<m.catList.length;i++) {
@@ -4568,31 +4580,54 @@ $fuzzy_search.on("keydown", function (e) {
 		break;
 	}
 });
-m.gotoLi=function (e, elem, k, fs) {
-if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+m.showAndScrollTo=function ($listI) {
+	if (!$listI.is(":visible")) {
+		$listI.removeClass("none");
+		$listI.show();
+	}
+	$window.scrollTop($listI.offset()?.top);
 }
-else {
+m.gotoLi=function (e, elem, k, fs) {
+	if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+		return;
+	}
 	let $elem=$(elem);
-	let uri=fs.fullList[k].uri;
+	let fsFLk=fs.fullList[k];
+	let uri=fsFLk.uri;
 	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
 	}
 	else {
 		fs.$fsLis.removeClass("selected");
 		$elem.addClass("selected");
 	}
-	let $listI=fs.fullList[k].$listI;
-	if ($listI&&$listI.is(":visible")) {
-		$window.scrollTop($listI.offset().top);
+	let $listI=fsFLk.$listI;
+	if ($listI) {
+		m.showAndScrollTo($listI);
 	}
 	else {
-		let i=Math.floor((fs.fullList.length-1-k)/m.maxShowReco);
+		let beInCurrentCat=false;
+		let catSplit=fsFLk.catSplit;
+		for (let i=0;i<catSplit.length;i++) {
+			if (m.currentCat==catSplit[i]) {
+				beInCurrentCat=true;
+				break;
+			}
+		}
+		if (!beInCurrentCat) {
+			m.openCat(catSplit[0]);
+		}
+		let k=fsFLk.kOfUriList[m.currentCat];
+		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function () {
-			$window.scrollTop(fs.fullList[k].$listI.offset().top);
-		}, 256);
+			$listI=fs.fullList[k].$listI;
+			if ($listI) {
+				m.showAndScrollTo($listI);
+			}
+		}, 512);
 	}
-}};
+};
 m.doFSGo=function (fs) {
 	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
@@ -4602,8 +4637,7 @@ m.doFSGo=function (fs) {
 		for (let i=0;i<sorted.length;i++) {
 			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
-			if (fsFLk.inRange) {
-				let uri=fsFLk.uri;
+			if (fsFLk) {
 				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
