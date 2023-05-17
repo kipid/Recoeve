@@ -872,35 +872,39 @@ m.a_log_in=function (e, elem) {
 m.toggleNeighborsMode=function () {
 	if ($button_neighbors_mode.hasClass("enabled")) {
 		$button_mode.removeClass("enabled");
+		m.recoMode="";
 		m.showRecosOnCat();
 		$playlist_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
 		$button_mode.removeClass("enabled");
 		$button_neighbors_mode.addClass("enabled");
+		m.recoMode="neighbors";
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 		$contents.html("Load neighbors datas, and plot charts.");
-		window.history.pushState({cat:m.currentCat, mode:"neighbors"}, m.currentCat, m.pathOfCat(m.currentCat, "neighbors"));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat, "neighbors"));
 	}
 }
 
 m.toggleMultirecoMode=function () {
 	if ($button_multireco_mode.hasClass("enabled")) {
 		$button_mode.removeClass("enabled");
+		m.recoMode="";
 		$contents.removeClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
 		$playlist_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		window.history.pushState({cat:m.currentCat}, m.currentCat, m.pathOfCat(m.currentCat));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
 		$button_mode.removeClass("enabled");
 		$button_multireco_mode.addClass("enabled");
+		m.recoMode="multireco";
 		$contents.addClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.show();
@@ -908,7 +912,7 @@ m.toggleMultirecoMode=function () {
 		}
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
-		window.history.pushState({cat:m.currentCat, mode:"multireco"}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
 		if (m.myPage) {
 			m.showRecosOnCat();
 		}
@@ -3829,7 +3833,7 @@ m.openCat=function (cat, e) {
 		m.fsGo.fullList[l].$listI=null;
 	}
 	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat}, cat, m.pathOfCat(cat));
+	window.history.pushState({cat:cat, mode:m.recoMode}, cat, m.pathOfCat(cat));
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -5052,7 +5056,10 @@ if (vars.cat!==undefined) {
 	}
 	else if (m.recoMode==="multireco") {
 		m.openCat(cat);
-		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
+		// TODO: async await 쓰거나 callback 으로 써야할듯?
+		setTimeout(function () {
+			$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
+		}, 1024);
 	}
 	else if (m.recoMode==="neighbors") {
 		$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
