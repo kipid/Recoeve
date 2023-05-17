@@ -3251,7 +3251,6 @@ m.showRecosOnCat=function (elem, from) {
 		$reco_playing.html('');
 		$uri_rendered.html('');
 		$video.html('');
-		// TODO: Should I stop the video and youtube?
 		$rC_video_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 	}
@@ -4229,7 +4228,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		$error.html("");
 	}
 	else {
-		$error.html("Be careful! This is not your page. On this URI, you have"); // TODO: translate.
+		$error.html("[--Be careful! This is not your page. On this URI, you have--]");
 		let mR=m.myRecos[uri];
 		if (!mR) { mR=m.myRecos[uri]={}; }
 		if (mR.down) {
@@ -4591,15 +4590,16 @@ $button_del.on("click", function (e) {
 	else {
 		let errorMsg="";
 		if (uri.length==0) {
-			errorMsg="URI is required."; // TODO: translate
+			errorMsg="[--URI is required.--]";
 		}
 		else {
-			errorMsg="You have no reco on this URI."; // TODO: translate
+			errorMsg="[--You have no reco on this URI.--]";
 		}
 		$error.html(errorMsg);
 		$button_del.removeClass("disabled");
 	}
 });
+
 
 
 ///////////////////////////////////////////
