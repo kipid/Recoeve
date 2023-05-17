@@ -104,6 +104,7 @@ img {min-width:1em; min-height:1em; max-width:100%}
 .button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
 .reco .button {margin:0}
+.reco .button.deleted {background:rgb(255, 118, 0)}
 .button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 	.bright .button.disabled {background:rgb(100,100,100); color:rgb(25,25,25)}
@@ -214,6 +215,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n) {
 	background:rgb(40,40,40)
 }
+#fuzzy-search-list .list-item.deleted {background:rgb(255, 118, 0)}
 #fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat {font-size:.9em}
 #fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted {
 	font-size:.5em; color:rgb(150,150,150)
@@ -3139,9 +3141,9 @@ $point_range_right.on("mousedown touchstart", function (e) {
 m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r&&r.has) {
-		res+=`<div class="reco${inRange?'':' none'}">
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}">
 	<img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
-	${m.myIndex?`<div class="button edit fRight" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
+	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
 	<div class="title">${m.escapeHTML(r.title)}</div>
@@ -3730,8 +3732,23 @@ m.refresh=function (cats, option, uri) {
 						fs.$fs.trigger("input.fs");
 					}
 					else if (option==="deleted") {
-						$reco.remove();
-						// fs.splice(i, 1)? // i from id attr?
+						let r=m.userRecos[uri];
+						r.deleted=true;
+						$reco.addClass("none");
+						// fs.fullList.splice(i, 1)? // i from id attr?
+
+						let fs=m.fsGo;
+						let fsFLk=fs.fullList[uri];
+						fs[1]=null;
+						fs[0].ptnSH=m.splitHangul("$!@#");
+						fs.$fs.trigger("input.fs");
+
+						fs=m.fsToRs;
+						fsFLk=fs.fullList[uri];
+						fsFLk.inRange=false;
+						fs[1]=null;
+						fs[0].ptnSH=m.splitHangul("$!@#");
+						fs.$fs.trigger("input.fs");
 					}
 					break;
 				}
@@ -3906,14 +3923,24 @@ m.myRecos[""]=m.userRecos[""]={
 };
 m.showMyReco=function (r) {
 	if (r.has) {
-		$button_reco.hide();
-		$button_edit.show();
-		$button_del.show();
+		if (r.deleted) {
+			$button_reco.show();
+			$button_edit.hide();
+			$button_del.hide();
+			$button_back.show();
+		}
+		else {
+			$button_reco.hide();
+			$button_edit.show();
+			$button_del.show();
+			$button_back.show();
+		}
 	}
 	else {
 		$button_reco.show();
 		$button_edit.hide();
 		$button_del.hide();
+		$button_back.hide();
 	}
 	let $mR=$("#my-reco");
 	$mR.html( m.recoHTML(r, true, true) ); // need to be edit.
@@ -3947,10 +3974,18 @@ m.showReco=function (r) {
 	}
 	if (m.myPage) {
 		if (r.has) {
-			$button_reco.hide();
-			$button_edit.show();
-			$button_del.show();
-			$button_back.show();
+			if (r.deleted) {
+				$button_reco.show();
+				$button_edit.hide();
+				$button_del.hide();
+				$button_back.show();
+			}
+			else {
+				$button_reco.hide();
+				$button_edit.show();
+				$button_del.show();
+				$button_back.show();
+			}
 		}
 		else {
 			$button_reco.show();
@@ -4161,7 +4196,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		$error.html("");
 	}
 	else {
-		$error.html("Be careful! This is not your page. On this URI, you have");
+		$error.html("Be careful! This is not your page. On this URI, you have"); // TODO: translate.
 		let mR=m.myRecos[uri];
 		if (!mR) { mR=m.myRecos[uri]={}; }
 		if (mR.down) {
@@ -4495,7 +4530,7 @@ m.reco_delete_do=function (args, err) {
 		if (res[1]?.result==="deleted") {
 			$error.html("Deleted");
 			let cats=args.r.cats;
-			delete m.myRecos[args.uri];
+			m.myRecos[args.uri].deleted=true;
 			m.delCats_UriFromLists(cats, args.uri);
 			if (m.myPage) {
 				m.refresh(cats, "deleted", args.uri);
@@ -4523,10 +4558,10 @@ $button_del.on("click", function (e) {
 	else {
 		let errorMsg="";
 		if (uri.length==0) {
-			errorMsg="URI is required.";
+			errorMsg="URI is required."; // TODO: translate
 		}
 		else {
-			errorMsg="You have no reco on this URI.";
+			errorMsg="You have no reco on this URI."; // TODO: translate
 		}
 		$error.html(errorMsg);
 		$button_del.removeClass("disabled");
@@ -4642,7 +4677,7 @@ m.doFSGo=function (fs) {
 			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
@@ -4709,7 +4744,7 @@ m.doFSToRs=function (fs, shuffle) {
 	for (let i=0;i<sorted.length;i++) {
 		let k=res[sorted[i]].i;
 		let fsFLk=fs.fullList[k];
-		if (fsFLk.inRange) {
+		if (fsFLk.inRange&&!fsFLk.reco.deleted) {
 			let uri=fsFLk.uri;
 			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
 					+fs.fullList[k].html
