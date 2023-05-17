@@ -1,6 +1,6 @@
 rp	i	en	ko	zh	ja	fr	es	hi	ar	ru	desc
 Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru	Description
-[--version--]	1	Ver. 0.7.5. (2023-02-27).
+[--version--]	1	Ver. 0.8.0. (2023-05-18).
 [--welcome--]	2	Welcome to Recoeve	Recoeve 에 오신 것을 환영합니다.	欢迎来到 Recoeve	Recoeve へようこそ	Bienvenue sur REVOEVE	Bienvenido a Recoeve	Recoeve में आपका स्वागत है।	مرحبا بكم في recoeve	Добро пожаловать в Recove
 [--desc--]	3	"<div class=""p replace-reco-eve"">Record everything that you are interested in and wanna value. Then get connected to the people of your kind based on your evaluations, and get personalized recommendations for everything from them.</div>
 <div class=""p replace-reco-eve"">Be free from abusing or contamination, and agenda setting from mass-media which is inevitably to be filtered by a few editors. Even if they are good at all, some of them might be not of your interest and not be ordered by your importance. Make your important sorts be important. And meet the minority reports of your kinds.</div>
@@ -38,7 +38,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Sign up for Recoeve--]	17	Sign up for Recoeve	Recoeve 가입하기	Recoeve 注册	Recoeve 登録	Inscrivez-vous à REVOEVE	Regístrese en RECOEVE	Recoeve में शामिल हों	اشترك في Recoeve	Зарегистрируйтесь на разведке
 [--Change password--]	18	Change password	비밀번호 변경하기	更改密碼	パスワードを変更する	Changer le mot de passe	Cambiar la contraseña	पासवर्ड बदलें	تغيير كلمة المرور	Изменить пароль
 [--ID or E-mail is empty.--]	20	ID or E-mail is empty.	아이디/이메일을 입력해주세요.	ID/請輸入您的電子郵件。	ID /メールアドレスを入力してください。	ID ou e-mail est vide.	ID o correo electrónico está vacío.	कृपया एक आईडी/ईमेल दर्ज करें।	المعرف أو البريد الإلكتروني فارغ.	ID или электронная почта пусты.
-[--ID or E-mail is too short.--]	21	ID or E-mail is too short.	아이디/이메일이 너무 짧습니다.	用戶名/電子郵件太短。	ID /メールアドレスが短すぎます。	ID ou e-mail est trop court.	ID o correo electrónico es demasiado corto.	आईडी/ईमेल बहुत छोटा है।	المعرف أو البريد الإلكتروني قصير جدًا.	ID или электронная почта слишком короткие.
+[--ID or E-mail is too short.--]	21	ID or E-mail is too short.	아이디/이메일이 너무 짧습니다.	用戶名/電子郵件太短。	ID /メールアドレスが短すぎます。	ID ou e-mail est trop court.	ID o correo electrónico es demasiado corto.	आईडी/ईमेल बहुत छोटा है।	المعرف أو البريد الإلكتروني قصير جدًا.	ID или электронная почта слишком коротка.
 [--Password is empty.--]	22	Password is empty.	비밀번호를 입력해주세요.	請輸入您的密碼。	パスワードを入力してください。	Le mot de passe est vide.	La contraseña está vacía.	कृपया पासवर्ड दर्ज करें।	كلمة المرور فارغة.	Пароль пуст.
 [--Password is too short.--]	23	Password is too short.	비밀번호가 너무 짧습니다.	密碼太短。	パスワードが短すぎます。	Le mot de passe est trop court.	La contraseña es demasiado corta.	पासवर्ड बहुत छोटा है।	كلمة المرور قصيرة جدا.	Пароль слишком короткий.
 [--Password is too long.--]	24	Password is too long.	비밀번호가 너무 깁니다.	密碼太長。	パスワードが長すぎます。	Le mot de passe est trop long.	La contraseña es demasiado larga.	पासवर्ड बहुत लंबा है।	كلمة المرور طويلة جدا.	Пароль слишком длинный.
@@ -56,9 +56,9 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Logging in--]	36	Logging in	로그인 중입니다.	您登錄。	ログイン中です。	Se connecter	Iniciando sesión	मैं लॉग इन कर रहा हूं।	تسجيل الدخول	Вход в систему
 [--Sending an email--]	37	Sending an email	이메일을 보내는 중입니다.	發送電子郵件	メールを送信する	Envoi d'un e-mail	Enviando un correo electrónico	मैं एक ईमेल भेज रहा हूं।	إرسال رسالة عبر البريد الإلكتروني	Отправка электронного письма
 [--Please wait.--]	38	Please wait.	잠시만 기다려 주세요.	請稍候	しばらくお待ちください。	S'il vous plaît, attendez.	Espere por favor.	कृपया एक पल के लिए प्रतीक्षा करें।	انتظر من فضلك.	Пожалуйста, подождите.
-[--ID is empty.--]	40	ID is empty.	아이디를 입력해주세요.	請輸入您的用戶名。	IDを入力してください。	Id est vide.	La identificación está vacía.	कृपया अपनी आईडी दर्ज करें।	المعرف فارغ.	ID пуст.
-[--ID is too short.--]	41	ID is too short.	아이디가 너무 짧습니다.	用戶名是太短了。	ユーザ名が短すぎます。	ID est trop court.	ID es demasiado corto.	आईडी बहुत कम है।	المعرف قصير جدًا.	ID слишком короткий.
-[--ID is too long.--]	42	ID is too long.	아이디가 너무 깁니다.	用戶名太長。	ユーザ名が長すぎます。	Id est trop long.	ID es demasiado largo.	आईडी बहुत लंबी है।	معرف طويل جدًا.	ID слишком длинный.
+[--ID is empty.--]	40	ID is empty.	아이디를 입력해주세요.	請輸入您的用戶名。	IDを入力してください。	Id est vide.	ID está vacío.	कृपया अपनी आईडी दर्ज करें।	المعرف فارغ.	Идентификатор пуст.
+[--ID is too short.--]	41	ID is too short.	아이디가 너무 짧습니다.	用戶名是太短了。	ユーザ名が短すぎます。	Id est trop court.	ID es demasiado corto.	आईडी बहुत कम है।	المعرف قصير جدا.	ID слишком короткий.
+[--ID is too long.--]	42	ID is too long.	아이디가 너무 깁니다.	用戶名太長。	ユーザ名が長すぎます。	Id est trop long.	ID es demasiado largo.	आईडी बहुत लंबी है।	المعرف طويل جدا.	ID слишком длинный.
 [--length--]	43	length	길이	長度	長さ	longueur	longitud	लंबाई	طول	длина
 [--E-mail is empty.--]	44	E-mail is empty.	이메일을 입력해주세요.	請輸入您的電子郵件。	メールアドレスを入力してください。	Le courrier électronique est vide.	El correo electrónico está vacío.	अपना ईमेल दर्ज करें।	البريد الإلكتروني فارغ.	Электронная почта пуста.
 [--Confirm your password correctly.--]	50	Confirm your password correctly.	비밀번호가 일치하지 않습니다.	密碼不匹配。	パスワードが一致しません。	Confirmez correctement votre mot de passe.	Confirme su contraseña correctamente.	सांकेतिक शब्द मेल नहीं खाते।	قم بتأكيد كلمة المرور الخاصة بك بشكل صحيح.	Правильно подтвердите свой пароль.
@@ -71,7 +71,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--You have to verify your account within a day. Otherwise your sign-up will be evicted/canceled.--]	57	You have to verify your account within a day. Otherwise your sign-up will be evicted/canceled.	하루내에 당신의 계정을 인증해야 합니다. 그렇지 않으면 회원가입이 취소될 수 있습니다.	您必须在一天之内验证您的帐户。否则，您的注册将被驱逐/取消。	1日以内にアカウントを認証する必要があります。それ以外の場合は、メンバーシップがキャンセルされる場合があります。	Vous devez vérifier votre compte dans une journée. Sinon, votre inscription sera expulsée / annulée.	Tienes que verificar su cuenta dentro de un día. De lo contrario, su registro será desalojado/cancelado.	आपको एक दिन के भीतर अपने खाते को प्रमाणित करना होगा। अन्यथा, सदस्यता रद्द की जा सकती है।	عليك التحقق من حسابك خلال يوم واحد. وإلا فإن الاشتراك الخاص بك سيتم طرده/إلغاؤه.	Вы должны проверить свою учетную запись в течение дня. В противном случае ваша регистрация будет выселена/отменена.
 [--Error occured during registration. Please sign-up again.--]	58	Error occured during registration. Please sign-up again.	가입 도중 에러가 발생했습니다. 다시 시도해 주세요.	注册期间发生错误。请再次注册。	サインアップ中にエラーが発生しました。もう一度やり直してください。	Une erreur s'est produite lors de l'enregistrement. Veuillez vous inscrire à nouveau.	Se produjo un error durante el registro. Por favor, regístrese nuevamente.	साइन अप के दौरान एक त्रुटि हुई। कृपया पुन: प्रयास करें।	حدث خطأ أثناء التسجيل. يرجى الاشتراك مرة أخرى.	Ошибка произошла во время регистрации. Пожалуйста, зарегистрируйтесь еще раз.
 [--Checking ID and E-mail--]	60	Checking ID and E-mail	아이디와 이메일을 확인중입니다.	檢查您的用戶名和電子郵件。	ユーザ名とメールを確認しています。	Vérification de l'ID et du courrier électronique	Verificación de identificación y correo electrónico	आईडी और ईमेल जाँच कर रहे हैं।	التحقق من الهوية والبريد الإلكتروني	Проверка удостоверения личности и электронного письма
-[--Please click the Sign-up button again.--]	61	Please click the Sign-up button again.	가입하기 버튼을 다시 클릭해주세요.	請再次點擊加入按鈕。	登録ボタンをもう一度クリックしてください。	Veuillez cliquer à nouveau sur le bouton d'inscription.	Haga clic en el botón de registro nuevamente.	कृपया फिर से साइनिंग बटन पर क्लिक करें।	يرجى النقر على زر التسجيل مرة أخرى.	Пожалуйста, нажмите кнопку регистрации еще раз.
+[--Please click the Sign-up button again.--]	61	Please click the Sign-up button again.	가입하기 버튼을 다시 클릭해주세요.	請再次點擊加入按鈕。	登録ボタンをもう一度クリックしてください。	Veuillez cliquer à nouveau sur le bouton d'inscription.	Haga clic en el botón de registro nuevamente.	कृपया फिर से साइनिंग बटन पर क्लिक करें।	الرجاء النقر فوق زر التسجيل مرة أخرى.	Пожалуйста, нажмите кнопку регистрации еще раз.
 [--Signing up--]	62	Signing up	가입 요청 중	登錄請求	登録要求の中で	S'enregistrer	Registrando	सदस्यता के लिए अनुरोध के तहत	توقيع	Подписываясь
 [--ID is already in use. Please try another ID.--]	63	ID '${userId}' is already in use. Please try another ID.	아이디 '${userId}' 는 이미 사용중입니다.	ID '${userId}' 已经在使用中。请尝试另一个ID。	ID '${userId}' はすでに使用されています。	Id '${userId}' est déjà utilisé. Veuillez essayer un autre identifiant.	ID '${userId}' ya está en uso. Pruebe con otra identificación.	ID '${userId}' पहले से ही उपयोग में है।	المعرف '${userId}' قيد الاستخدام بالفعل. يرجى تجربة معرف آخر.	Id '$ {userid}' уже используется. Пожалуйста, попробуйте другой идентификатор.
 [--E-mail is already registered. Please try another e-mail.--]	64	E-mail '${userEmail}' is already registered. Please try another e-mail.	이메일 '${userEmail}' 는 이미 등록되어 있습니다. 다른 이메일을 등록해 주세요.	电子邮件 '${userEmail}' 已经注册。请尝试另一封电子邮件。	電子メール '${userEmail}' は既に登録されています。別の電子メールをお試しください。	Le courriel '${userEmail}' est déjà enregistré. Veuillez essayer un autre e-mail.	El correo electrónico '${userEmail}' ya está registrado. Pruebe con otro correo electrónico.	ईमेल '${userEmail}' पहले से ही पंजीकृत है। कृपया एक और ईमेल पंजीकृत करें।	البريد الإلكتروني '${userEmail}' مسجل بالفعل. يرجى تجربة بريد إلكتروني آخر.	Электронная почта '$ {usermail}' уже зарегистрирована. Пожалуйста, попробуйте еще одно электронное письмо.
@@ -82,44 +82,48 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--See neighbors--]	103	See neighbors	이웃 보기	鄰居視圖	近所を見る	Voir les voisins	Ver vecinos	पड़ोसियों	انظر الجيران	Смотрите соседей
 [--Multireco mode--]	104	Multireco mode	멀티레코 모드	多記錄模式	マルチレコモード	Mode multiréco	Modo multireco	मल्टीरको विधा	وضع multireco	Multireco Mode
 [--Multireco Categories--]	105	Multireco Categories	멀티레코 카테고리	Multireco 類別	マルチレコカテゴリー	Catégories multiricoles	Categorías multireco	मल्टीरको श्रेणी	فئات MultiReco	Категории мультиреко
-[--New Reco--]	106	New Reco	새 레코	新Reco	新しいレコ	Nouveau reco	Nuevo Reco	नया	ريكو جديد	Новый реко
-[--Toggle reco list play--]	107	Toggle reco list play	레코목록 재생 보이기/숨기기	切换reco列表播放	再生して再生/非表示にします	Player la liste Recco Toggle	Jugar de la lista de reco de alternar	खेलने/छिपाने के लिए रिप्ले	تبديل قائمة Reco Play	Перевернуть список Reco Play
+[--New Reco--]	106	New Reco	새 레코	新Reco	新しいレコ	Nouveau reco	Nuevo RECO	न्यू लेको	ريكو جديد	Новый реко
+[--Toggle reco list play--]	107	Toggle reco list play	레코목록 재생 보이기/숨기기	切换reco列表播放	LECOリスト再生/非表示	Player la liste Recco Toggle	Jugar de la lista de reco de alternativa	LECO LIST PLAY/HIDE	تبديل قائمة Reco Play	Перевернуть список Reco Play
 [--Short Keys--]	107	Short Keys	단축키	快捷鍵	ショートカット	Clés courtes	Llaves cortas	छोटा रास्ता	مفاتيح قصيرة	Короткие ключи
 [--Show recos without points--]	108	Show recos without points	점수 없는 레코 보이기	顯示沒有積分的記錄	ポイントなしのレコを表示	Afficher les recos sans points	Mostrar recos sin puntos	अनावश्यक स्कोर के लिए दृश्यमान	عرض Recos بدون نقاط	Показать Recos без очков
 [--Show only unrecoed on mine--]	109	Show only unrecoed on mine	내가 레코 안한 것만 보기	仅在我的	私がしなかったことだけを見てください	Montrer uniquement non recoé sur le mien	Mostrar solo no lo recorre en el mío	केवल वही देखें जो मैंने नहीं किया	أظهر فقط غير مملوءة	Покажите только безвкус
 [--Uncategorized--]	110	Uncategorized	분류없음	未分類	未分類	Non classé	Sin categoría	कोई वर्गीकरण नहीं	غير مصنف	Без рубрики
 [--Later--]	111	Later	나중에	之後	後で	Plus tard	Más tarde	बाद में	لاحقاً	Позже
 [--Indifferent--]	112	Indifferent	관심없음	沒興趣	関心なし	Indifférent	Indiferente	असुविधा	غير مبال	Безразличный
+[--Delete--]	113	Delete	지우기	删除	消す	Supprimer	Borrar	विलोपन	يمسح	Удалить
 [--Preceding--]	120	Preceding	전으로	前	前に	Précédent	Anterior	पहले	السابق	Предшествующий
 [--Following--]	121	Following	앞으로	向前	これから	Suivant	Siguiente	अब से	التالي	Следующий
-[--To my page--]	122	To my page	내 페이지로	到我的頁面	私のページへ	À ma page	A mi página	मेरे पेज पर	على صفحتي	На мою страницу
+[--To my page--]	122	To my page	내 페이지로	到我的頁面	私のページへ	À ma page	A mi página	मेरे पेज पर	إلى صفحتي	На мою страницу
 [--Backward--]	123	Backward	전으로	前	前に	En arrière	Hacia atrás	पहले	الى الوراء	Назад
 [--Forward--]	124	Forward	앞으로	向前	これから	Avant	Adelante	अब से	إلى الأمام	Вперед
 [--Auto skip--]	125	Auto skip	자동 넘기기	自動跳過	自動スキップ	Sauter automatiquement	Saltar automáticamente	स्वचालित	تخطي السيارات	Авто Скип
 [--Shuffle--]	126	Shuffle	순서섞기	洗牌	シャッフル	Mélanger	Barajar	आदेश	خلط	Перетасовать
 [--Loop--]	127	Loop	전체반복	重複所有	全繰り返し	Boucle	Bucle	पूर्ण पुनरावृत्ति	حلقة	Петля
-[--One-loop--]	128	One-loop	한곡반복	重複一首歌	曲を繰り返し	En boucle	De un bucle	दोहराना	حلقة واحدة	Один петля
+[--One-loop--]	128	One-loop	한곡반복	重複一首歌	曲を繰り返し	En boucle	De un bucle	दोहराना	حلقة واحدة	Одна петля
 [--ToR--]	129	ToR	목록	列表	リスト	Tor	Colina	सूची	تور	Тор
-[--return to the original position--]	130	click me to return to the original position (static position)	클릭 - 원래 위치로	點擊 - 到其初始位置	クリック - 元の場所に	Cliquez sur moi pour revenir à la position d'origine (position statique)	Haz clic en mí para volver a la posición original (posición estática)	मूल स्थान पर क्लिक करें	انقر فوق لي للعودة إلى الموضع الأصلي (الموضع الثابت)	Нажмите меня, чтобы вернуться в исходную позицию (статическая позиция)
+[--return to the original position--]	130	click me to return to the original position (static position)	클릭 - 원래 위치로	點擊 - 到其初始位置	クリック - 元の場所に	Cliquez sur moi pour revenir à la position d'origine (position statique)	Haga clic en mí para volver a la posición original (posición estática)	मूल स्थान पर क्लिक करें	انقر لي للعودة إلى الموضع الأصلي (الموضع الثابت)	Нажмите меня, чтобы вернуться в исходную позицию (статическая позиция)
 [--stick to the left top--]	131	click me to stick to the left top (fixed position)	클릭 - 왼쪽 위 고정위치로	點擊 - 左上在固定位置	クリック - 左上の固定位置に	Cliquez sur moi pour rester au sommet gauche (position fixe)	Haz clic en mí para seguir con la parte superior izquierda (posición fija)	ऊपरी बाएं निश्चित स्थिति पर क्लिक करें	انقر لي للالتزام بالقمة اليسرى (الموضع الثابت)	Нажмите меня, чтобы придерживаться левой вершины (фиксированное положение)
 [--Title--]	140	Title	제목	標題	題名	Titre	Título	शीर्षक	عنوان	Заголовок
 [--Categories--]	141	Categories	카테고리	類別	カテゴリ	Catégories	Categorías	वर्ग	فئات	Категории
 [--Description--]	142	Description	설명	解釋	説明	Description	Descripción	व्याख्या	وصف	Описание
 [--Comment--]	143	Comment	의견	評論	コメント	Commentaire	Comentario	राय	تعليق	Комментарий
 [--Points--]	144	Points	점수	點	ポイント	Points	Puntos	अंक	نقاط	Точки
+[--Be careful! This is not your page. On this URI, you have--]	145	Be careful! This is not your page. On this URI, you have	주의! 이곳은 다른 사람의 페이지 입니다. 해당 URI 에 당신은 다음을 가지고 있습니다.	当心！这不是您的页面。在这个URI上，您有	注意！これは別の人のページです。そのuriの中であなたは持っています：	Faire attention! Ce n'est pas votre page. Sur cet uri, tu as	¡Ten cuidado! Esta no es tu página. En este uri, tienes	सावधानी! यह किसी अन्य व्यक्ति का पृष्ठ है। उस उरी में आपके पास है:	احرص! هذه ليست صفحتك. على هذا URI ، لديك	Будь осторожен! Это не ваша страница. На этом URI у вас есть
 [--Reco--]	150	Reco	레코	Reco	レコ	Reco	Acomodar	फिर से करना	ريكو	Реко
 [--Reco to mine--]	151	Reco to mine	내꺼에 레코	我的回收	私のレコ	Reco à la mienne	Reco a la mía	खदान में reco	ريكو لي	Reco до моего
-[--Stash--]	152	Stash	치워두기	擱置	消す	Planque	Reserva	निष्कासन	خبأ	Хранение
+[--Stash--]	152	Stash	치워두기	擱置	消す	Planque	Reserva	निष्कासन	خبأ	Тайник
 [--Edit--]	153	Edit	수정	編輯	編集	Modifier	Editar	सुधार	يحرر	Редактировать
 [--Del--]	154	Del	삭제	刪除	削除	Del	Deleño	मिटाना	ديل	Дель
 [--Close--]	155	Close	닫기	關閉	閉じる	Fermer	Cerca	बंद करना	يغلق	Закрывать
 [--Back--]	156	Back	원래대로	起初	元に	Dos	Atrás	मौलिक रूप से	خلف	Назад
 [--Toggle lyrics--]	157	Toggle lyrics	가사 보이기/숨기기	切换歌词	歌詞を切り替えます	Toggle	Letra de alternar	गीत देखें/छिपाएं	تبديل كلمات	Toggle Trics
-[--Hide lyrics--]	158	Hide lyrics	가사 숨기기	隐藏歌词	歌詞	Hide Paroles	Ocultar letras	बोल	إخفاء كلمات	Скрыть текст
+[--Hide lyrics--]	158	Hide lyrics	가사 숨기기	隐藏歌词	歌詞	Hide paroles	Ocultar letras	बोल	إخفاء كلمات	Скрыть тексты песен
 [--Hide--]	159	Hide	숨기기	隐藏	隠蔽	Cacher	Esconder	छुपा रहे है	يخفي	Скрывать
-[--Change orders--]	160	Change orders	순서 바꾸기	更改訂單	順序を変更	Changer les commandes	Cambiar ordenes	आदेश बदलना	تغيير أوامر	Изменить заказы
-[--OK--]	161	OK	확인	確認	確認	D'ACCORD	DE ACUERDO	जाँच करना	نعم	ХОРОШО
-[--Cancel--]	162	Cancel	취소	取消	キャンセル	Annuler	Cancelar	रद्द	يلغي	Отмена
+[--URI is required.--]	160	URI is required.	URI 는 필수항목입니다.	需要URI。	URIは不可欠なアイテムです。	URI est requis.	Se requiere URI.	URI एक आवश्यक वस्तु है।	مطلوب URI.	URI требуется.
+[--You have no reco on this URI.--]	161	You have no reco on this URI.	해당 URI 의 reco 를 가지고 있지 않습니다.	您在此URI上没有Reco。	URIのRecoはありません。	Vous n'avez pas de reco sur cet URI.	No tienes reco en este URI.	इसमें यूआरआई का रिको नहीं है।	ليس لديك reco على هذا URI.	У вас нет Reco на этом URI.
+[--Change orders--]	162	Change orders	순서 바꾸기	更改訂單	順序を変更	Changer les commandes	Cambiar ordenes	आदेश बदलना	تغيير أوامر	Изменить заказы
+[--OK--]	163	OK	확인	確認	確認	D'ACCORD	DE ACUERDO	जाँच करना	نعم	ХОРОШО
+[--Cancel--]	164	Cancel	취소	取消	キャンセル	Annuler	Cancelar	रद्द	يلغي	Отмена
 [--placeholder URI--]	170	Unique Resource Indentifier: like http-URL (max 255 length)	고유 리소스 구분자: HTTP-URL과 같은 것들 (255자까지)	独特的资源凹痕器: 例如HTTP-URL (最大255长)	ユニークなリソースインデンティファイア: HTTP-URLのように (最大255の長さ)	Intendant des ressources uniques: comme HTTP-URL (longueur max 255)	Guardifista de recursos único: como HTTP-URL (longitud máxima 255)	निर्दोष संसाधन: HTTP-URL (255 वर्णों तक) जैसा कुछ	المسافة البادئة للموارد الفريدة: مثل HTTP-URL (طول 255 كحد أقصى)	Уникальный концентратор ресурса: как http-url (длина максимального 255)
 [--placeholder Title--]	171	Title	제목	标题	タイトル	Titre	Título	शीर्षक	عنوان	Заголовок
 [--placeholder Category--]	172	Category--Sub category--Subsub category ; Another category ; ...	카테고리--하위 카테고리--하하위 카테고리 ; 또 다른 카테고리 ; ...	类别--sub类别--subsub类别 ; 另一个类别 ; ...	カテゴリ--低下カテゴリ--ハハカテゴリ。 ; 別のカテゴリ。 ; ...	Catégorie--catégorie de subsoux--catégorie de subsub ; Une autre catégorie ; ...	Categoría--Categoría SUB--Categoría SUBSUB ; Otra categoría ; ...	श्रेणी--लोअर श्रेणी--हाहा श्रेणी ; एक और श्रेणी ; का	فئة--فئة sub--فئة subsub ; فئة أخرى ; ...	Категория-категория-суббота-категория-субсуба; Другая категория; ...
