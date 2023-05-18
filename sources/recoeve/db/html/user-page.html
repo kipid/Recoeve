@@ -1707,6 +1707,9 @@ m.splitHangul=function (str) {
 	res.pCho=[]; // position of word-start or 초성
 	let p=0;
 	res.pCho[p]=true;
+	if (!str||str.constructor!==String) {
+		return res;
+	}
 	let cho, jung, jong;
 	for (let i=0;i<str.length;i++) {
 		let c=str.charAt(i)
