@@ -22,6 +22,8 @@ m.myPage=(m.myId===m.userId);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
 
+
+
 /*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
 |*|
 |*|  A complete cookies reader/writer framework with full unicode support.
@@ -721,6 +723,15 @@ $title=$("title");
 $body=$("body");
 $.fn.exists=function () { return this.length!==0; };
 
+switch (m.recoMode) {
+	case "multireco":
+		$button_multireco_mode.addClass("enabled");
+		break;
+	case "neighbors":
+		$button_neighbors_mode.addClass("enabled");
+		break;
+}
+
 
 
 // Changing Styles of Recoeve.net
@@ -871,40 +882,38 @@ m.a_log_in=function (e, elem) {
 
 m.toggleNeighborsMode=function () {
 	if ($button_neighbors_mode.hasClass("enabled")) {
-		$button_mode.removeClass("enabled");
 		m.recoMode="";
+		$button_mode.removeClass("enabled");
 		m.showRecosOnCat();
 		$playlist_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat));
 	}
 	else {
+		m.recoMode="neighbors";
 		$button_mode.removeClass("enabled");
 		$button_neighbors_mode.addClass("enabled");
-		m.recoMode="neighbors";
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
-		$contents.html("Load neighbors datas, and plot charts.");
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat, "neighbors"));
 	}
+	m.openCat(m.currentCat);
 }
 
 m.toggleMultirecoMode=function () {
 	if ($button_multireco_mode.hasClass("enabled")) {
-		$button_mode.removeClass("enabled");
 		m.recoMode="";
+		$button_mode.removeClass("enabled");
 		$contents.removeClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
 		$playlist_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat));
+		m.openCat(m.currentCat);
 	}
 	else {
+		m.recoMode="multireco";
 		$button_mode.removeClass("enabled");
 		$button_multireco_mode.addClass("enabled");
-		m.recoMode="multireco";
 		$contents.addClass("multireco");
 		if (!m.myPage) {
 			$multireco_cats_container.show();
@@ -3180,7 +3189,7 @@ $point_range_right.on("mousedown touchstart", function (e) {
 ////////////////////////////////////////////////////
 m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
-	if (r&&r.has) {
+	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}">
 	<img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
@@ -3231,19 +3240,21 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
-		if (m.myPage) {
-			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
-		}
-		else if (m.myRecos[r.uri]) {
-			let mR=m.myRecos[r.uri];
-			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+		if (m.recoMode==="multireco") {
+			if (m.myPage) {
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 			}
-			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="str"></span></div>`;
+			else if (m.myRecos[r.uri]) {
+				let mR=m.myRecos[r.uri];
+				if (mR.has) {
+					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+				}
+				else {
+					res+=`<div class="my-point">${m.stars(0)} <span class="str"></span></div>`;
+				}
 			}
 		}
-		res+=`</div>`;
+		res+=`<div class="result"></div></div>`;
 	}
 	else {
 		res+=`<div class="reco">No Reco</div>`;
@@ -3252,6 +3263,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 };
 m.reco_pointChange_do=function (args, err) {
 	if (err) {
+		// TODO: print err?
 		return;
 	}
 	let fs=m.fsGo;
@@ -3260,28 +3272,16 @@ m.reco_pointChange_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
-		if (fs.fullList[uri]?.$listI) {
-			fs.fullList[uri].$listI.append(`<div class="result">Failed change. You may not be logged-in.: ${resp}</div>`);
-			setTimeout(function () {
-				fs.fullList[uri].$listI.find(".result").remove();
-			}, 4096);
-		}
+		args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${resp}`);
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result==="changed") {
 			let val=m.myRecos[uri].val=m.val(args.valStr);
-			if (m.myPage&&val.valid&&fs.fullList[uri]?.$listI) {
-				fs.fullList[uri].$listI.append(`<div class="result">Your point on this URI is changed.</div>`);
-				setTimeout(function () {
-					fs.fullList[uri].$listI.find(".result").remove();
-				}, 4096);
-				fs.fullList[uri].$listI.find(".val .bar").css({width:m.starsWidth*val.val});
-			}
+			args.$result?.html(`[--Your point on this URI is changed.--]`);
+			//fs.fullList[uri].$listI.find(".val .bar").css({width:m.starsWidth*val.val});
 		}
 		else {
-			if (fs.fullList[uri]?.$listI) {
-				fs.fullList[uri].$listI.append(`<div class="result">${res[1]?.result}</div>`);
-			}
+			args.$result?.html(res[1]?.result);
 		}
 	});
 };
@@ -3362,96 +3362,60 @@ m.showRecosOnCat=function (elem, from) {
 				}
 			}
 			$(elem).replaceWith(strHTML);
-			let $stars=$contents.find(".my-point>.stars-container");
-			m.recoByOnlyStars=function ($str, uri) {
-				let valStr=$str.html();
-				if (m.myPage) {
-					if (!(m.myRecos[uri]?.val?.str===valStr)) {
-						let strHeads="do\turi\tval";
-						let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-						m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
-					}
-				}
-				else {
-					if (m.myRecos[uri]?.has) {
-						if (!(m.myRecos[uri]?.val?.str===valStr)) {
+			if (m.recoMode==="multireco") {
+				let $stars=$contents.find(".my-point>.stars-container");
+				m.recoByOnlyStars=function ($str, uri, $result) {
+					let valStr=$str.html();
+					if (m.myPage) {
+						if (m.myRecos[uri]?.val?.str!==valStr) {
 							let strHeads="do\turi\tval";
-							let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr});
+							let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+							$result.html("[--Changing your points.--]");
+							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
 						}
 					}
 					else {
-						let strHeads="do\turi";
-						let strContents="reco\t"+m.encloseStr(uri);
-						strHeads+="\tval";
-						strContents+="\t"+valStr;
-						let uR=m.userRecos[uri];
-						if (uR.title) {
-							strHeads+="\ttitle";
-							strContents+="\t"+m.encloseStr(uR.title);
+						if (m.myRecos[uri]?.has) {
+							if (m.myRecos[uri]?.val?.str!==valStr) {
+								let strHeads="do\turi\tval";
+								let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+								m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
+							}
 						}
-						if (uR.desc) {
-							strHeads+="\tdesc";
-							strContents+="\t"+m.encloseStr(uR.desc);
+						else {
+							let strHeads="do\turi";
+							let strContents="reco\t"+m.encloseStr(uri);
+							strHeads+="\tval";
+							strContents+="\t"+valStr;
+							let uR=m.userRecos[uri];
+							if (uR.title) {
+								strHeads+="\ttitle";
+								strContents+="\t"+m.encloseStr(uR.title);
+							}
+							if (uR.desc) {
+								strHeads+="\tdesc";
+								strContents+="\t"+m.encloseStr(uR.desc);
+							}
+							strHeads+="\tcats";
+							strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
+							let strRecoDo=strHeads+"\n"+strContents;
+							m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
 						}
-						strHeads+="\tcats";
-						strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
-						let strRecoDo=strHeads+"\n"+strContents;
-						m.rmb_me(m.reco_do, {strRecoDo, uri});
 					}
-				}
-			};
-			$stars.on("click", function (e) {
-				let $target=$(e.target);
-				if (!$target.hasClass("stars-container")) {
-					$target=$target.parents(".stars-container");
-				}
-				let uri=m.unescapeHTML($target.parents(".reco").find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $bar=$target.find(".bar");
-				let barW=$bar.width();
-				let $str=$target.siblings(".str");
-				let w=e.clientX-$bar.offset().left+$window.scrollLeft();
-				if (w<-15) {
-					w=-1;
-				}
-				else if (w<0) {
-					w=0;
-				}
-				else if (w>m.starsWidth) {
-					w=m.starsWidth;
-				}
-				if (w!==barW) {
-					barW=w;
-					if (w<0) {
-						$str.html("");
-						w=0;
+				};
+				$stars.on("click", function (e) {
+					clearTimeout(m.timeout[uri]);
+					let $target=$(e.target);
+					if (!$target.hasClass("stars-container")) {
+						$target=$target.parents(".stars-container");
 					}
-					else {
-						$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
-					}
-					$bar.css({width:w});
-				}
-				m.timeout[uri]=setTimeout(function () {
-					m.recoByOnlyStars($str, uri);
-				}, 5000);
-			});
-			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-				let $target=$(e.target);
-				if (!$target.hasClass("stars-container")) {
-					$target=$target.parents(".stars-container");
-				}
-				let uri=m.unescapeHTML($target.parents(".reco").find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $bar=$target.find(".bar");
-				let barW=$bar.width();
-				let $str=$target.siblings(".str");
-				$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
-					window.getSelection().removeAllRanges();
-					e.preventDefault();
-					e.stopPropagation();
-					let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-					let w=x-$bar.offset().left+$window.scrollLeft();
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					let $result=$reco.find(".result");
+					let $bar=$target.find(".bar");
+					let barW=$bar.width();
+					let $str=$target.siblings(".str");
+					let w=e.clientX-$bar.offset().left+$window.scrollLeft();
 					if (w<-15) {
 						w=-1;
 					}
@@ -3472,14 +3436,57 @@ m.showRecosOnCat=function (elem, from) {
 						}
 						$bar.css({width:w});
 					}
-				});
-				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
-					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 					m.timeout[uri]=setTimeout(function () {
-						m.recoByOnlyStars($str, uri);
-					}, 5000);
+						m.recoByOnlyStars($str, uri, $result);
+					}, 2048);
 				});
-			});
+				$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+					clearTimeout(m.timeout[uri]);
+					let $target=$(e.target);
+					if (!$target.hasClass("stars-container")) {
+						$target=$target.parents(".stars-container");
+					}
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					let $result=$reco.find(".result");
+					let $bar=$target.find(".bar");
+					let barW=$bar.width();
+					let $str=$target.siblings(".str");
+					$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+						window.getSelection().removeAllRanges();
+						e.preventDefault();
+						e.stopPropagation();
+						let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+						let w=x-$bar.offset().left+$window.scrollLeft();
+						if (w<-15) {
+							w=-1;
+						}
+						else if (w<0) {
+							w=0;
+						}
+						else if (w>m.starsWidth) {
+							w=m.starsWidth;
+						}
+						if (w!==barW) {
+							barW=w;
+							if (w<0) {
+								$str.html("");
+								w=0;
+							}
+							else {
+								$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+							}
+							$bar.css({width:w});
+						}
+					});
+					$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+						$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+						m.timeout[uri]=setTimeout(function () {
+							m.recoByOnlyStars($str, uri, $result);
+						}, 2048);
+					});
+				});
+			}
 		}
 	}
 	let $recos=$contents.find(".reco");
@@ -3572,8 +3579,17 @@ m.recoToEve=function (resp, recos, cat, uris) {
 		}
 	}
 };
-m.getAndShowRecosOnCat=function (cat) {
-	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
+m.showRecosOnCatAndUpdateFS=function (fs1) {
+	m.showRecosOnCat();
+	fs1.currentIndex=fs1.fullList.length-1;
+	fs1[1]=null;
+	fs1[0].ptnSH=m.splitHangul("$!@#");
+	fs1.$fs.trigger("input.fs");
+	setTimeout(function () {
+		fs1.playNext(-1, true, true);
+	}, m.wait*2);
+};
+m.getRecos=function (uris, recos) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
@@ -3581,9 +3597,11 @@ m.getAndShowRecosOnCat=function (cat) {
 	fs1FL.cat=cat;
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
-		let r=m.userRecos[uri];
-		if (!r) { r=m.userRecos[uri]={}; }
-		fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
+		let r=m.recos[uri];
+		if (!r) { r=m.recos[uri]={}; }
+		if (recos===m.userRecos) {
+			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
+		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
@@ -3591,30 +3609,42 @@ m.getAndShowRecosOnCat=function (cat) {
 	}
 	if (getRecosN>0) {
 		$.ajax({
-			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
+			type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
 			, dataType:"text"
 		}).done(function (resp) {
-			m.recoDowned(getRecosStr.substring(4), m.userRecos);
-			m.recoToEve(resp, m.userRecos, cat, uris);
-			m.showRecosOnCat();
-			fs1.currentIndex=fs1.fullList.length-1;
-			fs1[1]=null;
-			fs1[0].ptnSH=m.splitHangul("$!@#");
-			fs1.$fs.trigger("input.fs");
-			setTimeout(function () {
-				fs1.playNext(-1, true, true);
-			}, m.wait*2);
+			m.recoDowned(getRecosStr.substring(4), recos);
+			if (recos===m.userRecos) {
+				m.recoToEve(resp, recos, cat, uris);
+			}
+			else {
+				m.recoToEve(resp, recos);
+			}
+			if (m.recoMode==="multireco") {
+				if (recos===m.myRecos) {
+					m.showRecosOnCatAndUpdateFS(fs1);
+				}
+			}
+			else {
+				m.showRecosOnCatAndUpdateFS(fs1);
+			}
 		});
 	}
 	else {
-		m.showRecosOnCat();
-		fs1.currentIndex=fs1.fullList.length-1;
-		fs1[1]=null;
-		fs1[0].ptnSH=m.splitHangul("$!@#");
-		fs1.$fs.trigger("input.fs");
-		setTimeout(function () {
-			fs1.playNext(-1, true, true);
-		}, m.wait*2);
+		if (m.recoMode==="multireco") {
+			if (recos===m.myRecos) {
+				m.showRecosOnCatAndUpdateFS(fs1);
+			}
+		}
+		else {
+			m.showRecosOnCatAndUpdateFS(fs1);
+		}
+	}
+};
+m.getAndShowRecosOnCat=function (cat) {
+	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
+	m.getRecos(uris, m.userRecos);
+	if (m.recoMode==="multireco") {
+		m.getRecos(uris, m.myRecos);
 	}
 };
 m.getUriList=function (getUriListStr, fail, done) {
@@ -3647,41 +3677,48 @@ m.getUriList=function (getUriListStr, fail, done) {
 	});
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
-	$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
-	let catI=m.catList[cat];
-	if (catI) {
-		$catList.find(".cat").removeClass("selected");
-		let $cat=$("#cat-"+catI.i);
-		$cat.addClass("selected");
-		let $parents=$cat.parents(".subCat");
-		for (let i=$parents.length-1;i>=0;i--) {
-			if (!$parents.eq(i).is(":visible")) {
-				$parents.eq(i).prev().find(">.EC").trigger("click");
+switch (m.recoMode) {
+	case "neighbors":
+		$numbers_of_recos.html("Loading neighbors, and plotting charts.");
+		$contents.html("");
+		break;
+	case "multireco": case "": default:
+		$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
+		let catI=m.catList[cat];
+		if (catI) {
+			$catList.find(".cat").removeClass("selected");
+			let $cat=$("#cat-"+catI.i);
+			$cat.addClass("selected");
+			let $parents=$cat.parents(".subCat");
+			for (let i=$parents.length-1;i>=0;i--) {
+				if (!$parents.eq(i).is(":visible")) {
+					$parents.eq(i).prev().find(">.EC").trigger("click");
+				}
+			}
+			let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};;
+			if (catUriList.down) {
+				m.getAndShowRecosOnCat(cat);
+			}
+			else {
+				m.getUriList(
+					"cat\n"+(cat===""?"\tp":cat),
+					function () {
+						$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+						$contents.html("");
+					},
+					function () {
+						catUriList.down=true;
+						m.getAndShowRecosOnCat(cat);
+					}
+				);
 			}
 		}
-		let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};;
-		if (catUriList.down) {
-			m.getAndShowRecosOnCat(cat);
-		}
 		else {
-			m.getUriList(
-				"cat\n"+(cat===""?"\tp":cat),
-				function () {
-					$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-					$contents.html("");
-				},
-				function () {
-					catUriList.down=true;
-					m.getAndShowRecosOnCat(cat);
-				}
-			);
+			$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
+			$contents.html("");
 		}
-	}
-	else {
-		$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
-		$contents.html("");
-	}
-};
+		break;
+}};
 m.refresh=function (cats, option, uri) {
 	let c=cats.split(";");
 	let k=0;
@@ -4245,7 +4282,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	else {
 		let getRecosStr="uri"+"\n"+uri;
 		$.ajax({
-			type:"POST", url:m.userPath+"/get-Recos", data:getRecosStr
+			type:"POST", url:`${m.userPath}/get-Recos`, data:getRecosStr
 			, dataType:"text"
 		}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
 			m.recoDowned(uri, m.userRecos);
@@ -4285,7 +4322,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		else {
 			let getRecosStr="uri"+"\n"+uri;
 			$.ajax({
-				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
+				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 				, dataType:"text"
 			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
 				m.recoDowned(uri, m.myRecos);
@@ -4417,7 +4454,8 @@ $button_back.on("click", function (e) {
 
 m.reco_do=function (args, err) {
 	if (err) {
-		$error.html("Reco failed. You may be not logged-in. "+err);
+		$error.html(`[--Reco failed. You may be not logged-in.--] ${err}`);
+		args.$result?.html($error.html());
 		$button_reco.removeClass("disabled");
 		return;
 	}
@@ -4425,12 +4463,14 @@ m.reco_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
 	}).fail(function () {
-		$error.html("Reco failed. You may be not logged-in.");
+		$error.html("[--Reco failed. You may be not logged-in.--]");
+		args.$result?.html($error.html());
 		$button_reco.removeClass("disabled");
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result==="recoed") {
-			$error.html("Recoed");
+			$error.html("[--Recoed.--]");
+			args.$result?.html($error.html());
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
 			let cats=m.myRecos[args.uri].cats;
@@ -4959,6 +4999,17 @@ m.processShortKey=function (e) {
 		case 77: // M=77
 			e.preventDefault();
 			m.toggleMultirecoMode();
+			if ($button_multireco_mode.hasClass("enabled")) {
+				m.recoMode="";
+				$button_mode.removeClass("enabled");
+				$contents.removeClass("multireco");
+				if (!m.myPage) {
+					$multireco_cats_container.hide();
+				}
+				$playlist_container.show();
+				$toggle_reco_list_play.addClass("enabled");
+				m.openCat(m.currentCat);
+			}
 			break;
 		case 78: // N=78
 			e.preventDefault();
