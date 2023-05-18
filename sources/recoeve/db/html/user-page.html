@@ -908,7 +908,6 @@ m.toggleMultirecoMode=function () {
 		}
 		$playlist_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		m.openCat(m.currentCat);
 	}
 	else {
 		m.recoMode="multireco";
@@ -921,39 +920,8 @@ m.toggleMultirecoMode=function () {
 		}
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode}, m.currentCat, m.pathOfCat(m.currentCat, "multireco"));
-		if (m.myPage) {
-			m.showRecosOnCat();
-		}
-		else {
-			let cat=m.currentCat;
-			let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-			let getRecosStr="uri";
-			let getRecosN=0;
-			for (let i=0;i<uris.length;i++) {
-				let uri=uris[i];
-				let r=m.myRecos[uri];
-				if (!r) { r=m.myRecos[uri]={}; }
-				if (!r.down) {
-					getRecosStr+="\n"+uri;
-					getRecosN++;
-				}
-			}
-			if (getRecosN>0) {
-				$.ajax({
-					type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
-					, dataType:"text"
-				}).done(function (resp) {
-					m.recoDowned(getRecosStr.substring(4), m.myRecos);
-					m.recoToEve(resp, m.myRecos);
-					m.showRecosOnCat();
-				});
-			}
-			else {
-				m.showRecosOnCat();
-			}
-		}
 	}
+	m.openCat(m.currentCat);
 };
 
 if (m.myPage) {
@@ -2015,7 +1983,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-m.pathOfCat=function (cat, mode, lang) {
+m.pathOfCat=function (cat, mode=m.recoMode, lang) {
 	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}`;
 };
 m.getDepthOfTabs=function (str) {
@@ -3308,7 +3276,7 @@ m.showRecosOnCat=function (elem, from) {
 				let fsFLk=fs.fullList[k];
 				let uri=fsFLk.uri;
 				let r=fsFLk.reco;
-				let val=r.val.val;
+				let val=r.val?.val;
 				fsFLk.txt=m.splitHangul(r.title);
 				fsFLk.html=m.escapeHTML(r.title);
 				if (val===undefined||val===-1) {
@@ -5054,17 +5022,6 @@ m.processShortKey=function (e) {
 		case 77: // M=77
 			e.preventDefault();
 			m.toggleMultirecoMode();
-			if ($button_multireco_mode.hasClass("enabled")) {
-				m.recoMode="";
-				$button_mode.removeClass("enabled");
-				$contents.removeClass("multireco");
-				if (!m.myPage) {
-					$multireco_cats_container.hide();
-				}
-				$playlist_container.show();
-				$toggle_reco_list_play.addClass("enabled");
-				m.openCat(m.currentCat);
-			}
 			break;
 		case 78: // N=78
 			e.preventDefault();
