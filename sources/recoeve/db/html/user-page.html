@@ -3645,7 +3645,7 @@ m.showRecosOnCatAndUpdateFS=function (fs1) {
 		fs1.playNext(-1, true, true);
 	}, m.wait*2);
 };
-m.getRecos=function (uris, recos) {
+m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
@@ -3655,7 +3655,7 @@ m.getRecos=function (uris, recos) {
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={}; }
 		if (recos===m.userRecos) {
-			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, cat:cat, uri:uri, reco:r};
+			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri:uri, reco:r};
 		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
@@ -3697,9 +3697,9 @@ m.getRecos=function (uris, recos) {
 };
 m.getAndShowRecosOnCat=function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-	m.getRecos(uris, m.userRecos);
+	m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco") {
-		m.getRecos(uris, m.myRecos);
+		m.getRecos(uris, m.myRecos, cat);
 	}
 };
 m.getUriList=function (getUriListStr, fail, done) {
