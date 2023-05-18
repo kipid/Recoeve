@@ -3603,16 +3603,6 @@ m.recoToEve=function (resp, recos, cat, uris) {
 		}
 	}
 };
-m.showRecosOnCatAndUpdateFS=function (fs1) {
-	m.showRecosOnCat();
-	fs1.currentIndex=fs1.fullList.length-1;
-	fs1[1]=null;
-	fs1[0].ptnSH=m.splitHangul("$!@#");
-	fs1.$fs.trigger("input.fs");
-	setTimeout(function () {
-		fs1.playNext(-1, true, true);
-	}, m.wait*2);
-};
 m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
@@ -3642,33 +3632,23 @@ m.getRecos=function (uris, recos, cat) {
 			else {
 				m.recoToEve(resp, recos);
 			}
-			if (m.recoMode==="multireco") {
-				if (recos===m.myRecos) {
-					m.showRecosOnCatAndUpdateFS(fs1);
-				}
-			}
-			else {
-				m.showRecosOnCatAndUpdateFS(fs1);
-			}
 		});
-	}
-	else {
-		if (m.recoMode==="multireco") {
-			if (recos===m.myRecos) {
-				m.showRecosOnCatAndUpdateFS(fs1);
-			}
-		}
-		else {
-			m.showRecosOnCatAndUpdateFS(fs1);
-		}
 	}
 };
 m.getAndShowRecosOnCat=function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	m.getRecos(uris, m.userRecos, cat);
-	if (m.recoMode==="multireco") {
+	if (m.recoMode==="multireco"&&!m.myPage) {
 		m.getRecos(uris, m.myRecos, cat);
 	}
+	m.showRecosOnCat();
+	fs1.currentIndex=fs1.fullList.length-1;
+	fs1[1]=null;
+	fs1[0].ptnSH=m.splitHangul("$!@#");
+	fs1.$fs.trigger("input.fs");
+	setTimeout(function () {
+		fs1.playNext(-1, true, true);
+	}, m.wait*2);
 };
 m.getUriList=function (getUriListStr, fail, done) {
 	$.ajax({
