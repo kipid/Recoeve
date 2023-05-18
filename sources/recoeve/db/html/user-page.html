@@ -1614,7 +1614,7 @@ m.rmb_me=function (callback, args) {
 				callback(args, resp);
 			}
 			else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 16, "/", false, true);
 				callback(args, null); // null means no error.
 				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
@@ -3038,7 +3038,10 @@ m.renderStrDescCmt=function (str) {
 // val, points, stars
 ////////////////////////////////////////////////////
 m.val=function (val) {
-	let res={};
+	let res={valid:false};
+	if (val.constructor!==String) {
+		return res;
+	}
 	res.str=val;
 	if (val.length===0) {
 		res.valid=true;
@@ -3048,7 +3051,7 @@ m.val=function (val) {
 		let exec=m.ptnVal.exec(val);
 		if (exec!==null) {
 			res.num=Number(exec[1]);
-			res.divisor=Number(exec[2])
+			res.divisor=Number(exec[2]);
 			res.valid=(res.num>=0&&res.num<=res.divisor);
 			if (res.valid) {
 				res.val=res.num/res.divisor;
@@ -3242,15 +3245,15 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 		}
 		if (m.recoMode==="multireco") {
 			if (m.myPage) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 			}
 			else if (m.myRecos[r.uri]) {
 				let mR=m.myRecos[r.uri];
 				if (mR.has) {
-					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
 				}
 				else {
-					res+=`<div class="my-point">${m.stars(0)} <span class="str"></span></div>`;
+					res+=`<div class="my-point">${m.stars(0)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str"></span></div>`;
 				}
 			}
 		}
@@ -3263,7 +3266,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 };
 m.reco_pointChange_do=function (args, err) {
 	if (err) {
-		// TODO: print err?
+		args.$result?.html(err);
 		return;
 	}
 	let fs=m.fsGo;
@@ -3278,7 +3281,6 @@ m.reco_pointChange_do=function (args, err) {
 		if (res[1]?.result==="changed") {
 			let val=m.myRecos[uri].val=m.val(args.valStr);
 			args.$result?.html(`[--Your point on this URI is changed.--]`);
-			//fs.fullList[uri].$listI.find(".val .bar").css({width:m.starsWidth*val.val});
 		}
 		else {
 			args.$result?.html(res[1]?.result);
@@ -3363,7 +3365,6 @@ m.showRecosOnCat=function (elem, from) {
 			}
 			$(elem).replaceWith(strHTML);
 			if (m.recoMode==="multireco") {
-				let $stars=$contents.find(".my-point>.stars-container");
 				m.recoByOnlyStars=function ($str, uri, $result) {
 					let valStr=$str.html();
 					if (m.myPage) {
@@ -3403,14 +3404,12 @@ m.showRecosOnCat=function (elem, from) {
 						}
 					}
 				};
+				let $stars=$contents.find(".my-point>.stars-container");
 				$stars.on("click", function (e) {
-					clearTimeout(m.timeout[uri]);
 					let $target=$(e.target);
-					if (!$target.hasClass("stars-container")) {
-						$target=$target.parents(".stars-container");
-					}
 					let $reco=$target.parents(".reco");
 					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
 					let $result=$reco.find(".result");
 					let $bar=$target.find(".bar");
 					let barW=$bar.width();
@@ -3441,13 +3440,10 @@ m.showRecosOnCat=function (elem, from) {
 					}, 2048);
 				});
 				$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-					clearTimeout(m.timeout[uri]);
 					let $target=$(e.target);
-					if (!$target.hasClass("stars-container")) {
-						$target=$target.parents(".stars-container");
-					}
 					let $reco=$target.parents(".reco");
 					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
 					let $result=$reco.find(".result");
 					let $bar=$target.find(".bar");
 					let barW=$bar.width();
@@ -3474,7 +3470,7 @@ m.showRecosOnCat=function (elem, from) {
 								w=0;
 							}
 							else {
-								$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+								$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
 							}
 							$bar.css({width:w});
 						}
@@ -3485,6 +3481,66 @@ m.showRecosOnCat=function (elem, from) {
 							m.recoByOnlyStars($str, uri, $result);
 						}, 2048);
 					});
+				});
+				let $ups=$contents.find(".my-point>.up");
+				let $downs=$contents.find(".my-point>.down");
+				$ups.on("click", function (e) {
+					let $target=$(e.target);
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $str=$target.siblings(".str");
+					let $star=$reco.find(".my-point>.stars-container");
+					let val=m.val($str.html());
+					if (val.valid) {
+						if (val.val===-1) {
+							$str.html("10.0/10");
+						}
+						else {
+							val.num+=0.1;
+							if (val.num>val.divisor) {
+								val.num=val.divisor;
+							}
+							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+						}
+					} else {
+						$str.html("10.0/10");
+					}
+					val=m.val($str.html());
+					$star.find(".val .bar").css({width:m.starsWidth*val.val});
+					m.timeout[uri]=setTimeout(function () {
+						m.recoByOnlyStars($str, uri, $result);
+					}, 2048);
+				});
+				$downs.on("click", function (e) {
+					let $target=$(e.target);
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $str=$target.siblings(".str");
+					let $star=$reco.find(".my-point>.stars-container");
+					let val=m.val($str.html());
+					if (val.valid) {
+						if (val.val===-1) {
+							$str.html("0.0/10");
+						}
+						else {
+							val.num-=0.1;
+							if (val.num<0) {
+								val.num=0;
+							}
+							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+						}
+					} else {
+						$str.html("0.0/10");
+					}
+					val=m.val($str.html());
+					$star.find(".val .bar").css({width:m.starsWidth*val.val});
+					m.timeout[uri]=setTimeout(function () {
+						m.recoByOnlyStars($str, uri, $result);
+					}, 2048);
 				});
 			}
 		}
