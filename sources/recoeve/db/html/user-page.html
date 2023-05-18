@@ -5100,19 +5100,7 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	let cat=vars.cat.val;
-	if (m.recoMode==="") {
-		m.openCat(cat);
-	}
-	else if (m.recoMode==="multireco") {
-		m.openCat(cat);
-		// TODO: async await 쓰거나 callback 으로 써야할듯?
-		setTimeout(function () {
-			$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
-		}, 1024);
-	}
-	else if (m.recoMode==="neighbors") {
-		$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
-	}
+	m.openCat(cat);
 }
 if (vars.title!==undefined) {
 	let title=vars.title.val;
