@@ -1986,7 +1986,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-m.pathOfCat=function (cat, mode=m.recoMode, lang) {
+m.pathOfCat=function (cat, mode, lang) {
 	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}`;
 };
 m.getDepthOfTabs=function (str) {
@@ -3883,7 +3883,7 @@ m.openCat=function (cat, e) {
 		m.fsGo.fullList[l].$listI=null;
 	}
 	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat, mode:m.recoMode}, cat, m.pathOfCat(cat));
+	window.history.pushState({cat:cat, mode:m.recoMode}, cat, m.pathOfCat(cat, m.recoMode));
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -5016,10 +5016,6 @@ m.processShortKey=function (e) {
 		case 78: // N=78
 			e.preventDefault();
 			$button_new_reco.trigger("click");
-			break;
-		case 77: // M=77
-			e.preventDefault();
-			$button_multireco_mode.trigger("click");
 			break;
 		case 70: //F=70
 		case 68: //D=68
