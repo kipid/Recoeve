@@ -3623,26 +3623,32 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
-	if (getRecosN>0) {
-		$.ajax({
-			type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
-			, dataType:"text"
-		}).done(function (resp) {
-			m.recoDowned(getRecosStr.substring(4), recos);
-			if (recos===m.userRecos) {
-				m.recoToEve(resp, recos, cat, uris);
-			}
-			else {
-				m.recoToEve(resp, recos);
-			}
-		});
-	}
+	return new Promise(function (resolve, reject) {
+		if (getRecosN>0) {
+			$.ajax({
+				type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
+				, dataType:"text"
+			}).done(function (resp) {
+				m.recoDowned(getRecosStr.substring(4), recos);
+				if (recos===m.userRecos) {
+					m.recoToEve(resp, recos, cat, uris);
+				}
+				else {
+					m.recoToEve(resp, recos);
+				}
+				resolve(null);
+			});
+		}
+		else {
+			resolve(null);
+		}
+	});
 };
-m.getAndShowRecosOnCat=function (cat) {
+m.getAndShowRecosOnCat=async function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-	m.getRecos(uris, m.userRecos, cat);
+	await m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco"&&!m.myPage) {
-		m.getRecos(uris, m.myRecos, cat);
+		await m.getRecos(uris, m.myRecos, cat);
 	}
 	m.showRecosOnCat();
 	let fs1=m.fsToRs;
