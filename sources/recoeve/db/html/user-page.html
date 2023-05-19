@@ -5116,7 +5116,7 @@ if ($shortkeyDesc.exists()) {
 ////////////////////////////////////////////////////
 m.changeLang=function (lang, e, elem) {
 	let search=window.location.search;
-	let href=`${m.pathName}${search?`${search}&`:"?"}${lang?`lang=${lang}`:""}${window.location.hash}`;
+	let href=`${window.location.pathname}${search?`${search}&`:"?"}${lang?`lang=${lang}`:""}${window.location.hash}`;
 	if (e&&e.which===2) {
 		$(elem).attr({"href":href});
 		return true;
