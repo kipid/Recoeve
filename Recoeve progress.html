@@ -61,18 +61,11 @@
 
 추천해주기. Neighbor 통한 추천.
 
-multireco mode 로 처음 접속할때, 별 드래그들 안보임.
-setTimeout 으로 해결하긴 했는데, 제대로 다시 고쳐야할듯.
-
-Multireco 모드에서 별 드래그로 점수 바꿀때, Recoing to yours; Changing your points; Changed your points; You are not logged-in 등 표시해주기.
-
 UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point/점수 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯? 구글 스프레드시트 참고.) 정렬 후 Save this order 도 있어야 할듯? path=<code>/changeOrders/UriList</code> 로 구현.<br>
 UriList 순서 바꿀때 Set of URIs 가 같은지 한번은 체크 해야함.<br>
 중간 몇개만 바꿀때는 substring(start, end) 잡아서 이 내에서만 Set of URIs 체크하고 이 부분만 순서 바꿔서 저장해주는 방식이 되어도 됨. (그런데 이런 경우가 거의 없을거라서... 그냥 넘어가고 다음에 생각하는게 좋을듯?)
 
-Go 는 이제까지 load 한 모든 userRecos 에서 검색하도록 하자. Point range 도 거르지 말고 동작하게. txt 는 "cat :: title" 형태로 fs 검색.<br>
-Go 로 특정 reco on cat=... and URI=Some... 으로 갈 때 window.location.href=pathName?cat=...#SomeURIEncoded 같은 형태로 해당 reco 로 바로 갈수 있도록 디자인. pushState 이용. Cat 이 바뀌어야 되는 경우도 잘 동작하도록.<br>
-T 는 현재 cat (m.currentCat) 만 검색. Point range 도 걸러서.
+
 
 Remember 할 때, cookie 이용하는데 ip 주소도 저장해놓고, ip 가 바뀌면 보안상 이유로 rmbd 가 안되었다고 알려주기? 아니다. ip 바뀌어도 로그인은 유지시켜 주는데... 이메일로 알려주자 ip 가 바뀌었다고 rmbd 할때 (중간에 누군가 해킹을 한 것 일수도 있습니다. ip 가 1.3.4.2 에서 112.23.2.1 로 바뀌었습니다. 이동 중이시라면 가능성이 있는 일이고)
 
@@ -444,6 +437,23 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ##[.hiden] Done (애ㅜㄷ)
 
 ### 정리하기 전
+
+Go 는 이제까지 load 한 모든 userRecos 에서 검색하도록 하자. Point range 도 거르지 말고 동작하게. txt 는 "cat :: title" 형태로 fs 검색.<br>
+Go 로 특정 reco on cat=... and URI=Some... 으로 갈 때 window.location.href=pathName?cat=...#SomeURIEncoded 같은 형태로 해당 reco 로 바로 갈수 있도록 디자인. pushState 이용. Cat 이 바뀌어야 되는 경우도 잘 동작하도록. (#SomeURI 는 보류.)
+
+별 드래그 reco 할 때, &lt; &gt; 버튼 만들어줘서 0.1 point 씩 조절할 수 있도록 하자.
+
+Short Keys 에 B 추가. B: See neighbors.
+
+멀티레코할때 점수를 바꾸는중입니다. 안뜨는거. 몇초뒤에 메세지는 지우는게 좋을듯. (지우는건 보류.)
+
+/mode/multireco?cat=... 으로 바로 접속하면 제대로 load 안됨. m.currentCat 업데이트 후 오픈캣.
+
+언어 바꾸는 링크 제대로 처리하기.
+
+Multireco 모드에서 별 드래그로 점수 바꿀때, Recoing to yours; Changing your points; Changed your points; You are not logged-in 등 표시해주기.
+
+multireco mode 로 처음 접속할때, 별 드래그들 안보임. sync and await 써서 해결.
 
 multireco mode 변환할 때 새 reco 들 안보이는거 해결하기.
 
