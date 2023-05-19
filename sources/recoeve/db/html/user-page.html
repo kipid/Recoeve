@@ -729,17 +729,6 @@ $title=$("title");
 $body=$("body");
 $.fn.exists=function () { return this.length!==0; };
 
-switch (m.recoMode) {
-	case "multireco":
-		$button_multireco_mode.addClass("enabled");
-		break;
-	case "neighbors":
-		$button_neighbors_mode.addClass("enabled");
-		break;
-}
-
-
-
 // Changing Styles of Recoeve.net
 m.mode="Dark";
 m.fontFamily="맑은 고딕";
@@ -5156,7 +5145,15 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	let cat=vars.cat.val;
-	m.openCat(cat);
+	if (m.recoMode==="") {
+		m.openCat(cat);
+	}
+	else if (m.recoMode==="multireco") {
+		m.toggleMultirecoMode();
+	}
+	else if (m.recoMode==="neighbors") {
+		m.toggleNeighborsMode();
+	}
 }
 if (vars.title!==undefined) {
 	let title=vars.title.val;
