@@ -3276,6 +3276,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 			if (m.myRecos[uri]?.val?.str!==valStr) {
 				let strHeads="do\turi\tval";
 				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+				$result.html("[--Changing your points.--]");
 				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
 			}
 		}
@@ -3296,6 +3297,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 			strHeads+="\tcats";
 			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
 			let strRecoDo=strHeads+"\n"+strContents;
+			$result.html("[--Recoing to your recoeve.net.--]");
 			m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
 		}
 	}
@@ -5145,8 +5147,9 @@ if (vars.lang!==undefined) {
 }
 if (vars.cat!==undefined) {
 	let cat=vars.cat.val;
+	m.currentCat=cat?cat:"";
 	if (m.recoMode==="") {
-		m.openCat(cat);
+		m.openCat(m.currentCat);
 	}
 	else if (m.recoMode==="multireco") {
 		m.toggleMultirecoMode();
