@@ -371,6 +371,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco .reco .val {display:none}
 .reco .my-point {display:none}
 .multireco .reco .my-point {display:block}
+.reco .result {font-size:.7em; padding:.5em}
 
 .lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
@@ -3219,16 +3220,18 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
-		if (m.myPage) {
-			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
-		}
-		else if (m.myRecos[r.uri]) {
-			let mR=m.myRecos[r.uri];
-			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+		if (m.recoMode==="multireco") {
+			if (m.myPage) {
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 			}
-			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+			else if (m.myRecos[r.uri]) {
+				let mR=m.myRecos[r.uri];
+				if (mR.has) {
+					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+				}
+				else {
+					res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+				}
 			}
 		}
 		res+=`<div class="result"></div></div>`;
@@ -3388,62 +3391,21 @@ m.showRecosOnCat=function (elem, from) {
 				}
 			}
 			$(elem).replaceWith(strHTML);
-			let $stars=$contents.find(".my-point>.stars-container");
-			$stars.on("click", function (e) {
-				let $target=$(e.target);
-				let $reco=$target.parents(".reco");
-				if (!$target.hasClass("stars-container")) {
-					$target=$target.parents(".stars-container");
-				}
-				let uri=m.unescapeHTML($reco.find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $result=$reco.find(".result");
-				let $bar=$target.find(".bar");
-				let barW=$bar.width();
-				let $str=$target.siblings(".str");
-				let w=e.clientX-$bar.offset().left+$window.scrollLeft();
-				if (w<-15) {
-					w=-1;
-				}
-				else if (w<0) {
-					w=0;
-				}
-				else if (w>m.starsWidth) {
-					w=m.starsWidth;
-				}
-				if (w!==barW) {
-					barW=w;
-					if (w<0) {
-						$str.html("");
-						w=0;
+			if (m.recoMode==="multireco") {
+				let $stars=$contents.find(".my-point>.stars-container");
+				$stars.on("click", function (e) {
+					let $target=$(e.target);
+					let $reco=$target.parents(".reco");
+					if (!$target.hasClass("stars-container")) {
+						$target=$target.parents(".stars-container");
 					}
-					else {
-						$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
-					}
-					$bar.css({width:w});
-				}
-				m.timeout[uri]=setTimeout(function () {
-					m.recoByOnlyStars($str, uri, $result);
-				}, 2048);
-			});
-			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-				let $target=$(e.target);
-				if (!$target.hasClass("stars-container")) {
-					$target=$target.parents(".stars-container");
-				}
-				let $reco=$target.parents(".reco");
-				let uri=m.unescapeHTML($reco.find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $result=$reco.find(".result");
-				let $bar=$target.find(".bar");
-				let barW=$bar.width();
-				let $str=$target.siblings(".str");
-				$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
-					window.getSelection().removeAllRanges();
-					e.preventDefault();
-					e.stopPropagation();
-					let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-					let w=x-$bar.offset().left+$window.scrollLeft();
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $bar=$target.find(".bar");
+					let barW=$bar.width();
+					let $str=$target.siblings(".str");
+					let w=e.clientX-$bar.offset().left+$window.scrollLeft();
 					if (w<-15) {
 						w=-1;
 					}
@@ -3460,78 +3422,121 @@ m.showRecosOnCat=function (elem, from) {
 							w=0;
 						}
 						else {
-							$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
+							$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
 						}
 						$bar.css({width:w});
 					}
-				});
-				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
-					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 					m.timeout[uri]=setTimeout(function () {
 						m.recoByOnlyStars($str, uri, $result);
 					}, 2048);
 				});
-			});
-			let $ups=$contents.find(".my-point>.up");
-			let $downs=$contents.find(".my-point>.down");
-			$ups.on("click", function (e) {
-				let $target=$(e.target);
-				let $reco=$target.parents(".reco");
-				let uri=m.unescapeHTML($reco.find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $result=$reco.find(".result");
-				let $str=$target.siblings(".str");
-				let $star=$reco.find(".my-point>.stars-container");
-				let val=m.val($str.html());
-				if (val.valid) {
-					if (val.val===-1) {
+				$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+					let $target=$(e.target);
+					if (!$target.hasClass("stars-container")) {
+						$target=$target.parents(".stars-container");
+					}
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $bar=$target.find(".bar");
+					let barW=$bar.width();
+					let $str=$target.siblings(".str");
+					$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+						window.getSelection().removeAllRanges();
+						e.preventDefault();
+						e.stopPropagation();
+						let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+						let w=x-$bar.offset().left+$window.scrollLeft();
+						if (w<-15) {
+							w=-1;
+						}
+						else if (w<0) {
+							w=0;
+						}
+						else if (w>m.starsWidth) {
+							w=m.starsWidth;
+						}
+						if (w!==barW) {
+							barW=w;
+							if (w<0) {
+								$str.html("");
+								w=0;
+							}
+							else {
+								$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
+							}
+							$bar.css({width:w});
+						}
+					});
+					$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+						$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+						m.timeout[uri]=setTimeout(function () {
+							m.recoByOnlyStars($str, uri, $result);
+						}, 2048);
+					});
+				});
+				let $ups=$contents.find(".my-point>.up");
+				let $downs=$contents.find(".my-point>.down");
+				$ups.on("click", function (e) {
+					let $target=$(e.target);
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $str=$target.siblings(".str");
+					let $star=$reco.find(".my-point>.stars-container");
+					let val=m.val($str.html());
+					if (val.valid) {
+						if (val.val===-1) {
+							$str.html("10.0/10");
+						}
+						else {
+							val.num+=0.1;
+							if (val.num>val.divisor) {
+								val.num=val.divisor;
+							}
+							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+						}
+					} else {
 						$str.html("10.0/10");
 					}
-					else {
-						val.num+=0.1;
-						if (val.num>val.divisor) {
-							val.num=val.divisor;
+					val=m.val($str.html());
+					$star.find(".bar").css({width:m.starsWidth*val.val});
+					m.timeout[uri]=setTimeout(function () {
+						m.recoByOnlyStars($str, uri, $result);
+					}, 2048);
+				});
+				$downs.on("click", function (e) {
+					let $target=$(e.target);
+					let $reco=$target.parents(".reco");
+					let uri=m.unescapeHTML($reco.find(".textURI").html());
+					clearTimeout(m.timeout[uri]);
+					let $result=$reco.find(".result");
+					let $str=$target.siblings(".str");
+					let $star=$reco.find(".my-point>.stars-container");
+					let val=m.val($str.html());
+					if (val.valid) {
+						if (val.val===-1) {
+							$str.html("0.0/10");
 						}
-						$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-					}
-				} else {
-					$str.html("10.0/10");
-				}
-				val=m.val($str.html());
-				$star.find(".bar").css({width:m.starsWidth*val.val});
-				m.timeout[uri]=setTimeout(function () {
-					m.recoByOnlyStars($str, uri, $result);
-				}, 2048);
-			});
-			$downs.on("click", function (e) {
-				let $target=$(e.target);
-				let $reco=$target.parents(".reco");
-				let uri=m.unescapeHTML($reco.find(".textURI").html());
-				clearTimeout(m.timeout[uri]);
-				let $result=$reco.find(".result");
-				let $str=$target.siblings(".str");
-				let $star=$reco.find(".my-point>.stars-container");
-				let val=m.val($str.html());
-				if (val.valid) {
-					if (val.val===-1) {
+						else {
+							val.num-=0.1;
+							if (val.num<0) {
+								val.num=0;
+							}
+							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+						}
+					} else {
 						$str.html("0.0/10");
 					}
-					else {
-						val.num-=0.1;
-						if (val.num<0) {
-							val.num=0;
-						}
-						$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-					}
-				} else {
-					$str.html("0.0/10");
-				}
-				val=m.val($str.html());
-				$star.find(".bar").css({width:m.starsWidth*val.val});
-				m.timeout[uri]=setTimeout(function () {
-					m.recoByOnlyStars($str, uri, $result);
-				}, 2048);
-			});
+					val=m.val($str.html());
+					$star.find(".bar").css({width:m.starsWidth*val.val});
+					m.timeout[uri]=setTimeout(function () {
+						m.recoByOnlyStars($str, uri, $result);
+					}, 2048);
+				});
+			}
 		}
 	}
 	let $recos=$contents.find(".reco");
