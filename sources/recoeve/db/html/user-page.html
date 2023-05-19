@@ -921,9 +921,10 @@ m.toggleMultirecoMode=function () {
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	}
-	m.openCat(m.currentCat);
+	// m.openCat(m.currentCat);
 };
 
+m.showOnlyUnrecoed=false;
 if (m.myPage) {
 	$show_only_unrecoed.hide();
 }
@@ -931,10 +932,13 @@ else {
 	$show_only_unrecoed.on("click", function () {
 		if ($show_only_unrecoed.hasClass("enabled")) {
 			$show_only_unrecoed.removeClass("enabled");
+			m.showOnlyUnrecoed=false;
 		}
 		else {
 			$show_only_unrecoed.addClass("enabled");
+			m.showOnlyUnrecoed=true;
 		}
+		m.openCat(m.currentCat);
 	});
 }
 
@@ -1895,7 +1899,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 			for (let p=0;p<indices.length;p++) {
 				indicesMMS[p]=indices[p]; // hard copy of indices
 			}
-			if (txt.length<256) {
+			if (txt.length<512) {
 				for (let k=indices.length-2;k>=0;) {
 					regExs[k].lastIndex=indices[k].start+1;
 					exec=regExs[k].exec(txtS);
@@ -3207,25 +3211,26 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 			res+=`</div>`;
 		}
 		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
-		if (r.val.str) {
+		if (r.val?.str) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else {
+			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
 		}
 		res+=`<div class="tFirst">Firstly Recoed at ${r.tFirst}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
-		if (m.recoMode==="multireco") {
-			if (m.myPage) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		if (m.myPage) {
+			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else if (m.myRecos[r.uri]) {
+			let mR=m.myRecos[r.uri];
+			if (mR.has) {
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
 			}
-			else if (m.myRecos[r.uri]) {
-				let mR=m.myRecos[r.uri];
-				if (mR.has) {
-					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
-				}
-				else {
-					res+=`<div class="my-point">${m.stars(0)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str"></span></div>`;
-				}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str"></span></div>`;
 			}
 		}
 		res+=`<div class="result"></div></div>`;
@@ -3257,6 +3262,45 @@ m.reco_pointChange_do=function (args, err) {
 			args.$result?.html(res[1]?.result);
 		}
 	});
+};
+m.recoByOnlyStars=function ($str, uri, $result) {
+	let valStr=$str.html();
+	if (m.myPage) {
+		if (m.myRecos[uri]?.val?.str!==valStr) {
+			let strHeads="do\turi\tval";
+			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			$result.html("[--Changing your points.--]");
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
+		}
+	}
+	else {
+		if (m.myRecos[uri]?.has) {
+			if (m.myRecos[uri]?.val?.str!==valStr) {
+				let strHeads="do\turi\tval";
+				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
+				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
+			}
+		}
+		else {
+			let strHeads="do\turi";
+			let strContents="reco\t"+m.encloseStr(uri);
+			strHeads+="\tval";
+			strContents+="\t"+valStr;
+			let uR=m.userRecos[uri];
+			if (uR.title) {
+				strHeads+="\ttitle";
+				strContents+="\t"+m.encloseStr(uR.title);
+			}
+			if (uR.desc) {
+				strHeads+="\tdesc";
+				strContents+="\t"+m.encloseStr(uR.desc);
+			}
+			strHeads+="\tcats";
+			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
+			let strRecoDo=strHeads+"\n"+strContents;
+			m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
+		}
+	}
 };
 m.showRecosOnCat=function (elem, from) {
 	let fs=m.fsToRs;
@@ -3303,7 +3347,7 @@ m.showRecosOnCat=function (elem, from) {
 					}
 				}
 			}
-			if ((!m.myPage)&&$show_only_unrecoed.hasClass("enabled")) {
+			if ((!m.myPage)&&m.showOnlyUnrecoed) {
 				for (let k=0;k<l;k++) {
 					let fsFLk=fs.fullList[k];
 					let uri=fsFLk.uri;
@@ -3322,9 +3366,7 @@ m.showRecosOnCat=function (elem, from) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 			}
 			$contents.html(strHTML);
-			setTimeout(function () {
-				$(".to-be-executed").eq(0).trigger("click");
-			}, 256);
+			$(".to-be-executed").eq(0).trigger("click");
 		}
 		else {
 			if (from!==undefined&&from!==null&&from.constructor===Number) {
@@ -3335,57 +3377,56 @@ m.showRecosOnCat=function (elem, from) {
 				}
 			}
 			$(elem).replaceWith(strHTML);
-			if (m.recoMode==="multireco") {
-				m.recoByOnlyStars=function ($str, uri, $result) {
-					let valStr=$str.html();
-					if (m.myPage) {
-						if (m.myRecos[uri]?.val?.str!==valStr) {
-							let strHeads="do\turi\tval";
-							let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
-							$result.html("[--Changing your points.--]");
-							m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
-						}
+			let $stars=$contents.find(".my-point>.stars-container");
+			$stars.on("click", function (e) {
+				let $target=$(e.target);
+				let $reco=$target.parents(".reco");
+				let uri=m.unescapeHTML($reco.find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
+				let $result=$reco.find(".result");
+				let $bar=$target.find(".bar");
+				let barW=$bar.width();
+				let $str=$target.siblings(".str");
+				let w=e.clientX-$bar.offset().left+$window.scrollLeft();
+				if (w<-15) {
+					w=-1;
+				}
+				else if (w<0) {
+					w=0;
+				}
+				else if (w>m.starsWidth) {
+					w=m.starsWidth;
+				}
+				if (w!==barW) {
+					barW=w;
+					if (w<0) {
+						$str.html("");
+						w=0;
 					}
 					else {
-						if (m.myRecos[uri]?.has) {
-							if (m.myRecos[uri]?.val?.str!==valStr) {
-								let strHeads="do\turi\tval";
-								let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-								m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result});
-							}
-						}
-						else {
-							let strHeads="do\turi";
-							let strContents="reco\t"+m.encloseStr(uri);
-							strHeads+="\tval";
-							strContents+="\t"+valStr;
-							let uR=m.userRecos[uri];
-							if (uR.title) {
-								strHeads+="\ttitle";
-								strContents+="\t"+m.encloseStr(uR.title);
-							}
-							if (uR.desc) {
-								strHeads+="\tdesc";
-								strContents+="\t"+m.encloseStr(uR.desc);
-							}
-							strHeads+="\tcats";
-							strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
-							let strRecoDo=strHeads+"\n"+strContents;
-							m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
-						}
+						$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
 					}
-				};
-				let $stars=$contents.find(".my-point>.stars-container");
-				$stars.on("click", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					let $bar=$target.find(".bar");
-					let barW=$bar.width();
-					let $str=$target.siblings(".str");
-					let w=e.clientX-$bar.offset().left+$window.scrollLeft();
+					$bar.css({width:w});
+				}
+				m.timeout[uri]=setTimeout(function () {
+					m.recoByOnlyStars($str, uri, $result);
+				}, 2048);
+			});
+			$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+				let $target=$(e.target);
+				let $reco=$target.parents(".reco");
+				let uri=m.unescapeHTML($reco.find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
+				let $result=$reco.find(".result");
+				let $bar=$target.find(".bar");
+				let barW=$bar.width();
+				let $str=$target.siblings(".str");
+				$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+					window.getSelection().removeAllRanges();
+					e.preventDefault();
+					e.stopPropagation();
+					let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+					let w=x-$bar.offset().left+$window.scrollLeft();
 					if (w<-15) {
 						w=-1;
 					}
@@ -3402,118 +3443,78 @@ m.showRecosOnCat=function (elem, from) {
 							w=0;
 						}
 						else {
-							$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+							$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
 						}
 						$bar.css({width:w});
 					}
+				});
+				$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+					$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 					m.timeout[uri]=setTimeout(function () {
 						m.recoByOnlyStars($str, uri, $result);
 					}, 2048);
 				});
-				$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					let $bar=$target.find(".bar");
-					let barW=$bar.width();
-					let $str=$target.siblings(".str");
-					$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
-						window.getSelection().removeAllRanges();
-						e.preventDefault();
-						e.stopPropagation();
-						let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-						let w=x-$bar.offset().left+$window.scrollLeft();
-						if (w<-15) {
-							w=-1;
-						}
-						else if (w<0) {
-							w=0;
-						}
-						else if (w>m.starsWidth) {
-							w=m.starsWidth;
-						}
-						if (w!==barW) {
-							barW=w;
-							if (w<0) {
-								$str.html("");
-								w=0;
-							}
-							else {
-								$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
-							}
-							$bar.css({width:w});
-						}
-					});
-					$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
-						$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
-						m.timeout[uri]=setTimeout(function () {
-							m.recoByOnlyStars($str, uri, $result);
-						}, 2048);
-					});
-				});
-				let $ups=$contents.find(".my-point>.up");
-				let $downs=$contents.find(".my-point>.down");
-				$ups.on("click", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					let $str=$target.siblings(".str");
-					let $star=$reco.find(".my-point>.stars-container");
-					let val=m.val($str.html());
-					if (val.valid) {
-						if (val.val===-1) {
-							$str.html("10.0/10");
-						}
-						else {
-							val.num+=0.1;
-							if (val.num>val.divisor) {
-								val.num=val.divisor;
-							}
-							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-						}
-					} else {
+			});
+			let $ups=$contents.find(".my-point>.up");
+			let $downs=$contents.find(".my-point>.down");
+			$ups.on("click", function (e) {
+				let $target=$(e.target);
+				let $reco=$target.parents(".reco");
+				let uri=m.unescapeHTML($reco.find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
+				let $result=$reco.find(".result");
+				let $str=$target.siblings(".str");
+				let $star=$reco.find(".my-point>.stars-container");
+				let val=m.val($str.html());
+				if (val.valid) {
+					if (val.val===-1) {
 						$str.html("10.0/10");
 					}
-					val=m.val($str.html());
-					$star.find(".val .bar").css({width:m.starsWidth*val.val});
-					m.timeout[uri]=setTimeout(function () {
-						m.recoByOnlyStars($str, uri, $result);
-					}, 2048);
-				});
-				$downs.on("click", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					let $str=$target.siblings(".str");
-					let $star=$reco.find(".my-point>.stars-container");
-					let val=m.val($str.html());
-					if (val.valid) {
-						if (val.val===-1) {
-							$str.html("0.0/10");
+					else {
+						val.num+=0.1;
+						if (val.num>val.divisor) {
+							val.num=val.divisor;
 						}
-						else {
-							val.num-=0.1;
-							if (val.num<0) {
-								val.num=0;
-							}
-							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-						}
-					} else {
+						$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+					}
+				} else {
+					$str.html("10.0/10");
+				}
+				val=m.val($str.html());
+				$star.find(".val .bar").css({width:m.starsWidth*val.val});
+				m.timeout[uri]=setTimeout(function () {
+					m.recoByOnlyStars($str, uri, $result);
+				}, 2048);
+			});
+			$downs.on("click", function (e) {
+				let $target=$(e.target);
+				let $reco=$target.parents(".reco");
+				let uri=m.unescapeHTML($reco.find(".textURI").html());
+				clearTimeout(m.timeout[uri]);
+				let $result=$reco.find(".result");
+				let $str=$target.siblings(".str");
+				let $star=$reco.find(".my-point>.stars-container");
+				let val=m.val($str.html());
+				if (val.valid) {
+					if (val.val===-1) {
 						$str.html("0.0/10");
 					}
-					val=m.val($str.html());
-					$star.find(".val .bar").css({width:m.starsWidth*val.val});
-					m.timeout[uri]=setTimeout(function () {
-						m.recoByOnlyStars($str, uri, $result);
-					}, 2048);
-				});
-			}
+					else {
+						val.num-=0.1;
+						if (val.num<0) {
+							val.num=0;
+						}
+						$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+					}
+				} else {
+					$str.html("0.0/10");
+				}
+				val=m.val($str.html());
+				$star.find(".val .bar").css({width:m.starsWidth*val.val});
+				m.timeout[uri]=setTimeout(function () {
+					m.recoByOnlyStars($str, uri, $result);
+				}, 2048);
+			});
 		}
 	}
 	let $recos=$contents.find(".reco");
@@ -3575,9 +3576,8 @@ m.recoToEve=function (resp, recos, cat, uris) {
 		if (p.cmt!==undefined) {
 			p.cmtR=m.renderStrDescCmt(p.cmt); // R for rendered.
 		}
-		if (p.val!==undefined) {
-			p.val=m.val(p.val);
-		}
+		if (p.val!==undefined) { p.val=m.val(p.val); }
+		else { p.val=m.val(""); }
 	}
 	let fs=m.fsGo;
 	let fsFL=fs.fullList=fs.fullList||[];
@@ -3874,7 +3874,7 @@ m.ExpCol=function (elem, catEC) {
 // Open Cat
 /////////////////////////////////////////
 m.openCat=function (cat, e) {
-	if (e?.which===2) {
+	if (e?.which===2) { // wheel click.
 		return true;
 	}
 	m.currentCat=cat;
@@ -3894,9 +3894,8 @@ for (let i=0;i<m.catList.length;i++) {
 }
 
 window.onpopstate=function (e) {
-	if (e.state?.cat!==undefined) {
-		let cat=e.state.cat;
-		m.openCat(cat);
+	if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
+		m.openCat(e.state.cat);
 	}
 };
 m.getSearchVars=function (searchStr) {
@@ -5060,7 +5059,8 @@ if ($shortkeyDesc.exists()) {
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--Forward--] Reco</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backward--] Reco</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})"><span class="bold">N</span>: [--New Reco--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--Multireco mode--]</span></li>`
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--Multireco mode--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})"><span class="bold">B</span>: [--See neighbors--]</span></li>`
 	);
 }
 
