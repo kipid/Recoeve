@@ -927,7 +927,7 @@ m.toggleMultirecoMode=function () {
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	}
-	// m.openCat(m.currentCat);
+	m.openCat(m.currentCat);
 };
 
 m.showOnlyUnrecoed=false;
@@ -3624,7 +3624,10 @@ m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
-	let fs1FL=fs1.fullList=[];
+	let fs1FL=fs1.fullList;
+	if (recos===m.userRecos) {
+		fs1FL=fs1.fullList=[];
+	}
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=recos[uri];
@@ -3892,7 +3895,8 @@ m.openCat=function (cat, e) {
 		return true;
 	}
 	m.currentCat=cat;
-	m.fsToRs.shuffled=null;
+	let fs1=m.fsToRs;
+	fs1.shuffled=null;
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
