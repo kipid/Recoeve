@@ -252,6 +252,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 textarea.single-line {min-height:2.2em; height:3.8em}
 textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco input#input-val {display:inline-block; width:8.5em}
+.upDown {border:solid 1px white; vertical-align:top; padding:1px}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
 #new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
@@ -507,6 +508,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="[--placeholder Comment--]" tabindex="5"></textarea>
 	<label for="val">[--Points--]</label>
 		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="6"/>
+		<span id="input-val-down" class="upDown">&lt;</span>
+		<span id="input-val-up" class="upDown">&gt;</span>
+		<div id="input-val-stars"></div>
 	<div id="error-msg"></div>
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
@@ -3226,15 +3230,15 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
 		if (m.myPage) {
-			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
 		else if (m.myRecos[r.uri]) {
 			let mR=m.myRecos[r.uri];
 			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
 			}
 			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="down">&lt;</span> <span class="up">&gt;</span> <span class="str"></span></div>`;
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 			}
 		}
 		res+=`<div class="result"></div></div>`;
@@ -4379,8 +4383,8 @@ $input_uri.on("input.rd keyup.rd cut.rd paste.rd click.rd", function (e) {
 });
 
 m.lastVal=m.val("");
-$input_val.after($(m.stars(0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
+$input_val_stars.html(m.stars(0));
 $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 	let $bar=$input_val_stars.find(".bar");
 	let barW=$bar.width();
@@ -4447,6 +4451,44 @@ $input_val.on("keyup", function (e) {
 		}
 		m.lastVal=val;
 	}
+});
+$input_val_down=$("#input-val-down");
+$input_val_up=$("#input-val-up");
+$input_val_down.on("click", function (e) {
+	let val=m.val($input_val[0].value);
+	if (val.valid) {
+		if (val.val===-1) {
+			$input_val[0].value="0.0/10";
+		}
+		else {
+			val.num-=0.1;
+			if (val.num<0) {
+				val.num=0;
+			}
+			$input_val[0].value=`${val.num.toFixed(1)}/${val.divisor}`;
+		}
+	} else {
+		$input_val[0].value="0.0/10";
+	}
+	$input_val.trigger("keyup");
+});
+$input_val_up.on("click", function (e) {
+	let val=m.val($input_val[0].value);
+	if (val.valid) {
+		if (val.val===-1) {
+			$input_val[0].value="10.0/10";
+		}
+		else {
+			val.num+=0.1;
+			if (val.num>val.divisor) {
+				val.num=val.divisor;
+			}
+			$input_val[0].value=`${val.num.toFixed(1)}/${val.divisor}`;
+		}
+	} else {
+		$input_val[0].value="10.0/10";
+	}
+	$input_val.trigger("keyup");
 });
 
 $button_new_reco.on("click", function (e) {
