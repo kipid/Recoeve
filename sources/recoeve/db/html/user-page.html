@@ -3,6 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<meta http-equiv="Permissions-Policy" content="ch-ua-form-factor=()"/>
 <title>Recoeve.net</title>
 <script>
 window.m={};
@@ -3013,8 +3014,11 @@ m.renderStrDescCmt=function (str) {
 // val, points, stars
 ////////////////////////////////////////////////////
 m.val=function (val) {
-	let res={valid:false};
-	if (val?.constructor!==String) {
+	let res={valid:false, str:"", val:-1};
+	if (!val) {
+		return res;
+	}
+	else if (val?.constructor!==String) {
 		return res;
 	}
 	res.str=val;
@@ -3266,7 +3270,7 @@ m.reco_pointChange_do=function (args, err) {
 m.recoByOnlyStars=function ($str, uri, $result) {
 	let valStr=$str.html();
 	if (m.myPage) {
-		if (m.myRecos[uri]?.val?.str!==valStr) {
+		if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
 			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
 			$result.html("[--Changing your points.--]");
@@ -3582,8 +3586,7 @@ m.recoToEve=function (resp, recos, cat, uris) {
 		if (p.cmt!==undefined) {
 			p.cmtR=m.renderStrDescCmt(p.cmt); // R for rendered.
 		}
-		if (p.val!==undefined) { p.val=m.val(p.val); }
-		else { p.val=m.val(""); }
+		p.val=m.val(p.val);
 	}
 	let fs=m.fsGo;
 	let fsFL=fs.fullList=fs.fullList||[];
