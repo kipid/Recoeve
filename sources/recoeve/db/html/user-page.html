@@ -966,6 +966,9 @@ m.fsCat.fullList=[];
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
 
+m.goOn=false;
+m.ToRsOn=false;
+
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
@@ -3929,7 +3932,7 @@ m.openCat=function (cat, e) {
 		m.fsGo.fullList[l].$listI=null;
 	}
 	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat, mode:m.recoMode}, cat, m.pathOfCat(cat, m.recoMode));
+	window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
