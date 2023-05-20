@@ -2739,6 +2739,7 @@ m.YTiframe=function (v, vars) {
 let ptnURI;
 ptnURI=m.ptnURI["www.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
+ptnURI.regEx2=/^shorts\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
@@ -2753,6 +2754,15 @@ ptnURI.toIframe=function (uriRest) {
 		}
 		if (v) {
 			return {html:m.YTiframe(v, vars), from:"youtube", videoId:v};
+		}
+	}
+	else {
+		exec=m.ptnURI["www.youtube.com"].regEx2.exec(uriRest);
+		if (exec!==null) {
+			let v=exec[1];
+			if (v) {
+				return {html:m.YTiframe(v, null), from:"youtube", videoId:v};
+			}
 		}
 	}
 	return false;
