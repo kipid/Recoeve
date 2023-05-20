@@ -195,11 +195,12 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	height:auto;
 	text-align:left
 }
+.fs-name {background:black; padding:.1em 3em}
 #fuzzy-search, #table-of-recos {
 	height:2em; max-height:5em; overflow-y:auto;
 	font:inherit; font-size:1.3em; color:black;
 	width:100%;
-	padding:.1em 3em 0 1.5em;
+	padding:.1em;
 	border:.15em gray solid;
 	background:white
 }
@@ -441,6 +442,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</div>
 </div><!-- div#sidebar -->
 <div id="fuzzy-search-container" style="display:none">
+	<div class="fs-name">Go: Fuzzy search</div>
 	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
@@ -465,6 +467,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:71})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
 <div id="table-of-recos-container" style="display:none">
+	<div class="fs-name">Table of Recos</div>
 	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
