@@ -580,6 +580,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 <div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="headPlay">
+	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
 	<div id="playlist-container">
 		<div id="uri-rendered"></div>
@@ -5037,6 +5038,7 @@ m.shareSNS=function (elem, service) {
 // ShortKeys
 ////////////////////////////////////////////////////
 m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
 	switch (e.target.nodeName) {
@@ -5052,6 +5054,7 @@ m.processShortKey=function (e) {
 			}
 			else {
 				$fuzzy_search_container.show();
+				$fuzzy_search_container.css({zIndex:m.zIndex++});
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 			}
@@ -5065,6 +5068,7 @@ m.processShortKey=function (e) {
 			}
 			else {
 				$table_of_recos_container.show();
+				$table_of_recos_container.css({zIndex:m.zIndex++});
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 
