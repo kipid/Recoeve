@@ -5012,8 +5012,9 @@ $table_of_recos.on("keydown", function (e) {
 m.shareSNS=function (elem, service) {
 	let $reco=$(elem).parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
-	let title=$reco.find(".title").text();
-	let desc=$reco.find(".desc").text();
+	let r=m.userRecos[uri];
+	let title=r.title;
+	let desc=r.desc;
 	let open="";
 	switch (service) {
 		case 'link':
