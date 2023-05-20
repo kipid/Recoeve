@@ -552,9 +552,10 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="deviceInfo"></div>
 </div><!-- div#change-style -->
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
-	<div>Language/언어/語言
-		<data id="data-lang">en	ko	zh	ja	fr	es	hi	ar	ru
-English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data></div>
+	<div class="button" id="choose-lang">▼ Language/언어/語言</div>
+	<data id="data-lang">en	ko	zh	ja	fr	es	hi	ar	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+	<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 </div><!-- div#foot -->
 <div class="side2">
 	[--Short Keys--]
@@ -639,7 +640,9 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 //////////////////
 $data_myCatList=$("#data-myCatList");
 $data_CatList=m.myPage?$data_myCatList:$("#data-CatList");
+$choose_lang=$("#choose-lang");
 $data_lang=$("#data-lang");
+$choose_lang_list=$("#choose-lang-list");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
@@ -5152,13 +5155,21 @@ m.changeLang=function (lang, e, elem) {
 	}
 };
 let dataLang=m.strToJSON($data_lang.html().trim());
-let htmlLang=`<div>`;
+let htmlLangs="";
 for (let i=0;i<dataLang[0].length;i++) {
-	htmlLang+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+	htmlLangs+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
 }
-htmlLang+=`</div>`;
-$data_lang.after(htmlLang);
-
+$choose_lang_list.html(htmlLangs);
+$choose_lang.on("click", function (e) {
+	if ($choose_lang.hasClass("enabled")) {
+		$choose_lang.removeClass("enabled");
+		$choose_lang_list.hide();
+	}
+	else {
+		$choose_lang.addClass("enabled");
+		$choose_lang_list.show();
+	}
+});
 
 
 ////////////////////////////////////////////////
