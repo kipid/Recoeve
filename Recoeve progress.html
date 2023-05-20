@@ -59,6 +59,8 @@
 
 ### 정리하기 전
 
+최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length>MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
+
 추천해주기. Neighbor 통한 추천.
 
 UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point/점수 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯? 구글 스프레드시트 참고.) 정렬 후 Save this order 도 있어야 할듯? path=<code>/changeOrders/UriList</code> 로 구현.<br>
@@ -303,6 +305,8 @@ Cats 바꾸는거 간단하게 여러개 동시에 쉽게 할 수 있도록 디�
 
 
 #### 정말 필요한지 안한지 헷갈려서 보류한 것들.
+
+별 드래그 reco/edit 할 때, list play 쪽에 $(".reco") 도 해당되는 uri 라면 update 해주기. (해줘도 그만 안해줘도 그만인듯한...)
 
 openCat() 으로 열때?, 초기에 getSearchVars 통해서 cat 열때나 reco 의 cats 부분에서 cat 열때, CatList 에서 scroll into view of selected cat 해주기. (잠깐 보류)
 
