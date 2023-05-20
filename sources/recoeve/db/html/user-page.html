@@ -3943,6 +3943,12 @@ window.onpopstate=function (e) {
 	if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
 		m.openCat(e.state.cat);
 	}
+	if (e.state?.go) {
+		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
+	}
+	if (e.state?.ToRs) {
+		$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+	}
 };
 m.getSearchVars=function (searchStr) {
 	let vars=[];
@@ -5069,12 +5075,14 @@ m.processShortKey=function (e) {
 				$fuzzy_search_container.hide();
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
+				window.history.pushState({cat:cat, mode:m.recoMode, go:false}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$fuzzy_search_container.show();
 				$fuzzy_search_container.css({zIndex:m.zIndex++});
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
+				window.history.pushState({cat:cat, mode:m.recoMode, go:true}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 84: // T=84
@@ -5083,13 +5091,14 @@ m.processShortKey=function (e) {
 				$table_of_recos_container.hide();
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
+				window.history.pushState({cat:cat, mode:m.recoMode, ToRs:false}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$table_of_recos_container.show();
 				$table_of_recos_container.css({zIndex:m.zIndex++});
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
-
+				window.history.pushState({cat:cat, mode:m.recoMode, ToRs:true}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 66: // B=66
