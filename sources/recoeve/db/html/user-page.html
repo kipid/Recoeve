@@ -3694,12 +3694,13 @@ m.getRecos=function (uris, recos, cat) {
 	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
+return new Promise(function (resolve, reject) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco"&&!m.myPage) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
-	m.showRecosOnCat();
+	await m.showRecosOnCat();
 	let fs1=m.fsToRs;
 	fs1.currentIndex=fs1.fullList.length-1;
 	fs1[1]=null;
@@ -3707,8 +3708,9 @@ m.getAndShowRecosOnCat=async function (cat) {
 	fs1.$fs.trigger("input.fs");
 	setTimeout(function () {
 		fs1.playNext(-1, true, true);
+		resolve(null);
 	}, m.wait*2);
-};
+});};
 m.getUriList=function (getUriListStr, fail, done) {
 	$.ajax({
 		type:"POST", url:m.userPath+"/get-UriList", data:getUriListStr
@@ -3738,11 +3740,13 @@ m.getUriList=function (getUriListStr, fail, done) {
 		}
 	});
 };
-m.getUriListAndShowRecosOnCat=function (cat) {
+m.getUriListAndShowRecosOnCat=async function (cat) {
+return new Promise(function (resolve, reject) {
 switch (m.recoMode) {
 	case "neighbors":
 		$numbers_of_recos.html("Loading neighbors, and plotting charts.");
 		$contents.html("");
+		resolve(null);
 		break;
 	case "multireco": case "": default:
 		$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
@@ -3759,7 +3763,7 @@ switch (m.recoMode) {
 			}
 			let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};;
 			if (catUriList.down) {
-				m.getAndShowRecosOnCat(cat);
+				await m.getAndShowRecosOnCat(cat);
 			}
 			else {
 				m.getUriList(
@@ -3770,7 +3774,7 @@ switch (m.recoMode) {
 					},
 					function () {
 						catUriList.down=true;
-						m.getAndShowRecosOnCat(cat);
+						await m.getAndShowRecosOnCat(cat);
 					}
 				);
 			}
@@ -3779,8 +3783,10 @@ switch (m.recoMode) {
 			$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
 			$contents.html("");
 		}
+		resolve(null);
 		break;
-}};
+}
+});};
 m.refresh=function (cats, option, uri) {
 	let c=cats.split(";");
 	let k=0;
@@ -3922,7 +3928,7 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
-m.openCat=function (cat, e) {
+m.openCat=async function (cat, e) {
 	if (e?.which===2) { // wheel click.
 		return true;
 	}
@@ -3932,12 +3938,14 @@ m.openCat=function (cat, e) {
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
-	m.getUriListAndShowRecosOnCat(cat);
-	if (!m.initialOpen) {
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-	}
-	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
-	return false;
+	return new Promise(function (resolve, reject) {
+		await m.getUriListAndShowRecosOnCat(cat);
+		if (!m.initialOpen) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
+		resolve(false);
+	});
 };
 
 for (let i=0;i<m.catList.length;i++) {
