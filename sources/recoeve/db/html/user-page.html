@@ -5267,15 +5267,15 @@ m.initialOpenfn=async function () {
 		resolve(m.initialOpen);
 	});
 };
-if (m.initialOpen) {
-	await m.initialOpenfn();
-	let uri=decodeURIComponent(window.location.hash.substring(1));
-	let fs=m.fsGo;
-	if (fs.fullList[uri]) {
-		let k=fs.fullList[uri].i;
-		$(`#li-${k}`).trigger("click");
-	}
+await m.initialOpenfn();
+let uri=decodeURIComponent(window.location.hash.substring(1));
+let fs=m.fsGo;
+if (fs.fullList[uri]) {
+	let k=fs.fullList[uri].i;
+	$(`#li-${k}`).trigger("click");
 }
+
+
 
 ////////////////////////////////////////////////////
 // YouTube API
