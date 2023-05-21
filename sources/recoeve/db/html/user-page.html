@@ -5050,7 +5050,7 @@ m.shareSNS=function (elem, service) {
 	let desc=r.desc;
 	let open="";
 	let lang=m.docCookies.getItem("lang");
-	let recoeveURI=m.pathOfCat(m.currentCat, m.recoMode, lang)+"#"+encodeURIComponent(uri);
+	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang)+"#"+encodeURIComponent(uri);
 	switch (service) {
 		case 'link':
 			let written=`${uri}\n${title}\n${recoeveURI}`;
