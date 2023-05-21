@@ -5265,7 +5265,7 @@ m.initialOpenfn=async function () {
 		$title.html(`${m.userId}'s recoeve.net`);
 		m.initialOpen=false;
 		resolve(m.initialOpen);
-	};
+	});
 };
 if (m.initialOpen) {
 	await m.initialOpenfn();
