@@ -4955,6 +4955,15 @@ m.playLi=function (e, elem, k, fs) {
 			fs.currentIndex=k;
 			fs.getAndPlayVideo(); // cue or not? not!
 			// TODO: scroll into lyrics view.
+			if ($playlist_container.is(":visible")) {
+				let scrollTop=$window.scrollTop();
+				if (fs.fixed) {
+
+				}
+				else {
+					$window.scrollTop($playlist_container.offset().top);
+				}
+			}
 		}
 	}
 };
