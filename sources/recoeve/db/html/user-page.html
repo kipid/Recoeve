@@ -3953,7 +3953,7 @@ window.onpopstate=function (e) {
 		m.currentCat="";
 		m.openCat(m.currentCat);
 	}
-	if (e.state?.goOn!==m.fsGoOn) {
+	if (e.state?.goOn!==m.goOn) {
 		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
 	}
 	if (e.state?.ToRsOn!==m.ToRsOn) {
