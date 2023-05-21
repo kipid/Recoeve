@@ -5211,24 +5211,21 @@ $choose_lang.on("click", function (e) {
 
 
 ////////////////////////////////////////////////
-// Lang : set cookie, Cat : get and show recos
+// Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 let vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
 }
-if (vars.cat!==undefined) {
-	let cat=vars.cat.val;
-	m.currentCat=cat?cat:"";
-	if (m.recoMode==="") {
-		m.openCat(m.currentCat);
-	}
-	else if (m.recoMode==="multireco") {
-		m.toggleMultirecoMode();
-	}
-	else if (m.recoMode==="neighbors") {
-		m.toggleNeighborsMode();
-	}
+m.currentCat=vars?.cat?.val||"";
+if (m.recoMode==="") {
+	m.openCat(m.currentCat);
+}
+else if (m.recoMode==="multireco") {
+	m.toggleMultirecoMode();
+}
+else if (m.recoMode==="neighbors") {
+	m.toggleNeighborsMode();
 }
 if (vars.title!==undefined) {
 	let title=vars.title.val;
