@@ -3949,6 +3949,10 @@ window.onpopstate=function (e) {
 			m.openCat(e.state.cat);
 		}
 	}
+	else {
+		m.currentCat="";
+		m.openCat(m.currentCat);
+	}
 	if (e.state?.goOn!==m.fsGoOn) {
 		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
 	}
