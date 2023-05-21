@@ -3932,7 +3932,7 @@ m.openCat=function (cat, e) {
 		m.fsGo.fullList[l].$listI=null;
 	}
 	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+	window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -3946,7 +3946,7 @@ window.onpopstate=function (e) {
 	if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
 		let cat=e.state.cat;
 		if (cat!==m.currentCat) {
-			m.openCat(e.state.cat);
+			m.openCat(cat);
 		}
 	}
 	else {
@@ -5086,7 +5086,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
 				m.goOn=false;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$fuzzy_search_container.show();
@@ -5094,7 +5094,7 @@ m.processShortKey=function (e) {
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 				m.goOn=true;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 84: // T=84
@@ -5104,7 +5104,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
 				m.ToRsOn=false;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$table_of_recos_container.show();
@@ -5112,7 +5112,7 @@ m.processShortKey=function (e) {
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 				m.ToRsOn=true;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 66: // B=66
