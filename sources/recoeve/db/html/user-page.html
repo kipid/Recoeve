@@ -4954,7 +4954,6 @@ m.playLi=function (e, elem, k, fs) {
 		else {
 			fs.currentIndex=k;
 			fs.getAndPlayVideo(); // cue or not? not!
-			// TODO: scroll into lyrics view.
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -5429,6 +5428,15 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
 			fs.$fsl.viewAndScroll($li);
 			fs.getAndPlayVideo(cue);
+			return;
+		}
+		else {
+			fs.currentIndex=0;
+			$reco_playing.html('');
+			$uri_rendered.html('');
+			$video.html('');
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.hide();
 			return;
 		}
 	}
