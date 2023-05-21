@@ -3943,8 +3943,8 @@ for (let i=0;i<m.catList.length;i++) {
 }
 
 window.onpopstate=function (e) {
-	if (history.state?.cat!==undefined&&history.state.cat.constructor===String) {
-		let cat=history.state.cat;
+	if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
+		let cat=e.state.cat;
 		if (cat!==m.currentCat) {
 			m.openCat(cat);
 		}
@@ -3953,10 +3953,10 @@ window.onpopstate=function (e) {
 		m.currentCat="";
 		m.openCat(m.currentCat);
 	}
-	if (history.state?.goOn!==m.goOn) {
+	if (e.state?.goOn!==m.goOn) {
 		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
 	}
-	if (history.state?.ToRsOn!==m.ToRsOn) {
+	if (e.state?.ToRsOn!==m.ToRsOn) {
 		$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 	}
 };
