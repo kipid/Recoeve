@@ -3150,8 +3150,8 @@ m.mmInPR=function (e) {
 		if (m.ptsRangeFrom!==PRL||m.ptsRangeTo!==PRR) {
 			m.ptsRangeFrom=PRL;
 			m.ptsRangeTo=PRR;
-			m.docCookies.setItem("PRL", PRL, Infinity, "/", false, true);
-			m.docCookies.setItem("PRR", PRR, Infinity, "/", false, true);
+			m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
+			m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			clearTimeout(m.timeOutRange);
 			m.timeOutRange=setTimeout(function () {
 				m.getUriListAndShowRecosOnCat(m.currentCat);
