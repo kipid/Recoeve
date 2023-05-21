@@ -4957,8 +4957,9 @@ m.playLi=function (e, elem, k, fs) {
 			// TODO: scroll into lyrics view.
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
+				let pHeight=$playlist_container.height();
 				if (fs.fixed) {
-
+					$window.scrollTop($playlist_container.offset().top-fs.$playing.height());
 				}
 				else {
 					$window.scrollTop($playlist_container.offset().top);
@@ -5320,6 +5321,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
+			fs.$playing=$rC_youtube_uri_rendered;
 			if ($rC_youtube_uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
@@ -5364,6 +5366,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$uri_rendered.html('');
 			$rC_youtube_uri_rendered.hide();
 			$rC_video_uri_rendered.show();
+			fs.$playing=$rC_video_uri_rendered;
 			if ($rC_video_uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
@@ -5386,6 +5389,8 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		}
 		else {
 			$uri_rendered.html(uriRendered.html);
+			fs.$playing=$uri_rendered;
+			fs.fixed=false;
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
