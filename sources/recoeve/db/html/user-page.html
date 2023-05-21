@@ -464,7 +464,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:71})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
 <div id="table-of-recos-container" style="display:none">
 	<div class="fs-name">Table of Recos</div>
@@ -489,7 +489,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:84})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
 	<form>
@@ -599,7 +599,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div class="button enabled" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:84})">[--ToR--]</div>
+		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
@@ -4810,7 +4810,7 @@ $fuzzy_search.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:'keydown', keyCode:71}); // G=71
+		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
 		break;
 	case 38: // up=38
 	case 40: // down=40
@@ -5015,7 +5015,7 @@ $table_of_recos.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:'keydown', keyCode:84}); // T=84
+		$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 		break;
 	}
 });
@@ -5086,7 +5086,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
 				m.goOn=false;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$fuzzy_search_container.show();
@@ -5094,7 +5094,7 @@ m.processShortKey=function (e) {
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 				m.goOn=true;
-				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 84: // T=84
@@ -5104,7 +5104,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
 				m.ToRsOn=false;
-				window.history.pushState({cat:cat, mode:m.recoMode, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			else {
 				$table_of_recos_container.show();
@@ -5112,7 +5112,7 @@ m.processShortKey=function (e) {
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 				m.ToRsOn=true;
-				window.history.pushState({cat:cat, mode:m.recoMode, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
+				window.history.pushState({cat:cat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, cat, m.pathOfCat(cat, m.recoMode));
 			}
 			break;
 		case 66: // B=66
