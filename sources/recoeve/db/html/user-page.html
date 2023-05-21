@@ -977,6 +977,7 @@ m.fsGo.$fsl=$fuzzy_search_list;
 
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
+m.fsToRs.fixed=false;
 m.fsToRs.fullList=[];
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
@@ -2682,7 +2683,7 @@ m.uriToA=function (uri) {
 		return m.escapeHTML(uri);
 	}
 };
-m.zIndex=10000;
+m.videoZIndex=10000;
 m.togglePosition=function (elem) {
 	let $elem=$(elem);
 	let $parent=$elem.parent().parent();
@@ -2694,7 +2695,7 @@ m.togglePosition=function (elem) {
 	}
 	else {
 		$parent.addClass("fixed");
-		$parent.css("z-index", m.zIndex--);
+		$parent.css("z-index", m.videoZIndex--);
 		window.scrollBy(0, -$parent.height());
 		$elem.text("▲ [--return to the original position--]");
 	}
@@ -4953,6 +4954,7 @@ m.playLi=function (e, elem, k, fs) {
 		else {
 			fs.currentIndex=k;
 			fs.getAndPlayVideo(); // cue or not? not!
+			// TODO: scroll into lyrics view.
 		}
 	}
 };
@@ -5309,6 +5311,12 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$video.html('');
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
+			if ($rC_youtube_uri_rendered.hasClass("fixed")) {
+				fs.fixed=true;
+			}
+			else {
+				fs.fixed=false;
+			}
 			if (m.YtPlayer) {
 				if (cue) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
@@ -5347,7 +5355,12 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$uri_rendered.html('');
 			$rC_youtube_uri_rendered.hide();
 			$rC_video_uri_rendered.show();
-
+			if ($rC_video_uri_rendered.hasClass("fixed")) {
+				fs.fixed=true;
+			}
+			else {
+				fs.fixed=false;
+			}
 			$video.replaceWith($('<video id="video" controls '+(fs.oneLoop?'loop ':'')+'preload="auto" src="'+uriRendered.src+'"></video>'));
 			$video=$("#video");
 			$video.on("ended", function () {
@@ -5371,7 +5384,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
 					if (fs.skip) { fs.playNext(-1, cue); }
-				}, 7000);
+				}, 4096);
 			}
 		}
 	}
@@ -5388,11 +5401,9 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 };
 m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
-		$video[0].pause();
+		$video[0]?.pause();
 	}
-	if (m.YtPlayer) {
-		m.YtPlayer.pauseVideo();
-	}
+	m.YtPlayer?.pauseVideo();
 };
 m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
