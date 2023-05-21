@@ -4913,11 +4913,15 @@ m.doFSGo=function (fs) {
 			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div id="li-${k}" class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
 		fs.$fsLis=fs.$fsl.find(".list-item");
+		for (let i=0;i<fs.$fsLis.length;i++) {
+			let $fsLi=fs.$fsLis.eq(i);
+			fs.fullList.eq()
+		}
 	}
 };
 m.fsGoOn=function () {
@@ -5045,9 +5049,11 @@ m.shareSNS=function (elem, service) {
 	let title=r.title;
 	let desc=r.desc;
 	let open="";
+	let lang=m.docCookies.getItem("lang");
+	let recoeveURI=m.pathOfCat(m.currentCat, m.recoMode, lang)+"#"+encodeURIComponent(uri);
 	switch (service) {
 		case 'link':
-			let written=`${uri}\n${title}`;
+			let written=`${uri}\n${title}\n${recoeveURI}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`The following is copied!\n"${written}"`);
 			}
@@ -5056,10 +5062,10 @@ m.shareSNS=function (elem, service) {
 			});
 			return;
 		case 'twitter':
-			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(uri);
+			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(uri);
+			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
 			break;
 		case 'kakao':
 			Kakao.Share.sendDefault({
@@ -5069,8 +5075,8 @@ m.shareSNS=function (elem, service) {
 					description: desc?m.escapeHTML(desc):'',
 					imageUrl: '', // No image.
 					link: {
-						mobileWebUrl: uri,
-						webUrl: uri,
+						mobileWebUrl: recoeveURI,
+						webUrl: recoeveURI,
 					},
 				},
 			});
@@ -5227,36 +5233,49 @@ $choose_lang.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 m.initialOpen=true;
-let vars=m.getSearchVars(window.location.search);
-if (vars.lang!==undefined) {
-	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
+m.initialOpenfn=async function () {
+	return new Promise(function (resolve, reject) {
+		let vars=m.getSearchVars(window.location.search);
+		if (vars.lang!==undefined) {
+			m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
+		}
+		m.currentCat=vars?.cat?.val||"";
+		if (m.recoMode==="") {
+			m.openCat(m.currentCat);
+		}
+		else if (m.recoMode==="multireco") {
+			m.toggleMultirecoMode();
+		}
+		else if (m.recoMode==="neighbors") {
+			m.toggleNeighborsMode();
+		}
+		if (vars.title!==undefined) {
+			let title=vars.title.val;
+			$input_title[0].value=title;
+		}
+		if (vars.uri!==undefined) {
+			$new_reco.show();
+			let uri=vars.uri.val;
+			$input_uri[0].value=uri;
+			$input_uri.trigger("input.rd");
+		}
+		if (window.location.pathname==="/reco") {
+			$new_reco.show();
+		}
+		$title.html(`${m.userId}'s recoeve.net`);
+		m.initialOpen=false;
+		resolve(m.initialOpen);
+	};
+};
+if (m.initialOpen) {
+	await m.initialOpenfn();
+	let uri=decodeURIComponent(window.location.hash.substring(1));
+	let fs=m.fsGo;
+	if (fs.fullList[uri]) {
+		let k=fs.fullList[uri].i;
+		$(`#li-${k}`).trigger("click");
+	}
 }
-m.currentCat=vars?.cat?.val||"";
-if (m.recoMode==="") {
-	m.openCat(m.currentCat);
-}
-else if (m.recoMode==="multireco") {
-	m.toggleMultirecoMode();
-}
-else if (m.recoMode==="neighbors") {
-	m.toggleNeighborsMode();
-}
-if (vars.title!==undefined) {
-	let title=vars.title.val;
-	$input_title[0].value=title;
-}
-if (vars.uri!==undefined) {
-	$new_reco.show();
-	let uri=vars.uri.val;
-	$input_uri[0].value=uri;
-	$input_uri.trigger("input.rd");
-}
-if (window.location.pathname==="/reco") {
-	$new_reco.show();
-}
-$title.html(`${m.userId}'s recoeve.net`);
-m.initialOpen=false;
-
 
 ////////////////////////////////////////////////////
 // YouTube API
