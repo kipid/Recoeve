@@ -13,7 +13,7 @@ m.pathName=window.location.pathname;
 if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
 	m.pathName="/user/"+m.myId;
 	if (window.location.pathname!=="/reco") {
-		// window.history.replaceState(null, "My page", m.pathName+window.location.search+window.location.hash);
+		window.history.replaceState(null, "My page", m.pathName+window.location.search+window.location.hash);
 	}
 }
 m.pathNameSplit=m.pathName.split("/");
@@ -3932,7 +3932,9 @@ m.openCat=function (cat, e) {
 		m.fsGo.fullList[l].$listI=null;
 	}
 	m.getUriListAndShowRecosOnCat(cat);
-	window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+	if (!m.initialOpen) {
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -5213,6 +5215,7 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
+m.initialOpen=true;
 let vars=m.getSearchVars(window.location.search);
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
@@ -5241,7 +5244,7 @@ if (window.location.pathname==="/reco") {
 	$new_reco.show();
 }
 $title.html(`${m.userId}'s recoeve.net`);
-
+m.initialOpen=false;
 
 
 ////////////////////////////////////////////////////
