@@ -565,7 +565,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button" id="my-id"></div>
 	<a id="a-log-out" href="/account/log-out">[--Log out--]</a>
 	<a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
-	<div class="button button-Go" id="out-focus" onclick='$window.trigger({type:"keydown", keyCode:71});'>[--Fuzzy Search--]</div>
+	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--]</div>
 	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--See neighbors--]</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
 	<div class="button" id="button-new-reco">[--New Reco--]</div>
@@ -4810,7 +4810,7 @@ $fuzzy_search.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:"keydown", keyCode:71}); // G=71
+		$window.trigger({type:'keydown', keyCode:71}); // G=71
 		break;
 	case 38: // up=38
 	case 40: // down=40
@@ -4867,7 +4867,7 @@ m.gotoLi=function (e, elem, k, fs) {
 	let fsFLk=fs.fullList[k];
 	let uri=fsFLk.uri;
 	if ($elem.hasClass("selected")) {
-		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+		// fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
 	}
 	else {
 		fs.$fsLis.removeClass("selected");
@@ -4946,7 +4946,7 @@ m.playLi=function (e, elem, k, fs) {
 		let $elem=$(elem);
 		// let uri=fs.fullList[k].uri;
 		if ($elem.hasClass("selected")) {
-			fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
 		}
 		else {
 			fs.currentIndex=k;
@@ -5015,7 +5015,7 @@ $table_of_recos.on("keydown", function (e) {
 	switch (e.keyCode) {
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:"keydown", keyCode:84}); // T=84
+		$window.trigger({type:'keydown', keyCode:84}); // T=84
 		break;
 	}
 });
