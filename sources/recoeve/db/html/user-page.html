@@ -5234,47 +5234,43 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 m.initialOpen=true;
 m.initialOpenfn=async function () {
-	return new Promise(function (resolve, reject) {
-		let vars=m.getSearchVars(window.location.search);
-		if (vars.lang!==undefined) {
-			m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
-		}
-		m.currentCat=vars?.cat?.val||"";
-		if (m.recoMode==="") {
-			m.openCat(m.currentCat);
-		}
-		else if (m.recoMode==="multireco") {
-			m.toggleMultirecoMode();
-		}
-		else if (m.recoMode==="neighbors") {
-			m.toggleNeighborsMode();
-		}
-		if (vars.title!==undefined) {
-			let title=vars.title.val;
-			$input_title[0].value=title;
-		}
-		if (vars.uri!==undefined) {
-			$new_reco.show();
-			let uri=vars.uri.val;
-			$input_uri[0].value=uri;
-			$input_uri.trigger("input.rd");
-		}
-		if (window.location.pathname==="/reco") {
-			$new_reco.show();
-		}
-		$title.html(`${m.userId}'s recoeve.net`);
-		m.initialOpen=false;
-		resolve(m.initialOpen);
-	});
+	let vars=m.getSearchVars(window.location.search);
+	if (vars.lang!==undefined) {
+		m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
+	}
+	m.currentCat=vars?.cat?.val||"";
+	if (m.recoMode==="") {
+		await m.openCat(m.currentCat);
+	}
+	else if (m.recoMode==="multireco") {
+		await m.toggleMultirecoMode();
+	}
+	else if (m.recoMode==="neighbors") {
+		await m.toggleNeighborsMode();
+	}
+	if (vars.title!==undefined) {
+		let title=vars.title.val;
+		$input_title[0].value=title;
+	}
+	if (vars.uri!==undefined) {
+		$new_reco.show();
+		let uri=vars.uri.val;
+		$input_uri[0].value=uri;
+		$input_uri.trigger("input.rd");
+	}
+	if (window.location.pathname==="/reco") {
+		$new_reco.show();
+	}
+	$title.html(`${m.userId}'s recoeve.net`);
+	m.initialOpen=false;
+	let uri=decodeURIComponent(window.location.hash.substring(1));
+	let fs=m.fsGo;
+	if (fs.fullList[uri]) {
+		let k=fs.fullList[uri].i;
+		$(`#li-${k}`).trigger("click");
+	}
 };
-await m.initialOpenfn();
-let uri=decodeURIComponent(window.location.hash.substring(1));
-let fs=m.fsGo;
-if (fs.fullList[uri]) {
-	let k=fs.fullList[uri].i;
-	$(`#li-${k}`).trigger("click");
-}
-
+m.initialOpenfn();
 
 
 ////////////////////////////////////////////////////
