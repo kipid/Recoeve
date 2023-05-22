@@ -3696,7 +3696,7 @@ m.getRecos=function (uris, recos, cat) {
 	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco"&&!m.myPage) {
