@@ -2587,7 +2587,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				m.catUriList[cat].uris.splice(0, 0, uri);
 			}
 			else if (m.catUriList[cat]) {
-				m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				await m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
@@ -3108,8 +3108,8 @@ $show_recos_without_points.on("click", function (e) {
 		m.showRWOP=true;
 	}
 	clearTimeout(m.timeOutRange);
-	m.timeOutRange=setTimeout(function () {
-		m.getUriListAndShowRecosOnCat(m.currentCat);
+	m.timeOutRange=setTimeout(async function () {
+		await m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 500);
 });
 m.PRtoFixed=function (w) {
@@ -3154,8 +3154,8 @@ m.mmInPR=function (e) {
 			m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 			m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			clearTimeout(m.timeOutRange);
-			m.timeOutRange=setTimeout(function () {
-				m.getUriListAndShowRecosOnCat(m.currentCat);
+			m.timeOutRange=setTimeout(async function () {
+				await m.getUriListAndShowRecosOnCat(m.currentCat);
 				let fs=m.fsToRs;
 				fs[0].ptnSH=m.splitHangul("$!@#");
 				fs.$fs.trigger("input.fs");
@@ -3946,8 +3946,7 @@ m.openCat=async function (cat, e) {
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
-	// await
-	m.getUriListAndShowRecosOnCat(cat);
+	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 	}
