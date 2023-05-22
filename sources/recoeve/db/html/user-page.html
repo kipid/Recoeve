@@ -3596,7 +3596,7 @@ m.editOrRecoToMine=function (elem) {
 		$window.scrollTop(m.wST);
 	});
 };
-m.recoDowned=function (urisStr, recos) {
+m.recoDowned=async function (urisStr, recos) {
 	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
@@ -3605,7 +3605,7 @@ m.recoDowned=function (urisStr, recos) {
 		p.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
-m.recoToEve=function (resp, recos, cat, uris) {
+m.recoToEve=async function (resp, recos, cat, uris) {
 return new Promise(async function (resolve, reject) {
 	resp=m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
@@ -3683,7 +3683,7 @@ m.getRecos=function (uris, recos, cat) {
 				type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
 				, dataType:"text"
 			}).done(async function (resp) {
-				m.recoDowned(getRecosStr.substring(4), recos);
+				await m.recoDowned(getRecosStr.substring(4), recos);
 				if (recos===m.userRecos) {
 					await m.recoToEve(resp, recos, cat, uris);
 				}
@@ -3934,22 +3934,22 @@ m.ExpCol=function (elem, catEC) {
 // Open Cat
 /////////////////////////////////////////
 m.openCat=async function (cat, e) {
-	if (e?.which===2) { // wheel click.
-		return true;
-	}
-	m.currentCat=cat;
-	let fs1=m.fsToRs;
-	fs1.shuffled=null;
-	for (let l=0;l<m.fsGo.fullList.length;l++) {
-		m.fsGo.fullList[l].$listI=null;
-	}
 	return new Promise(async function (resolve, reject) {
+		if (e?.which===2) { // wheel click.
+			return true;
+		}
+		m.currentCat=cat;
+		let fs1=m.fsToRs;
+		fs1.shuffled=null;
+		for (let l=0;l<m.fsGo.fullList.length;l++) {
+			m.fsGo.fullList[l].$listI=null;
+		}
 		await m.getUriListAndShowRecosOnCat(cat);
 		if (!m.initialOpen) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 		}
 		$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
-		resolve(false);
+		resolve(null);
 	});
 };
 
@@ -5280,14 +5280,15 @@ m.initialOpenfn=async function () {
 	let fs=m.fsGo;
 	console.log(fs);
 	console.log(hashURI);
-	await sleep(2048);
-	console.log(fs.fullList[hashURI]);
-	if (fs.fullList[hashURI]) {
-		let k=fs.fullList[hashURI].i;
-		console.log(k);
-		console.log($(`#li-${k}`));
-		$(`#li-${k}`).trigger("click");
-	}
+	setTimeout(function () {
+		console.log(m.fsGo.fullList[hashURI]);
+		if (m.fsGo.fullList[hashURI]) {
+			let k=m.fsGo.fullList[hashURI].i;
+			console.log(k);
+			console.log($(`#li-${k}`));
+			$(`#li-${k}`).trigger("click");
+		}
+	}, 1000);
 };
 m.initialOpenfn();
 
