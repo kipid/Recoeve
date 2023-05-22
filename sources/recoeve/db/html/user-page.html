@@ -3743,7 +3743,7 @@ m.getUriList=function (getUriListStr, fail, done) {
 	});
 };
 m.getUriListAndShowRecosOnCat=async function (cat) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 switch (m.recoMode) {
 	case "neighbors":
 		$numbers_of_recos.html("Loading neighbors, and plotting charts.");
