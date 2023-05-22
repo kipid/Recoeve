@@ -5245,6 +5245,7 @@ $choose_lang.on("click", function (e) {
 m.initialOpen=true;
 m.initialOpenfn=async function () {
 	let vars=m.getSearchVars(window.location.search);
+	let hashURI=decodeURIComponent(window.location.hash.substring(1));
 	if (vars.lang!==undefined) {
 		m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
 	}
@@ -5273,10 +5274,9 @@ m.initialOpenfn=async function () {
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
 	m.initialOpen=false;
-	let uri=decodeURIComponent(window.location.hash.substring(1));
 	let fs=m.fsGo;
-	if (fs.fullList[uri]) {
-		let k=fs.fullList[uri].i;
+	if (fs.fullList[hashURI]) {
+		let k=fs.fullList[hashURI].i;
 		$(`#li-${k}`).trigger("click");
 	}
 };
