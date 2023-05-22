@@ -5275,8 +5275,11 @@ m.initialOpenfn=async function () {
 	$title.html(`${m.userId}'s recoeve.net`);
 	m.initialOpen=false;
 	let fs=m.fsGo;
+	console.log(fs.fullList[hashURI]);
 	if (fs.fullList[hashURI]) {
 		let k=fs.fullList[hashURI].i;
+		console.log(k);
+		console.log($(`#li-${k}`));
 		$(`#li-${k}`).trigger("click");
 	}
 };
