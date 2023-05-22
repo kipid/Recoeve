@@ -3774,7 +3774,7 @@ switch (m.recoMode) {
 						$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
 						$contents.html("");
 					},
-					function () {
+					async function () {
 						catUriList.down=true;
 						await m.getAndShowRecosOnCat(cat);
 					}
@@ -3940,7 +3940,7 @@ m.openCat=async function (cat, e) {
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
-	return new Promise(function (resolve, reject) {
+	return new Promise(async function (resolve, reject) {
 		await m.getUriListAndShowRecosOnCat(cat);
 		if (!m.initialOpen) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
