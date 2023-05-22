@@ -3338,7 +3338,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 	}
 };
 m.showRecosOnCat=function (elem, from) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -3654,6 +3654,7 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 	}
+	resolve(null);
 });
 };
 m.getRecos=function (uris, recos, cat) {
