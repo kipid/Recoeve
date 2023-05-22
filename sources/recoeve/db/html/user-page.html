@@ -3677,7 +3677,7 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
-	return new Promise(function (resolve, reject) {
+	return new Promise(async function (resolve, reject) {
 		if (getRecosN>0) {
 			$.ajax({
 				type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
