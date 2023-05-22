@@ -5280,6 +5280,7 @@ m.initialOpenfn=async function () {
 	let fs=m.fsGo;
 	console.log(fs);
 	console.log(hashURI);
+	await sleep(2048);
 	console.log(fs.fullList[hashURI]);
 	if (fs.fullList[hashURI]) {
 		let k=fs.fullList[hashURI].i;
