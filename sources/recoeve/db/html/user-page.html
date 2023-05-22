@@ -3338,6 +3338,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 	}
 };
 m.showRecosOnCat=function (elem, from) {
+return new Promise(function (resolve, reject) {
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -3577,7 +3578,8 @@ m.showRecosOnCat=function (elem, from) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
-};
+	resolve(null);
+});};
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
