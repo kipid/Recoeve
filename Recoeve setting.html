@@ -21,8 +21,6 @@
 
 ## TOC
 
-
-
 ## AWS 및 깔아야할 Softwares.
 
 AWS 같은 cloud server 에다가 인스턴스를 만들어서 windows server 를 돌리자.
@@ -35,7 +33,71 @@ MySQL 깔고 <cite class="ref-mysql"><a target="_blank" href="https://kipid.tist
 
 JAVA 깔고 <cite class="ref-java-install"><a target="_blank" href="https://kipid.tistory.com/entry/Installing-and-Learning-JAVA">https://kipid.tistory.com/entry/Installing-and-Learning-JAVA</a></cite><cite class="ref-java"><a target="_blank" href="https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh">https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh</a></cite>
 
-Sublimetext 깔고 <cite class="ref-sublimetext"><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor">https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor</a></cite>
+Sublimetext 깔고 <cite class="ref-sublimetext"><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor">https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor</a></cite>. 설정도 충분히 바꿔주고.
+
+특히나 sublime-snippet.
+
+```[.linenums.lang-html]
+&lt;!-- aWithBlank.sublime-snippet --&gt;
+&lt;snippet&gt;
+	&lt;content&gt;&lt;![CDATA[
+&lt;a target="${1:_blank}" href="${2}"&gt;${3}&lt;/a&gt;${0}
+]]&gt;&lt;/content&gt;
+	&lt;tabTrigger&gt;ab&lt;/tabTrigger&gt;
+	&lt;scope&gt;text.html&lt;/scope&gt;
+	&lt;description&gt;a tag with target _blank&lt;/description&gt;
+&lt;/snippet&gt;
+
+
+
+&lt;!-- eq.sublime-snippet --&gt;
+&lt;snippet&gt;
+	&lt;content&gt;&lt;![CDATA[
+&lt;eq&gt;${1}&lt;/eq&gt;${0}
+]]&gt;&lt;/content&gt;
+	&lt;tabTrigger&gt;eq&lt;/tabTrigger&gt;
+	&lt;scope&gt;text.html&lt;/scope&gt;
+	&lt;description&gt;eq tag (inline equation)&lt;/description&gt;
+&lt;/snippet&gt;
+
+
+
+&lt;!-- eqq.sublime-snippet --&gt;
+&lt;snippet&gt;
+	&lt;content&gt;&lt;![CDATA[
+&lt;eqq&gt;
+${1}
+&lt;/eqq&gt;${0}
+]]&gt;&lt;/content&gt;
+	&lt;tabTrigger&gt;eqq&lt;/tabTrigger&gt;
+	&lt;scope&gt;text.html&lt;/scope&gt;
+	&lt;description&gt;eqq tag (outline equation)&lt;/description&gt;
+&lt;/snippet&gt;
+
+
+
+&lt;!-- img.sublime-snippet --&gt;
+&lt;snippet&gt;
+	&lt;content&gt;&lt;![CDATA[
+&lt;img delayed-src="${1}"/&gt;${0}
+]]&gt;&lt;/content&gt;
+	&lt;tabTrigger&gt;img&lt;/tabTrigger&gt;
+	&lt;scope&gt;text.html&lt;/scope&gt;
+	&lt;description&gt;img tag with delayed-src&lt;/description&gt;
+&lt;/snippet&gt;
+
+
+
+&lt;!-- iframe.sublime-snippet --&gt;
+&lt;snippet&gt;
+	&lt;content&gt;&lt;![CDATA[
+&lt;iframe delayed-src="${1}"&gt;&lt;/iframe&gt;${0}
+]]&gt;&lt;/content&gt;
+	&lt;tabTrigger&gt;iframe&lt;/tabTrigger&gt;
+	&lt;scope&gt;text.html&lt;/scope&gt;
+	&lt;description&gt;iframe tag with delayed-src&lt;/description&gt;
+&lt;/snippet&gt;
+```/
 
 Vert.X 도 깔고 <cite class="ref-vertx"><a target="_blank" href="https://kipid.tistory.com/entry/Learning-Vertx">https://kipid.tistory.com/entry/Learning-Vertx</a></cite>
 
