@@ -2,13 +2,16 @@
 	"folders":
 	[
 		{
-			"path": "."
+			"path": ".",
 		},
 		{
-			"path": "C:\\blog"
+			"path": "C:\\blog",
 		},
 		{
-			"path": "C:\\docuK"
-		}
-	]
+			"path": "C:\\docuK",
+		},
+		{
+			"path": "C:\\Users\\kipac\\AppData\\Roaming\\Sublime Text\\Packages\\User"
+		},
+	],
 }
