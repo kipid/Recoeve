@@ -2075,7 +2075,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 };
 m.catListToHTML=function () {
 	let cL=m.catList;
-	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:${cL[0].depth}em"><span class="noEC"></span><a href="${m.pathOfCat("")}" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:${cL[0].depth}em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat('', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		let beforeDepth=cL[i-1].depth;
@@ -4008,19 +4008,20 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
-m.openCat=async function (cat, e) {
+m.openCat=function (cat, e) {
+	m.currentCat=cat;
+	let path=m.pathOfCat(m.currentCat, m.recoMode);
 	if (e?.which===2) { // wheel click.
+		window.open(path, "_blank");
 		return true;
 	}
-	m.currentCat=cat;
-	let fs1=m.fsToRs;
-	fs1.shuffled=null;
+	m.fsToRs.shuffled=null;
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
-	await m.getUriListAndShowRecosOnCat(cat);
+	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
