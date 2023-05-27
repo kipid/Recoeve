@@ -1,5 +1,5 @@
 Recoeve.net.rdp
-*.sublime-workspace
+sublime-project.sublime-workspace
 sources/recoeve/http/NaverMail.java
 classes/recoeve/http/NaverMail$1.class
 classes/recoeve/http/NaverMail.class
