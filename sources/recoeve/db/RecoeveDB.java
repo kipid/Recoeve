@@ -209,13 +209,6 @@ public RecoeveDB() {
 		err(e);
 	}
 }
-protected void finalize() {
-	try {
-		if (con!=null) { con.close(); }
-	} catch (SQLException e) {
-		err(e);
-	}
-}
 
 public static void err(Exception ex) {
 	System.out.println("Exception: "+ex);

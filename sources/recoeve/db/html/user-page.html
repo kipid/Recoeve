@@ -390,8 +390,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 	.bright #foot {border-color:black}
 
-#floating-key {display:flex; flex-wrap:wrap; position:fixed; right:.2em; bottom:2.45em; width:130px; height:auto}
-#floating-key div.button {text-align:center; margin:0; width:130px; height:auto}
+#floating-key {display:flex; flex-wrap:wrap; position:fixed; right:.2em; bottom:2.45em; width:9em; height:auto}
+#floating-key div.button {text-align:center; margin:0; width:9em; height:auto}
 #toggle-floating-key {position:fixed; right:.2em; bottom:.2em; text-align:center; width:2.4em; height:2.25em; margin:0}
 
 @media all and (min-width:600px) {
@@ -607,7 +607,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key">
 	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hide--]</div>
-	<div class="button button-Go" style="width:50px" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">Go</div><div class="button button-ToR" style="width:80px" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
+	<div class="button button-Go" style="width:4em" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">Go</div><div class="button button-ToR" style="width:5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">[--Backward--]</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">[--Forward--]</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
@@ -732,6 +732,7 @@ $contents=$("#contents");
 $scripts=$("#scripts");
 
 $window=$(window);
+$document=$(document);
 $html=$("html");
 $title=$("title");
 $body=$("body");
@@ -2587,7 +2588,23 @@ m.putCats_UriToLists=async function (cats, uri) {
 				m.catUriList[cat].uris.splice(0, 0, uri);
 			}
 			else if (m.catUriList[cat]) {
-				m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				await m.getUriList(
+					"cat\n"+(cat===""?"\tp":cat),
+					async function () {
+						return new Promise(async function (resolve, reject) {
+							$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+							$contents.html("");
+							resolve();
+						});
+					},
+					async function () {
+						return new Promise(async function (resolve, reject) {
+							catUriList.down=true;
+							await m.getAndShowRecosOnCat(cat);
+							resolve();
+						});
+					}
+				);
 				await m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
@@ -3108,8 +3125,8 @@ $show_recos_without_points.on("click", function (e) {
 		m.showRWOP=true;
 	}
 	clearTimeout(m.timeOutRange);
-	m.timeOutRange=setTimeout(function () {
-		m.getUriListAndShowRecosOnCat(m.currentCat);
+	m.timeOutRange=setTimeout(async function () {
+		await m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 500);
 });
 m.PRtoFixed=function (w) {
@@ -3154,8 +3171,8 @@ m.mmInPR=function (e) {
 			m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 			m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			clearTimeout(m.timeOutRange);
-			m.timeOutRange=setTimeout(function () {
-				m.getUriListAndShowRecosOnCat(m.currentCat);
+			m.timeOutRange=setTimeout(async function () {
+				await m.getUriListAndShowRecosOnCat(m.currentCat);
 				let fs=m.fsToRs;
 				fs[0].ptnSH=m.splitHangul("$!@#");
 				fs.$fs.trigger("input.fs");
@@ -3578,7 +3595,7 @@ return new Promise(async function (resolve, reject) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
-	resolve(null);
+	resolve();
 });};
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
@@ -3654,10 +3671,11 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 	}
-	resolve(null);
+	resolve();
 });
 };
-m.getRecos=function (uris, recos, cat) {
+m.getRecos=async function (uris, recos, cat) {
+return new Promise(async function (resolve, reject) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
@@ -3677,27 +3695,26 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
-	return new Promise(function (resolve, reject) {
-		if (getRecosN>0) {
-			$.ajax({
-				type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
-				, dataType:"text"
-			}).done(async function (resp) {
-				await m.recoDowned(getRecosStr.substring(4), recos);
-				if (recos===m.userRecos) {
-					await m.recoToEve(resp, recos, cat, uris);
-				}
-				else {
-					await m.recoToEve(resp, recos);
-				}
-				resolve(null);
-			});
-		}
-		else {
-			resolve(null);
-		}
-	});
-};
+	if (getRecosN>0) {
+		$.ajax({
+			type:"POST", url:(recos===m.userRecos?m.userPath:`/user/${m.myId}`)+"/get-Recos", data:getRecosStr
+			, dataType:"text"
+		}).done(async function (resp) {
+			await m.recoDowned(getRecosStr.substring(4), recos);
+			if (recos===m.userRecos) {
+				await m.recoToEve(resp, recos, cat, uris);
+			}
+			else {
+				await m.recoToEve(resp, recos);
+			}
+			resolve();
+		});
+	}
+	else {
+		resolve();
+	}
+	resolve();
+});};
 m.getAndShowRecosOnCat=async function (cat) {
 return new Promise(async function (resolve, reject) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
@@ -3713,18 +3730,21 @@ return new Promise(async function (resolve, reject) {
 	fs1.$fs.trigger("input.fs");
 	setTimeout(function () {
 		fs1.playNext(-1, true, true);
-		resolve(null);
+		// resolve();
 	}, m.wait*2);
+	resolve();
 });};
-m.getUriList=function (getUriListStr, fail, done) {
+m.getUriList=async function (getUriListStr, failFn, doneFn) {
+return new Promise(async function (resolve, reject) {
 	$.ajax({
 		type:"POST", url:m.userPath+"/get-UriList", data:getUriListStr
 		, dataType:"text"
-	}).fail(function () {
-		if (typeof fail==="function") {
-			fail();
-		}
-	}).done(function (resp) {
+	}).fail(async function () {
+		// if (typeof failFn==="function") {
+			await failFn();
+		// }
+		resolve();
+	}).done(async function (resp) {
 		resp=m.strToJSON(resp);
 		for (let i=1;i<resp.length;i++) {
 			let catUL=m.catUriList[resp[i].cat];
@@ -3740,57 +3760,65 @@ m.getUriList=function (getUriListStr, fail, done) {
 				catUL.uris=catUL.UriList.split("\n");
 			}
 		}
-		if (typeof done==="function") {
-			done();
-		}
+		// if (typeof doneFn==="function") {
+			await doneFn();
+		// }
+		resolve();
 	});
-};
+	return;
+});};
 m.getUriListAndShowRecosOnCat=async function (cat) {
 return new Promise(async function (resolve, reject) {
-switch (m.recoMode) {
-	case "neighbors":
-		$numbers_of_recos.html("Loading neighbors, and plotting charts.");
-		$contents.html("");
-		resolve(null);
-		break;
-	case "multireco": case "": default:
-		$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
-		let catI=m.catList[cat];
-		if (catI) {
-			$catList.find(".cat").removeClass("selected");
-			let $cat=$("#cat-"+catI.i);
-			$cat.addClass("selected");
-			let $parents=$cat.parents(".subCat");
-			for (let i=$parents.length-1;i>=0;i--) {
-				if (!$parents.eq(i).is(":visible")) {
-					$parents.eq(i).prev().find(">.EC").trigger("click");
+	switch (m.recoMode) {
+		case "neighbors":
+			$numbers_of_recos.html("Loading neighbors, and plotting charts.");
+			$contents.html("");
+			resolve();
+			return;
+		case "multireco": case "": default:
+			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}...`);
+			let catI=m.catList[cat];
+			if (catI) {
+				$catList.find(".cat").removeClass("selected");
+				let $cat=$("#cat-"+catI.i);
+				$cat.addClass("selected");
+				let $parents=$cat.parents(".subCat");
+				for (let i=$parents.length-1;i>=0;i--) {
+					if (!$parents.eq(i).is(":visible")) {
+						$parents.eq(i).prev().find(">.EC").trigger("click");
+					}
+				}
+				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};;
+				if (catUriList.down) {
+					await m.getAndShowRecosOnCat(cat);
+				}
+				else {
+					await m.getUriList(
+						"cat\n"+(cat===""?"\tp":cat),
+						async function () {
+							return new Promise(async function (resolve, reject) {
+								$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+								$contents.html("");
+								resolve();
+							});
+						},
+						async function () {
+							return new Promise(async function (resolve, reject) {
+								catUriList.down=true;
+								await m.getAndShowRecosOnCat(cat);
+								resolve();
+							});
+						}
+					);
 				}
 			}
-			let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};;
-			if (catUriList.down) {
-				await m.getAndShowRecosOnCat(cat);
-			}
 			else {
-				m.getUriList(
-					"cat\n"+(cat===""?"\tp":cat),
-					function () {
-						$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-						$contents.html("");
-					},
-					async function () {
-						catUriList.down=true;
-						await m.getAndShowRecosOnCat(cat);
-					}
-				);
+				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
+				$contents.html("");
 			}
-		}
-		else {
-			$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
-			$contents.html("");
-		}
-		resolve(null);
-		break;
-}
+			resolve();
+			return;
+	}
 });};
 m.refresh=function (cats, option, uri) {
 	let c=cats.split(";");
@@ -3933,47 +3961,56 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
+m.doNotOpenCat=true;
 m.openCat=async function (cat, e) {
-	return new Promise(async function (resolve, reject) {
-		if (e?.which===2) { // wheel click.
-			return true;
-		}
-		m.currentCat=cat;
-		let fs1=m.fsToRs;
-		fs1.shuffled=null;
-		for (let l=0;l<m.fsGo.fullList.length;l++) {
-			m.fsGo.fullList[l].$listI=null;
-		}
-		await m.getUriListAndShowRecosOnCat(cat);
-		if (!m.initialOpen) {
-			window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-		}
-		$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
-		resolve(null);
-	});
-};
+return new Promise(async function (resolve, reject) {
+	if (e?.which===2) { // wheel click.
+		resolve(true);
+		// return true;
+	}
+	m.currentCat=cat;
+	let fs1=m.fsToRs;
+	fs1.shuffled=null;
+	for (let l=0;l<m.fsGo.fullList.length;l++) {
+		m.fsGo.fullList[l].$listI=null;
+	}
+	await m.getUriListAndShowRecosOnCat(cat);
+	if (!m.initialOpen) {
+		m.doNotOpenCat=false;
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+	}
+	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
+	resolve(false);
+	// return false;
+});};
 
 for (let i=0;i<m.catList.length;i++) {
 	let cat=m.catList[i].cat;
 	m.catUriList[cat]={cat:cat, down:false};
 }
 
-window.onpopstate=function (e) {
-	if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
-		let cat=e.state.cat;
-		if (cat!==m.currentCat) {
-			m.openCat(cat);
+window.onpopstate=async function (e) {
+	if (!!e.state) {
+		if (m.doNotOpenCat) {
+			if (e.state?.goOn!==m.goOn) {
+				$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
+			}
+			if (e.state?.ToRsOn!==m.ToRsOn) {
+				$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+			}
 		}
-	}
-	else {
-		m.currentCat="";
-		m.openCat(m.currentCat);
-	}
-	if (e.state?.goOn!==m.goOn) {
-		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
-	}
-	if (e.state?.ToRsOn!==m.ToRsOn) {
-		$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+		else {
+			if (e.state?.cat!==undefined&&e.state.cat.constructor===String) {
+				let cat=e.state.cat;
+				if (cat!==m.currentCat) {
+					await m.openCat(cat);
+				}
+			}
+			else {
+				m.currentCat="";
+				await m.openCat(m.currentCat);
+			}
+		}
 	}
 };
 m.getSearchVars=function (searchStr) {
@@ -5118,6 +5155,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
 				m.goOn=false;
+				m.doNotOpenCat=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
@@ -5126,6 +5164,7 @@ m.processShortKey=function (e) {
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 				m.goOn=true;
+				m.doNotOpenCat=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
@@ -5136,6 +5175,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
 				m.ToRsOn=false;
+				m.doNotOpenCat=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
@@ -5144,6 +5184,7 @@ m.processShortKey=function (e) {
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 				m.ToRsOn=true;
+				m.doNotOpenCat=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
@@ -5246,15 +5287,21 @@ $choose_lang.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 m.initialOpen=true;
+console.log(m.initialOpen);
 m.initialOpenfn=async function () {
+return new Promise(async function (resolve, reject) {
+	console.log("m.initialOpenfn");
 	let vars=m.getSearchVars(window.location.search);
 	let hashURI=decodeURIComponent(window.location.hash.substring(1));
 	if (vars.lang!==undefined) {
 		m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
+		console.log("vars.lang.val", vars.lang.val);
 	}
 	m.currentCat=vars?.cat?.val||"";
 	if (m.recoMode==="") {
-		await m.openCat(m.currentCat);
+		console.log("recoMode 0: ", m.currentCat);
+		await console.log(m.openCat(m.currentCat));
+		console.log("m.openCat passed");
 	}
 	else if (m.recoMode==="multireco") {
 		await m.toggleMultirecoMode();
@@ -5269,28 +5316,42 @@ m.initialOpenfn=async function () {
 	if (vars.uri!==undefined) {
 		$new_reco.show();
 		let uri=vars.uri.val;
+		console.log("vars.uri: ", uri);
 		$input_uri[0].value=uri;
-		$input_uri.trigger("input.rd");
+		await $input_uri.trigger("input.rd");
 	}
 	if (window.location.pathname==="/reco") {
 		$new_reco.show();
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
-	m.initialOpen=false;
 	let fs=m.fsGo;
 	console.log(fs);
+	console.log(m.fsToRs);
 	console.log(hashURI);
-	setTimeout(function () {
-		console.log(m.fsGo.fullList[hashURI]);
-		if (m.fsGo.fullList[hashURI]) {
-			let k=m.fsGo.fullList[hashURI].i;
-			console.log(k);
-			console.log($(`#li-${k}`));
-			$(`#li-${k}`).trigger("click");
-		}
-	}, 1000);
-};
-m.initialOpenfn();
+	if (hashURI) {
+		setTimeout(function () {
+			console.log(m.fsGo.fullList[hashURI]);
+			if (m.fsGo.fullList[hashURI]) {
+				let k=m.fsGo.fullList[hashURI].i;
+				console.log(k);
+				console.log($(`#li-${k}`));
+				$(`#li-${k}`).trigger("click");
+			}
+			m.initialOpen=false;
+			resolve();
+		}, 1000);
+	}
+	else {
+		resolve();
+	}
+});};
+console.log(m.initialOpenfn());
+$document.ready(async function () {
+	console.log("document ready");
+	await m.initialOpenfn();
+	console.log(m.fsGo);
+	console.log(m.fsToRs);
+});
 
 
 ////////////////////////////////////////////////////
@@ -5498,6 +5559,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		$next.trigger("click");
 		fs.$fsl.viewAndScroll($next);
 	}
+	return;
 };
 m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 	let fs=m.fsToRs;
