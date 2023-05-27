@@ -1100,16 +1100,16 @@ m.getNeighbors=function () {
 		console.log(req);
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-URI-cats-val", data:req
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(function (resp) {
-			console.log(resp);
+			$numbers_of_recos.html(resp);
 		});
 	}
 	else {
 		let req="cat_from\n"+m.currentCat;
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-Neighbors", data:req
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(function (resp) {
 			let cat_froms=m.strToJSON(req);
 			for (let i=1;i<cat_froms.length;i++) {
@@ -1619,9 +1619,9 @@ m.rmb_me=function (callback, args) {
 	let SSNencrypt=function (callback, args) {
 		$.ajax({
 			type:"GET", url:"/sessionIter"
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(function (resp) {
-			console.log(resp);
+			$numbers_of_recos.html(resp);
 			let iter=Number(resp);
 			if (isNaN(iter)) {
 				callback(args, resp);
@@ -1645,12 +1645,11 @@ m.rmb_me=function (callback, args) {
 	if (m.docCookies.hasItem('rmbdI')) {
 		$.ajax({
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(function (resp) {
 			console.log("rmb_do : "+resp);
 			setTimeout(function () {
-				console.log(resp);
-				console.log("tCreate: "+m.docCookies.hasItem('tCreate'));
+				$numbers_of_recos.html(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
 				if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
 					m.saveSSN();
 					if (m.saltSSN&&m.session) {
@@ -2270,7 +2269,7 @@ m.change_catList_order_do=function (args, err) {
 	else {
 		$.ajax({
 			type:"POST", url:"/changeOrders/CatList", data:args
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).fail(function () {
 			console.log("Changing CatList order has failed.");
 		}).done(function (resp) {
@@ -2621,6 +2620,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				m.catUriList[cat].uris.splice(0, 0, uri);
 			}
 			else if (m.catUriList[cat]) {
+				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
 				await m.getUriList(
 					"cat\n"+(cat===""?"\tp":cat),
 					async function () {
@@ -2630,9 +2630,23 @@ m.putCats_UriToLists=async function (cats, uri) {
 							resolve();
 						});
 					},
-					async function () {
+					async function (resp) {
 						return new Promise(async function (resolve, reject) {
-							catUriList.down=true;
+							let respJSON=m.strToJSON(resp);
+							for (let i=1;i<respJSON.length;i++) {
+								let catUL=m.catUriList[respJSON[i].cat];
+								catUL.down=true;
+								catUL.has=true;
+								for (let p in respJSON[i]) {
+									if (isNaN(p)) {
+										catUL[p]=respJSON[i][p]; // cat, UriList
+									}
+								}
+								catUL.uris=[];
+								if (catUL.UriList?.length!==0) {
+									catUL.uris=catUL.UriList.split("\n");
+								}
+							}
 							await m.getAndShowRecosOnCat(cat);
 							resolve();
 						});
@@ -3321,7 +3335,7 @@ m.reco_pointChange_do=function (args, err) {
 	let uri=args.uri;
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text"
+		, dataType:"text", async:true
 	}).fail(function (resp) {
 		args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${resp}`);
 	}).done(function (resp) {
@@ -3647,6 +3661,7 @@ m.editOrRecoToMine=function (elem) {
 	});
 };
 m.recoDowned=async function (urisStr, recos) {
+return new Promise(async function (resolve, reject) {
 	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
@@ -3654,7 +3669,8 @@ m.recoDowned=async function (urisStr, recos) {
 		if (!p) { p=recos[uri]={}; }
 		p.down=true; // User's or My reco on the uri is downloaded.
 	}
-};
+	resolve();
+});};
 m.recoToEve=async function (resp, recos, cat, uris) {
 return new Promise(async function (resolve, reject) {
 	resp=m.strToJSON(resp);
@@ -3728,27 +3744,26 @@ return new Promise(async function (resolve, reject) {
 			getRecosN++;
 		}
 	}
-	console.log(getRecosN);
 	if (getRecosN>0) {
-		console.log(getRecosStr);
 		$.ajax({
 			type:"POST", url:(((recos===m.userRecos)?m.userPath:`/user/${m.myId}`)+"/get-Recos"), data:getRecosStr
-			, dataType:"text"
-		}).done(async function (resp) {
-			await m.recoDowned(getRecosStr.substring(4), recos);
-			if (recos===m.userRecos) {
-				await m.recoToEve(resp, recos, cat, uris);
+			, dataType:"text", async:true
+			, error:function () {}
+			, success:function (resp) {
+				m.recoDowned(getRecosStr.substring(4), recos);
+				if (recos===m.userRecos) {
+					m.recoToEve(resp, recos, cat, uris);
+				}
+				else {
+					m.recoToEve(resp, recos);
+				}
+				resolve();
 			}
-			else {
-				await m.recoToEve(resp, recos);
-			}
-			resolve();
 		});
 	}
 	else {
 		resolve();
 	}
-	resolve();
 });};
 m.getAndShowRecosOnCat=async function (cat) {
 return new Promise(async function (resolve, reject) {
@@ -3771,21 +3786,17 @@ return new Promise(async function (resolve, reject) {
 });};
 m.getUriList=async function (getUriListStr, failFn, doneFn) {
 return new Promise(async function (resolve, reject) {
-	console.log(getUriListStr);
 	$.ajax({
 		type:"POST", url:`${m.userPath}/get-UriList`, data:getUriListStr
 		, dataType:"text", async:true
-		, success:async function (resp) {
-
+		, error:function () {
+			failFn();
+			resolve();
 		}
-	}).fail(function () {
-		console.log("fail");
-		failFn();
-		resolve();
-	}).done(function (resp) {
-		console.log("done");
-		doneFn(resp);
-		resolve();
+		, success:function (resp) {
+			doneFn(resp);
+			resolve();
+		}
 	});
 });};
 m.getUriListAndShowRecosOnCat=async function (cat) {
@@ -3795,7 +3806,7 @@ return new Promise(async function (resolve, reject) {
 			$numbers_of_recos.html("Loading neighbors, and plotting charts.");
 			$contents.html("");
 			resolve();
-			return;
+			break;
 		case "multireco": case "": default:
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
 			let catI=m.catList[cat];
@@ -3810,15 +3821,13 @@ return new Promise(async function (resolve, reject) {
 					}
 				}
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
-				console.log(catUriList);
 				if (catUriList.down) {
 					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
-					let getUriListStr="cat\n"+(cat===""?"\tp":cat);
-					console.log(getUriListStr);
+					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
 					await m.getUriList(
-						getUriListStr,
+						"cat\n"+(cat===""?"\tp":cat),
 						async function () {
 							return new Promise(async function (resolve, reject) {
 								$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
@@ -3828,8 +3837,7 @@ return new Promise(async function (resolve, reject) {
 						},
 						async function (resp) {
 							return new Promise(async function (resolve, reject) {
-								respJSON=m.strToJSON(resp);
-								console.log(respJSON);
+								let respJSON=m.strToJSON(resp);
 								for (let i=1;i<respJSON.length;i++) {
 									let catUL=m.catUriList[respJSON[i].cat];
 									catUL.down=true;
@@ -3856,7 +3864,7 @@ return new Promise(async function (resolve, reject) {
 				$contents.html("");
 			}
 			resolve();
-			return;
+			break;
 	}
 });};
 m.refresh=async function (cats, option, uri) {
@@ -4001,27 +4009,22 @@ m.ExpCol=function (elem, catEC) {
 // Open Cat
 /////////////////////////////////////////
 m.openCat=async function (cat, e) {
-return new Promise(async function (resolve, reject) {
 	if (e?.which===2) { // wheel click.
-		resolve(true);
-		// return true;
+		return true;
 	}
 	m.currentCat=cat;
-	console.log(cat);
 	let fs1=m.fsToRs;
 	fs1.shuffled=null;
 	for (let l=0;l<m.fsGo.fullList.length;l++) {
 		m.fsGo.fullList[l].$listI=null;
 	}
-	console.log(m.initialOpen);
 	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
-	resolve(false);
-	// return false;
-});};
+	return false;
+};
 
 for (let i=0;i<m.catList.length;i++) {
 	let cat=m.catList[i].cat;
@@ -4035,6 +4038,9 @@ window.onpopstate=async function (e) {
 		}
 		if (e.state.ToRsOn!==m.ToRsOn) {
 			$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+		}
+		if (e.state.newRecoOn!==m.newRecoOn) {
+			$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
 		}
 		if (e.state.cat!==undefined&&e.state.cat.constructor===String) {
 			let cat=e.state.cat;
@@ -4112,7 +4118,9 @@ m.formatURI=function (uri) {
 				src=$uri.find("[src]").attr("src");
 				if (src) { uri=src; }
 			}
-		} catch (err) { console.log(err); }
+		} catch (err) {
+			console.log(err);
+		}
 	}
 	return uri.replace(/&amp;/ig,"&").trim();
 };
@@ -4444,7 +4452,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		let getRecosStr="uri"+"\n"+uri;
 		$.ajax({
 			type:"POST", url:`${m.userPath}/get-Recos`, data:getRecosStr
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 			await m.recoDowned(uri, m.userRecos);
 			await m.recoToEve(resp, m.userRecos);
@@ -4458,7 +4466,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
 		$.ajax({
 			type:"POST", url:"/reco/defs", data:uri
-			, dataType:"text"
+			, dataType:"text", async:true
 		}).done(function (resp) {
 			let defs=m.strToJSON(resp);
 			r.defs=true;
@@ -4484,7 +4492,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			let getRecosStr="uri"+"\n"+uri;
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
-				, dataType:"text"
+				, dataType:"text", async:true
 			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 				await m.recoDowned(uri, m.myRecos);
 				await m.recoToEve(resp, m.myRecos);
@@ -4649,7 +4657,7 @@ m.reco_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strRecoDo
-		, dataType:"text"
+		, dataType:"text", async:true
 	}).fail(function () {
 		$error.html("[--Reco failed. You may be not logged-in.--]");
 		args.$result?.html($error.html());
@@ -4726,7 +4734,7 @@ m.reco_change_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text"
+		, dataType:"text", async:true
 	}).fail(function (resp) {
 		$error.html("Failed change. You may not be logged-in. "+resp);
 	}).done(function (resp) {
@@ -4832,7 +4840,7 @@ m.reco_delete_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text"
+		, dataType:"text", async:true
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result==="deleted") {
@@ -5181,7 +5189,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
 				m.goOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
 				$fuzzy_search_container.show();
@@ -5189,7 +5197,7 @@ m.processShortKey=function (e) {
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 				m.goOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
 		case 84: // T=84
@@ -5199,7 +5207,7 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
 				m.ToRsOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
 				$table_of_recos_container.show();
@@ -5207,7 +5215,7 @@ m.processShortKey=function (e) {
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 				m.ToRsOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
 		case 66: // B=66
@@ -5311,7 +5319,6 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 m.initialOpen=true;
 let vars=m.getSearchVars(window.location.search);
-console.log(vars);
 let hashURI=decodeURIComponent(window.location.hash.substring(1));
 if (!!vars.lang) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
