@@ -571,7 +571,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
 		<div class="button" id="button-del" tabindex="11" style="background:#ff7600">[--Del--]</div>
-		<div class="button left" id="button-close" tabindex="9">[--Close--]</div>
+		<div class="button left" id="button-close" tabindex="9" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--Close--]</div>
 		<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
 		<div class="cBoth"></div>
 	</div>
@@ -982,29 +982,29 @@ m.toggleNewReco=function () {
 	if ($button_new_reco.hasClass("enabled")) {
 		m.newRecoOn=false;
 		$button_new_reco.removeClass("enabled");
+		$out_focus.focus();
 		$new_reco.hide();
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		$window.off("scroll.stop");
 	}
 	else {
 		m.newRecoOn=true;
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
 		$new_reco.show();
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		let cat=m.currentCat;
+		if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
+			$input_cats[0].value=cat;
+		}
+		m.wST=$window.scrollTop();
+		$window.on("scroll.stop", function (e) {
+			e.preventDefault();
+			$window.scrollTop(m.wST);
+		});
+		$input_uri.focus();
+		$input_uri.trigger("keyup");
 	}
-
-	let cat=m.currentCat;
-	if (cat) { cat=decodeURIComponent(cat); }
-	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
-		$input_cats[0].value=cat;
-	}
-	m.wST=$window.scrollTop();
-	$window.on("scroll.stop", function (e) {
-		e.preventDefault();
-		$window.scrollTop(m.wST);
-	});
-	$input_uri.focus();
-	$input_uri.trigger("keyup");
-	$button_new_reco.trigger("click");
 };
 
 m.showOnlyUnrecoed=false;
@@ -4082,6 +4082,14 @@ window.onpopstate=async function (e) {
 		if (e.state.newRecoOn!==m.newRecoOn) {
 			$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
 		}
+		if (e.state.recoMode!==m.recoMode) {
+			if (e.state.recoMode==="multireco"&&(!$button_multireco_mode.hasClass("enabled"))) {
+				$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
+			}
+			else if (e.state.recoMode==="neighbors"&&(!$button_neighbors_mode.hasClass("enabled"))) {
+				$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
+			}
+		}
 		if (e.state.cat!==undefined&&e.state.cat.constructor===String) {
 			let cat=e.state.cat;
 			if (cat!==m.currentCat) {
@@ -4522,8 +4530,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27) { // ESC
-		$out_focus.focus();
-		$button_close.trigger("click");
+		$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})
 	}
 	else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
 		let r=m.myRecos[$input_uri[0].value];
@@ -4657,14 +4664,8 @@ $input_val_up.on("click", function (e) {
 	}
 	$input_val.trigger("keyup");
 });
-
-$button_close.on("click", function (e) {
-	$new_reco.hide();
-	$window.off("scroll.stop");
-});
 $button_back.on("click", function (e) {
-	let r=m.userRecos[$input_uri[0].value];
-	m.showReco(r);
+	m.showReco(m.userRecos[$input_uri[0].value]);
 });
 
 m.reco_do=function (args, err) {
