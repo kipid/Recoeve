@@ -9,26 +9,54 @@ window.m={};
 (function (m, undefined) {
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
-m.pathName=window.location.pathname;
+
 m.goOn=false;
 m.ToRsOn=false;
 m.newRecoOn=false;
+
+m.pathName=window.location.pathname;
+if (m.pathName==="/reco") {
+	m.newRecoOn=true;
+}
 if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
 	m.pathName="/user/"+m.myId;
-	if (window.location.pathname==="/reco") {
-		m.newRecoOn=true;
-	}
-	else {
-		window.history.replaceState({cat:"", mode:"", goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "My page", m.pathName+window.location.search+window.location.hash);
-	}
 }
+
 m.pathNameSplit=m.pathName.split("/");
 m.userId=decodeURIComponent(m.pathNameSplit[2]);
 m.myPage=(m.myId===m.userId);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
+m.hashURI=decodeURIComponent(window.location.hash.substring(1));
 
+m.getSearchVars=function (searchStr) {
+	let vars=[];
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
+		let j=searchStr.indexOf("#");
+		if (j!==-1) { searchStr=searchStr.substring(0,j); }
+		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
+		for (let i=0;i<splits.length;i++) {
+			let key=splits[i];
+			let value="";
+			let k=key.indexOf("=");
+			if (k!==-1) {
+				value=decodeURIComponent(key.substring(k+1));
+				key=key.substring(0,k);
+			}
+			key=decodeURIComponent(key);
+			vars[i]=vars[key]={key:key, val:value};
+		}
+	}
+	return vars;
+};
 
+m.searchVars=m.getSearchVars(window.location.search);
+m.currentCat=m.searchVars?.cat?.val||"";
+
+m.pathOfCat=function (cat, mode, lang, hashURI) {
+	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
+};
 
 /*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
 |*|
@@ -82,6 +110,22 @@ m.docCookies={
 		return aKeys;
 	}
 };
+
+m.lang=null;
+if (!!m.searchVars.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
+
+if (window.location.pathname==="/reco") {
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", window.location.href);
+}
+else {
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+}
 
 m.saveSSN=function () {
 	if (m.docCookies.hasItem("salt")) {
@@ -948,9 +992,8 @@ m.toggleNewReco=function () {
 		$new_reco.show();
 	}
 
-
-	let cat=m.getSearchVars(window.location.search).cat;
-	if (cat) { cat=decodeURIComponent(cat.val); }
+	let cat=m.currentCat;
+	if (cat) { cat=decodeURIComponent(cat); }
 	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 		$input_cats[0].value=cat;
 	}
@@ -989,7 +1032,6 @@ m.previous=Date.now();
 
 m.catList=[];
 m.myCatList=m.myPage?m.catList:[];
-m.currentCat=null;
 m.catUriList=[];
 m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
@@ -2030,9 +2072,6 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-m.pathOfCat=function (cat, mode, lang) {
-	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}`;
-};
 m.getDepthOfTabs=function (str) {
 	let n=0;
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
@@ -4054,27 +4093,6 @@ window.onpopstate=async function (e) {
 		}
 	}
 };
-m.getSearchVars=function (searchStr) {
-	let vars=[];
-	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
-		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
-		let j=searchStr.indexOf("#");
-		if (j!==-1) { searchStr=searchStr.substring(0,j); }
-		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
-		for (let i=0;i<splits.length;i++) {
-			let key=splits[i];
-			let value="";
-			let k=key.indexOf("=");
-			if (k!==-1) {
-				value=decodeURIComponent(key.substring(k+1));
-				key=key.substring(0,k);
-			}
-			key=decodeURIComponent(key);
-			vars[i]=vars[key]={key:key, val:value};
-		}
-	}
-	return vars;
-};
 
 
 
@@ -5135,7 +5153,7 @@ m.shareSNS=function (elem, service) {
 	let desc=r.desc;
 	let open="";
 	let lang=m.docCookies.getItem("lang");
-	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang)+"#"+encodeURIComponent(uri);
+	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, uri);
 	switch (service) {
 		case 'link':
 			let written=`${uri}\n${title}\n${recoeveURI}`;
@@ -5319,13 +5337,6 @@ $choose_lang.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 m.initialOpen=true;
-let vars=m.getSearchVars(window.location.search);
-let hashURI=decodeURIComponent(window.location.hash.substring(1));
-if (!!vars.lang) {
-	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/", false, true);
-	console.log("vars.lang.val", vars.lang.val);
-}
-m.currentCat=vars?.cat?.val||"";
 if (m.recoMode==="") {
 	await m.openCat(m.currentCat);
 }
@@ -5335,6 +5346,7 @@ else if (m.recoMode==="multireco") {
 else if (m.recoMode==="neighbors") {
 	await m.toggleNeighborsMode();
 }
+let vars=m.searchVars;
 if (vars.title!==undefined) {
 	$input_title[0].value=vars.title.val;
 }
@@ -5346,14 +5358,10 @@ if (window.location.pathname==="/reco") {
 	$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})
 }
 $title.html(`${m.userId}'s recoeve.net`);
-console.log(m.fsGo);
-console.log(m.fsToRs);
-if (hashURI) {
-	console.log(m.fsGo.fullList[hashURI]);
+let hashURI=m.hashURI;
+if (!!hashURI) {
 	if (!!m.fsGo.fullList[hashURI]) {
 		let k=m.fsGo.fullList[hashURI].i;
-		console.log(k);
-		console.log($(`#li-${k}`));
 		await $(`#li-${k}`).trigger("click");
 	}
 }
