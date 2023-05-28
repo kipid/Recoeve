@@ -1143,7 +1143,7 @@ m.getNeighbors=function () {
 		console.log(req);
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-URI-cats-val", data:req
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(function (resp) {
 			$numbers_of_recos.html(resp);
 		});
@@ -1152,7 +1152,7 @@ m.getNeighbors=function () {
 		let req="cat_from\n"+m.currentCat;
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-Neighbors", data:req
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(function (resp) {
 			let cat_froms=m.strToJSON(req);
 			for (let i=1;i<cat_froms.length;i++) {
@@ -1662,7 +1662,7 @@ m.rmb_me=function (callback, args) {
 	let SSNencrypt=function (callback, args) {
 		$.ajax({
 			type:"GET", url:"/sessionIter"
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(function (resp) {
 			$numbers_of_recos.html(resp);
 			let iter=Number(resp);
@@ -1688,7 +1688,7 @@ m.rmb_me=function (callback, args) {
 	if (m.docCookies.hasItem('rmbdI')) {
 		$.ajax({
 			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(function (resp) {
 			console.log("rmb_do : "+resp);
 			setTimeout(function () {
@@ -2309,7 +2309,7 @@ m.change_catList_order_do=function (args, err) {
 	else {
 		$.ajax({
 			type:"POST", url:"/changeOrders/CatList", data:args
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).fail(function () {
 			console.log("Changing CatList order has failed.");
 		}).done(function (resp) {
@@ -3375,7 +3375,7 @@ m.reco_pointChange_do=function (args, err) {
 	let uri=args.uri;
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text", async:true
+		, dataType:"text"
 	}).fail(function (resp) {
 		args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${resp}`);
 	}).done(function (resp) {
@@ -3787,7 +3787,7 @@ return new Promise(async function (resolve, reject) {
 	if (getRecosN>0) {
 		$.ajax({
 			type:"POST", url:(((recos===m.userRecos)?m.userPath:`/user/${m.myId}`)+"/get-Recos"), data:getRecosStr
-			, dataType:"text", async:true
+			, dataType:"text"
 			, error:function () {}
 			, success:function (resp) {
 				m.recoDowned(getRecosStr.substring(4), recos);
@@ -3828,7 +3828,7 @@ m.getUriList=async function (getUriListStr, failFn, doneFn) {
 return new Promise(async function (resolve, reject) {
 	$.ajax({
 		type:"POST", url:`${m.userPath}/get-UriList`, data:getUriListStr
-		, dataType:"text", async:true
+		, dataType:"text"
 		, error:function () {
 			failFn();
 			resolve();
@@ -4480,7 +4480,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		let getRecosStr="uri"+"\n"+uri;
 		$.ajax({
 			type:"POST", url:`${m.userPath}/get-Recos`, data:getRecosStr
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 			await m.recoDowned(uri, m.userRecos);
 			await m.recoToEve(resp, m.userRecos);
@@ -4494,7 +4494,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
 		$.ajax({
 			type:"POST", url:"/reco/defs", data:uri
-			, dataType:"text", async:true
+			, dataType:"text"
 		}).done(function (resp) {
 			let defs=m.strToJSON(resp);
 			r.defs=true;
@@ -4520,7 +4520,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			let getRecosStr="uri"+"\n"+uri;
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
-				, dataType:"text", async:true
+				, dataType:"text"
 			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 				await m.recoDowned(uri, m.myRecos);
 				await m.recoToEve(resp, m.myRecos);
@@ -4676,7 +4676,7 @@ m.reco_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strRecoDo
-		, dataType:"text", async:true
+		, dataType:"text"
 	}).fail(function () {
 		$error.html("[--Reco failed. You may be not logged-in.--]");
 		args.$result?.html($error.html());
@@ -4753,7 +4753,7 @@ m.reco_change_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text", async:true
+		, dataType:"text"
 	}).fail(function (resp) {
 		$error.html("Failed change. You may not be logged-in. "+resp);
 	}).done(function (resp) {
@@ -4859,7 +4859,7 @@ m.reco_delete_do=function (args, err) {
 	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
-		, dataType:"text", async:true
+		, dataType:"text"
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result==="deleted") {
