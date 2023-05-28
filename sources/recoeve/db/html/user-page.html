@@ -4544,18 +4544,16 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	}
 });
 $input_cats.off("keydown.common");
-$input_uri.on("input keyup cut paste click", async function (e) {
-return new Promise(async function (resolve, reject) {
+$input_uri.on("input keyup cut paste click", function (e) {
 	let uri=this.value;
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(async function () {
-			await m.getAndShowDefsAndReco();
-			resolve();
+			m.getAndShowDefsAndReco();
 		}, 1024);
 	}
-});});
+});
 
 m.lastVal=m.val("");
 $input_val_stars=$("#input-val-stars");
