@@ -3675,7 +3675,6 @@ m.showRecosOnCat=function (elem, from) {
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
-	resolve();
 };
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
@@ -3784,12 +3783,8 @@ m.getRecos=function (uris, recos, cat) {
 				else {
 					m.recoToEve(resp, recos);
 				}
-				resolve();
 			}
 		});
-	}
-	else {
-		resolve();
 	}
 };
 m.getAndShowRecosOnCat=function (cat) {
@@ -3806,9 +3801,7 @@ m.getAndShowRecosOnCat=function (cat) {
 	fs1.$fs.trigger("input.fs");
 	setTimeout(function () {
 		fs1.playNext(-1, true, true);
-		// resolve();
 	}, m.wait*2);
-	resolve();
 };
 m.getUriList=function (getUriListStr, failFn, doneFn) {
 	$.ajax({
@@ -3827,7 +3820,6 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 		case "neighbors":
 			$numbers_of_recos.html("Loading neighbors, and plotting charts.");
 			$contents.html("");
-			resolve();
 			break;
 		case "multireco": case "": default:
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
@@ -3879,7 +3871,6 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
 				$contents.html("");
 			}
-			resolve();
 			break;
 	}
 };
