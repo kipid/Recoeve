@@ -543,25 +543,25 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </div><!-- div#table-of-recos-container -->
 <div id="new-reco" style="display:none">
 	<form>
-	<label for="uri">URI <span class="desc">([--required--])</span></label>
+	<label for="input-uri">URI <span class="desc">([--required--])</span></label>
 		<textarea id="input-uri" class="single-line" name="uri" placeholder="[--placeholder URI--]" type="text" tabindex="1"></textarea>
 		<div id="show-URI"></div>
-	<label for="title">[--Title--]</label>
+	<label for="input-title">[--Title--]</label>
 		<div id="def-titles"></div>
 		<textarea id="input-title" class="single-line" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
-	<label for="cats">[--Categories--]</label>
+	<label for="input-cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
 		<textarea id="input-cats" class="single-line" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
-	<label for="desc">[--Description--]</label>
+	<label for="input-desc">[--Description--]</label>
 		<div id="def-descs"></div>
 		<textarea id="input-desc" class="multi-line" name="desc" placeholder="[--placeholder Description--]" tabindex="4"></textarea>
-	<label for="cmt">[--Comment--]</label>
+	<label for="input-cmt">[--Comment--]</label>
 		<textarea id="input-cmt" class="multi-line" name="cmt" placeholder="[--placeholder Comment--]" tabindex="5"></textarea>
-	<label for="val">[--Points--]</label>
+	<label for="input-val">[--Points--]</label>
 		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="6"/>
 		<span id="input-val-down" class="upDown">&lt;</span>
 		<span id="input-val-up" class="upDown">&gt;</span>
@@ -580,7 +580,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</form>
 </div><!-- div#new-reco -->
 <div id="multireco-cats-container" style="display:none">
-	<label for="multireco-cats">[--Multireco Categories--]</label>
+	<label for="multireco-input-cats">[--Multireco Categories--]</label>
 		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="multireco-add-cat" class="def-cat add-txt">;</div> <div id="multireco-sub-cat" class="def-cat add-txt">--</div> <div id="multireco-delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
 		<textarea id="multireco-input-cats" class="single-line" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
 		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
