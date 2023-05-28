@@ -3184,7 +3184,7 @@ $show_recos_without_points.on("click", function (e) {
 	clearTimeout(m.timeOutRange);
 	m.timeOutRange=setTimeout(function () {
 		m.getUriListAndShowRecosOnCat(m.currentCat);
-	}, 500);
+	}, 1024);
 });
 m.PRtoFixed=function (w) {
 	return (m.PRmax*(w-15)/(m.PRw-30)).toFixed(1);
@@ -3746,28 +3746,35 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
+return new Promise(function (resolve, reject) {
 	if (getRecosN>0) {
 		$.ajax({
 			type:"POST", url:(((recos===m.userRecos)?m.userPath:`/user/${m.myId}`)+"/get-Recos"), data:getRecosStr
 			, dataType:"text"
-			, error:function () {}
-			, success:function (resp) {
-				m.recoDowned(getRecosStr.substring(4), recos);
-				if (recos===m.userRecos) {
-					m.recoToEve(resp, recos, cat, uris);
-				}
-				else {
-					m.recoToEve(resp, recos);
-				}
+		}).fail(function () {
+			$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
+			$contents.html("");
+		}).done(function (resp) {
+			m.recoDowned(getRecosStr.substring(4), recos);
+			if (recos===m.userRecos) {
+				m.recoToEve(resp, recos, cat, uris);
 			}
+			else {
+				m.recoToEve(resp, recos);
+			}
+			resolve();
 		});
 	}
+	else {
+		resolve();
+	}
+});
 };
-m.getAndShowRecosOnCat=function (cat) {
+m.getAndShowRecosOnCat=async function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-	m.getRecos(uris, m.userRecos, cat);
+	await m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco"&&!m.myPage) {
-		m.getRecos(uris, m.myRecos, cat);
+		await m.getRecos(uris, m.myRecos, cat);
 	}
 	m.showRecosOnCat();
 	let fs1=m.fsToRs;
@@ -3802,7 +3809,7 @@ m.getUriList=function (getUriListStr) {
 				catUL.uris=catUL.UriList.split("\n");
 			}
 		}
-		m.getAndShowRecosOnCat(cat);
+		m.getAndShowRecosOnCat(m.currentCat);
 	});
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
