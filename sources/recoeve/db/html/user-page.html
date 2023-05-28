@@ -114,7 +114,7 @@ m.docCookies={
 m.lang=null;
 if (!!m.searchVars.lang) {
 	m.lang=m.searchVars.lang.val;
-	m.docCookies.setItem("lang", lang, Infinity, "/", false, true);
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
 }
 else if (m.docCookies.hasItem("lang")) {
 	m.lang=m.docCookies.getItem("lang");
@@ -5361,10 +5361,17 @@ if (window.location.pathname==="/reco") {
 $title.html(`${m.userId}'s recoeve.net`);
 let hashURI=m.hashURI;
 if (!!hashURI) {
-	if (!!m.fsGo.fullList[hashURI]) {
-		let k=m.fsGo.fullList[hashURI].i;
-		await $(`#li-${k}`).trigger("click");
-	}
+	m.fsGo.tryN=1;
+	m.setIntervalFsGo=setInterval(function () {
+		if (!!m.fsGo.fullList[hashURI]||++m.fsGo.tryN>11) {
+			let k=m.fsGo.fullList[hashURI]?.i;
+			let $liK=$(`#li-${k}`);
+			if ($liK.exists()) {
+				$(`#li-${k}`).trigger("click");
+				clearInterval(m.setIntervalFsGo);
+			}
+		}
+	}, 1024);
 }
 m.initialOpen=false;
 
