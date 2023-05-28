@@ -2661,31 +2661,7 @@ m.putCats_UriToLists=function (cats, uri) {
 			}
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
-				m.getUriList(
-					"cat\n"+(cat===""?"\tp":cat),
-					function () {
-						$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-						$contents.html("");
-					},
-					function (resp) {
-						let respJSON=m.strToJSON(resp);
-						for (let i=1;i<respJSON.length;i++) {
-							let catUL=m.catUriList[respJSON[i].cat];
-							catUL.down=true;
-							catUL.has=true;
-							for (let p in respJSON[i]) {
-								if (isNaN(p)) {
-									catUL[p]=respJSON[i][p]; // cat, UriList
-								}
-							}
-							catUL.uris=[];
-							if (catUL.UriList?.length!==0) {
-								catUL.uris=catUL.UriList.split("\n");
-							}
-						}
-						m.getAndShowRecosOnCat(cat);
-					}
-				);
+				m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
@@ -3803,16 +3779,30 @@ m.getAndShowRecosOnCat=function (cat) {
 		fs1.playNext(-1, true, true);
 	}, m.wait*2);
 };
-m.getUriList=function (getUriListStr, failFn, doneFn) {
+m.getUriList=function (getUriListStr) {
 	$.ajax({
 		type:"POST", url:`${m.userPath}/get-UriList`, data:getUriListStr
 		, dataType:"text"
-		, error:function () {
-			failFn();
+	}).fail(function () {
+		$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+		$contents.html("");
+	}).done(function (resp) {
+		let respJSON=m.strToJSON(resp);
+		for (let i=1;i<respJSON.length;i++) {
+			let catUL=m.catUriList[respJSON[i].cat];
+			catUL.down=true;
+			catUL.has=true;
+			for (let p in respJSON[i]) {
+				if (isNaN(p)) {
+					catUL[p]=respJSON[i][p]; // cat, UriList
+				}
+			}
+			catUL.uris=[];
+			if (catUL.UriList?.length!==0) {
+				catUL.uris=catUL.UriList.split("\n");
+			}
 		}
-		, success:function (resp) {
-			doneFn(resp);
-		}
+		m.getAndShowRecosOnCat(cat);
 	});
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
@@ -3840,31 +3830,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				}
 				else {
 					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-					m.getUriList(
-						"cat\n"+(cat===""?"\tp":cat),
-						function () {
-							$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-							$contents.html("");
-						},
-						function (resp) {
-							let respJSON=m.strToJSON(resp);
-							for (let i=1;i<respJSON.length;i++) {
-								let catUL=m.catUriList[respJSON[i].cat];
-								catUL.down=true;
-								catUL.has=true;
-								for (let p in respJSON[i]) {
-									if (isNaN(p)) {
-										catUL[p]=respJSON[i][p]; // cat, UriList
-									}
-								}
-								catUL.uris=[];
-								if (catUL.UriList?.length!==0) {
-									catUL.uris=catUL.UriList.split("\n");
-								}
-							}
-							m.getAndShowRecosOnCat(cat);
-						}
-					);
+					m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				}
 			}
 			else {
