@@ -982,6 +982,7 @@ m.toggleNewReco=function () {
 	if ($button_new_reco.hasClass("enabled")) {
 		m.newRecoOn=false;
 		$button_new_reco.removeClass("enabled");
+		$input_uri[0].disabled=true;
 		$out_focus.focus();
 		$new_reco.hide();
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
