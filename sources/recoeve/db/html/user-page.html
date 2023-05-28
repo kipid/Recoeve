@@ -670,7 +670,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="/jquery.min.js"></script>
 <script>
-(async function (m, $, undefined) {
+(function (m, $, undefined) {
 $("#javascript-disable").hide();
 m.kakaoInitDo=function () {
 	if (typeof Kakao!=='undefined') {
@@ -952,7 +952,7 @@ m.toggleNeighborsMode=function () {
 	m.openCat(m.currentCat);
 }
 
-m.toggleMultirecoMode=async function () {
+m.toggleMultirecoMode=function () {
 	if ($button_multireco_mode.hasClass("enabled")) {
 		m.recoMode="";
 		$button_mode.removeClass("enabled");
@@ -975,7 +975,7 @@ m.toggleMultirecoMode=async function () {
 		$playlist_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	}
-	await m.openCat(m.currentCat);
+	m.openCat(m.currentCat);
 };
 
 m.toggleNewReco=function () {
@@ -2649,7 +2649,7 @@ m.deleteCat=function (cat) {
 	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
 	return res;
 };
-m.putCats_UriToLists=async function (cats, uri) {
+m.putCats_UriToLists=function (cats, uri) {
 	let catSplit=cats.split(";");
 	let catIsPut=false;
 	for (let i=0;i<catSplit.length;i++) {
@@ -2661,38 +2661,32 @@ m.putCats_UriToLists=async function (cats, uri) {
 			}
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
-				await m.getUriList(
+				m.getUriList(
 					"cat\n"+(cat===""?"\tp":cat),
-					async function () {
-						return new Promise(async function (resolve, reject) {
-							$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-							$contents.html("");
-							resolve();
-						});
+					function () {
+						$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+						$contents.html("");
 					},
-					async function (resp) {
-						return new Promise(async function (resolve, reject) {
-							let respJSON=m.strToJSON(resp);
-							for (let i=1;i<respJSON.length;i++) {
-								let catUL=m.catUriList[respJSON[i].cat];
-								catUL.down=true;
-								catUL.has=true;
-								for (let p in respJSON[i]) {
-									if (isNaN(p)) {
-										catUL[p]=respJSON[i][p]; // cat, UriList
-									}
-								}
-								catUL.uris=[];
-								if (catUL.UriList?.length!==0) {
-									catUL.uris=catUL.UriList.split("\n");
+					function (resp) {
+						let respJSON=m.strToJSON(resp);
+						for (let i=1;i<respJSON.length;i++) {
+							let catUL=m.catUriList[respJSON[i].cat];
+							catUL.down=true;
+							catUL.has=true;
+							for (let p in respJSON[i]) {
+								if (isNaN(p)) {
+									catUL[p]=respJSON[i][p]; // cat, UriList
 								}
 							}
-							await m.getAndShowRecosOnCat(cat);
-							resolve();
-						});
+							catUL.uris=[];
+							if (catUL.UriList?.length!==0) {
+								catUL.uris=catUL.UriList.split("\n");
+							}
+						}
+						m.getAndShowRecosOnCat(cat);
 					}
 				);
-				await m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
+				m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
 				catIsPut=m.putCat(cat)||catIsPut;
@@ -3212,8 +3206,8 @@ $show_recos_without_points.on("click", function (e) {
 		m.showRWOP=true;
 	}
 	clearTimeout(m.timeOutRange);
-	m.timeOutRange=setTimeout(async function () {
-		await m.getUriListAndShowRecosOnCat(m.currentCat);
+	m.timeOutRange=setTimeout(function () {
+		m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 500);
 });
 m.PRtoFixed=function (w) {
@@ -3258,8 +3252,8 @@ m.mmInPR=function (e) {
 			m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 			m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			clearTimeout(m.timeOutRange);
-			m.timeOutRange=setTimeout(async function () {
-				await m.getUriListAndShowRecosOnCat(m.currentCat);
+			m.timeOutRange=setTimeout(function () {
+				m.getUriListAndShowRecosOnCat(m.currentCat);
 				let fs=m.fsToRs;
 				fs[0].ptnSH=m.splitHangul("$!@#");
 				fs.$fs.trigger("input.fs");
@@ -3442,7 +3436,6 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 	}
 };
 m.showRecosOnCat=function (elem, from) {
-return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -3683,7 +3676,7 @@ return new Promise(async function (resolve, reject) {
 	$window.trigger("scroll.delayedLoad");
 	m.fdList=$("#change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
 	resolve();
-});};
+};
 m.editOrRecoToMine=function (elem) {
 	let $reco=$(elem).parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
@@ -3700,8 +3693,7 @@ m.editOrRecoToMine=function (elem) {
 		$window.scrollTop(m.wST);
 	});
 };
-m.recoDowned=async function (urisStr, recos) {
-return new Promise(async function (resolve, reject) {
+m.recoDowned=function (urisStr, recos) {
 	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
@@ -3709,10 +3701,8 @@ return new Promise(async function (resolve, reject) {
 		if (!p) { p=recos[uri]={}; }
 		p.down=true; // User's or My reco on the uri is downloaded.
 	}
-	resolve();
-});};
-m.recoToEve=async function (resp, recos, cat, uris) {
-return new Promise(async function (resolve, reject) {
+};
+m.recoToEve=function (resp, recos, cat, uris) {
 	resp=m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
 		let respK=resp[k];
@@ -3760,11 +3750,8 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 	}
-	resolve();
-});
 };
-m.getRecos=async function (uris, recos, cat) {
-return new Promise(async function (resolve, reject) {
+m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
@@ -3804,15 +3791,14 @@ return new Promise(async function (resolve, reject) {
 	else {
 		resolve();
 	}
-});};
-m.getAndShowRecosOnCat=async function (cat) {
-return new Promise(async function (resolve, reject) {
+};
+m.getAndShowRecosOnCat=function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-	await m.getRecos(uris, m.userRecos, cat);
+	m.getRecos(uris, m.userRecos, cat);
 	if (m.recoMode==="multireco"&&!m.myPage) {
-		await m.getRecos(uris, m.myRecos, cat);
+		m.getRecos(uris, m.myRecos, cat);
 	}
-	await m.showRecosOnCat();
+	m.showRecosOnCat();
 	let fs1=m.fsToRs;
 	fs1.currentIndex=fs1.fullList.length-1;
 	fs1[1]=null;
@@ -3823,24 +3809,20 @@ return new Promise(async function (resolve, reject) {
 		// resolve();
 	}, m.wait*2);
 	resolve();
-});};
-m.getUriList=async function (getUriListStr, failFn, doneFn) {
-return new Promise(async function (resolve, reject) {
+};
+m.getUriList=function (getUriListStr, failFn, doneFn) {
 	$.ajax({
 		type:"POST", url:`${m.userPath}/get-UriList`, data:getUriListStr
 		, dataType:"text"
 		, error:function () {
 			failFn();
-			resolve();
 		}
 		, success:function (resp) {
 			doneFn(resp);
-			resolve();
 		}
 	});
-});};
-m.getUriListAndShowRecosOnCat=async function (cat) {
-return new Promise(async function (resolve, reject) {
+};
+m.getUriListAndShowRecosOnCat=function (cat) {
 	switch (m.recoMode) {
 		case "neighbors":
 			$numbers_of_recos.html("Loading neighbors, and plotting charts.");
@@ -3862,39 +3844,33 @@ return new Promise(async function (resolve, reject) {
 				}
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
 				if (catUriList.down) {
-					await m.getAndShowRecosOnCat(cat);
+					m.getAndShowRecosOnCat(cat);
 				}
 				else {
 					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-					await m.getUriList(
+					m.getUriList(
 						"cat\n"+(cat===""?"\tp":cat),
-						async function () {
-							return new Promise(async function (resolve, reject) {
-								$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-								$contents.html("");
-								resolve();
-							});
+						function () {
+							$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+							$contents.html("");
 						},
-						async function (resp) {
-							return new Promise(async function (resolve, reject) {
-								let respJSON=m.strToJSON(resp);
-								for (let i=1;i<respJSON.length;i++) {
-									let catUL=m.catUriList[respJSON[i].cat];
-									catUL.down=true;
-									catUL.has=true;
-									for (let p in respJSON[i]) {
-										if (isNaN(p)) {
-											catUL[p]=respJSON[i][p]; // cat, UriList
-										}
-									}
-									catUL.uris=[];
-									if (catUL.UriList?.length!==0) {
-										catUL.uris=catUL.UriList.split("\n");
+						function (resp) {
+							let respJSON=m.strToJSON(resp);
+							for (let i=1;i<respJSON.length;i++) {
+								let catUL=m.catUriList[respJSON[i].cat];
+								catUL.down=true;
+								catUL.has=true;
+								for (let p in respJSON[i]) {
+									if (isNaN(p)) {
+										catUL[p]=respJSON[i][p]; // cat, UriList
 									}
 								}
-								await m.getAndShowRecosOnCat(cat);
-								resolve();
-							});
+								catUL.uris=[];
+								if (catUL.UriList?.length!==0) {
+									catUL.uris=catUL.UriList.split("\n");
+								}
+							}
+							m.getAndShowRecosOnCat(cat);
 						}
 					);
 				}
@@ -3906,8 +3882,8 @@ return new Promise(async function (resolve, reject) {
 			resolve();
 			break;
 	}
-});};
-m.refresh=async function (cats, option, uri) {
+};
+m.refresh=function (cats, option, uri) {
 	let c=cats.split(";");
 	let k=0;
 	if (m.currentCat!==undefined) {
@@ -4023,7 +3999,7 @@ m.refresh=async function (cats, option, uri) {
 			}
 			break;
 		default :
-			await m.openCat(c[k]);
+			m.openCat(c[k]);
 		}
 	}
 };
@@ -4072,7 +4048,7 @@ for (let i=0;i<m.catList.length;i++) {
 	m.catUriList[cat]={cat:cat, down:false};
 }
 
-window.onpopstate=async function (e) {
+window.onpopstate=function (e) {
 	if (!!e.state) {
 		if (e.state.goOn!==m.goOn) {
 			$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
@@ -4094,11 +4070,11 @@ window.onpopstate=async function (e) {
 		if (e.state.cat!==undefined&&e.state.cat.constructor===String) {
 			let cat=e.state.cat;
 			if (cat!==m.currentCat) {
-				await m.openCat(cat);
+				m.openCat(cat);
 			}
 		}
 		else {
-			await m.openCat("");
+			m.openCat("");
 		}
 	}
 };
@@ -4481,9 +4457,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		$.ajax({
 			type:"POST", url:`${m.userPath}/get-Recos`, data:getRecosStr
 			, dataType:"text"
-		}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-			await m.recoDowned(uri, m.userRecos);
-			await m.recoToEve(resp, m.userRecos);
+		}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+			m.recoDowned(uri, m.userRecos);
+			m.recoToEve(resp, m.userRecos);
 			m.showReco(r);
 		});
 	}
@@ -4521,9 +4497,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 				, dataType:"text"
-			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-				await m.recoDowned(uri, m.myRecos);
-				await m.recoToEve(resp, m.myRecos);
+			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+				m.recoDowned(uri, m.myRecos);
+				m.recoToEve(resp, m.myRecos);
 				m.showMyReco(mR);
 			});
 		}
@@ -4549,7 +4525,7 @@ $input_uri.on("input keyup cut paste click", function (e) {
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
-		m.timeOutGetInfos=setTimeout(async function () {
+		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndReco();
 		}, 1024);
 	}
@@ -4681,17 +4657,17 @@ m.reco_do=function (args, err) {
 		$error.html("[--Reco failed. You may be not logged-in.--]");
 		args.$result?.html($error.html());
 		$button_reco.removeClass("disabled");
-	}).done(async function (resp) {
+	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result==="recoed") {
 			$error.html("[--Recoed.--]");
 			args.$result?.html($error.html());
-			await m.recoDowned(args.uri, m.myRecos);
-			await m.recoToEve(args.strRecoDo, m.myRecos);
+			m.recoDowned(args.uri, m.myRecos);
+			m.recoToEve(args.strRecoDo, m.myRecos);
 			let cats=m.myRecos[args.uri].cats;
-			await m.putCats_UriToLists(cats, args.uri);
+			m.putCats_UriToLists(cats, args.uri);
 			if (m.myPage) {
-				await m.refresh(cats, "recoed", args.uri);
+				m.refresh(cats, "recoed", args.uri);
 			}
 			setTimeout(function () {
 				m.emptifyReco();
@@ -4962,7 +4938,7 @@ m.showAndScrollTo=function ($listI) {
 	}
 	$window.scrollTop($listI.offset()?.top);
 }
-m.gotoLi=async function (e, elem, k, fs) {
+m.gotoLi=function (e, elem, k, fs) {
 	if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 		return;
 	}
@@ -5338,13 +5314,13 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 m.initialOpen=true;
 if (m.recoMode==="") {
-	await m.openCat(m.currentCat);
+	m.openCat(m.currentCat);
 }
 else if (m.recoMode==="multireco") {
-	await m.toggleMultirecoMode();
+	m.toggleMultirecoMode();
 }
 else if (m.recoMode==="neighbors") {
-	await m.toggleNeighborsMode();
+	m.toggleNeighborsMode();
 }
 let vars=m.searchVars;
 if (vars.title!==undefined) {
@@ -5352,7 +5328,7 @@ if (vars.title!==undefined) {
 }
 if (vars.uri!==undefined) {
 	$input_uri[0].value=vars.uri.val;
-	await $input_uri.trigger("input");
+	$input_uri.trigger("input");
 }
 if (window.location.pathname==="/reco") {
 	$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})
