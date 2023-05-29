@@ -405,7 +405,7 @@ $("#input-su-userPwdCfm").on("keyup", function (e) {
 });
 $("input.go-next").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
-		$(this).next().next("input").focus();
+		$(this).next("input").focus();
 	}
 });
 })(window.m, jQuery);
