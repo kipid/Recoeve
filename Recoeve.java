@@ -40,9 +40,9 @@ import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
 	public static final String host
-		="recoeve.net";
+		// ="recoeve.net";
 		// ="0.0.0.0";
-		// ="localhost";
+		="localhost";
 	public static final String ENCODING="UTF-8";
 	public static final String INVALID_ACCESS="INVALID ACCESS";
 	private static long numberOfClients;
@@ -158,6 +158,16 @@ public void start() {
 		else if (pathSplit.length==2) { // e.g. path=/jquery.min.js
 		if (refererAllowed) {
 		switch (pathSplit[1]) {
+			case "prepare.js": // e.g. path=/prepare.js
+				req.response().putHeader("Content-Type","text/javascript");
+				req.response().end(FileMap.get("prepare.js", lang), ENCODING);
+				System.out.println("Sended prepare.js.");
+				break;
+			case "jquery.min.js": // e.g. path=/jquery.min.js
+				req.response().putHeader("Content-Type","text/javascript");
+				req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
+				System.out.println("Sended jquery.min.js.");
+				break;
 			case "sessionIter": // e.g. path=/sessionIter
 				String iter=db.sessionIter(cookie);
 				req.response().putHeader("Content-Type", "text/plain");
@@ -181,11 +191,6 @@ public void start() {
 				req.response().putHeader("Content-Type","image/x-icon");
 				req.response().sendFile(fileName);
 				System.out.println("Sended "+fileName+".");
-				break;
-			case "jquery.min.js": // e.g. path=/jquery.min.js
-				req.response().putHeader("Content-Type","text/javascript");
-				req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
-				System.out.println("Sended jquery.min.js.");
 				break;
 			case "robots.txt": // e.g. path=/robots.txt
 				req.response().putHeader("Content-Type","text/plain; charset=utf-8");
