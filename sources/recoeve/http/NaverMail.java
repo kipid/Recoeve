@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 // https://developers.google.com/appengine/docs/java/mail/usingjavamail
 
 /**
- * http://stackoverflow.com/questions/3649014/send-email-using-java
+ * https://stackoverflow.com/questions/3649014/send-email-using-java
  * asked Sep 6 '10 at 4:34 by Mohit Bansal
  * @author doraemon
  */
@@ -34,7 +34,7 @@ public class NaverMail{
 		if (lang.equals("ko")) {
 			title="Recoeve.net 의 비밀번호를 잊어버리셨나요?";
 		}
-		String url="http://"+host+"/account/changePwd?id="+id+"&email="+email+"&token="+token;
+		String url="https://"+host+"/account/changePwd?id="+id+"&email="+email+"&token="+token;
 		String msg="<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:15px'>Within 10 minutes after you receive this email, please visit<br><a href='"+url+"&lang=en"+"'>"+url+"&lang=en"+"</a>.<br><br><br><br>이메일을 받으신 후 10분내로 다음 링크를 방문해주세요.<br><a href='"+url+"&lang=ko"+"'>"+url+"&lang=ko"+"</a></span>";
 		NaverMail.send(email, "", title, msg);
 	}
@@ -42,8 +42,8 @@ public class NaverMail{
 	public static void sendVeriKey(String email, String id, String veriKey)
 			throws AddressException, MessagingException {
 		String title="Verify your account on Recoeve.net";
-		String url="http://"+host+"/account/verify/"+id+"/"+veriKey;
-		String msg="<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:15px'>Thanks for your registration on <a href='http://recoeve.net/'>Recoeve.net</a>.<br><br>Please log in <a href='http://recoeve.net/'>Recoeve.net</a> first, and then click the following link to verify your account:<br><a href='"+url+"'>"+url+"</a><br><br><br><br><a href='http://recoeve.net/'>Recoeve.net</a> 가입을 환영합니다.<br><br>계정 이메일 인증을 위해 로그인 후 다음 링크를 클릭해 주세요.:<br><a href='"+url+"'>"+url+"</a><br></span>";
+		String url="https://"+host+"/account/verify/"+id+"/"+veriKey;
+		String msg="<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:15px'>Thanks for your registration on <a href='https://recoeve.net/'>Recoeve.net</a>.<br><br>Please log in <a href='https://recoeve.net/'>Recoeve.net</a> first, and then click the following link to verify your account:<br><a href='"+url+"'>"+url+"</a><br><br><br><br><a href='https://recoeve.net/'>Recoeve.net</a> 가입을 환영합니다.<br><br>계정 이메일 인증을 위해 로그인 후 다음 링크를 클릭해 주세요.:<br><a href='"+url+"'>"+url+"</a><br></span>";
 		NaverMail.send(email, "", title, msg);
 	}
 
