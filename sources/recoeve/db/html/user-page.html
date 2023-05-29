@@ -4,9 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
 <title>Recoeve.net</title>
-<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="/CDN/jquery.min.js"></script>
 <script src="/prepare.js"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script>
 (function (m, $, undefined) {
 m.myIndex="{--myIndex--}";
@@ -50,7 +50,7 @@ else {
 	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 }
 m.saveSSN();
-})(window.m||{}, jQuery);
+})(window.m, jQuery);
 </script>
 <style>
 body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
@@ -4362,6 +4362,6 @@ m.fsToRs.toggleRecoListPlay=function () {
 		$toggle_reco_list_play.addClass("enabled");
 	}
 };
-})(window.m||{}, jQuery);
+})(window.m, jQuery);
 </script>
 </html>

@@ -1,3 +1,4 @@
+window.m={};
 (function (m, $, undefined) {
 // 여러군데 쓰일거 같은 것만 모아놓자.
 // user-page.html, log-in.html
@@ -1195,4 +1196,4 @@ m.slideUp=function (elem) {
 	window.scrollBy(0,-$elem.outerHeight());
 	// $body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
-})(window.m||{}, jQuery);
+})(window.m, jQuery);

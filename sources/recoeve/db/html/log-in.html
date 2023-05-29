@@ -8,12 +8,12 @@
 <script src="/prepare.js"></script>
 <script>
 (function (m, undefined) {
-	let pathname=window.location.pathname;
-	let path="/account/log-in";
-	if (pathname!==path) {
-		window.history.replaceState(null, null, path+window.location.search+window.location.hash);
-	}
-})(m=window.m||{});
+let pathname=window.location.pathname;
+let path="/account/log-in";
+if (pathname!==path) {
+	window.history.replaceState(null, null, path+window.location.search+window.location.hash);
+}
+})(window.m);
 </script>
 <style>
 * {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
@@ -408,7 +408,7 @@ $("input.go-next").on("keyup", function (e) {
 		$(this).next().next("input").focus();
 	}
 });
-})(m=window.m||{}, jQuery);
+})(window.m, jQuery);
 </script>
 </body>
 </html>
