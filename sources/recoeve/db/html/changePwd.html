@@ -47,14 +47,14 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 <form class="form-login" action="./changePwd.do" accept-charset="UTF-8" method="post">
 <h2>[--Change password--]</h2>
-	<label for="input-userId">[--ID--]</label>
-	<input id="input-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
-	<label for="input-userEmail">[--E-mail--]</label>
-	<input id="input-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" maxlength="50" tabindex="6"/>
-	<label for="input-userPwd">[--Password--]</label>
-	<input id="input-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" maxlength="64" tabindex="7"/>
-	<label for="input-userPwdCfm">[--Password confirm--]</label>
-	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" maxlength="100" tabindex="8"/>
+	<label for="input-cp-userId">[--ID--]</label>
+	<input id="input-cp-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
+	<label for="input-cp-userEmail">[--E-mail--]</label>
+	<input id="input-cp-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="6"/>
+	<label for="input-cp-userPwd">[--Password--]</label>
+	<input id="input-cp-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="7"/>
+	<label for="input-cp-userPwdCfm">[--Password confirm--]</label>
+	<input id="input-cp-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="8"/>
 	<button id="button-changePwd" type="button" onclick="m.changePwd(this)" tabindex="9">[--Change password--]</button>
 </form>
 
@@ -85,13 +85,13 @@ else {
 	vars.lang={key:"lang", val:"df"};
 }
 if (vars.id?.val) {
-	$("#input-userId")[0].value=vars.id.val;
+	$("#input-cp-userId")[0].value=vars.id.val;
 }
-$("#input-userId")[0].disabled=true;
+$("#input-cp-userId")[0].disabled=true;
 if (vars.email?.val) {
-	$("#input-userEmail")[0].value=vars.email.val;
+	$("#input-cp-userEmail")[0].value=vars.email.val;
 }
-$("#input-userEmail")[0].disabled=true;
+$("#input-cp-userEmail")[0].disabled=true;
 
 let $dataLang=$("#data-lang");
 let dataLang=m.strToJSON($dataLang.html().trim());
@@ -133,14 +133,14 @@ m.changePwd=function(elem) {
 	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
 	let $form=$elem.parent("form").eq(0);
-	let userId=$form.find(".user-id")[0].value;
+	let userId=$("#input-cp-userId")[0].value;
 	let userIdLength=m.byteCount(userId);
-	let userEmail=$form.find(".user-Email")[0].value;
-	let userPwd=$form.find(".user-pwd")[0].value;
-	let userPwdCfm=$form.find(".user-pwd")[1].value;
+	let userEmail=$("#input-cp-userEmail")[0].value;
+	let userPwd=$("#input-cp-userPwd")[0].value;
+	let userPwdCfm=$("#input-cp-userPwdCfm")[0].value;
 	let err="";
 	let valid=false;
-	
+
 	if (userPwd.length==0) {
 		err+="[--Password is empty.--]";
 	} else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
@@ -150,7 +150,7 @@ m.changePwd=function(elem) {
 	} else {
 		valid=true;
 	}
-	
+
 	if (valid) {
 		$elem.before(m.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]"));
 		$.ajax("./getNewSalt", {
@@ -166,11 +166,13 @@ m.changePwd=function(elem) {
 				+'<input type="hidden" name="userId" value="'+vars["id"]+'"/>'
 			);
 			setTimeout(function() {
-				$form.find(".user-pwd")[0].value=m.encrypt(resp, userPwd, m.iterFull); userPwd="";
-				$form.find(".user-pwd")[1].value="confirmed"; userPwdCfm="";
+				$("#input-cp-userPwd")[0].value=m.encrypt(resp, userPwd, m.iterSessionFull);
+				userPwd="";
+				$("#input-cp-userPwdCfm")[0].value="confirmed";
+				userPwdCfm="";
 				$elem.before(m.encloseErr("[--Changing password--] : [--Please wait.--]"));
 				$form.submit();
-			}, 500);
+			}, 1024);
 		});
 	} else {
 		$elem.before(m.encloseErr(err));
@@ -188,7 +190,7 @@ $("#sign-up-userPwdCfm").on("keyup", function(e) {
 });
 $("input.go-next").on("keyup", function(e) {
 	if (e.keyCode===13) { // Enter
-		$(this).next().next("input").focus();
+		$(this).next("input").focus();
 	}
 });
 })(window.m, jQuery);
