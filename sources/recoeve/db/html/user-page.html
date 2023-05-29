@@ -3361,14 +3361,14 @@ m.reco_pointChange_do=function (args, err) {
 };
 m.recoByOnlyStars=function ($str, uri, $result) {
 	if (!m.myIndex) {
-		let delay=5;
+		let delay=27;
 		setInterval(function () {
 			$result.html(`[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
 			delay--;
 		}, 1000);
 		setTimeout(function () {
 			window.location.href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
-		}, 5000);
+		}, 27000);
 		return;
 	}
 	let valStr=$str.html();
