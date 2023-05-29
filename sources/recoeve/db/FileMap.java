@@ -36,7 +36,7 @@ public class FileMap {
 		
 	private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] txtFileNames={
-			"jquery.min.js"
+			"jquery.min.js", "prepare.js"
 			, "robots.txt"
 			, "log-in.html", "to-log-in.html"
 			, "changePwd.html"
@@ -45,7 +45,7 @@ public class FileMap {
 			, "redirect.html", "remember-me.html"
 		};
 	private static final int txtFileMapSize=50;
-	private static final int fileLangMapSize=10; // # of languages translated to support.
+	private static final int fileLangMapSize=15; // # of languages translated to support.
 	
 	public static Set<String> refererSet;
 	public static Map<String, String> fileMap;
