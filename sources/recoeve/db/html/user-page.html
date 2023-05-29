@@ -844,11 +844,11 @@ m.CfontFamily=function (font) {
 m.CfontSize=function (increment) {
 	if (increment.constructor===Number&&!isNaN(increment)) {
 		m.fontSize+=increment;
-		if (m.fontSize<8) {
-			m.fontSize=8;
+		if (m.fontSize<5) {
+			m.fontSize=5;
 		}
-		else if (m.fontSize>27) {
-			m.fontSize=27;
+		else if (m.fontSize>33) {
+			m.fontSize=33;
 		}
 		m.$container.css({"font-size":m.fontSize.toFixed(1)+"px"});
 		m.printDeviceInfo();
