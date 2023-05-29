@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+	<meta name="keywords" content="Recoeve.net"/>
+<script src="/jquery.min.js"></script>
 <script>
 (function (m, undefined) {
 	let pathname=window.location.pathname;
@@ -10,14 +14,10 @@
 	}
 })(m=window.m||{});
 </script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-	<meta name="keywords" content="Recoeve.net"/>
-	<!-- <link rel="stylesheet" media="all" type="text/css" href="./log-in.css"/> -->
 <style>
 * {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
 body {width:100%; max-width:1000px; margin:0 auto; padding:5px 0}
-.recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(40,40,55); color:white}
+#recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(40,40,55); color:white}
 h1 {display:block; font:inherit; font-size:3em; font-weight:bold; margin:0 0 .5em; padding:.6em .5em; border-bottom:5px solid rgb(140,140,150)}
 .form-login {width:20em; max-width:100%; margin:0 auto 1em; padding:1em; font-size:16px; color:white; line-height:1; background:black; border:3px solid rgb(120,120,130)}
 .form-login>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3; font-weight:bold}
@@ -52,32 +52,31 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<title>Recoeve.net</title>
 </head>
 <body>
-<div class="recoeve-container">
+<div id="recoeve-container">
 <h1>[--welcome--]</h1>
 
 <form id="form-log-in" class="form-login">
 <!-- <h2>[--Sign in--]</h2> -->
-	<input type="hidden" name="idType" value="id" id="input-idType"/>
-	<label for="userId">[--ID--] or [--E-mail--]</label>
-	<input class="user-id go-next" name="userId" id="input-userId" value="" placeholder="[--ID--] or [--E-mail--]" type="text" maxlength="50" tabindex="1"/>
-	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd" name="userPwd" id="log-in-userPwd" value="" placeholder="[--Password--]" type="password" maxlength="100" tabindex="2"/>
-	<label class="checkbox"><input name="rememberMe" class="checkbox" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label><!-- checked="checked" -->
-	<!-- <div>Forgot password?</div> -->
+	<input id="input-idType" type="hidden" name="idType" value="id"/>
+	<label for="input-userId">[--ID--] or [--E-mail--]</label>
+	<input id="input-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--] or [--E-mail--]" type="text" minlength="1" maxlength="255" tabindex="1"/>
+	<label for="input-userPwd">[--Password--]</label>
+	<input id="input-userPwd" class="user-pwd" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="2"/>
+	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
 </form>
 
 <form id="form-sign-up" class="form-login" action="./sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
-	<label for="userId">[--ID--]</label>
-	<input class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" maxlength="21" tabindex="5"/>
-	<label for="userEmail">[--E-mail--]</label>
-	<input class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" maxlength="50" tabindex="6"/>
-	<label for="userPwd">[--Password--]</label>
-	<input class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" maxlength="64" tabindex="7"/>
-	<label for="userPwdCfm">[--Password confirm--]</label>
-	<input class="user-pwd" name="userPwdCfm" id="sign-up-userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" maxlength="100" tabindex="8"/>
+	<label for="input-su-userId">[--ID--]</label>
+	<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
+	<label for="input-su-userEmail">[--E-mail--]</label>
+	<input id="input-su-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="6"/>
+	<label for="input-su-userPwd">[--Password--]</label>
+	<input id="input-su-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="7"/>
+	<label for="input-su-userPwdCfm">[--Password confirm--]</label>
+	<input id="input-su-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="8"/>
 	<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="9">[--Sign up for Recoeve--]</button>
 </form>
 
@@ -92,10 +91,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 
 <div id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making: Recoeve.net</a></div>
-</div><!-- recoeve-container -->
+</div><!-- #recoeve-container -->
 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
-<script src="/jquery.min.js"></script>
 <script>
 (function (m, $, undefined) {
 $(".replace-reco-eve").html(function (i, orgHtml) {
@@ -103,6 +100,8 @@ $(".replace-reco-eve").html(function (i, orgHtml) {
 		.replace(/reco/ig,'<span class="reco bold">$&</span>')
 		.replace(/eve/ig,'<span class="eve bold">$&</span>');
 });
+
+
 
 //////////////////////////////////////////
 // path.search rendering
@@ -128,6 +127,8 @@ m.getSearchVars=function (searchStr) {
 	}
 	return vars;
 };
+
+
 
 /*  :: cookies.js :: Slightly edited by kipid at 2023-02-26.
 |*|
@@ -187,6 +188,22 @@ if (m.searchVars.lang!==undefined) {
 	m.docCookies.setItem("lang", m.searchVars.lang.val, Infinity, "/");
 }
 
+
+
+////////////////////////////////////////////////////
+// Escape and Unescape HTML string.
+////////////////////////////////////////////////////
+m.escapeHTML=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+};
+m.unescapeHTML=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
+};
+
+
+
 ////////////////////////////////////////////////////
 // String to Array (copied from user-page.html)
 ////////////////////////////////////////////////////
@@ -194,7 +211,8 @@ m.encloseStr=function (str) {
 	if (str===undefined||str===null||str.constructor!==String) { return ""; }
 	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
 		return '"'+str.replace(/"/g,'""')+'"';
-	} else {
+	}
+	else {
 		return str;
 	}
 };
@@ -216,7 +234,8 @@ m.strToJSON=function (str, colMap, rowMap) {
 	function increseRC(str) {
 		if (str==='\t') {
 			col++; return true;
-		} else if (str==='\n') {
+		}
+		else if (str==='\n') {
 			row++; col=0; ret.push([]); return true;
 		} return false;
 	}
@@ -227,18 +246,21 @@ m.strToJSON=function (str, colMap, rowMap) {
 				strElem=str.substring(start+1, lastQuote.lastIndex-2);
 				delim=exec[1];
 				start=delimiter.lastIndex=lastQuote.lastIndex;
-			} else {
+			}
+			else {
 				strElem=str.substring(start+1);
 				delim="";
 				start=str.length;
 			}
 			strElem=strElem.replace(/""/g,'"');
-		} else {
+		}
+		else {
 			if ((exec=delimiter.exec(str))!==null) {
 				strElem=exec[1];
 				delim=exec[2];
 				start=delimiter.lastIndex;
-			} else {
+			}
+			else {
 				strElem=str.substring(start);
 				delim="";
 				start=str.length;
@@ -279,6 +301,8 @@ for (let i=0;i<dataLang[0].length;i++) {
 htmlLang+=`</div>`;
 $dataLang.after(htmlLang);
 
+
+
 //////////////////////////////////////////////////////////
 // Form handling. (Validity check, encrypt, and submit)
 //////////////////////////////////////////////////////////
@@ -291,7 +315,7 @@ if (sW<sH) {
 
 m.errCount=0;
 m.encloseErr=function (msg) {
-	return '<div id="error-msg-'+(m.errCount++)+'" class="error-msg">'+msg+'</div>';
+	return `<div id="error-msg-${m.errCount++}" class="error-msg">${m.escapeHTML(msg)}</div>`;
 };
 m.byteCount=function (str) {
 	return encodeURI(str).split(/%..|./).length-1;
@@ -462,7 +486,8 @@ m.hash13=function (str) {/* AP Hash Function */
 	for(let i=0;i<str.length;i++) {
 		if ((i&1)==0) {
 			h^=((h<<7)^str.charCodeAt(i)*(h>>3));
-		} else {
+		}
+		else {
 			h^=(~((h<<11)+str.charCodeAt(i)^(h>>5)));
 		}
 	}
@@ -519,7 +544,7 @@ m.encrypt=function (salt, pwd, iter) {
 m.iterFull=10000;
 
 m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
-m.regExEmail=/^[a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+$/;
+m.regExEmail=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+@[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
 m.minIdLength=1;
 m.maxIdLength=255;
 m.minPwdLength=6;
@@ -530,33 +555,39 @@ m.logIn=function (elem) {
 	$elem[0].disabled=true;
 	let $form=$elem.parent("form").eq(0);
 	let idType="id";
-	let userId=$form.find(".user-id")[0].value.trim();
+	let userId=$("#input-userId")[0].value.trim();
 	let userIdLength=m.byteCount(userId);
-	let userPwd=$form.find(".user-pwd")[0].value;
+	let userPwd=$("#input-userPwd")[0].value;
 	let err="";
 	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID or E-mail is empty.--]";
-	} else if (userIdLength<m.minIdLength) {
+	}
+	else if (userIdLength<m.minIdLength) {
 		err+="[--ID or E-mail is too short.--]";
-	} else if (userPwd.length==0) {
+	}
+	else if (userPwd.length==0) {
 		err+="[--Password is empty.--]";
-	} else if (userPwd.length<m.minPwdLength) {
+	}
+	else if (userPwd.length<m.minPwdLength) {
 		err+="[--Password is too short.--]";
-	} else {
+	}
+	else {
 		if (m.regExId.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="id"; valid=true;
-		} else if (m.regExEmail.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="email"; valid=true;
-		} else {
+			$("#input-idType")[0].value=idType="id"; valid=true;
+		}
+		else if (m.regExEmail.test(userId)) {
+			$("#input-idType")[0].value=idType="email"; valid=true;
+		}
+		else {
 			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
 		}
 	}
 	
 	if (valid) {
 		let form_data=`log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
-web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberMe']").is(":checked")?"yes":"no")}	`;
+web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"yes":"no")}	`;
 		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
 		$.ajax("./pwd_iteration", {
 			type: "POST"
@@ -570,7 +601,8 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 			if (isNaN(iter)) {
 				$elem.before( m.encloseErr("Error: "+res[0]) );
 				$elem[0].disabled=false;
-			} else {
+			}
+			else {
 				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
 				setTimeout(function () {
 					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
@@ -585,10 +617,12 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 							if (resp==="log-in success") {
 								if (m.searchVars.goto!==undefined) {
 									window.location.href=m.searchVars.goto.val;
-								} else {
+								}
+								else {
 									window.location.pathname="/";
 								}
-							} else {
+							}
+							else {
 								$elem[0].disabled=false;
 							}
 						}, 1024);
@@ -596,7 +630,8 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("input:checkbox[name='rememberM
 				}, 512);
 			}
 		});
-	} else {
+	}
+	else {
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
@@ -610,21 +645,25 @@ m.forgotPwd=function (elem) {
 	$elem[0].disabled=true;
 	let $form=$elem.parent("form").eq(0);
 	let idType="id";
-	let userId=$form.find(".user-id")[0].value.trim();
+	let userId=$("#input-userId")[0].value.trim();
 	let userIdLength=m.byteCount(userId);
 	let err="";
 	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID or E-mail is empty.--]";
-	} else if (userIdLength<m.minIdLength) {
+	}
+	else if (userIdLength<m.minIdLength) {
 		err+="[--ID or E-mail is too short.--]";
-	} else {
+	}
+	else {
 		if (m.regExId.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="id"; valid=true;
-		} else if (m.regExEmail.test(userId)) {
-			$form.find("#input-idType")[0].value=idType="email"; valid=true;
-		} else {
+			$("#input-idType")[0].value=idType="id"; valid=true;
+		}
+		else if (m.regExEmail.test(userId)) {
+			$("#input-idType")[0].value=idType="email"; valid=true;
+		}
+		else {
 			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
 		}
 	}
@@ -645,7 +684,8 @@ m.forgotPwd=function (elem) {
 			if (isNaN(iter)) {
 				$elem.before( m.encloseErr("Error: "+res[0]) );
 				$elem[0].disabled=false;
-			} else {
+			}
+			else {
 				$elem.before( m.encloseErr("[--Sending an email--]: [--Please wait.--]") );
 				$.ajax("./forgotPwd", {
 					type: "POST"
@@ -656,7 +696,8 @@ m.forgotPwd=function (elem) {
 				});
 			}
 		});
-	} else {
+	}
+	else {
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
@@ -669,31 +710,41 @@ m.signUp=function (elem) {
 	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
 	let $form=$elem.parent("form").eq(0);
-	let userId=$form.find(".user-id")[0].value.trim();
+	let userId=$("#input-su-userId")[0].value.trim();
 	let userIdLength=m.byteCount(userId);
-	let userEmail=$form.find(".user-Email")[0].value.trim();
-	let userPwd=$form.find(".user-pwd")[0].value;
-	let userPwdCfm=$form.find(".user-pwd")[1].value;
+	let userEmail=$("#input-su-userEmail")[0].value.trim();
+	let userPwd=$("#input-su-userPwd")[0].value;
+	let userPwdCfm=$("#input-su-userPwdCfm")[0].value;
 	let err="";
 	let valid=false;
 	
 	if (userIdLength==0) {
 		err+="[--ID is empty.--]";
-	} else if (userIdLength<m.minIdLength||userIdLength>m.maxIdLength) {
-		err+=(userIdLength<m.minIdLength?"[--ID is too short.--]":"[--ID is too long.--]")+" '"+userId+"':"+userIdLength+" ([--ID--].[--length--]:"+m.minIdLength+"~"+m.maxIdLength+")";
-	} else if (!m.regExId.test(userId)) {
+	}
+	else if (userIdLength<m.minIdLength||userIdLength>m.maxIdLength) {
+		err+=`${(userIdLength<m.minIdLength?"[--ID is too short.--]":"[--ID is too long.--]")}<br>
+'${userId}':${userIdLength} ([--ID--].[--length--]: ${m.minIdLength}~${m.maxIdLength})`;
+	}
+	else if (!m.regExId.test(userId)) {
 		err+="[--ID--] '"+userId+"' [--is of invalid form.--]";
-	} else if (userEmail.length==0) {
+	}
+	else if (userEmail.length==0) {
 		err+="[--E-mail is empty.--]";
-	} else if (!m.regExEmail.test(userEmail)) {
+	}
+	else if (!m.regExEmail.test(userEmail)) {
 		err+="[--E-mail--] '"+userEmail+"' [--is of invalid form.--]";
-	} else if (userPwd.length==0) {
+	}
+	else if (userPwd.length==0) {
 		err+="[--Password is empty.--]";
-	} else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
-		err+=(userPwd.length<m.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")+" ([--Password--].[--length--]:"+m.minPwdLength+"~"+m.maxPwdLength+")";
-	} else if (userPwd!==userPwdCfm) {
+	}
+	else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
+		err+=`${(userPwd.length<m.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")}<br>
+([--Password--].[--length--]: ${m.minPwdLength}~${m.maxPwdLength})`;
+	}
+	else if (userPwd!==userPwdCfm) {
 		err+="[--Confirm your password correctly.--]";
-	} else {
+	}
+	else {
 		valid=true;
 	}
 	
@@ -710,8 +761,10 @@ m.signUp=function (elem) {
 			if (res&&res.length>2&&res[0]=="true"&&res[1]=="true") {
 				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
 				setTimeout(function () {
-					let userPwd=$form.find(".user-pwd")[0].value=m.encrypt(res[3], userPwd, m.iterFull);
-					let userPwdCfm=$form.find(".user-pwd")[1].value="confirmed";
+					userPwd=m.encrypt(res[3], userPwd, m.iterFull);
+					userPwdCfm="confirmed";
+					$("#input-su-userPwd")[0].value="";
+					$("#input-su-userPwdCfm")[0].value="";
 					$elem.before( m.encloseErr("[--Signing up--]: [--Please wait.--]") );
 					let form_data=`userId	userEmail	tToken	authToken	userPwd	userPwdCfm
 ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
@@ -723,8 +776,9 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
 					});
-				}, 500);
-			} else {
+				}, 512);
+			}
+			else {
 				let errStr="";
 				if (res[0]=="false") {
 					errStr+=`[--ID is already in use. Please try another ID.--]<br>`; // userId is handled.
@@ -736,7 +790,8 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 				$elem[0].disabled=false;
 			}
 		});
-	} else {
+	}
+	else {
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
@@ -745,12 +800,12 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	}
 };
 
-$("#log-in-userPwd").on("keyup", function (e) {
+$("#input-userPwd").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-log-in").trigger("click");
 	}
 });
-$("#sign-up-userPwdCfm").on("keyup", function (e) {
+$("#input-su-userPwdCfm").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-sign-up").trigger("click");
 	}
