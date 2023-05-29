@@ -1,6 +1,7 @@
 (function (m, $, undefined) {
 // 여러군데 쓰일거 같은 것만 모아놓자.
 // user-page.html, log-in.html
+$window=$(window);
 m.getSearchVars=function (searchStr) {
 	let vars=[];
 	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
@@ -1182,9 +1183,4 @@ m.slideUp=function (elem) {
 	window.scrollBy(0,-$elem.outerHeight());
 	// $body.animate({scrollTop:'-='+$elem.height()}, 1000);
 };
-
-
-
-
-
 })(window.m||{}, jQuery);
