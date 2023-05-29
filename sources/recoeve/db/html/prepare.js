@@ -2,6 +2,8 @@
 // 여러군데 쓰일거 같은 것만 모아놓자.
 // user-page.html, log-in.html
 $window=$(window);
+$.fn.exists=function () { return this.length!==0; };
+
 m.getSearchVars=function (searchStr) {
 	let vars=[];
 	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
@@ -417,6 +419,10 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
+m.delayPad=m.delayPad||256;
+m.wait=m.wait||512;
+m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+m.previous=Date.now();
 $.fn.inView=function () {
 	if (this.is(":visible")) {
 		let viewportHeight=window.innerHeight;
@@ -851,6 +857,12 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.
 ////////////////////////////////////////////////////
+m.ptnURI=[];
+m.ptnURL=/^https?:\/\/\S+/i;
+m.ptnTag=/^<\w+[\s\S]+>$/i;
+m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
+
 m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	let exec=m.ptnURL.exec(uri);

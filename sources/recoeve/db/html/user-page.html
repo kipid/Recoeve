@@ -695,7 +695,6 @@ $document=$(document);
 $html=$("html");
 $title=$("title");
 $body=$("body");
-$.fn.exists=function () { return this.length!==0; };
 
 // Changing Styles of Recoeve.net
 m.mode="Dark";
@@ -935,11 +934,6 @@ else {
 	});
 }
 
-m.delayPad=m.delayPad||256;
-m.wait=m.wait||512;
-m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-m.previous=Date.now();
-
 m.catList=[];
 m.myCatList=m.myPage?m.catList:[];
 m.catUriList=[];
@@ -997,12 +991,6 @@ m.fsToRs.loop=false;
 YT=undefined;
 m.YtPlayer=null;
 m.YtAPILoaded=false;
-
-m.ptnURI=[];
-m.ptnURL=/^https?:\/\/\S+/i;
-m.ptnTag=/^<\w+[\s\S]+>$/i;
-m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
-m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
 
 m.mdInPRL=false; // mouse down in Point Range Left
 m.mdInPRR=false; // mouse down in Point Range Right
