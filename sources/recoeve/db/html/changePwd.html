@@ -77,7 +77,7 @@ $(".replace-reco-eve").html(function(i, orgHtml) {
 		.replace(/eve/ig,'<span class="eve bold">$&</span>');
 });
 
-let vars=m.getSearchVars();
+let vars=m.getSearchVars(window.location.search);
 if (vars.lang?.val) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
