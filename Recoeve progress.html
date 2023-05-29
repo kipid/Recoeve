@@ -31,16 +31,17 @@
 진행사항을 잡다하게 적자. 다른 할 일은 Works to do 참조 <cite class="ref-works"><a target="_blank" href="https://kipid.tistory.com/entry/Works-to-do">kipid's blog :: Works to do</a></cite>.
 
 <figure><div class="fig">
-	<div class="caption">츄츄스타그램 recoeve.net 에 정리한 것 <cite class="ref-chuchu"><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 of kipid's recoeve.net</a></cite>.</div>
+	<div class="caption">[My Blog]--[Music/Break]--츄츄 of kipid's Recoeve.net :: image file <cite class="ref-chuchu"><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84&lang=ko#https%3A%2F%2Fwww.instagram.com%2Fp%2FCsn70THrh99%2F">[My Blog]--[Music/Break]--츄츄 of kipid's Recoeve.net</a></cite>.</div>
 	<img delayed-src="https://blog.kakaocdn.net/dn/d1xgrD/btr3eW1UBs8/I6Pdcej4WMJT7KUcukP1B0/img.png">
 </div></figure>
 
 <figure><div class="fig">
-	<div class="caption">츄츄스타그램 at recoeve.net (iframe) <cite class="ref-chuchu"><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 of kipid's recoeve.net</a></cite>.</div>
+	<div class="caption">[My Blog]--[Music/Break]--츄츄 of kipid's Recoeve.net :: iframe <cite class="ref-chuchu"></cite>.</div>
 	<div class="rC"><div class="rSC" style="padding-bottom:130%">
-		<iframe delayed-src="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84"></iframe>
+		<iframe delayed-src="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84&lang=ko#https%3A%2F%2Fwww.instagram.com%2Fp%2FCsn70THrh99%2F"></iframe>
 	</div></div>
 </div></figure>
+
 
 
 ## TOC
@@ -65,7 +66,7 @@
 
 ### 정리하기 전
 
-최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length>MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
+최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
 
 추천해주기. Neighbor 통한 추천.
 
@@ -449,6 +450,20 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ### 정리하기 전
 
 
+
+lang.txt 업데이트 하기. 특히나 a href 링크 같은거 들어간 것들.
+
+Reco 후 닫기랑. 수정 후 닫기가 제대로 동작 안함.
+
+url lang 바꾸는거 자꾸 멘 마지막에 추가로 lang=ko&lang=de 처럼 연속해서 붙음. m.pathOfCat 써서 cat 이랑 mode, hash 값도 유지한채로 lang 만 바뀌도록 디자인하자.
+
+뒤로가기 누를때 의도대로 안움직임. cat 도 잘 안바뀌고, Go, ToRs 도 제멋대로인듯. 함 확인해 보고 고쳐야할듯.
+
+New reco toggle 도 pushState 해서 뒤로가기 누르면 닫히고 열리는거 history 쌓이도록.
+
+New Reco 버튼 class="enabled" toggle 되도록 만들기. $window.trigger("keyDown") 이용.
+
+javascript 분리하기. prepare.js 에 여러군데에서 쓰일 function 들 모아놓기. window.m.fns...
 
 첫 로드할때도 history.replaceState 로 state data 적절히 넣어놓자. 뒤로가기 누를때 첫 화면으로 갈 수 있게.
 
@@ -1302,7 +1317,7 @@ Lock-in 효과 지양 : 유명한 사람이 더 유명해지도록 하는 시스
 <ol class="refs">
 	<li><a href="https://recoeve.net/">Recoeve.net</a></li>
 	<li><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a>, 2014-12-02</li>
-	<li id="ref-docuK"><a href="https://kipid.tistory.com/entry/HTML-docuK-format-ver-20">kipid's blog - HTML docuK format ver. 2.1</a>;<br>
+	<li id="ref-docuK"><a href="https://kipid.tistory.com/entry/HTML-docuK-format-ver-20">kipid's blog :: HTML docuK format ver. 2.1</a>;<br>
 		// Updated regularly</li>
 <div class="subsec"><h3>Etc.</h3></div>
 </ol>
