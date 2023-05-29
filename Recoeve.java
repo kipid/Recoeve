@@ -163,11 +163,6 @@ public void start() {
 				req.response().end(FileMap.get("prepare.js", lang), ENCODING);
 				System.out.println("Sended prepare.js.");
 				break;
-			case "jquery.min.js": // e.g. path=/jquery.min.js
-				req.response().putHeader("Content-Type","text/javascript");
-				req.response().end(FileMap.get("jquery.min.js", "df"), ENCODING);
-				System.out.println("Sended jquery.min.js.");
-				break;
 			case "sessionIter": // e.g. path=/sessionIter
 				String iter=db.sessionIter(cookie);
 				req.response().putHeader("Content-Type", "text/plain");
