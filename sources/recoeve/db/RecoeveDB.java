@@ -279,8 +279,8 @@ public boolean checkTimeDiff(String now, String from, String lessThan) {
 }
 public boolean checkDateDiff(String now, String from, int lessThan) {
 	try {
-		pstmtCheckDateDiff.setDate(1, Date.valueOf(now));
-		pstmtCheckDateDiff.setDate(2, Date.valueOf(from));
+		pstmtCheckDateDiff.setDate(1, Date.valueOf(now.substring(0,10)));
+		pstmtCheckDateDiff.setDate(2, Date.valueOf(from.substring(0,10)));
 		pstmtCheckDateDiff.setInt(3, lessThan);
 		ResultSet rs=pstmtCheckDateDiff.executeQuery();
 		if (rs.next()) {
@@ -352,19 +352,22 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 			else {
 				if (!newC) {
 					errMsg+="used token";
-				}errMsg+=", ";
+				}
+				errMsg+=", ";
 				if (!tokenC) {
 					errMsg+="wrong token";
-				}errMsg+=", ";
+				}
+				errMsg+=", ";
 				if (!timeC) {
 					errMsg+="expired token";
-				}errMsg+=".";
+				}
+				errMsg+=".";
 			}
 		}
 		else {
 			errMsg+="no token.";
 		}
-		errMsg+="\nID: "+id+", E-mail: "+email+". tToken: "+tToken;
+		errMsg+=" ID: "+id+", E-mail: "+email+". tToken: "+tToken;
 		logs(1, now, ip, "tkn", false, errMsg);
 	} catch (SQLException e) {
 		err(e);
@@ -458,7 +461,7 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 			if (user.next()) {
 				NaverMail.sendVeriKey(email, id, veriKey);
 				updateUserClass(0, +1); // 0: Not verified yet
-				logs(user.getLong("i"), now, ip, "snu", true); // sign-up
+				logs(user.getLong("i"), now, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
 				done=true;
 			}
 		}
@@ -825,7 +828,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 				// int ssnC=user.getInt("ssnC");
 				setCookie=createUserSession(user_i, now, session, saltSSN, ip);
 				// user.updateInt("ssnC", ssnC+1);
-				String logDesc=null;
+				String logDesc="Not remembered";
 				String rmb=inputs.get(1, "rememberMe");
 				if ( rmb!=null && rmb.equals("yes") ) {
 					byte[] rmbdAuth=randomBytes(32);
