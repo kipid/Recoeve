@@ -43,8 +43,8 @@ else if (m.docCookies.hasItem("lang")) {
 	m.lang=m.docCookies.getItem("lang");
 }
 
-if (window.location.pathname==="/reco") {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", window.location.href);
+if (window.location.pathname==='/reco') {
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}`);
 }
 else {
 	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
