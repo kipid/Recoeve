@@ -44,7 +44,7 @@ else if (m.docCookies.hasItem("lang")) {
 }
 
 console.log(window.location.pathname);
-if (window.location.pathname==='/reco') {
+if (window.location.pathname==="/reco") {
 	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}`);
 }
 else {
@@ -4106,7 +4106,22 @@ if (vars.uri!==undefined) {
 	$input_uri.trigger("input");
 }
 if (window.location.pathname==="/reco") {
-	$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})
+	// Avoid window.history.pushState().
+	m.newRecoOn=true;
+	$button_new_reco.addClass("enabled");
+	$input_uri[0].disabled=false;
+	$new_reco.show();
+	let cat=m.currentCat;
+	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
+		$input_cats[0].value=cat;
+	}
+	m.wST=$window.scrollTop();
+	$window.on("scroll.stop", function (e) {
+		e.preventDefault();
+		$window.scrollTop(m.wST);
+	});
+	$input_uri.focus();
+	$input_uri.trigger("keyup");
 }
 $title.html(`${m.userId}'s recoeve.net`);
 let hashURI=m.hashURI;
