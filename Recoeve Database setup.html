@@ -25,6 +25,11 @@ SELECT i,id,email,class,tReg,ipReg,pwd_iteration FROM `Users` LIMIT 30,100;
 
 SELECT * FROM `LogInLogs` ORDER BY 't' DESC LIMIT 0,30;
 // 정렬이 잘 안됨.
+SELECT * FROM `LogInLogs` ORDER BY 't' ASC LIMIT 0,30;
+
+SELECT * FROM `LogInLogs` LIMIT 100;
+SELECT * FROM `LogInLogs` WHERE `log`='snu' LIMIT 100;
+SELECT * FROM `LogInLogs` WHERE `log`='tkn' LIMIT 100;
 ```/
 
 
