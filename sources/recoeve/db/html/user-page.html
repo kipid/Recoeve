@@ -43,6 +43,7 @@ else if (m.docCookies.hasItem("lang")) {
 	m.lang=m.docCookies.getItem("lang");
 }
 
+console.log(window.location.pathname);
 if (window.location.pathname==='/reco') {
 	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}`);
 }
