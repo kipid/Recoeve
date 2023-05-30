@@ -505,7 +505,7 @@ m.rmb_me=function (callback, args) {
 			type:"GET", url:"/sessionIter"
 			, dataType:"text"
 		}).done(function (resp) {
-			$numbers_of_recos.html(resp);
+			console.log(resp);
 			let iter=Number(resp);
 			if (isNaN(iter)) {
 				callback(args, resp);
@@ -533,7 +533,7 @@ m.rmb_me=function (callback, args) {
 		}).done(function (resp) {
 			console.log("rmb_do : "+resp);
 			setTimeout(function () {
-				$numbers_of_recos.html(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
+				console.log(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
 				if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
 					m.saveSSN();
 					if (m.saltSSN&&m.session) {
