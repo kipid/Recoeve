@@ -377,7 +377,9 @@ public void start() {
 								if (i>0) {
 									String id=dataStr.substring(0,i);
 									String token=dataStr.substring(i+1);
-									if (db.checkChangePwdToken(id, token, now)) {
+									boolean tokenChecked=db.checkChangePwdToken(id, token, now);
+									System.out.println("tokenChecked: "+tokenChecked);
+									if (tokenChecked) {
 										String new_salt=db.getNewPwdSalt("id", id);
 										req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 										req.response().end(new_salt, ENCODING);
