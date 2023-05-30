@@ -2,6 +2,7 @@ package recoeve.db;
 
 import java.sql.*;
 	// java.sql.Timestamp;
+	// java.sql.PreparedStatement
 import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.html
 
 // import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -278,8 +279,8 @@ public boolean checkTimeDiff(String now, String from, String lessThan) {
 }
 public boolean checkDateDiff(String now, String from, int lessThan) {
 	try {
-		pstmtCheckDateDiff.setTimestamp(1, Timestamp.valueOf(now));
-		pstmtCheckDateDiff.setTimestamp(2, Timestamp.valueOf(from));
+		pstmtCheckDateDiff.setDate(1, Date.valueOf(now));
+		pstmtCheckDateDiff.setDate(2, Date.valueOf(from));
 		pstmtCheckDateDiff.setInt(3, lessThan);
 		ResultSet rs=pstmtCheckDateDiff.executeQuery();
 		if (rs.next()) {
@@ -890,6 +891,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
 		if (rs.next()) {
+			// TODO: ip check.
 			if ( /*ip.startsWith(rs.getString("ip").split(":")[0])
 				&&*/checkDateDiff(now, rmbdT, daysRMB)
 				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
