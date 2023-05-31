@@ -170,16 +170,9 @@ public void start() {
 				System.out.println("iter: "+iter);
 				break;
 			case "reco": // e.g. path=/reco
-				if (cookie.get("rmbdI")!=null) {
-					req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-					req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
-					System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
-				}
-				else {
-					req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-					req.response().end(FileMap.get("to-log-in.html", lang), ENCODING); // window.location.href="/account/log-in?goto="+encodeURIComponent(fullPath);
-					System.out.println("Sended to-log-in.html."); // redirecting to /account/log-in since rmbd cookie is to be checked too.
-				}
+				req.response().putHeader("Content-Type", "text/html; charset=utf-8");
+				req.response().end(FileMapWithVar.get("user-page.html", lang, db.varMapMyPage(cookie)), ENCODING);
+				System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 				break;
 			case "favicon.ico": // e.g. path=/favicon.ico
 				String fileName=FileMap.getCDNFile(pathSplit[1]);
