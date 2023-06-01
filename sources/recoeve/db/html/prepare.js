@@ -928,7 +928,7 @@ m.uriRendering=function (uri, toA) {
 };
 
 m.YTiframe=function (v, vars) {
-	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen=""></iframe>`);
+	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`);
 };
 
 let ptnURI;
