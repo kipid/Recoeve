@@ -273,6 +273,9 @@ public void start() {
 							case "webm":
 								req.response().putHeader("Content-Type","video/webm");
 								break;
+							case "html":
+								req.response().putHeader("Content-Type","text/html; charset=utf-8");
+								break;
 							default:
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						}
