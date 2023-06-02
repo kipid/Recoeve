@@ -158,7 +158,7 @@ public void start() {
 				System.out.println("Sended to-log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
 		}
-		else if (pathSplit.length==2) { // e.g. path=/jquery.min.js
+		else if (pathSplit.length==2) { // e.g. path=/prepare.js
 		if (refererAllowed) {
 		switch (pathSplit[1]) {
 			case "prepare.js": // e.g. path=/prepare.js
