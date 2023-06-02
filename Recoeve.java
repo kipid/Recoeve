@@ -68,7 +68,8 @@ public void start() {
 			if (referer!=null) {
 				try {
 					System.out.println("Referer: "+URLDecoder.decode(referer, "UTF-8"));
-				} catch (UnsupportedEncodingException e) {
+				}
+				catch (UnsupportedEncodingException e) {
 					System.out.println(e);
 				}
 			}
@@ -107,7 +108,8 @@ public void start() {
 		System.out.println("Method: "+method);
 		try {
 			System.out.println("Absolute URI: "+URLDecoder.decode(req.absoluteURI(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
 		}
 
@@ -129,7 +131,8 @@ public void start() {
 				if (user.next()) {
 					System.out.println("User ID: "+user.getString("id"));
 				}
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				db.err(e);
 			}
 		}
@@ -193,7 +196,15 @@ public void start() {
 		else if (pathSplit.length>2) {
 		switch (pathSplit[1]) {
 			case "user": // e.g. path=/user/kipid/mode/multireco?cat=...
-				String user=URLDecoder.decode(pathSplit[2], "UTF-8");
+				String user=null;
+				try {
+					user=URLDecoder.decode(pathSplit[2], "UTF-8");
+				}
+				catch (UnsupportedEncodingException e) {
+					System.out.println(e);
+					user=pathSplit[2];
+				}
+				final String finalUser=user;
 				if (pathSplit.length==3||pathSplit.length==5) { // e.g. path=/user/kipid[/mode/multireco]?cat=...
 					if (db.idExists(user)) {
 						req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -212,14 +223,14 @@ public void start() {
 						case "get-Recos": // e.g. path=/user/kipid/get-Recos
 							req.bodyHandler((Buffer data) -> {
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-								req.response().end(db.getRecos(user, new StrArray(data.toString())), ENCODING);
+								req.response().end(db.getRecos(finalUser, new StrArray(data.toString())), ENCODING);
 								System.out.println("Sended recos.");
 							});
 							break;
 						case "get-UriList": // e.g. path=/user/kipid/get-UriList
 							req.bodyHandler((Buffer data) -> {
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-								req.response().end(db.getStringCatUriList(user, new StrArray(data.toString())), ENCODING);
+								req.response().end(db.getStringCatUriList(finalUser, new StrArray(data.toString())), ENCODING);
 								System.out.println("Sended uriLists.");
 							});
 							break;
@@ -251,7 +262,14 @@ public void start() {
 				break;
 			case "CDN": // e.g. path=/CDN/icon-Recoeve.png
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
-					String fileName=FileMap.getCDNFile(URLDecoder.decode(pathSplit[2], "UTF-8"));
+					String fileName=null;
+					try {
+						fileName=URLDecoder.decode(pathSplit[2], "UTF-8");
+					}
+					catch (UnsupportedEncodingException e) {
+						System.out.println(e);
+						fileName=pathSplit[2];
+					}
 					if (fileName!=null) {
 						String[] fileNameSplit=pathSplit[2].split("\\.");
 						switch (fileNameSplit[fileNameSplit.length-1]) {
@@ -645,7 +663,15 @@ public void start() {
 					case "verify": // path=/account/verify/.....token
 						if (sessionPassed) {
 							// VeriKey check.
-							if (db.verifyUser(cookie.get("I"), URLDecoder.decode(pathSplit[3], "UTF-8"), ip)) {
+							String pathSplit3=null;
+							try {
+								pathSplit3=URLDecoder.decode(pathSplit[3], "UTF-8");
+							}
+							catch (UnsupportedEncodingException e) {
+								System.out.println(e);
+								pathSplit3=pathSplit[3];
+							}
+							if (db.verifyUser(cookie.get("I"), pathSplit3, ip)) {
 								// User is verified.
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("You are verified.", ENCODING);
