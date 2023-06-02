@@ -193,7 +193,7 @@ public void start() {
 		else if (pathSplit.length>2) {
 		switch (pathSplit[1]) {
 			case "user": // e.g. path=/user/kipid/mode/multireco?cat=...
-				String user=URLDecoder.decode(pathSplit[2]);
+				String user=URLDecoder.decode(pathSplit[2], "UTF-8");
 				if (pathSplit.length==3||pathSplit.length==5) { // e.g. path=/user/kipid[/mode/multireco]?cat=...
 					if (db.idExists(user)) {
 						req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -251,7 +251,7 @@ public void start() {
 				break;
 			case "CDN": // e.g. path=/CDN/icon-Recoeve.png
 				if (refererAllowed) { // e.g. path=/CDN/docuK-prepare-2.3.js
-					String fileName=FileMap.getCDNFile(pathSplit[2]);
+					String fileName=FileMap.getCDNFile(URLDecoder.decode(pathSplit[2], "UTF-8"));
 					if (fileName!=null) {
 						String[] fileNameSplit=pathSplit[2].split("\\.");
 						switch (fileNameSplit[fileNameSplit.length-1]) {
@@ -645,7 +645,7 @@ public void start() {
 					case "verify": // path=/account/verify/.....token
 						if (sessionPassed) {
 							// VeriKey check.
-							if (db.verifyUser(cookie.get("I"), URLDecoder.decode(pathSplit[3]), ip)) {
+							if (db.verifyUser(cookie.get("I"), URLDecoder.decode(pathSplit[3], "UTF-8"), ip)) {
 								// User is verified.
 								req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								req.response().end("You are verified.", ENCODING);
