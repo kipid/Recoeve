@@ -32,7 +32,7 @@ public class FileMap {
 			, "link.png", "icon-Twitter.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png"
 			, "cc.png", "by.png", "nc.png", "nd.png"
 			, "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js"
-			, "고통없이-죽는-방법-안락사-방법-자살할-권리.html"
+			, "right-to-commit-suicide.html"
 		};
 		
 	private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
