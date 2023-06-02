@@ -714,8 +714,8 @@ public void start() {
 				.setPath("C:/Recoeve/recoeve.jks")
 				.setPassword("Kd8#j$LL0@OM1")
 			)
-	).requestHandler(router).listen(443);
-	vertx.createHttpServer()
-		.requestHandler(router).listen(80);
+	).requestHandler(router).listen(443, host);
+	// vertx.createHttpServer()
+	// 	.requestHandler(router).listen(80);
 } // public void start()
 } // public class Recoeve extends AbstractVerticle
