@@ -45,8 +45,8 @@ public class FileMap {
 			, "user-page.html", "to-user-page.html"
 			, "redirect.html", "remember-me.html"
 		};
-	private static final int txtFileMapSize=50;
-	private static final int fileLangMapSize=15; // # of languages translated to support.
+	private static final int txtFileMapSize=100;
+	private static final int fileLangMapSize=100; // # of languages translated to support.
 	
 	public static Set<String> refererSet;
 	public static Map<String, String> fileMap;
