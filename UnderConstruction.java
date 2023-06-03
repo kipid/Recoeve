@@ -159,7 +159,12 @@ public void start() {
 				.setPath("C:/Recoeve/recoeve.jks")
 				.setPassword("Kd8#j$LL0@OM1")
 			)
-	).requestHandler(router).listen(443, HOST);
+	).requestHandler(router).listen(443);
+	// UnderConstruction.HOST
+	// "43.200.166.14" : 탄력적 IP
+	// "43.200.166.14" : 퍼블릭 IPv4 주소
+	// "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com" : 퍼블릭 IPv4 DNS
+	// "172.31.35.249" : 프라이빗 IPv4 주소
 	vertx.createHttpServer()
 		.requestHandler(router).listen(80);
 } // public void start()
