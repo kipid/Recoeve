@@ -161,6 +161,11 @@ public void start() {
 		else if (pathSplit.length==2) { // e.g. path=/prepare.js
 		if (refererAllowed) {
 		switch (pathSplit[1]) {
+			case "jquery.js": // e.g. path=/jquery.js
+				req.response().putHeader("Content-Type","text/javascript");
+				req.response().end(FileMap.get("jquery.js", lang), ENCODING);
+				System.out.println("Sended jquery.js.");
+				break;
 			case "prepare.js": // e.g. path=/prepare.js
 				req.response().putHeader("Content-Type","text/javascript");
 				req.response().end(FileMap.get("prepare.js", lang), ENCODING);
