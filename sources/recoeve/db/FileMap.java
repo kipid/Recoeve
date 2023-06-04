@@ -28,7 +28,7 @@ public class FileMap {
 	
 	private static final String filePath="C:/Recoeve/CDN/";
 	private static final String[] fileNames={
-			"jquery.min.js", "favicon.ico"
+			"favicon.ico"
 			, "link.png", "icon-Twitter.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png"
 			, "cc.png", "by.png", "nc.png", "nd.png"
 			, "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js"
@@ -37,7 +37,7 @@ public class FileMap {
 		
 	private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] txtFileNames={
-			"prepare.js"
+			"jquery.js", "prepare.js"
 			, "robots.txt"
 			, "log-in.html", "to-log-in.html"
 			, "changePwd.html"
