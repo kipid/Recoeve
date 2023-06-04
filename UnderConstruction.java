@@ -151,6 +151,8 @@ public void start() {
 		System.out.println("Sended '"+res+"'");
 	});
 
+
+
 	vertx.createHttpServer(
 		new HttpServerOptions()
 			.setUseAlpn(true)
@@ -161,11 +163,17 @@ public void start() {
 			)
 	).requestHandler(router).listen(443);
 	// UnderConstruction.HOST
-	// "43.200.166.14" : 탄력적 IP
-	// "43.200.166.14" : 퍼블릭 IPv4 주소
-	// "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com" : 퍼블릭 IPv4 DNS
-	// "172.31.35.249" : 프라이빗 IPv4 주소
-	vertx.createHttpServer()
-		.requestHandler(router).listen(80);
+	// 탄력적 IP : "43.200.166.14"
+	// 할당된 IPv4 주소, 퍼블릭 IPv4 주소 : "43.200.166.14"
+	// 퍼블릭 IPv4 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
+	// 프라이빗 IPv4 주소 : "172.31.35.249"
+	// 호스트 이름 유형 - IP 이름: "ip-172-31-35-249.ap-northeast-2.compute.internal"
+	// 퍼블릭 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
+	// 역방향 DNS 레코드 : "recoeve.net."
+
+
+
+	// vertx.createHttpServer()
+	// 	.requestHandler(router).listen(80);
 } // public void start()
 } // public class UnderConstruction extends AbstractVerticle
