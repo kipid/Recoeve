@@ -782,16 +782,24 @@ window.MathJax={
 				break;
 			case 90: // Z=90
 				if ($("div.comments").exists()) $window.scrollTop($("div.comments").offset().top);
-				// m.HandleAhrefInComment();
+				break;
+			case 72: // H=72
+				m.HandleAhrefInComment();
 				break;
 			case 88: // X=88
 				if ($("#disqus_thread").exists()) $window.scrollTop($("#disqus_thread").offset().top);
 				break;
 			case 73: // I=73
+				m.docCookies.removeItem("REACTION_GUEST", "/");
 				window.location.href="https://www.tistory.com/auth/login";
 				break;
+			case 79: // O=79
+				window.location.href="https://www.tistory.com/auth/logout";
+				break;
 			default:
-				if (window['processShortcut']!==undefined) {processShortcut(event);}
+				if (window.processShortcut!==undefined) {
+					window.processShortcut(event);
+				}
 		}
 	}
 	$window.on("keydown", m.processShortKey);
@@ -800,16 +808,28 @@ window.MathJax={
 	m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
 
 	m.HandleAhrefInComment=function () {
-		$("div.comments").find("p").each(function (i, elem) {
-			$(elem).html(
-				$(elem).html().replaceAll(/(https?:\/\/[^<>\s\t\n\r]+)/ig, function (match) {
-					return `<a style="color:wheat" target="_blank" href="${match}">${m.escapeHTML(decodeURIComponent(match))}</a>`
-				})
-			);
+		$("div.comments>.comment-list").find("p").each(function (i, elem) {
+			let $elem=$(elem);
+			let contents=$elem.contents();
+			let elemHTML="";
+			for (let i=0;i<contents.length;i++) {
+				let toBeAdded="";
+				if (contents[i].nodeType===Node.TEXT_NODE) { // Node.TEXT_NODE=3
+					toBeAdded=contents[i].innerHTML=contents[i].wholeText.replaceAll(/(https?:\/\/[^<>\s\t\n\r]+)/ig, function (match) {
+						return `<a style="color:wheat" target="_blank" href="${match}">${m.escapeHTML(decodeURIComponent(match))}</a>`
+					});
+				}
+				else {
+					toBeAdded=contents[i].outerHTML;
+				}
+				elemHTML+=toBeAdded;
+			}
+			$elem.html(elemHTML);
 		});
 	};
 	m.HandleAhrefInComment();
 
+	// TODO: 아래 덮어씌운건 동작 안하는듯?
 	m.tistoryAddComment=window.addComment;
 	window.addComment=async function (elem, number) {
 		await m.tistoryAddComment(elem, number);
