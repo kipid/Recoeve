@@ -9,10 +9,11 @@
 <script src="/prepare.js"></script>
 <script>
 (function (m, undefined) {
+let fullPath=window.location.pathname+window.location.search+window.location.hash;
 let pathname=window.location.pathname;
 let path="/account/log-in";
 if (pathname!==path) {
-	window.history.replaceState(null, null, path+window.location.search+window.location.hash);
+	window.history.replaceState({}, "", `/account/log-in?goto=${encodeURIComponent(fullPath)}`);
 }
 })(window.m);
 </script>
@@ -394,6 +395,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	}
 };
 
+// TODO: Press <code>Enter</code> to go to the next input.
 $("#input-userPwd").on("keyup", function (e) {
 	if (e.keyCode===13) { // Enter
 		$("#button-log-in").trigger("click");
