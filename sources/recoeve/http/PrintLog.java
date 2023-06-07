@@ -19,23 +19,28 @@ import recoeve.db.FileMap;
 public class PrintLog implements Handler<RoutingContext> {
 private static long numberOfClients=0;
 public static final RecoeveDB db=new RecoeveDB();
+public static HttpServerRequest req=null;
 public static String lang="df";
 public static boolean refererAllowed=false;
 public static String path="/";
 public static Cookie cookie=null;
 public static boolean sessionPassed=false;
 public static String user_i=null;
+public static HttpMethod method=null;
+public static String now=null;
+public static String referer=null;
+public static String ip=null;
 
 public PrintLog() {}
 
 public static void printLog(RoutingContext ctx) {
-	HttpServerRequest req=ctx.request();
+	req=ctx.request();
 	////////////////////////////////////
 	// Console log.
 	////////////////////////////////////
 	System.out.println("\n\nA client has connected!: "+(++numberOfClients));
-	final String now=db.now();
-	final String referer=req.headers().get("Referer");
+	now=db.now();
+	referer=req.headers().get("Referer");
 		System.out.println("Time: "+now);
 		if (referer!=null) {
 			try {
@@ -73,7 +78,7 @@ public static void printLog(RoutingContext ctx) {
 	}
 	System.out.println("Referer Allowed: "+refererAllowed);
 
-	final HttpMethod method=req.method();
+	method=req.method();
 	path=req.path();
 	final String query=req.query();
 	System.out.println("Method: "+method);
@@ -84,7 +89,7 @@ public static void printLog(RoutingContext ctx) {
 		System.out.println(e);
 	}
 
-	final String ip=req.remoteAddress().toString();
+	ip=req.remoteAddress().toString();
 	System.out.println("User IP: "+ip);
 	System.out.println("Local Address: "+req.localAddress());
 

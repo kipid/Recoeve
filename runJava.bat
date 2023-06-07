@@ -9,8 +9,8 @@ SET DC=C:\Recoeve\classes
 
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
-:: Compile %~nx1 with {filename:%~nx1, encoding:utf8, destination:%DC%, classpath:%CLASSPATH%}
-javac %~nx1 -encoding utf8 -d "%DC%" -classpath "%CLASSPATH%"
+:: Compile %~nx1 with {filename:%~nx1, encoding:UTF-8, destination:%DC%, classpath:%CLASSPATH%}
+javac %~nx1 -encoding UTF-8 -d "%DC%" -classpath "%CLASSPATH%"
 
 IF NOT %ERRORLEVEL%==0 GOTO :EOF
 
@@ -34,7 +34,7 @@ ECHO --- OUTPUT: %CN% %2 %3 %4 %5 %6 %7 %8 %9 ---
 CD %DC%
 
 :: Run/Execute the class created.
-java -Dfile.encoding=UTF8 -classpath "%CLASSPATH%" %CN% %2 %3 %4 %5 %6 %7 %8 %9
+java -Dfile.encoding=UTF-8 -classpath "%CLASSPATH%" %CN% %2 %3 %4 %5 %6 %7 %8 %9
 
 :: Back to source directory
 CD %SD%

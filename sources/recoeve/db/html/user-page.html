@@ -718,6 +718,9 @@ m.resetStyle=function () {
 	m.CfontFamily(m.defaultStyles.fontFamily);
 	m.CfontSize(m.defaultStyles.fontSize-m.fontSize);
 	m.ClineHeight(m.defaultStyles.lineHeight10-m.lineHeight10);
+	if (!$floating_key.is(":visible")) {
+		m.toggleFK();
+	}
 }
 m.Cmode=function (modeI) {
 	if (modeI=="Dark") {

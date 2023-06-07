@@ -41,13 +41,13 @@ import recoeve.db.StrArray;
 
 
 public class UnderConstruction extends AbstractVerticle {
-	public static final String HOST
-		// ="recoeve.net";
-		// ="0.0.0.0";
-		="localhost";
-	public static final String ENCODING="UTF-8";
-	public static final String INVALID_ACCESS="INVALID ACCESS";
-	private static final RecoeveDB db=PrintLog.db;
+public static final String HOST
+	// ="recoeve.net";
+	// ="0.0.0.0";
+	="localhost";
+public static final String ENCODING="UTF-8";
+public static final String INVALID_ACCESS="INVALID ACCESS";
+private static final RecoeveDB db=PrintLog.db;
 
 @Override
 public void start() {
@@ -86,6 +86,5 @@ public void start() {
 	// 	.requestHandler(router).listen(80);
 } // public void start()
 
-public static void main(String... args) {
-	// Do nothing.
-}} // public class UnderConstruction extends AbstractVerticle
+public static void main(String... args) {} // Do nothing.
+} // public class UnderConstruction extends AbstractVerticle
