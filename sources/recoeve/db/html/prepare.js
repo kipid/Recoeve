@@ -1151,7 +1151,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, `instagram`), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, `instagram`), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
