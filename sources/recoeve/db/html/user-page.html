@@ -3911,7 +3911,7 @@ m.shareSNS=function (elem, service) {
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, uri);
 	switch (service) {
 		case 'link':
-			let written=`${uri}\n${title}\n${recoeveURI}`;
+			let written=`${title}\n${recoeveURI}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`The following is copied!\n"${written}"`);
 			}
