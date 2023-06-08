@@ -221,7 +221,7 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 		}
 		final String finalUserId=userId;
 		if (finalUserId!=null&&!finalUserId.isEmpty()&&PrintLog.db.idExists(finalUserId)) {
-			String wildcard=PrintLog.req.getParam("param0");
+			String wildcard=PrintLog.req.getParam("wildcard");
 			System.out.println("/user/:userId/* :: wildcard="+wildcard);
 			if (wildcard!=null) {
 			switch (wildcard) {
