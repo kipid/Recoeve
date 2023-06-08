@@ -52,6 +52,7 @@ router.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		String fileName=null;
 		try {
 			fileName=URLDecoder.decode(ctx.pathParam("fileName"), "UTF-8");
+			System.out.println("/CND/:fileName :: fileName="+fileName);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
@@ -122,6 +123,7 @@ router.get("/:fileName").handler(ctx -> {
 		String fileName=null;
 		try {
 			fileName=URLDecoder.decode(ctx.pathParam("fileName"), "UTF-8");
+			System.out.println("/:fileName :: fileName="+fileName);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
@@ -174,12 +176,13 @@ router.get("/:fileName").handler(ctx -> {
 	}
 });
 
-router.get("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
+router.get("/user/:userId").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
 		String userId=null;
 		try {
 			userId=URLDecoder.decode(ctx.pathParam("userId"), "UTF-8");
+			System.out.println("/user/:userId :: userId="+userId);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
@@ -210,6 +213,7 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 		String userId=null;
 		try {
 			userId=URLDecoder.decode(ctx.pathParam("userId"), "UTF-8");
+			System.out.println("/user/:userId/* :: userId="+userId);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
@@ -218,6 +222,7 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 		final String finalUserId=userId;
 		if (finalUserId!=null&&!finalUserId.isEmpty()&&PrintLog.db.idExists(finalUserId)) {
 			String wildcard=PrintLog.req.getParam("param0");
+			System.out.println("/user/:userId/* :: wildcard="+wildcard);
 			if (wildcard!=null) {
 			switch (wildcard) {
 				case "get-Recos": // e.g. path=/user/kipid/get-Recos
@@ -277,6 +282,7 @@ router.post("/reco/:toDo").handler(ctx -> {
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
 		String toDo=ctx.pathParam("toDo");
+		System.out.println("/reco/:toDo :: toDo="+toDo);
 		switch (toDo) {
 			case "defs": // path=/reco/defs
 				PrintLog.req.bodyHandler((Buffer data) -> {
@@ -336,6 +342,7 @@ router.route("/account/:toDo").handler(ctx -> { // e.g. path=/account/...
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
 		String toDo=ctx.pathParam("toDo");
+		System.out.println("/account/:toDo :: toDo="+toDo);
 		switch (toDo) {
 			case "changePwd": // path=/account/changePwd
 				if (PrintLog.db.checkChangePwdToken(PrintLog.req.params(), PrintLog.now)) {
@@ -629,9 +636,10 @@ router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/
 router.get("/account/verify/:token").handler(ctx -> { // path=/account/verify/:token
 	if (PrintLog.sessionPassed) {
 		// VeriKey check.
-		String token=ctx.pathParam("token");;
+		String token=ctx.pathParam("token");
 		try {
 			token=URLDecoder.decode(token, "UTF-8");
+			System.out.println("/account/verify/:token :: token="+token);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
