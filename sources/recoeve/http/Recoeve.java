@@ -218,6 +218,7 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 		final String finalUserId=userId;
 		if (finalUserId!=null&&!finalUserId.isEmpty()&&PrintLog.db.idExists(finalUserId)) {
 			String wildcard=PrintLog.req.getParam("param0");
+			if (wildcard!=null) {
 			switch (wildcard) {
 				case "get-Recos": // e.g. path=/user/kipid/get-Recos
 					PrintLog.req.bodyHandler((Buffer data) -> {
@@ -251,6 +252,11 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS);
+			}}
+			else {
+				PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+				PrintLog.req.response().end("Wrong method POST.", ENCODING);
+				System.out.println("Sended 'Wrong method' POST.");
 			}
 		}
 		else {

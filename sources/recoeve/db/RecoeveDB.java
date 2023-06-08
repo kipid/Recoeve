@@ -1514,13 +1514,17 @@ public boolean changeOrdersCatList(long user_i, String listName, String newFullC
 
 public String getStringCatUriList(String user_id, StrArray catList) {
 	String res="";
-	try {
-		ResultSet user=findUserById(user_id);
-		if (user.next()) {
-			res=getStringCatUriList(user.getLong("i"), catList);
+	if (user_id!=null&&!user_id.isEmpty()) {
+		try {
+			ResultSet user=findUserById(user_id);
+			if (user.next()) {
+				res=getStringCatUriList(user.getLong("i"), catList);
+			}
+		} catch (SQLException e) {
+			err(e);
+		} catch (NullPointerException e) {
+			err(e);
 		}
-	} catch (SQLException e) {
-		err(e);
 	}
 	return res;
 }
@@ -1534,6 +1538,8 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 			res+="\n"+cat+"\t"+getUriList(user_i, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 		}
 	} catch (SQLException e) {
+		err(e);
+	} catch (NullPointerException e) {
 		err(e);
 	}
 	return res;
