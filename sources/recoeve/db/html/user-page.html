@@ -4157,7 +4157,7 @@ if (vars.uri!==undefined) {
 	$input_uri[0].value=vars.uri.val;
 	$input_uri.trigger("input");
 }
-if (vars.PRL||var.PRR) {
+if (vars.PRL||vars.PRR) {
 	if (vars.PRL) {
 		m.ptsRangeFrom=Number(vars.PRL.val);
 		m.docCookies.setItem("PRL", vars.PRL.val, Infinity, "/", false, true);
