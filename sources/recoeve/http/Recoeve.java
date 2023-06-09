@@ -176,12 +176,12 @@ router.get("/:fileName").handler(ctx -> {
 	}
 });
 
-router.get("/user/:userId").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
+router.getWithRegex("\\/user\\/([^\\/]+)(?:\\/mode\\/[^\\/]+)?").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
 		String userId=null;
 		try {
-			userId=URLDecoder.decode(ctx.pathParam("userId"), "UTF-8");
+			userId=URLDecoder.decode(ctx.pathParam("param0"), "UTF-8");
 			System.out.println("/user/:userId :: userId="+userId);
 		}
 		catch (UnsupportedEncodingException e) {
