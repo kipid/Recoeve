@@ -3914,7 +3914,7 @@ m.shareCurrentPage=function (service) {
 	if (m.docCookies.hasItem(argName)) {
 		args[argName]=m.docCookies.getItem(argName);
 	}
-	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, null, args);
+	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, null, args);
 	switch (service) {
 		case 'link':
 			let written=`${title}\n${recoeveURI}`;
