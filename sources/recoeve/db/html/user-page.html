@@ -12,46 +12,6 @@
 (function (m, $, undefined) {
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
-
-m.goOn=false;
-m.ToRsOn=false;
-m.newRecoOn=false;
-
-m.pathName=window.location.pathname;
-if (m.pathName==="/reco") {
-	m.newRecoOn=true;
-}
-if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
-	m.pathName="/user/"+m.myId;
-}
-
-m.pathNameSplit=m.pathName.split("/");
-m.userId=decodeURIComponent(m.pathNameSplit[2]);
-m.myPage=(m.myId===m.userId);
-m.userPath=`/user/${encodeURIComponent(m.userId)}`;
-m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
-m.hashURI=decodeURIComponent(window.location.hash.substring(1));
-
-m.searchVars=m.getSearchVars(window.location.search);
-m.currentCat=m.searchVars?.cat?.val||"";
-
-m.lang=null;
-if (!!m.searchVars.lang) {
-	m.lang=m.searchVars.lang.val;
-	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
-}
-else if (m.docCookies.hasItem("lang")) {
-	m.lang=m.docCookies.getItem("lang");
-}
-
-console.log(window.location.pathname);
-if (window.location.pathname==="/reco") {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}`);
-}
-else {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
-}
-m.saveSSN();
 })(window.m, jQuery);
 </script>
 <style>
@@ -4140,15 +4100,38 @@ $choose_lang.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 m.initialOpen=true;
-if (m.recoMode==="") {
-	m.openCat(m.currentCat);
+
+m.goOn=false;
+m.ToRsOn=false;
+m.newRecoOn=false;
+
+m.pathName=window.location.pathname;
+if (m.pathName==="/reco") {
+	m.newRecoOn=true;
 }
-else if (m.recoMode==="multireco") {
-	m.toggleMultirecoMode();
+if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
+	m.pathName="/user/"+m.myId;
 }
-else if (m.recoMode==="neighbors") {
-	m.toggleNeighborsMode();
+
+m.pathNameSplit=m.pathName.split("/");
+m.userId=decodeURIComponent(m.pathNameSplit[2]);
+m.myPage=(m.myId===m.userId);
+m.userPath=`/user/${encodeURIComponent(m.userId)}`;
+m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
+m.hashURI=decodeURIComponent(window.location.hash.substring(1));
+
+m.searchVars=m.getSearchVars(window.location.search);
+m.currentCat=m.searchVars?.cat?.val||"";
+
+m.lang=null;
+if (!!m.searchVars.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
 }
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
+
 let vars=m.searchVars;
 if (vars.title!==undefined) {
 	$input_title[0].value=vars.title.val;
@@ -4157,18 +4140,23 @@ if (vars.uri!==undefined) {
 	$input_uri[0].value=vars.uri.val;
 	$input_uri.trigger("input");
 }
+m.args={};
 if (vars.PRL||vars.PRR) {
 	if (vars.PRL) {
-		m.ptsRangeFrom=Number(vars.PRL.val);
-		m.docCookies.setItem("PRL", vars.PRL.val, Infinity, "/", false, true);
+		let val=vars.PRL.val;
+		m.args.PRL=val;
+		m.ptsRangeFrom=Number(val);
+		m.docCookies.setItem("PRL", val, Infinity, "/", false, true);
 	}
 	else {
 		m.ptsRangeFrom=0;
 		m.docCookies.setItem("PRL", "0", Infinity, "/", false, true);
 	}
 	if (vars.PRR) {
-		m.ptsRangeTo=Number(vars.PRR.val);
-		m.docCookies.setItem("PRR", vars.PRR.val, Infinity, "/", false, true);
+		let val=vars.PRR.val;
+		m.args.PRR=val;
+		m.ptsRangeTo=Number(val);
+		m.docCookies.setItem("PRR", val, Infinity, "/", false, true);
 	}
 	else {
 		m.ptsRangeTo=1;
@@ -4178,20 +4166,38 @@ if (vars.PRL||vars.PRR) {
 else if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
 	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
 	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
-	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:m.PRLw-15});
-	$point_range_bar.css({left:m.PRLw});
-	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({left:m.PRRw-5});
-	$point_range_bar.css({right:m.PRw-m.PRRw});
-	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 }
 else {
 	m.ptsRangeFrom=0;
 	m.ptsRangeTo=1;
-	m.PRLw=15;
-	m.PRRw=m.PRw-15;
 }
+m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+$point_range_left.css({left:m.PRLw-15});
+$point_range_bar.css({left:m.PRLw});
+m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+$point_range_right.css({left:m.PRRw-5});
+$point_range_bar.css({right:m.PRw-m.PRRw});
+$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
+
+console.log(window.location.pathname);
+if (window.location.pathname==="/reco") {
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
+}
+else {
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+}
+m.saveSSN();
+
+if (m.recoMode==="") {
+	m.openCat(m.currentCat);
+}
+else if (m.recoMode==="multireco") {
+	m.toggleMultirecoMode();
+}
+else if (m.recoMode==="neighbors") {
+	m.toggleNeighborsMode();
+}
+
 if (window.location.pathname==="/reco") {
 	// Avoid window.history.pushState().
 	m.newRecoOn=true;
