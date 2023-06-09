@@ -354,9 +354,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 	.bright #foot {border-color:black}
 
-#floating-key {font-size:.8em; display:flex; flex-wrap:wrap; position:fixed; right:.2em; bottom:2.45em; width:9em; height:auto}
-#floating-key div.button {text-align:center; margin:0; width:9em; height:auto}
-#toggle-floating-key {font-size:.8em; position:fixed; right:.2em; bottom:.2em; text-align:center; width:2.4em; height:2.25em; margin:0}
+#floating-key {display:flex; flex-wrap:wrap; bottom:2.6em; width:9em; height:auto}
+#floating-key div.button {border-top:none; text-align:center; margin:0; padding:0; width:9em; height:auto}
+	#floating-key div.button:first-child {border-top:2px solid rgb(50,50,50)}
+#toggle-floating-key {bottom:.2em; text-align:center; width:2.2em; height:2.3em; margin:0; padding:.1em}
+#SNS-floating {width:100%; text-align:center}
+#SNS-floating .SNS-img {box-sizing:border-box; padding:0; margin:0; width:1.8em; height:1.8em; border:1px gray solid; border-left:0; cursor:pointer}
+	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
+#floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em;}
+.bright #floating-key, .bright #toggle-floating-key {color:black}
 
 @media all and (min-width:600px) {
 	.multireco .reco {width:33%}
@@ -569,14 +575,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div><!-- div#headPlay -->
 <div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="contents"></div><!-- div#contents -->
-<div id="floating-key">
-	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hide--]</div>
-	<div class="button button-Go" style="width:4em" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">Go</div><div class="button button-ToR" style="width:5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">[--Backward--]</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">[--Forward--]</div>
-	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
-	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--New Reco--]</div>
-</div>
+<div id="floating-key"></div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
 </body>
@@ -1077,6 +1076,28 @@ m.getNeighbors=function () {
 ////////////////////////////////////////////////////
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
+$floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
+	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
+		[--_G_o (FS)--]
+	</div>
+	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+		[--_T_ofR--]
+	</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
+		[--Backwar_d_--]
+	</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
+		[--_F_orward--]
+	</div>
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">
+		[--Go to _C_ats--]
+	</div>
+	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		[--Log _i_n--]
+	</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+		[--Log _o_ut--]
+	</div>`}
+	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"></div>`)
 $button_hideFK=$("#button-hideFK");
 if ((!m.myPage)&&m.myId) {
 	$button_hideFK.after(`<div class="button" onclick="window.open('/user/${m.myId}')">[--To my page--]</div>`);
@@ -1261,9 +1282,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 		let depth=m.getDepthOfTabs(list[i]);
 		superCats.splice(depth, superCats.length-depth, baseCat);
 		let cat=superCats[0];
-		for (let j=1;j<=depth;j++) {
-			cat+="--"+superCats[j];
-		}
+		cat=superCats.join("--");
 		catList[i]=catList[cat]={i, cat, baseCat, depth};
 	}
 };
@@ -2078,7 +2097,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}">
-	<img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
+	<img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
@@ -3901,6 +3920,10 @@ $table_of_recos.on("keydown", function (e) {
 ////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
+m.shareCurrentPage=function (service) {
+	let args={PRL:, PRR:, shuffle:, loop:, oneLoop:}
+	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, null, args);
+};
 m.shareSNS=function (elem, service) {
 	let $reco=$(elem).parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
