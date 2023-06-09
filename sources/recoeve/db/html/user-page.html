@@ -4085,6 +4085,12 @@ m.processShortKey=function (e) {
 			}
 			$window.scrollTop(hI.offset().top);
 			break;
+		case 73: // I=73
+			window.location.href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
+			break;
+		case 79: // O=79
+			window.location.href="/account/log-out";
+			break;
 		default:
 	}
 }
