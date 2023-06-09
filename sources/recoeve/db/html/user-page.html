@@ -600,9 +600,6 @@ $choose_lang_list=$("#choose-lang-list");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
-$button_mode=$(".button-mode");
-$button_neighbors_mode=$(".button-neighbors-mode");
-$button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
@@ -658,8 +655,6 @@ $table_of_recos_container=$("#table-of-recos-container");
 $table_of_recos_container_move=$("#table-of-recos-container>.move");
 $table_of_recos=$("#table-of-recos");
 $table_of_recos_list=$("#table-of-recos-list");
-$button_Go=$(".button-Go");
-$button_ToR=$(".button-ToR");
 
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
@@ -1053,10 +1048,16 @@ m.getNeighbors=function () {
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
+	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">
+		[--Neigh_b_ors mode--]
+	</div>
+	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">
+		[--_M_ultireco mode--]
+	</div>
 	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
 		[--_G_o (FS)--]
 	</div>
-	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+	<div class="button button-ToR" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
 		[--_T_ofR--]
 	</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
@@ -1078,6 +1079,12 @@ $button_hideFK=$("#button-hideFK");
 if ((!m.myPage)&&m.myId) {
 	$button_hideFK.after(`<div class="button" onclick="window.open('/user/${m.myId}')">[--To my page--]</div>`);
 }
+
+$button_Go=$(".button-Go");
+$button_ToR=$(".button-ToR");
+$button_mode=$(".button-mode");
+$button_neighbors_mode=$(".button-neighbors-mode");
+$button_multireco_mode=$(".button-multireco-mode");
 
 m.hideFK=function () {
 	$floating_key.hide();
@@ -3898,6 +3905,8 @@ $table_of_recos.on("keydown", function (e) {
 ////////////////////////////////////////////////////
 m.shareCurrentPage=function (service) {
 	let title=`${m.currentCat} of ${m.userId}'s Recoeve.net`;
+	let open="";
+	let desc=title;
 	let args={};
 	let argName="PRL"
 	if (m.docCookies.hasItem(argName)) {
@@ -3948,7 +3957,7 @@ m.shareSNS=function (elem, service) {
 	let title=r.title;
 	let desc=r.desc;
 	let open="";
-	let lang=m.docCookies.getItem("lang");
+	let lang=m.lang;
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, uri);
 	switch (service) {
 		case 'link':
