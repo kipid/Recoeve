@@ -207,13 +207,13 @@ router.get("/user/:userId").handler(ctx -> { // e.g. path=/user/kipid[/mode/mult
 	}
 });
 
-router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Recos
+router.postWithRegex("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+)").handler(ctx -> { // e.g. path=/user/kipid/get-Recos
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
 		String userId=null;
 		try {
-			userId=URLDecoder.decode(ctx.pathParam("userId"), "UTF-8");
-			System.out.println("/user/:userId/* :: userId="+userId);
+			userId=URLDecoder.decode(ctx.pathParam("param0"), "UTF-8");
+			System.out.println("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param0="+userId);
 		}
 		catch (UnsupportedEncodingException e) {
 			System.out.println(e);
@@ -221,8 +221,8 @@ router.post("/user/:userId/*").handler(ctx -> { // e.g. path=/user/kipid/get-Rec
 		}
 		final String finalUserId=userId;
 		if (finalUserId!=null&&!finalUserId.isEmpty()&&PrintLog.db.idExists(finalUserId)) {
-			String wildcard=PrintLog.req.getParam("wildcard");
-			System.out.println("/user/:userId/* :: wildcard="+wildcard);
+			String wildcard=PrintLog.req.getParam("param1");
+			System.out.println("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param1="+wildcard);
 			if (wildcard!=null) {
 			switch (wildcard) {
 				case "get-Recos": // e.g. path=/user/kipid/get-Recos
