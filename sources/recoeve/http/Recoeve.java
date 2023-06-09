@@ -86,8 +86,9 @@ router.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			}
 			// TODO: Check if a file with fileName exists.
-			PrintLog.req.response().sendFile(fileName); // TODO: Cache file datas in memory to response faster.
-			System.out.println("Sended "+fileName+".");
+			String fullFilePath=FileMap.getCDNFile(fileName);
+			PrintLog.req.response().sendFile(fullFilePath); // TODO: Cache file datas in memory to response faster.
+			System.out.println("Sended "+fullFilePath+".");
 		}
 		else {
 			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
