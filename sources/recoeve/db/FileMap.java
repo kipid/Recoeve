@@ -130,7 +130,8 @@ public class FileMap {
 	public FileMap() {}
 	
 	public static boolean refererAllowed(String host) {
-		return refererSet.contains(host);
+		// return refererSet.contains(host);
+		return true;
 	}
 	
 	public static String getCDNFile(String fileName) {
