@@ -1002,23 +1002,6 @@ m.PRmax=10;
 m.PRw=$point_range.width();
 m.fullPts=10;
 // from <= pts <= to
-if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
-	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
-	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
-	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:m.PRLw-15});
-	$point_range_bar.css({left:m.PRLw});
-	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({left:m.PRRw-5});
-	$point_range_bar.css({right:m.PRw-m.PRRw});
-	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
-}
-else {
-	m.ptsRangeFrom=0;
-	m.ptsRangeTo=1;
-	m.PRLw=15;
-	m.PRRw=m.PRw-15;
-}
 
 m.neighbors={};
 	// m.neighbors[cat_from]={down:true};
@@ -1097,7 +1080,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 		[--Log _o_ut--]
 	</div>`}
-	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"></div>`)
+	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"></div>`)
 $button_hideFK=$("#button-hideFK");
 if ((!m.myPage)&&m.myId) {
 	$button_hideFK.after(`<div class="button" onclick="window.open('/user/${m.myId}')">[--To my page--]</div>`);
@@ -3921,8 +3904,49 @@ $table_of_recos.on("keydown", function (e) {
 // SNS Sharing
 ////////////////////////////////////////////////////
 m.shareCurrentPage=function (service) {
-	let args={PRL:, PRR:, shuffle:, loop:, oneLoop:}
+	let title=`${m.currentCat} of ${m.userId}'s Recoeve.net`;
+	let args={};
+	let argName="PRL"
+	if (m.docCookies.hasItem(argName)) {
+		args[argName]=m.docCookies.getItem(argName);
+	}
+	argName="PRR"
+	if (m.docCookies.hasItem(argName)) {
+		args[argName]=m.docCookies.getItem(argName);
+	}
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, null, args);
+	switch (service) {
+		case 'link':
+			let written=`${title}\n${recoeveURI}`;
+			navigator.clipboard.writeText(written).then(function () {
+				alert(`The following is copied!\n"${written}"`);
+			}
+			, function (err) {
+				alert(`Could not copy text: ${err}`);
+			});
+			return;
+		case 'twitter':
+			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
+			break;
+		case 'facebook':
+			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
+			break;
+		case 'kakao':
+			Kakao.Share.sendDefault({
+				objectType: 'feed',
+				content: {
+					title: m.escapeHTML(title),
+					description: desc?m.escapeHTML(desc):'',
+					imageUrl: '', // No image.
+					link: {
+						mobileWebUrl: recoeveURI,
+						webUrl: recoeveURI,
+					},
+				},
+			});
+			return;
+	}
+	window.open(open);
 };
 m.shareSNS=function (elem, service) {
 	let $reco=$(elem).parent(".reco");
@@ -4132,6 +4156,41 @@ if (vars.title!==undefined) {
 if (vars.uri!==undefined) {
 	$input_uri[0].value=vars.uri.val;
 	$input_uri.trigger("input");
+}
+if (vars.PRL||var.PRR) {
+	if (vars.PRL) {
+		m.ptsRangeFrom=Number(vars.PRL.val);
+		m.docCookies.setItem("PRL", vars.PRL.val, Infinity, "/", false, true);
+	}
+	else {
+		m.ptsRangeFrom=0;
+		m.docCookies.setItem("PRL", "0", Infinity, "/", false, true);
+	}
+	if (vars.PRR) {
+		m.ptsRangeTo=Number(vars.PRR.val);
+		m.docCookies.setItem("PRR", vars.PRR.val, Infinity, "/", false, true);
+	}
+	else {
+		m.ptsRangeTo=1;
+		m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
+	}
+}
+else if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
+	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
+	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
+	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+	$point_range_left.css({left:m.PRLw-15});
+	$point_range_bar.css({left:m.PRLw});
+	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+	$point_range_right.css({left:m.PRRw-5});
+	$point_range_bar.css({right:m.PRw-m.PRRw});
+	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
+}
+else {
+	m.ptsRangeFrom=0;
+	m.ptsRangeTo=1;
+	m.PRLw=15;
+	m.PRRw=m.PRw-15;
 }
 if (window.location.pathname==="/reco") {
 	// Avoid window.history.pushState().
