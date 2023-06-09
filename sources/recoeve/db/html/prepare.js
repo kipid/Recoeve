@@ -27,8 +27,14 @@ m.getSearchVars=function (searchStr) {
 	return vars;
 };
 
-m.pathOfCat=function (cat, mode, lang, hashURI) {
-	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
+m.pathOfCat=function (cat, mode, lang, hashURI, args) {
+	let argsSearch="";
+	if (args) {
+		for (const prop in args) {
+			argsSearch+=`&${prop}=${args[prop]}`;
+		}
+	}
+	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
 };
 
 /*  :: cookies.js :: Slightly edited by kipid at 2023-06-06.
