@@ -2601,9 +2601,10 @@ m.getAndShowRecosOnCat=async function (cat) {
 		fs1.playNext(-1, true, true);
 	}, m.wait*2);
 };
-m.getUriList=function (getUriListStr) {
+m.getUriList=function (catStrArray) {
+	console.log(catStrArray);
 	$.ajax({
-		type:"POST", url:`${m.userPath}/get-UriList`, data:getUriListStr
+		type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
 		, dataType:"text"
 	}).fail(function () {
 		$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
