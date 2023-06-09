@@ -12,6 +12,37 @@
 (function (m, $, undefined) {
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
+
+m.goOn=false;
+m.ToRsOn=false;
+m.newRecoOn=false;
+
+m.pathName=window.location.pathname;
+if (m.pathName==="/reco") {
+	m.newRecoOn=true;
+}
+if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
+	m.pathName="/user/"+m.myId;
+}
+
+m.pathNameSplit=m.pathName.split("/");
+m.userId=decodeURIComponent(m.pathNameSplit[2]);
+m.myPage=(m.myId===m.userId);
+m.userPath=`/user/${encodeURIComponent(m.userId)}`;
+m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
+m.hashURI=decodeURIComponent(window.location.hash.substring(1));
+
+m.searchVars=m.getSearchVars(window.location.search);
+m.currentCat=m.searchVars?.cat?.val||"";
+
+m.lang=null;
+if (!!m.searchVars.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
 })(window.m, jQuery);
 </script>
 <style>
@@ -4100,37 +4131,6 @@ $choose_lang.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 m.initialOpen=true;
-
-m.goOn=false;
-m.ToRsOn=false;
-m.newRecoOn=false;
-
-m.pathName=window.location.pathname;
-if (m.pathName==="/reco") {
-	m.newRecoOn=true;
-}
-if (m.pathName.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... or /account/log-in with sessionPassed
-	m.pathName="/user/"+m.myId;
-}
-
-m.pathNameSplit=m.pathName.split("/");
-m.userId=decodeURIComponent(m.pathNameSplit[2]);
-m.myPage=(m.myId===m.userId);
-m.userPath=`/user/${encodeURIComponent(m.userId)}`;
-m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
-m.hashURI=decodeURIComponent(window.location.hash.substring(1));
-
-m.searchVars=m.getSearchVars(window.location.search);
-m.currentCat=m.searchVars?.cat?.val||"";
-
-m.lang=null;
-if (!!m.searchVars.lang) {
-	m.lang=m.searchVars.lang.val;
-	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
-}
-else if (m.docCookies.hasItem("lang")) {
-	m.lang=m.docCookies.getItem("lang");
-}
 
 let vars=m.searchVars;
 if (vars.title!==undefined) {
