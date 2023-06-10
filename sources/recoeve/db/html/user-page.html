@@ -2578,7 +2578,6 @@ m.getRecos=function (uris, recos, cat) {
 	}
 return new Promise(function (resolve, reject) {
 	if (getRecosN>0) {
-		let postURL=null;
 		let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(!!m.myId?`/user/${m.myId}/get-Recos`:null));
 		if (postURL) {
 			$.ajax({
