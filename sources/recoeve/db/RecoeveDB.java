@@ -267,11 +267,11 @@ public String now() {
 	}
 	return now; // utc_timestamp()
 }
-public boolean checkTimeDiff(String now, String from, String lessThan) {
+public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 	try {
 		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
 		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
-		pstmtCheckTimeDiff.setString(3, lessThan);
+		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
 			return rs.getBoolean(1);
@@ -281,11 +281,11 @@ public boolean checkTimeDiff(String now, String from, String lessThan) {
 	}
 	return false;
 }
-public boolean checkDateDiff(String now, String from, int lessThan) {
+public boolean checkDateDiff(String now, String from, int lessThanInDays) {
 	try {
 		pstmtCheckDateDiff.setDate(1, Date.valueOf(now.substring(0,10)));
 		pstmtCheckDateDiff.setDate(2, Date.valueOf(from.substring(0,10)));
-		pstmtCheckDateDiff.setInt(3, lessThan);
+		pstmtCheckDateDiff.setInt(3, lessThanInDays); // In days
 		ResultSet rs=pstmtCheckDateDiff.executeQuery();
 		if (rs.next()) {
 			return rs.getBoolean(1);
@@ -346,7 +346,7 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 		if (rs.next()) {
 			boolean newC=rs.getBoolean("new");
 			boolean tokenC=Arrays.equals(rs.getBytes("token"), unhex(token));
-			boolean timeC=checkTimeDiff(now, tToken, "00:01:30");
+			boolean timeC=checkTimeDiff(now, tToken, 1*60+30);
 			if (newC&&tokenC&&timeC) {
 				rs.updateBoolean("new", false);
 				rs.updateRow();
@@ -386,7 +386,7 @@ public boolean checkChangePwdToken(MultiMap params, String now) {
 			String from=user.getString("tChangePwd");
 			System.out.println(now+"\t"+from);
 			return from!=null
-				&& checkTimeDiff(now, from, "00:10:00")
+				&& checkTimeDiff(now, from, 10*60)
 				&& Arrays.equals(unhex(params.get("token")), user.getBytes("tokenChangePwd"));
 		}
 	} catch (SQLException e) {
@@ -401,7 +401,7 @@ public boolean checkChangePwdToken(String id, String token, String now) {
 			String from=user.getString("tChangePwd");
 			System.out.println(now+"\t"+from);
 			return from!=null
-				&& checkTimeDiff(now, from, "00:10:00")
+				&& checkTimeDiff(now, from, 10*60)
 				&& Arrays.equals(unhex(token), user.getBytes("tokenChangePwd"));
 		}
 	} catch (SQLException e) {
@@ -563,7 +563,7 @@ public boolean verifyUser(String cookieI, String path, String ip) {
 			&&user.getString("id").equals(id)
 			&&user.getString("veriKey").equals(veriKey)
 			&&user.getInt("class")==0
-			&&checkTimeDiff(now, user.getString("tReg"), "24:00:00") ) {
+			&&checkTimeDiff(now, user.getString("tReg"), 24*60*60) ) {
 			// IP check is needed???
 			updateUserClass(0, -1); // 0: Not verified yet
 			user.updateInt("class", 6);
@@ -676,7 +676,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			id=user.getString("id");
 			String email=user.getString("email");
 			String from=user.getString("tChangePwd");
-			if (from!=null&&checkTimeDiff(now, from, "00:10:00")) {
+			if (from!=null&&checkTimeDiff(now, from, 10*60)) {
 				return FileMap.replaceStr("[--pre already sended email to--] "+encryptEmail(email)+"[--post already sended email to--]", lang);
 			}
 			user.updateString("tChangePwd", now);
@@ -785,7 +785,7 @@ public String sessionIter(Cookie cookie) {
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
 		if (tCreate!=null) {
 			String now=now();
-			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
+			if (checkTimeDiff(now, tCreate, hoursSSN*60*60)) {
 				try {
 					pstmtSession.setLong(1, user_i);
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
@@ -811,7 +811,7 @@ public boolean sessionCheck(Cookie cookie) {
 		String session=cookie.get("SSN");
 		if (tCreate!=null&&session!=null) {
 			String now=now();
-			if (checkTimeDiff(now, tCreate, hoursSSN+":00:00")) {
+			if (checkTimeDiff(now, tCreate, hoursSSN*60*60)) {
 				try {
 					pstmtSession.setLong(1, user_i);
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
@@ -2414,7 +2414,7 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
-	RecoeveDB db=new RecoeveDB();
-	db.deleteUser("Sophy.5912@gmail.com");
+	// RecoeveDB db=new RecoeveDB();
+	// db.deleteUser("Sophy.5912@gmail.com");
 }
 }// public class RecoeveDB
