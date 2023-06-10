@@ -269,12 +269,10 @@ public String now() {
 }
 public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 	try {
-		String nowTime=now.substring(11);
-		System.out.println("nowTime:"+java.sql.Time.valueOf(nowTime));
-		String fromTime=from.substring(11);
-		System.out.println("fromTime:"+java.sql.Time.valueOf(fromTime));
-		pstmtCheckTimeDiff.setTime(1, java.sql.Time.valueOf(nowTime));
-		pstmtCheckTimeDiff.setTime(2, java.sql.Time.valueOf(fromTime));
+		System.out.println("now:"+now);
+		System.out.println("from:"+from);
+		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
+		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
@@ -350,7 +348,8 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 		if (rs.next()) {
 			boolean newC=rs.getBoolean("new");
 			boolean tokenC=Arrays.equals(rs.getBytes("token"), unhex(token));
-			boolean timeC=checkTimeDiff(now, tToken, 1*60+30);
+			boolean timeC=checkTimeDiff(now, tToken, 30);
+			System.out.println("newC:"+newC+", tokenC:"+tokenC+", timeC:"+timeC);
 			if (newC&&tokenC&&timeC) {
 				rs.updateBoolean("new", false);
 				rs.updateRow();
@@ -376,6 +375,7 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 			errMsg+="no token.";
 		}
 		errMsg+=" ID: "+id+", E-mail: "+email+". tToken: "+tToken;
+		System.out.println(errMsg);
 		logs(1, now, ip, "tkn", false, errMsg);
 	} catch (SQLException e) {
 		err(e);
