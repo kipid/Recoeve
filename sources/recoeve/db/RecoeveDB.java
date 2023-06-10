@@ -106,6 +106,8 @@ private PreparedStatement pstmtCreateAuthToken;
 private PreparedStatement pstmtCheckAuthToken;
 
 private PreparedStatement pstmtCreateUser;
+private PreparedStatement pstmtDeleteUser;
+private PreparedStatement pstmtDeleteUserCatList;
 private PreparedStatement pstmtCreateEmailStat;
 private PreparedStatement pstmtFindEmailStat;
 private PreparedStatement pstmtCreateUserSession;
@@ -163,6 +165,8 @@ public RecoeveDB() {
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
 		pstmtCheckAuthToken=con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateUser=con.prepareStatement("INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+		pstmtDeleteUser=con.prepareStatement("DELETE FROM `Users` WHERE `email`=?;");
+		pstmtDeleteUserCatList=con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
 		pstmtCreateEmailStat=con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
 		pstmtFindEmailStat=con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`) VALUES (?, ?, ?, ?, ?);");
@@ -472,6 +476,35 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 	}
 	try {
 		System.out.println("createUser done : "+done);
+		if (done) {
+			con.commit();
+		}
+		else {
+			con.rollback();
+		}
+	} catch (SQLException e) {
+		err(e);
+	}
+	return done;
+}
+private boolean deleteUser(String userEmail) {
+	boolean done=false;
+	ResultSet user=null;
+	try {
+		con.setAutoCommit(false);
+		ResultSet rsUser=findUserByEmail(userEmail);
+		pstmtDeleteUser.setString(1, userEmail);
+		updateUserClass(rsUser.getInt("class"), -1);
+		pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
+		pstmtDeleteUserCatList.executeUpdate();
+		done=pstmtDeleteUser.executeUpdate()>0;
+	} catch (SQLException e) {
+		err(e);
+	} catch (Exception e) {
+		System.out.println(e);
+	}
+	try {
+		System.out.println("User with email:"+userEmail+" is deleted successfully. : "+done);
 		if (done) {
 			con.commit();
 		}
@@ -2381,7 +2414,7 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
-	// RecoeveDB db=new RecoeveDB();
-	// db.updateDefs();
+	RecoeveDB db=new RecoeveDB();
+	db.deleteUser("Sophy.5912@gmail.com");
 }
 }// public class RecoeveDB
