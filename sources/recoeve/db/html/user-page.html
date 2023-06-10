@@ -526,8 +526,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 <div class="side2" id="head">
 	<div class="button" id="my-id"></div>
-	<a id="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log out--]</a>
-	<a id="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
+	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log out--]</a>
+	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
 	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--]</div>
 	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--See neighbors--]</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
@@ -642,8 +642,8 @@ $button_del=$("#button-del");
 $button_back=$("#button-back");
 $button_close=$("#button-close");
 
-$a_log_in=$("#a-log-in");
-$a_log_out=$("#a-log-out");
+$a_log_in=$(".a-log-in");
+$a_log_out=$(".a-log-out");
 
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
@@ -2196,6 +2196,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 		let delay=27;
 		setInterval(function () {
 			$result.html(`[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
+			$a_log_in=$(".a-log-in");
 			delay--;
 		}, 1000);
 		setTimeout(function () {
