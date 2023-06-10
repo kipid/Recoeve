@@ -158,7 +158,7 @@ public RecoeveDB() {
 		ds.setServerTimezone("UTC");
 		con=ds.getConnection();
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
-		pstmtCheckTimeDiff=con.prepareStatement("SELECT timediff(?, ?)<?;");
+		pstmtCheckTimeDiff=con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -269,8 +269,12 @@ public String now() {
 }
 public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 	try {
-		pstmtCheckTimeDiff.setTime(1, java.sql.Time.valueOf(now.substring(11)));
-		pstmtCheckTimeDiff.setTime(2, java.sql.Time.valueOf(from.substring(11)));
+		String nowTime=now.substring(11);
+		System.out.println("nowTime:"+java.sql.Time.valueOf(nowTime));
+		String fromTime=from.substring(11);
+		System.out.println("fromTime:"+java.sql.Time.valueOf(fromTime));
+		pstmtCheckTimeDiff.setTime(1, java.sql.Time.valueOf(nowTime));
+		pstmtCheckTimeDiff.setTime(2, java.sql.Time.valueOf(fromTime));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
