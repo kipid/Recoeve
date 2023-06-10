@@ -1921,7 +1921,7 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 ////////////////////////////////////////////////////
 m.val=function (val) {
 	let res={valid:false, str:"", val:-1};
-	if (!val) {
+	if (val===null||val===undefined) {
 		return res;
 	}
 	else if (val?.constructor!==String) {
