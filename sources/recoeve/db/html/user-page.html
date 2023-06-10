@@ -601,7 +601,6 @@ $choose_lang_list=$("#choose-lang-list");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
-$button_new_reco=$(".button-new-reco");
 
 $sidebar_dragger=$("#sidebar-dragger");
 $sidebar_toggle=$("#sidebar-toggle");
@@ -1085,7 +1084,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">
 		[--Go to _C_ats--]
 	</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
+	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
 	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"></div>`)
@@ -1099,6 +1098,7 @@ $button_ToR=$(".button-ToR");
 $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
+$button_new_reco=$(".button-new-reco");
 
 m.hideFK=function () {
 	$floating_key.hide();
