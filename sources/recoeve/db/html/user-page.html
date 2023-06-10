@@ -874,8 +874,6 @@ m.toggleMultirecoMode=function () {
 		if (!m.myPage) {
 			$multireco_cats_container.hide();
 		}
-		$playlist_container.show();
-		$toggle_reco_list_play.addClass("enabled");
 	}
 	else {
 		m.recoMode="multireco";
@@ -886,8 +884,6 @@ m.toggleMultirecoMode=function () {
 			$multireco_cats_container.show();
 			$multireco_input_cats[0].value=m.currentCat;
 		}
-		$playlist_container.hide();
-		$toggle_reco_list_play.removeClass("enabled");
 	}
 	m.openCat(m.currentCat);
 };
@@ -1062,6 +1058,11 @@ m.getNeighbors=function () {
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
+	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		[--Log _i_n--]
+	</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+		[--Log _o_ut--]
+	</div>`}
 	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">
 		[--Neigh_b_ors mode--]
 	</div>
@@ -1083,11 +1084,9 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">
 		[--Go to _C_ats--]
 	</div>
-	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
-		[--Log _i_n--]
-	</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
-		[--Log _o_ut--]
-	</div>`}
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
+		[--_N_ew reco--]
+	</div>
 	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"></div>`)
 $button_hideFK=$("#button-hideFK");
 if ((!m.myPage)&&m.myId) {
@@ -2546,7 +2545,7 @@ m.recoToEve=function (resp, recos, cat, uris) {
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("input.fs");
 	}
-	if (cat&&uris) {
+	if ((cat===""||cat)&&uris) {
 		for (k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (fs.fullList[uri]) {
@@ -2579,22 +2578,26 @@ m.getRecos=function (uris, recos, cat) {
 	}
 return new Promise(function (resolve, reject) {
 	if (getRecosN>0) {
-		$.ajax({
-			type:"POST", url:(((recos===m.userRecos)?m.userPath:`/user/${m.myId}`)+"/get-Recos"), data:getRecosStr
-			, dataType:"text"
-		}).fail(function () {
-			$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
-			$contents.html("");
-		}).done(function (resp) {
-			m.recoDowned(getRecosStr.substring(4), recos);
-			if (recos===m.userRecos) {
-				m.recoToEve(resp, recos, cat, uris);
-			}
-			else {
-				m.recoToEve(resp, recos);
-			}
-			resolve();
-		});
+		let postURL=null;
+		let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(!!m.myId?`/user/${m.myId}/get-Recos`:null));
+		if (postURL) {
+			$.ajax({
+				type:"POST", url:postURL, data:getRecosStr
+				, dataType:"text"
+			}).fail(function () {
+				$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
+				$contents.html("");
+			}).done(function (resp) {
+				m.recoDowned(getRecosStr.substring(4), recos);
+				if (recos===m.userRecos) {
+					m.recoToEve(resp, recos, cat, uris);
+				}
+				else {
+					m.recoToEve(resp, recos);
+				}
+				resolve();
+			});
+		}
 	}
 	else {
 		resolve();
