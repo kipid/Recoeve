@@ -507,8 +507,8 @@ router.route("/account/:toDo").handler(ctx -> { // e.g. path=/account/...
 					PrintLog.req.response().addCookie(singleCookie);
 				}
 				PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-				PrintLog.req.response().end(FileMap.get("log-in.html", PrintLog.lang), ENCODING);
-				System.out.println("Sended log-in.html with Set-Cookie of deleting all cookies.");
+				PrintLog.req.response().end(FileMap.get("log-out.html", PrintLog.lang), ENCODING);
+				System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
 				break;
 			case "check": // path=/account/check
 				if (PrintLog.method==HttpMethod.POST) {
