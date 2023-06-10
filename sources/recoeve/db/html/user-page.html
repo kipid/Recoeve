@@ -824,7 +824,8 @@ else {
 	$a_log_out.hide();
 }
 m.a_log_in=function (e, elem) {
-	let href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
+	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
 		$a_log_in.attr("href", href);
 		return true;
@@ -835,9 +836,10 @@ m.a_log_in=function (e, elem) {
 	}
 };
 m.a_log_out=function (e, elem) {
-	let href=`/account/log-out?goto=${encodeURIComponent(window.location.href)}`;
+	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let href=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
-		$a_log_in.attr("href", href);
+		$a_log_out.attr("href", href);
 		return true;
 	}
 	else {
@@ -4098,10 +4100,10 @@ m.processShortKey=function (e) {
 			$window.scrollTop(hI.offset().top);
 			break;
 		case 73: // I=73
-			window.location.href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
+			$a_log_in.trigger("click");
 			break;
 		case 79: // O=79
-			window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.href)}`;
+			$a_log_out.trigger("click");
 			break;
 		default:
 	}
