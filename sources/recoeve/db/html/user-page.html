@@ -4028,6 +4028,8 @@ m.processShortKey=function (e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
+		case 67: // C=67 Go to Cat or Cats?
+			break;
 		case 71: // G=71
 			e.preventDefault();
 			if ($fuzzy_search_container.is(":visible")) {
