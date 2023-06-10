@@ -448,7 +448,36 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+deleteUser testing.
 
+```
+mysql> SELECT `i`, `class` FROM `Users` WHERE `email`="Sophy.5912@gmail.com";
++-----------+-------+
+| i         | class |
++-----------+-------+
+| 100000001 |     6 |
++-----------+-------+
+```/
+
+```
+Exception: java.sql.SQLException: Before start of result set
+java.sql.SQLException: Before start of result set
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:98)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:90)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:64)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.checkRowPos(ResultSetImpl.java:532)
+	at com.mysql.cj.jdbc.result.UpdatableResultSet.checkRowPos(UpdatableResultSet.java:203)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getObject(ResultSetImpl.java:1322)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getInt(ResultSetImpl.java:830)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getInt(ResultSetImpl.java:851)
+	at recoeve.db.RecoeveDB.deleteUser(RecoeveDB.java:497)
+	at recoeve.db.RecoeveDB.main(RecoeveDB.java:2417)
+SQLState: S1000
+Error Code: 0
+Message: Before start of result set
+User and associated UserClass are deleted successfully. : false
+```/
 
 AWS 의 timezone Korea 로 바꾸기.
 
