@@ -2092,8 +2092,7 @@ m.renderStrDescCmt=function (str) {
 m.recoHTML=function (r, uriRenderDisable, inRange) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}">
-	<img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
@@ -2157,6 +2156,9 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 				else {
 					res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 				}
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 			}
 		}
 		res+=`<div class="result"></div></div>`;
@@ -2606,7 +2608,7 @@ return new Promise(function (resolve, reject) {
 m.getAndShowRecosOnCat=async function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
-	if (m.recoMode==="multireco"&&!m.myPage) {
+	if (m.recoMode==="multireco"&&!m.myPage&&!!m.myIndex) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
 	m.showRecosOnCat();
