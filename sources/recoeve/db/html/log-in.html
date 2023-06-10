@@ -70,7 +70,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
 </form>
 
-<form id="form-sign-up" class="form-login" action="./sign-up" accept-charset="UTF-8" method="post">
+<form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
 	<label for="input-su-userId">[--ID--]</label>
 	<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
@@ -195,7 +195,7 @@ m.logIn=function (elem) {
 		let form_data=`log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
 web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"yes":"no")}	`;
 		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
-		$.ajax("./pwd_iteration", {
+		$.ajax("/account/pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
 		}).fail(function () {
@@ -213,7 +213,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 				setTimeout(function () {
 					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
 					$elem.before( m.encloseErr("[--Logging in--]: [--Please wait.--]") );
-					$.ajax("./log-in.do", {
+					$.ajax("/account/log-in.do", {
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
@@ -278,7 +278,7 @@ m.forgotPwd=function (elem) {
 		let form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
 			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId;
 		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
-		$.ajax("./pwd_iteration", {
+		$.ajax("/account/pwd_iteration", {
 			type: "POST"
 			, data: idType+"\t"+userId
 		}).fail(function () {
@@ -293,7 +293,7 @@ m.forgotPwd=function (elem) {
 			}
 			else {
 				$elem.before( m.encloseErr("[--Sending an email--]: [--Please wait.--]") );
-				$.ajax("./forgotPwd", {
+				$.ajax("/account/forgotPwd", {
 					type: "POST"
 					, data: form_data
 				}).done(function (resp) {
@@ -356,7 +356,7 @@ m.signUp=function (elem) {
 	
 	if (valid) {
 		$elem.before( m.encloseErr("[--Checking ID and E-mail--]: [--Please wait.--]") );
-		$.ajax("./check", {
+		$.ajax("/account/check", {
 			type: "POST"
 			, data: userId+"\t"+userEmail
 		}).fail(function () {
@@ -375,14 +375,14 @@ m.signUp=function (elem) {
 					let form_data=`userId	userEmail	tToken	authToken	userPwd	userPwdCfm
 ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					userPwd=null; userPwdCfm=null;
-					$.ajax("./sign-up", {
+					$.ajax("/account/sign-up", {
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
 					});
-				}, 512);
+				}, 2048);
 			}
 			else {
 				let errStr="";
