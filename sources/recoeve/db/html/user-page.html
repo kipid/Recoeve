@@ -810,20 +810,6 @@ if (cookieItem!==null) {
 	m.ClineHeight(Number(cookieItem)-16);
 }
 
-$user_noti.html(m.userId+"'s recos");
-if (m.myIndex) {
-	$my_id.html(m.myId+" ▾");
-}
-else {
-	$my_id.hide();
-	$button_new_reco.remove();
-}
-if (m.myIndex) {
-	$a_log_in.hide();
-}
-else {
-	$a_log_out.hide();
-}
 m.a_log_in=function (e, elem) {
 	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
@@ -1100,6 +1086,21 @@ $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
+
+$user_noti.html(m.userId+"'s recos");
+if (!!m.myIndex) {
+	$my_id.html(m.myId+" ▾");
+}
+else {
+	$my_id.hide();
+	$button_new_reco.remove();
+}
+if (!!m.myIndex) {
+	$a_log_in.hide();
+}
+else {
+	$a_log_out.hide();
+}
 
 m.hideFK=function () {
 	$floating_key.hide();
