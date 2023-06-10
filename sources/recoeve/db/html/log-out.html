@@ -1,6 +1,6 @@
-<h1>Log-out : All cookies are deleted.</h1>
+<h1>Log-out : All log-in | session cookies are deleted.</h1>
 <script>
 setTimeout(function(){
-	window.location.pathname=`/account/log-in${document.referrer}`;
+	window.location.href=`/account/log-in${window.location.search}`;
 }, 2000);
 </script>
