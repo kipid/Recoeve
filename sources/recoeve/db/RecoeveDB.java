@@ -269,8 +269,8 @@ public String now() {
 }
 public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 	try {
-		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
-		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
+		pstmtCheckTimeDiff.setTime(1, java.sql.Time.valueOf(now.substring(11)));
+		pstmtCheckTimeDiff.setTime(2, java.sql.Time.valueOf(from.substring(11)));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
