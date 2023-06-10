@@ -484,7 +484,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
 		<div class="button" id="button-del" tabindex="11" style="background:#ff7600">[--Del--]</div>
-		<div class="button left" id="button-close" tabindex="9" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--Close--]</div>
+		<div class="button left" id="button-close" tabindex="9" onclick="m.closeNewReco()">[--Close--]</div>
 		<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
 		<div class="cBoth"></div>
 	</div>
@@ -3311,7 +3311,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27) { // ESC
-		$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})
+		$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
 	}
 	else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
 		let r=m.myRecos[$input_uri[0].value];
@@ -3447,6 +3447,13 @@ $button_back.on("click", function (e) {
 	m.showReco(m.userRecos[$input_uri[0].value]);
 });
 
+m.closeNewReco=function () {
+	setTimeout(function () {
+		if ($new_reco.is(":visible")) {
+			$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
+		}
+	}, 2048);
+};
 m.reco_do=function (args, err) {
 	if (err) {
 		$error.html(`[--Reco failed. You may be not logged-in.--] ${err}`);
@@ -3559,7 +3566,7 @@ m.reco_change_do=function (args, err) {
 				setTimeout(function () {
 					m.emptifyReco();
 					$button_close.trigger("click");
-				}, 1000);
+				}, 1024);
 			}
 			else {
 				$error.html(res[1]?.result);
@@ -3652,7 +3659,7 @@ m.reco_delete_do=function (args, err) {
 			}
 			setTimeout(function () {
 				$button_close.trigger("click");
-			}, 1000);
+			}, 1024);
 		}
 		else {
 			$error.html(res[1]?.result);
