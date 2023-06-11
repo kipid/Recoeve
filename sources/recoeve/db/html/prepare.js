@@ -926,7 +926,7 @@ m.uriRendering=function (uri, toA) {
 		}
 		for (let i=0;i<m.ptnURI.length;i++) {
 			let result=m.ptnURI[i].toIframe(uri); // img or video
-			if (result) { return result; }
+			if (result) { return m.rC(result, "eveElse"); }
 		}
 	}
 	return {html:(toA?m.uriToA(uri):"")};
