@@ -548,26 +548,19 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
 	<div id="playlist-container">
-		<div class="rC" id="uri-rendered">
-			<div class="rSC rSC-eveElse">
-				<div id="eveElse"></div>
+		<div id="uri-rendered-container">
+			<div class="rC" id="rC-eveElse-uri-rendered">
+				<div class="rSC"><div id="eveElse"></div></div>
 			</div>
-			<div class="rSC rSC-youtube">
-				<div id="youtube"></div>
+			<div class="rC" id="rC-video-uri-rendered" style="display:none">
+				<div class="rSC"><div id="video"></div></div>
+				<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 			</div>
-			<div class="rSC rSC-video">
-				<div id="video"></div>
+			<div class="rC" id="rC-youtube-uri-rendered" style="display:none">
+				<div class="rSC"><div id="youtube"></div></div>
+				<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 			</div>
-			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 		</div>
-		<!-- <div class="rC" id="rC-video-uri-rendered" style="display:none">
-			<div class="rSC"><div id="video"></div></div>
-			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
-		</div> -->
-		<!-- <div class="rC" id="rC-youtube-uri-rendered" style="display:none">
-			<div class="rSC"><div id="youtube"></div></div>
-			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
-		</div> -->
 		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
 		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
 		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
@@ -628,7 +621,10 @@ $new_reco=$("#new-reco");
 $headPlay=$("#headPlay");
 $toggle_reco_list_play=$("#toggle-reco-list-play");
 $playlist_container=$("#playlist-container");
-$uri_rendered=$("#uri-rendered");
+$uri_rendered_container=$("#uri-rendered-container");
+$rC_eveElse_uri_rendered=$("#rC-eveElse-uri-rendered");
+$rC_video_uri_rendered=$("#rC-video-uri-rendered");
+$rC_youtube_uri_rendered=$("#rC-youtube-uri-rendered");
 $eveElse=$("#eveElse");
 $youtube=$("#youtube");
 $video=$("#video");
@@ -2268,7 +2264,9 @@ m.showRecosOnCat=function (elem, from) {
 		$eveElse.html('');
 		$youtube.html('');
 		$video.html('');
-		$uri_rendered.hide();
+		$rC_eveElse_uri_rendered.hide();
+		$rC_video_uri_rendered.hide();
+		$rC_youtube_uri_rendered.hide();
 	}
 	else {
 		if (elem===undefined||elem===null) {
@@ -2752,7 +2750,9 @@ m.refresh=function (cats, option, uri) {
 					$eveElse.html('');
 					$youtube.html('');
 					$video.html('');
-					$uri_rendered.hide();
+					$rC_eveElse_uri_rendered.hide();
+					$rC_video_uri_rendered.hide();
+					$rC_youtube_uri_rendered.hide();
 				}
 			}
 			let $recos=$contents.find(">.reco");
@@ -4358,7 +4358,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		if (uriRendered.from==="youtube") {
 			$eveElse.html('');
 			$video.html('');
-			fs.$playing=$uri_rendered;
+			$rC_eveElse_uri_rendered.hide();
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.show();
+			fs.$playing=$rC_youtube_uri_rendered;
 			if ($uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
@@ -4402,7 +4405,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		else if (uriRendered.from==="video") {
 			$eveElse.html('');
 			$youtube.html('');
-			fs.$playing=$uri_rendered;
+			$rC_eveElse_uri_rendered.hide();
+			$rC_video_uri_rendered.show();
+			$rC_youtube_uri_rendered.hide();
+			fs.$playing=$rC_video_uri_rendered;
 			if ($uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
@@ -4427,7 +4433,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$eveElse.html(uriRendered.html);
 			$youtube.html('');
 			$video.html('');
-			fs.$playing=$uri_rendered;
+			$rC_eveElse_uri_rendered.show();
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.hide();
+			fs.$playing=$rC_eveElse_uri_rendered;
 			fs.fixed=false;
 			$video.html('');
 			if ((!cue)&&fs.skip) {
@@ -4443,6 +4452,9 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		$eveElse.html('');
 		$youtube.html('');
 		$video.html('');
+		$rC_eveElse_uri_rendered.hide();
+		$rC_video_uri_rendered.hide();
+		$rC_youtube_uri_rendered.hide();
 	}
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -4472,6 +4484,9 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			$eveElse.html('');
 			$youtube.html('');
 			$video.html('');
+			$rC_eveElse_uri_rendered.hide();
+			$rC_video_uri_rendered.hide();
+			$rC_youtube_uri_rendered.hide();
 			return;
 		}
 	}
@@ -4520,12 +4535,12 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 	}
 };
 m.fsToRs.toggleRecoListPlay=function () {
-	if ($uri_rendered.is(":visible")) {
-		$uri_rendered.hide();
+	if ($uri_rendered_container.is(":visible")) {
+		$uri_rendered_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	}
 	else {
-		$uri_rendered.show();
+		$uri_rendered_container.show();
 		$toggle_reco_list_play.addClass("enabled");
 	}
 };
