@@ -896,8 +896,8 @@ m.togglePosition=function (elem) {
 		$elem.text("▲ [--return to the original position--]");
 	}
 };
-m.rC=function (elemStr, option) {
-	return `<div class="rC${(option?` ${option}`:'')}"><div class="rSC">${elemStr}</div><div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`;
+m.rC=function (elemStr, option, id) {
+	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div><div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`;
 };
 m.uriRendering=function (uri, toA) {
 	if (uri&&uri.constructor===String) {
@@ -926,7 +926,13 @@ m.uriRendering=function (uri, toA) {
 		}
 		for (let i=0;i<m.ptnURI.length;i++) {
 			let result=m.ptnURI[i].toIframe(uri); // img or video
-			if (result) { return m.rC(result, "eveElse"); }
+			if (result.from==="image") {
+				result.html=m.rC(result.html, "eveElse");
+			}
+			else if (result.from==="video") {
+				result.html=m.rC(result.html);
+			}
+			if (result) { return result; }
 		}
 	}
 	return {html:(toA?m.uriToA(uri):"")};
@@ -1157,7 +1163,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, `instagram`), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, "instagram"), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -1167,7 +1173,7 @@ ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/
 ptnURI.toIframe=function (uri) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:`<div class="center"><img delayed-src="${exec[0]}"/></div>`};
+		return {html:m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, "eveElse"), from:'image', src:exec[0]};
 	}
 	return false;
 };
