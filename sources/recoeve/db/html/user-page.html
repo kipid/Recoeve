@@ -549,9 +549,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
 	<div id="playlist-container">
 		<div id="uri-rendered-container">
-			<div class="rC" id="rC-eveElse-uri-rendered">
-				<div class="rSC"><div id="eveElse"></div></div>
-			</div>
+			<div id="rC-eveElse-uri-rendered"><div id="eveElse"></div></div>
 			<div class="rC" id="rC-video-uri-rendered" style="display:none">
 				<div class="rSC"><div id="video"></div></div>
 				<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
@@ -4362,7 +4360,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
-			if ($uri_rendered.hasClass("fixed")) {
+			if (fs.$playing.hasClass("fixed")) {
 				fs.fixed=true;
 			}
 			else {
@@ -4409,7 +4407,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$rC_video_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$rC_video_uri_rendered;
-			if ($uri_rendered.hasClass("fixed")) {
+			if (fs.$playing.hasClass("fixed")) {
 				fs.fixed=true;
 			}
 			else {
@@ -4436,14 +4434,18 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$rC_eveElse_uri_rendered.show();
 			$rC_video_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
-			fs.$playing=$rC_eveElse_uri_rendered;
-			fs.fixed=false;
-			$video.html('');
+			fs.$playing=$rC_eveElse_uri_rendered.find(".rC");
+			if (fs.$playing.hasClass("fixed")) {
+				fs.fixed=true;
+			}
+			else {
+				fs.fixed=false;
+			}
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
 					if (fs.skip) { fs.playNext(-1, cue); }
-				}, 4096);
+				}, 7000);
 			}
 		}
 	}
