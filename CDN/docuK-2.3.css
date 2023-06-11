@@ -28,18 +28,18 @@ codeprint.SEE {display:none}
 	padding-left:38px
 }
 
-.shortkey {color:white; background-color:#141414; max-width:1000px; margin:auto}
-.shortkey ul.ul-short-key {line-height:1.4; padding:0 1.5em; margin:.7em 0}
-.shortkey li {color:white !important}
+#shortkey.shortkey {font-size:16px; color:white; background-color:#141414; max-width:100%; margin:auto}
+#shortkey.shortkey ul.ul-short-key {font-size:1em; line-height:1.4; padding:0 1.5em; margin:.7em 0}
+#shortkey.shortkey li {font-size:1em; color:white !important}
 
 #floating-key {display:flex; flex-wrap:wrap; bottom:2.6em; width:9em; height:auto}
 #floating-key div.button {border-top:none; text-align:center; margin:0; padding:0; width:9em; height:auto}
-	#floating-key div.button:first-child {border-top:2px;}
+	#floating-key div.button:first-child {border-top:2px solid rgb(50,50,50)}
 #toggle-floating-key {bottom:.2em; text-align:center; width:2.2em; height:2.3em; margin:0; padding:.1em}
 #SNS-floating {width:100%; text-align:center}
 #SNS-floating .SNS-img {box-sizing:border-box; width:1.8em; height:1.8em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
-.docuK #floating-key, .docuK #toggle-floating-key {color:wheat; z-index:20000; position:fixed; right:.2em;}
+.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.4em; color:wheat; z-index:20000; position:fixed; right:.2em;}
 .docuK.bright #floating-key, .docuK.bright #toggle-floating-key {color:black}
 
 .docuK ::selection, .docuK ::-moz-selection {background:#aa0000; color:white}
@@ -317,27 +317,26 @@ codeprint.SEE {display:none}
 
 @media all and (min-width:400px) {
 	.docuK ::-webkit-scrollbar {width:9px; height:9px}
-	#floating-key {font-size:1.3em}
 }
 @media all and (min-width:500px) {
 	.docuK>.sec {border-left:2px rgb(25,60,25) solid; border-right:2px rgb(25,60,25) solid}
 	#docuK-log {max-width:500px; max-height:300px}
 	#docuK-log.fixed>.exit {bottom:280px}
-	#floating-key {font-size:1.4em}
+	.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.5em}
 }
 @media all and (min-width:600px) {
 	.docuK .SNS-top {padding-top:0}
 	.docuK .deviceInfo, .docuK .promoting-docuK {margin-left:188px}
-	#floating-key {font-size:1.5em}
+	.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.6em}
 }
 @media all and (min-width:700px) {
-	#floating-key {font-size:1.6em}
+	.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.7em}
 }
 @media all and (min-width:800px) {
-	#floating-key {font-size:1.7em}
+	.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.8em}
 }
 @media all and (min-width:900px) {
-	#floating-key {font-size:1.8em}
+	.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.9em}
 }
 
 @media all and (min-height:300px) {

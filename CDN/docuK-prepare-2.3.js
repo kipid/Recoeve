@@ -66,10 +66,10 @@ m.$log=$("#docuK-log");
 m.$log.addClass("fixed");
 m.$log.before(`<div id="floating-key">
 	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
-	<div class="button button-Go" style="width:4em" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
-		<span class="bold underline">G</span>o
+	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
+		<span class="bold underline">G</span>o (FS)
 	</div>
-	<div class="button" style="width:5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
 		<span class="bold underline">T</span>ofC
 	</div>
 	<div class="button button-log" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">
@@ -81,13 +81,13 @@ m.$log.before(`<div id="floating-key">
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
 		<span class="bold underline">F</span>orward
 	</div>
-	<div class="button" style="width:4em" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
+	<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
 		<span class="bold underline">R</span>RA
 	</div>
-	<div class="button" style="width:5em" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">
+	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">
 		<span class="bold underline">L</span>ists
 	</div>
-	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
+	<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
 		Cmt<span class="bold underline">Z</span>
 	</div>
 	<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})">
@@ -830,7 +830,7 @@ m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div class="shortkey">
+<div id="shortkey" class="shortkey">
 	Short Keys
 	<ul class="ul-short-key">
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
