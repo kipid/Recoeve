@@ -340,6 +340,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC {box-sizing:content-box; position:relative; height:4em; padding-bottom:63%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
 .rC.instagram>.rSC {padding-bottom:150%}
+.rC.eveElse>.rSC {padding-bottom:150%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .rC>.pc {text-align:center; font-size:.7em} /* position change */
 
@@ -547,15 +548,26 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
 	<div id="playlist-container">
-		<div id="uri-rendered"></div>
-		<div class="rC" id="rC-video-uri-rendered" style="display:none">
+		<div class="rC" id="uri-rendered">
+			<div class="rSC rSC-eveElse">
+				<div id="eveElse"></div>
+			</div>
+			<div class="rSC rSC-youtube">
+				<div id="youtube"></div>
+			</div>
+			<div class="rSC rSC-video">
+				<div id="video"></div>
+			</div>
+			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
+		</div>
+		<!-- <div class="rC" id="rC-video-uri-rendered" style="display:none">
 			<div class="rSC"><div id="video"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
-		</div>
-		<div class="rC" id="rC-youtube-uri-rendered" style="display:none">
+		</div> -->
+		<!-- <div class="rC" id="rC-youtube-uri-rendered" style="display:none">
 			<div class="rSC"><div id="youtube"></div></div>
 			<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
-		</div>
+		</div> -->
 		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
 		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
 		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
@@ -617,10 +629,9 @@ $headPlay=$("#headPlay");
 $toggle_reco_list_play=$("#toggle-reco-list-play");
 $playlist_container=$("#playlist-container");
 $uri_rendered=$("#uri-rendered");
-$rC_video_uri_rendered=$("#rC-video-uri-rendered");
-$video=$("#video");
-$rC_youtube_uri_rendered=$("#rC-youtube-uri-rendered");
+$eveElse=$("#eveElse");
 $youtube=$("#youtube");
+$video=$("#video");
 $reco_playing=$("#reco-playing");
 
 $input_uri=$("#input-uri");
@@ -2254,10 +2265,10 @@ m.showRecosOnCat=function (elem, from) {
 		$numbers_of_recos.html(`No reco in cat=${m.escapeHTML(m.currentCat)}.`);
 		$contents.html(strHTML);
 		$reco_playing.html('');
-		$uri_rendered.html('');
+		$eveElse.html('');
+		$youtube.html('');
 		$video.html('');
-		$rC_video_uri_rendered.hide();
-		$rC_youtube_uri_rendered.hide();
+		$uri_rendered.hide();
 	}
 	else {
 		if (elem===undefined||elem===null) {
@@ -2738,10 +2749,10 @@ m.refresh=function (cats, option, uri) {
 				}
 				else if (option==="deleted") {
 					$reco_playing.html('');
-					$uri_rendered.html('');
+					$eveElse.html('');
+					$youtube.html('');
 					$video.html('');
-					$rC_video_uri_rendered.hide();
-					$rC_youtube_uri_rendered.hide();
+					$uri_rendered.hide();
 				}
 			}
 			let $recos=$contents.find(">.reco");
@@ -4345,12 +4356,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		$reco_playing.html(m.recoHTML(r, true, true));
 		let uriRendered=m.uriRendering(r.uri);
 		if (uriRendered.from==="youtube") {
-			$uri_rendered.html('');
+			$eveElse.html('');
 			$video.html('');
-			$rC_video_uri_rendered.hide();
-			$rC_youtube_uri_rendered.show();
-			fs.$playing=$rC_youtube_uri_rendered;
-			if ($rC_youtube_uri_rendered.hasClass("fixed")) {
+			fs.$playing=$uri_rendered;
+			if ($uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
 			else {
@@ -4391,11 +4400,10 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			}
 		}
 		else if (uriRendered.from==="video") {
-			$uri_rendered.html('');
-			$rC_youtube_uri_rendered.hide();
-			$rC_video_uri_rendered.show();
-			fs.$playing=$rC_video_uri_rendered;
-			if ($rC_video_uri_rendered.hasClass("fixed")) {
+			$eveElse.html('');
+			$youtube.html('');
+			fs.$playing=$uri_rendered;
+			if ($uri_rendered.hasClass("fixed")) {
 				fs.fixed=true;
 			}
 			else {
@@ -4416,12 +4424,12 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			}
 		}
 		else {
-			$uri_rendered.html(uriRendered.html);
+			$eveElse.html(uriRendered.html);
+			$youtube.html('');
+			$video.html('');
 			fs.$playing=$uri_rendered;
 			fs.fixed=false;
 			$video.html('');
-			$rC_video_uri_rendered.hide();
-			$rC_youtube_uri_rendered.hide();
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
@@ -4432,10 +4440,9 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 	}
 	else {
 		$reco_playing.html('');
-		$uri_rendered.html('');
+		$eveElse.html('');
+		$youtube.html('');
 		$video.html('');
-		$rC_video_uri_rendered.hide();
-		$rC_youtube_uri_rendered.hide();
 	}
 	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -4462,10 +4469,9 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		else {
 			fs.currentIndex=0;
 			$reco_playing.html('');
-			$uri_rendered.html('');
+			$eveElse.html('');
+			$youtube.html('');
 			$video.html('');
-			$rC_video_uri_rendered.hide();
-			$rC_youtube_uri_rendered.hide();
 			return;
 		}
 	}
@@ -4514,12 +4520,12 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 	}
 };
 m.fsToRs.toggleRecoListPlay=function () {
-	if ($playlist_container.is(":visible")) {
-		$playlist_container.hide();
+	if ($uri_rendered.is(":visible")) {
+		$uri_rendered.hide();
 		$toggle_reco_list_play.removeClass("enabled");
 	}
 	else {
-		$playlist_container.show();
+		$uri_rendered.show();
 		$toggle_reco_list_play.addClass("enabled");
 	}
 };
