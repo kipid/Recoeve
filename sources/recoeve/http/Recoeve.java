@@ -374,11 +374,16 @@ router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").h
 						System.out.println("Sended 'Wrong verification key. You are not verified.'.");
 					}
 				}
-				else {
+				else if (PrintLog.method==HttpMethod.GET) {
 					// Log-in 유도.
 					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					PrintLog.req.response().end(FileMap.get("verify.html", PrintLog.lang), ENCODING);
 					System.out.println("Sended 'Please log in first to verify your account.'.");
+				}
+				else {
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+					PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (Wrong method:"+PrintLog.method+")");
 				}
 				break;
 			case "changePwd": // path=/account/changePwd
