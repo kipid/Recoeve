@@ -19,7 +19,11 @@
 $error_msg=$("#error-msg");
 let fullPath=window.location.href;
 let args={fullPath:fullPath, $result:$error_msg};
-let verify=function (args) {
+let verify=function (args, err) {
+	if (err) {
+		console.log(err);
+		return;
+	}
 	args.$result.html("Sending a verification key.");
 	$.ajax({
 		type:"POST", url:args.fullPath
@@ -31,8 +35,11 @@ let verify=function (args) {
 		args.$result.html(resp);
 	});
 };
+m.saveSSN();
 
-m.rmb_me(verify, args)
+setTimeout(function () {
+	m.rmb_me(verify, args);
+}, 2048);
 })(window.m, jQuery);
 </script>
 </html>
