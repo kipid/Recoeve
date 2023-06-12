@@ -1683,22 +1683,20 @@ m.doFSCat=function (fs, $input) {
 	if ($input===undefined||$input===null) {
 		$input=$input_cats;
 	}
-	if ($input!==fs.$fs) { // If fs.$fs is different from previous $input.
-		fs.$fs=$input;
-		if ($input===$multireco_input_cats) {
-			fs.$fsl=$multireco_cat_fs_list;
-		}
-		else if ($input===$input_cats) {
-			fs.$fsl=$cat_fs_list;
-		}
-		else if ($input===$goto_cats) {
-			fs.$fsl=$goto_cats_list;
-		}
-		else {
-			fs.$fsl=$("#nothing");
-		}
-		m.fuzzySearch(m.splitHangul("!@#$"), fs);
+	fs.$fs=$input;
+	if ($input===$multireco_input_cats) {
+		fs.$fsl=$multireco_cat_fs_list;
 	}
+	else if ($input===$input_cats) {
+		fs.$fsl=$cat_fs_list;
+	}
+	else if ($input===$goto_cats) {
+		fs.$fsl=$goto_cats_list;
+	}
+	else {
+		fs.$fsl=$("#nothing");
+	}
+	m.fuzzySearch(m.splitHangul("!@#$"), fs);
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
 	let listOfCats=fs.listOfCats=catsTxt.split(";");
