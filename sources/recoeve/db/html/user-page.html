@@ -13,6 +13,7 @@
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
 
+m.gotoCats=false;
 m.goOn=false;
 m.ToRsOn=false;
 m.newRecoOn=false;
@@ -455,7 +456,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
 <div id="goto-cats-container" style="display:none">
-	<div class="fs-name">Table of Recos</div>
+	<div class="fs-name">Go to Cats</div>
 	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
@@ -468,8 +469,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="table-of-recos" contenteditable="true"></div>
-	<div id="table-of-recos-list"></div>
+	<div id="goto-cats" contenteditable="true"></div>
+	<div id="goto-cats-list"></div>
 	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
@@ -554,7 +555,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button" id="my-id"></div>
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log out--]</a>
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
-	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--]</div>
+	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--] [--_G_o (FS)--]</div>
+	<div class="button button-goto-cats" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">[--Go to _C_ats--]</div>
 	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--See neighbors--]</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--New Reco--]</div>
@@ -682,6 +684,11 @@ $table_of_recos_container=$("#table-of-recos-container");
 $table_of_recos_container_move=$("#table-of-recos-container>.move");
 $table_of_recos=$("#table-of-recos");
 $table_of_recos_list=$("#table-of-recos-list");
+
+$goto_cats_container=$("#goto-cats-container");
+$goto_cats_container_move=$("#goto-cats-container>.move");
+$goto_cats=$("#goto-cats");
+$goto_cats_list=$("#goto-cats-list");
 
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
@@ -908,7 +915,7 @@ m.toggleNewReco=function () {
 		$input_uri[0].disabled=true;
 		$out_focus.focus();
 		$new_reco.hide();
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 		$window.off("scroll.stop");
 	}
 	else {
@@ -916,7 +923,7 @@ m.toggleNewReco=function () {
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
 		$new_reco.show();
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 		let cat=m.currentCat;
 		if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
 			$input_cats[0].value=cat;
@@ -956,6 +963,13 @@ m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
 m.timeout={};
 m.maxShowReco=20;
+
+m.fsGotoCats=[];
+m.fsGotoCats[0]=m.fsGotoCats[1]=[];
+m.fsGotoCats[0].k=m.fsGotoCats[1].k=-1;
+m.fsGotoCats.fullList=[];
+m.fsGotoCats.$fs=$goto_cats;
+m.fsGotoCats.$fsl=$goto_cats_list;
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
@@ -1094,7 +1108,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
 		[--_F_orward--]
 	</div>
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">
+	<div class="button button-goto-cats" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">
 		[--Go to _C_ats--]
 	</div>
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
@@ -1112,6 +1126,7 @@ $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
+$button_Goto_cats=$(".button-goto-cats");
 
 $user_noti.html(m.userId+"'s recos");
 if (!!m.myIndex) {
@@ -1263,7 +1278,8 @@ $("#table-of-recos-container>.reset").on("click.reset", function (e) {
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
-m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
+m.fsGotoCats[0].ptnSH=m.fsGotoCats[1].ptnSH
+=m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
 =m.fsGo[0].ptnSH=m.fsGo[1].ptnSH
 =m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH=m.splitHangul("$!@#");
 
@@ -1573,9 +1589,16 @@ m.putCatToFSFullList=function (i, cat) {
 	else {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
+	if (m.fsGotoCats.fullList[cat]) {
+		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
+	}
+	else {
+		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	}
 };
 m.updateCatFS=function () {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
+	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	if (!m.myPage) {
 		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	}
@@ -1601,7 +1624,7 @@ m.completeCat=function (elem, j) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.completeMRCat=function (elem, j) {
+m.completeMRCat=function (elem, j) { // TODO: Edit this better.
 	let $elem=$(elem);
 	let fs=m.fsCat;
 	fs.$fsLis.removeClass("selected");
@@ -1659,6 +1682,9 @@ m.doFSCat=function (fs, $input) {
 m.doMRFSCat=function (fs) {
 	m.doFSCat(fs, $multireco_input_cats);
 };
+m.doFSGotoCats=function (fs) {
+	m.doFSCat(fs, $goto_cats);
+};
 m.fsCatOn=function () {
 	let now=Date.now();
 	let passed=now-m.previous;
@@ -1691,8 +1717,25 @@ m.fsMRCatOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
+m.fsGotoCatsOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doMRFSCat(m.fsGotoCats);
+	}
+	else {
+		$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		setTimeout(function () {
+			$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+			m.previous=Date.now();
+			m.doMRFSCat(m.fsGotoCats);
+		}, m.wait*1.1-passed);
+	}
+};
 $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
 	clearTimeout(m.setTimeoutTargetOn);
 	let $target=$(e.target);
@@ -1758,6 +1801,9 @@ $input_cats.on("keydown.fs", function (e) {
 $multireco_input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, $multireco_cat_fs_list, $multireco_cat_fs_container);
 });
+$goto_cats.on("keydown.fs", function (e) {
+	m.onKeydownInFS(e, $goto_cats_list, $goto_cats_container);
+});
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
 	let cat=m.myCatList[i].cat;
@@ -1770,6 +1816,10 @@ $input_cats.on("focus", function () {
 $multireco_input_cats.trigger("keyup.fs");
 $multireco_input_cats.on("focus", function () {
 	$multireco_cat_fs_container.show();
+});
+$goto_cats.trigger("keyup.fs");
+$goto_cats.on("focus", function () {
+	$goto_cats_container.show();
 });
 
 
@@ -2871,7 +2921,7 @@ m.openCat=function (cat, e) {
 	}
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
+		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
@@ -2884,6 +2934,9 @@ for (let i=0;i<m.catList.length;i++) {
 
 window.onpopstate=function (e) {
 	if (!!e.state) {
+		if (e.state.gotoCats!==m.gotoCats) {
+			$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
+		}
 		if (e.state.goOn!==m.goOn) {
 			$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
 		}
@@ -4071,6 +4124,22 @@ m.processShortKey=function (e) {
 	}
 	switch (e.keyCode) {
 		case 67: // C=67 Go to Cat or Cats?
+			e.preventDefault();
+			if ($goto_cats_container.is(":visible")) {
+				$goto_cats_container.hide();
+				$out_focus.focus();
+				$button_Goto_cats.removeClass("enabled");
+				m.gotoCats=false;
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+			}
+			else {
+				$goto_cats_container.show();
+				$goto_cats_container.css({zIndex:++m.zIndex});
+				$fuzzy_search.focus();
+				$button_Goto_cats.addClass("enabled");
+				m.gotoCats=true;
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+			}
 			break;
 		case 71: // G=71
 			e.preventDefault();
@@ -4079,15 +4148,15 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_Go.removeClass("enabled");
 				m.goOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
 				$fuzzy_search_container.show();
-				$fuzzy_search_container.css({zIndex:m.zIndex++});
+				$fuzzy_search_container.css({zIndex:++m.zIndex});
 				$fuzzy_search.focus();
 				$button_Go.addClass("enabled");
 				m.goOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
 		case 84: // T=84
@@ -4097,15 +4166,15 @@ m.processShortKey=function (e) {
 				$out_focus.focus();
 				$button_ToR.removeClass("enabled");
 				m.ToRsOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			else {
 				$table_of_recos_container.show();
-				$table_of_recos_container.css({zIndex:m.zIndex++});
+				$table_of_recos_container.css({zIndex:++m.zIndex});
 				$table_of_recos.focus();
 				$button_ToR.addClass("enabled");
 				m.ToRsOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
 			break;
 		case 66: // B=66
@@ -4264,10 +4333,10 @@ $point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m
 
 console.log(window.location.pathname);
 if (window.location.pathname==="/reco") {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
 }
 else {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 }
 m.saveSSN();
 
