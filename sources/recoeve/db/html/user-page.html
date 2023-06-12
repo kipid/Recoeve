@@ -3880,8 +3880,8 @@ $goto_cats.on("keydown", function (e) {
 });
 m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	let $elem=$(elem);
-	let fsFLj=fs.fullList[j];
-	let cat=fsFLj.cat;
+	let fsFLk=fs.fullList[j];
+	let cat=fsFLk.cat;
 	if ($elem.hasClass("selected")) {
 		fs.$fs.trigger({type:'keydown.fs', keyCode:27}); // keyCode:27=ESC
 	}
