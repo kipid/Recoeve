@@ -181,7 +181,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted, #goto-cats-list .list-item .highlighted {
 	font-size:.5em; color:rgb(150,150,150)
 }
-#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold #goto-cats-list .list-item .highlighted .bold {
+#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold, #goto-cats-list .list-item .highlighted .bold {
 	color:rgb(170,250,170)
 }
 .exit {
@@ -1227,6 +1227,29 @@ $sidebar_exit.on("click", function () {
 
 /* Fuzzy search */
 // Fuzzy search, Table of Recos move and reset
+$goto_cats_container_move.on("mousedown.move touchstart.move", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($goto_cats_container_move.offset().left)+$window.scrollLeft();
+	let relativeY=touch0.clientY-Math.round($goto_cats_container_move.offset().top)+$window.scrollTop();
+	$html.on("mousemove.move touchmove.move", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		$goto_cats_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$html.on("mouseup.move touchend.move", function () {
+			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+		});
+	});
+});
+$("#goto-cats-container>.reset").on("click.reset", function (e) {
+	$goto_cats.html("");
+	$goto_cats.focus();
+	$goto_cats.trigger("input.fs");
+});
+
 $fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
 	e.preventDefault();
 	e.stopPropagation();
@@ -1668,6 +1691,9 @@ m.doFSCat=function (fs, $input) {
 		else if ($input===$input_cats) {
 			fs.$fsl=$cat_fs_list;
 		}
+		else if ($input===$goto_cats) {
+			fs.$fsl=$goto_cats_list;
+		}
 		else {
 			fs.$fsl=$("#nothing");
 		}
@@ -1738,14 +1764,14 @@ m.fsGotoCatsOn=function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doMRFSCat(m.fsGotoCats);
+		m.doFSGotoCats(m.fsGotoCats);
 	}
 	else {
-		$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
-			m.doMRFSCat(m.fsGotoCats);
+			m.doFSGotoCats(m.fsGotoCats);
 		}, m.wait*1.1-passed);
 	}
 };
