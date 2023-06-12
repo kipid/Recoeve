@@ -1715,7 +1715,7 @@ m.doFSCat=function (fs, $input) {
 	if ($input===$goto_cats) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)">${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	else {
@@ -3883,7 +3883,7 @@ m.completeCatAndOpenCat=function (e, elem, k, fs) {
 	let fsFLk=fs.fullList[k];
 	let cat=fsFLk.cat;
 	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+		fs.$fs.trigger({type:'keydown.fs', keyCode:27}); // keyCode:27=ESC
 	}
 	else {
 		fs.$fsLis.removeClass("selected");
@@ -3893,12 +3893,19 @@ m.completeCatAndOpenCat=function (e, elem, k, fs) {
 	if (cat===m.currentCat) {
 		beInCurrentCat=true;
 	}
-	fs.$fs[0].value=cat;
-	let sEnd=cat.length;
+	let k=fs.k; // index of cat on sEnd.
+	fs.listOfCats[k]=fs.fullList[j].cat;
+	fs.$fs[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
+	}
+	let sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	fs.$fs.trigger("keydown");
 	if (!beInCurrentCat) {
+		m.currentCat=cat;
 		m.openCat(cat);
 	}
 };
