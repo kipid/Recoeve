@@ -1294,7 +1294,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 	}
 	list.unshift(""); // cat=uncategorized : empty cat.
 	if (catList===undefined||catList===null) {
-		if (m.catList) {
+		if (!!m.catList) {
 			catList=m.catList;
 		}
 		else {
@@ -1302,13 +1302,17 @@ m.strCatListToJSON=function (strCatList, catList) {
 		}
 	}
 	let superCats=[];
-	for (let i=0;i<list.length;i++) {
-		let baseCat=list[i].trim();
-		let depth=m.getDepthOfTabs(list[i]);
-		superCats.splice(depth, superCats.length-depth, baseCat);
-		let cat=superCats[0];
-		cat=superCats.join("--");
-		catList[i]=catList[cat]={i, cat, baseCat, depth};
+	if (strCatList==="") {
+		catList[0]=catList[""]={i:0, cat:"", baseCat:"", depth:0};
+	}
+	else {
+		for (let i=0;i<list.length;i++) {
+			let baseCat=list[i].trim();
+			let depth=m.getDepthOfTabs(list[i]);
+			superCats.splice(depth, superCats.length-depth, baseCat);
+			let cat=superCats.join("--");
+			catList[i]=catList[cat]={i, cat, baseCat, depth};
+		}
 	}
 };
 m.catListToHTML=function () {
