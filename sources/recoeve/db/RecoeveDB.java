@@ -599,12 +599,9 @@ public boolean changePwd(BodyData inputs, String ip, String now) {
 	}
 	return done;
 }
-public boolean verifyUser(String cookieI, String path, String ip) {
+public boolean verifyUser(String cookieI, String id, String veriKey, String ip) {
 	boolean done=false;
 	long user_i=Long.parseLong(cookieI, 16);
-	int i=path.indexOf("/");
-	String id=path.substring(0, i);
-	String veriKey=path.substring(i+1);
 	String now=now();
 	try {
 		con.setAutoCommit(false);

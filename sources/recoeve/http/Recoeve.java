@@ -359,7 +359,7 @@ router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").h
 					catch (UnsupportedEncodingException e) {
 						System.out.println(e);
 					}
-					boolean verified=PrintLog.db.verifyUser(PrintLog.cookie.get("I"), token, PrintLog.ip);
+					boolean verified=PrintLog.db.verifyUser(PrintLog.cookie.get("I"), userId, token, PrintLog.ip);
 					System.out.println("Verified:"+verified);
 					if (verified) {
 						// User is verified.
