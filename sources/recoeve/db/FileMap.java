@@ -39,11 +39,8 @@ public class FileMap {
 	private static final String[] txtFileNames={
 			"jquery.js", "prepare.js"
 			, "robots.txt"
-			, "log-in.html"
-			, "changePwd.html"
-			, "log-out.html"
-			, "user-page.html"
-			, "remember-me.html"
+			, "log-in.html", "verify.html", "changePwd.html", "log-out.html"
+			, "user-page.html", "remember-me.html"
 		};
 	private static final int txtFileMapSize=100;
 	private static final int fileLangMapSize=100; // # of languages translated to support.
