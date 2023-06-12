@@ -1714,9 +1714,17 @@ m.doFSCat=function (fs, $input) {
 	let fsCatSH=m.splitHangul(listOfCats[fs.k].trim());
 	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
-	for (let i=0;i<res.length;i++) {
-		let fsSortedI=res[res.sorted[i]];
-		str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+	if ($input===$goto_cats) {
+		for (let i=0;i<res.length;i++) {
+			let fsSortedI=res[res.sorted[i]];
+			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+		}
+	}
+	else {
+		for (let i=0;i<res.length;i++) {
+			let fsSortedI=res[res.sorted[i]];
+			str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+		}
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -3891,6 +3899,7 @@ m.completeCatAndOpenCat=function (e, elem, k, fs) {
 	let sEnd=cat.length;
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	fs.$fs.trigger("keydown");
 	if (!beInCurrentCat) {
 		m.openCat(cat);
 	}
