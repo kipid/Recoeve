@@ -1302,7 +1302,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 		}
 	}
 	let superCats=[];
-	if (strCatList==="") {
+	if (strCatList.trim()==="") {
 		catList[0]=catList[""]={i:0, cat:"", baseCat:"", depth:0};
 	}
 	else {
