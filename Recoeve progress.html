@@ -459,19 +459,29 @@ Under construction.java 해서 오류잡아야할때 이걸 vertx run 해놓자.
 Sign-up 에서 아래와 같은 에러가 남. 가입은 된건데 따로 에러가 난건가? 가입이 안된듯
 
 ```
-Time: 2023-06-10 06:33:57
-Referer: https://recoeve.net/account/log-in
-Referer Host: recoeve.net
+Time: 2023-06-11 10:45:10
+Referer: https://localhost/account/log-in?goto=/user/kipid?cat=&lang=ko
+Referer Host: localhost
 Referer Allowed: true
 Method: POST
-Absolute URI: https://recoeve.net/account/sign-up
-User IP: 175.212.158.53:14891
-Local Address: 172.31.35.249:443
+Absolute URI: https://localhost/account/sign-up
+User IP: 0:0:0:0:0:0:0:1:3445
+Local Address: 0:0:0:0:0:0:0:1:443
 Cookie:  hideFK : y
+ PRL : 0.82
+ PRR : 1.00
+ lang : ko
 
 Session passed?: false
-Lang: en
+Lang: ko
 /account/:toDo :: toDo=sign-up
+tToken:2023-06-11 10:45:08
+token:866c9572777abff56ef2b244ca82f3684392560a613c2bacb0ec9ab48275deb9288bc5d95bb0efce7aacde8029c67f721c300e4f596e070ab5ae64d523d7e270f2522857684c35e1afc30d4de16a5988eff85156dfe051b64237a0632d13dc818939946ed373b28435d77aecc6c1311a71c5f0e2cf1389f2e17b07f92f4ea736
+id:Sophy
+email:Sophy.5912@gmail.com
+now:2023-06-11 10:45:10
+from:2023-06-11 10:45:08
+newC:true, tokenC:true, timeC:true
 Exception: java.sql.SQLException: Cannot convert class java.time.LocalDateTime to SQL type requested due to java.lang.ArrayIndexOutOfBoundsException - Index 4 out of bounds for length 4
 java.sql.SQLException: Cannot convert class java.time.LocalDateTime to SQL type requested due to java.lang.ArrayIndexOutOfBoundsException - Index 4 out of bounds for length 4
         at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
@@ -481,7 +491,7 @@ java.sql.SQLException: Cannot convert class java.time.LocalDateTime to SQL type 
         at com.mysql.cj.jdbc.result.UpdatableResultSet.syncUpdate(UpdatableResultSet.java:1164)
         at com.mysql.cj.jdbc.result.UpdatableResultSet.updateBoolean(UpdatableResultSet.java:1292)
         at com.mysql.cj.jdbc.result.UpdatableResultSet.updateBoolean(UpdatableResultSet.java:1283)
-        at recoeve.db.RecoeveDB.checkAuthToken(RecoeveDB.java:351)
+        at recoeve.db.RecoeveDB.checkAuthToken(RecoeveDB.java:358)
         at recoeve.http.Recoeve.lambda$start$17(Recoeve.java:569)
         at io.vertx.core.impl.future.FutureImpl$1.onSuccess(FutureImpl.java:91)
         at io.vertx.core.impl.future.FutureBase.emitSuccess(FutureBase.java:60)
@@ -554,7 +564,7 @@ java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4
         at com.mysql.cj.jdbc.result.UpdatableResultSet.syncUpdate(UpdatableResultSet.java:1164)
         at com.mysql.cj.jdbc.result.UpdatableResultSet.updateBoolean(UpdatableResultSet.java:1292)
         at com.mysql.cj.jdbc.result.UpdatableResultSet.updateBoolean(UpdatableResultSet.java:1283)
-        at recoeve.db.RecoeveDB.checkAuthToken(RecoeveDB.java:351)
+        at recoeve.db.RecoeveDB.checkAuthToken(RecoeveDB.java:358)
         at recoeve.http.Recoeve.lambda$start$17(Recoeve.java:569)
         at io.vertx.core.impl.future.FutureImpl$1.onSuccess(FutureImpl.java:91)
         at io.vertx.core.impl.future.FutureBase.emitSuccess(FutureBase.java:60)
@@ -615,21 +625,25 @@ java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4
 ```/
 
 ```
-DELETE FROM `CatList` WHERE `user_i`=100000001;
+USE recoeve0.1;
+SELECT `i`, `class` FROM `Users` WHERE `email`="Sophy.5912@gmail.com";
 
-DELETE FROM `UriList` WHERE `user_i`=100000001;
+DELETE FROM `CatList` WHERE `user_i`=100000058;
 
-DELETE FROM `LogInLogs` WHERE `user_i`=100000001;
+DELETE FROM `UriList` WHERE `user_i`=100000058;
 
-DELETE FROM `UserSession` WHERE `user_i`=100000001;
+DELETE FROM `LogInLogs` WHERE `user_i`=100000058;
 
-DELETE FROM `UserSession1` WHERE `user_i`=100000001;
+DELETE FROM `UserSession` WHERE `user_i`=100000058;
 
-DELETE FROM `UserRemember` WHERE `user_i`=100000001;
+DELETE FROM `UserSession1` WHERE `user_i`=100000058;
 
-DELETE FROM `Recos` WHERE `user_i`=100000001;
+DELETE FROM `UserRemember` WHERE `user_i`=100000058;
 
-DELETE FROM `Users` WHERE `i`=100000001;
+DELETE FROM `Recos` WHERE `user_i`=100000058;
+
+DELETE FROM `Users` WHERE `i`=100000058;
+
 ```/
 
 deleteUser testing.
