@@ -146,7 +146,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	color:rgb(170,250,170)
 }
 
-#fuzzy-search-container, #table-of-recos-container {
+#fuzzy-search-container, #table-of-recos-container, #goto-cats-container {
 	position:fixed; left:0; top:0;
 	z-index:10010;
 	width:25em; max-width:100%;
@@ -154,7 +154,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	text-align:left
 }
 .fs-name {background:black; padding:.1em 3em}
-#fuzzy-search, #table-of-recos {
+#fuzzy-search, #table-of-recos, #goto-cats {
 	height:2em; max-height:5em; overflow-y:auto;
 	font:inherit; font-size:1.3em; color:black;
 	width:100%;
@@ -162,26 +162,26 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	border:.15em gray solid;
 	background:white
 }
-#fuzzy-search-list, #table-of-recos-list {
+#fuzzy-search-list, #table-of-recos-list, #goto-cats-list {
 	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
 	border:.15em gray solid;
 	background:rgb(20,20,20)
 }
-#fuzzy-search-list .list-item, #table-of-recos-list .list-item {
+#fuzzy-search-list .list-item, #table-of-recos-list .list-item, #goto-cats-list .list-item {
 	background:black; color:white;
 	padding:.2em .5em .4em
 }
-#fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index {display:none}
-#fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n) {
+#fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected, #goto-cats-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index, #goto-Cats-list .list-item .list-index {display:none}
+#fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n), #goto-cats-list .list-item:nth-child(2n) {
 	background:rgb(40,40,40)
 }
-#fuzzy-search-list .list-item.deleted {background:rgb(108 50 0); border:.15em solid rgb(120,120,150)}
-#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat {font-size:.9em}
-#fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted {
+#fuzzy-search-list .list-item.deleted, #goto-cats-list .list-item.deleted {background:rgb(108 50 0); border:.15em solid rgb(120,120,150)}
+#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat, #goto-cats-list .list-item .cat {font-size:.9em}
+#fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted, #goto-cats-list .list-item .highlighted {
 	font-size:.5em; color:rgb(150,150,150)
 }
-#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold {
+#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold #goto-cats-list .list-item .highlighted .bold {
 	color:rgb(170,250,170)
 }
 .exit {
@@ -478,7 +478,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#goto-cats-container -->
 <div id="new-reco" style="display:none">
 	<form>
@@ -1126,7 +1126,7 @@ $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
-$button_Goto_cats=$(".button-goto-cats");
+$button_goto_cats=$(".button-goto-cats");
 
 $user_noti.html(m.userId+"'s recos");
 if (!!m.myIndex) {
@@ -1640,6 +1640,22 @@ m.completeMRCat=function (elem, j) { // TODO: Edit this better.
 	$multireco_input_cats.focus();
 	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 };
+m.completeGotoCats=function (elem, j) { // TODO: Edit this better.
+	let $elem=$(elem);
+	let fs=m.fsGotoCats;
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k=fs.k; // index of cat on sEnd.
+	fs.listOfCats[k]=fs.fullList[j].cat;
+	$goto_cats[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
+	}
+	let sEnd=sStart+fs.listOfCats[k].length;
+	$goto_cats.focus();
+	$goto_cats[0].setSelectionRange(sEnd,sEnd);
+};
 m.doFSCat=function (fs, $input) {
 	if ($input===undefined||$input===null) {
 		$input=$input_cats;
@@ -1807,7 +1823,7 @@ $goto_cats.on("keydown.fs", function (e) {
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
 	let cat=m.myCatList[i].cat;
-	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	m.fsGotoCats.fullList[l-1-i]=m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 }
 $input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function () {
@@ -3781,7 +3797,118 @@ $button_del.on("click", function (e) {
 
 
 ///////////////////////////////////////////
-// Fuzzy search on Titles
+// Go to Cats
+///////////////////////////////////////////
+$goto_cats.on("keydown", function (e) {
+	e.stopPropagation();
+	switch (e.keyCode) {
+	case 27: // ESC=27
+		e.preventDefault();
+		$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
+		break;
+	case 38: // up=38
+	case 40: // down=40
+		e.preventDefault();
+		let $fsl=$goto_cats_list;
+		let $lis=$fsl.find(".list-item");
+		let $liSelected=$fsl.find(".list-item.selected").eq(0);
+		let $liTo=null;
+		if ($liSelected.exists()) {
+			if (e.keyCode===38) {
+				$liTo=$liSelected.prev();
+			}
+			else {
+				$liTo=$liSelected.next();
+			}
+			if ($liTo.exists()) {
+				$liTo.eq(0).trigger("click");
+				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+				}
+				else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+				}
+			}
+		}
+		else {
+			if ($lis.exists()) {
+				if (e.keyCode===38) {
+					$liTo=$lis.last();
+					$fsl.scrollTop($fsl[0].scrollHeight);
+				}
+				else {
+					$liTo=$lis.first();
+					$fsl.scrollTop(0);
+				}
+				$liTo.eq(0).trigger("click");
+			}
+		}
+		break;
+	}
+});
+m.completeCatAndOpenCat=function (e, elem, k, fs) {
+	let $elem=$(elem);
+	let fsFLk=fs.fullList[k];
+	let cat=fsFLk.cat;
+	if ($elem.hasClass("selected")) {
+		fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+	}
+	else {
+		fs.$fsLis.removeClass("selected");
+		$elem.addClass("selected");
+	}
+	let beInCurrentCat=false;
+	if (cat===m.currentCat) {
+		beInCurrentCat=true;
+	}
+	fs.$fs[0].value=cat;
+	let sEnd=cat.length;
+	fs.$fs.focus();
+	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	if (!beInCurrentCat) {
+		m.openCat(cat);
+	}
+};
+m.doGotoCatsFSGo=function (fs) {
+	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
+		let res=m.fuzzySearch(fsPtnSH, fs);
+		let sorted=res.sorted;
+		let str="";
+		for (let i=0;i<sorted.length;i++) {
+			let k=res[sorted[i]].i;
+			let fsFLk=fs.fullList[k];
+			if (fsFLk) {
+				str+=`<div id="goto-cats-${k}" class="list-item${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${k},m.fsGotoCats)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+			}
+		}
+		fs.$fsl.html(str);
+		fs.$fsLis=fs.$fsl.find(".list-item");
+	}
+};
+m.fsGotoCatsOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doGotoCatsFSGo(m.fsGotoCats);
+	}
+	else {
+		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs");
+		setTimeout(function () {
+			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs", m.fsGotoCatsOn);
+			m.previous=Date.now();
+			m.doGotoCatsFSGo(m.fsGotoCats);
+		}, m.wait*1.1-passed);
+	}
+};
+$goto_cats.on("input.fs keyup.fs cut.fs paste.fs", m.fsGotoCatsOn);
+$goto_cats.trigger("input.fs");
+
+
+
+///////////////////////////////////////////
+// Fuzzy search on Titles (Go)
 ///////////////////////////////////////////
 $fuzzy_search.on("keydown", function (e) {
 	e.stopPropagation();
@@ -3836,7 +3963,7 @@ m.showAndScrollTo=function ($listI) {
 		$listI.show();
 	}
 	$window.scrollTop($listI.offset()?.top);
-}
+};
 m.gotoLi=function (e, elem, k, fs) {
 	if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
 		return;
@@ -3924,7 +4051,7 @@ $fuzzy_search.trigger("input.fs");
 
 
 ///////////////////////////////////////////
-// Fuzzy search on Table of Recos
+// Fuzzy search on Table of Recos (TofR)
 ///////////////////////////////////////////
 m.playLi=function (e, elem, k, fs) {
 	if (!(e&&e.srcElement&&e.srcElement.nodeName=="A")) {
@@ -4128,7 +4255,7 @@ m.processShortKey=function (e) {
 			if ($goto_cats_container.is(":visible")) {
 				$goto_cats_container.hide();
 				$out_focus.focus();
-				$button_Goto_cats.removeClass("enabled");
+				$button_goto_cats.removeClass("enabled");
 				m.gotoCats=false;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
@@ -4136,7 +4263,7 @@ m.processShortKey=function (e) {
 				$goto_cats_container.show();
 				$goto_cats_container.css({zIndex:++m.zIndex});
 				$fuzzy_search.focus();
-				$button_Goto_cats.addClass("enabled");
+				$button_goto_cats.addClass("enabled");
 				m.gotoCats=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 			}
