@@ -339,12 +339,48 @@ router.post("/reco/:toDo").handler(ctx -> {
 	}
 });
 
-router.route("/account/:toDo").handler(ctx -> { // e.g. path=/account/...
+router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").handler(ctx -> { // e.g. path=/account/...
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.
-		String toDo=ctx.pathParam("toDo");
-		System.out.println("/account/:toDo :: toDo="+toDo);
-		switch (toDo) {
+		String param0=ctx.pathParam("param0");
+		System.out.println("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$ :: param0="+param0);
+		switch (param0) {
+			case "verify": // path=/account/verify/:userId/:token
+				if (PrintLog.sessionPassed&&PrintLog.method==HttpMethod.POST) {
+					// VeriKey check.
+					String userId=ctx.pathParam("param1");
+					String token=ctx.pathParam("param2");
+					try {
+						userId=URLDecoder.decode(userId, "UTF-8");
+						// token=URLDecoder.decode(token, "UTF-8");
+						System.out.println("^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param1="+userId);
+						System.out.println("^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param2="+token);
+					}
+					catch (UnsupportedEncodingException e) {
+						System.out.println(e);
+					}
+					boolean verified=PrintLog.db.verifyUser(PrintLog.cookie.get("I"), token, PrintLog.ip);
+					System.out.println("Verified:"+verified);
+					if (verified) {
+						// User is verified.
+						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+						PrintLog.req.response().end("You are verified.", ENCODING);
+						System.out.println("Sended 'You are verified.'.");
+					}
+					else {
+						// User is NOT verified.
+						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+						PrintLog.req.response().end("Wrong verification key. You are not verified.", ENCODING);
+						System.out.println("Sended 'Wrong verification key. You are not verified.'.");
+					}
+				}
+				else {
+					// Log-in 유도.
+					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
+					PrintLog.req.response().end(FileMap.get("verify.html", PrintLog.lang), ENCODING);
+					System.out.println("Sended 'Please log in first to verify your account.'.");
+				}
+				break;
 			case "changePwd": // path=/account/changePwd
 				if (PrintLog.db.checkChangePwdToken(PrintLog.req.params(), PrintLog.now)) {
 					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -632,38 +668,6 @@ router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/
 			System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 		}
 	});
-});
-
-router.get("/account/verify/:token").handler(ctx -> { // path=/account/verify/:token
-	if (PrintLog.sessionPassed) {
-		// VeriKey check.
-		String token=ctx.pathParam("token");
-		try {
-			token=URLDecoder.decode(token, "UTF-8");
-			System.out.println("/account/verify/:token :: token="+token);
-		}
-		catch (UnsupportedEncodingException e) {
-			System.out.println(e);
-		}
-		if (PrintLog.db.verifyUser(PrintLog.cookie.get("I"), token, PrintLog.ip)) {
-			// User is verified.
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			PrintLog.req.response().end("You are verified.", ENCODING);
-			System.out.println("Sended 'You are verified.'.");
-		}
-		else {
-			// User is NOT verified.
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			PrintLog.req.response().end("Wrong verification key.", ENCODING);
-			System.out.println("Sended 'Wrong verification key.'.");
-		}
-	}
-	else {
-		// Log-in 유도.
-		PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-		PrintLog.req.response().end("<h1>Please log in first to verify your account.</h1>", ENCODING);
-		System.out.println("Sended 'Please log in first to verify your account.'.");
-	}
 });
 
 router.post("/changeOrders/CatList").handler(ctx -> { // e.g. path=/changeOrders/CatList
