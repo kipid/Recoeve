@@ -104,6 +104,7 @@ private PreparedStatement pstmtCheckDateDiff;
 private PreparedStatement pstmtSession;
 private PreparedStatement pstmtCreateAuthToken;
 private PreparedStatement pstmtCheckAuthToken;
+private PreparedStatement pstmtUpdateAuthToken;
 
 private PreparedStatement pstmtCreateUser;
 private PreparedStatement pstmtDeleteUser;
@@ -164,6 +165,7 @@ public RecoeveDB() {
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
 		pstmtCheckAuthToken=con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtUpdateAuthToken=con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
 		pstmtCreateUser=con.prepareStatement("INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtDeleteUser=con.prepareStatement("DELETE FROM `Users` WHERE `email`=?;");
 		pstmtDeleteUserCatList=con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
@@ -211,7 +213,8 @@ public RecoeveDB() {
 		pstmtGetRecoStatDefTitleSet=con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutRecoStatDefDescSet=con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
 		pstmtGetRecoStatDefDescSet=con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 }
@@ -262,7 +265,8 @@ public String now() {
 		if (rs.next()) {
 			now=rs.getString(1);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return now; // utc_timestamp()
@@ -278,7 +282,8 @@ public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 		if (rs.next()) {
 			return rs.getBoolean(1);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -292,7 +297,8 @@ public boolean checkDateDiff(String now, String from, int lessThanInDays) {
 		if (rs.next()) {
 			return rs.getBoolean(1);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -301,7 +307,8 @@ public boolean checkDateDiff(String now, String from, int lessThanInDays) {
 public boolean idExists(String id) {
 	try {
 		return findUserById(id).next();
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false; // if error occurs.
@@ -309,7 +316,8 @@ public boolean idExists(String id) {
 public boolean idAvailable(String id) {
 	try {
 		return !(findUserById(id).next());
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false; // if error occurs.
@@ -317,30 +325,45 @@ public boolean idAvailable(String id) {
 public boolean emailAvailable(String email) {
 	try {
 		return !(findUserByEmail(email).next());
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false; // if error occurs.
 }
 public boolean createAuthToken(String t, String ip, byte[] token) {
+	boolean done=false;
 	try {
-		con.setAutoCommit(true);
+		con.setAutoCommit(false);
 		pstmtCreateAuthToken.setTimestamp(1, Timestamp.valueOf(t));
 		pstmtCreateAuthToken.setString(2, ip);
 		pstmtCreateAuthToken.setBytes(3, token);
-		return (pstmtCreateAuthToken.executeUpdate()>0);
-	} catch (SQLException e) {
-		err(e);
+		done=(pstmtCreateAuthToken.executeUpdate()>0);
+		con.commit();
 	}
-	return false;
+	catch (SQLException e) {
+		err(e);
+		try {
+			con.rollback();
+		}
+		catch (SQLException e1) {
+			err(e1);
+		}
+	}
+	return done;
 }
 public boolean checkAuthToken(StrArray inputs, String ip, String now) {
+	boolean done=false;
 	String tToken=inputs.get(1, "tToken");
+	System.out.println("tToken:"+tToken);
 	String token=inputs.get(1, "authToken");
+	System.out.println("token:"+token);
 	String id=inputs.get(1, "userId");
+	System.out.println("id:"+id);
 	String email=inputs.get(1, "userEmail");
+	System.out.println("email:"+email);
 	try {
-		con.setAutoCommit(true);
+		con.setAutoCommit(false);
 		pstmtCheckAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
 		pstmtCheckAuthToken.setString(2, ip);
 		ResultSet rs=pstmtCheckAuthToken.executeQuery();
@@ -351,10 +374,12 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 			boolean timeC=checkTimeDiff(now, tToken, 30);
 			System.out.println("newC:"+newC+", tokenC:"+tokenC+", timeC:"+timeC);
 			if (newC&&tokenC&&timeC) {
-				rs.updateBoolean("new", false);
-				rs.updateRow();
-				logs(1, now, ip, "tkn", true, "tToken: "+tToken);
-				return true;
+				pstmtUpdateAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
+				pstmtUpdateAuthToken.setString(2, ip);
+				logsCommit(1, now, ip, "tkn", true, "tToken: "+tToken);
+				done=(pstmtUpdateAuthToken.executeUpdate()>0);
+				con.commit();
+				return done;
 			}
 			else {
 				if (!newC) {
@@ -376,11 +401,19 @@ public boolean checkAuthToken(StrArray inputs, String ip, String now) {
 		}
 		errMsg+=" ID: "+id+", E-mail: "+email+". tToken: "+tToken;
 		System.out.println(errMsg);
-		logs(1, now, ip, "tkn", false, errMsg);
-	} catch (SQLException e) {
-		err(e);
+		logsCommit(1, now, ip, "tkn", false, errMsg);
+		con.commit();
 	}
-	return false;
+	catch (SQLException e) {
+		err(e);
+		try {
+			con.rollback();
+		}
+		catch (SQLException e1) {
+			err(e1);
+		}
+	}
+	return done;
 }
 
 public boolean checkChangePwdToken(MultiMap params, String now) {
@@ -393,7 +426,8 @@ public boolean checkChangePwdToken(MultiMap params, String now) {
 				&& checkTimeDiff(now, from, 10*60)
 				&& Arrays.equals(unhex(params.get("token")), user.getBytes("tokenChangePwd"));
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -408,7 +442,8 @@ public boolean checkChangePwdToken(String id, String token, String now) {
 				&& checkTimeDiff(now, from, 10*60)
 				&& Arrays.equals(unhex(token), user.getBytes("tokenChangePwd"));
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -418,7 +453,8 @@ private static MessageDigest sha512;
 static {
 	try {
 		sha512=MessageDigest.getInstance("SHA-512");
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		err(e);
 	}
 }
@@ -469,13 +505,16 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 			if (user.next()) {
 				NaverMail.sendVeriKey(email, id, veriKey);
 				updateUserClass(0, +1); // 0: Not verified yet
-				logs(user.getLong("i"), now, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
+				logsCommit(user.getLong("i"), now, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
 				done=true;
+				con.commit();
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		System.out.println(e);
 	}
 	try {
@@ -486,7 +525,8 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 		else {
 			con.rollback();
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return done;
@@ -502,9 +542,11 @@ private boolean deleteUser(String userEmail) {
 		pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
 		pstmtDeleteUserCatList.executeUpdate();
 		done=pstmtDeleteUser.executeUpdate()>0;
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		System.out.println(e);
 	}
 	try {
@@ -515,7 +557,8 @@ private boolean deleteUser(String userEmail) {
 		else {
 			con.rollback();
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return done;
@@ -531,13 +574,15 @@ public boolean changePwd(BodyData inputs, String ip, String now) {
 		if (user.next()) {
 			byte[] pwd_salt=user.getBytes("pwd_salt");
 			user.updateBytes("pwd", pwdEncrypt(pwd_salt, pwd));
-			logs(user.getLong("i"), now, ip, "cpw", true); // change password
+			logsCommit(user.getLong("i"), now, ip, "cpw", true); // change password
 			user.updateRow();
 			done=true;
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		System.out.println(e);
 	}
 	try {
@@ -548,7 +593,8 @@ public boolean changePwd(BodyData inputs, String ip, String now) {
 		else {
 			con.rollback();
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return done;
@@ -577,19 +623,21 @@ public boolean verifyUser(String cookieI, String path, String ip) {
 			updateEmailStat(email.substring(email.indexOf("@")+1), +1);
 			user.updateString("veriKey", null);
 			user.updateRow();
-			logs(user_i, now, ip, "vrf", true); // verified.
+			logsCommit(user_i, now, ip, "vrf", true); // verified.
 			done=true;
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	try {
 		if (!done) {
 			con.rollback();
-			logs(user_i, now, ip, "vrf", false); // not verified.
+			logsCommit(user_i, now, ip, "vrf", false); // not verified.
 		}
 		con.commit();
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return done;
@@ -607,8 +655,10 @@ public ResultSet findUserByEmail(String email) throws SQLException {
 	return pstmtFindUserByEmail.executeQuery();
 }
 public String getPwdIteration(String idType, String id) { // idType	"id or email"
+	boolean done=false;
+	String result="";
 	try {
-		con.setAutoCommit(true);
+		con.setAutoCommit(false);
 		ResultSet user=null;
 		if (idType.equals("id")) {
 			user=findUserById(id);
@@ -617,18 +667,25 @@ public String getPwdIteration(String idType, String id) { // idType	"id or email
 			user=findUserByEmail(id);
 		}
 		if ( user!=null&&user.next() ) {
-			return Integer.toString( user.getInt("pwd_iteration") )
+			result=Integer.toString( user.getInt("pwd_iteration") )
 				+"\t"+hex( user.getBytes("pwd_salt") );
+			done=true;
+			return result;
 		}
 		else {
-			return "Cannot find a user from id/email.";
+			result="Cannot find a user from id/email.";
+			return result;
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
-	return "SQL Exception.";
+	result="SQL Exception.";
+	return result;
 }
 public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
+	boolean done=false;
+	String result="Wrong";
 	try {
 		con.setAutoCommit(false);
 		ResultSet user=null;
@@ -644,15 +701,39 @@ public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
 			user.updateBytes("pwd_salt", new_salt);
 			System.out.println("pwd_salt is renewed. :: "+hex(new_salt));
 			user.updateRow();
-			return hex(new_salt);
+			result=hex(new_salt);
+			con.commit();
+			done=true;
+			return result;
 		}
 		else {
-			return "Cannot find a user from id/email.";
+			result="Cannot find a user from id/email.";
+			con.rollback();
+			return result;
 		}
-	} catch (SQLException e) {
-		err(e);
 	}
-	return "SQL Exception.";
+	catch (SQLException e) {
+		err(e);
+		try {
+			if (!done) {
+				con.rollback();
+			}
+			else {
+				con.commit();
+			}
+		}
+		catch (SQLException e1) {
+			err(e1);
+			try {
+				con.rollback();
+			}
+			catch (SQLException e2) {
+				err(e2);
+			}
+		}
+	}
+	result="SQL Exception.";
+	return result;
 }
 public static String encryptEmail(String email) {
 	int i=email.indexOf("@");
@@ -690,9 +771,11 @@ public String forgotPwd(StrArray inputs, String lang) {
 			user.updateRow();
 			return FileMap.replaceStr("[--pre sended email to--] "+encryptEmail(email)+"[--post sended email to--]", lang);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		System.out.println(e);
 	}
 	return "Error occurred.";
@@ -734,7 +817,8 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 				varMap.put("{--myId--}", HTMLString.escapeHTML(user.getString("id")));
 				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			err(e);
 		}
 	}
@@ -746,7 +830,8 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	varMap.putIfAbsent("{--myIndex--}", "");
@@ -773,7 +858,8 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 				varMap.put("{--myId--}", user.getString("id"));
 				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			err(e);
 		}
 	}
@@ -798,7 +884,8 @@ public String sessionIter(Cookie cookie) {
 						return Integer.toString(rs.getInt("iter"));
 					}
 					return "No session.";
-				} catch (SQLException e) {
+				}
+				catch (SQLException e) {
 					err(e);
 				}
 			}
@@ -827,7 +914,8 @@ public boolean sessionCheck(Cookie cookie) {
 						return true;
 					}
 					// No log for sessionCheck. Too much.
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					err(e);
 				}
 			}
@@ -876,21 +964,23 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 					logDesc="Remembered";
 				}
 				user.updateRow();
-				logs(user_i, now, ip, "lgi", true, logDesc); // log-in success
+				logsCommit(user_i, now, ip, "lgi", true, logDesc); // log-in success
 			}
 			else {
 				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
 				System.out.println(hex(user.getBytes("pwd")));
-				logs(user_i, now, ip, "lgi", false); // log-in fail
+				logsCommit(user_i, now, ip, "lgi", false); // log-in fail
 			}
 		}
 		else {
-			logs(user_i, now, ip, "lgi", false); // user_i=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
+			logsCommit(user_i, now, ip, "lgi", false); // user_i=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
 		}
 		done=true;
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		System.out.println(e);
 	}
 	try {
@@ -900,7 +990,8 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 		else {
 			con.rollback();
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return setCookie;
@@ -950,7 +1041,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken)).setSecure(true)
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 					System.out.println("Remembered.");
-					logs(user_i, now, ip, "rmb", true);
+					logsCommit(user_i, now, ip, "rmb", true);
 					rs.updateRow();
 					return setCookie;
 				}
@@ -984,8 +1075,9 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 			errMsg+="Not remembered.";
 		}
 		System.out.println(errMsg);
-		logs(user_i, now, ip, "rmb", false, errMsg);
-	} catch (SQLException e) {
+		logsCommit(user_i, now, ip, "rmb", false, errMsg);
+	}
+	catch (SQLException e) {
 		err(e);
 	}}}
 	return setCookie;
@@ -1012,7 +1104,8 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 			setCookie.add(io.vertx.core.http.Cookie.cookie("salt", hex(salt)).setSecure(true)
 					.setPath("/").setMaxAge(secondsSSN));
 		}
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		err(e);
 	}
 	return setCookie;
@@ -1064,7 +1157,8 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 				if (rs.next()) {
 					rs.deleteRow();
 				}
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				err(e);
 			}
 		}
@@ -1080,7 +1174,8 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 				if (rs.next()) {
 					rs.deleteRow();
 				}
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				err(e);
 			}
 		}
@@ -1120,11 +1215,22 @@ public boolean logs(long user_i, String t, String ip, String log, boolean succes
 	pstmtLog.setString(6, desc);
 	return (pstmtLog.executeUpdate()>0);
 }
+public boolean logsCommit(long user_i, String t, String ip, String log, boolean success) {
+	try {
+		con.setAutoCommit(false);
+		return logs(user_i, t, ip, log, success, null);
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
 public boolean logsCommit(long user_i, String t, String ip, String log, boolean success, String desc) {
 	try {
-		con.setAutoCommit(true);
+		con.setAutoCommit(false);
 		return logs(user_i, t, ip, log, success, desc);
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -1156,7 +1262,8 @@ public boolean logsCommit(long user_i, String t, String ip, String log, boolean 
 // 				}
 // 			}
 // 		}
-// 	} catch (SQLException e) {
+// 	}
+//	catch (SQLException e) {
 // 		err(e);
 // 	}
 // 	return res;
@@ -1184,7 +1291,8 @@ public String getRecos(String user_id, StrArray uris) {
 				}
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return res;
@@ -1471,7 +1579,8 @@ public String getStringCatList(String user_id) {
 			long user_i=user.getLong("i");
 			res=getStringCatList(user_i);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return res;
@@ -1481,7 +1590,8 @@ public String getStringCatList(long user_i) {
 	try {
 		CatList catL=getCatList(user_i);
 		res=catL.toString();
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return res;
@@ -1543,7 +1653,8 @@ public boolean changeOrdersCatList(long user_i, String listName, String newFullC
 				return true;
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return false;
@@ -1557,9 +1668,11 @@ public String getStringCatUriList(String user_id, StrArray catList) {
 			if (user.next()) {
 				res=getStringCatUriList(user.getLong("i"), catList);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			err(e);
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			err(e);
 		}
 	}
@@ -1574,9 +1687,11 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 			String cat=catList.get(i, "cat");
 			res+="\n"+cat+"\t"+getUriList(user_i, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
-	} catch (NullPointerException e) {
+	}
+	catch (NullPointerException e) {
 		err(e);
 	}
 	return res;
@@ -1595,7 +1710,8 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 // 			}
 // 			res+=cat+"\t"+strUriL+"\n";
 // 		}
-// 	} catch (SQLException e) {
+// 	}
+//	catch (SQLException e) {
 // 		err(e);
 // 	}
 // 	return res;
@@ -1873,7 +1989,8 @@ if (desc!=null&&!(desc.isEmpty())) {
 	byte[] descHash;
 	try {
 		descHash=sha512(desc);
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 		err(e);
 		return;
 	}
@@ -1927,7 +2044,8 @@ if (desc!=null&&!(desc.isEmpty())) {
 						byte[] descIHash;
 						try {
 							descIHash=sha512(descI);
-						} catch (Exception e) {
+						}
+						catch (Exception e) {
 							err(e);
 							return;
 						}
@@ -2064,7 +2182,8 @@ public String recoDefs(String uri) {
 		}
 
 		res=heads+"\n"+contents;
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return res;
@@ -2230,18 +2349,21 @@ public String recoDo(long user_i, String recoStr) {
 				}
 				updateCatList(user_i, catL);
 				con.commit();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				err(e);
 				res+="error";
 				catL.fullCats=previousCatListStr;
 				try {
 					con.rollback();
-				} catch (SQLException e2) {
+				}
+				catch (SQLException e2) {
 					err(e2);
 				}
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 	return res;
@@ -2249,6 +2371,7 @@ public String recoDo(long user_i, String recoStr) {
 
 // put or overwrite Reco
 public String putReco(long user_i, String recoStr) {
+	boolean done=false;
 	String res="i\tresult";
 	String now=now();
 	StrArray sa=new StrArray(recoStr);
@@ -2347,21 +2470,25 @@ public String putReco(long user_i, String recoStr) {
 				}
 				updateCatList(user_i, catL);
 				con.commit();
-			} catch (SQLException e) {
+				done=true;
+			}
+			catch (SQLException e) {
 				err(e);
 				res+="error";
 				catL.fullCats=previousCatListStr;
 				try {
 					con.rollback();
-				} catch (SQLException e2) {
+				}
+				catch (SQLException e2) {
 					err(e2);
 				}
 			}
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
-	return res;
+	return res+" :: done:"+done;
 }
 // public boolean updateReco(long user_i, String recoStr) {
 // 	try {
@@ -2388,7 +2515,8 @@ public String putReco(long user_i, String recoStr) {
 // 			reco.updateRow(); // void return;
 // 			return true;
 // 		}
-// 	} catch (SQLException e) {
+// 	}
+//	catch (SQLException e) {
 // 		err(e);
 // 	}
 // 	return false;
@@ -2412,7 +2540,8 @@ public void updateDefs() {
 			updateDefDesc(uri, desc, +1);
 			updateRecoStat(user_i, uri, pts, now, +1);
 		}
-	} catch (SQLException e) {
+	}
+	catch (SQLException e) {
 		err(e);
 	}
 }
