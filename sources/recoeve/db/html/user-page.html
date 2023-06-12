@@ -4262,7 +4262,7 @@ m.processShortKey=function (e) {
 			else {
 				$goto_cats_container.show();
 				$goto_cats_container.css({zIndex:++m.zIndex});
-				$fuzzy_search.focus();
+				$goto_cats.focus();
 				$button_goto_cats.addClass("enabled");
 				m.gotoCats=true;
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
