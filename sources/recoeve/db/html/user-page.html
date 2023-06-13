@@ -3904,7 +3904,7 @@ m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	}
 };
 m.doGotoCatsFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value.split(";")[fs.k]);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
