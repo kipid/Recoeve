@@ -3585,7 +3585,7 @@ m.closeNewReco=function () {
 		if ($new_reco.is(":visible")) {
 			$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
 		}
-		if (m.closeNewRecoN>3) {
+		if (m.closeNewRecoN>3||!$new_reco.is(":visible")) {
 			clearInterval(m.closeNewRecoInterval);
 		}
 	}, 2048);
