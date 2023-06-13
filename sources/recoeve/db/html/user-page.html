@@ -3865,16 +3865,30 @@ $button_del.on("click", function (e) {
 // 		break;
 // 	}
 // });
-m.completeCatAndOpenCat=function (e, elem, j, fs) {
+m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	let $elem=$(elem);
-	let fsFLk=fs.fullList[j];
-	let cat=fsFLk.cat;
+	let fsFLj=fs.fullList[j];
+	let cat=fsFLj.cat;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let beInCurrentCat=false;
 	if (cat===m.currentCat) {
 		beInCurrentCat=true;
 	}
+	let catsTxt=fs.$fs[0].value;
+	$input.focus();
+	let sEnd=fs.$fs[0].selectionEnd;
+	let listOfCats=fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	fs.k=0;
+	for (let i=listOfCats.length-1;i>=0;i--) {
+		l-=listOfCats[i].length+1;
+		if (l<sEnd) {
+			fs.k=i;
+			console.log(`fs.k=${fs.k}`);
+			break;
+		}
+	} // Picking cat index k of the current selectionEnd.
 	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
@@ -3887,8 +3901,9 @@ m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	if (!beInCurrentCat) {
 		m.currentCat=cat;
-		m.openCat(cat);
+		await m.openCat(cat);
 	}
+	return;
 };
 m.doGotoCatsFSGo=function (fs) {
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value.split(";")[fs.k]);
