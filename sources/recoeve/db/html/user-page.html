@@ -1679,25 +1679,11 @@ m.completeGotoCats=function (elem, j) { // TODO: Edit this better.
 	$goto_cats.focus();
 	$goto_cats[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function (fs, $input) {
-	if ($input===undefined||$input===null) {
-		$input=$input_cats;
-	}
-	fs.$fs=$input;
-	if ($input===$multireco_input_cats) {
-		fs.$fsl=$multireco_cat_fs_list;
-	}
-	else if ($input===$input_cats) {
-		fs.$fsl=$cat_fs_list;
-	}
-	else if ($input===$goto_cats) {
-		fs.$fsl=$goto_cats_list;
-	}
-	else {
-		fs.$fsl=$("#nothing");
-	}
+m.doFSCat=function (fs) {
+	let $input=fs.$fs;
 	m.fuzzySearch(m.splitHangul("!@#$"), fs);
 	let catsTxt=fs.$fs[0].value;
+	$input.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	let listOfCats=fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
@@ -1706,6 +1692,7 @@ m.doFSCat=function (fs, $input) {
 		l-=listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
+			console.log(`fs.k=${fs.k}`);
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
