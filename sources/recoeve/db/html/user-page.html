@@ -1679,23 +1679,29 @@ m.completeGotoCats=function (elem, j) { // TODO: Edit this better.
 	$goto_cats.focus();
 	$goto_cats[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function (fs) {
-	let $input=fs.$fs;
-	m.fuzzySearch(m.splitHangul("!@#$"), fs);
+m.doFSCat=function (fs, $input) {
+	if ($input!==undefined&&$input!==null&&!!$input) {
+		fs.$fs=$input;
+	}
+	m.fuzzySearch(m.splitHangul("!@#$"), fs); // TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
 	let catsTxt=fs.$fs[0].value;
 	$input.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	let listOfCats=fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
+	let lastK=fs.k;
 	fs.k=0;
 	for (let i=listOfCats.length-1;i>=0;i--) {
 		l-=listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
-			console.log(`fs.k=${fs.k}`);
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
+	console.log(`fs.k=${fs.k}`);
+	if (lastK!==fs.k) {
+		m.fuzzySearch(m.splitHangul("!@#$"), fs);
+	}
 	let fsCatSH=m.splitHangul(listOfCats[fs.k].trim());
 	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
