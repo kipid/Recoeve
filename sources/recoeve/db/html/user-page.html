@@ -3882,13 +3882,8 @@ m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	let $elem=$(elem);
 	let fsFLk=fs.fullList[j];
 	let cat=fsFLk.cat;
-	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:'keydown.fs', keyCode:27}); // keyCode:27=ESC
-	}
-	else {
-		fs.$fsLis.removeClass("selected");
-		$elem.addClass("selected");
-	}
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
 	let beInCurrentCat=false;
 	if (cat===m.currentCat) {
 		beInCurrentCat=true;
