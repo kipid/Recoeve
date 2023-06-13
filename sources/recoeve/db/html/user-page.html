@@ -172,7 +172,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	padding:.2em .5em .4em
 }
 #fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected, #goto-cats-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index, #goto-Cats-list .list-item .list-index {display:none}
+#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index, #goto-cats-list .list-item .list-index {display:none}
 #fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n), #goto-cats-list .list-item:nth-child(2n) {
 	background:rgb(40,40,40)
 }
@@ -370,7 +370,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#my-id {margin-left:0}
 	.side2 {padding:.5em}
 	.rC.fixed {width:600px; border-right:.15em solid white}
-	.rC.instagram.fixed {width:360px}
+	.rC.instagram.fixed, .rC.eveElse.fixed {width:360px}
 	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
@@ -469,7 +469,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<textarea class="single-line" id="goto-cats" type="text"></textarea>
+	<textarea id="goto-cats" type="text"></textarea>
 	<div id="goto-cats-list"></div>
 	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
@@ -1715,7 +1715,7 @@ m.doFSCat=function (fs, $input) {
 	if ($input===$goto_cats) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)">${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	else {
@@ -3831,53 +3831,53 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 // Go to Cats
 ///////////////////////////////////////////
-$goto_cats.on("keydown", function (e) {
-	e.stopPropagation();
-	switch (e.keyCode) {
-	case 27: // ESC=27
-		e.preventDefault();
-		$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
-		break;
-	case 38: // up=38
-	case 40: // down=40
-		e.preventDefault();
-		let $fsl=$goto_cats_list;
-		let $lis=$fsl.find(".list-item");
-		let $liSelected=$fsl.find(".list-item.selected").eq(0);
-		let $liTo=null;
-		if ($liSelected.exists()) {
-			if (e.keyCode===38) {
-				$liTo=$liSelected.prev();
-			}
-			else {
-				$liTo=$liSelected.next();
-			}
-			if ($liTo.exists()) {
-				$liTo.eq(0).trigger("click");
-				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
-					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
-				}
-				else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
-					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
-				}
-			}
-		}
-		else {
-			if ($lis.exists()) {
-				if (e.keyCode===38) {
-					$liTo=$lis.last();
-					$fsl.scrollTop($fsl[0].scrollHeight);
-				}
-				else {
-					$liTo=$lis.first();
-					$fsl.scrollTop(0);
-				}
-				$liTo.eq(0).trigger("click");
-			}
-		}
-		break;
-	}
-});
+// $goto_cats.on("keydown", function (e) {
+// 	e.stopPropagation();
+// 	switch (e.keyCode) {
+// 	case 27: // ESC=27
+// 		e.preventDefault();
+// 		$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
+// 		break;
+// 	case 38: // up=38
+// 	case 40: // down=40
+// 		e.preventDefault();
+// 		let $fsl=$goto_cats_list;
+// 		let $lis=$fsl.find(".list-item");
+// 		let $liSelected=$fsl.find(".list-item.selected").eq(0);
+// 		let $liTo=null;
+// 		if ($liSelected.exists()) {
+// 			if (e.keyCode===38) {
+// 				$liTo=$liSelected.prev();
+// 			}
+// 			else {
+// 				$liTo=$liSelected.next();
+// 			}
+// 			if ($liTo.exists()) {
+// 				$liTo.eq(0).trigger("click");
+// 				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+// 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+// 				}
+// 				else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
+// 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+// 				}
+// 			}
+// 		}
+// 		else {
+// 			if ($lis.exists()) {
+// 				if (e.keyCode===38) {
+// 					$liTo=$lis.last();
+// 					$fsl.scrollTop($fsl[0].scrollHeight);
+// 				}
+// 				else {
+// 					$liTo=$lis.first();
+// 					$fsl.scrollTop(0);
+// 				}
+// 				$liTo.eq(0).trigger("click");
+// 			}
+// 		}
+// 		break;
+// 	}
+// });
 m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	let $elem=$(elem);
 	let fsFLk=fs.fullList[j];
@@ -3894,7 +3894,7 @@ m.completeCatAndOpenCat=function (e, elem, j, fs) {
 		beInCurrentCat=true;
 	}
 	let k=fs.k; // index of cat on sEnd.
-	fs.listOfCats[k]=fs.fullList[j].cat;
+	fs.listOfCats[k]=cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -3903,14 +3903,13 @@ m.completeCatAndOpenCat=function (e, elem, j, fs) {
 	let sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
-	fs.$fs.trigger("keydown");
 	if (!beInCurrentCat) {
 		m.currentCat=cat;
 		m.openCat(cat);
 	}
 };
 m.doGotoCatsFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
