@@ -3896,7 +3896,7 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	for (let i=0;i<k;i++) {
 		sStart+=fs.listOfCats[i].length+1;
 	}
-	let sEnd=sStart+fs.listOfCats[k].length;
+	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	if (!beInCurrentCat) {
