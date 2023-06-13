@@ -3876,7 +3876,7 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 		beInCurrentCat=true;
 	}
 	let catsTxt=fs.$fs[0].value;
-	$input.focus();
+	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	let listOfCats=fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
