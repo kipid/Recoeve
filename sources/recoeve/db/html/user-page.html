@@ -1781,9 +1781,12 @@ m.fsGotoCatsOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
-$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+m.fsCatsOnTimeout=function () {
+	$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+	$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+};
+m.fsCatsOnTimeout();
 m.onKeydownInFS=function (e, $fsl, $fs_container) {
 	clearTimeout(m.setTimeoutTargetOn);
 	let $target=$(e.target);
@@ -1838,10 +1841,7 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 			}
 			break;
 	}
-	m.setTimeoutTargetOn=setTimeout(function () {
-		$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-		$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-	}, 512);
+	m.setTimeoutTargetOn=setTimeout(m.fsCatsOnTimeout, 512);
 }
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, $cat_fs_list, $cat_fs_container);
