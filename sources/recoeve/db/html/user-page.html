@@ -1685,16 +1685,16 @@ m.doFSCat=function (fs, $input) {
 	if ($input!==undefined&&$input!==null&&!!$input) {
 		fs.$fs=$input;
 	}
-	m.fuzzySearch(m.splitHangul("!@#$"), fs); // TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
+	// m.fuzzySearch(m.splitHangul("!@#$"), fs); // TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
 	let catsTxt=fs.$fs[0].value;
 	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
-	let listOfCats=fs.listOfCats=catsTxt.split(";");
+	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
 	let lastK=fs.k;
 	fs.k=0;
-	for (let i=listOfCats.length-1;i>=0;i--) {
-		l-=listOfCats[i].length+1;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
 			break;
@@ -1704,7 +1704,7 @@ m.doFSCat=function (fs, $input) {
 	if (lastK!==fs.k) {
 		m.fuzzySearch(m.splitHangul("!@#$"), fs);
 	}
-	let fsCatSH=m.splitHangul(listOfCats[fs.k].trim());
+	let fsCatSH=m.splitHangul(fs.listOfCats[fs.k].trim());
 	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
 	if ($input===$goto_cats) {
@@ -1728,6 +1728,17 @@ m.doMRFSCat=function (fs) {
 m.doFSGotoCats=function (fs) {
 	m.doFSCat(fs, $goto_cats);
 };
+
+// $input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", function () {
+// 	m.doFSCat(m.fsCat);
+// });
+// $multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", function () {
+// 	m.doMRFSCat(m.fsCat);
+// });
+// $goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", function () {
+// 	m.doFSGotoCats(m.fsGotoCats);
+// });
+
 m.fsCatOn=function () {
 	let now=Date.now();
 	let passed=now-m.previous;
@@ -1782,9 +1793,24 @@ m.fsCatsOnTimeout=function () {
 	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 };
 m.fsCatsOnTimeout();
-m.onKeydownInFS=function (e, $fsl, $fs_container) {
+m.onKeydownInFS=function (e, fs, $fsl, $fs_container) {
 	clearTimeout(m.setTimeoutTargetOn);
 	let $target=$(e.target);
+	let catsTxt=$target[0].value;
+	$target.focus();
+	let sEnd=$target[0].selectionEnd;
+	fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	let lastK=fs.k;
+	fs.k=0;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
+		if (l<sEnd) {
+			fs.k=i;
+			break;
+		}
+	} // Picking cat index k of the current selectionEnd.
+	console.log(`fs.k=${fs.k}`);
 	let $lis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
@@ -1836,16 +1862,18 @@ m.onKeydownInFS=function (e, $fsl, $fs_container) {
 			}
 			break;
 	}
-	m.setTimeoutTargetOn=setTimeout(m.fsCatsOnTimeout, 512);
+	m.setTimeoutTargetOn=setTimeout(function () {
+		m.fsCatsOnTimeout();
+	}, m.wait);
 }
 $input_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, $cat_fs_list, $cat_fs_container);
+	m.onKeydownInFS(e, m.fsCat, $cat_fs_list, $cat_fs_container);
 });
 $multireco_input_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, $multireco_cat_fs_list, $multireco_cat_fs_container);
+	m.onKeydownInFS(e, m.fsCat, $multireco_cat_fs_list, $multireco_cat_fs_container);
 });
 $goto_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, $goto_cats_list, $goto_cats_container);
+	m.onKeydownInFS(e, m.fsGotoCats, $goto_cats_list, $goto_cats_container);
 });
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
@@ -3824,55 +3852,8 @@ $button_del.on("click", function (e) {
 
 
 ///////////////////////////////////////////
-// Go to Cats
+// Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
-// $goto_cats.on("keydown", function (e) {
-// 	e.stopPropagation();
-// 	switch (e.keyCode) {
-// 	case 27: // ESC=27
-// 		e.preventDefault();
-// 		$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
-// 		break;
-// 	case 38: // up=38
-// 	case 40: // down=40
-// 		e.preventDefault();
-// 		let $fsl=$goto_cats_list;
-// 		let $lis=$fsl.find(".list-item");
-// 		let $liSelected=$fsl.find(".list-item.selected").eq(0);
-// 		let $liTo=null;
-// 		if ($liSelected.exists()) {
-// 			if (e.keyCode===38) {
-// 				$liTo=$liSelected.prev();
-// 			}
-// 			else {
-// 				$liTo=$liSelected.next();
-// 			}
-// 			if ($liTo.exists()) {
-// 				$liTo.eq(0).trigger("click");
-// 				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
-// 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
-// 				}
-// 				else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
-// 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
-// 				}
-// 			}
-// 		}
-// 		else {
-// 			if ($lis.exists()) {
-// 				if (e.keyCode===38) {
-// 					$liTo=$lis.last();
-// 					$fsl.scrollTop($fsl[0].scrollHeight);
-// 				}
-// 				else {
-// 					$liTo=$lis.first();
-// 					$fsl.scrollTop(0);
-// 				}
-// 				$liTo.eq(0).trigger("click");
-// 			}
-// 		}
-// 		break;
-// 	}
-// });
 m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	let $elem=$(elem);
 	let fsFLj=fs.fullList[j];
@@ -3886,12 +3867,12 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	let catsTxt=fs.$fs[0].value;
 	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
-	let listOfCats=fs.listOfCats=catsTxt.split(";");
+	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
 	let lastK=fs.k;
 	fs.k=0;
-	for (let i=listOfCats.length-1;i>=0;i--) {
-		l-=listOfCats[i].length+1;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
 			break;
@@ -3915,7 +3896,22 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	return;
 };
 m.doGotoCatsFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs[0].value.split(";")[fs.k]);
+	let catsTxt=fs.$fs[0].value;
+	fs.$fs.focus();
+	let sEnd=fs.$fs[0].selectionEnd;
+	fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	let lastK=fs.k;
+	fs.k=0;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
+		if (l<sEnd) {
+			fs.k=i;
+			break;
+		}
+	} // Picking cat index k of the current selectionEnd.
+	console.log(`fs.k=${fs.k}`);
+	let fsPtnSH=m.splitHangul(fs.listOfCats[fs.k]);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
