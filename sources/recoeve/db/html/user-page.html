@@ -543,6 +543,17 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="deviceInfo"></div>
 </div><!-- div#change-style -->
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
+<div class="side2" id="promoting">
+	<div class="p">
+	For the usage examples, visit my page
+	<ul>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+	</ul>
+	</div>
+</div>
 	<div class="button" id="choose-lang">▼ Language/언어/語言</div>
 	<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
 English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
@@ -1246,7 +1257,7 @@ $goto_cats_container_move.on("mousedown.move touchstart.move", function (e) {
 	});
 });
 $("#goto-cats-container>.reset").on("click.reset", function (e) {
-	$goto_cats.html("");
+	$goto_cats[0].value="";
 	$goto_cats.focus();
 	$goto_cats.trigger("input.fs");
 });
@@ -1889,9 +1900,6 @@ $multireco_input_cats.on("focus", function () {
 	$multireco_cat_fs_container.show();
 });
 $goto_cats.trigger("keyup.fs");
-$goto_cats.on("focus", function () {
-	$goto_cats_container.show();
-});
 
 
 
@@ -4450,113 +4458,115 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
-m.initialOpen=true;
-
-let vars=m.searchVars;
-if (vars.title!==undefined) {
-	$input_title[0].value=vars.title.val;
-}
-if (vars.uri!==undefined) {
-	$input_uri[0].value=vars.uri.val;
-	$input_uri.trigger("input");
-}
-m.args={};
-if (vars.PRL||vars.PRR) {
-	if (vars.PRL) {
-		let val=vars.PRL.val;
-		m.args.PRL=val;
-		m.ptsRangeFrom=Number(val);
-		m.docCookies.setItem("PRL", val, Infinity, "/", false, true);
+$document.ready(function () {
+	m.initialOpen=true;
+	let vars=m.searchVars;
+	if (vars.title!==undefined) {
+		$input_title[0].value=vars.title.val;
+	}
+	if (vars.uri!==undefined) {
+		$input_uri[0].value=vars.uri.val;
+		$input_uri.trigger("input");
+	}
+	m.args={};
+	if (vars.PRL||vars.PRR) {
+		if (vars.PRL) {
+			let val=vars.PRL.val;
+			m.args.PRL=val;
+			m.ptsRangeFrom=Number(val);
+			m.docCookies.setItem("PRL", val, Infinity, "/", false, true);
+		}
+		else {
+			m.ptsRangeFrom=0;
+			m.docCookies.setItem("PRL", "0", Infinity, "/", false, true);
+		}
+		if (vars.PRR) {
+			let val=vars.PRR.val;
+			m.args.PRR=val;
+			m.ptsRangeTo=Number(val);
+			m.docCookies.setItem("PRR", val, Infinity, "/", false, true);
+		}
+		else {
+			m.ptsRangeTo=1;
+			m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
+		}
+	}
+	else if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
+		m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
+		m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
 	}
 	else {
 		m.ptsRangeFrom=0;
-		m.docCookies.setItem("PRL", "0", Infinity, "/", false, true);
-	}
-	if (vars.PRR) {
-		let val=vars.PRR.val;
-		m.args.PRR=val;
-		m.ptsRangeTo=Number(val);
-		m.docCookies.setItem("PRR", val, Infinity, "/", false, true);
-	}
-	else {
 		m.ptsRangeTo=1;
-		m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
 	}
-}
-else if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
-	m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
-	m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
-}
-else {
-	m.ptsRangeFrom=0;
-	m.ptsRangeTo=1;
-}
-m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-$point_range_left.css({left:m.PRLw-15});
-$point_range_bar.css({left:m.PRLw});
-m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-$point_range_right.css({left:m.PRRw-5});
-$point_range_bar.css({right:m.PRw-m.PRRw});
-$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
+	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+	$point_range_left.css({left:m.PRLw-15});
+	$point_range_bar.css({left:m.PRLw});
+	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+	$point_range_right.css({left:m.PRRw-5});
+	$point_range_bar.css({right:m.PRw-m.PRRw});
+	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
-console.log(window.location.pathname);
-if (window.location.pathname==="/reco") {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
-}
-else {
-	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-}
-m.saveSSN();
-
-if (m.recoMode==="") {
-	m.openCat(m.currentCat);
-}
-else if (m.recoMode==="multireco") {
-	m.toggleMultirecoMode();
-}
-else if (m.recoMode==="neighbors") {
-	m.toggleNeighborsMode();
-}
-
-if (window.location.pathname==="/reco") {
-	// Avoid window.history.pushState().
-	m.newRecoOn=true;
-	$button_new_reco.addClass("enabled");
-	$input_uri[0].disabled=false;
-	$new_reco.show();
-	let cat=m.currentCat;
-	if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
-		$input_cats[0].value=cat;
-	}
-	m.wST=$window.scrollTop();
-	$window.on("scroll.stop", function (e) {
-		e.preventDefault();
-		$window.scrollTop(m.wST);
-	});
-	$input_uri.focus();
-	if (m.docCookies.hasItem("rmbdI")&&(!!m.docCookies.getItem("rmbdI"))) {
-		$input_uri.trigger("keyup");
+	console.log(window.location.pathname);
+	if (window.location.pathname==="/reco") {
+		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
 	}
 	else {
-		$new_reco.after(``);
+		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
-}
-$title.html(`${m.userId}'s recoeve.net`);
-let hashURI=m.hashURI;
-if (!!hashURI) {
-	m.fsGo.tryN=1;
-	m.setIntervalFsGo=setInterval(function () {
-		if (!!m.fsGo.fullList[hashURI]||++m.fsGo.tryN>11) {
-			let k=m.fsGo.fullList[hashURI]?.i;
-			let $liK=$(`#li-${k}`);
-			if ($liK.exists()) {
-				$(`#li-${k}`).trigger("click");
-				clearInterval(m.setIntervalFsGo);
-			}
+	m.saveSSN();
+
+	if (m.recoMode==="") {
+		m.openCat(m.currentCat);
+	}
+	else if (m.recoMode==="multireco") {
+		m.toggleMultirecoMode();
+	}
+	else if (m.recoMode==="neighbors") {
+		m.toggleNeighborsMode();
+	}
+
+	if (window.location.pathname==="/reco") {
+		// Avoid window.history.pushState().
+		m.newRecoOn=true;
+		$button_new_reco.addClass("enabled");
+		$input_uri[0].disabled=false;
+		$new_reco.show();
+		let cat=m.currentCat;
+		if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
+			$input_cats[0].value=cat;
 		}
-	}, 1024);
-}
-m.initialOpen=false;
+		m.wST=$window.scrollTop();
+		$window.on("scroll.stop", function (e) {
+			e.preventDefault();
+			$window.scrollTop(m.wST);
+		});
+		$input_uri.focus();
+		if (m.docCookies.hasItem("rmbdI")&&(!!m.docCookies.getItem("rmbdI"))) {
+			$input_uri.trigger("keyup");
+		}
+		else {
+			$new_reco.after(``);
+		}
+	}
+	$title.html(`${m.userId}'s recoeve.net`);
+	let hashURI=m.hashURI;
+	if (!!hashURI) {
+		m.fsGo.tryN=1;
+		m.setIntervalFsGo=setInterval(function () {
+			if (!!m.fsGo.fullList[hashURI]||++m.fsGo.tryN>11) {
+				let k=m.fsGo.fullList[hashURI]?.i;
+				let $liK=$(`#li-${k}`);
+				if ($liK.exists()) {
+					$(`#li-${k}`).trigger("click");
+					clearInterval(m.setIntervalFsGo);
+				}
+			}
+		}, 1024);
+	}
+	$goto_cats_container.hide();
+	m.initialOpen=false;
+});
 
 
 
