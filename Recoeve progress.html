@@ -63,6 +63,10 @@
 
 ### 정리하기 전
 
+
+
+local storage 이용 좀 하자. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">MDN :: Web - API - Window - localStorage</a>
+
 최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
 
 추천해주기. Neighbor 통한 추천.
@@ -370,8 +374,6 @@ subCats 안의 UriList 들까지 모두 보여주기.
 CatList 에서 cat 이름 바꾸기 가능하게? (이거 javascript 로 대부분 처리해놓고, reco/put 에 명령어 주르륵 보내면 될듯? 더 복잡해질라나? 그냥 changeCatName 으로 보내서 따로 server 에서 처리하는게 더 나을듯? 이건 대따 복잡할거 같으니까 천천히 생각합시다.)
 
 recentRecoers : "text" 로 저장할게 아니라 "bigint" (long) ArrayList 같은 byte 로 저장해야 더 속도가 빠를듯???
-
-local storage 이용 좀 하자.
 
 fixed video 가 붙으면 sidebar (in Phone view) 가려지지 않도록 위에 padding 될만한거 붙이기?
 
