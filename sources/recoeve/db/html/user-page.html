@@ -787,14 +787,16 @@ m.resetStyle=function () {
 m.Cmode=function (modeI) {
 	m.$container.removeClass("bright");
 	m.$container.removeClass("pink");
-	if (modeI==="Bright") {
+	switch (modeI) {
+	case "Bright":
 		m.$container.addClass("bright");
-	}
-	else if (modeI==="Pink") {
+		break;
+	case "Pink":
 		m.$container.addClass("pink");
-	}
-	else {
-		return false;
+		break;
+	default:
+		// Dark
+		break;
 	}
 	m.mode=modeI;
 	m.printDeviceInfo();
