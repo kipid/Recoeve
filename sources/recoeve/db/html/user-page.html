@@ -65,6 +65,7 @@ li, dd {margin:.3em 0 .5em 2em}
 
 .button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
+	.pink .button {border-color:rgb(180,0,180); background:rgb(138,13,106)}
 .reco .button {margin:0}
 .reco .button.deleted {background:rgb(255, 118, 0)}
 .button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
@@ -75,18 +76,24 @@ li, dd {margin:.3em 0 .5em 2em}
 	.bright .button:active {background:rgb(100,180,180)}
 .button.enabled {background:rgb(50,140,80)}
 	.bright .button.enabled {background:rgb(120,210,150)}
+	.pink .button.enabled {background:rgb(115,148,213)}
 .button.enabled:active {background:rgb(70,70,70)}
 	.bright .button.enabled:active {background:rgb(190,190,190)}
+	.pink .button.enabled:active {background:rgb(125,125,125)}
 
 a {text-decoration:none}
 a:link {color:rgb(190,190,235)}
-.bright a:link {color:rgb(60,60,160)}
+	.bright a:link {color:rgb(60,60,160)}
+	.pink a:link {color:rgb(155,195,131)}
 a:visited {color:rgb(170,170,215)}
-.bright a:visited {color:rgb(40,40,140)}
+	.bright a:visited {color:rgb(40,40,140)}
+	.pink a:visited {color:rgb(111,146,235)}
 a:active {color:rgb(100,215,215)}
-.bright a:active {color:rgb(0,100,100)}
+	.bright a:active {color:rgb(0,100,100)}
+	.pink a:active {color:rgb(70,170,170)}
 a:hover {color:rgb(170,215,170); text-decoration:underline}
-.bright a:hover {color:rgb(40,140,40)}
+	.bright a:hover {color:rgb(40,140,40)}
+	.pink a:hover {color:rgb(70,170,70)}
 
 ::-webkit-scrollbar {width:7px; height:7px}
 ::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
@@ -97,10 +104,12 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
+	#container.pink {background:rgb(68,0,59); color:wheat}
 #sidebar-dragger {position:fixed; z-index:10; top:0; height:200px; left:0; width:1.5em; background:transparent}
 #sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0}
 #sidebar {position:fixed; z-index:10; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(35,35,35); color:white; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
 	.bright #sidebar {background:rgb(230,230,230); color:black; border-color:black}
+	.pink #sidebar {background:rgb(134,31,110); color:wheat; border-color:wheat}
 #sidebar-toggle {width:2em; height:2em; background:black; border:white 2px solid}
 
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
@@ -116,10 +125,13 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #catList .cat.edit>.edit-bar:last-child {right:0}
 #catList .cat.selected {border:1px solid white}
 	.bright #catList .cat.selected {border-color:black}
+	.pink #catList .cat.selected {border-color:wheat}
 #catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer; color:white}
 	.bright #catList .cat>.baseCat, .bright #catList .cat>.EC {color:black}
+	.pink #catList .cat>.baseCat, .pink #catList .cat>.EC {color:wheat}
 #catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,210,210)}
 	.bright #catList .cat.selected>.baseCat {color:rgb(50,0,0)}
+	.pink #catList .cat.selected>.baseCat {color:white}
 #catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 #cat-fs-container {
@@ -302,8 +314,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #my-id {margin-left:2.5em}
 
 .multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
-.reco {margin:0 0 1em; border-bottom:.15em solid rgb(100,100,100); background:black}
+.reco {margin:0 0 1em; border-top:.15em solid rgb(100,100,100); border-bottom:.15em solid rgb(100,100,100); background:black}
 	.bright .reco {border-color:black; background:rgb(230,230,230)}
+	.pink .reco {border-color:wheat; background:rgb(35,0,97)}
 .reco.deleted {border:.5em solid rgb(168 50 0)}
 .multireco .reco {width:49%}
 .reco .SNS-img {margin:0; float:left; box-sizing:content-box; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
@@ -318,7 +331,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats>a {color:rgb(130,170,130)}
 .reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
-.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)} .bright .reco>.cmt {background:rgb(200,200,200)}
+.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+	.bright .reco>.cmt {background:rgb(200,200,200)}
+	.pink .reco>.cmt {background:rgb(75,47,47)}
 .multireco .reco>.cmt {display:none}
 .stars-container {position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
@@ -356,12 +371,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #floating-key {display:flex; flex-wrap:wrap; bottom:2.6em; width:9em; height:auto}
 #floating-key div.button {border-top:none; text-align:center; margin:0; padding:0; width:9em; height:auto}
 	#floating-key div.button:first-child {border-top:2px solid rgb(50,50,50)}
+	.bright #floating-key div.button:first-child {border-top:2px solid rgb(200,200,200)}
+	.pink #floating-key div.button:first-child {border-top:2px solid rgb(180,0,180)}
 #toggle-floating-key {bottom:.2em; text-align:center; width:2.2em; height:2.3em; margin:0; padding:.1em}
 #SNS-floating {width:100%; text-align:center}
 #SNS-floating .SNS-img {box-sizing:border-box; padding:0; margin:0; width:1.8em; height:1.8em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
 #floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em;}
-.bright #floating-key, .bright #toggle-floating-key {color:black}
+	.bright #floating-key, .bright #toggle-floating-key {color:black}
+	.pink #floating-key, .pink #toggle-floating-key {color:wheat}
 
 @media all and (min-width:600px) {
 	.multireco .reco {width:33%}
@@ -542,8 +560,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" style="padding:.5em"></div>
 <div class="side2" id="change-style">
 	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset style</button></form>
-	<form><input id="button-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
-	</input><input id="button-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
+	<form>
+		<input id="button-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label></input>
+		<input id="button-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input>
+		<input id="button-Pink" type="radio" name="mode" value="Pink" onclick="m.Cmode(this.value)"><label for="button-Pink" style="display:inline-block; background:rgb(180,0,97); color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Pink</label></input>
+	</form>
 	<form><input class="bold" id="input-font-family" type="text" name="font" value="맑은 고딕" style="font-family:'맑은 고딕'; font-size:1.2em; width:73px; height:23px; text-align:center" onchange="m.CfontFamily(this.value)"></input></form>
 	<form><button type="button" onclick="m.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="m.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
 	<form><button type="button" onclick="m.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="m.ClineHeight(1)" style="font-size:1.6em">=</button></form>
@@ -764,11 +785,13 @@ m.resetStyle=function () {
 	}
 }
 m.Cmode=function (modeI) {
-	if (modeI=="Dark") {
-		m.$container.removeClass("bright");
-	}
-	else if (modeI=="Bright") {
+	m.$container.removeClass("bright");
+	m.$container.removeClass("pink");
+	if (modeI=="Bright") {
 		m.$container.addClass("bright");
+	}
+	else if () {
+		m.$container.addClass("pink");
 	}
 	else {
 		return false;
