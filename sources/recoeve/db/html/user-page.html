@@ -2015,7 +2015,7 @@ if (m.myPage) {
 	for (let i=0;i<catSplit.length;i++) {
 		let cat=catSplit[i];
 		if (m.catUriList[cat]&&m.catUriList[cat].has) {
-			let fullURIs="\n"+m.catUriList[cat].UriList+"\n";
+			let fullURIs="\n"+m.catUriList[cat].UriList.trim()+"\n";
 			let k=fullURIs.indexOf("\n"+uri+"\n");
 			if (k!==-1) {
 				m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
@@ -3821,6 +3821,7 @@ m.reco_delete_do=function (args, err) {
 			m.myRecos[args.uri].deleted=true;
 			m.delCats_UriFromLists(cats, args.uri);
 			if (m.myPage) {
+				$numbers_of_recos.html(`Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.`);
 				m.refresh(cats, "deleted", args.uri);
 			}
 			setTimeout(function () {
@@ -3838,7 +3839,7 @@ $button_del.on("click", function (e) {
 	$button_del.addClass("disabled");
 	let uri=$input_uri[0].value;
 	let r=m.myRecos[uri];
-	if (uri.length!==0&&r) {
+	if (uri.length!==0&&!!r) {
 		let strHeads="do"+"\t"+"uri";
 		let strContents="delete"+"\t"+m.encloseStr(uri);
 		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri});
