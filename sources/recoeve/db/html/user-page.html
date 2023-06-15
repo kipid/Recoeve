@@ -60,6 +60,8 @@ data {display:none}
 .bold {font-weight:bold}
 .underline {text-decoration:underline}
 img {min-width:1em; min-height:1em; max-width:100%}
+ul, ol {margin:0; padding:0}
+li, dd {margin:.3em 0 .5em 2em}
 
 .button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
@@ -283,7 +285,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #change-style form button {width:29px; height:25px; padding:0}
 #change-style .deviceInfo {font-size:1em}
 
-#shortkeys {margin:0.3em 0; padding-left:2em}
+#shortkeys {}
 
 #point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
 #point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
@@ -485,7 +487,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<form>
 	<label for="input-uri">URI <span class="desc">([--required--])</span></label>
 		<textarea class="single-line" id="input-uri" name="uri" placeholder="[--placeholder URI--]" type="text" tabindex="1"></textarea>
-		<div id="show-URI"></div>
 	<label for="input-title">[--Title--]</label>
 		<div id="def-titles"></div>
 		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
@@ -496,13 +497,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div id="cat-fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
-	<label for="input-desc">[--Description--]</label>
-		<div id="def-descs"></div>
-		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="4"></textarea>
-	<label for="input-cmt">[--Comment--]</label>
-		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="5"></textarea>
+		<div id="show-URI"></div>
 	<label for="input-val">[--Points--]</label>
-		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="6"/>
+		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4"/>
 		<span class="upDown" id="input-val-down">&lt;</span>
 		<span class="upDown" id="input-val-up">&gt;</span>
 		<div id="input-val-stars"></div>
@@ -510,11 +507,16 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
-		<div class="button" id="button-del" tabindex="11" style="background:#ff7600">[--Del--]</div>
-		<div class="button left" id="button-close" tabindex="9" onclick="m.closeNewReco()">[--Close--]</div>
-		<div class="button left" id="button-back" tabindex="10">[--Back--]</div>
+		<div class="button" id="button-del" tabindex="9" style="background:#ff7600">[--Del--]</div>
+		<div class="button left" id="button-close" tabindex="5" onclick="m.closeNewReco()">[--Close--]</div>
+		<div class="button left" id="button-back" tabindex="6">[--Back--]</div>
 		<div class="cBoth"></div>
 	</div>
+	<label for="input-desc">[--Description--]</label>
+		<div id="def-descs"></div>
+		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
+	<label for="input-cmt">[--Comment--]</label>
+		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
 	<div id="my-reco"></div>
 	<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 	</form>
@@ -1061,7 +1063,6 @@ m.getNeighbors=function () {
 				}
 			}
 		}
-		console.log(req);
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-URI-cats-val", data:req
 			, dataType:"text"
@@ -1696,7 +1697,10 @@ m.doFSCat=function (fs, $input) {
 	if ($input!==undefined&&$input!==null&&!!$input) {
 		fs.$fs=$input;
 	}
-	// m.fuzzySearch(m.splitHangul("!@#$"), fs); // TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
+	else {
+		fs.$fs=$input_cats;
+	}
+	// TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
 	let catsTxt=fs.$fs[0].value;
 	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -1711,10 +1715,6 @@ m.doFSCat=function (fs, $input) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	console.log(`fs.k=${fs.k}`);
-	if (lastK!==fs.k) {
-		m.fuzzySearch(m.splitHangul("!@#$"), fs);
-	}
 	let fsCatSH=m.splitHangul(fs.listOfCats[fs.k].trim());
 	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
@@ -1821,7 +1821,6 @@ m.onKeydownInFS=function (e, fs, $fsl, $fs_container) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	console.log(`fs.k=${fs.k}`);
 	let $lis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
@@ -3886,7 +3885,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	console.log(`fs.k=${fs.k}`);
 	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
@@ -3918,7 +3916,6 @@ m.doGotoCatsFSGo=function (fs) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	console.log(`fs.k=${fs.k}`);
 	let fsPtnSH=m.splitHangul(fs.listOfCats[fs.k]);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
@@ -4507,7 +4504,6 @@ $document.ready(function () {
 	$point_range_bar.css({right:m.PRw-m.PRRw});
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
-	console.log(window.location.pathname);
 	if (window.location.pathname==="/reco") {
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
 	}
