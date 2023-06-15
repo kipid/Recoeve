@@ -103,6 +103,27 @@ m.saveSSN=function () {
 
 
 ////////////////////////////////////////////////////
+// Local storage
+////////////////////////////////////////////////////
+m.localStorage={
+	setItem:function (key, val) {
+		localStorage.setItem(encodeURIComponent(key), encodeURIComponent(val));
+		return true;
+	}
+	, getItem:function (key) {
+		return decodeURIComponent(localStorage.getItem(encodeURIComponent(key)));
+	}
+	, removeItem:function (key) {
+		localStorage.removeItem(encodeURIComponent(key));
+		return true;
+	}
+	, clear:function () {
+		localStorage.clear();
+		return true;
+	}
+};
+
+////////////////////////////////////////////////////
 // hash encrypt
 ////////////////////////////////////////////////////
 m.pad=function(str, max) {
