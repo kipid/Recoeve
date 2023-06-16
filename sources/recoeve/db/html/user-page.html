@@ -3712,17 +3712,34 @@ $button_reco.on("click", function (e) {
 	}
 	if (valid) {
 		let strHeads="do\turi";
+		m.localStorage.setItem("uri", uri);
 		let strContents="reco\t"+m.encloseStr(uri);
+
+		let title=m.formatTitle($input_title[0].value.trim());
+		m.localStorage.setItem("title", title);
 		strHeads+="\ttitle";
-		strContents+="\t"+m.encloseStr(m.formatTitle($input_title[0].value.trim()));
+		strContents+="\t"+m.encloseStr(title);
+
+		let cats=m.formatCats($input_cats[0].value.trim());
+		m.localStorage.setItem("cats", cats);
 		strHeads+="\tcats";
-		strContents+="\t"+m.encloseStr(m.formatCats($input_cats[0].value.trim()));
+		strContents+="\t"+m.encloseStr(cats);
+
+		let desc=$input_desc[0].value.trim();
+		m.localStorage.setItem("desc", desc);
 		strHeads+="\tdesc";
-		strContents+="\t"+m.encloseStr($input_desc[0].value.trim());
+		strContents+="\t"+m.encloseStr(desc);
+
+		let cmt=$input_cmt[0].value.trim();
+		m.localStorage.setItem("cmt", cmt);
 		strHeads+="\tcmt";
-		strContents+="\t"+m.encloseStr($input_cmt[0].value.trim());
+		strContents+="\t"+m.encloseStr(cmt);
+
+		let points=val.str;
+		m.localStorage.setItem("points", points);
 		strHeads+="\tval";
-		strContents+="\t"+m.encloseStr(val.str);
+		strContents+="\t"+m.encloseStr(points);
+
 		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
 		m.rmb_me(m.reco_do, {strRecoDo, uri});
@@ -3783,37 +3800,50 @@ $button_edit.on("click", function (e) {
 	let r=m.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
 		let strHeads="do"+"\t"+"uri";
+		m.localStorage.setItem("uri", uri);
 		let strContents="change"+"\t"+m.encloseStr(uri);
 		let changed=false;
+
 		let title=m.formatTitle($input_title[0].value.trim());
+		m.localStorage.setItem("title", title);
 		if (title!==r.title) {
 			changed=true;
 			strHeads+="\t"+"title";
 			strContents+="\t"+m.encloseStr(title);
 		}
+
 		let cats=m.formatCats($input_cats[0].value.trim());
+		m.localStorage.setItem("cats", cats);
 		if (cats!==r.cats) {
 			changed=true;
 			strHeads+="\t"+"cats";
 			strContents+="\t"+m.encloseStr(cats);
 		}
+
 		let desc=$input_desc[0].value.trim();
+		m.localStorage.setItem("desc", desc);
 		if (desc!==r.desc) {
 			changed=true;
 			strHeads+="\t"+"desc";
 			strContents+="\t"+m.encloseStr(desc);
 		}
+
 		let cmt=$input_cmt[0].value.trim();
+		m.localStorage.setItem("cmt", cmt);
 		if (cmt!==r.cmt) {
 			changed=true;
 			strHeads+="\t"+"cmt";
 			strContents+="\t"+m.encloseStr(cmt);
 		}
-		if (val.str!==r.val.str) {
+
+		let points=val.str;
+		m.localStorage.setItem("points", points);
+		if (points!==r.val.str) {
 			changed=true;
 			strHeads+="\t"+"val";
-			strContents+="\t"+m.encloseStr(val.str);
+			strContents+="\t"+m.encloseStr(points);
 		}
+
 		if (changed) {
 			$error.html("Being changed.");
 			m.rmb_me(m.reco_change_do, {strHeads:strHeads, strContents:strContents, cats:cats, r:r, uri:uri, title:title, desc:desc, cmt:cmt, val:val});
@@ -4499,14 +4529,49 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 $document.ready(function () {
 	m.initialOpen=true;
+
 	let vars=m.searchVars;
-	if (vars.title!==undefined) {
-		$input_title[0].value=vars.title.val;
-	}
+
+	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
 		$input_uri[0].value=vars.uri.val;
 		$input_uri.trigger("input");
 	}
+	else if (!!uri) {
+		$input_uri[0].value=uri;
+	}
+
+	let title=m.localStorage.getItem("title");
+	if (vars.title!==undefined) {
+		$input_title[0].value=vars.title.val;
+	}
+	else if (!!title) {
+		$input_title[0].value=title;
+	}
+
+	let cats=m.localStorage.getItem("cats");
+	if (!!cats) {
+		$input_cats[0].value=cats;
+	}
+
+	let desc=m.localStorage.getItem("desc");
+	if (!!desc) {
+		$input_desc[0].value=desc;
+	}
+
+	let cmt=m.localStorage.getItem("cmt");
+	if (!!cmt) {
+		$input_cmt[0].value=cmt;
+	}
+
+	let points=m.localStorage.getItem("points");
+	if (!!points) {
+		$input_val[0].value=points;
+		$input_val.trigger("keyup");
+	}
+
+	m.localStorage.clear();
+
 	m.args={};
 	if (vars.PRL||vars.PRR) {
 		if (vars.PRL) {
@@ -4576,6 +4641,7 @@ $document.ready(function () {
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
+			e.stopPropagation();
 			e.preventDefault();
 			$window.scrollTop(m.wST);
 		});
