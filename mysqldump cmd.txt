@@ -1,0 +1,1 @@
+mysqldump recoeve0.1 -u root -p > mydump.sql
