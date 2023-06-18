@@ -45,7 +45,7 @@ public class NaverMail{
 	}
 
 	private static final String username="kipid84";
-	private static final String amho="6B9H277NZJBM";
+	private static final String amho="DD7RMUJVB32K";
 	private static final Properties prop = new Properties();
 	static {
 		prop.put("mail.smtp.host", "smtp.naver.com");
