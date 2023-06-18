@@ -45,7 +45,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 <div id="recoeve-container">
 <h1>[--Change password--]</h1>
 
-<form class="form-login" action="./changePwd.do" accept-charset="UTF-8" method="post">
+<form class="form-login" action="/account/changePwd.do" accept-charset="UTF-8" method="post">
 <h2>[--Change password--]</h2>
 	<label for="input-cp-userId">[--ID--]</label>
 	<input id="input-cp-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
@@ -80,9 +80,6 @@ $(".replace-reco-eve").html(function(i, orgHtml) {
 let vars=m.getSearchVars(window.location.search);
 if (vars.lang?.val) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
-}
-else {
-	vars.lang={key:"lang", val:"df"};
 }
 if (vars.id?.val) {
 	$("#input-cp-userId")[0].value=vars.id.val;
@@ -166,7 +163,7 @@ m.changePwd=function(elem) {
 				+'<input type="hidden" name="userId" value="'+vars.id.val+'"/>'
 			);
 			setTimeout(function() {
-				$("#input-cp-userPwd")[0].value=m.encrypt(resp, userPwd, m.iterSessionFull);
+				$("#input-cp-userPwd")[0].value=m.encrypt(resp, userPwd, m.iterFull);
 				userPwd="";
 				$("#input-cp-userPwdCfm")[0].value="confirmed";
 				userPwdCfm="";
