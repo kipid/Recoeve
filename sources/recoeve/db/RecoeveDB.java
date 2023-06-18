@@ -279,12 +279,12 @@ public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 		System.out.println("from:"+from);
 		System.out.println("lessThanInSeconds:"+lessThanInSeconds);
 
-		pstmtCheckDayDiffLessThan1.setTimestamp(1, Timestamp.valueOf(now));
-		pstmtCheckDayDiffLessThan1.setTimestamp(2, Timestamp.valueOf(from));
+		pstmtCheckDayDiffLessThan1.setTimestamp(1, Timestamp.valueOf(from));
+		pstmtCheckDayDiffLessThan1.setTimestamp(2, Timestamp.valueOf(now));
 		ResultSet rs0=pstmtCheckDayDiffLessThan1.executeQuery();
 
-		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
-		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
+		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(from));
+		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(now));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 
