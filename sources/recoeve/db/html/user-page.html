@@ -2240,9 +2240,10 @@ m.mmInPR=function (e) {
 		}
 	}
 	if (changed) {
+		let PRL=m.PRtoFixed(m.PRLw);
+		let PRR=m.PRtoFixed(m.PRRw);
 		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
 		if (m.mdInPRL) {
-			let PRL=m.PRtoFixed(m.PRLw);
 			PRL=Number(PRL)/m.PRmax;
 			if (m.ptsRangeFrom!==PRL) {
 				m.ptsRangeFrom=PRL;
@@ -2251,7 +2252,6 @@ m.mmInPR=function (e) {
 			}
 		}
 		if (m.mdInPRR) {
-			let PRR=m.PRtoFixed(m.PRRw);
 			PRR=Number(PRR)/m.PRmax;
 			if (m.ptsRangeTo!==PRR) {
 				m.ptsRangeTo=PRR;
