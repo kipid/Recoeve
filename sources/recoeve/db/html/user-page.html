@@ -4537,7 +4537,7 @@ $document.ready(function () {
 		$input_uri[0].value=vars.uri.val;
 		$input_uri.trigger("input");
 	}
-	else if (!!uri) {
+	else if (!!uri&&uri!=='null') {
 		$input_uri[0].value=uri;
 	}
 
@@ -4545,27 +4545,27 @@ $document.ready(function () {
 	if (vars.title!==undefined) {
 		$input_title[0].value=vars.title.val;
 	}
-	else if (!!title) {
+	else if (!!title&&title!=='null') {
 		$input_title[0].value=title;
 	}
 
 	let cats=m.localStorage.getItem("cats");
-	if (!!cats) {
+	if (!!cats&&cats!=='null') {
 		$input_cats[0].value=cats;
 	}
 
 	let desc=m.localStorage.getItem("desc");
-	if (!!desc) {
+	if (!!desc&&desc!=='null') {
 		$input_desc[0].value=desc;
 	}
 
 	let cmt=m.localStorage.getItem("cmt");
-	if (!!cmt) {
+	if (!!cmt&&cmt!=='null') {
 		$input_cmt[0].value=cmt;
 	}
 
 	let points=m.localStorage.getItem("points");
-	if (!!points) {
+	if (!!points&&points!=='null') {
 		$input_val[0].value=points;
 		$input_val.trigger("keyup");
 	}
