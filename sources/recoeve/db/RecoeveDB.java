@@ -761,6 +761,9 @@ public String forgotPwd(StrArray inputs, String lang) {
 			if (from!=null&&checkTimeDiff(now, from, 10*60)) {
 				return FileMap.replaceStr("[--pre already sended email to--] "+encryptEmail(email)+"[--post already sended email to--]", lang);
 			}
+			System.out.println("from=null or checkTimeDiff(now, from, 10*60)=false.");
+			System.out.println("from:"+from);
+			System.out.println("now:"+now);
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
