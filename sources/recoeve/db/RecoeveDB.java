@@ -95,6 +95,7 @@ private Connection con;
 
 private PreparedStatement pstmtNow;
 private PreparedStatement pstmtCheckTimeDiff;
+private PreparedStatement pstmtCheckDayDiffLessThan1;
 private PreparedStatement pstmtCheckDateDiff;
 	// java.sql.Timestamp class, and java.sql.Date class
 	// java.util.Date dt=new java.util.Date();
@@ -160,6 +161,7 @@ public RecoeveDB() {
 		con=ds.getConnection();
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
+		pstmtCheckDayDiffLessThan1=con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -276,12 +278,18 @@ public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 		System.out.println("now:"+now);
 		System.out.println("from:"+from);
 		System.out.println("lessThanInSeconds:"+lessThanInSeconds);
+
+		pstmtCheckDayDiffLessThan1.setTimestamp(1, Timestamp.valueOf(now));
+		pstmtCheckDayDiffLessThan1.setTimestamp(2, Timestamp.valueOf(from));
+		ResultSet rs0=pstmtCheckDayDiffLessThan1.executeQuery();
+
 		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
 		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
-		if (rs.next()) {
-			boolean res=rs.getBoolean(1);
+
+		if (rs0.next()&&rs.next()) {
+			boolean res=rs0.getBoolean(1)&&rs.getBoolean(1);
 			System.out.println("result:"+res);
 			return res;
 		}
