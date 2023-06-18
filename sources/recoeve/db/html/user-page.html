@@ -2209,8 +2209,8 @@ $show_recos_without_points.on("click", function (e) {
 		m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 1024);
 });
-m.PRtoFixed=function (w) {
-	return (m.PRmax*(w-15)/(m.PRw-30)).toFixed(1);
+m.PRtoFixed=function (w) { // 0.00 ~ 1.00
+	return (w-15)/(m.PRw-30).toFixed(2);
 };
 m.mmInPR=function (e) {
 	window.getSelection().removeAllRanges();
@@ -2242,13 +2242,11 @@ m.mmInPR=function (e) {
 	if (changed) {
 		let PRL=m.PRtoFixed(m.PRLw);
 		let PRR=m.PRtoFixed(m.PRRw);
-		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
 		if (m.mdInPRL) {
 			PRL=Number(PRL)/m.PRmax;
 			if (m.ptsRangeFrom!==PRL) {
 				m.ptsRangeFrom=PRL;
 				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
-
 			}
 		}
 		if (m.mdInPRR) {
@@ -2258,6 +2256,13 @@ m.mmInPR=function (e) {
 				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			}
 		}
+		if (typeof PRL==="Number") {
+			PRL=(PRL*m.PRmax).toFixed(1);
+		}
+		if (typeof PRR==="Number") {
+			PRR=(PRR*m.PRmax).toFixed(1);
+		}
+		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
 		clearTimeout(m.timeOutRange);
 		m.timeOutRange=setTimeout(function () {
 			m.getUriListAndShowRecosOnCat(m.currentCat);
