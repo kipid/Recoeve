@@ -101,6 +101,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 ::-webkit-scrollbar-corner {background:transparent}
 
 #block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
+#block-touch .exit {z-index:31000}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
@@ -301,13 +302,13 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #shortkeys {}
 
-#point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
-#point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
-#point-range-left, #point-range-right {position:absolute; width:27px; top:0; bottom:0; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
-#point-range-left {left:0}
-#point-range-right {right:0}
-#point-range-result {margin:1em; float:right; border:.15em solid white; padding:.1em .5em; vertical-align:top}
-	.bright #point-range-result {border-color:black}
+.point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
+.point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
+.point-range-left, .point-range-right {position:absolute; width:27px; top:0; bottom:0; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
+.point-range-left {left:0}
+.point-range-right {right:0}
+.point-range-result {margin:1em; float:right; border:.15em solid white; padding:.1em .5em; vertical-align:top}
+	.bright .point-range-result {border-color:black}
 
 .numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 
@@ -415,7 +416,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
 <div id="block-touch" style="display:none">
-	<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" style="z-index:31000" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
 <div id="container">
 <div id="sidebar-dragger">
@@ -602,9 +603,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--New Reco--]</div>
 </div><!-- div#head -->
 <div class="side2" id="subCats">
-	<span id="point-range-result">0~10/10</span>
-	<div id="point-range">
-		<div id="point-range-bar"></div><div id="point-range-right"></div><div id="point-range-left"></div>
+	<span class="point-range-result">0~10/10</span>
+	<div class="point-range">
+		<div class="point-range-bar"></div><div class="point-range-right"></div><div class="point-range-left"></div>
 	</div>
 	<div class="button enabled" id="show-recos-without-points">[--Show recos without points--]</div>
 	<div class="button" id="show-only-unrecoed">[--Show only unrecoed on mine--]</div>
@@ -740,11 +741,11 @@ $multireco_input_cats=$("#multireco-input-cats");
 $multireco_cat_fs_container=$("#multireco-cat-fs-container");
 $multireco_cat_fs_list=$("#multireco-cat-fs-list");
 
-$point_range=$("#point-range");
-$point_range_bar=$("#point-range-bar");
-$point_range_left=$("#point-range-left");
-$point_range_right=$("#point-range-right");
-$point_range_result=$("#point-range-result");
+$point_range=$(".point-range");
+$point_range_bar=$(".point-range-bar");
+$point_range_left=$(".point-range-left");
+$point_range_right=$(".point-range-right");
+$point_range_result=$(".point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
 $show_only_unrecoed=$("#show-only-unrecoed");
