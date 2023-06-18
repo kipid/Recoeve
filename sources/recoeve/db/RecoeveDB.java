@@ -289,9 +289,11 @@ public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 
 		if (rs0.next()&&rs.next()) {
-			boolean res=rs0.getBoolean(1)&&rs.getBoolean(1);
+			boolean res0=rs0.getBoolean(1);
+			boolean res=rs.getBoolean(1);
+			System.out.println("result0:"+res0);
 			System.out.println("result:"+res);
-			return res;
+			return res0&&res;
 		}
 	}
 	catch (SQLException e) {
