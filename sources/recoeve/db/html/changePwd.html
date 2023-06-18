@@ -153,17 +153,17 @@ m.changePwd=function(elem) {
 
 	if (valid) {
 		$elem.before(m.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]"));
-		$.ajax("./getNewSalt", {
+		$.ajax("/account/getNewSalt", {
 			type: "POST"
-			, data: userId+"\t"+vars["token"]
+			, data: userId+"\t"+vars.token.val
 		}).fail(function() {
 			$elem.before(m.encloseErr("[--Request time out.--] [--Please click the change password button again.--]"));
 			$elem[0].disabled=false;
 		}).done(function(resp) { // resp: pwd_salt
 			$elem.before(m.encloseErr("[--Password is being encrypted.--]"));
 			$form.prepend(
-				'<input type="hidden" name="token" value="'+vars["token"]+'"/>'
-				+'<input type="hidden" name="userId" value="'+vars["id"]+'"/>'
+				'<input type="hidden" name="token" value="'+vars.token.val+'"/>'
+				+'<input type="hidden" name="userId" value="'+vars.id.val+'"/>'
 			);
 			setTimeout(function() {
 				$("#input-cp-userPwd")[0].value=m.encrypt(resp, userPwd, m.iterSessionFull);
