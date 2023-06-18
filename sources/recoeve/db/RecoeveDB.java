@@ -275,12 +275,15 @@ public boolean checkTimeDiff(String now, String from, int lessThanInSeconds) {
 	try {
 		System.out.println("now:"+now);
 		System.out.println("from:"+from);
+		System.out.println("lessThanInSeconds:"+lessThanInSeconds);
 		pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(now));
 		pstmtCheckTimeDiff.setTimestamp(2, Timestamp.valueOf(from));
 		pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
 		ResultSet rs=pstmtCheckTimeDiff.executeQuery();
 		if (rs.next()) {
-			return rs.getBoolean(1);
+			boolean res=rs.getBoolean(1);
+			System.out.println("result:"+res);
+			return res;
 		}
 	}
 	catch (SQLException e) {
@@ -764,7 +767,7 @@ public String forgotPwd(StrArray inputs, String lang) {
 			System.out.println("from=null or checkTimeDiff(now, from, 10*60)=false.");
 			System.out.println("from:"+from);
 			System.out.println("now:"+now);
-			System.out.println("checkTimeDiff(now, from, 10*60):"+(from!=null&&checkTimeDiff(now, from, 10*60)));
+			System.out.println("checkTimeDiff(now, from, 10*60):"+checkTimeDiff(now, from, 10*60));
 			user.updateString("tChangePwd", now);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
