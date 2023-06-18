@@ -101,7 +101,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 ::-webkit-scrollbar-corner {background:transparent}
 
 #block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
-#block-touch .exit {z-index:31000}
+#block-touch-exit {z-index:31000}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
@@ -302,6 +302,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #shortkeys {}
 
+#floating-key .point-range {margin:0; padding:0; min-width:100%; width:100%; height:17px; background:rgb(200,100,100)}
+#floating-key .point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
+#floating-key .point-range-left, #floating-key .point-range-right {position:absolute; width:17px; top:0; bottom:0; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
+#floating-key .point-range-left {left:0}
+#floating-key .point-range-right {right:0}
+#floating-key .point-range-result {margin:0; font-size:13px; background:black; color:white; text-align:center; padding:.1em .5em; width:100%; height:1.6em; border:.15em solid white}
+	.bright #floating-key .point-range-result {border-color:black}
+
+
 .point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
 .point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
 .point-range-left, .point-range-right {position:absolute; width:27px; top:0; bottom:0; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
@@ -415,9 +424,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
-<div id="block-touch" style="display:none">
-	<div class="exit" style="z-index:31000" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
-</div>
+<div id="block-touch" style="display:none"></div>
+<div id="block-touch-exit" class="exit" style="display:none" onclick="$('#block-touch, #block-touch-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
 <div id="sidebar-dragger">
 	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
@@ -662,6 +670,7 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 // Variables
 //////////////////
 $block_touch=$("#block-touch");
+$block_touch_exit=$("#block-touch-exit");
 $data_myCatList=$("#data-myCatList");
 $data_CatList=m.myPage?$data_myCatList:$("#data-CatList");
 $choose_lang=$("#choose-lang");
@@ -741,11 +750,6 @@ $multireco_input_cats=$("#multireco-input-cats");
 $multireco_cat_fs_container=$("#multireco-cat-fs-container");
 $multireco_cat_fs_list=$("#multireco-cat-fs-list");
 
-$point_range=$(".point-range");
-$point_range_bar=$(".point-range-bar");
-$point_range_left=$(".point-range-left");
-$point_range_right=$(".point-range-right");
-$point_range_result=$(".point-range-result");
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
 $show_only_unrecoed=$("#show-only-unrecoed");
@@ -1067,13 +1071,6 @@ YT=undefined;
 m.YtPlayer=null;
 m.YtAPILoaded=false;
 
-m.mdInPRL=false; // mouse down in Point Range Left
-m.mdInPRR=false; // mouse down in Point Range Right
-m.PRmax=10;
-m.PRw=$point_range.width();
-m.fullPts=10;
-// from <= pts <= to
-
 m.neighbors={};
 	// m.neighbors[cat_from]={down:true};
 	// m.neighbors[cat_from][user_i]={}
@@ -1130,6 +1127,10 @@ m.getNeighbors=function () {
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
+	<span class="point-range-result">0~10/10</span>
+	<div class="point-range">
+		<div class="point-range-bar"></div><div class="point-range-right"></div><div class="point-range-left"></div>
+	</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
 	</div>
@@ -1175,6 +1176,19 @@ $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
 $button_goto_cats=$(".button-goto-cats");
+
+$point_range=$(".point-range");
+$point_range_bar=$(".point-range-bar");
+$point_range_left=$(".point-range-left");
+$point_range_right=$(".point-range-right");
+$point_range_result=$(".point-range-result");
+
+m.mdInPRL=false; // mouse down in Point Range Left
+m.mdInPRR=false; // mouse down in Point Range Right
+m.PRmax=10;
+// m.PRw=$point_range.eq(0).width(); // TODO: different applying m.PRw to each .point-range.
+m.fullPts=10;
+// from <= pts <= to
 
 $user_noti.html(m.userId+"'s recos");
 if (!!m.myIndex) {
@@ -2226,37 +2240,58 @@ m.mmInPR=function (e) {
 		}
 	}
 	if (changed) {
-		let PRL=m.PRtoFixed(m.PRLw);
-		let PRR=m.PRtoFixed(m.PRRw);
 		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
-		PRL=Number(PRL)/m.PRmax;
-		PRR=Number(PRR)/m.PRmax;
-		if (m.ptsRangeFrom!==PRL||m.ptsRangeTo!==PRR) {
-			m.ptsRangeFrom=PRL;
-			m.ptsRangeTo=PRR;
-			m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
-			m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
-			clearTimeout(m.timeOutRange);
-			m.timeOutRange=setTimeout(function () {
-				m.getUriListAndShowRecosOnCat(m.currentCat);
-				let fs=m.fsToRs;
-				fs[0].ptnSH=m.splitHangul("$!@#");
-				fs.$fs.trigger("input.fs");
-			}, 1024);
+		if (m.mdInPRL) {
+			let PRL=m.PRtoFixed(m.PRLw);
+			PRL=Number(PRL)/m.PRmax;
+			if (m.ptsRangeFrom!==PRL) {
+				m.ptsRangeFrom=PRL;
+				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
+
+			}
 		}
+		if (m.mdInPRR) {
+			let PRR=m.PRtoFixed(m.PRRw);
+			PRR=Number(PRR)/m.PRmax;
+			if (m.ptsRangeTo!==PRR) {
+				m.ptsRangeTo=PRR;
+				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
+			}
+		}
+		clearTimeout(m.timeOutRange);
+		m.timeOutRange=setTimeout(function () {
+			m.getUriListAndShowRecosOnCat(m.currentCat);
+			let fs=m.fsToRs;
+			fs[0].ptnSH=m.splitHangul("$!@#");
+			fs.$fs.trigger("input.fs");
+		}, 1024);
 	}
 };
-$point_range_left.on("mousedown touchstart", function (e) {
+$point_range_left.on("mousedown touchstart", function (e0) {
 	m.mdInPRL=true;
-	$html.on("mousemove.mdInPR touchmove.mdInPR", m.mmInPR);
+	$point_range=$(e0.target).parents(".point-range");
+	m.PRw=$point_range.width();
+	$html.on("mousemove.mdInPR touchmove.mdInPR", function (e) {
+		$point_range_left=$point_range.find(".point-range-left");
+		$point_range_bar=$point_range.find(".point-range-bar");
+		$point_range_right=$point_range.find(".point-range-right");
+		m.mmInPR(e);
+	});
 	$html.on("mouseup.mdInPR touchend.mdInPR", function (e) {
 		m.mdInPRL=false;
 		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
 	});
 });
-$point_range_right.on("mousedown touchstart", function (e) {
+$point_range_right.on("mousedown touchstart", function (e0) {
 	m.mdInPRR=true;
-	$html.on("mousemove.mdInPR touchmove.mdInPR", m.mmInPR);
+	$point_range=$(e0.target).parents(".point-range");
+	m.PRw=$point_range.width();
+	$html.on("mousemove.mdInPR touchmove.mdInPR", function (e) {
+		$point_range_left=$point_range.find(".point-range-left");
+		$point_range_bar=$point_range.find(".point-range-bar");
+		$point_range_right=$point_range.find(".point-range-right");
+		m.mmInPR(e);
+	});
 	$html.on("mouseup.mdInPR touchend.mdInPR", function (e) {
 		m.mdInPRR=false;
 		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
@@ -4368,6 +4403,7 @@ m.processShortKey=function (e) {
 	switch (e.keyCode) {
 		case 85: // U=85 Block touch
 			$block_touch.show();
+			$block_touch_exit.show();
 			break;
 		case 67: // C=67 Go to Cat or Cats?
 			e.preventDefault();
@@ -4604,12 +4640,22 @@ $document.ready(function () {
 		m.ptsRangeFrom=0;
 		m.ptsRangeTo=1;
 	}
+	m.PRw=$(".point-range").eq(0).width();
 	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:m.PRLw-15});
-	$point_range_bar.css({left:m.PRLw});
+	$point_range_left.eq(0).css({left:m.PRLw-15});
+	$point_range_bar.eq(0).css({left:m.PRLw});
 	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({left:m.PRRw-5});
-	$point_range_bar.css({right:m.PRw-m.PRRw});
+	$point_range_right.eq(0).css({left:m.PRRw-5});
+	$point_range_bar.eq(0).css({right:m.PRw-m.PRRw});
+
+	m.PRw=$(".point-range").eq(1).width();
+	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
+	$point_range_left.eq(1).css({left:m.PRLw-15});
+	$point_range_bar.eq(1).css({left:m.PRLw});
+	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
+	$point_range_right.eq(1).css({left:m.PRRw-5});
+	$point_range_bar.eq(1).css({right:m.PRw-m.PRRw});
+
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
 	if (window.location.pathname==="/reco") {
