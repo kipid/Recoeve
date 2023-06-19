@@ -100,8 +100,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 ::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
 ::-webkit-scrollbar-corner {background:transparent}
 
-#block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
-#block-touch-exit {z-index:31000}
+.block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
+.block-touch-exit {z-index:31000}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
@@ -424,8 +424,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
-<div id="block-touch" style="display:none"></div>
-<div id="block-touch-exit" class="exit" style="display:none" onclick="$('#block-touch, #block-touch-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+<div class="block-touch" id="block-touch" style="display:none"></div>
+<div class="block-touch-exit exit" id="block-touch-exit" style="display:none; z-index:31000; position:fixed" onclick="$('#block-touch, #block-touch-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
 <div id="sidebar-dragger">
 	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
@@ -1177,16 +1177,23 @@ $button_multireco_mode=$(".button-multireco-mode");
 $button_new_reco=$(".button-new-reco");
 $button_goto_cats=$(".button-goto-cats");
 
-$point_range=$(".point-range");
-$point_range_bar=$(".point-range-bar");
-$point_range_left=$(".point-range-left");
-$point_range_right=$(".point-range-right");
+$point_range=$(".point-range").eq(0);
+$point_range_bar=$(".point-range-bar").eq(0);
+$point_range_left=$(".point-range-left").eq(0);
+$point_range_right=$(".point-range-right").eq(0);
+$point_range1=$(".point-range").eq(1);
+$point_range_bar1=$(".point-range-bar").eq(1);
+$point_range_left1=$(".point-range-left").eq(1);
+$point_range_right1=$(".point-range-right").eq(1);
 $point_range_result=$(".point-range-result");
 
 m.mdInPRL=false; // mouse down in Point Range Left
 m.mdInPRR=false; // mouse down in Point Range Right
+m.mdInPRL1=false; // mouse down in Point Range1 Left
+m.mdInPRR1=false; // mouse down in Point Range1 Right
 m.PRmax=10;
-// m.PRw=$point_range.eq(0).width(); // TODO: different applying m.PRw to each .point-range.
+m.PRw=$point_range.width();
+m.PRw1=$point_range1.width();
 m.fullPts=10;
 // from <= pts <= to
 
@@ -2209,8 +2216,11 @@ $show_recos_without_points.on("click", function (e) {
 		m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 1024);
 });
-m.PRtoFixed=function (w) { // 0.00 ~ 1.00
-	return (w-15)/(m.PRw-30).toFixed(2);
+m.PRtoFixed=function (w) { // 0.0 ~ 10.0
+	return (m.PRmax*(w-15)/(m.PRw-30)).toFixed(1);
+};
+m.PRtoFixed1=function (w1) { // 0.0 ~ 10.0
+	return (m.PRmax*(w1-15)/(m.PRw1-30)).toFixed(1);
 };
 m.mmInPR=function (e) {
 	window.getSelection().removeAllRanges();
@@ -2220,6 +2230,9 @@ m.mmInPR=function (e) {
 	let w=x-$point_range.offset().left+$window.scrollLeft();
 	w=(w>15)?w:15;
 	w=(w<m.PRw-15)?w:m.PRw-15;
+	let w1=(w-30)/m.PRw*m.PRw1+15;
+	w1=(w1>15)?w1:15;
+	w1=(w1<m.PRw1-15)?w1:m.PRw1-15;
 	let changed=false;
 	if (m.mdInPRL) {
 		if (w>m.PRRw) { w=m.PRRw; }
@@ -2229,13 +2242,27 @@ m.mmInPR=function (e) {
 			m.PRLw=w;
 			changed=true;
 		}
+		if (w1>m.PRRw1) { w1=m.PRRw1; }
+		if (m.PRLw1!==w1) {
+			$point_range_left1.css({left:w1-15});
+			$point_range_bar1.css({left:w1});
+			m.PRLw1=w1;
+			changed=true;
+		}
 	}
-	else {
+	if (m.mdInPRR) {
 		if (w<m.PRLw) { w=m.PRLw; }
 		if (m.PRRw!==w) {
-			$point_range_right.css({left:w-5});
+			$point_range_right.css({left:w-12});
 			$point_range_bar.css({right:m.PRw-w});
 			m.PRRw=w;
+			changed=true;
+		}
+		if (w1<m.PRLw1) { w1=m.PRLw1; }
+		if (m.PRRw1!==w1) {
+			$point_range_right1.css({left:w1-12});
+			$point_range_bar1.css({right:m.PRw1-w1});
+			m.PRRw1=w1;
 			changed=true;
 		}
 	}
@@ -2245,24 +2272,18 @@ m.mmInPR=function (e) {
 		if (m.mdInPRL) {
 			PRL=Number(PRL)/m.PRmax;
 			if (m.ptsRangeFrom!==PRL) {
-				m.ptsRangeFrom=PRL;
+				m.ptsRangeFrom=Number(PRL.toFixed(2));
 				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 			}
 		}
 		if (m.mdInPRR) {
 			PRR=Number(PRR)/m.PRmax;
 			if (m.ptsRangeTo!==PRR) {
-				m.ptsRangeTo=PRR;
+				m.ptsRangeTo=Number(PRR.toFixed(2));
 				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 			}
 		}
-		if (typeof PRL==="Number") {
-			PRL=(PRL*m.PRmax).toFixed(1);
-		}
-		if (typeof PRR==="Number") {
-			PRR=(PRR*m.PRmax).toFixed(1);
-		}
-		$point_range_result.html(PRL+"~"+PRR+" / "+m.PRmax);
+		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 		clearTimeout(m.timeOutRange);
 		m.timeOutRange=setTimeout(function () {
 			m.getUriListAndShowRecosOnCat(m.currentCat);
@@ -2272,34 +2293,117 @@ m.mmInPR=function (e) {
 		}, 1024);
 	}
 };
-$point_range_left.on("mousedown touchstart", function (e0) {
+m.mmInPR1=function (e) {
+	window.getSelection().removeAllRanges();
+	e.preventDefault();
+	e.stopPropagation();
+	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	let w1=x-$point_range1.offset().left+$window.scrollLeft();
+	w1=(w1>15)?w1:15;
+	w1=(w1<m.PRw1-15)?w1:m.PRw1-15;
+	let w=(w1-30)/m.PRw1*m.PRw+15;
+	w=(w>15)?w:15;
+	w=(w<m.PRw-15)?w:m.PRw-15;
+	let changed=false;
+	if (m.mdInPRL1) {
+		if (w>m.PRRw) { w=m.PRRw; }
+		if (m.PRLw!==w) {
+			$point_range_left.css({left:w-15});
+			$point_range_bar.css({left:w});
+			m.PRLw=w;
+			changed=true;
+		}
+		if (w1>m.PRRw1) { w1=m.PRRw1; }
+		if (m.PRLw1!==w1) {
+			$point_range_left1.css({left:w1-15});
+			$point_range_bar1.css({left:w1});
+			m.PRLw1=w1;
+			changed=true;
+		}
+	}
+	if (m.dmInPRR1) {
+		if (w<m.PRLw) { w=m.PRLw; }
+		if (m.PRRw!==w) {
+			$point_range_right.css({left:w-12});
+			$point_range_bar.css({right:m.PRw-w});
+			m.PRRw=w;
+			changed=true;
+		}
+		if (w1<m.PRLw1) { w1=m.PRLw1; }
+		if (m.PRRw1!==w1) {
+			$point_range_right1.css({left:w1-12});
+			$point_range_bar1.css({right:m.PRw1-w1});
+			m.PRRw1=w1;
+			changed=true;
+		}
+	}
+	if (changed) {
+		let PRL=m.PRtoFixed1(m.PRLw1);
+		let PRR=m.PRtoFixed1(m.PRRw1);
+		if (m.mdInPRL1) {
+			PRL=Number(PRL)/m.PRmax;
+			if (m.ptsRangeFrom!==PRL) {
+				m.ptsRangeFrom=Number(PRL.toFixed(2));
+				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
+			}
+		}
+		if (m.mdInPRR1) {
+			PRR=Number(PRR)/m.PRmax;
+			if (m.ptsRangeTo!==PRR) {
+				m.ptsRangeTo=Number(PRR.toFixed(2));
+				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
+			}
+		}
+		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
+		clearTimeout(m.timeOutRange);
+		m.timeOutRange=setTimeout(function () {
+			m.getUriListAndShowRecosOnCat(m.currentCat);
+			let fs=m.fsToRs;
+			fs[0].ptnSH=m.splitHangul("$!@#");
+			fs.$fs.trigger("input.fs");
+		}, 1024);
+	}
+};
+
+$point_range_left.on("mousedown.mdPRL touchstart.mdPRL", function (e0) {
 	m.mdInPRL=true;
-	$point_range=$(e0.target).parents(".point-range");
-	m.PRw=$point_range.width();
-	$html.on("mousemove.mdInPR touchmove.mdInPR", function (e) {
-		$point_range_left=$point_range.find(".point-range-left");
-		$point_range_bar=$point_range.find(".point-range-bar");
-		$point_range_right=$point_range.find(".point-range-right");
+	$html.on("mousemove.mdInPRL touchmove.mdInPRL", function (e) {
 		m.mmInPR(e);
 	});
-	$html.on("mouseup.mdInPR touchend.mdInPR", function (e) {
+	$html.on("mouseup.mdInPRL touchend.mdInPRL", function (e) {
 		m.mdInPRL=false;
-		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
+		$html.off("mouseup.mdInPRL touchend.mdInPRL mousemove.mdInPRL touchmove.mdInPRL");
 	});
 });
-$point_range_right.on("mousedown touchstart", function (e0) {
+$point_range_right.on("mousedown.mdPRR touchstart.mdPRR", function (e0) {
 	m.mdInPRR=true;
-	$point_range=$(e0.target).parents(".point-range");
-	m.PRw=$point_range.width();
-	$html.on("mousemove.mdInPR touchmove.mdInPR", function (e) {
-		$point_range_left=$point_range.find(".point-range-left");
-		$point_range_bar=$point_range.find(".point-range-bar");
-		$point_range_right=$point_range.find(".point-range-right");
+	$html.on("mousemove.mdInPRR touchmove.mdInPRR", function (e) {
 		m.mmInPR(e);
 	});
-	$html.on("mouseup.mdInPR touchend.mdInPR", function (e) {
+	$html.on("mouseup.mdInPRR touchend.mdInPRR", function (e) {
 		m.mdInPRR=false;
-		$html.off("mouseup.mdInPR touchend.mdInPR mousemove.mdInPR touchmove.mdInPR");
+		$html.off("mouseup.mdInPRR touchend.mdInPRR mousemove.mdInPRR touchmove.mdInPRR");
+	});
+});
+
+$point_range_left1.on("mousedown.mdPRL1 touchstart.mdPRL1", function (e0) {
+	m.mdInPRL1=true;
+	$html.on("mousemove.mdInPRL1 touchmove.mdInPRL1", function (e) {
+		m.mmInPR1(e);
+	});
+	$html.on("mouseup.mdInPRL1 touchend.mdInPRL1", function (e) {
+		m.mdInPRL1=false;
+		$html.off("mouseup.mdInPRL1 touchend.mdInPRL1 mousemove.mdInPRL1 touchmove.mdInPRL1");
+	});
+});
+$point_range_right1.on("mousedown.mdPRR1 touchstart.mdPRR1", function (e0) {
+	m.mdInPRR1=true;
+	$html.on("mousemove.mdInPRR1 touchmove.mdInPRR1", function (e) {
+		m.mmInPR1(e);
+	});
+	$html.on("mouseup.mdInPRR1 touchend.mdInPRR1", function (e) {
+		m.mdInPRR1=false;
+		$html.off("mouseup.mdInPRR1 touchend.mdInPRR1 mousemove.mdInPRR1 touchmove.mdInPRR1");
 	});
 });
 
@@ -4637,29 +4741,35 @@ $document.ready(function () {
 			m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
 		}
 	}
-	else if (m.docCookies.hasItem("PRL")&&m.docCookies.hasItem("PRR")) {
-		m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
-		m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
-	}
 	else {
-		m.ptsRangeFrom=0;
-		m.ptsRangeTo=1;
+		if (m.docCookies.hasItem("PRL")) {
+			m.ptsRangeFrom=Number(m.docCookies.getItem("PRL"));
+		}
+		else {
+			m.ptsRangeFrom=0;
+		}
+		if (m.docCookies.hasItem("PRR")) {
+			m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
+		}
+		else {
+			m.ptsRangeTo=1;
+		}
 	}
-	m.PRw=$(".point-range").eq(0).width();
+	m.PRw=$point_range.width();
 	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.eq(0).css({left:m.PRLw-15});
-	$point_range_bar.eq(0).css({left:m.PRLw});
+	$point_range_left.css({left:m.PRLw-15});
+	$point_range_bar.css({left:m.PRLw});
 	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.eq(0).css({left:m.PRRw-5});
-	$point_range_bar.eq(0).css({right:m.PRw-m.PRRw});
+	$point_range_right.css({left:m.PRRw-5});
+	$point_range_bar.css({right:m.PRw-m.PRRw});
 
-	m.PRw=$(".point-range").eq(1).width();
-	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.eq(1).css({left:m.PRLw-15});
-	$point_range_bar.eq(1).css({left:m.PRLw});
-	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.eq(1).css({left:m.PRRw-5});
-	$point_range_bar.eq(1).css({right:m.PRw-m.PRRw});
+	m.PRw1=$point_range1.width();
+	m.PRLw1=m.ptsRangeFrom*(m.PRw1-30)+15;
+	$point_range_left1.css({left:m.PRLw1-15});
+	$point_range_bar1.css({left:m.PRLw1});
+	m.PRRw1=m.ptsRangeTo*(m.PRw1-30)+15;
+	$point_range_right1.css({left:m.PRRw1-5});
+	$point_range_bar1.css({right:m.PRw1-m.PRRw1});
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
@@ -4688,7 +4798,7 @@ $document.ready(function () {
 		$input_uri[0].disabled=false;
 		$new_reco.show();
 		let cat=m.currentCat;
-		if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
+		if (cat&&($input_cats[0].value===""||$input_uri[0].value==="")) {
 			$input_cats[0].value=cat;
 		}
 		m.wST=$window.scrollTop();
@@ -4702,7 +4812,16 @@ $document.ready(function () {
 			$input_uri.trigger("keyup");
 		}
 		else {
-			$new_reco.after(``);
+			m.gotoLogIn=function (elem) {
+				let path=`/account/log-in?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+				if (e?.which===2) { // wheel click.
+					window.open(path, "_blank");
+					return true;
+				}
+				window.location.href=path;
+				return false;
+			};
+			$new_reco.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in, #should-do-log-in-exit').hide();"></div>`);
 		}
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
