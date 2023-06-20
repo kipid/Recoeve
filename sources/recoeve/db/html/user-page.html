@@ -311,7 +311,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright #floating-key .point-range-result {border-color:black}
 
 
-.point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:300px; max-width:90%; height:30px; background:rgb(200,100,100)}
+.point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
 .point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
 .point-range-left, .point-range-right {position:absolute; width:33px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:.15em solid rgb(50,50,50)}
 .point-range-left {left:0}
@@ -2228,25 +2228,25 @@ m.mmInPR=function (e) {
 	e.stopPropagation();
 	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w=x-$point_range.offset().left+$window.scrollLeft();
-	w=(w>15)?w:15;
-	w=(w<m.PRw-15)?w:m.PRw-15;
-	let w1=(w-30)/m.PRw*m.PRw1;
-	w1=(w1>0)?w1:0;
-	w1=(w1<m.PRw1)?w1:m.PRw1;
+	w=(w<15)?0:w-15;
+	w=(w>m.PRw-15)?m.PRw-15:w-15;
+	let w1=w/(m.PRw-30.0)*(m.PRw1-30.0);
+	w1=(w1<0)?0:w1;
+	w1=(w1>m.PRw1-30)?m.PRw1-30:w1;
 	let changed=false;
 	if (m.mdInPRL) {
 		if (w>m.PRRw) { w=m.PRRw; }
 		if (m.PRLw!==w) {
 			m.PRLw=w;
-			$point_range_left.css({left:m.PRLw-30});
+			$point_range_left.css({left:m.PRLw-40});
 			$point_range_bar.css({left:m.PRLw-15});
 			changed=true;
 		}
 		if (w1>m.PRRw1) { w1=m.PRRw1; }
 		if (m.PRLw1!==w1) {
 			m.PRLw1=w1;
-			$point_range_left1.css({left:m.PRLw1-30});
-			$point_range_bar1.css({left:m.PRLw1-30});
+			$point_range_left1.css({left:m.PRLw1-15});
+			$point_range_bar1.css({left:m.PRLw1});
 			changed=true;
 		}
 	}
@@ -2254,20 +2254,20 @@ m.mmInPR=function (e) {
 		if (w<m.PRLw) { w=m.PRLw; }
 		if (m.PRRw!==w) {
 			m.PRRw=w;
-			$point_range_right.css({right:m.PRw-30-m.PRRw});
-			$point_range_bar.css({right:m.PRw-m.PRRw});
+			$point_range_right.css({right:m.PRw-m.PRRw-40});
+			$point_range_bar.css({right:m.PRw-m.PRRw-15});
 			changed=true;
 		}
 		if (w1<m.PRLw1) { w1=m.PRLw1; }
 		if (m.PRRw1!==w1) {
 			m.PRRw1=w1;
-			$point_range_right1.css({right:m.PRw1-30-m.PRRw1});
-			$point_range_bar1.css({right:m.PRw1-15-m.PRRw1});
+			$point_range_right1.css({right:m.PRw1-m.PRRw1-45});
+			$point_range_bar1.css({right:m.PRw1-m.PRRw1-30});
 			changed=true;
 		}
 	}
 	if (changed) {
-		let PRL=m.PRtoFixed(m.PRLw);
+		let PRL=m.PRtoFixed(m.PRLw-15);
 		let PRR=m.PRtoFixed(m.PRRw);
 		if (m.mdInPRL) {
 			PRL=Number(PRL)/m.PRmax;
@@ -2298,25 +2298,25 @@ m.mmInPR1=function (e) {
 	e.preventDefault();
 	e.stopPropagation();
 	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-	let w1=x-$point_range1.offset().left+(m.mdInPRL1?15:15)+$window.scrollLeft();
-	w1=(w1>15)?w1:15;
-	w1=(w1<m.PRw1-15)?w1:m.PRw1-15;
-	let w=(w1-30)/m.PRw1*m.PRw+15;
-	w=(w>15)?w:15;
-	w=(w<m.PRw-15)?w:m.PRw-15;
+	let w1=x-$point_range1.offset().left+$window.scrollLeft();
+	w1=(w1<0)?0:w1;
+	w1=(w1>m.PRw1-30)?m.PRw1-30:w1;
+	let w=w1/(m.PRw1-30.0)*(m.PRw-30.0);
+	w=(w<0)?0:w;
+	w=(w>m.PRw-30)?m.PRw-30:w;
 	let changed=false;
 	if (m.mdInPRL1) {
 		if (w1>m.PRRw1) { w1=m.PRRw1; }
 		if (m.PRLw1!==w1) {
 			m.PRLw1=w1;
-			$point_range_left1.css({left:m.PRLw1-30});
-			$point_range_bar1.css({left:m.PRLw1-15});
+			$point_range_left1.css({left:m.PRLw1-15});
+			$point_range_bar1.css({left:m.PRLw1});
 			changed=true;
 		}
 		if (w>m.PRRw) { w=m.PRRw; }
 		if (m.PRLw!==w) {
 			m.PRLw=w;
-			$point_range_left.css({left:m.PRLw-30});
+			$point_range_left.css({left:m.PRLw-40});
 			$point_range_bar.css({left:m.PRLw-15});
 			changed=true;
 		}
@@ -2325,20 +2325,20 @@ m.mmInPR1=function (e) {
 		if (w1<m.PRLw1) { w1=m.PRLw1; }
 		if (m.PRRw1!==w1) {
 			m.PRRw1=w1;
-			$point_range_right1.css({right:m.PRw1-30-m.PRRw1});
-			$point_range_bar1.css({right:m.PRw1-15-m.PRRw1});
+			$point_range_right1.css({right:m.PRw1-m.PRRw1-45});
+			$point_range_bar1.css({right:m.PRw1-m.PRRw1-30});
 			changed=true;
 		}
 		if (w<m.PRLw) { w=m.PRLw; }
 		if (m.PRRw!==w) {
 			m.PRRw=w;
-			$point_range_right.css({right:m.PRw-30-m.PRRw});
-			$point_range_bar.css({right:m.PRw-m.PRRw});
+			$point_range_right.css({right:m.PRw-m.PRRw-40});
+			$point_range_bar.css({right:m.PRw-m.PRRw-15});
 			changed=true;
 		}
 	}
 	if (changed) {
-		let PRL=m.PRtoFixed1(m.PRLw1);
+		let PRL=m.PRtoFixed1(m.PRLw1-15);
 		let PRR=m.PRtoFixed1(m.PRRw1);
 		if (m.mdInPRL1) {
 			PRL=Number(PRL)/m.PRmax;
@@ -4755,21 +4755,21 @@ $document.ready(function () {
 			m.ptsRangeTo=1;
 		}
 	}
-	m.PRw=$point_range.width();
+	m.PRw=$point_range.width()+30;
 	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:m.PRLw-15});
-	$point_range_bar.css({left:m.PRLw});
+	$point_range_left.css({left:m.PRLw-30});
+	$point_range_bar.css({left:m.PRLw-30});
 	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({right:m.PRw-m.PRRw-30});
-	$point_range_bar.css({right:m.PRw-m.PRRw});
+	$point_range_right.css({right:m.PRw-30-m.PRRw});
+	$point_range_bar.css({right:m.PRw-15-m.PRRw});
 
 	m.PRw1=$point_range1.width()+30;
 	m.PRLw1=m.ptsRangeFrom*(m.PRw1-30)+15;
-	$point_range_left1.css({left:m.PRLw1-15});
-	$point_range_bar1.css({left:m.PRLw1});
+	$point_range_left1.css({left:m.PRLw1-30});
+	$point_range_bar1.css({left:m.PRLw1-15});
 	m.PRRw1=m.ptsRangeTo*(m.PRw1-30)+15;
-	$point_range_right1.css({right:m.PRw1-m.PRRw1-30});
-	$point_range_bar1.css({right:m.PRw1-m.PRRw1});
+	$point_range_right1.css({right:m.PRw1-30-m.PRRw1});
+	$point_range_bar1.css({right:m.PRw1-15-m.PRRw1});
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
