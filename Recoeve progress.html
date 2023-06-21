@@ -63,10 +63,6 @@
 
 ### 정리하기 전
 
-
-
-local storage 이용 좀 하자. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">MDN :: Web - API - Window - localStorage</a>
-
 최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
 
 추천해주기. Neighbor 통한 추천.
@@ -77,15 +73,7 @@ UriList 순서 바꿀때 Set of URIs 가 같은지 한번은 체크 해야함.<b
 
 Remember 할 때, cookie 이용하는데 ip 주소도 저장해놓고, ip 가 바뀌면 보안상 이유로 rmbd 가 안되었다고 알려주기? 아니다. ip 바뀌어도 로그인은 유지시켜 주는데... 이메일로 알려주자 ip 가 바뀌었다고 rmbd 할때 (중간에 누군가 해킹을 한 것 일수도 있습니다. ip 가 1.3.4.2 에서 112.23.2.1 로 바뀌었습니다. 이동 중이시라면 가능성이 있는 일이고)
 
-그리고 현재 페이지 바로 공유할 수 있게 SNS share 버튼 fixed 로 어딘가 (floating keys?) 에 붙여놓고...
-
-아래에서 부터 drag 해서 올라올 때, scrollTop 적절하게 해주기. (.to-be-executed 의 inView 가 screen 1/3 위쪽에서 trigger 된 거라면, scrollHeight 전과 load 후 비교해서 scrollTop(원래 scrollTop + load 후 - 전) 해주기.)
-
-기존 reco edit/del 할때, URI 자동으로 바꿔주는 것 때문에 edit/del 이 사라지고 reco 버튼으로 뜸. 고치자.
-
 로그인 암호 바꾼후 "password is changed." 출력 후 log-in 페이지로 redirect.
-
-Reco 작성하다가 로그인 문제 생기거나 rmb 가 안되었을때, 작성 중이었던 URI, title, description, comment 등 쿠키에 저장했다가 다시 New reco 했을 때 채워주기. (Grip review 작성시 불편했던 점에서 아이디어 얻었음.)
 
 Introducing recoeve.net 한글로도 작성하기.
 
@@ -103,12 +91,7 @@ ads.txt 는 뭐 쏴줘야 하는거지? 어디에 쓰이는거야? 요청이 들
 
 이웃들 보다 당신의 점수가 박하네요. 이웃들 보다 당신의 점수가 후하네요. 같은 것도 알려주자. Reco 추천만 주는게 아니라. Slow/Sincere/Sexy communication 이 되도록.
 
-It is recommended that the compiler be upgraded.
-자바 compiler upgrade 필요함. <code>C:\Recoeve\classes\recoeve\http\NaverMail.class: major version 62 is newer than 61, the highest major version supported by this compiler.</code>
-
 IP statics 이용해서 DDOS 공격 막아놓기.
-
-카톡으로 공유하기 할때 카카오 개발자 설정에 등록 안된 uri 는 링크가 안걸림. 두가지 옵션으로 해결하자. recoeve.net 이랑 YouTube 는 개발자 설정에 등록해서 그대로 공유해주고 다른 uri 들은 ?cat=...#uriEncoded 으로 연결해서 해당 uri 로 go 되도록. 유튜브도 가사 같이 봐야 하니까 recoeve.net 쪽으로 유도할까나?
 
 /recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id 등 나열. 말 그대로 statistics of reco on uri=...
 
@@ -451,6 +434,21 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+
+카톡으로 공유하기 할때 카카오 개발자 설정에 등록 안된 uri 는 링크가 안걸림. 두가지 옵션으로 해결하자. recoeve.net 이랑 YouTube 는 개발자 설정에 등록해서 그대로 공유해주고 다른 uri 들은 ?cat=...#uriEncoded 으로 연결해서 해당 uri 로 go 되도록. 유튜브도 가사 같이 봐야 하니까 recoeve.net 쪽으로 유도할까나?
+
+It is recommended that the compiler be upgraded.
+자바 compiler upgrade 필요함. <code>C:\Recoeve\classes\recoeve\http\NaverMail.class: major version 62 is newer than 61, the highest major version supported by this compiler.</code>
+
+Reco 작성하다가 로그인 문제 생기거나 rmb 가 안되었을때, 작성 중이었던 URI, title, description, comment 등 쿠키에 저장했다가 다시 New reco 했을 때 채워주기. (Grip review 작성시 불편했던 점에서 아이디어 얻었음.) (제대로 짠건지 테스트는 해봐야함.)
+
+아래에서 부터 drag 해서 올라올 때, scrollTop 적절하게 해주기. (.to-be-executed 의 inView 가 screen 1/3 위쪽에서 trigger 된 거라면, scrollHeight 전과 load 후 비교해서 scrollTop(원래 scrollTop + load 후 - 전) 해주기.) 이것도 보류...
+
+기존 reco edit/del 할때, URI 자동으로 바꿔주는 것 때문에 edit/del 이 사라지고 reco 버튼으로 뜸. 고치자. (보류 급한거 아니라..)
+
+그리고 현재 페이지 바로 공유할 수 있게 SNS share 버튼 fixed 로 어딘가 (floating keys?) 에 붙여놓고...
+
+local storage 이용 좀 하자. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">MDN :: Web - API - Window - localStorage</a>
 
 온라인에서 다운받은 파일의 경우 원도우가 자동적으로 읽고 쓰는거에 제약을 좀 걸어놓는듯? 보안 문제 때문에? SEE 로 정리합시다. jquery.js sendFile 이 왜 계속 안되나 엄청 곤란했었음. 화도 나고 ㅡ.,ㅡ
 
