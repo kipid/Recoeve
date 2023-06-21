@@ -2591,6 +2591,7 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 	}
 };
 m.showRecosOnCat=function (elem, from) {
+	let $elem=$(elem);
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -2664,7 +2665,16 @@ m.showRecosOnCat=function (elem, from) {
 					strHTML+=m.recoHTML(r, false, fsFLi.inRange);
 				}
 			}
-			$(elem).replaceWith(strHTML);
+			let beforeLoadSH=document.documentElement.scrollHeight;
+			let beforeST=$window.scrollTop();
+			if ($elem.offset().top-beforeST<=window.innerHeight/2.0) {
+				$elem.replaceWith(strHTML);
+				$window.scrollTop($window.scrollTop()+$elem.outerHeight()+document.documentElement.scrollHeight-beforeLoadSH);
+			}
+			else {
+				$elem.replaceWith(strHTML);
+			}
+			let afterLoadSH=document.documentElement.scrollHeight;
 			if (m.recoMode==="multireco") {
 				let $stars=$contents.find(".my-point>.stars-container");
 				$stars.on("click", function (e) {
@@ -2969,7 +2979,6 @@ m.getAndShowRecosOnCat=async function (cat) {
 	}, m.wait*2);
 };
 m.getUriList=function (catStrArray) {
-	console.log(catStrArray);
 	$.ajax({
 		type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
 		, dataType:"text"
