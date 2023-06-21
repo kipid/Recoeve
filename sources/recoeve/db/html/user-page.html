@@ -302,22 +302,26 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #shortkeys {}
 
-#floating-key .point-range {margin:0 15px; padding:0; display:inline-block; width:100%; height:17px; background:rgb(200,100,100)}
-#floating-key .point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
-#floating-key .point-range-left, #floating-key .point-range-right {position:absolute; width:17px; top:0; bottom:0; background:rgba(150,150,150,0.9); border:.15em solid rgb(50,50,50)}
+.point-range {margin:1em 2.5em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
+.point-range-bar {position:absolute; left:0; right:0; height:100%; background:rgb(100,200,100)}
+.point-range-left, .point-range-right {position:absolute; width:33px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:.15em solid rgb(50,50,50)}
+.point-range-left {left:-23px}
+.point-range-right {right:-23px}
+.point-range-result {margin:1em; display:inline-block; text-align:center; float:right; border:.15em solid white; padding:.1em .5em; vertical-align:top}
+	.bright .point-range-result {border-color:black}
+	.pink .point-range-result {border-color:pink}
+
+#floating-key .point-range-con {position:sticky; left:0; right:0; width:9em; height:23px; background:wheat; border-bottom:1px solid wheat}
+	.bright #floating-key .point-range-con {border-color:black}
+	.pink #floating-key .point-range-con {border-color:pink}
+#floating-key .point-range {position:absolute; margin:0; padding:0; left:.5em; width:8em; height:100%; background:rgb(200,100,100)}
+#floating-key .point-range-bar {position:absolute; left:0; right:0; top:0; bottom:0; background:rgb(100,200,100)}
+#floating-key .point-range-left, #floating-key .point-range-right {position:absolute; width:23px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:.15em solid rgb(50,50,50)}
 #floating-key .point-range-left {left:0}
 #floating-key .point-range-right {right:0}
-#floating-key .point-range-result {margin:0; font-size:13px; background:black; color:white; text-align:center; padding:.1em .5em; width:100%; height:1.6em; border:.15em solid white}
-	.bright #floating-key .point-range-result {border-color:black}
-
-
-.point-range {margin:1em 2em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
-.point-range-bar {position:absolute; left:15px; right:15px; height:100%; background:rgb(100,200,100)}
-.point-range-left, .point-range-right {position:absolute; width:33px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:.15em solid rgb(50,50,50)}
-.point-range-left {left:0}
-.point-range-right {right:0}
-.point-range-result {margin:1em; float:right; border:.15em solid white; padding:.1em .5em; vertical-align:top}
-	.bright .point-range-result {border-color:black}
+#floating-key .point-range-result {margin:0; font-size:13px; background:black; color:white; text-align:center; padding:.1em .5em; width:100%; height:1.6em; border:1px solid wheat}
+	.bright #floating-key .point-range-result {background:white; color:black; border-color:black}
+	.pink #floating-key .point-range-result {background:pink; color:white; border-color:pink}
 
 .numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
 
@@ -1128,8 +1132,10 @@ $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
 	<span class="point-range-result">0~10/10</span>
-	<div class="point-range">
-		<div class="point-range-bar"></div><div class="point-range-right"></div><div class="point-range-left"></div>
+	<div class="point-range-con">
+		<div class="point-range">
+			<div class="point-range-bar"></div><div class="point-range-right"></div><div class="point-range-left"></div>
+		</div>
 	</div>
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
@@ -1191,10 +1197,10 @@ m.mdInPRL=false; // mouse down in Point Range Left
 m.mdInPRR=false; // mouse down in Point Range Right
 m.mdInPRL1=false; // mouse down in Point Range1 Left
 m.mdInPRR1=false; // mouse down in Point Range1 Right
-m.PRmax=10;
+m.PRmax=10.0;
 m.PRw=$point_range.width();
-m.PRw1=$point_range1.width()+30;
-m.fullPts=10;
+m.PRw1=$point_range1.width();
+m.fullPts=10.0;
 // from <= pts <= to
 
 $user_noti.html(m.userId+"'s recos");
@@ -2217,10 +2223,10 @@ $show_recos_without_points.on("click", function (e) {
 	}, 1024);
 });
 m.PRtoFixed=function (w) { // 0.0 ~ 10.0
-	return (m.PRmax*(w-15)/(m.PRw-30)).toFixed(1);
+	return (1.0*m.PRmax*w/m.PRw).toFixed(1);
 };
 m.PRtoFixed1=function (w1) { // 0.0 ~ 10.0
-	return (m.PRmax*(w1-15)/(m.PRw1-30)).toFixed(1);
+	return (1.0*m.PRmax*w1/m.PRw1).toFixed(1);
 };
 m.mmInPR=function (e) {
 	window.getSelection().removeAllRanges();
@@ -2228,18 +2234,18 @@ m.mmInPR=function (e) {
 	e.stopPropagation();
 	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w=x-$point_range.offset().left+$window.scrollLeft();
-	w=(w<15)?0:w-15;
-	w=(w>m.PRw-15)?m.PRw-15:w-15;
-	let w1=w/(m.PRw-30.0)*(m.PRw1-30.0);
+	w=(w<0)?0:w;
+	w=(w>m.PRw)?m.PRw:w;
+	let w1=1.0*w/m.PRw*m.PRw1;
 	w1=(w1<0)?0:w1;
-	w1=(w1>m.PRw1-30)?m.PRw1-30:w1;
+	w1=(w1>m.PRw1)?m.PRw1:w1;
 	let changed=false;
 	if (m.mdInPRL) {
 		if (w>m.PRRw) { w=m.PRRw; }
 		if (m.PRLw!==w) {
 			m.PRLw=w;
-			$point_range_left.css({left:m.PRLw-40});
-			$point_range_bar.css({left:m.PRLw-15});
+			$point_range_left.css({left:m.PRLw-23});
+			$point_range_bar.css({left:m.PRLw});
 			changed=true;
 		}
 		if (w1>m.PRRw1) { w1=m.PRRw1; }
@@ -2254,20 +2260,20 @@ m.mmInPR=function (e) {
 		if (w<m.PRLw) { w=m.PRLw; }
 		if (m.PRRw!==w) {
 			m.PRRw=w;
-			$point_range_right.css({right:m.PRw-m.PRRw-40});
-			$point_range_bar.css({right:m.PRw-m.PRRw-15});
+			$point_range_right.css({right:m.PRw-m.PRRw-23});
+			$point_range_bar.css({right:m.PRw-m.PRRw});
 			changed=true;
 		}
 		if (w1<m.PRLw1) { w1=m.PRLw1; }
 		if (m.PRRw1!==w1) {
 			m.PRRw1=w1;
-			$point_range_right1.css({right:m.PRw1-m.PRRw1-45});
-			$point_range_bar1.css({right:m.PRw1-m.PRRw1-30});
+			$point_range_right1.css({right:m.PRw1-m.PRRw1-15});
+			$point_range_bar1.css({right:m.PRw1-m.PRRw1});
 			changed=true;
 		}
 	}
 	if (changed) {
-		let PRL=m.PRtoFixed(m.PRLw-15);
+		let PRL=m.PRtoFixed(m.PRLw);
 		let PRR=m.PRtoFixed(m.PRRw);
 		if (m.mdInPRL) {
 			PRL=Number(PRL)/m.PRmax;
@@ -2300,12 +2306,19 @@ m.mmInPR1=function (e) {
 	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w1=x-$point_range1.offset().left+$window.scrollLeft();
 	w1=(w1<0)?0:w1;
-	w1=(w1>m.PRw1-30)?m.PRw1-30:w1;
-	let w=w1/(m.PRw1-30.0)*(m.PRw-30.0);
+	w1=(w1>m.PRw1)?m.PRw1:w1;
+	let w=1.0*w1/m.PRw1*m.PRw;
 	w=(w<0)?0:w;
-	w=(w>m.PRw-30)?m.PRw-30:w;
+	w=(w>m.PRw)?m.PRw:w;
 	let changed=false;
 	if (m.mdInPRL1) {
+		if (w>m.PRRw) { w=m.PRRw; }
+		if (m.PRLw!==w) {
+			m.PRLw=w;
+			$point_range_left.css({left:m.PRLw-23});
+			$point_range_bar.css({left:m.PRLw});
+			changed=true;
+		}
 		if (w1>m.PRRw1) { w1=m.PRRw1; }
 		if (m.PRLw1!==w1) {
 			m.PRLw1=w1;
@@ -2313,32 +2326,25 @@ m.mmInPR1=function (e) {
 			$point_range_bar1.css({left:m.PRLw1});
 			changed=true;
 		}
-		if (w>m.PRRw) { w=m.PRRw; }
-		if (m.PRLw!==w) {
-			m.PRLw=w;
-			$point_range_left.css({left:m.PRLw-40});
-			$point_range_bar.css({left:m.PRLw-15});
-			changed=true;
-		}
 	}
 	if (m.mdInPRR1) {
-		if (w1<m.PRLw1) { w1=m.PRLw1; }
-		if (m.PRRw1!==w1) {
-			m.PRRw1=w1;
-			$point_range_right1.css({right:m.PRw1-m.PRRw1-45});
-			$point_range_bar1.css({right:m.PRw1-m.PRRw1-30});
-			changed=true;
-		}
 		if (w<m.PRLw) { w=m.PRLw; }
 		if (m.PRRw!==w) {
 			m.PRRw=w;
-			$point_range_right.css({right:m.PRw-m.PRRw-40});
-			$point_range_bar.css({right:m.PRw-m.PRRw-15});
+			$point_range_right.css({right:m.PRw-m.PRRw-23});
+			$point_range_bar.css({right:m.PRw-m.PRRw});
+			changed=true;
+		}
+		if (w1<m.PRLw1) { w1=m.PRLw1; }
+		if (m.PRRw1!==w1) {
+			m.PRRw1=w1;
+			$point_range_right1.css({right:m.PRw1-m.PRRw1-15});
+			$point_range_bar1.css({right:m.PRw1-m.PRRw1});
 			changed=true;
 		}
 	}
 	if (changed) {
-		let PRL=m.PRtoFixed1(m.PRLw1-15);
+		let PRL=m.PRtoFixed1(m.PRLw1);
 		let PRR=m.PRtoFixed1(m.PRRw1);
 		if (m.mdInPRL1) {
 			PRL=Number(PRL)/m.PRmax;
@@ -4755,21 +4761,21 @@ $document.ready(function () {
 			m.ptsRangeTo=1;
 		}
 	}
-	m.PRw=$point_range.width()+30;
-	m.PRLw=m.ptsRangeFrom*(m.PRw-30)+15;
-	$point_range_left.css({left:m.PRLw-30});
-	$point_range_bar.css({left:m.PRLw-30});
-	m.PRRw=m.ptsRangeTo*(m.PRw-30)+15;
-	$point_range_right.css({right:m.PRw-30-m.PRRw});
-	$point_range_bar.css({right:m.PRw-15-m.PRRw});
+	m.PRw=$point_range.width();
+	m.PRLw=m.ptsRangeFrom*m.PRw;
+	$point_range_left.css({left:m.PRLw-23});
+	$point_range_bar.css({left:m.PRLw});
+	m.PRRw=m.ptsRangeTo*m.PRw;
+	$point_range_right.css({right:m.PRw-m.PRRw-23});
+	$point_range_bar.css({right:m.PRw-m.PRRw});
 
-	m.PRw1=$point_range1.width()+30;
-	m.PRLw1=m.ptsRangeFrom*(m.PRw1-30)+15;
-	$point_range_left1.css({left:m.PRLw1-30});
-	$point_range_bar1.css({left:m.PRLw1-15});
-	m.PRRw1=m.ptsRangeTo*(m.PRw1-30)+15;
-	$point_range_right1.css({right:m.PRw1-30-m.PRRw1});
-	$point_range_bar1.css({right:m.PRw1-15-m.PRRw1});
+	m.PRw1=$point_range1.width();
+	m.PRLw1=m.ptsRangeFrom*m.PRw1;
+	$point_range_left1.css({left:m.PRLw1-15});
+	$point_range_bar1.css({left:m.PRLw1});
+	m.PRRw1=m.ptsRangeTo*m.PRw1;
+	$point_range_right1.css({right:m.PRw1-m.PRRw1-15});
+	$point_range_bar1.css({right:m.PRw1-m.PRRw1});
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
