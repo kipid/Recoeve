@@ -964,10 +964,13 @@ CREATE TABLE `UserSession` (
 	, `session` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `token` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `ip` char(32) NOT NULL
+	, `userAgent` char(255) NOT NULL
 	, `tLast` datetime
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 	, PRIMARY KEY (`user_i`, `tCreate`)
 );
+
+ALTER TABLE `UserSession` ADD `userAgent` char(255) NOT NULL;
 
 `session`: Session, binary(64), NOT NULL
 # Using hex(random_bytes(32))
@@ -1021,6 +1024,7 @@ CREATE TABLE `UserRemember` (
 	, `auth` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `token` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `ip` char(32)
+	, `userAgent` char(255) NOT NULL
 	, `log` char(3)
 	, `sW` smallint unsigned
 	, `sH` smallint unsigned
@@ -1029,6 +1033,8 @@ CREATE TABLE `UserRemember` (
 	, PRIMARY KEY (`user_i`, `tCreate`)
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 );
+
+ALTER TABLE `UserRemember` ADD `userAgent` char(255) NOT NULL;
 
 `auth`: Authorization, binary(32), NOT NULL
 # Using hex(random_bytes(32))
