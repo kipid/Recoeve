@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package signal;
+
+option java_package = "kipid.test";
+option java_outer_classname = "SignalProto";
+
+message Tick {
+  // User ID.
+  string uid = 1;
+  // Installation ID.
+  string iid = 2;
+  // The UTC timestamp in milliseconds since January 1, 1970.
+  int64 timestamp = 3;
+}
+
+// Next ID: 11
+message Location {
+  // User ID.
+  string uid = 8;
+  // Installation ID.
+  string iid = 9;
+
+  // The UTC timestamp in milliseconds since January 1, 1970.
+  int64 timestamp = 1;
+  // The latitude, in degrees.
+  double latitude = 2;
+  // The longitude, in degrees.
+  double longitude = 3;
+  // When stored to MongoDb, we encrypt latitude and longitude values to this field.
+  string encryptedLatLng = 10;
+
+  // The altitude if available, in meters above the WGS 84 reference ellipsoid.
+  double altitude = 4;
+  // The estimated horizontal accuracy of this location, radial, in meters.
+  float accuracy = 5;
+  // The bearing, in degrees.
+  float bearing = 6;
+  // The speed if it is available, in meters/second over ground.
+  float speed = 7;
+}
+
+message Locations {
+  repeated Location locations = 1;
+}
+
+// Next ID: 7
+message Wifi {
+  // User ID.
+  string uid = 1;
+  // Installation ID.
+  string iid = 6;
+  int64 timestamp = 2;  // The UTC timestamp in milliseconds since January 1, 1970.
+
+  enum State {
+    STATE_DISABLING = 0;
+    STATE_DISABLED = 1;
+    STATE_ENABLING = 2;
+    STATE_ENABLED = 3;
+    STATE_UNKNOWN = 4;
+  }
+  State state = 3;
+
+  message Info {
+    string bssid = 1;  // The address of the access point.
+    string ssid = 2;   // The network name.
+    int32 rssi = 3;    // The signal level in dBm.
+    int64 timestamp = 4;  // Timestamp when connection is detected.
+  }
+  Info connected_info = 4;  // Information about wifi channel currently connected.
+  repeated Info scanned_infos = 5;
+}
