@@ -518,7 +518,7 @@ router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").h
 				if (PrintLog.method==HttpMethod.POST) {
 					PrintLog.req.bodyHandler((Buffer data) -> {
 						StrArray inputs=new StrArray(data.toString());
-						List<io.vertx.core.http.Cookie> setCookieSSN=PrintLog.db.authUser(inputs, PrintLog.ip);
+						List<io.vertx.core.http.Cookie> setCookieSSN=PrintLog.db.authUser(inputs, PrintLog.ip, PrintLog.userAgent);
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
@@ -655,7 +655,7 @@ router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/
 	PrintLog.printLog(ctx);
 	PrintLog.req.bodyHandler((Buffer data) -> {
 		StrArray inputs=new StrArray(data.toString());
-		List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip);
+		List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip, PrintLog.userAgent);
 		for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 			PrintLog.req.response().addCookie(singleCookie);
 			System.out.println(singleCookie.getName()+": "+singleCookie.getValue());

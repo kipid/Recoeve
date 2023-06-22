@@ -173,8 +173,8 @@ public RecoeveDB() {
 		pstmtDeleteUserCatList=con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
 		pstmtCreateEmailStat=con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
 		pstmtFindEmailStat=con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`) VALUES (?, ?, ?, ?, ?);");
-		pstmtCreateUserRemember=con.prepareStatement("INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
+		pstmtCreateUserRemember=con.prepareStatement("INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtCheckUserRemember=con.prepareStatement("SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		
 		pstmtFindUserByIndex=con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -937,7 +937,7 @@ public boolean sessionCheck(Cookie cookie) {
 	}
 	return false;
 }
-public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
+public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, String userAgent) {
 	boolean done=false;
 	long user_i=1; // anonymous
 	String now=now();
@@ -965,7 +965,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 				byte[] session=randomBytes(32);
 				byte[] saltSSN=randomBytes(32);
 				// int ssnC=user.getInt("ssnC");
-				setCookie=createUserSession(user_i, now, session, saltSSN, ip);
+				setCookie=createUserSession(user_i, now, session, saltSSN, ip, userAgent);
 				// user.updateInt("ssnC", ssnC+1);
 				String logDesc="Not remembered";
 				String rmb=inputs.get(1, "rememberMe");
@@ -973,7 +973,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 					byte[] rmbdAuth=randomBytes(32);
 					byte[] rmbdToken=randomBytes(32);
 					// int rmbdC=user.getInt("rmbdC");
-					setCookie.addAll(createUserRemember(user_i, now, rmbdAuth, rmbdToken, inputs, ip));
+					setCookie.addAll(createUserRemember(user_i, now, rmbdAuth, rmbdToken, inputs, ip, userAgent));
 					// user.updateInt("rmbdC", rmbdC+1);
 					logDesc="Remembered";
 				}
@@ -1010,7 +1010,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip) {
 	}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray inputs, String ip) {
+public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray inputs, String ip, String userAgent) {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
 			.setPath("/").setMaxAge(-100L));
@@ -1043,12 +1043,13 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))
 				&&rs.getString("log").equals(log)
 				&&rs.getInt("sW")==Integer.parseInt(sW)
-				&&rs.getInt("sH")==Integer.parseInt(sH) ) {
+				&&rs.getInt("sH")==Integer.parseInt(sH)
+				&&rs.getString("userAgent").equals(userAgent) ) {
 				byte[] session=randomBytes(32);
 				byte[] token=randomBytes(32);
 				ResultSet user=findUserByIndex(user_i);
 				if (user!=null&&user.next()) {
-					setCookie=createUserSession(user.getLong("i"), now, session, token, ip);
+					setCookie=createUserSession(user.getLong("i"), now, session, token, ip, userAgent);
 					byte[] newToken=randomBytes(32);
 					rs.updateTimestamp("tLast", Timestamp.valueOf(now));
 					rs.updateBytes("token", newToken);
@@ -1083,6 +1084,9 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if ((rs.getInt("sH")!=Integer.parseInt(sH))) {
 					errMsg+="sH. ";
 				}
+				if (!rs.getString("userAgent").equals(userAgent)) {
+					errMsg+="userAgent. ";
+				}
 			}
 		}
 		else {
@@ -1096,7 +1100,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	}}}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now, byte[] session, byte[] salt, String ip)
+public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now, byte[] session, byte[] salt, String ip, String userAgent)
 	throws SQLException {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	try {
@@ -1105,6 +1109,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3, 11), Encrypt.iterSSNFull)));
 		pstmtCreateUserSession.setBytes(4, salt);
 		pstmtCreateUserSession.setString(5, ip);
+		pstmtCreateUserSession.setString(6, userAgent);
 		String now_=now.replaceAll("\\s", "_");
 		if (pstmtCreateUserSession.executeUpdate()>0) {
 			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i, 16)).setSecure(true)
@@ -1124,7 +1129,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, String now
 	}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip)
+public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String now, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip, String userAgent)
 	throws SQLException {
 	pstmtCreateUserRemember.setLong(1, user_i);
 	pstmtCreateUserRemember.setTimestamp(2, Timestamp.valueOf(now));
@@ -1134,6 +1139,7 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, String no
 	pstmtCreateUserRemember.setInt(6, Integer.parseInt(inputs.get(1, "screenWidth")));
 	pstmtCreateUserRemember.setInt(7, Integer.parseInt(inputs.get(1, "screenHeight")));
 	pstmtCreateUserRemember.setString(8, ip);
+	pstmtCreateUserRemember.setString(9, userAgent);
 	String now_=now.replaceAll("\\s", "_");
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
