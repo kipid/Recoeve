@@ -30,6 +30,7 @@ public static HttpMethod method=null;
 public static String now=null;
 public static String referer=null;
 public static String ip=null;
+public static String userAgent=null;
 
 public PrintLog() {}
 
@@ -40,8 +41,11 @@ public static void printLog(RoutingContext ctx) {
 	////////////////////////////////////
 	System.out.println("\n\nA client has connected!: "+(++numberOfClients));
 	now=db.now();
+	userAgent=req.getHeader("User-Agent");
 	referer=req.headers().get("Referer");
 		System.out.println("Time: "+now);
+		System.out.println("User-Agent: "+userAgent);
+		System.out.println("User-Agent.length: "+userAgent.length());
 		if (referer!=null) {
 			try {
 				System.out.println("Referer: "+URLDecoder.decode(referer, "UTF-8"));
