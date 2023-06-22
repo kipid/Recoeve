@@ -99,168 +99,13 @@ Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 
 
 검색 google 에서 "site:recoeve.net/user/kipid 검색어" 식으로 검색 대신 해주는거 input 만들어 주기.
 
-아래 에러 해결하자.
-
-```[.scrollable]
-Exception: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
-java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
-        at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
-        at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
-        at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
-        at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
-        at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:1003)
-        at com.mysql.cj.jdbc.result.UpdatableResultSet.refreshRow(UpdatableResultSet.java:1050)
-        at com.mysql.cj.jdbc.result.UpdatableResultSet.refreshRow(UpdatableResultSet.java:990)
-        at com.mysql.cj.jdbc.result.UpdatableResultSet.updateRow(UpdatableResultSet.java:1174)
-        at recoeve.db.RecoeveDB.authUserFromRmbd(RecoeveDB.java:901)
-        at Recoeve.lambda$start$4(Recoeve.java:269)
-        at io.vertx.core.http.HttpServerRequest.lambda$bodyHandler$0(HttpServerRequest.java:216)
-        at io.vertx.core.http.impl.Http2ServerRequestImpl.handleEnd(Http2ServerRequestImpl.java:196)
-        at io.vertx.core.http.impl.VertxHttp2Stream.lambda$new$1(VertxHttp2Stream.java:68)
-        at io.vertx.core.streams.impl.InboundBuffer.handleEvent(InboundBuffer.java:237)
-        at io.vertx.core.streams.impl.InboundBuffer.write(InboundBuffer.java:127)
-        at io.vertx.core.http.impl.VertxHttp2Stream.onEnd(VertxHttp2Stream.java:107)
-        at io.vertx.core.http.impl.VertxHttp2Stream.onEnd(VertxHttp2Stream.java:100)
-        at io.vertx.core.http.impl.Http2ConnectionBase.lambda$onDataRead$10(Http2ConnectionBase.java:333)
-        at io.vertx.core.impl.ContextImpl.executeTask(ContextImpl.java:369)
-        at io.vertx.core.impl.EventLoopContext.execute(EventLoopContext.java:43)
-        at io.vertx.core.impl.ContextImpl.executeFromIO(ContextImpl.java:232)
-        at io.vertx.core.impl.ContextImpl.executeFromIO(ContextImpl.java:224)
-        at io.vertx.core.http.impl.Http2ConnectionBase.onDataRead(Http2ConnectionBase.java:333)
-        at io.vertx.core.http.impl.Http2ServerConnection.onDataRead(Http2ServerConnection.java:42)
-        at io.netty.handler.codec.http2.Http2FrameListenerDecorator.onDataRead(Http2FrameListenerDecorator.java:36)
-        at io.netty.handler.codec.http2.Http2EmptyDataFrameListener.onDataRead(Http2EmptyDataFrameListener.java:49)
-        at io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder$FrameReadListener.onDataRead(DefaultHttp2ConnectionDecoder.java:292)
-        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.readDataFrame(DefaultHttp2FrameReader.java:422)
-        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.processPayloadState(DefaultHttp2FrameReader.java:251)
-        at io.netty.handler.codec.http2.DefaultHttp2FrameReader.readFrame(DefaultHttp2FrameReader.java:160)
-        at io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder.decodeFrame(DefaultHttp2ConnectionDecoder.java:174)
-        at io.netty.handler.codec.http2.DecoratingHttp2ConnectionDecoder.decodeFrame(DecoratingHttp2ConnectionDecoder.java:63)
-        at io.netty.handler.codec.http2.Http2ConnectionHandler$FrameDecoder.decode(Http2ConnectionHandler.java:378)
-        at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:438)
-        at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
-        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
-        at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
-        at io.vertx.core.http.impl.VertxHttp2ConnectionHandler.channelRead(VertxHttp2ConnectionHandler.java:417)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
-        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
-        at io.netty.handler.ssl.SslHandler.unwrap(SslHandler.java:1486)
-        at io.netty.handler.ssl.SslHandler.decodeJdkCompatible(SslHandler.java:1235)
-        at io.netty.handler.ssl.SslHandler.decode(SslHandler.java:1282)
-        at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
-        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
-        at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
-        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
-        at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
-        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
-        at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
-        at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163)
-        at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:714)
-        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:650)
-        at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:576)
-        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:493)
-        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:989)
-        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-        at java.base/java.lang.Thread.run(Thread.java:833)
-SQLState: 42000
-Error Code: 1064
-Message: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '23:51:33' at line 1
-I : 5f5e100
-tCreate : 2023-02-08_01:45:08
-session : 58dc8f05094428f8e264ce308f318b7a36b558ffd423a8deedabccb43ea86db6
-salt : fe91a820ca06efa6a5f781d8b2a93bcd0640126e063737a6b3332e47085af81d
-rmbdToken : 3d2739646c6091af85ac898d5556a7ba8ca7e0ad319e596f634e62ceeec56b7e
-Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)
-```/
-
 edit 이후에 $reco.replaceWith($newReco) 가 되어서 그런지, G/T 에서 scroll to reco 가 안먹힘.
-
-새로운 reco 가 들어왔을때 YoutubeList 도 update.
-
-eve.recoToEve 에서 recoK for (i in recoK) {} 이런식으로 처리하고 valStr 으로 받자?
-
-PointsRange 랑 이런것들 cookie 에 저장해놓기?? Server 로 보낼 필요 없는 데이터들이긴 한데... secure cookie 에 넣으면 읽어들일수도 없는건가? (secure cookie 는 javascript 로 못 읽어드림. https 로 접속했을 때에만 javascript 로 읽어들일 수 있을듯? 이건 테스트 안해봐서 모르겄음.) 아니면 Local Storage API 를 써야하긴 하는데...
 
 로그인 안한채로 User page 에 왔다면 Account 부분에 Log-in 버튼 만들기. 여기서 back path 가 필요할듯? 오 back path= empty 해놓으면, 로그인 이후 다른 페이지로 이동 안하게 해놓으면 될듯? 이러면 reco/do 같은거에서도 바로 로그인 시키고 하던일 계속 하게 가능할래나?
 
 Account 부분 만들기. styles (bright/dark, font-size, font-family, line-height, and so on), shortkeys, settings, log-out 등이 들어가야 함. UI 만들어야. (우선 대충 #head 에 집어넣음. log-out, shortkeys 만.)
 
-User = log out, settings 등등 클릭하면 slide 로 나오도록.
-
-유투브 영상이 playlist 에 재생되면서 해당 영상의 reco description 및 comment 가 바로 아래에 뜨도록 만들어줄까? Playlist 에서 듣다가 바로 가사도 볼 수 있고, 수정도 가능하게?
-
-desc 가져오는거 관련.
-Description 남의것 가져올 수 있도록. 시스템을 잘 구상해야 할듯.
-
-UriList 위치 바꿀 수 있게. UriList 위치이동 가능하도록 UI/UX.
-
-Session 이 아웃되었을 때, /reco/do 같은 접속이 이루어지면? "You should log-in first" 같은 error 가 올때 ajax 로 다시 자동으로 로그인 시도하고 다시 /reco/do 를 하도록 하려면?
-
-reco page 만들기. query 로 받아서 어느정도 자동으로 채우고. 이미 reco 를 가지고 있으면 처리해 주는 등이 필요.
-
-cats 바뀌었을때 sim 업데이트 해야 하는데 set oldCats' superCats 랑 set newCats' superCats 비교해서 계산안해도 되는거 줄일 수 있을듯? cat "A--B--C" 에서 "A--B--C--D" 로 옮겼다고 치면, sim "A", "A--B", "A--B--C" 는 고칠필요 없고, "A--B--C--D" 만 추가하면 되니까? 새로운 neighbor 추가에 대해서는 계산이 필요하긴 할테고...
-
-"You are the first recoer on this uri=..." 요런 문구를 줄까? 그러면서 fin 지급?
-
-C:\Users\강수\AppData\Local\Temp 에 vertx.log 가 쌓이면 Can't load log handler "java.util.logging.FileHandler", java.io.IOException: Couldn't get lock for %t/vertx.log 가 발생하네. 어찌 해결하지?<br>
-: 이건 log 가 100개까지 쌓인 다음에 에러 발생하면 해결합시다. 당장은 어찌 해결해야 할지도 모르겄음. JAVA 나 LabVIEW 프로그래밍을 만들어 놓을까? 수작업보단 그냥 실행 한번 하면 지워지게?
-
-user-page.html 에 로그인 버튼 만들자. (비로그인일 때만 보이는) /account/log-in?back=/user/current-user 식으로 보내서 로그인 하고 나면 다시 이 페이지로 오도록 디자인.
-
-desc, cmt 에서 엔터 한번이 line-height 보단 크게 만들고. 엔터 두번째 부터는 1줄이 line-height 보다 작아지는 식으로 처리해주자. 이래야 text 를 어디선가 긁어오는 경우에도 깔끔하게 보일듯.
-
-desc, cmt 에 주석처리 가능하도록 할까? 뭔가 부작용이 있을거 같아서 빼놨던거 같긴한데... (이상한 문구를 심어놓는다던지 식으로?) 주석 처리하는 code 는 LabVIEW 에 이미 만들어져는 있음.
-
-Recoeve.net promotion 1 : Make your own flexible youtube playlist 요런거 만들기. 어떤식으로 쓸 수 있는지 Guide 형식으로 그림 삽입하고 똥글뱅이 쳐주고 하나하나씩 설명해주는 페이지 좀 만들어서 배포해야 할듯.
-
-History 를 따로 log 로 저장해 놓을까나? Undo 할 수 있도록? 뭐 Undo 까지는 아니더라도... 뭔가 저장해놓으면 쓸데는 있을지도? 그냥 용량만 차지할래나? text 가 대부분이긴 할텐데... Cloud 처럼 overwrite version 관리용으로 필요할거 같기도 하고. 같은 계정으로 여러 기기에서 접근해서 reco/edit 할텐데, 어느 요청이 먼저 들어왔냐에 따라서 뭔가 꼬일수도 있으니?
-
-Reco this user's page to mine 버튼도 만들자.
-
-link a href 로 바꿀때, https?:\/\/\S+ 이런 패턴으로 찾고. 뒤에 있는 text 를 <code class="prettyprint">&lt;a href="https://recoeve.net/"&gt;recoeve.net&lt;/a&gt;</code> 처럼 표시해주도록 하면 될듯? Wiki 처럼 아예 [] 로 둘러쌓으면 link 나타내는 걸로 만들어 버릴까?
-
 Server 의 time zone : Universial 로 어느 지역에서 서비스하던지 일치하는 시간 같도록. 그리고 javascript 단에서 time lap 은 바꾸도록?
-
-log-in.html 에서 password 입력할때 (sign-up password 포함), Caps Lock 이 켜져 있다던지, 키보드가 한글/일본어/한자 등 영어가 아닌 언어로 되어 있다던지 알려주는게 필요하긴 할듯?
-
-다른 user 가 "https://recoeve.net/user/kipid?&uri=yyy" 형태의 URI 를 가지고 reco 를 작성하면 해당 user 에게 멘션이 가는 형태로?
-
-user/kipid?cat=xxx&uri=yyy 이런 URI 접속하면 해당 reco 가 보이도록?
-
-cat 마다 desc 따로 저장할 수 있게 해놓을까나? (이거 그냥 그 cat 에 해당하는 URI 에 reco 작성하면 저장되는 식으로 할까?)
-
-/reco/do 같은 POST with data 를 실행하는데, session out 되었으면 어찌 처리해야 할까나? rmbd cookie 는 있는 상태라고 했을때?
-
-desc, cmt 에 img/a/div/span 정도 tag 는 쓸 수 있게 해놓을까?
-
-그냥 테스트 용으로 docuK.html 이랑, 동영상/사진 올려서 전송 제대로 되는지 테스트 해봅시다. path="/test.html" 로 할까?
-
-Outsider's Dev Story 기술뉴스 시리즈 보다가 생각난건데, cats="IT--기술뉴스--시리즈--#30--웹개발 관련;IT--기술뉴스--웹개발 관련" 와 같은 카테고리에 모아놓으면 cat="IT--기술뉴스--시리즈--#30" 에서 Render this cat to HTML 버튼 만들어서 blog 에 바로 posting 할 수 있는 HTML 나오도록 만들어 놔주면 정리하기 더 쉽지 않으실까 생각중. 이렇게 정리 잘하는 사람들 유저로 끌어들이는데도 좋을테고.<br>
-: 만들어놓고 테스트를 내가 해봐야 할듯? (허락은 받고 테스트를 해야할듯)
-
-가입하면 처음에 기본적인 reco 들을 넣어놓자? 점수 및 comment 는 빼고. 유명한 음악들 몇개랑 기본 카테고리별로 간단하게나마. 매번 업데이트 하면서?
-
-E-mail verification 이후에 reco 되도록 설정하기. (지금은 그냥 가입만하면 쓸 수 있게 되어있네?) 로그인 과정을 전반적으로 점검해 볼 필요가 있을듯. 깔끔하게 진행되도록.
-
-각 페이지에서 reco/edit/delete 등을 요청할 때, id 도 explicit 하게 같이 보내서 log-in session id 랑 요청때 id 가 일치하는지도 체크하고 넘어가야 할듯? Log in 되어있지 않을때 처리와도 연관이 있고.
-
-Exception: java.sql.SQLException: Operation not allowed after ResultSet closedjava.sql.SQLException: Operation not allowed after ResultSet closed<br>
-: cat 에 한글이 들어가 있어서 그런가? 몇개 reco 가 삭제가 제대로 안되네? 뭐가 문제지? 구체적으로는 cat="[과학]--뇌과학" 에 있는 reco 들이 안지워짐. desc, cmt, val 다 지운뒤 edit, 이후 del 하면 지워지던데... 뭐지?<br>
-: 이거 neighbor 계산이 문제 같긴 한데... neighbor 관련 process 를 disable 해놓으니까 문제가 사라진걸로 봐서.
-
-개인화 된 추천 javascript 로 계산. (우선 neighbors' sim and recoes 뽑아오는거.)
-
-URIstat 그래프로 표시. (우선은 버튼을 만들어서 눌렀을때만 보이도록 할까?)
-
-points 에서 위아래 화살표 키로 points 랑 max 조정되도록. 커서 위치 따라서 적절히 스마트하게 바뀌도록.
-
-Del reco 할때 cat이 지워지면, FS 부분 cat 만 놔두고 #catList HTML 부분은 지워지도록 만들자.<br>
-: 뭔가 상위 cat 이 많을때만 안지워지나???
 
 Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
 
@@ -272,8 +117,6 @@ Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
 점수 분포도 보여주기?
 
 Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. 첫 recoer 에게 reco 할거 같은 URI 받으면 그때 crawler 가 동작해서 title, desc 등 긁어오면 될듯? (Crawling 하는 법을 아직 몰라서... 배우는데 좀 걸릴듯?)
-
-여러 포스팅들 영어로도 업로드 하기. (최저임금 환산기/계산기랑 텐서란 무엇인가? 정도... 기타 잘 팔릴거 같은 글들 위주로 번역해서 올리기.) docuK 에 recoeve.net 광고 삽입하기.
 
 Cats 바꾸는거 간단하게 여러개 동시에 쉽게 할 수 있도록 디자인하기.
 
@@ -433,7 +276,13 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+여러 포스팅들 영어로도 업로드 하기. (최저임금 환산기/계산기랑 텐서란 무엇인가? 정도... 기타 잘 팔릴거 같은 글들 위주로 번역해서 올리기.) docuK 에 recoeve.net 광고 삽입하기.
 
+PointsRange 랑 이런것들 cookie 에 저장해놓기?? Server 로 보낼 필요 없는 데이터들이긴 한데... secure cookie 에 넣으면 읽어들일수도 없는건가? (secure cookie 는 javascript 로 못 읽어드림. https 로 접속했을 때에만 javascript 로 읽어들일 수 있을듯? 이건 테스트 안해봐서 모르겄음.) 아니면 Local Storage API 를 써야하긴 하는데...
+
+새로운 reco 가 들어왔을때 YoutubeList 도 update.
+
+아래에서부터 scroll up 해갈 때, scrollTop 잘해줘서 아래로부터 천천히 reco 들 읽어나갈 수 있게 하기.
 
 카톡으로 공유하기 할때 카카오 개발자 설정에 등록 안된 uri 는 링크가 안걸림. 두가지 옵션으로 해결하자. recoeve.net 이랑 YouTube 는 개발자 설정에 등록해서 그대로 공유해주고 다른 uri 들은 ?cat=...#uriEncoded 으로 연결해서 해당 uri 로 go 되도록. 유튜브도 가사 같이 봐야 하니까 recoeve.net 쪽으로 유도할까나?
 
