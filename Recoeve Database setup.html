@@ -67,7 +67,7 @@ E-mail stat 좀 확인하고 싶어서 <refer class="table-EmailStat"></refer>.
 
 FinTech 관련된 <refer class="table-Fin"></refer>, <refer class="table-DailyPoints"></refer>.
 
-Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-UserSession"></refer>, <refer class="table-UserRemember"></refer> 까지 만들어야 하고.
+Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-UserSession"></refer> (Disabled), <refer class="table-UserSession1"></refer>, <refer class="table-UserRemember"></refer> 까지 만들어야 하고.
 
 Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
 
@@ -996,10 +996,12 @@ CREATE TABLE `UserSession1` (
 	, `encryptedSSN` binary(64) NOT NULL
 	, `salt` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `ip` char(32) NOT NULL
+	, `userAgent` char(255) NOT NULL
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 	, PRIMARY KEY (`user_i`, `tCreate`)
 );
 
+ALTER TABLE `UserSession1` ADD `userAgent` char(255) NOT NULL;
 
 `ip`: Secondary check.
 # IP 가 중간에 바뀌는 경우도 많아서 (공유기? 혹은 mobile) 곁다리로만 확인해야 할듯.
