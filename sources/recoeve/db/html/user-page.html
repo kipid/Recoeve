@@ -373,7 +373,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
 
 .rC {margin:.5em 0}
-.rC.fixed {position:fixed; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
+.rC.fixed {position:fixed; z-index:10000; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
 	.bright .rC.fixed {background:white; border-color:black}
 .rC>.rSC {box-sizing:content-box; position:relative; height:4em; padding-bottom:63%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
@@ -4941,7 +4941,7 @@ m.fsToRs.toggleOneLoop=function (elem) {
 		m.fsToRs.oneLoop=true;
 	}
 };
-m.fsToRs.getAndPlayVideo=function (cue) {
+m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
 	let fs=m.fsToRs;
 	fs.pauseVideo();
 	let i=fs.currentIndex;
@@ -4949,19 +4949,13 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		fs.$fsLis.removeClass("selected");
 		$(`#toR-${i}`).addClass("selected");
 		let r=fs.fullList[i].reco;
-		$reco_playing.html(m.recoHTML(r, true, true));
-		let uriRendered=m.uriRendering(r.uri, false, true);
+		$reco_playing.html(m.recoHTML(r, inListPlay, true));
+		let uriRendered=m.uriRendering(r.uri, false, inListPlay);
 		if (uriRendered.from==="youtube") {
 			$eveElse.html('');
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
-			if (fs.$playing.hasClass("fixed")) {
-				fs.fixed=true;
-			}
-			else {
-				fs.fixed=false;
-			}
 			if (m.YtPlayer) {
 				if (cue) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
@@ -4997,19 +4991,13 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			}
 		}
 		else if (uriRendered.from==="video") {
-			$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, null, "eveElse"));
+			$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse"), "eveElse"));
 			$eveElse=$("#eveElse");
 			$video=$("#video");
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered.find(".rC");
-			if (fs.$playing.hasClass("fixed")) {
-				fs.fixed=true;
-			}
-			else {
-				fs.fixed=false;
-			}
 			$video.on("ended", function () {
 				if (fs.oneLoop) {
 					$video[0].play();
@@ -5028,12 +5016,6 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered.find(".rC");
-			if (fs.$playing.hasClass("fixed")) {
-				fs.fixed=true;
-			}
-			else {
-				fs.fixed=false;
-			}
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
