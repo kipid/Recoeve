@@ -441,7 +441,40 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
   }
   return ret;
 };
-
+m.csvToJSON=function (str, colMap=true, rowMap=false) {
+	if (!str||str.constructor!==String) { return []; }
+	let rows=str.split("\n");
+	for (let i=0;i<rows.length;i++) {
+		if (rows[i].substring(0,1)==='"'&&rows[i].substring(rows[i].length-1)==='"') {
+			rows[i]=rows[i].substring(1,rows[i].length-1).split('","');
+		}
+		else {
+			rows[i]=rows[i].split(",");
+		}
+	}
+	if (colMap) {
+		const firstColSize=rows[0].length;
+		for (let i=0;i<rows.length;i++) {
+			let jMax=rows[i].length;
+			if (jMax>firstColSize) { jMax=firstColSize; }
+			for (let j=0;j<jMax;j++) {
+				let key=rows[0][j];
+				if (key!==undefined) {
+					rows[i][key]=rows[i][j];
+				}
+			}
+		}
+	}
+	if (rowMap) {
+		for (let i=0;i<rows.length;i++) {
+			let key=rows[i][0];
+			if (key!==undefined) {
+				rows[key]=rows[i];
+			}
+		}
+	}
+	return rows;
+};
 
 
 ////////////////////////////////////////////////////
