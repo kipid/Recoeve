@@ -241,6 +241,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .def-cat, #multireco-cats-container .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
 #delete-cat, #multireco-delete-cat {background:#ff7600}
+#new-reco .def-cmd {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 
 #multireco-cats-container {
 	position:fixed;
@@ -551,6 +552,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="cBoth"></div>
 	</div>
 	<label for="input-desc">[--Description--]</label>
+		<div id="def-cmds"><div class="def-cmd">#related</div> <div class="def-cmd">#lyrics</div></div>
 		<div id="def-descs"></div>
 		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
 	<label for="input-cmt">[--Comment--]</label>
@@ -613,9 +615,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log in--]</a>
 	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--] [--_G_o (FS)--]</div>
 	<div class="button button-goto-cats" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">[--Go to _C_ats--]</div>
-	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--See neighbors--]</div>
-	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--Multireco mode--]</div>
-	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--New Reco--]</div>
+	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--Neigh_b_ors mode--]</div>
+	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--_M_ultireco mode--]</div>
+	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--_N_ew reco--]</div>
 </div><!-- div#head -->
 <div class="side2" id="subCats">
 	<span class="point-range-result">0~10/10</span>
@@ -646,7 +648,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div class="button enabled" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
 		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
 		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
-		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--ToR--]</div>
+		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--_T_ofR--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
@@ -856,6 +858,7 @@ m.CfontSize=function (increment) {
 			m.fontSize=33;
 		}
 		m.$container.css({"font-size":m.fontSize.toFixed(1)+"px"});
+		$window.trigger("resize");
 		m.printDeviceInfo();
 		if (m.fontSize===m.defaultStyles.fontSize) {
 			m.docCookies.removeItem("m.fontSize", "/");
@@ -1262,19 +1265,19 @@ $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
 		if (window.innerWidth<600) {
-			m.fontSize=11;
+			m.fontSize=15;
 		}
 		else if (window.innerWidth<701) {
-			m.fontSize=12;
+			m.fontSize=15.5;
 		}
 		else if (window.innerWidth<901) {
-			m.fontSize=13;
+			m.fontSize=16;
 		}
 		else if (window.innerWidth<1210) {
-			m.fontSize=14;
+			m.fontSize=16.5;
 		}
 		else {
-			m.fontSize=15;
+			m.fontSize=17;
 		}
 		m.defaultStyles.fontSize=m.fontSize;
 		m.printDeviceInfo();
@@ -3535,6 +3538,18 @@ m.showDefs=function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
+let $def_cmd=$("#def-cmds").find(".def-cmd");
+$def_cmd.on("click", function (e) {
+	$input_desc.focus();
+	let sStart=$input_desc[0].selectionStart;
+	let sEnd=$input_desc[0].selectionEnd;
+	let inputValue=$input_desc[0].value;
+	let inserted=m.unescapeHTML($(this).html());
+	$input_desc[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
+	$input_desc.focus();
+	sEnd=sStart+inserted.length;
+	$input_desc[0].setSelectionRange(sEnd,sEnd);
+});
 let $multirecoDefCats=$multireco_def_cats.find(".def-cat");
 let $multirecoReplaceCats=$multireco_def_cats.find(".replace-cat");
 $multirecoReplaceCats.on("click", function (e) {
