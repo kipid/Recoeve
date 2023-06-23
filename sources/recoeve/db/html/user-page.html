@@ -631,7 +631,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="side2"><div class="numbers-of-recos"></div></div>
 <div class="side2" id="headPlay">
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
-	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Toggle reco list play--]</div>
+	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Showing reco list play--]</div>
 	<div id="playlist-container">
 		<div id="uri-rendered-container">
 			<div id="eveElse-uri-rendered">
@@ -947,15 +947,11 @@ m.toggleNeighborsMode=function () {
 		m.recoMode="";
 		$button_mode.removeClass("enabled");
 		m.showRecosOnCat();
-		$playlist_container.show();
-		$toggle_reco_list_play.addClass("enabled");
 	}
 	else {
 		m.recoMode="neighbors";
 		$button_mode.removeClass("enabled");
 		$button_neighbors_mode.addClass("enabled");
-		$playlist_container.hide();
-		$toggle_reco_list_play.removeClass("enabled");
 	}
 	m.openCat(m.currentCat);
 }
@@ -5121,14 +5117,29 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 		}, 1000);
 	}
 };
+$toggle_reco_list_play.hover(function (e) {
+	$toggle_reco_list_play.html(`[--Toggle reco list play--]`);
+}
+, function (e) {
+	if ($uri_rendered_container.is(":visible")) {
+		$toggle_reco_list_play.addClass("enabled");
+		$toggle_reco_list_play.html(`[--Showing reco list play--]`);
+	}
+	else {
+		$toggle_reco_list_play.removeClass("enabled");
+		$toggle_reco_list_play.html(`[--Hiding reco list play--]`);
+	}
+});
 m.fsToRs.toggleRecoListPlay=function () {
 	if ($uri_rendered_container.is(":visible")) {
 		$uri_rendered_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
+		$toggle_reco_list_play.html(`[--Hiding reco list play--]`);
 	}
 	else {
 		$uri_rendered_container.show();
 		$toggle_reco_list_play.addClass("enabled");
+		$toggle_reco_list_play.html(`[--Showing reco list play--]`);
 	}
 };
 })(window.m, jQuery);
