@@ -669,7 +669,7 @@ router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/
 		else { // if (setCookieRMB.startsWith("rmbdI="))
 			// Failed: Delete rmbd cookie.
 			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			PrintLog.req.response().end("Remembering you failed.", ENCODING);
+			PrintLog.req.response().end("Remembering you failed. We deleted your cookie | session. Please log-in again.", ENCODING);
 			System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 		}
 	});
