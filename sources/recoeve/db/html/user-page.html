@@ -1446,20 +1446,12 @@ m.getSuperCat=function (cat) {
 m.strCatListToJSON=function (strCatList, catList) {
 	let list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
-		list=[];
+		list=[""];
 	}
-	list.unshift(""); // cat=uncategorized : empty cat.
-	if (catList===undefined||catList===null) {
-		if (!!m.catList) {
-			catList=m.catList;
-		}
-		else {
-			catList=m.catList=[];
-		}
-	}
+	catList=m.catList=[{i:0, cat:"", baseCat:"", depth:0}];
 	let superCats=[];
 	if (strCatList.trim()==="") {
-		catList[0]=catList[""]={i:0, cat:"", baseCat:"", depth:0};
+		catList[""]=catList[0];
 	}
 	else {
 		for (let i=0;i<list.length;i++) {
@@ -1473,7 +1465,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 };
 m.catListToHTML=function () {
 	let cL=m.catList;
-	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:${cL[0].depth}em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		let beforeDepth=cL[i-1].depth;
@@ -1487,7 +1479,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em">`;
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i]?.depth}em">`;
 		if (currentDepth<afterDepth) {
 			catListHTML+=`<span class="EC" onclick="m.ExpCol(this,m.catList[${i}])">▶</span>`;
 		}
@@ -1514,8 +1506,15 @@ m.catListToHTML=function () {
 	}
 	$catList.html(catListHTML);
 };
-if (m.myIndex) { m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList); }
-if (!m.myPage) { m.strCatListToJSON(m.unescapeHTML($data_CatList.html())); }
+if (m.myIndex) {
+	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+}
+if (!m.myPage) {
+	m.strCatListToJSON(m.unescapeHTML($data_CatList.html()), m.catList);
+}
+else if (m.myIndex==="") {
+	m.strCatListToJSON("", m.catList);
+}
 m.catListToHTML();
 let $catECs=$catList.find(".cat:has(>.EC)");
 for (let i=$catECs.length-1;i>=0;i--) {
@@ -4726,9 +4725,7 @@ $choose_lang.on("click", function (e) {
 ////////////////////////////////////////////////
 $document.ready(function () {
 	m.initialOpen=true;
-
 	let vars=m.searchVars;
-
 	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
 		$input_uri[0].value=vars.uri.val;
@@ -4737,7 +4734,6 @@ $document.ready(function () {
 	else if (!!uri&&uri!=='null') {
 		$input_uri[0].value=uri;
 	}
-
 	let title=m.localStorage.getItem("title");
 	if (vars.title!==undefined) {
 		$input_title[0].value=vars.title.val;
@@ -4745,30 +4741,24 @@ $document.ready(function () {
 	else if (!!title&&title!=='null') {
 		$input_title[0].value=title;
 	}
-
 	let cats=m.localStorage.getItem("cats");
 	if (!!cats&&cats!=='null') {
 		$input_cats[0].value=cats;
 	}
-
 	let desc=m.localStorage.getItem("desc");
 	if (!!desc&&desc!=='null') {
 		$input_desc[0].value=desc;
 	}
-
 	let cmt=m.localStorage.getItem("cmt");
 	if (!!cmt&&cmt!=='null') {
 		$input_cmt[0].value=cmt;
 	}
-
 	let points=m.localStorage.getItem("points");
 	if (!!points&&points!=='null') {
 		$input_val[0].value=points;
 		$input_val.trigger("keyup");
 	}
-
 	m.localStorage.clear();
-
 	m.args={};
 	if (vars.PRL||vars.PRR) {
 		if (vars.PRL) {
@@ -4872,7 +4862,7 @@ $document.ready(function () {
 				window.location.href=path;
 				return false;
 			};
-			$new_reco.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in, #should-do-log-in-exit').hide();"></div>`);
+			$new_reco.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in, #should-do-log-in-exit').hide();"></div>`);
 		}
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
