@@ -103,6 +103,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
 .block-touch-exit {z-index:31000}
 
+#not-my-page {position:fixed; z-index:50000; left:0; right:0; top:0; bottom:0; background:rgb(200,255,200,0.15)}
+
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
 	#container.pink {background:rgb(68,0,59); color:wheat}
@@ -431,6 +433,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
+<div id="not-my-page"></div>
 <div class="block-touch" id="block-touch" style="display:none"></div>
 <div class="block-touch-exit exit" id="block-touch-exit" style="display:none; z-index:31000; position:fixed" onclick="$('#block-touch, #block-touch-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
@@ -678,6 +681,13 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 //////////////////
 // Variables
 //////////////////
+$not_my_page=$("#not-my-page");
+if (m.myPage) {
+	$not_my_page.hide();
+}
+else {
+	$not_my_page.show();
+}
 $block_touch=$("#block-touch");
 $block_touch_exit=$("#block-touch-exit");
 $data_myCatList=$("#data-myCatList");
