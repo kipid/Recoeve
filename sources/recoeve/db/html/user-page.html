@@ -2466,7 +2466,7 @@ m.renderStrDescCmt=function (str) {
 	res[key]=str.substring(start).trim();
 	return res;
 };
-m.recoHTML=function (r, uriRenderDisable, inRange) {
+m.recoHTML=function (r, inListPlay, inRange) {
 	let res="";
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
@@ -2475,7 +2475,7 @@ m.recoHTML=function (r, uriRenderDisable, inRange) {
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
 	<div class="title">${m.escapeHTML(r.title)}</div>
 	<div class="cats">${m.catsToA(r.cats)}</div>
-	${uriRenderDisable?"":m.uriRendering(r.uri).html}`;
+	${inListPlay?"":m.uriRendering(r.uri, false, inListPlay).html}`;
 		if (r.desc) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
@@ -4950,7 +4950,7 @@ m.fsToRs.getAndPlayVideo=function (cue) {
 		$(`#toR-${i}`).addClass("selected");
 		let r=fs.fullList[i].reco;
 		$reco_playing.html(m.recoHTML(r, true, true));
-		let uriRendered=m.uriRendering(r.uri);
+		let uriRendered=m.uriRendering(r.uri, false, true);
 		if (uriRendered.from==="youtube") {
 			$eveElse.html('');
 			$eveElse_uri_rendered.hide();

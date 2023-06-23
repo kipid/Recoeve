@@ -943,18 +943,20 @@ m.togglePosition=function (elem) {
 		$parent.css("z-index", 0);
 		window.scrollTo(0, $parent.offset().top);
 		$elem.text("▲ [--stick to the left top--]");
+		m.fsToRs.fixed=false;
 	}
 	else {
 		$parent.addClass("fixed");
 		$parent.css("z-index", m.videoZIndex--);
 		window.scrollBy(0, -$parent.height());
 		$elem.text("▲ [--return to the original position--]");
+		m.fsToRs.fixed=true;
 	}
 };
 m.rC=function (elemStr, option, id) {
 	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div><div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`;
 };
-m.uriRendering=function (uri, toA) {
+m.uriRendering=function (uri, toA, inListPlay) {
 	if (uri&&uri.constructor===String) {
 		if (uri.substring(0,4).toLowerCase()==="http") {
 			let k=4;
@@ -974,28 +976,28 @@ m.uriRendering=function (uri, toA) {
 					uriRest=uri.substring(l+1);
 				}
 				if (m.ptnURI[uriHost]) {
-					let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest);
+					let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest, inListPlay);
 					if (result) { return result; }
 				}
 			}
 		}
 		for (let i=0;i<m.ptnURI.length;i++) {
-			let result=m.ptnURI[i].toIframe(uri); // img or video
+			let result=m.ptnURI[i].toIframe(uri, inListPlay); // img or video
 			if (result) { return result; }
 		}
 	}
 	return {html:(toA?m.uriToA(uri):"")};
 };
 
-m.YTiframe=function (v, vars) {
-	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`);
+m.YTiframe=function (v, vars, inListPlay) {
+	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null));
 };
 
 let ptnURI;
 ptnURI=m.ptnURI["www.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
 ptnURI.regEx2=/^shorts\/([\w-]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=null;
@@ -1008,7 +1010,7 @@ ptnURI.toIframe=function (uriRest) {
 			v=vars.v.val;
 		}
 		if (v) {
-			return {html:m.YTiframe(v, vars), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v, vars, inListPlay), from:"youtube", videoId:v};
 		}
 	}
 	else {
@@ -1016,7 +1018,7 @@ ptnURI.toIframe=function (uriRest) {
 		if (exec!==null) {
 			let v=exec[1];
 			if (v) {
-				return {html:m.YTiframe(v, null), from:"youtube", videoId:v};
+				return {html:m.YTiframe(v, null, inListPlay), from:"youtube", videoId:v};
 			}
 		}
 	}
@@ -1025,12 +1027,12 @@ ptnURI.toIframe=function (uriRest) {
 
 ptnURI=m.ptnURI["youtube.com"]={};
 ptnURI.regEx=/^shorts\/([\w-]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let v=exec[1];
 		if (v) {
-			return {html:m.YTiframe(v, null), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v, null, inListPlay), from:"youtube", videoId:v};
 		}
 	}
 	return false;
@@ -1038,26 +1040,26 @@ ptnURI.toIframe=function (uriRest) {
 
 ptnURI=m.ptnURI["youtu.be"]={};
 ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=null;
 		if (exec[2]) {
 			vars=m.getSearchVars(exec[2]);
 		}
-		return {html:m.YTiframe(exec[1], vars), from:"youtube", videoId:exec[1]};
+		return {html:m.YTiframe(exec[1], vars, inListPlay), from:"youtube", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["m.youtube.com"]={};
 ptnURI.regEx=/^watch(\?\S+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
 		if (vars.v&&vars.v.val) {
-			return {html:m.YTiframe(vars.v.val, vars), from:"youtube", videoId:vars.v.val};
+			return {html:m.YTiframe(vars.v.val, vars, inListPlay), from:"youtube", videoId:vars.v.val};
 		}
 	}
 	return false;
@@ -1065,98 +1067,98 @@ ptnURI.toIframe=function (uriRest) {
 
 ptnURI=m.ptnURI["tv.naver.com"]={};
 ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"naver", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["www.vlive.tv"]={};
 ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
+		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vlive", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["vlive.tv"]={};
 ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["vlive.tv"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`), from:"vlive", videoId:exec[1]};
+		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vlive", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["tv.kakao.com"]={};
 ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"kakao", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["entertain.daum.net"]={};
 ptnURI.regEx=/video\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"kakao", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["tvpot.daum.net"]={};
 ptnURI.regEx=/^v\/([\w-]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="no"></iframe>`), from:"daum", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["videofarm.daum.net"]={};
 ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
-		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="no"></iframe>`), from:"daum", videoId:vars.vid.val};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["vimeo.com"]={};
 ptnURI.regEx=/^([0-9]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`), from:"vimeo", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vimeo", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["www.dailymotion.com"]={};
 ptnURI.regEx=/video\/(\w+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`), from:"dailymotion", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"dailymotion", videoId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["www.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
@@ -1170,26 +1172,26 @@ ptnURI.toIframe=function (uriRest) {
 		if (vars&&vars.language) {
 			uriRest="lang/"+vars.language.val+"/"+uriRest;
 		}
-		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["embed.ted.com"]={};
 ptnURI.regEx=/^talks\//i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["embed.ted.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
 		let v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
-		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["w.soundcloud.com"]={};
 ptnURI.regEx=/^player\/(\?\S+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
@@ -1202,44 +1204,44 @@ ptnURI.toIframe=function (uriRest) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="no" frameborder="no"></iframe>`, `soundcloud`), from:"soundcloud", videoId:vars.url&&vars.url.val};
+		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="no" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
 ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
-ptnURI.toIframe=function (uriRest) {
+ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, "instagram"), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed instagram":"instagram")), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI[0]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
-ptnURI.toIframe=function (uri) {
+ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, "eveElse"), from:'image', src:exec[0]};
+		return {html:m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI[1]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
-ptnURI.toIframe=function (uri) {
+ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`), from:'video', src:exec[0]};
+		return {html:m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]};
 	}
 	return false;
 };
 
 ptnURI=m.ptnURI[2]={};
 ptnURI.regEx=/^https?:\/\/kr[\d]+\.sogirl\.so(?:(\/[\s\S]*))?/i;
-ptnURI.toIframe=function (uri) {
+ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:`<a target="_blank" href="https://kr53.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr53.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
