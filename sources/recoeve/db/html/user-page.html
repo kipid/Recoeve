@@ -1264,23 +1264,23 @@ m.browserWidth=0;
 $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
+		if (window.innerWidth<600) {
+			m.fontSize=15;
+		}
+		else if (window.innerWidth<701) {
+			m.fontSize=15.5;
+		}
+		else if (window.innerWidth<901) {
+			m.fontSize=16;
+		}
+		else if (window.innerWidth<1210) {
+			m.fontSize=16.5;
+		}
+		else {
+			m.fontSize=17;
+		}
+		m.defaultStyles.fontSize=m.fontSize;
 	}
-	if (window.innerWidth<600) {
-		m.fontSize=15;
-	}
-	else if (window.innerWidth<701) {
-		m.fontSize=15.5;
-	}
-	else if (window.innerWidth<901) {
-		m.fontSize=16;
-	}
-	else if (window.innerWidth<1210) {
-		m.fontSize=16.5;
-	}
-	else {
-		m.fontSize=17;
-	}
-	m.defaultStyles.fontSize=m.fontSize;
 	m.printDeviceInfo();
 	if (m.browserWidth<701) {
 		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
