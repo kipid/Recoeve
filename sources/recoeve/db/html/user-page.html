@@ -1446,12 +1446,20 @@ m.getSuperCat=function (cat) {
 m.strCatListToJSON=function (strCatList, catList) {
 	let list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
-		list=[""];
+		list=[];
 	}
-	catList=m.catList=[{i:0, cat:"", baseCat:"", depth:0}];
+	list.unshift(""); // cat=uncategorized : empty cat.
+	if (catList===undefined||catList===null) {
+		if (!!m.catList) {
+			catList=m.catList;
+		}
+		else {
+			catList=m.catList=[];
+		}
+	}
 	let superCats=[];
 	if (strCatList.trim()==="") {
-		catList[""]=catList[0];
+		catList[""]=catList[0]={i:0, cat:"", baseCat:"", depth:0};
 	}
 	else {
 		for (let i=0;i<list.length;i++) {
