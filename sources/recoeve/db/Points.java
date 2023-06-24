@@ -29,12 +29,10 @@ public class Points {
 	public Points(String valStr) {
 		pointStr=valStr;
 		val=val(valStr);
-		valid=(val>=0);
+		valid=(val>=0.0&&val<=1.0);
 	}
 	public String toString() {
-		return "str : "+pointStr
-			+"\nval : "+val
-			+"\nvalid : "+valid;
+		return "str:"+pointStr+"\tval:"+val+"\tvalid:"+valid;
 	}
 	public String str() {
 		return pointStr;
@@ -79,8 +77,8 @@ public class Points {
 	}
 	
 	public static void main(String... args) {
-		Points p=new Points();
-		Points p2=new Points("abc");
+		Points p=new Points("");
+		Points p2=new Points("2.1/10");
 		System.out.println(p);
 		System.out.println(p2);
 		System.out.println(p.equals(p2));
