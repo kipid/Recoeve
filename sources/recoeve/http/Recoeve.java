@@ -10,6 +10,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.sql.*;
@@ -45,6 +46,16 @@ public static final String INVALID_ACCESS="INVALID ACCESS";
 @Override
 public void start() {
 Router router=Router.router(vertx);
+
+CorsHandler corsHandler=CorsHandler.create()
+	.addOrigin("kipid.tistory.com")
+	// .allowedMethod(HttpMethod.GET)
+	.allowedMethod(HttpMethod.POST)
+	// .allowedMethod(HttpMethod.PUT)
+	// .allowedMethod(HttpMethod.DELETE)
+	.allowedHeader("Content-Type");
+
+router.route().handler(corsHandler);
 
 router.post("/BlogStat").handler(ctx -> { // e.g. path=/blogstat
 	PrintLog.printLog(ctx);
