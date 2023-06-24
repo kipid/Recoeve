@@ -45,6 +45,7 @@ public static final String INVALID_ACCESS="INVALID ACCESS";
 
 @Override
 public void start() {
+Router router0=Router.router(vertx);
 Router router=Router.router(vertx);
 
 CorsHandler corsHandler=CorsHandler.create()
@@ -55,9 +56,9 @@ CorsHandler corsHandler=CorsHandler.create()
 	// .allowedMethod(HttpMethod.DELETE)
 	.allowedHeader("Content-Type");
 
-router.route().handler(corsHandler);
+router0.route().handler(corsHandler);
 
-router.post("/BlogStat").handler(ctx -> { // e.g. path=/blogstat
+router0.post("/BlogStat").handler(ctx -> { // e.g. path=/BlogStat
 	PrintLog.printLog(ctx);
 	PrintLog.req.bodyHandler((Buffer data) -> {
 		StrArray inputs=new StrArray(data.toString());
@@ -67,7 +68,7 @@ router.post("/BlogStat").handler(ctx -> { // e.g. path=/blogstat
 	});
 });
 
-router.post("/GetBlogStat").handler(ctx -> { // e.g. path=/blogstat
+router0.post("/BlogStat/Get").handler(ctx -> { // e.g. path=/BlogStat/Get
 	PrintLog.printLog(ctx);
 	PrintLog.req.bodyHandler((Buffer data) -> {
 		StrArray inputs=new StrArray(data.toString());
@@ -727,7 +728,10 @@ vertx.createHttpServer(
 			.setPath("C:/RecoeveNet/Convert/recoeve.net_202302280263A.jks")
 			.setPassword("o8lx6xxp")
 		)
-).requestHandler(router).listen(443);
+).requestHandler(req -> {
+	Router routerK=req.path().startsWith("/BlogStat")?router0:router;
+	routerK.handle(req);
+}).listen(443);
 // UnderConstruction.HOST
 // 탄력적 IP | 할당된 IPv4 주소 | 퍼블릭 IPv4 주소 : "43.200.166.14"
 // 퍼블릭 IPv4 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
