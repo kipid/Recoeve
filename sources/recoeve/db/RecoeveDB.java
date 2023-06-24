@@ -80,6 +80,10 @@ public static byte[] unhex(String s) {
 	return data;
 }
 
+public static String longToHexString(long user_i) {
+	return String.format("%016X", user_i);
+}
+
 private static final MysqlConnectionPoolDataSource ds;
 static {
 	ds=new MysqlConnectionPoolDataSource();
@@ -544,7 +548,7 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 	}
 	return done;
 }
-private boolean deleteUser(String userEmail) {
+private boolean deleteUser(String userEmail) { // TODO: Delete user with 30 days suspending.
 	boolean done=false;
 	ResultSet user=null;
 	try {
@@ -1357,22 +1361,28 @@ public ResultSet getNeighborListFrom(long user_from, String cat_from) throws SQL
 	// 	rs.getString("userCatList");
 	// }
 }
-public Set<Long> getRecentests(String uri) throws SQLException {
+public Set<Long> getRecentests(String uri, int maxN) throws SQLException {
 	ResultSet rs=getRecoStat(uri);
-	String[] recentests=rs.getString("recentests").split("\n");
-	Set<Long> setOfRecentests=new HashSet<Long>(recentests.length*2);
-	for (int i=0;i<recentests.length;i++) {
-		setOfRecentests.add(Long.parseLong(recentests[i], 16));
+	String recentests=rs.getString("recentests");
+	int l=recentests.length()<=16*maxN?recentests.length()/16:maxN;
+	List<String> users=new ArrayList<String>(l);
+	for (int i=0;i<l;i++) {
+		users.add(recentests.substring(16*i, 16*(i+1)));
+	}
+	Set<Long> setOfRecentests=new HashSet<Long>(users.size()*2);
+	for (int i=0;i<users.size();i++) {
+		setOfRecentests.add(Long.parseLong(users.get(i), 16));
 	}
 	return setOfRecentests;
 }
+public static final int RECENTESTS_N=200;
 public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
 	if (pts.valid()) {
 		if (increment==1) {
 			//////////////////////////////////////////////////////
 			// Update existing neighbors and recentests.
 			//////////////////////////////////////////////////////
-			Set<Long> recentests=getRecentests(uri);
+			Set<Long> recentests=getRecentests(uri, RECENTESTS_N);
 			recentests.remove(user_from);
 			for (String cat_from: cats.setOfCats) {
 				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
@@ -2117,7 +2127,7 @@ public ResultSet putAndGetRecoStat(String uri, long user_i, String now) throws S
 	}
 	else {
 		pstmtPutRecoStat.setString(1, uri);
-		pstmtPutRecoStat.setString(2, Long.toString(user_i, 16));
+		pstmtPutRecoStat.setString(2, RecoeveDB.longToHexString(user_i));
 		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
 		pstmtPutRecoStat.executeUpdate();
 		rs=pstmtGetRecoStat.executeQuery();
@@ -2136,9 +2146,6 @@ public ResultSet getRecoStat(String uri) throws SQLException {
 	throw new SQLException("No RecoStat on the uri.");
 }
 
-public static final int recoStatUpdatePer=50;
-public static final int recoStatMaxRecentests=200;
-
 public void updateRecoStat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
 	ResultSet recoStat=putAndGetRecoStat(uri, user_i, now);
 	recoStat.updateString("tUpdate", now);
@@ -2155,24 +2162,9 @@ public void updateRecoStat(long user_i, String uri, Points pts, String now, int 
 		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
 	}
 	if (increment>0) {
-		String recentests=Long.toString(user_i, 16)+"\n"+recoStat.getString("recentests");
-		if (nV%recoStatUpdatePer==0) {
-			String[] recoers=recentests.split("\n");
-			Set<String> recoersSet=new HashSet<String>(recoStatMaxRecentests*2);
-			int n=0;
-			List<String> recoersList=new ArrayList<String>();
-			for (String recoer : recoers) {
-				if (recoersSet.add(recoer)) {
-					n++;
-					recoersList.add(recoer);
-					if (n==recoStatMaxRecentests) { break; }
-				}
-			}
-			recentests=String.join("\n", recoersList);
-		}
-		recoStat.updateString("recentests", recentests);
+		recoStat.updateString("recentests", recoStat.getString("recentests")+RecoeveDB.longToHexString(user_i));
+		recoStat.updateRow();
 	}
-	recoStat.updateRow();
 }
 public String recoDefs(String uri) {
 	String res="";
@@ -2567,6 +2559,11 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
+	System.out.println(RecoeveDB.longToHexString(9223372036854775807L)); // 7FFF_FFFF_FFFF_FFFF
+	System.out.println(RecoeveDB.longToHexString(-9223372036854775808L)); // 8000_0000_0000_0000
+	System.out.println(RecoeveDB.longToHexString(Long.MAX_VALUE)); // 7FFF_FFFF_FFFF_FFFF
+	System.out.println(RecoeveDB.longToHexString(Long.MIN_VALUE)); // 8000_0000_0000_0000
+	System.out.println(Long.parseLong("7FFFFFFFFFFFFFFF"));
 	// RecoeveDB db=new RecoeveDB();
 	// db.deleteUser("Sophy.5912@gmail.com");
 }
