@@ -46,6 +46,27 @@ public static final String INVALID_ACCESS="INVALID ACCESS";
 public void start() {
 Router router=Router.router(vertx);
 
+router.post("/BlogStat").handler(ctx -> { // e.g. path=/blogstat
+	PrintLog.printLog(ctx);
+	PrintLog.req.bodyHandler((Buffer data) -> {
+		StrArray inputs=new StrArray(data.toString());
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+		PrintLog.req.response().end(""+PrintLog.db.putBlogVisitor(PrintLog.now, PrintLog.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+		System.out.println("Recorded:\n"+inputs);
+	});
+});
+
+router.post("/GetBlogStat").handler(ctx -> { // e.g. path=/blogstat
+	PrintLog.printLog(ctx);
+	PrintLog.req.bodyHandler((Buffer data) -> {
+		StrArray inputs=new StrArray(data.toString());
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+		String res=PrintLog.db.getBlogVisitor(inputs.get(1, "to"), inputs.get(1, "from"));
+		PrintLog.req.response().end(res, ENCODING);
+		System.out.println("Sended:\n"+res);
+	});
+});
+
 router.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 	PrintLog.printLog(ctx);
 	if (PrintLog.refererAllowed) { // referer check.

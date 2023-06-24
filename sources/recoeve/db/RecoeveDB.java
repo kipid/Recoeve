@@ -106,6 +106,9 @@ private PreparedStatement pstmtCheckDateDiff;
 	// java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	// String currentTime=sdf.format(dt);
 
+private PreparedStatement pstmtPutBlogVisitor;
+private PreparedStatement pstmtGetBlogVisitor;
+
 private PreparedStatement pstmtSession;
 private PreparedStatement pstmtCreateAuthToken;
 private PreparedStatement pstmtCheckAuthToken;
@@ -167,6 +170,9 @@ public RecoeveDB() {
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
 		pstmtCheckDayDiffLessThan1=con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
+
+		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
+		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? `t`<?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
@@ -319,6 +325,36 @@ public boolean checkDateDiff(String now, String from, int lessThanInDays) {
 		err(e);
 	}
 	return false;
+}
+
+public boolean putBlogVisitor(String now, String ip, String URI, String referer, String REACTION_GUEST) {
+	try {
+		pstmtPutBlogVisitor.setTimestamp(1, Timestamp.valueOf(now));
+		pstmtPutBlogVisitor.setString(2, ip);
+		pstmtPutBlogVisitor.setString(3, URI);
+		pstmtPutBlogVisitor.setString(4, referer);
+		pstmtPutBlogVisitor.setString(5, REACTION_GUEST);
+		return pstmtPutBlogVisitor.executeUpdate()==1;
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
+public String getBlogVisitor(String to, String from) {
+	String res="t\tip\tURI\treferer\tREACTION_GUEST";
+	try {
+		pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(to));
+		pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(from));
+		ResultSet rs=pstmtGetBlogVisitor.executeQuery();
+		while (rs.next()) {
+			res+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return res;
 }
 
 public boolean idExists(String id) {
@@ -2559,11 +2595,11 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
-	System.out.println(RecoeveDB.longToHexString(9223372036854775807L)); // 7FFF_FFFF_FFFF_FFFF
-	System.out.println(RecoeveDB.longToHexString(-9223372036854775808L)); // 8000_0000_0000_0000
-	System.out.println(RecoeveDB.longToHexString(Long.MAX_VALUE)); // 7FFF_FFFF_FFFF_FFFF
-	System.out.println(RecoeveDB.longToHexString(Long.MIN_VALUE)); // 8000_0000_0000_0000
-	System.out.println(Long.parseLong("7FFFFFFFFFFFFFFF"));
+	// System.out.println(RecoeveDB.longToHexString(9223372036854775807L)); // 7FFF_FFFF_FFFF_FFFF
+	// System.out.println(RecoeveDB.longToHexString(-9223372036854775808L)); // 8000_0000_0000_0000
+	// System.out.println(RecoeveDB.longToHexString(Long.MAX_VALUE)); // 7FFF_FFFF_FFFF_FFFF
+	// System.out.println(RecoeveDB.longToHexString(Long.MIN_VALUE)); // 8000_0000_0000_0000
+	// System.out.println(Long.parseLong("7FFFFFFFFFFFFFFF", 16));
 	// RecoeveDB db=new RecoeveDB();
 	// db.deleteUser("Sophy.5912@gmail.com");
 }
