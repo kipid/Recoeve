@@ -341,11 +341,11 @@ public boolean putBlogVisitor(String now, String ip, String URI, String referer,
 	}
 	return false;
 }
-public String getBlogVisitor(String to, String from) {
+public String getBlogVisitor(String from, String to) {
 	String res="t\tip\tURI\treferer\tREACTION_GUEST";
 	try {
-		pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(to));
-		pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(from));
+		pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(from));
+		pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(to));
 		ResultSet rs=pstmtGetBlogVisitor.executeQuery();
 		while (rs.next()) {
 			res+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");

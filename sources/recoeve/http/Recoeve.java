@@ -73,7 +73,8 @@ router0.post("/BlogStat/Get").handler(ctx -> { // e.g. path=/BlogStat/Get
 	PrintLog.req.bodyHandler((Buffer data) -> {
 		StrArray inputs=new StrArray(data.toString());
 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-		String res=PrintLog.db.getBlogVisitor(inputs.get(1, "to"), inputs.get(1, "from"));
+		System.out.println("from:"+inputs.get(1, "from")+", to:"+inputs.get(1, "to"));
+		String res=PrintLog.db.getBlogVisitor(inputs.get(1, "from"), inputs.get(1, "to"));
 		PrintLog.req.response().end(res, ENCODING);
 		System.out.println("Sended:\n"+res);
 	});
