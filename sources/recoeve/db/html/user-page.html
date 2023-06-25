@@ -740,9 +740,6 @@ $button_back=$("#button-back");
 $button_close=$("#button-close");
 $button_new_reco=$(".button-new-reco");
 
-$a_log_in=$(".a-log-in");
-$a_log_out=$(".a-log-out");
-
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
 $fuzzy_search_container_move=$("#fuzzy-search-container>.move");
@@ -1151,14 +1148,22 @@ m.getNeighbors=function () {
 
 
 ////////////////////////////////////////////////////
-// Floating key
+// Right top Log-in | Log-out
 ////////////////////////////////////////////////////
 $right_top_log_in=$("#right-top-log-in");
 $right_top_log_in.append(`${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
-	[--Log _i_n--]
+	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
 </div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
-	[--Log _o_ut--]
+	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>`}`);
+$a_log_in=$(".a-log-in");
+$a_log_out=$(".a-log-out");
+
+
+
+////////////////////////////////////////////////////
+// Floating key
+////////////////////////////////////////////////////
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
@@ -2578,7 +2583,6 @@ m.recoByOnlyStars=function ($str, uri, $result) {
 		let delay=27;
 		setInterval(function () {
 			$result.html(`[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
-			$a_log_in=$(".a-log-in");
 			delay--;
 		}, 1000);
 		setTimeout(function () {
