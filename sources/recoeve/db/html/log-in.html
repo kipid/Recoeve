@@ -143,7 +143,7 @@ if (sW<sH) {
 
 m.errCount=0;
 m.encloseErr=function (msg) {
-	return `<div id="error-msg-${m.errCount++}" class="error-msg">${m.escapeHTML(msg)}</div>`;
+	return `<div id="error-msg-${m.errCount++}" class="error-msg">${msg}</div>`;
 };
 m.byteCount=function (str) {
 	return encodeURI(str).split(/%..|./).length-1;
