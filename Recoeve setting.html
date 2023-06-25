@@ -169,6 +169,78 @@ SELECT @@SESSION.sql_mode;
 
 
 
+### Timezone
+
+```[.lang-sql]
+mysql> status;
+--------------
+mysql  Ver 8.0.30 for Win64 on x86_64 (MySQL Community Server - GPL)
+
+Connection id:          41
+Current database:       recoeve0.1
+Current user:           root@localhost
+SSL:                    Cipher in use is TLS_AES_256_GCM_SHA384
+Using delimiter:        ;
+Server version:         8.0.30 MySQL Community Server - GPL
+Protocol version:       10
+Connection:             localhost via TCP/IP
+Server characterset:    utf8mb4
+Db     characterset:    utf8mb4
+Client characterset:    utf8mb4
+Conn.  characterset:    utf8mb4
+TCP port:               3306
+Binary data as:         Hexadecimal
+Uptime:                 4 days 2 hours 42 min 13 sec
+
+Threads: 3  Questions: 122383  Slow queries: 0  Opens: 537  Flush tables: 3  Open tables: 437  Queries per second avg: 0.344
+--------------
+```/
+
+
+
+```[.lang-sql]
+mysql> SHOW variables like 'c%';
++----------------------------------------------+---------------------------------------------------------+
+| Variable_name                                | Value                                                   |
++----------------------------------------------+---------------------------------------------------------+
+| caching_sha2_password_auto_generate_rsa_keys | ON                                                      |
+| caching_sha2_password_digest_rounds          | 5000                                                    |
+| caching_sha2_password_private_key_path       | private_key.pem                                         |
+| caching_sha2_password_public_key_path        | public_key.pem                                          |
+| character_set_client                         | utf8mb4                                                 |
+| character_set_connection                     | utf8mb4                                                 |
+| character_set_database                       | utf8mb4                                                 |
+| character_set_filesystem                     | binary                                                  |
+| character_set_results                        | utf8mb4                                                 |
+| character_set_server                         | utf8mb4                                                 |
+| character_set_system                         | utf8mb3                                                 |
+| character_sets_dir                           | C:\Program Files\MySQL\MySQL Server 8.0\share\charsets\ |
+| check_proxy_users                            | OFF                                                     |
+| collation_connection                         | utf8mb4_0900_ai_ci                                      |
+| collation_database                           | utf8mb4_0900_ai_ci                                      |
+| collation_server                             | utf8mb4_0900_ai_ci                                      |
+| completion_type                              | NO_CHAIN                                                |
+| concurrent_insert                            | AUTO                                                    |
+| connect_timeout                              | 10                                                      |
+| connection_memory_chunk_size                 | 8912                                                    |
+| connection_memory_limit                      | 18446744073709551615                                    |
+| core_file                                    | OFF                                                     |
+| create_admin_listener_thread                 | OFF                                                     |
+| cte_max_recursion_depth                      | 1000                                                    |
++----------------------------------------------+---------------------------------------------------------+
+24 rows in set (0.14 sec)
+```/
+
+
+
+```[.lang-sql]
+SELECT @@global.time_zone, @@session.time_zone;
+
+SET GLOBAL time_zone='+00:00';
+SET time_zone='+00:00';
+```/
+
+
 ## Windows firewall
 
 Windows firewall 에서 port 80 access 를 풀어줘야 함. Inbound, Outbound 둘 다 풀어줌.
