@@ -4691,7 +4691,8 @@ $window.on("keydown", m.processShortKey);
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-`<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
+`<li><span onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--_F_orward--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backwar_d_--]</span></li>
