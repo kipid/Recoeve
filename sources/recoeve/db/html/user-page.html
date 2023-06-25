@@ -63,7 +63,7 @@ img {min-width:1em; min-height:1em; max-width:100%; max-height:100%}
 ul, ol {margin:0; padding:0}
 li, dd {margin:.3em 0 .5em 2em}
 
-.button {display:inline-block; cursor:pointer; margin:0 .2em 1em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
+.button {display:inline-block; cursor:pointer; margin:0 .1em .5em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
 	.pink .button {border-color:rgb(180,0,180); background:rgb(138,13,106)}
 .reco .button {margin:0}
@@ -104,7 +104,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .block-touch-exit {z-index:31000}
 
 #not-my-page {position:fixed; z-index:50000; left:0; right:0; top:0; bottom:0; background:rgb(200,255,200,0.15); pointer-events:none}
-#right-top-log-in, #my-id {display:inline-block; float:right}
+#right-top-log-in, #my-id, #choose-lang {display:inline-block; float:right}
+#choose-lang-list {display:inline-block; padding:.5em; line-height:1.5; float:right}
 
 #container {max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white; font-size:15px}
 	#container.bright {background:rgb(250,250,250); color:black}
@@ -304,7 +305,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #change-style form button {width:29px; height:25px; padding:0}
 #change-style .deviceInfo {font-size:1em}
 
-#shortkeys {}
+#shortkeys {line-height:1}
 
 .point-range {margin:1em 2.5em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
 .point-range-bar {position:absolute; left:0; right:0; height:100%; background:rgb(100,200,100)}
@@ -575,8 +576,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div class="side2" id="javascript-disable">
 	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
 </div><!-- div#javascript-disable -->
-<div class="side2" id="right-top-log-in"><div class="button" id="my-id"></div>
-</div>
+<div class="side2" id="right-top-log-in"><div class="button" id="my-id"></div><div class="button" id="choose-lang">▼ Language/언어/語言</div></div><!-- div#right-top-log-in -->
+<div class="cBoth"></div>
+<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 <div class="cBoth"></div>
 <div class="side2" style="padding:.5em"></div>
 <div class="side2" id="change-style">
@@ -592,22 +596,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="deviceInfo"></div>
 </div><!-- div#change-style -->
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
-<div class="side2" id="promoting">
-	<div class="p">
-	For the usage examples, visit my page
-	<ul>
-	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
-	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
-	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-	</ul>
-	</div>
-	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe delayed-src="https://www.youtube.com/embed/Kb2XRGWtRFE" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></div>
-</div>
-	<div class="button" id="choose-lang">▼ Language/언어/語言</div>
-	<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
-English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
-	<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 </div><!-- div#foot -->
 <div class="side2">
 	[--Short Keys--]
@@ -654,6 +642,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	</div>
 </div><!-- div#headPlay -->
 <div class="side2"><div class="numbers-of-recos"></div></div>
+<div class="side2" id="promoting">
+	<div class="p">
+	For the usage examples, visit my page
+	<ul>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+	</ul>
+	</div>
+	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe delayed-src="https://www.youtube.com/embed/Kb2XRGWtRFE" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></div>
+</div><!-- div#promoting -->
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key"></div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
@@ -4691,13 +4691,16 @@ $window.on("keydown", m.processShortKey);
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
-`<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] (Go)</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--Forward--] Reco</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backward--] Reco</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})"><span class="bold">N</span>: [--New Reco--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--Multireco mode--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})"><span class="bold">B</span>: [--See neighbors--]</span></li>`
+`<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--_F_orward--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backwar_d_--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})"><span class="bold">N</span>: [--_N_ew reco--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--_M_ultireco mode--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})"><span class="bold">B</span>: [--Neigh_b_ors mode--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})"><span class="bold">U</span>: [--Block to_u_ch--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold">I</span>: [--Log _i_n--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold">O</span>: [--Log _o_ut--]</span></li>`
 	);
 }
 
