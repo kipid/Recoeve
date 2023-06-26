@@ -63,6 +63,24 @@
 
 ### 정리하기 전
 
+
+
+desc, cmt SEE (Super Easy Edit) 처럼 처리되도록 만들자. 그리고 sublime-text 처럼 편집기 따로 켜서 글쓰지 않아도 되게. Ctrl+D 같은 기능 핵심적으로... Ctrl+오른쪽/왼쪽 같은것도... (그런데 멀티커서 javascript 에서 구현이 될래나? 쉽지는 않을거 같은데... Ctrl+D 이후 Ctrl+K, Ctrl+D 같은 것도 구현해 줘야 하고, selection(Start, End) 도 여러개 selection 이 되도록 기본적으로 javascirpt 에서 해줘야 가능한 구현 같은데...)
+
+cloud 서비스로 수익구조 만들어도 좋을듯? 아니면 연예인 영상이나 사진 구매해야만 reco 되도록, 그리고 링크에 대한 auth 도 구매해야만 제대로된 response 를 받도록 만들어서 수익구조 내도 될듯.
+
+cat=RSS-- 하위 cat 들에서는 feedly 처럼 새로운 글 알려주는 식으로 짜볼까나? (이건 좀 미뤄도 될듯? 합병을 생각해도 되는거고 feedly 랑.)
+
+수정 눌렀을때 (cats 하나 뺌) new-reco 가 안닫힘. Reco to mine 할때 창이 그냥 닫힘. 이미 있는 reco on the URI 일 경우에만 그러는거 같기도 하고...
+
+Reco 하루에 수십 수백개씩 작성하는 사람들에게는 Machine Learning training 시키도록 간단한 작업을 주자. 티스토리 글쓰기 할때, "로봇이 아닙니다." 나오고 그림 고르게 시키는 것처럼. (그런데 많이 써주면 내 입장에선 좋은거 아닐까나? 그냥 맘껏 쓰게 놔둘까?)
+
+F, D 로 scroll 이동할때 hashURI 표시해주기.
+
+각 cat 마다 comment 달 수 있는 widget 넣을까? 다른 서버 돌려서 iframe 으로 가져오기? DISQUS 좀 베껴야 할듯? 이건 유료 구독 판매할수도 있을듯?
+
+페이스북 포스팅, 트위터 트윗도 퍼올 수 있는건 알고 있는데.. 이게 함수까지 제공해서 delayed-loading 이 가능한건가? 가능하다고 하면 구현해 놓고 싶긴 한데... 불가능하게 해놨을것 같아서 잠시 보류.
+
 최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
 
 추천해주기. Neighbor 통한 추천.
@@ -1416,6 +1434,7 @@ Lock-in 효과 지양 : 유명한 사람이 더 유명해지도록 하는 시스
 <script>
 m.wait=512;
 m.delayPad=0;
+$out_focus.focus();
 
 /**
  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
