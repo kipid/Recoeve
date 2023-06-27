@@ -996,7 +996,7 @@ m.YTiframe=function (v, vars, inListPlay) {
 let ptnURI;
 ptnURI=m.ptnURI["www.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
-ptnURI.regEx2=/^shorts\/([\w-]+)/i;
+ptnURI.regEx1=/^shorts\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
@@ -1014,7 +1014,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 		}
 	}
 	else {
-		exec=m.ptnURI["www.youtube.com"].regEx2.exec(uriRest);
+		exec=m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
 		if (exec!==null) {
 			let v=exec[1];
 			if (v) {
@@ -1241,10 +1241,17 @@ ptnURI.toIframe=function (uri, inListPlay) {
 
 ptnURI=m.ptnURI[2]={};
 ptnURI.regEx=/^https?:\/\/kr[\d]+\.sogirl\.so(?:(\/[\s\S]*))?/i;
+ptnURI.regEx1=/^https?:\/\/kr[\d]+\.sogirl\.co(?:(\/[\s\S]*))?/i;
 ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
 		return {html:`<a target="_blank" href="https://kr53.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr53.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+	}
+	else {
+		exec=m.ptnURI[2].regEx1.exec(uri);
+		if (exec!==null) {
+			return {html:`<a target="_blank" href="https://kr53.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr53.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+		}
 	}
 	return false;
 };
