@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
@@ -108,6 +109,7 @@ private PreparedStatement pstmtCheckDateDiff;
 
 private PreparedStatement pstmtPutBlogVisitor;
 private PreparedStatement pstmtGetBlogVisitor;
+private PreparedStatement pstmtDelBlogVisitor;
 
 private PreparedStatement pstmtSession;
 private PreparedStatement pstmtCreateAuthToken;
@@ -173,6 +175,7 @@ public RecoeveDB() {
 
 		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
+		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
@@ -355,6 +358,19 @@ public String getBlogVisitor(String from, String to) {
 		err(e);
 	}
 	return res;
+}
+public boolean delBlogVisitor() {
+	try {
+		Calendar calendar=Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -30); // Subtract 30 days from the current date
+		Date date=new Date(calendar.getTimeInMillis());
+		pstmtDelBlogVisitor.setTimestamp(1, new Timestamp(date.getTime()));
+		return true;
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
 }
 
 public boolean idExists(String id) {
@@ -2595,12 +2611,7 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
-	// System.out.println(RecoeveDB.longToHexString(9223372036854775807L)); // 7FFF_FFFF_FFFF_FFFF
-	// System.out.println(RecoeveDB.longToHexString(-9223372036854775808L)); // 8000_0000_0000_0000
-	// System.out.println(RecoeveDB.longToHexString(Long.MAX_VALUE)); // 7FFF_FFFF_FFFF_FFFF
-	// System.out.println(RecoeveDB.longToHexString(Long.MIN_VALUE)); // 8000_0000_0000_0000
-	// System.out.println(Long.parseLong("7FFFFFFFFFFFFFFF", 16));
 	// RecoeveDB db=new RecoeveDB();
-	// db.deleteUser("Sophy.5912@gmail.com");
+	// db.delBlogVisitor();
 }
 }// public class RecoeveDB
