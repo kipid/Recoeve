@@ -75,13 +75,11 @@ cat=RSS-- 하위 cat 들에서는 feedly 처럼 새로운 글 알려주는 식�
 
 Reco 하루에 수십 수백개씩 작성하는 사람들에게는 Machine Learning training 시키도록 간단한 작업을 주자. 티스토리 글쓰기 할때, "로봇이 아닙니다." 나오고 그림 고르게 시키는 것처럼. (그런데 많이 써주면 내 입장에선 좋은거 아닐까나? 그냥 맘껏 쓰게 놔둘까?)
 
-F, D 로 scroll 이동할때 hashURI 표시해주기.
-
 각 cat 마다 comment 달 수 있는 widget 넣을까? 다른 서버 돌려서 iframe 으로 가져오기? DISQUS 좀 베껴야 할듯? 이건 유료 구독 판매할수도 있을듯?
 
 페이스북 포스팅, 트위터 트윗도 퍼올 수 있는건 알고 있는데.. 이게 함수까지 제공해서 delayed-loading 이 가능한건가? 가능하다고 하면 구현해 놓고 싶긴 한데... 불가능하게 해놨을것 같아서 잠시 보류.
 
-최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기?
+최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기? Reco revision history 도 같이 보이도록... path=/statistics[/mode/multireco]?cat=...#encodeURIComponent(UserIndex-recoURI) 정도의 path 로...
 
 추천해주기. Neighbor 통한 추천.
 
@@ -293,6 +291,8 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ### 정리하기 전
 
 
+
+F, D 로 scroll 이동할때 hashURI 표시해주기.
 
 멀티레코 모드에서 자기걸로 reco 해 가는 동영상 promotion in kipid's blog 에 삽입하기.
 
