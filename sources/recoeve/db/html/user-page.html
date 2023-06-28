@@ -985,20 +985,20 @@ m.toggleMultirecoMode=function () {
 };
 
 m.toggleNewReco=function () {
-	if ($button_new_reco.hasClass("enabled")) {
-		m.newRecoOn=false;
+	if ($new_reco.is(":visible")) {
 		$button_new_reco.removeClass("enabled");
 		$input_uri[0].disabled=true;
 		$out_focus.focus();
 		$new_reco.hide();
+		m.newRecoOn=false;
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 		$window.off("scroll.stop");
 	}
 	else {
-		m.newRecoOn=true;
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
 		$new_reco.show();
+		m.newRecoOn=true;
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
 		let cat=m.currentCat;
 		if (cat&&($input_cats[0].value===""||$input_title[0].value===""||$input_uri[0].value==="")) {
@@ -2888,6 +2888,7 @@ m.editOrRecoToMine=function (elem) {
 	$input_uri[0].value=r.uri;
 	$input_uri[0].disabled=true;
 	$new_reco.show();
+	m.newRecoOn=true;
 	if (uri.length!==0&&uri!==m.lastURI) {
 		m.getAndShowDefsAndReco(true);
 	}
@@ -4867,6 +4868,7 @@ $document.ready(function () {
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
 		$new_reco.show();
+		m.newRecoOn=true;
 		let cat=m.currentCat;
 		if (cat&&($input_cats[0].value===""||$input_uri[0].value==="")) {
 			$input_cats[0].value=cat;
