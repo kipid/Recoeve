@@ -43,6 +43,7 @@ public static final String HOST
 	// ="localhost";
 public static final String ENCODING="UTF-8";
 public static final String INVALID_ACCESS="INVALID ACCESS";
+public static final long day31InMs=31*24*60*60*1000;
 public static Router router0;
 public static Router router;
 
