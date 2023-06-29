@@ -470,7 +470,7 @@ $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
 //////////////////////////////////////////
 // Fuzzy search fullList
 //////////////////////////////////////////
-let $list=$(".docuK .p, .docuK .cmt, .docuK .bcf, .docuK li");
+let $list=$(".docuK .p, .docuK .cmt, .docuK .bcf, .docuK li, .docuK pre");
 for (let i=0;i<$list.length;i++) {
 	let $listI=$list.eq(i);
 	let $sec=$listI.parents(".docuK>.sec");
@@ -514,6 +514,18 @@ window.onpopstate=function (e) {
 
 // On ready.
 $document.ready(function () {
+	let blogStat=`URI	referer	REACTION_GUEST
+${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GUEST")}`;
+	$.ajax({
+		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+	}).fail(function (resp) {
+		m.logPrint("<br><br>BlogStat timeout. "+resp);
+		// console.log("fail", resp);
+	}).done(function (resp) {
+		m.logPrint("<br><br>BlogStat is logged. "+resp);
+		// console.log("done", resp);
+	});
+
 	for (let i=1;i<m.docuK.length;i++) {
 		m.docuK.eq(i).before(m.promoting);
 		m.docuK.eq(i).after(m.promoting);
@@ -671,7 +683,7 @@ window.MathJax={
 	}
 
 	// ShortKeys (including default 'processShortcut(event)' of tistory.)
-	m.fdList=$("#header,.promoting,#content,#container,#wrapContent,.docuK .sec>h1,.docuK .sec>h2,.docuK .subsec>h3,.docuK .subsubsec>h4,div.comments,#disqus_thread,#aside"); // Ordered automatically by jQuery.
+	m.fdList=$("#header, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, div.comments, #disqus_thread, #aside"); // Ordered automatically by jQuery.
 	m.tocs=$(".docuK>.sec").has(".toc");
 	m.rras=$(".docuK>.sec").has("ol.refs");
 	m.goOn=false;

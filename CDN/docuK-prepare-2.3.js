@@ -9,6 +9,18 @@ m.browserWidth=window.innerWidth;
 const docuK=$(".docuK");
 m.docuK=docuK;
 
+m.ptnURL=/^https?:\/\/\S+/i;
+m.uriToA=function (uri) {
+	if (!uri||uri.constructor!==String) { return ""; }
+	let exec=m.ptnURL.exec(uri);
+	if (exec!==null) {
+		return `<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a>`;
+	}
+	else {
+		return m.escapeHTML(uri);
+	}
+};
+
 // cookies.js (copied from cookie-test.html)
 m.expire=365*24*60*60; // max-age in seconds.
 m.docCookies={
@@ -336,6 +348,13 @@ m.SEEToArray=function (SEE) {
 				subStr=SEE.substring(start,end).trim();
 			}
 		}
+		else if (/^<eqq\s*[^>]*>/i.test(subStr)) {
+			while (!/<\/eqq>$/i.test(subStr)) {
+				re=dE.exec(SEE);
+				end=dE.lastIndex;
+				subStr=SEE.substring(start,end).trim();
+			}
+		}
 		else if (/^<!--/i.test(subStr)) {
 			while (!/-->$/i.test(subStr)) {
 				re=dE.exec(SEE);
@@ -617,7 +636,7 @@ m.HideBR=function (elem) {
 // Changing Styles of docuK
 m.mode="Dark";
 m.fontFamily="맑은 고딕";
-m.fontSize=10;
+m.fontSize=5;
 m.lineHeight10=16;
 m.defaultStyles={mode:m.mode, fontFamily:m.fontFamily, fontSize:m.fontSize, lineHeight10:m.lineHeight10};
 
