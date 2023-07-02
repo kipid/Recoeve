@@ -3457,7 +3457,7 @@ m.emptifyReco=function () {
 	$input_cmt[0].value="";
 	$input_val[0].value="";
 	$input_val.trigger("keyup");
-	m.getAndShowDefsAndReco();
+	m.getAndShowDefsAndReco(true);
 };
 m.showDefs=function (r) {
 	let defTitles=r.defTitles;
@@ -3658,7 +3658,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 	}
-	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
+	$("#show-URI").html(uriRendered.html.replace(/\s+delayed-src/gi,"\ssrc"));
 	let r=m.userRecos[uri];
 	if (!r) { r=m.userRecos[uri]={}; }
 	if (r.down) {
@@ -3718,7 +3718,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 	}
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
-	if (e.keyCode===27) { // ESC
+	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
 		$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
 	}
 	else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
