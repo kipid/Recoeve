@@ -1482,7 +1482,8 @@ URI list 의 순서도 user 가 정하는 경우가 많을테니 순서대로 UR
 ```[.linenums.scrollable.lang-sql]
 CREATE TABLE `RecoStat` (
 	`uri` varchar(255) NOT NULL
-	, `recentests` mediumtext DEFAULT NULL
+	, `N` SMALLINT UNSIGNED DEFAULT 0
+	, `recentests` BLOB
 	, `tUpdate` datetime DEFAULT NULL
 	, `sumV100` bigint DEFAULT 0 # sum of round(value*100)
 	, `nV` bigint DEFAULT 0 # number of values (not including null, i.e. equal to the sum n0~n100.)
@@ -1592,6 +1593,9 @@ CREATE TABLE `RecoStat` (
 	, `n100` bigint DEFAULT 0
 	, PRIMARY KEY (`uri`)
 );
+
+ALTER TABLE `RecoStat` MODIFY COLUMN `recentests` BLOB;
+ALTER TABLE `RecoStat` ADD `N` SMALLINT UNSIGNED DEFAULT 0;
 
 SELECT * FROM `RecoStat` WHERE `uri`=?;
 pstmtGetRecoStat=con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
