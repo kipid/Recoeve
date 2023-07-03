@@ -349,6 +349,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+.multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
 	.pink .reco>.cmt {background:rgb(75,47,47)}
 .multireco .reco>.cmt {display:none}
@@ -2486,6 +2487,30 @@ m.recoHTML=function (r, inListPlay, inRange) {
 	<div class="title">${m.escapeHTML(r.title)}</div>
 	<div class="cats">${m.catsToA(r.cats)}</div>
 	${inListPlay?"":m.uriRendering(r.uri, false, inListPlay).html}`;
+		if (r.val?.str) {
+			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else {
+			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
+		}
+		if (m.recoMode==="multireco") {
+			if (m.myPage) {
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+			}
+			else if (m.myRecos[r.uri]) {
+				let mR=m.myRecos[r.uri];
+				if (mR.has) {
+					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+				}
+				else {
+					res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+				}
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+			}
+		}
+		res+=`<div class="result"></div>`;
 		if (r.desc) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
@@ -2521,34 +2546,11 @@ m.recoHTML=function (r, inListPlay, inRange) {
 			res+=`</div>`;
 		}
 		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
-		if (r.val?.str) {
-			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
-		}
-		else {
-			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
-		}
 		res+=`<div class="tFirst">Firstly Recoed at ${r.tFirst}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
-		if (m.recoMode==="multireco") {
-			if (m.myPage) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
-			}
-			else if (m.myRecos[r.uri]) {
-				let mR=m.myRecos[r.uri];
-				if (mR.has) {
-					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
-				}
-				else {
-					res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
-				}
-			}
-			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
-			}
-		}
-		res+=`<div class="result"></div></div>`;
+		res+=`</div>`;
 	}
 	else {
 		res+=`<div class="reco">No Reco</div>`;
