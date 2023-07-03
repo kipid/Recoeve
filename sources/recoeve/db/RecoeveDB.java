@@ -12,6 +12,8 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import io.vertx.core.MultiMap;
 
+import java.nio.ByteBuffer;
+
 // import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 
@@ -142,6 +144,8 @@ private PreparedStatement pstmtPutCatList;
 private PreparedStatement pstmtGetUriList;
 private PreparedStatement pstmtPutUriList;
 
+private PreparedStatement pstmtUpdateRecentests;
+
 private PreparedStatement pstmtPutNeighbor;
 private PreparedStatement pstmtGetNeighbor;
 private PreparedStatement pstmtPutNeighborListFrom;
@@ -207,12 +211,14 @@ public RecoeveDB() {
 		pstmtGetUriList=con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutUriList=con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
+		pstmtUpdateRecentests=con.prepareStatement("UPDATE `RecoStat` SET `Recentests`=INSERT(`Recentests`, ?, ? - ?, ?) WHERE `uri`=?;");
+
 		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
 		pstmtGetNeighborListFrom=con.prepareStatement("SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-		pstmtPutRecoStat=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`) VALUES (?, ?, ?);");
+		pstmtPutRecoStat=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?, ?, 1);");
 		pstmtGetRecoStat=con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 		pstmtPutRecoStatDefCat=con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
@@ -1379,6 +1385,117 @@ public ResultSet getReco(long user_i, String uri) throws SQLException {
 	return pstmtGetReco.executeQuery();
 }
 
+// Ref answered by Wytze :: https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java
+public static byte[] longToBytes(long l) {
+	byte[] result=new byte[Long.BYTES];
+	for (int i=Long.BYTES-1;i>=0;i--) {
+		result[i]=(byte)(l&0xFF);
+		l>>=Byte.SIZE;
+	}
+	return result;
+}
+public static long bytesToLong(final byte[] b) {
+	long result=0;
+	for (int i=0;i<Long.BYTES;i++) {
+		result<<=Byte.SIZE;
+		result|=(b[i]&0xFF);
+	}
+	return result;
+}
+
+private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
+	int N_min=N>RECENTESTS_N?RECENTESTS_N:N;
+	int byteLength=N_min*8;
+	byte[] portion=new byte[byteLength];
+	int offset=(N-N_min)*8;
+	System.arraycopy(byteData, offset, portion, 0, byteLength);
+	long[] longArray=new long[N_min];
+	ByteBuffer buffer=ByteBuffer.wrap(portion);
+	for (int i=0;i<N_min;i++) {
+		longArray[i]=buffer.getLong();
+	}
+	return longArray;
+}
+
+public boolean putRecoStat(String uri, long user_i, String now, int N) {
+	try {
+		int startByte=N*8;
+		int endByte=startByte+8;
+		pstmtUpdateRecentests.setInt(1, startByte+1); // MySQL uses 1-based index for SUBSTRING function
+		pstmtUpdateRecentests.setInt(2, endByte+1); // MySQL uses 1-based index for SUBSTRING function
+		pstmtUpdateRecentests.setInt(3, startByte+1); // MySQL uses 1-based index for INSERT function
+		pstmtUpdateRecentests.setBytes(4, longToBytes(user_i));
+		pstmtUpdateRecentests.setString(5, uri);
+		return pstmtUpdateRecentests.executeUpdate()>0;
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
+public static final int N_MAX=8191;
+public static final int N_PADDING=1024;
+public static final int N_REMAIN=N_MAX-N_PADDING;
+public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) throws SQLException {
+	pstmtGetRecoStat.setString(1, uri);
+	ResultSet rs=pstmtGetRecoStat.executeQuery();
+	if (rs.next()) {
+		int N=rs.getInt("N");
+		putRecoStat(uri, user_i, now, N);
+		rs.updateInt("N", N+1);
+		if (N+1==N_MAX) {
+			byte[] remains=new byte[N_REMAIN*8];
+			System.arraycopy(rs.getBytes("recentests"), N_PADDING*8, remains, 0, N_REMAIN*8);
+			rs.updateBytes("recentests", remains);
+			rs.updateInt("N", N_REMAIN);
+		}
+		rs.updateRow();
+		return rs;
+	}
+	else {
+		pstmtPutRecoStat.setString(1, uri);
+		pstmtPutRecoStat.setBytes(2, longToBytes(user_i));
+		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
+		pstmtPutRecoStat.executeUpdate();
+		rs=pstmtGetRecoStat.executeQuery();
+		if (rs.next()) {
+			return rs;
+		}
+		throw new SQLException("No RecoStat on the uri.");
+	}
+}
+public ResultSet getRecoStat(String uri) throws SQLException {
+	pstmtGetRecoStat.setString(1, uri);
+	ResultSet rs=pstmtGetRecoStat.executeQuery();
+	if (rs.next()) {
+		return rs;
+	}
+	throw new SQLException("No RecoStat on the uri.");
+}
+
+public void updateRecoStat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
+	ResultSet recoStat=null;
+	if (increment>0) {
+		recoStat=putAndGetRecoRecentests(uri, user_i, now);
+	}
+	else {
+		recoStat=getRecoStat(uri);
+	}
+	recoStat.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+	long nV=recoStat.getLong("nV");
+	if (pts.valid()) {
+		long val100=pts.val100();
+		recoStat.updateLong("sumV100", recoStat.getLong("sumV100")+val100*increment);
+		nV+=increment;
+		recoStat.updateLong("nV", nV);
+		String nVal100="n"+Long.toString(val100);
+		recoStat.updateLong(nVal100, recoStat.getLong(nVal100)+increment);
+	}
+	else {
+		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
+	}
+}
+
 public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat_from, long sumSim, int nSim, int simAvg100, String now) throws SQLException {
 	pstmtPutNeighbor.setLong(1, user_i);
 	pstmtPutNeighbor.setString(2, cat_i);
@@ -1413,29 +1530,26 @@ public ResultSet getNeighborListFrom(long user_from, String cat_from) throws SQL
 	// 	rs.getString("userCatList");
 	// }
 }
-public Set<Long> getRecentests(String uri, int maxN) throws SQLException {
+public long[] getRecentests(String uri) throws SQLException {
 	ResultSet rs=getRecoStat(uri);
-	String recentests=rs.getString("recentests");
-	int l=recentests.length()<=16*maxN?recentests.length()/16:maxN;
-	List<String> users=new ArrayList<String>(l);
-	for (int i=0;i<l;i++) {
-		users.add(recentests.substring(16*i, 16*(i+1)));
-	}
-	Set<Long> setOfRecentests=new HashSet<Long>(users.size()*2);
-	for (int i=0;i<users.size();i++) {
-		setOfRecentests.add(Long.parseLong(users.get(i), 16));
-	}
-	return setOfRecentests;
+	int N=rs.getInt("N");
+	byte[] recentests=rs.getBytes("recentests");
+	return convertByteArrayToLongArray(recentests, N);
 }
 public static final int RECENTESTS_N=200;
+public static final int N_SET=300;
 public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
 	if (pts.valid()) {
 		if (increment==1) {
 			//////////////////////////////////////////////////////
 			// Update existing neighbors and recentests.
 			//////////////////////////////////////////////////////
-			Set<Long> recentests=getRecentests(uri, RECENTESTS_N);
-			recentests.remove(user_from);
+			long[] recentests=getRecentests(uri);
+			Set<Long> recentestsSet=new HashSet<>(N_SET);
+			for (int i=0;i<recentests.length;i++) {
+				recentestsSet.add(recentests[i]);
+			}
+			recentestsSet.remove(user_from);
 			for (String cat_from: cats.setOfCats) {
 				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
 				for (Long user_to: recentests) {
@@ -1883,6 +1997,11 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 	}
 }
 
+// Reco, Edit 일 때 둘 다 recentests 마지막에 user_i 추가.
+public void updateRecentests(long user_i) {
+
+}
+
 public static final int sortPer=100;
 
 public void updateDefCat(String uri, Categories cats, int increment) throws SQLException {
@@ -2171,53 +2290,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 		}
 	}
 }}
-public ResultSet putAndGetRecoStat(String uri, long user_i, String now) throws SQLException {
-	pstmtGetRecoStat.setString(1, uri);
-	ResultSet rs=pstmtGetRecoStat.executeQuery();
-	if (rs.next()) {
-		return rs;
-	}
-	else {
-		pstmtPutRecoStat.setString(1, uri);
-		pstmtPutRecoStat.setString(2, RecoeveDB.longToHexString(user_i));
-		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
-		pstmtPutRecoStat.executeUpdate();
-		rs=pstmtGetRecoStat.executeQuery();
-		if (rs.next()) {
-			return rs;
-		}
-		throw new SQLException("No RecoStat on the uri.");
-	}
-}
-public ResultSet getRecoStat(String uri) throws SQLException {
-	pstmtGetRecoStat.setString(1, uri);
-	ResultSet rs=pstmtGetRecoStat.executeQuery();
-	if (rs.next()) {
-		return rs;
-	}
-	throw new SQLException("No RecoStat on the uri.");
-}
 
-public void updateRecoStat(long user_i, String uri, Points pts, String now, int increment) throws SQLException {
-	ResultSet recoStat=putAndGetRecoStat(uri, user_i, now);
-	recoStat.updateString("tUpdate", now);
-	long nV=recoStat.getLong("nV");
-	if (pts.valid()) {
-		long val100=pts.val100();
-		recoStat.updateLong("sumV100", recoStat.getLong("sumV100")+val100*increment);
-		nV+=increment;
-		recoStat.updateLong("nV", nV);
-		String nVal100="n"+Long.toString(val100);
-		recoStat.updateLong(nVal100, recoStat.getLong(nVal100)+increment);
-	}
-	else {
-		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
-	}
-	if (increment>0) {
-		recoStat.updateString("recentests", recoStat.getString("recentests")+RecoeveDB.longToHexString(user_i));
-		recoStat.updateRow();
-	}
-}
 public String recoDefs(String uri) {
 	String res="";
 	try {
@@ -2554,6 +2627,7 @@ public String putReco(long user_i, String recoStr) {
 	}
 	return res+" :: done:"+done;
 }
+
 // public boolean updateReco(long user_i, String recoStr) {
 // 	try {
 // 		StrArray sa=new StrArray(recoStr);
@@ -2580,7 +2654,7 @@ public String putReco(long user_i, String recoStr) {
 // 			return true;
 // 		}
 // 	}
-//	catch (SQLException e) {
+// 	catch (SQLException e) {
 // 		err(e);
 // 	}
 // 	return false;
