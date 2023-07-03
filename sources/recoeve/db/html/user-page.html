@@ -375,7 +375,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC {margin:.5em 0}
 .rC.fixed {position:fixed; z-index:10000; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
 	.bright .rC.fixed {background:white; border-color:black}
-.rC>.rSC {box-sizing:content-box; position:relative; height:4em; padding-bottom:63%}
+.rC>.rSC {box-sizing:content-box; position:relative; height:0; padding-bottom:63%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
 .rC.instagram>.rSC {padding-bottom:150%}
 .rC.eveElse>.rSC {padding-bottom:80%}
@@ -2557,7 +2557,7 @@ m.recoHTML=function (r, inListPlay, inRange) {
 };
 m.reco_pointChange_do=function (args, err) {
 	if (err) {
-		args.$result?.html(err);
+		m.delayedLogOut(err, 27, args.$result);
 		return;
 	}
 	let fs=m.fsGo;
@@ -2575,19 +2575,15 @@ m.reco_pointChange_do=function (args, err) {
 		}
 		else {
 			args.$result?.html(res[1]?.result);
+			setTimeout(function () {
+				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+			}, 2000);
 		}
 	});
 };
 m.recoByOnlyStars=function ($str, uri, $result) {
 	if (!m.myIndex) {
-		let delay=27;
-		setInterval(function () {
-			$result.html(`[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
-			delay--;
-		}, 1000);
-		setTimeout(function () {
-			window.location.href=`/account/log-in?goto=${encodeURIComponent(window.location.href)}`;
-		}, 27000);
+		m.delayedLogOut("", 27 , $result);
 		return;
 	}
 	let valStr=$str.html();
@@ -2882,21 +2878,25 @@ m.showRecosOnCat=function (elem, from) {
 	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #contents>.reco, .to-be-executed");
 };
 m.editOrRecoToMine=function (elem) {
-	let $reco=$(elem).parent(".reco");
-	let uri=m.unescapeHTML($reco.find(".textURI").html());
-	let r=m.userRecos[uri];
-	$input_uri[0].value=r.uri;
-	$input_uri[0].disabled=true;
-	$new_reco.show();
-	m.newRecoOn=true;
-	if (uri.length!==0&&uri!==m.lastURI) {
-		m.getAndShowDefsAndReco(true);
+	if (!$new_reco.is(":visible")) {
+		m.toggleNewReco();
+		let $reco=$(elem).parent(".reco");
+		let uri=m.unescapeHTML($reco.find(".textURI").html());
+		let r=m.userRecos[uri];
+		$input_uri[0].value=r.uri;
+		$input_uri[0].disabled=true;
+		if (uri.length!==0&&uri!==m.lastURI) {
+			m.getAndShowDefsAndReco(true);
+		}
+		m.wST=$window.scrollTop();
+		$window.on("scroll.stop", function (e) {
+			e.preventDefault();
+			$window.scrollTop(m.wST);
+		});
 	}
-	m.wST=$window.scrollTop();
-	$window.on("scroll.stop", function (e) {
-		e.preventDefault();
-		$window.scrollTop(m.wST);
-	});
+	else {
+		$window.off("scroll.stop");
+	}
 };
 m.recoDowned=function (urisStr, recos) {
 	let uris=urisStr.trim().split("\n");
@@ -3738,7 +3738,7 @@ $input_uri.on("input keyup cut paste click", function (e) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
-			m.getAndShowDefsAndReco();
+			m.getAndShowDefsAndReco(false);
 		}, 1024);
 	}
 });
@@ -3855,22 +3855,24 @@ $button_back.on("click", function (e) {
 	m.showReco(m.userRecos[$input_uri[0].value]);
 });
 
+m.delayedLogOut=function (msg, delayTime=27, $result) {
+	let delay=delayTime&&typeof delayTime==="number"?delayTime:27;
+	setInterval(function () {
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
+		$result?.html($error.html());
+	}, 1000);
+	setTimeout(function () {
+		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+	}, delay*1000);
+};
 m.closeNewReco=function () {
-	m.closeNewRecoN=0;
-	m.closeNewRecoInterval=setInterval(function () {
-		m.closeNewRecoN++;
-		if ($new_reco.is(":visible")) {
-			$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
-		}
-		if (m.closeNewRecoN>7) {
-			clearInterval(m.closeNewRecoInterval);
-		}
-	}, 512);
+	if ($new_reco.is(":visible")) {
+		m.toggleNewReco();
+	}
 };
 m.reco_do=function (args, err) {
 	if (err) {
-		$error.html(`[--Reco failed. You may be not logged-in.--] ${err}`);
-		args.$result?.html($error.html());
+		m.delayedLogOut(`[--Reco failed. You may be not logged-in.--] ${err}`, 27);
 		$button_reco.removeClass("disabled");
 		return;
 	}
@@ -3900,6 +3902,9 @@ m.reco_do=function (args, err) {
 		}
 		else {
 			$error.html(res[1]?.result);
+			setTimeout(function () {
+				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+			}, 2000);
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -3925,31 +3930,25 @@ $button_reco.on("click", function (e) {
 	}
 	if (valid) {
 		let strHeads="do\turi";
-		m.localStorage.setItem("uri", uri);
 		let strContents="reco\t"+m.encloseStr(uri);
 
 		let title=m.formatTitle($input_title[0].value.trim());
-		m.localStorage.setItem("title", title);
 		strHeads+="\ttitle";
 		strContents+="\t"+m.encloseStr(title);
 
 		let cats=m.formatCats($input_cats[0].value.trim());
-		m.localStorage.setItem("cats", cats);
 		strHeads+="\tcats";
 		strContents+="\t"+m.encloseStr(cats);
 
 		let desc=$input_desc[0].value.trim();
-		m.localStorage.setItem("desc", desc);
 		strHeads+="\tdesc";
 		strContents+="\t"+m.encloseStr(desc);
 
 		let cmt=$input_cmt[0].value.trim();
-		m.localStorage.setItem("cmt", cmt);
 		strHeads+="\tcmt";
 		strContents+="\t"+m.encloseStr(cmt);
 
 		let points=val.str;
-		m.localStorage.setItem("points", points);
 		strHeads+="\tval";
 		strContents+="\t"+m.encloseStr(points);
 
@@ -3964,7 +3963,7 @@ $button_reco.on("click", function (e) {
 });
 m.reco_change_do=function (args, err) {
 	if (err) {
-		$error.html("Failed change. You may not be logged-in. "+err);
+		m.delayedLogOut(`[--Failed change. You may not be logged-in.--] ${err}`, 27);
 		$button_edit.removeClass("disabled");
 		return;
 	}
@@ -4000,6 +3999,9 @@ m.reco_change_do=function (args, err) {
 			}
 			else {
 				$error.html(res[1]?.result);
+				setTimeout(function () {
+					window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+				}, 2000);
 			}
 		}
 	}).always(function () {
@@ -4013,12 +4015,10 @@ $button_edit.on("click", function (e) {
 	let r=m.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
 		let strHeads="do"+"\t"+"uri";
-		m.localStorage.setItem("uri", uri);
 		let strContents="change"+"\t"+m.encloseStr(uri);
 		let changed=false;
 
 		let title=m.formatTitle($input_title[0].value.trim());
-		m.localStorage.setItem("title", title);
 		if (title!==r.title) {
 			changed=true;
 			strHeads+="\t"+"title";
@@ -4026,7 +4026,6 @@ $button_edit.on("click", function (e) {
 		}
 
 		let cats=m.formatCats($input_cats[0].value.trim());
-		m.localStorage.setItem("cats", cats);
 		if (cats!==r.cats) {
 			changed=true;
 			strHeads+="\t"+"cats";
@@ -4034,7 +4033,6 @@ $button_edit.on("click", function (e) {
 		}
 
 		let desc=$input_desc[0].value.trim();
-		m.localStorage.setItem("desc", desc);
 		if (desc!==r.desc) {
 			changed=true;
 			strHeads+="\t"+"desc";
@@ -4042,7 +4040,6 @@ $button_edit.on("click", function (e) {
 		}
 
 		let cmt=$input_cmt[0].value.trim();
-		m.localStorage.setItem("cmt", cmt);
 		if (cmt!==r.cmt) {
 			changed=true;
 			strHeads+="\t"+"cmt";
@@ -4050,7 +4047,6 @@ $button_edit.on("click", function (e) {
 		}
 
 		let points=val.str;
-		m.localStorage.setItem("points", points);
 		if (points!==r.val.str) {
 			changed=true;
 			strHeads+="\t"+"val";
@@ -4083,7 +4079,7 @@ $button_edit.on("click", function (e) {
 });
 m.reco_delete_do=function (args, err) {
 	if (err) {
-		$error.html("Failed delete. You may not be logged-in.");
+		m.delayedLogOut(`[--Failed delete. You may not be logged-in.--] ${err}`, 27);
 		$button_del.removeClass("disabled");
 		return;
 	}
@@ -4107,6 +4103,9 @@ m.reco_delete_do=function (args, err) {
 		}
 		else {
 			$error.html(res[1]?.result);
+			setTimeout(function () {
+				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+			}, 2000);
 		}
 	}).always(function () {
 		$button_del.removeClass("disabled");
@@ -4788,7 +4787,6 @@ $document.ready(function () {
 		$input_val[0].value=points;
 		$input_val.trigger("keyup");
 	}
-	m.localStorage.clear();
 	m.args={};
 	if (vars.PRL||vars.PRR) {
 		if (vars.PRL) {
@@ -4863,12 +4861,11 @@ $document.ready(function () {
 	}
 
 	if (window.location.pathname==="/reco") {
-		// Avoid window.history.pushState().
-		m.newRecoOn=true;
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
-		$new_reco.show();
-		m.newRecoOn=true;
+		if (!$new_reco.is(":visible")) {
+			m.toggleNewReco();
+		}
 		let cat=m.currentCat;
 		if (cat&&($input_cats[0].value===""||$input_uri[0].value==="")) {
 			$input_cats[0].value=cat;

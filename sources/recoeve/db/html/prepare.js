@@ -47,7 +47,7 @@ m.pathOfCat=function (cat, mode, lang, hashURI, args) {
 |*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
 |*|
 |*|  Syntaxes:
-|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]) // end :: Number: max-age in seconds
 |*|  * docCookies.getItem(name)
 |*|  * docCookies.removeItem(name[, path], domain)
 |*|  * docCookies.hasItem(name)
@@ -560,6 +560,15 @@ if (m.sW<m.sH) {
 m.str_rmb_me='log\tsW\tsH\n'
 	+'web\t'+m.sW+'\t'+m.sH;
 m.rmb_me=function (callback, args) {
+	m.localStorage.setItem("uri", m.formatURI($input_uri[0].value));
+	m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
+	m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
+	m.localStorage.setItem("desc", $input_desc[0].value.trim());
+	m.localStorage.setItem("cmt", $input_cmt[0].value.trim());
+	let val=m.val($input_val[0].value.trim());
+	if (val.valid) {
+		m.localStorage.setItem("points", val.str);
+	}
 	let SSNencrypt=function (callback, args) {
 		$.ajax({
 			type:"GET", url:"/sessionIter"
