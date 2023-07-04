@@ -3660,7 +3660,7 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 		m.lastURI=uri;
 		uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 	}
-	$("#show-URI").html(uriRendered.html.replace(/\s+delayed-src/gi,"\ssrc"));
+	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
 	let r=m.userRecos[uri];
 	if (!r) { r=m.userRecos[uri]={}; }
 	if (r.down) {
@@ -3689,9 +3689,9 @@ m.getAndShowDefsAndReco=function (noFormatURI) {
 			let defs=m.strToJSON(resp);
 			r.defs=true;
 			if (defs[1]) {
-				r.defCats=m.strToJSON(defs[1].defCats, false);
-				r.defTitles=m.strToJSON(defs[1].defTitles, false);
-				r.defDescs=m.strToJSON(defs[1].defDescs, false);
+				r.defCats=m.strToJSON(defs[1]["def-cats"], false);
+				r.defTitles=m.strToJSON(defs[1]["def-titles"], false);
+				r.defDescs=m.strToJSON(defs[1]["def-descs"], false);
 				m.showDefs(r);
 			}
 		});
@@ -3860,7 +3860,7 @@ $button_back.on("click", function (e) {
 m.delayedLogOut=function (msg, delayTime=27, $result) {
 	let delay=delayTime&&typeof delayTime==="number"?delayTime:27;
 	setInterval(function () {
-		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay--} sec.--]`);
 		$result?.html($error.html());
 	}, 1000);
 	setTimeout(function () {
