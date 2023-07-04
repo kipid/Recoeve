@@ -1892,26 +1892,6 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 	}
 	return res;
 }
-// public String getStringCatUriList(long user_i, ArrayList<String> catList) {
-// 	String res="";
-// 	try {
-// 		res+="cat\tUriList\n";
-// 		int size=catList.size();
-// 		for (int i=0;i<size;i++) {
-// 			String cat=catList.get(i);
-// 			UriList uriL=getUriList(user_i, cat);
-// 			String strUriL=uriL.toString().trim();
-// 			if (!strUriL.isEmpty()) {
-// 				strUriL="\""+strUriL.replaceAll("\"", "\"\"")+"\"";
-// 			}
-// 			res+=cat+"\t"+strUriL+"\n";
-// 		}
-// 	}
-//	catch (SQLException e) {
-// 		err(e);
-// 	}
-// 	return res;
-// }
 public UriList getUriList(long user_i, String cat) throws SQLException {
 	pstmtGetUriList.setLong(1, user_i);
 	pstmtGetUriList.setString(2, cat);
