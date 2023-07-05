@@ -514,17 +514,19 @@ window.onpopstate=function (e) {
 
 // On ready.
 $document.ready(function () {
-	let blogStat=`URI	referer	REACTION_GUEST
+	if (window.location.host==="kipid.tistory.com") {
+		let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GUEST")}`;
-	$.ajax({
-		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
-	}).fail(function (resp) {
-		m.logPrint("<br><br>BlogStat timeout. "+resp);
-		// console.log("fail", resp);
-	}).done(function (resp) {
-		m.logPrint("<br><br>BlogStat is logged. "+resp);
-		// console.log("done", resp);
-	});
+		$.ajax({
+			type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+		}).fail(function (resp) {
+			m.logPrint("<br><br>BlogStat timeout. "+resp);
+			// console.log("fail", resp);
+		}).done(function (resp) {
+			m.logPrint("<br><br>BlogStat is logged. "+resp);
+			// console.log("done", resp);
+		});
+	}
 
 	for (let i=1;i<m.docuK.length;i++) {
 		m.docuK.eq(i).before(m.promoting);
@@ -571,13 +573,13 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 
 	cookieItem=m.docCookies.getItem("m.fontSize");
 	if (cookieItem!==null) {
-		m.CfontSize(Number(cookieItem)-10);
+		m.CfontSize(Number(cookieItem)-m.defaultStyles.fontSize);
 		m.logPrint(`<br>Font-size ${(Number(cookieItem)*1.8).toFixed(1)} is set from cookie.`);
 	}
 
 	cookieItem=m.docCookies.getItem("m.lineHeight10");
 	if (cookieItem!==null) {
-		m.ClineHeight(Number(cookieItem)-16);
+		m.ClineHeight(Number(cookieItem)-m.defaultStyles.lineHeight10);
 		m.logPrint(`<br>Line-height ${(Number(cookieItem)/10).toFixed(1)} is set from cookie.`);
 	}
 
