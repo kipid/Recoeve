@@ -283,20 +283,20 @@ public static void main(String... args) {
 							System.out.println("Sended uriLists.");
 						});
 						break;
-					// case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
-					// 	PrintLog.req.bodyHandler((Buffer data) -> {
-					// 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-					// 		PrintLog.req.response().end(PrintLog.db.getStrOfNeighbors(user, new StrArray(data.toString())), ENCODING);
-					// 		System.out.println("Sended neighbors.");
-					// 	});
-					// 	break;
-					// case "/get-URI-cats-val": // e.g. path=/user/kipid/get-URI-cats-val
-					// 	PrintLog.req.bodyHandler((Buffer data) -> {
-					// 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-					// 		PrintLog.req.response().end(PrintLog.db.getUriCatsVal(user, new StrArray(data.toString())), ENCODING);
-					// 		System.out.println("Sended URI-cats-val.");
-					// 	});
-					// 	break;
+					case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
+						PrintLog.req.bodyHandler((Buffer data) -> {
+							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+							PrintLog.req.response().end(PrintLog.db.getStrOfNeighbors(finalUserId, new StrArray(data.toString())), ENCODING);
+							System.out.println("Sended neighbors.");
+						});
+						break;
+					case "/get-URI-cats-val": // e.g. path=/user/kipid/get-URI-cats-val
+						PrintLog.req.bodyHandler((Buffer data) -> {
+							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+							PrintLog.req.response().end(PrintLog.db.getUriCatsVal(finalUserId, new StrArray(data.toString())), ENCODING);
+							System.out.println("Sended URI-cats-val.");
+						});
+						break;
 					default:
 						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);

@@ -1318,38 +1318,42 @@ public boolean logsCommit(long user_i, String t, String ip, String log, boolean 
 	return false;
 }
 
-// public String getUriCatsVal(String user_id_from, StrArray sa) {
-// 	sa.get(1, "user_i")
-// }
-
-// public String getStrOfNeighbors(String user_id_from, StrArray cat_froms) {
-// 	String res="";
-// 	try {
-// 		ResultSet user=findUserById(user_id_from);
-// 		if (user.next()) {
-// 			long user_from=user.getLong("i");
-// 			res="user_i\tcat_i\tuser_from\tcat_from\tsumSim\tnSim\tsimAvg100\ttUpdate";
-// 			int size=cat_froms.getRowSize();
-// 			for (int i=1;i<size;i++) {
-// 				ResultSet rs=getNeighbors(user_from, cat_froms.get(i, "cat_from"));
-// 				while (rs.next()) {
-// 					res+="\n"+Long.toString(rs.getLong("user_i"), 16)
-// 						+"\t"+rs.getString("cat_i")
-// 						+"\t"+Long.toString(user_from, 16)
-// 						+"\t"+cat_froms.get(i, "cat_from")
-// 						+"\t"+Long.toString(rs.getLong("sumSim"), 16)
-// 						+"\t"+Integer.toString(rs.getInt("nSim"), 16)
-// 						+"\t"+Integer.toString(rs.getInt("simAvg100"), 16)
-// 						+"\t"+rs.getString("tUpdate");
-// 				}
-// 			}
-// 		}
-// 	}
-//	catch (SQLException e) {
-// 		err(e);
-// 	}
-// 	return res;
-// }
+public String getUriCatsVal(String user_id_from, StrArray cat_froms) {
+	return "Not implemented yet.";
+}
+public String getStrOfNeighbors(String user_id_from, StrArray cat_froms) {
+	String res="";
+	try {
+		ResultSet user=findUserById(user_id_from);
+		if (user.next()) {
+			long user_from=user.getLong("i");
+			res="user_i\tcat_i\tuser_from\tcat_from\tsumSim\tnSim\tsimAvg100\ttUpdate";
+			int size=cat_froms.getRowSize();
+			for (int i=1;i<size;i++) {
+				String cat_from=cat_froms.get(i, "cat_from");
+				StrArray userCatList=getNeighborListFrom(user_from, cat_from);
+				int jSize=userCatList.getRowSize();
+				for (int j=1;j<jSize;j++) {
+					ResultSet neighbor=getNeighbor(Long.parseLong(userCatList.get(j, "user_to"), 16), userCatList.get(j, "cat_to"), user_from, cat_from);
+					if (neighbor.next()) {
+						res+="\n"+Long.toString(neighbor.getLong("user_i"), 16)
+							+"\t"+neighbor.getString("cat_i")
+							+"\t"+Long.toString(user_from, 16)
+							+"\t"+cat_froms.get(i, "cat_from")
+							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
+							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
+							+"\t"+Integer.toString(neighbor.getInt("simAvg100"), 16)
+							+"\t"+neighbor.getString("tUpdate");
+					}
+				}
+			}
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return res;
+}
 public String getRecos(String user_id, StrArray uris) {
 	String res="";
 	try {
@@ -1521,14 +1525,14 @@ public boolean putNeighborListFrom(long user_from, String cat_from, String userC
 	pstmtPutNeighborListFrom.setTimestamp(4, Timestamp.valueOf(now));
 	return pstmtPutNeighborListFrom.executeUpdate()==1;
 }
-public ResultSet getNeighborListFrom(long user_from, String cat_from) throws SQLException {
+public StrArray getNeighborListFrom(long user_from, String cat_from) throws SQLException {
 	pstmtGetNeighborListFrom.setLong(1, user_from);
 	pstmtGetNeighborListFrom.setString(2, cat_from);
 	ResultSet rs=pstmtGetNeighborListFrom.executeQuery();
-	return rs;
-	// if (rs.next()) {
-	// 	rs.getString("userCatList");
-	// }
+	if (rs.next()) {
+		return new StrArray(rs.getString("userCatList"));
+	}
+	return new StrArray("user_to\tcat_to");
 }
 public long[] getRecentests(String uri) throws SQLException {
 	ResultSet rs=getRecoStat(uri);
@@ -1551,7 +1555,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			}
 			recentestsSet.remove(user_from);
 			for (String cat_from: cats.setOfCats) {
-				ResultSet neighborList=getNeighborListFrom(user_from, cat_from);
+				StrArray neighborListFrom=getNeighborListFrom(user_from, cat_from);
 				for (Long user_to: recentests) {
 					ResultSet reco_to=getReco(user_to, uri);
 					if (reco_to.next()) {
@@ -1582,7 +1586,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 }
 
 
-// 			ResultSet neighbors=getNeighbors(user_i, cat);
+// 			ResultSet neighbors=getNeighborsFrom(user_i, cat);
 // 			while (neighbors.next()) {
 // 				ResultSet reco=getReco(neighbors.getLong("user_i"), uri);
 // 				if (reco.next()) {

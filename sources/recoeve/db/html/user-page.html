@@ -959,6 +959,7 @@ m.toggleNeighborsMode=function () {
 		m.recoMode="neighbors";
 		$button_mode.removeClass("enabled");
 		$button_neighbors_mode.addClass("enabled");
+		m.getNeighbors();
 	}
 	m.openCat(m.currentCat);
 }
