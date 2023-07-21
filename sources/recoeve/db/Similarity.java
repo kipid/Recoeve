@@ -23,6 +23,11 @@ public class Similarity {
 		nSim=1;
 		simAvg100=simAvg100(sumSim, nSim);
 	}
+	public Similarity(long sumSim, int nSim) {
+		this.sumSim=sumSim;
+		this.nSim=nSim;
+		this.simAvg100=Similarity.simAvg100(sumSim, nSim);
+	}
 	public void add(long simSingle) {
 		sumSim+=simSingle;
 		nSim++;
@@ -42,13 +47,13 @@ public class Similarity {
 	}
 
 	public static long sim(double d) {
-		return Math.round(100/(1+d*d*50));
+		return Math.round(100.0/(1+d*d*50));
 	}
 	public static long sim(Points p1, Points p2) {
 		return sim(p1.val()-p2.val());
 	}
 	public static int simAvg100(long sumSim, int nSim) {
-		return (int)Math.round(100*sumSim/(nSim>5?nSim:5));
+		return (int)Math.round(100.0*sumSim/(nSim>5?nSim:5));
 	}
 
 	public static void main(String... args) {
