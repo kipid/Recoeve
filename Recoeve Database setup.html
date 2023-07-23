@@ -84,7 +84,7 @@ Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-U
 
 Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
 
-Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>.
+Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>, <refer class="table-NeighborListTo"></refer>.
 
 Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
 
@@ -1902,15 +1902,48 @@ ALTER TABLE `NeighborListFrom` MODIFY COLUMN `userCatList` mediumtext NOT NULL;
 DESC `NeighborListFrom`;
 
 `userCatList`=
-"user_to	cat_to
+"user_to	cat_to // No first row.
 df0017	[Music/Break]--K-Pop"
 
 # Sort by simAvg100 desc : table `Neighbors` 에서 simAvg100 찾아서 비교.
-# Sort and Cut 200 lis every nUpdate%50==0
+# Sort and Cut 200 lis every nUpdate%SORT_AND_CUT_PER==0
 
 pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
 
 pstmtGetNeighborListFrom=con.prepareStatement("SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+```/
+
+</div>
+
+
+
+### TABLE `NeighborListTo`
+
+<div id="table-NeighborListTo"><div class="number none">NeighborListTo</div>
+
+```[.linenums.lang-sql.scrollable]
+CREATE TABLE `NeighborListTo` (
+	`user_to` bigint NOT NULL
+	, `cat_to` varchar(255) NOT NULL
+	, `userCatList` mediumtext NOT NULL
+	, `nUpdate` int NOT NULL DEFAULT 1
+	, `tUpdate` datetime NOT NULL
+	, PRIMARY KEY (`user_from`, `cat_from`)
+);
+
+ALTER TABLE `NeighborListTo` MODIFY COLUMN `userCatList` mediumtext NOT NULL;
+DESC `NeighborListTo`;
+
+`userCatList`=
+"user_from	cat_from // No first row.
+df0017	[Music/Break]--K-Pop"
+
+# Sort by simAvg100 desc : table `Neighbors` 에서 simAvg100 찾아서 비교.
+# Sort and Cut 200 lis every nUpdate%SORT_AND_CUT_PER==0
+
+pstmtPutNeighborListTo=con.prepareStatement("INSERT INTO `NeighborListTo` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+
+pstmtGetNeighborListTo=con.prepareStatement("SELECT * FROM `NeighborListTo` WHERE `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 ```/
 
 </div>
