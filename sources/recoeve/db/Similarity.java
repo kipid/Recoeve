@@ -28,9 +28,16 @@ public class Similarity {
 		this.nSim=nSim;
 		this.simAvg100=Similarity.simAvg100(sumSim, nSim);
 	}
+	public void simpleAdd(long simSingle) {
+		sumSim+=simSingle;
+		nSim++;
+	}
 	public void add(long simSingle) {
 		sumSim+=simSingle;
 		nSim++;
+		simAvg100=simAvg100(sumSim, nSim);
+	}
+	public void calc() {
 		simAvg100=simAvg100(sumSim, nSim);
 	}
 	public boolean remove(long simSingle) {
