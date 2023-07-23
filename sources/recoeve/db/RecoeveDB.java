@@ -2506,13 +2506,7 @@ public String recoDo(long user_i, String recoStr) {
 						res+="no change";
 					}
 					else {
-						if (!equalityOfValuesOfPts) {
-							updateRecoStat(user_i, uri, oldPts, now, -1);
-							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateRecoStat(user_i, uri, pts, now, +1);
-							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
-						}
-						reco.updateString("tLast", now);
+						reco.updateTimestamp("tLast", Timestamp.valueOf(now));
 						if (!equalityOfStringOfCats) {
 							reco.updateString("cats", cats.toString());
 							if (!equalityOfCats) {
@@ -2541,6 +2535,12 @@ public String recoDo(long user_i, String recoStr) {
 							}
 						}
 						reco.updateRow();
+						if (!equalityOfValuesOfPts) {
+							updateRecoStat(user_i, uri, oldPts, now, -1);
+							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
+							updateRecoStat(user_i, uri, pts, now, +1);
+							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+						}
 						res+="changed";
 					}
 					break;
@@ -2551,12 +2551,12 @@ public String recoDo(long user_i, String recoStr) {
 					oldPts=new Points(reco.getString("val")); // can be null.
 					System.out.println("deleting "+reco.getString("uri"));
 					deleteCatsUriFromList(user_i, oldCats, uri, catL);
+					reco.deleteRow();
 					updateDefCat(uri, oldCats, -1);
 					updateDefTitle(uri, oldTitle, -1);
 					updateDefDesc(uri, oldDesc, -1);
 					updateRecoStat(user_i, uri, oldPts, now, -1);
 					updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-					reco.deleteRow();
 					res+="deleted";
 					break;
 				}
