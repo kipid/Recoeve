@@ -1863,36 +1863,6 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 	}
 }
 
-// public void cutNeighbors(long user_i, Categories cats) throws SQLException {
-// 	cutNeighbors(user_i, cats, 200, 1000, 3500); // default
-// }
-// public void cutNeighbors(long user_i, Categories cats, int min_NN, int max_NN, int simAvg100Cutoff) throws SQLException {
-// 	// min_NN: minimum number of neighbors.
-// 	// Cutting least sims.
-// 	for (String cat: cats.setOfSuperCats) {
-// 		ResultSet neighbors=getNeighborsOrdered(user_i, cat);
-// 		int size=neighbors.getFetchSize();
-// 		if (size>min_NN) {
-// 			int i=min_NN;
-// 			if (size>max_NN) {
-// 				i=max_NN+1;
-// 				while (neighbors.absolute(i)) {
-// 					neighbors.deleteRow();
-// 					i++;
-// 				}
-// 				i=max_NN;
-// 			}
-// 			else {
-// 				i=size;
-// 			}
-// 			while (i>min_NN&&neighbors.absolute(i)&&neighbors.getInt("simAvg100")<simAvg100Cutoff) {
-// 				neighbors.deleteRow();
-// 				i--;
-// 			}
-// 		}
-// 	}
-// }
-
 public String getStringCatList(String user_id) {
 	String res="";
 	try {
@@ -2097,9 +2067,9 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 			}
 		}
 		updateRecoStat(user_i, uri, oldPts, now, -1);
-		// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
+		updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 		updateRecoStat(user_i, uri, newPts, now, +1);
-		// updateNeighbors(user_i, uri, newCats, newPts, catL, now, +1);
+		updateNeighbors(user_i, uri, newCats, newPts, catL, now, +1);
 	}
 }
 
@@ -2517,7 +2487,7 @@ public String recoDo(long user_i, String recoStr) {
 					}
 					pstmtPutReco.executeUpdate();
 					updateRecoStat(user_i, uri, pts, now, +1);
-						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+						updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 					break;
 				case "change":
@@ -2538,9 +2508,9 @@ public String recoDo(long user_i, String recoStr) {
 					else {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
-							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
+							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 							updateRecoStat(user_i, uri, pts, now, +1);
-							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
 						if (!equalityOfStringOfCats) {
@@ -2585,7 +2555,7 @@ public String recoDo(long user_i, String recoStr) {
 					updateDefTitle(uri, oldTitle, -1);
 					updateDefDesc(uri, oldDesc, -1);
 					updateRecoStat(user_i, uri, oldPts, now, -1);
-					// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
+					updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 					reco.deleteRow();
 					res+="deleted";
 					break;
@@ -2651,9 +2621,9 @@ public String putReco(long user_i, String recoStr) {
 					else {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
-							// updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
+							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 							updateRecoStat(user_i, uri, pts, now, +1);
-							// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 						}
 						reco.updateString("tLast", now);
 						if (!equalityOfStringOfCats) {
@@ -2708,7 +2678,7 @@ public String putReco(long user_i, String recoStr) {
 					}
 					pstmtPutReco.executeUpdate();
 						updateRecoStat(user_i, uri, pts, now, +1);
-						// updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+						updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
 					res+="recoed";
 				}
 				updateCatList(user_i, catL);
@@ -2733,38 +2703,6 @@ public String putReco(long user_i, String recoStr) {
 	}
 	return res+" :: done:"+done;
 }
-
-// public boolean updateReco(long user_i, String recoStr) {
-// 	try {
-// 		StrArray sa=new StrArray(recoStr);
-// 		ResultSet reco=getReco(user_i, sa.get(1, "uri"));
-// 		if (reco.next()) {
-// 			String now=now();
-// 			reco.updateString("tLast", now);
-// 			if (sa.get(1, "cats")!=null&&!sa.get(1, "cats").equals(reco.getString("cats"))) {
-// 				reco.updateString("cats", sa.get(1, "cats"));
-// 			}
-// 			if (sa.get(1, "title")!=null&&!sa.get(1, "title").equals(reco.getString("title"))) {
-// 				reco.updateString("title", sa.get(1, "title"));
-// 			}
-// 			if (sa.get(1, "desc")!=null&&!sa.get(1, "desc").equals(reco.getString("desc"))) {
-// 				reco.updateString("desc", sa.get(1, "desc"));
-// 			}
-// 			if (sa.get(1, "cmt")!=null&&!sa.get(1, "cmt").equals(reco.getString("cmt"))) {
-// 				reco.updateString("cmt", sa.get(1, "cmt"));
-// 			}
-// 			if (sa.get(1, "val")!=null&&!sa.get(1, "val").equals(reco.getString("val"))) {
-// 				reco.updateString("val", sa.get(1, "val"));
-// 			}
-// 			reco.updateRow(); // void return;
-// 			return true;
-// 		}
-// 	}
-// 	catch (SQLException e) {
-// 		err(e);
-// 	}
-// 	return false;
-// }
 
 public void updateDefs() {
 	try {

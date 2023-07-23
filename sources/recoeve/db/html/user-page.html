@@ -1133,6 +1133,7 @@ m.getNeighbors=function () {
 			type:"POST", url:m.userPath+"/get-Neighbors", data:req
 			, dataType:"text"
 		}).done(function (resp) {
+			console.log(resp);
 			let cat_froms=m.strToJSON(req);
 			for (let i=1;i<cat_froms.length;i++) {
 				m.neighbors[cat_froms[i].cat_from]={down:true};
@@ -1142,7 +1143,7 @@ m.getNeighbors=function () {
 				m.neighbors[res[i].cat_from][res[i].user_i]={};
 				m.neighbors[res[i].cat_from][res[i].user_i][res[i].cat_i]=res[i];
 			}
-			console.log(m.neighbors);
+			// console.log(m.neighbors);
 		});
 	}
 };
@@ -3861,8 +3862,9 @@ $button_back.on("click", function (e) {
 m.delayedLogOut=function (msg, delayTime=27, $result) {
 	let delay=delayTime&&typeof delayTime==="number"?delayTime:27;
 	setInterval(function () {
-		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay--} sec.--]`);
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
 		$result?.html($error.html());
+		delay--;
 	}, 1000);
 	setTimeout(function () {
 		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
