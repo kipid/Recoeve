@@ -23,7 +23,8 @@ public class StrArray {
 		if (str==null) { return ""; }
 		if (str.startsWith("\"")||str.indexOf("\n")!=-1||str.indexOf("\t")!=-1) {
 			return "\""+str.replaceAll("\"","\"\"")+"\"";
-		} else {
+		}
+		else {
 			return str;
 		}
 	}
@@ -54,17 +55,20 @@ public class StrArray {
 		arrayArray=new ArrayList<ArrayList<String>>();
 		if (colMap) {
 			arrayMap=new ArrayList<Map<String, String>>();
-		} else {
+		}
+		else {
 			arrayMap=null;
 		}
 		if (rowMap) {
 			mapArray=new HashMap<String, ArrayList<String>>();
-		} else {
+		}
+		else {
 			mapArray=null;
 		}
 		if (colMap&&rowMap) {
 			mapMap=new HashMap<String, Map<String, String>>();
-		} else {
+		}
+		else {
 			mapMap=null;
 		}
 		row=-1;
@@ -78,6 +82,9 @@ public class StrArray {
 	}
 	public StrArray(String strData, boolean colMap, boolean rowMap) {
 		this(colMap, rowMap);
+		if (strData.isEmpty()) {
+			return;
+		}
 		str=strData.replaceAll("\\r","");
 		if (str.charAt(str.length()-1)!='\n') {
 			str+="\n";
@@ -89,7 +96,8 @@ public class StrArray {
 		if (delim.equals("\t")) {
 			col++;
 			return true;
-		} else if (delim.equals("\n")) {
+		}
+		else if (delim.equals("\n")) {
 			row++; col=0;
 			arrayArray.add(new ArrayList<String>());
 			return true;
@@ -118,19 +126,22 @@ public class StrArray {
 						strElem=str.substring(start+1, end-2);
 						delim=matchLastQuote.group(1);
 						start=end;
-					} else {
+					}
+					else {
 						strElem=str.substring(start+1);
 						delim="";
 						start=end=str.length();
 					}
 					strElem=strElem.replaceAll("\"\"","\"");
-				} else {
+				}
+				else {
 					if (matchDelim.find(start)) {
 						delim=matchDelim.group();
 						end=matchDelim.end();
 						strElem=str.substring(start, end-1);
 						start=end;
-					} else {
+					}
+					else {
 						delim="";
 						strElem=str.substring(start);
 						start=end=str.length();
