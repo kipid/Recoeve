@@ -1928,7 +1928,7 @@ CREATE TABLE `NeighborListTo` (
 	, `userCatList` mediumtext NOT NULL
 	, `nUpdate` int NOT NULL DEFAULT 1
 	, `tUpdate` datetime NOT NULL
-	, PRIMARY KEY (`user_from`, `cat_from`)
+	, PRIMARY KEY (`user_to`, `cat_to`)
 );
 
 ALTER TABLE `NeighborListTo` MODIFY COLUMN `userCatList` mediumtext NOT NULL;
