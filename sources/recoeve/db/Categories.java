@@ -38,7 +38,7 @@ public class Categories {
 	public static final String later="Later";
 	
 	public static String toFormat(String cats) {
-		if (cats==null||cats.isEmpty()) { return cats; }
+		if (cats==null||cats.isEmpty()) { return ""; }
 		cats=cats.replaceAll("[\\t\\r\\n]", " ");
 		String[] listCats=cats.split(";");
 		for (int i=0;i<listCats.length;i++) {
@@ -157,6 +157,9 @@ public class Categories {
 		}
 	}
 	
+	public boolean contains(String cat) {
+		return setOfCats.contains(cat);
+	}
 	public boolean equals(Categories cat2) {
 		// Equality of set.
 		return setOfCats.equals(cat2.setOfCats);
