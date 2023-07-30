@@ -9,6 +9,8 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import io.vertx.core.MultiMap;
 
 import java.lang.StringBuilder;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import java.nio.ByteBuffer;
 
@@ -27,6 +29,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -146,7 +149,9 @@ private PreparedStatement pstmtPutCatList;
 private PreparedStatement pstmtGetUriList;
 private PreparedStatement pstmtPutUriList;
 
+private PreparedStatement pstmtPutRecentests;
 private PreparedStatement pstmtUpdateRecentests;
+private PreparedStatement pstmtCutAndPutRecentests;
 
 private PreparedStatement pstmtPutNeighbor;
 private PreparedStatement pstmtGetNeighbor;
@@ -218,7 +223,9 @@ public RecoeveDB() {
 		pstmtGetUriList=con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutUriList=con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
-		pstmtUpdateRecentests=con.prepareStatement("UPDATE `RecoStat` SET `Recentests`=INSERT(`Recentests`, ?, ? - ?, ?) WHERE `uri`=?;");
+		pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?, ?, 1);");
+		pstmtUpdateRecentests=con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(`recentests`, ?), `N`=`N`+1, `tUpdate`=? WHERE `uri`=?;");
+		pstmtCutAndPutRecentests=con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?), ?), `N`=? WHERE `uri`=?;");
 
 		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `simAvg100`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -1421,10 +1428,12 @@ public static long bytesToLong(final byte[] b) {
 
 private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
 	int N_min=N>RECENTESTS_N?RECENTESTS_N:N;
-	int byteLength=N_min*8;
+	System.out.println("N_min:"+N_min);
+	int byteLength=N_min*Long.BYTES;
 	byte[] portion=new byte[byteLength];
-	int offset=(N-N_min)*8;
-	System.arraycopy(byteData, offset, portion, 0, byteLength);
+	int offset=(N-N_min)*Long.BYTES;
+	System.out.println("offset:"+offset);
+	System.arraycopy(byteData, offset, portion, 0, portion.length);
 	long[] longArray=new long[N_min];
 	ByteBuffer buffer=ByteBuffer.wrap(portion);
 	for (int i=0;i<N_min;i++) {
@@ -1433,15 +1442,11 @@ private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
 	return longArray;
 }
 
-public boolean putRecoStat(String uri, long user_i, String now, int N) {
+public boolean putRecoRecentests(String uri, long user_i, String now) {
 	try {
-		int startByte=N*8;
-		int endByte=startByte+8;
-		pstmtUpdateRecentests.setInt(1, startByte+1); // MySQL uses 1-based index for SUBSTRING function
-		pstmtUpdateRecentests.setInt(2, endByte+1); // MySQL uses 1-based index for SUBSTRING function
-		pstmtUpdateRecentests.setInt(3, startByte+1); // MySQL uses 1-based index for INSERT function
-		pstmtUpdateRecentests.setBytes(4, longToBytes(user_i));
-		pstmtUpdateRecentests.setString(5, uri);
+		pstmtUpdateRecentests.setBytes(1, longToBytes(user_i));
+		pstmtUpdateRecentests.setTimestamp(2, Timestamp.valueOf(now));
+		pstmtUpdateRecentests.setString(3, uri);
 		return pstmtUpdateRecentests.executeUpdate()>0;
 	}
 	catch (SQLException e) {
@@ -1456,16 +1461,44 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) th
 	pstmtGetRecoStat.setString(1, uri);
 	ResultSet rs=pstmtGetRecoStat.executeQuery();
 	if (rs.next()) {
+		boolean equalityOfRecentest=false;
 		int N=rs.getInt("N");
-		putRecoStat(uri, user_i, now, N);
-		rs.updateInt("N", N+1);
-		if (N+1==N_MAX) {
-			byte[] remains=new byte[N_REMAIN*8];
-			System.arraycopy(rs.getBytes("recentests"), N_PADDING*8, remains, 0, N_REMAIN*8);
-			rs.updateBytes("recentests", remains);
-			rs.updateInt("N", N_REMAIN);
+		ByteArrayOutputStream oStream=new ByteArrayOutputStream();
+		byte[] recentests=rs.getBytes("recentests");
+		byte[] user_i_bytes=longToBytes(user_i);
+		// System.out.println("Reading recentests... "+hex(recentests));
+		int rsL=0;
+		try {
+			if (recentests!=null) {
+				rsL=recentests.length;
+				// System.out.println("recentests length... "+rsL);
+				if (rsL>=8) {
+					equalityOfRecentest=Arrays.equals(Arrays.copyOfRange(recentests, rsL-8, rsL), user_i_bytes);
+				}
+				// System.out.println("equalityOfRecentest:"+equalityOfRecentest);
+				if (!equalityOfRecentest) {
+					oStream.write(recentests);
+				}
+			}
+			if (!equalityOfRecentest) {
+				oStream.write(user_i_bytes);
+				rs.updateBytes("recentests", oStream.toByteArray());
+				// System.out.println("Writed recentests... "+hex(oStream.toByteArray()));
+			}
 		}
-		rs.updateRow();
+		catch (IOException e) {
+			err(e);
+		}
+		if (!equalityOfRecentest) {
+			rs.updateInt("N", N+1);
+			if (N+1==N_MAX) {
+				byte[] remains=new byte[N_REMAIN*8];
+				System.arraycopy(rs.getBytes("recentests"), N_PADDING*8, remains, 0, N_REMAIN*8);
+				rs.updateBytes("recentests", remains);
+				rs.updateInt("N", N_REMAIN);
+			}
+			rs.updateRow();
+		}
 		return rs;
 	}
 	else {
@@ -1510,6 +1543,7 @@ public void updateRecoStat(long user_i, String uri, Points pts, String now, int 
 	else {
 		recoStat.updateLong("nNull", recoStat.getLong("nNull")+increment);
 	}
+	recoStat.updateRow();
 }
 public static final int SORT_AND_CUT_PER=8;
 public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat_from, long sumSim, int nSim, int simAvg100, String now) throws SQLException {
@@ -1601,27 +1635,34 @@ public boolean updateNeighborListTo(long user_to, String cat_to, StrArray userCa
 }
 public long[] getRecentests(String uri) throws SQLException {
 	ResultSet rs=getRecoStat(uri);
-	int N=rs.getInt("N");
-	byte[] recentests=rs.getBytes("recentests");
-	return convertByteArrayToLongArray(recentests, N);
+	if (rs!=null) {
+		int N=rs.getInt("N");
+		byte[] recentests=rs.getBytes("recentests");
+		return convertByteArrayToLongArray(recentests, N);
+	}
+	return new long[0];
 }
 public static final int RECENTESTS_N=200;
 public static final int N_SET=400;
 public static final int N_CUT_NEIGHBOR=200;
 public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
+	System.out.println("cats:"+cats+", increment:"+increment);
 	if (pts.valid()) {
 		if (increment==1) {
 			//////////////////////////////////////////////////////
 			// Update existing neighbors and recentests.
 			//////////////////////////////////////////////////////
 			long[] recentests=getRecentests(uri);
+			System.out.println("recentests.length:"+recentests.length);
 			Set<Long> recentestsSet=new HashSet<>(N_SET);
 			for (int i=0;i<recentests.length;i++) {
 				recentestsSet.add(recentests[i]);
 			}
 			recentestsSet.remove(user_from);
 			for (String cat_from: cats.setOfCats) {
+				System.out.println("cat_from:"+cat_from);
 				StrArray neighborListFrom=getNeighborListFrom(user_from, cat_from);
+				System.out.println("neighborListFrom:"+neighborListFrom);
 				int n=neighborListFrom.getRowSize();
 				for (int i=0;i<n;i++) { // 이미 계산된 neighborListFrom 에서 1개 new URI update 하기.
 					long user_to=Long.parseLong(neighborListFrom.get(i, 0), 16);
@@ -1638,16 +1679,20 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (cats_to.contains(cat_to)) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.add(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateInt("simAvg100", sim.simAvg100);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+									neighbor.updateRow();
+									neighbor.close();
 								}
 							}
 						}
 					}
 				}
 				StrArray neighborListTo=getNeighborListTo(user_from, cat_from);
+				System.out.println("neighborListTo:"+neighborListTo);
 				n=neighborListTo.getRowSize();
 				for (int i=0;i<n;i++) { // 이미 계산된 neighborListTo 에서 1개 new URI update 하기.
 					long user_to=Long.parseLong(neighborListTo.get(i, 0), 16);
@@ -1664,78 +1709,110 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (cats_to.contains(cat_to)) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.add(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateInt("simAvg100", sim.simAvg100);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+									neighbor.updateRow();
+									neighbor.close();
 								}
 							}
 						}
 					}
 				}
 			}
+			System.out.println("recentestsSet.size():"+recentestsSet.size());
 			for (String cat_from: cats.setOfCats) {
 				StrArray neighborListFrom=getNeighborListFrom(user_from, cat_from);
 				ResultSet RSneighborListFrom=getRSNeighborListFrom(user_from, cat_from);
 				StrArray neighborListTo=getNeighborListTo(user_from, cat_from);
 				ResultSet RSneighborListTo=getRSNeighborListTo(user_from, cat_from);
 				for (Long user_to: recentestsSet) { // 새로운 recentestsSet neighbor 로 추가하기.
+					// TODO : DELETE this part.
+					ResultSet rSuser_to=findUserByIndex(user_to);
+					if (rSuser_to.next()) {
+						System.out.println("user_id:"+rSuser_to.getString("id"));
+					}
+					// TODO : end
 					ResultSet reco_to=getReco(user_to, uri);
+					System.out.println("uri:"+uri);
 					if (reco_to.next()) {
 						Points pts_to=new Points(reco_to.getString("val"));
 						if (pts_to.valid()) {
 							Categories cats_to=new Categories(reco_to.getString("cats"));
 							UriList uriList_from=getUriList(user_from, cat_from);
+							// TODO : DELETE this part.
+							ResultSet rSuser_from=findUserByIndex(user_from);
+							if (rSuser_from.next()) {
+								System.out.println("user_id:"+rSuser_from.getString("id"));
+							}
+							System.out.println("cat_from:"+cat_from);
+							// TODO : end
+							System.out.println("uriList_from:"+uriList_from);
 							Set<String> uriListSet_from=uriList_from.setOfURIs();
 							for (String cat_to: cats_to.setOfCats) {
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
-								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
-								if (!neighbor.next()&&!neighborRev.next()) {
-									Similarity sim=new Similarity();
-									UriList uriList_to=getUriList(user_to, cat_to);
-									Set<String> uriListSet_to=uriList_to.setOfURIs();
-									if (uriListSet_from.size()<uriListSet_to.size()) { // 좀 더 작은 uriListSet 으로부터 matching calculation.
-										for (String uri_from: uriListSet_from) {
-										if (uriListSet_to.contains(uri_from)) {
-											ResultSet reco_from=getReco(user_from, uri_from);
-											if (reco_from.next()) {
-												Points pts_from=new Points(reco_from.getString("val"));
-												if (pts_from.valid()) {
-													ResultSet reco_to_corresponding=getReco(user_to, uri_from);
-													if (reco_to_corresponding.next()) {
-														Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
-														if (pts_to_corresponding.valid()) {
-															sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
-														}
-													}
-												}
-											}
-										}}
-									}
-									else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
-										for (String uri_to: uriListSet_to) {
-										if (uriListSet_from.contains(uri_to)) {
-											ResultSet reco_to_corresponding=getReco(user_to, uri_to);
-											if (reco_to_corresponding.next()) {
-												Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
-												if (pts_to_corresponding.valid()) {
-													ResultSet reco_from=getReco(user_from, uri_to);
-													if (reco_from.next()) {
-														Points pts_from=new Points(reco_from.getString("val"));
-														if (pts_from.valid()) {
-															sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
-														}
-													}
-												}
-											}
-										}}
-									}
-									sim.calc();
-									neighborListFrom.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
-									putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, sim.simAvg100, now);
-									neighborListTo.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
-									putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim, sim.simAvg100, now);
+								if (neighbor.next()) {
+									delNeighbor(user_to, cat_to, user_from, cat_from);
 								}
+								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
+								if (neighborRev.next()) {
+									delNeighbor(user_from, cat_from, user_to, cat_to);
+								}
+								Similarity sim=new Similarity();
+								UriList uriList_to=getUriList(user_to, cat_to);
+								Set<String> uriListSet_to=uriList_to.setOfURIs();
+								if (uriListSet_from.size()<uriListSet_to.size()) { // 좀 더 작은 uriListSet 으로부터 matching calculation.
+									for (String uri_from: uriListSet_from) {
+									System.out.println("uri_from:"+uri_from);
+									if (uriListSet_to.contains(uri_from)) {
+										ResultSet reco_from=getReco(user_from, uri_from);
+										if (reco_from.next()) {
+											Points pts_from=new Points(reco_from.getString("val"));
+											if (pts_from.valid()) {
+												ResultSet reco_to_corresponding=getReco(user_to, uri_from);
+												if (reco_to_corresponding.next()) {
+													Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
+													if (pts_to_corresponding.valid()) {
+														sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
+													}
+												}
+											}
+										}
+									}}
+								}
+								else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
+									for (String uri_to: uriListSet_to) {
+									System.out.println("uri_to:"+uri_to);
+									if (uriListSet_from.contains(uri_to)) {
+										ResultSet reco_to_corresponding=getReco(user_to, uri_to);
+										if (reco_to_corresponding.next()) {
+											Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
+											if (pts_to_corresponding.valid()) {
+												ResultSet reco_from=getReco(user_from, uri_to);
+												if (reco_from.next()) {
+													Points pts_from=new Points(reco_from.getString("val"));
+													if (pts_from.valid()) {
+														sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
+													}
+												}
+											}
+										}
+									}}
+								}
+								sim.calc();
+								System.out.println("user_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
+								neighborListFrom.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
+								System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toString());
+								RSneighborListFrom.updateString("userCatList", neighborListFrom.toString());
+								RSneighborListFrom.updateRow();
+								putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, sim.simAvg100, now);
+								neighborListTo.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
+								System.out.println("neighborListTo.toString()\n"+neighborListTo.toString());
+								RSneighborListTo.updateString("userCatList", neighborListTo.toString());
+								RSneighborListTo.updateRow();
+								putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim, sim.simAvg100, now);
 							}
 						}
 					}
@@ -1765,15 +1842,20 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 						}
 						RSneighborListFrom.updateInt("nUpdate", RSneighborListFrom.getInt("nUpdate")+1);
 						RSneighborListFrom.updateString("userCatList", sb.toString().trim());
+						RSneighborListFrom.updateRow();
+						System.out.println("sb.toString().trim()\n"+sb.toString().trim());
 						for (;i>=0;i--) {
 							delNeighbor(Long.parseLong(neighborListFrom.get(i, 0), 16), neighborListFrom.get(i, 1), user_from, cat_from);
 						}
 					}
 					else {
+						System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toString());
 						RSneighborListFrom.updateString("userCatList", neighborListFrom.toString());
+						RSneighborListFrom.updateRow();
 					}
 				}
 				else {
+					System.out.println("neighborListFrom.toString() (null)\n"+neighborListFrom.toString());
 					putNeighborListFrom(user_from, cat_from, neighborListFrom.toString(), now);
 				}
 				if (RSneighborListTo!=null) {
@@ -1801,15 +1883,20 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 						}
 						RSneighborListTo.updateInt("nUpdate", RSneighborListTo.getInt("nUpdate")+1);
 						RSneighborListTo.updateString("userCatList", sb.toString().trim());
+						RSneighborListTo.updateRow();
+						System.out.println("sb.toString().trim()\n"+sb.toString().trim());
 						for (;i>=0;i--) {
 							delNeighbor(user_from, cat_from, Long.parseLong(neighborListTo.get(i, 0), 16), neighborListFrom.get(i, 1));
 						}
 					}
 					else {
+						System.out.println("neighborListTo.toString()\n"+neighborListTo.toString());
 						RSneighborListTo.updateString("userCatList", neighborListTo.toString());
+						RSneighborListTo.updateRow();
 					}
 				}
 				else {
+					System.out.println("neighborListTo.toString() (null)\n"+neighborListTo.toString());
 					putNeighborListTo(user_from, cat_from, neighborListTo.toString(), now);
 				}
 			}
@@ -1817,12 +1904,15 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 		else if (increment==-1) {
 			Set<Long> userSet=new HashSet<>(10*N_SET);
 			for (String cat_from: cats.setOfCats) {
+				System.out.println("cat_from:"+cat_from);
 				StrArray neighborListFrom=getNeighborListFrom(user_from, cat_from);
+				System.out.println("neighborListFrom:"+neighborListFrom);
 				int n=neighborListFrom.getRowSize();
 				for(int i=0;i<n;i++) {
 					userSet.add(Long.parseLong(neighborListFrom.get(i, 0), 16));
 				}
 				StrArray neighborListTo=getNeighborListTo(user_from, cat_from);
+				System.out.println("neighborListTo:"+neighborListTo);
 				n=neighborListTo.getRowSize();
 				for(int i=0;i<n;i++) {
 					userSet.add(Long.parseLong(neighborListTo.get(i, 0), 16));
@@ -1840,19 +1930,25 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (neighbor.next()) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.remove(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateInt("simAvg100", sim.simAvg100);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+									neighbor.updateRow();
+									neighbor.close();
 								}
 								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 								if (neighborRev.next()) {
 									Similarity sim=new Similarity(neighborRev.getLong("sumSim"), neighborRev.getInt("nSim"));
 									sim.remove(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
 									neighborRev.updateLong("sumSim", sim.sumSim);
 									neighborRev.updateInt("nSim", sim.nSim);
 									neighborRev.updateInt("simAvg100", sim.simAvg100);
 									neighborRev.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+									neighborRev.updateRow();
+									neighborRev.close();
 								}
 							}
 						}
@@ -2494,6 +2590,9 @@ public String recoDo(long user_i, String recoStr) {
 					Categories oldCats=new Categories(reco.getString("cats"));
 					boolean equalityOfStringOfCats=(catsStr==null||catsStr.equals(oldCats.toString()));
 					boolean equalityOfCats=(catsStr==null||cats.equals(oldCats));
+					if (catsStr==null) {
+						cats=oldCats;
+					}
 					String oldTitle=reco.getString("title");
 					boolean equalityOfTitle=(title==null||title.equals(oldTitle));
 					String oldDesc=reco.getString("desc");
@@ -2502,6 +2601,9 @@ public String recoDo(long user_i, String recoStr) {
 					Points oldPts=new Points(reco.getString("val")); // can be null.
 					boolean equalityOfPts=(sa.get(i, "val")==null||pts.equals(oldPts));
 					boolean equalityOfValuesOfPts=(sa.get(i, "val")==null||pts.equalValue(oldPts));
+					if (sa.get(i, "val")==null) {
+						pts=oldPts;
+					}
 					if (equalityOfStringOfCats&&equalityOfTitle&&equalityOfDesc&&equalityOfCmt&&equalityOfPts) {
 						res+="no change";
 					}
@@ -2729,7 +2831,24 @@ public void updateDefs() {
 }
 
 public static void main(String... args) {
+	// long[] lArray=convertByteArrayToLongArray(HexFormat.of().parseHex("004fd020f0f0d0d0004fd020f0f0d0d1"), 1);
+	// long[] lArray=convertByteArrayToLongArray(longToBytes(Long.MAX_VALUE), 1);
+	// for (int i=0;i<lArray.length;i++) {
+	// 	System.out.println(lArray[i]);
+	// }
+	// System.out.println(Byte.SIZE);
+	// System.out.println(Long.BYTES);
 	// RecoeveDB db=new RecoeveDB();
+	// try {
+	// 	long[] r=db.getRecentests("https://www.youtube.com/watch?v=qD1kP_nJU3o");
+	// 	System.out.println(r.length);
+	// 	for (int i=0;i<r.length;i++) {
+	// 		System.out.println(r[i]);
+	// 	}
+	// }
+	// catch (SQLException e) {
+	// 	err(e);
+	// }
 	// db.delBlogVisitor();
 }
 }// public class RecoeveDB
