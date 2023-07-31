@@ -2830,7 +2830,27 @@ public void updateDefs() {
 	}
 }
 
+// RecoStat update all.
+	// RecoeveDB db=new RecoeveDB();
+	// String now=db.now();
+	// try {
+	// 	// TRUNCATE `RecoStat`;
+	// 	PreparedStatement pstmt=db.con.prepareStatement("SELECT * FROM `Recos`;");
+	// 	ResultSet rs=pstmt.executeQuery();
+	// 	while (rs.next()) {
+	// 		long user_i=rs.getLong("user_i");
+	// 		String uri=rs.getString("uri");
+	// 		Points pts=new Points(rs.getString("val"));
+	// 		db.updateRecoStat(user_i, uri, pts, now, 1);
+	// 	}
+	// }
+	// catch (SQLException e) {
+	// 	err(e);
+	// }
+
 public static void main(String... args) {
+
+
 	// long[] lArray=convertByteArrayToLongArray(HexFormat.of().parseHex("004fd020f0f0d0d0004fd020f0f0d0d1"), 1);
 	// long[] lArray=convertByteArrayToLongArray(longToBytes(Long.MAX_VALUE), 1);
 	// for (int i=0;i<lArray.length;i++) {
