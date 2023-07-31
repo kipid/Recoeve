@@ -2830,6 +2830,7 @@ public void updateDefs() {
 	}
 }
 
+/*
 // RecoStat update all.
 	// RecoeveDB db=new RecoeveDB();
 	// String now=db.now();
@@ -2847,6 +2848,7 @@ public void updateDefs() {
 	// catch (SQLException e) {
 	// 	err(e);
 	// }
+*/
 
 public static void main(String... args) {
 
