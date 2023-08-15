@@ -1137,12 +1137,11 @@ m.getNeighbors=function () {
 			}
 		}
 		let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-		let strHTML=`<div>`;
+		let strHTML=``;
 		for (let i=neighbors.length-1;i>=until;i--) {
 			let neighborI=neighbors[sorted[i]];
 			strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI.simAvg100/100.0}%"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net</a></div></div>`;
 		}
-		strHTML+=`</div>`;
 		$contents.html(strHTML);
 		console.log(neighbors);
 		m.neighbors[cat_from]=neighbors;
