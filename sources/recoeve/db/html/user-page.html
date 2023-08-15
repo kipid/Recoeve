@@ -3010,10 +3010,9 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
 			$contents.html("");
-			let catI=m.catList[cat];
-			if (catI) {
+			if (m.catList[cat]) {
 				$catList.find(".cat").removeClass("selected");
-				let $cat=$("#cat-"+catI.i);
+				let $cat=$("#cat-"+m.catList[cat].i);
 				$cat.addClass("selected");
 				let $parents=$cat.parents(".subCat");
 				for (let i=$parents.length-1;i>=0;i--) {
