@@ -36,6 +36,15 @@ m.pathOfCat=function (cat, mode, lang, hashURI, args) {
 	}
 	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
 };
+m.pathOfNeighbor=function (user_id, cat, mode, lang, hashURI, args) {
+	let argsSearch="";
+	if (args) {
+		for (const prop in args) {
+			argsSearch+=`&${prop}=${args[prop]}`;
+		}
+	}
+	return `/user/${user_id}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
+};
 
 /*  :: cookies.js :: Slightly edited by kipid at 2023-06-06.
 |*|
