@@ -286,7 +286,7 @@ public static void main(String... args) {
 					case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-							PrintLog.req.response().end(PrintLog.db.getStrOfNeighbors(finalUserId, new StrArray(data.toString())), ENCODING);
+							PrintLog.req.response().end(PrintLog.db.getStrOfNeighbors(finalUserId, data.toString()), ENCODING);
 							System.out.println("Sended neighbors.");
 						});
 						break;
