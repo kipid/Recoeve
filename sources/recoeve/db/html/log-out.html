@@ -2,11 +2,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<style>
+#log-in {font-size:20px}
+</style>
 </head>
 <body>
 <h1>Log-out : All log-in | session cookies are deleted.</h1>
+<div id="log-in">To <a id="a-log-in" target="_blank" href="/account/log-in">log-in page</a>.</div>
+<script src="/jquery.js"></script>
 <script>
-window.location.href=`/account/log-in${window.location.search}`;
+let href=`/account/log-in${window.location.search}`;
+window.location.href=href;
+$("#a-log-in").attr("href", href);
 </script>
 </body>
 </html>
