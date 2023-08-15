@@ -1489,16 +1489,16 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) th
 		ByteArrayOutputStream oStream=new ByteArrayOutputStream();
 		byte[] recentests=rs.getBytes("recentests");
 		byte[] user_i_bytes=longToBytes(user_i);
-		// System.out.println("Reading recentests... "+hex(recentests));
+		System.out.println("Reading recentests... "+hex(recentests));
 		int rsL=0;
 		try {
 			if (recentests!=null) {
 				rsL=recentests.length;
-				// System.out.println("recentests length... "+rsL);
+				System.out.println("recentests length... "+rsL);
 				if (rsL>=8) {
 					equalityOfRecentest=Arrays.equals(Arrays.copyOfRange(recentests, rsL-8, rsL), user_i_bytes);
 				}
-				// System.out.println("equalityOfRecentest:"+equalityOfRecentest);
+				System.out.println("equalityOfRecentest:"+equalityOfRecentest);
 				if (!equalityOfRecentest) {
 					oStream.write(recentests);
 				}
@@ -1506,7 +1506,7 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) th
 			if (!equalityOfRecentest) {
 				oStream.write(user_i_bytes);
 				rs.updateBytes("recentests", oStream.toByteArray());
-				// System.out.println("Writed recentests... "+hex(oStream.toByteArray()));
+				System.out.println("Writed recentests... "+hex(oStream.toByteArray()));
 			}
 		}
 		catch (IOException e) {
@@ -1526,6 +1526,7 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) th
 	}
 	else {
 		pstmtPutRecoStat.setString(1, uri);
+		System.out.println("Writing recentests... "+hex(longToBytes(user_i)));
 		pstmtPutRecoStat.setBytes(2, longToBytes(user_i));
 		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
 		pstmtPutRecoStat.executeUpdate();
