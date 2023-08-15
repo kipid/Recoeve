@@ -1346,14 +1346,21 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 		ResultSet user=findUserById(user_id_from);
 		if (user.next()) {
 			long user_from=user.getLong("i");
-			res="user_i\tcat_i\tsumSim\tnSim\tsimAvg100\ttUpdate";
+			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\tsimAvg100\ttUpdate";
 			StrArray neighborListFrom=getNeighborListFrom(user_from, cat_from);
 			System.out.println("neighborListFrom"+neighborListFrom.toString());
 			int jSize=neighborListFrom.getRowSize();
 			for (int j=0;j<jSize;j++) {
 				ResultSet neighbor=getNeighbor(user_from, cat_from, Long.parseLong(neighborListFrom.get(j, 0), 16), neighborListFrom.get(j, 1));
 				if (neighbor.next()) {
-					res+="\n"+Long.toString(neighbor.getLong("user_from"), 16)
+					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
+					if (rS_user_from.next()) {
+						res+="\n"+rS_user_from.getString("id");
+					}
+					else {
+						res+="\n";
+					}
+					res+="\t"+Long.toString(neighbor.getLong("user_from"), 16)
 						+"\t"+neighbor.getString("cat_from")
 						+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 						+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
@@ -1367,7 +1374,14 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 			for (int j=0;j<jSize;j++) {
 				ResultSet neighbor=getNeighbor(Long.parseLong(neighborListTo.get(j, 0), 16), neighborListTo.get(j, 1), user_from, cat_from);
 				if (neighbor.next()) {
-					res+="\n"+Long.toString(neighbor.getLong("user_i"), 16)
+					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
+					if (rS_user_from.next()) {
+						res+="\n"+rS_user_from.getString("id");
+					}
+					else {
+						res+="\n";
+					}
+					res+="\t"+Long.toString(neighbor.getLong("user_i"), 16)
 						+"\t"+neighbor.getString("cat_i")
 						+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 						+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
