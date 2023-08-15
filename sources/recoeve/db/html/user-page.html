@@ -3029,7 +3029,8 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 			}).done(function (resp) {
 				let respJSON=m.strToJSON(resp);
 				let neighbors=[];
-				let sorted=neighbors.sorted=[];
+				neighbors.sorted=[];
+				let sorted=neighbors.sorted;
 				let n=0;
 				for (let i=1;i<respJSON.length;i++) {
 					let neighborI=respJSON[i];
