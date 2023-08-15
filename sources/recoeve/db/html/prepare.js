@@ -486,6 +486,45 @@ m.csvToJSON=function (str, colMap=true, rowMap=false) {
 };
 
 
+
+////////////////////////////////////////////////////
+// Heap sort.
+////////////////////////////////////////////////////
+m.heapsort=function (arr, key, sorted, upto) {
+	let n=arr.length;
+	for (let i=n/2-1;i>=0;i--) {
+		m.heapify(arr, key, sorted, n, i);
+	}
+	upto=upto>n?n:upto;
+	let until=n-upto;
+	for (let i=n-1;i>=until;i--) {
+		let temp=sorted[0];
+		sorted[0]=sorted[i];
+		sorted[i]=temp;
+		m.heapify(arr, key, sorted, 0);
+	}
+	return until;
+};
+m.heapify=function (arr, key, sorted, n, i) {
+	let largest=i;
+	let l=2*i+1;
+	let r=2*i+2;
+	if (l<n&&arr[sorted[l]][key]>arr[sorted[largest]][key]) {
+		largest=l;
+	}
+	if (r<n&&arr[sorted[r]][key]>arr[sorted[largest]][key]) {
+		largest=r;
+	}
+	if (largest!=i) {
+		let swap=sorted[i];
+		sorted[i]=sorted[largest];
+		sorted[largest]=swap;
+		m.heapify(arr, key, sorted, n, largest);
+	}
+};
+
+
+
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
