@@ -383,6 +383,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .rC>.pc {text-align:center; font-size:10px} /* position change */
 
+.neighbor-con {position:relative; display:inline-block; margin:.2em 0; padding:1em; border:2px solid rgb(150,100,100); width:100%; background:black}
+.neighbor-sim {overflow-x:visible; padding:.1em; background:yellow; position:absolute; left:0; top:0; bottom:0}
+
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 	.bright #foot {border-color:black}
 
@@ -653,7 +656,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
 	</ul>
 	</div>
-	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe delayed-src="https://www.youtube.com/embed/Kb2XRGWtRFE" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></div>
+	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe src="https://www.youtube.com/embed/Kb2XRGWtRFE" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></div>
 </div><!-- div#promoting -->
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key"></div>
@@ -950,6 +953,7 @@ m.a_log_out=function (e, elem) {
 }
 
 m.toggleNeighborsMode=function () {
+	$contents.removeClass("multireco");
 	if ($button_neighbors_mode.hasClass("enabled")) {
 		m.recoMode="";
 		$button_mode.removeClass("enabled");
@@ -1110,42 +1114,39 @@ m.neighbors={};
 // Get neighbors
 ////////////////////////////////////////////////////
 m.getNeighbors=function () {
-	if (m.neighbors[m.currentCat]&&m.neighbors[m.currentCat].down) {
-		let req="user_i\tcat_i";
-		let neighbors=m.neighbors[m.currentCat]
-		for (let p in neighbors) {
-			if (p!=="down") {
-				for (let q in neighbors[p]) {
-					req+="\n"+p+"\t"+q;
-				}
+	let cat_from=m.currentCat;
+	$.ajax({
+		type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
+		, dataType:"text"
+	}).done(function (resp) {
+		let respJSON=m.strToJSON(resp);
+		let neighbors=[];
+		let sorted=neighbors.sorted=[];
+		let n=0;
+		for (let i=1;i<respJSON.length;i++) {
+			let neighborI=respJSON[i];
+			neighborI.cat_from=cat_from;
+			neighborI.sumSim=parseInt(neighborI.sumSim, 16);
+			neighborI.nSim=parseInt(neighborI.nSim, 16);
+			neighborI.simAvg100=parseInt(neighborI.simAvg100, 16);
+			if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
+				neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+				neighbors.push(neighborI);
+				sorted.push(n);
+				n++;
 			}
 		}
-		$.ajax({
-			type:"POST", url:m.userPath+"/get-URI-cats-val", data:req
-			, dataType:"text"
-		}).done(function (resp) {
-			$numbers_of_recos.html(resp);
-		});
-	}
-	else {
-		let req=m.currentCat;
-		$.ajax({
-			type:"POST", url:m.userPath+"/get-Neighbors", data:req
-			, dataType:"text"
-		}).done(function (resp) {
-			console.log(resp);
-			let cat_froms=m.strToJSON(req);
-			for (let i=1;i<cat_froms.length;i++) {
-				m.neighbors[cat_froms[i].cat_from]={down:true};
-			}
-			let res=m.strToJSON(resp);
-			for (let i=1;i<res.length;i++) {
-				m.neighbors[res[i].cat_from][res[i].user_i]={};
-				m.neighbors[res[i].cat_from][res[i].user_i][res[i].cat_i]=res[i];
-			}
-			// console.log(m.neighbors);
-		});
-	}
+		let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
+		let strHTML=`<div>`;
+		for (let i=neighbors.length-1;i>=until;i--) {
+			let neighborI=neighbors[sorted[i]];
+			strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI.simAvg100/100.0}%"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net</a></div></div>`;
+		}
+		strHTML+=`</div>`;
+		$contents.html(strHTML);
+		console.log(neighbors);
+		m.neighbors[cat_from]=neighbors;
+	});
 };
 
 
