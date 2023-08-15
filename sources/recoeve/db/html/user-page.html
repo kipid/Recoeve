@@ -1128,7 +1128,7 @@ m.getNeighbors=function () {
 		});
 	}
 	else {
-		let req="cat_from\n"+m.currentCat;
+		let req=m.currentCat;
 		$.ajax({
 			type:"POST", url:m.userPath+"/get-Neighbors", data:req
 			, dataType:"text"
@@ -2717,7 +2717,7 @@ m.showRecosOnCat=function (elem, from) {
 			let afterLoadSH=document.documentElement.scrollHeight;
 			if (m.recoMode==="multireco") {
 				let $stars=$contents.find(".my-point>.stars-container");
-				$stars.on("click", function (e) {
+				$stars.on("click.mdInStars", function (e) {
 					let $target=$(e.target);
 					let $reco=$target.parents(".reco");
 					if (!$target.hasClass("stars-container")) {
@@ -2804,7 +2804,7 @@ m.showRecosOnCat=function (elem, from) {
 				});
 				let $ups=$contents.find(".my-point>.up");
 				let $downs=$contents.find(".my-point>.down");
-				$ups.on("click", function (e) {
+				$ups.on("click.ud", function (e) {
 					let $target=$(e.target);
 					let $reco=$target.parents(".reco");
 					let uri=m.unescapeHTML($reco.find(".textURI").html());
@@ -2834,7 +2834,7 @@ m.showRecosOnCat=function (elem, from) {
 						m.recoByOnlyStars($str, uri, $result);
 					}, 2048);
 				});
-				$downs.on("click", function (e) {
+				$downs.on("click.ud", function (e) {
 					let $target=$(e.target);
 					let $reco=$target.parents(".reco");
 					let uri=m.unescapeHTML($reco.find(".textURI").html());
