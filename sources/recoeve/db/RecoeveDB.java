@@ -1725,7 +1725,6 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 					recentestsSet.remove(user_to); // recentestsSet 에서 제거.
 					String cat_to=neighborListTo.get(i, 1);
 					ResultSet neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
-					;
 					if (neighbor.next()) {
 						ResultSet reco_to=getReco(user_to, uri);
 						if (reco_to.next()) {
@@ -1831,23 +1830,9 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								System.out.println("user_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from+"\nsimAvg100:"+sim.simAvg100);
 								neighborListFrom.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
 								System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toString());
-								// if (RSneighborListFrom==null) {
-								// 	putNeighborListFrom(user_from, cat_from, neighborListFrom.toString(), now);
-								// }
-								// else {
-								// 	RSneighborListFrom.updateString("userCatList", neighborListFrom.toString());
-								// 	RSneighborListFrom.updateRow();
-								// }
 								putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, sim.simAvg100, now);
 								neighborListTo.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
 								System.out.println("neighborListTo.toString()\n"+neighborListTo.toString());
-								// if (RSneighborListTo==null) {
-								// 	putNeighborListTo(user_from, cat_from, neighborListTo.toString(), now);
-								// }
-								// else {
-								// 	RSneighborListTo.updateString("userCatList", neighborListTo.toString());
-								// 	RSneighborListTo.updateRow();
-								// }
 								putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim, sim.simAvg100, now);
 							}
 						}
