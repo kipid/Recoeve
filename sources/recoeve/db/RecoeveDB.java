@@ -598,7 +598,7 @@ public boolean createUser(StrArray inputs, String ip, String now) {
 			user=findUserById(id);
 			if (user.next()) {
 				NaverMail.sendVeriKey(email, id, veriKey);
-				updateUserClass(0, +1); // 0: Not verified yet
+				updateUserClass(0, 1); // 0: Not verified yet
 				logsCommit(user.getLong("i"), now, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
 				done=true;
 				con.commit();
@@ -708,10 +708,10 @@ public boolean verifyUser(String cookieI, String id, String veriKey, String ip) 
 			// IP check is needed???
 			updateUserClass(0, -1); // 0: Not verified yet
 			user.updateInt("class", 6);
-			updateUserClass(6, +1); // 6: Initial
-			updateUserClass(-2, +1); // -2: Total number of accounts
+			updateUserClass(6, 1); // 6: Initial
+			updateUserClass(-2, 1); // -2: Total number of accounts
 			String email=user.getString("email");
-			updateEmailStat(email.substring(email.indexOf("@")+1), +1);
+			updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 			user.updateString("veriKey", null);
 			user.updateRow();
 			logsCommit(user_i, now, ip, "vrf", true); // verified.
@@ -1348,10 +1348,13 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 			long user_from=user.getLong("i");
 			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\ttUpdate";
 			NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
-			System.out.println("neighborListFrom"+neighborListFrom.toString());
-			int jSize=neighborListFrom.getRowSize();
+			System.out.println("neighborListFrom:\n"+neighborListFrom.toString());
+			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
+			System.out.println("neighborListTo:\n"+neighborListTo.toString());
+			NeighborList neighborList=new NeighborList(neighborListFrom.toString()+"\n"+neighborListTo.toString());
+			int jSize=neighborList.getRowSize();
 			for (int j=0;j<jSize;j++) {
-				ResultSet neighbor=getNeighbor(user_from, cat_from, Long.parseLong(neighborListFrom.get(j, 0), 16), neighborListFrom.get(j, 1));
+				ResultSet neighbor=getNeighbor(user_from, cat_from, Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1));
 				if (neighbor.next()) {
 					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
 					if (rS_user_from.next()) {
@@ -1366,25 +1369,22 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 						+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
 						+"\t"+neighbor.getString("tUpdate");
 				}
-			}
-			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
-			System.out.println("neighborListTo"+neighborListTo.toString());
-			jSize=neighborListTo.getRowSize();
-			for (int j=0;j<jSize;j++) {
-				ResultSet neighbor=getNeighbor(Long.parseLong(neighborListTo.get(j, 0), 16), neighborListTo.get(j, 1), user_from, cat_from);
-				if (neighbor.next()) {
-					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
-					if (rS_user_from.next()) {
-						res+="\n"+rS_user_from.getString("id");
+				else {
+					neighbor=getNeighbor(Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1), user_from, cat_from);
+					if (neighbor.next()) {
+						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
+						if (rS_user_from.next()) {
+							res+="\n"+rS_user_from.getString("id");
+						}
+						else {
+							res+="\n";
+						}
+						res+="\t"+Long.toString(neighbor.getLong("user_from"), 16)
+							+"\t"+neighbor.getString("cat_from")
+							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
+							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
+							+"\t"+neighbor.getString("tUpdate");
 					}
-					else {
-						res+="\n";
-					}
-					res+="\t"+Long.toString(neighbor.getLong("user_i"), 16)
-						+"\t"+neighbor.getString("cat_i")
-						+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
-						+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-						+"\t"+neighbor.getString("tUpdate");
 				}
 			}
 		}
@@ -2070,7 +2070,7 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 	deleteCatsUriFromList(user_i, oldCats, uri, catL);
 	putCatsUriToList(user_i, newCats, uri, catL);
 	updateDefCat(uri, oldCats, -1);
-	updateDefCat(uri, newCats, +1);
+	updateDefCat(uri, newCats, 1);
 	if (equalityOfValuesOfPts) {
 		iterator=newCats.setOfCats.iterator();
 		while (iterator.hasNext()) {
@@ -2082,8 +2082,8 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 		}
 		updateRecoStat(user_i, uri, oldPts, now, -1);
 		updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-		updateRecoStat(user_i, uri, newPts, now, +1);
-		updateNeighbors(user_i, uri, newCats, newPts, catL, now, +1);
+		updateRecoStat(user_i, uri, newPts, now, 1);
+		updateNeighbors(user_i, uri, newCats, newPts, catL, now, 1);
 	}
 }
 
@@ -2487,11 +2487,11 @@ public String recoDo(long user_i, String recoStr) {
 					pstmtPutReco.setTimestamp(4, Timestamp.valueOf(now));
 					pstmtPutReco.setString(5, cats.toString());
 						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
-						updateDefCat(uri, cats, +1);
+						updateDefCat(uri, cats, 1);
 					pstmtPutReco.setString(6, title); // Null can be put?
-						updateDefTitle(uri, title, +1);
+						updateDefTitle(uri, title, 1);
 					pstmtPutReco.setString(7, desc); // Null can be put?
-						updateDefDesc(uri, desc, +1);
+						updateDefDesc(uri, desc, 1);
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
@@ -2500,8 +2500,8 @@ public String recoDo(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-					updateRecoStat(user_i, uri, pts, now, +1);
-						updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+					updateRecoStat(user_i, uri, pts, now, 1);
+						updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
 					res+="recoed";
 					break;
 				case "change":
@@ -2536,12 +2536,12 @@ public String recoDo(long user_i, String recoStr) {
 						if (!equalityOfTitle) {
 							reco.updateString("title", title);
 							updateDefTitle(uri, oldTitle, -1);
-							updateDefTitle(uri, title, +1);
+							updateDefTitle(uri, title, 1);
 						}
 						if (!equalityOfDesc) {
 							reco.updateString("desc", desc);
 							updateDefDesc(uri, oldDesc, -1);
-							updateDefDesc(uri, desc, +1);
+							updateDefDesc(uri, desc, 1);
 						}
 						if (!equalityOfCmt) {
 							reco.updateString("cmt", cmt);
@@ -2558,8 +2558,8 @@ public String recoDo(long user_i, String recoStr) {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
 							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateRecoStat(user_i, uri, pts, now, +1);
-							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+							updateRecoStat(user_i, uri, pts, now, 1);
+							updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
 						}
 						res+="changed";
 					}
@@ -2642,8 +2642,8 @@ public String putReco(long user_i, String recoStr) {
 						if (!equalityOfValuesOfPts) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
 							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateRecoStat(user_i, uri, pts, now, +1);
-							updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+							updateRecoStat(user_i, uri, pts, now, 1);
+							updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
 						}
 						reco.updateString("tLast", now);
 						if (!equalityOfStringOfCats) {
@@ -2655,12 +2655,12 @@ public String putReco(long user_i, String recoStr) {
 						if (!equalityOfTitle) {
 							reco.updateString("title", title);
 							updateDefTitle(uri, oldTitle, -1);
-							updateDefTitle(uri, title, +1);
+							updateDefTitle(uri, title, 1);
 						}
 						if (!equalityOfDesc) {
 							reco.updateString("desc", desc);
 							updateDefDesc(uri, oldDesc, -1);
-							updateDefDesc(uri, desc, +1);
+							updateDefDesc(uri, desc, 1);
 						}
 						if (!equalityOfCmt) {
 							reco.updateString("cmt", cmt);
@@ -2684,11 +2684,11 @@ public String putReco(long user_i, String recoStr) {
 					pstmtPutReco.setTimestamp(4, Timestamp.valueOf(now));
 					pstmtPutReco.setString(5, cats.toString());
 						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
-						updateDefCat(uri, cats, +1);
+						updateDefCat(uri, cats, 1);
 					pstmtPutReco.setString(6, title); // Null can be put?
-						updateDefTitle(uri, title, +1);
+						updateDefTitle(uri, title, 1);
 					pstmtPutReco.setString(7, desc); // Null can be put?
-						updateDefDesc(uri, desc, +1);
+						updateDefDesc(uri, desc, 1);
 					pstmtPutReco.setString(8, cmt); // Null can be put?
 					if (pts.valid()) {
 						pstmtPutReco.setString(9, pts.str());
@@ -2697,8 +2697,8 @@ public String putReco(long user_i, String recoStr) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-						updateRecoStat(user_i, uri, pts, now, +1);
-						updateNeighbors(user_i, uri, cats, pts, catL, now, +1);
+						updateRecoStat(user_i, uri, pts, now, 1);
+						updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
 					res+="recoed";
 				}
 				updateCatList(user_i, catL);
@@ -2737,10 +2737,10 @@ public void updateDefs() {
 			Categories cats=new Categories(catsStr);
 			String desc=rs.getString("desc");
 			Points pts=new Points(rs.getString("val"));
-			updateDefCat(uri, cats, +1);
-			updateDefTitle(uri, title, +1);
-			updateDefDesc(uri, desc, +1);
-			updateRecoStat(user_i, uri, pts, now, +1);
+			updateDefCat(uri, cats, 1);
+			updateDefTitle(uri, title, 1);
+			updateDefDesc(uri, desc, 1);
+			updateRecoStat(user_i, uri, pts, now, 1);
 		}
 	}
 	catch (SQLException e) {
