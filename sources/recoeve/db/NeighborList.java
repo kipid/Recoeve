@@ -77,6 +77,7 @@ public class NeighborList {
 	}
 	public NeighborList(String strData, boolean colMap, boolean rowMap) {
 		this(colMap, rowMap);
+		strData=strData.trim();
 		if (strData.isEmpty()) {
 			return;
 		}

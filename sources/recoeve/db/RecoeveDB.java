@@ -1372,15 +1372,15 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 				else {
 					neighbor=getNeighbor(Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1), user_from, cat_from);
 					if (neighbor.next()) {
-						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
+						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
 						if (rS_user_from.next()) {
 							res+="\n"+rS_user_from.getString("id");
 						}
 						else {
 							res+="\n";
 						}
-						res+="\t"+Long.toString(neighbor.getLong("user_from"), 16)
-							+"\t"+neighbor.getString("cat_from")
+						res+="\t"+Long.toString(neighbor.getLong("user_i"), 16)
+							+"\t"+neighbor.getString("cat_i")
 							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
 							+"\t"+neighbor.getString("tUpdate");
