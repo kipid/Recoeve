@@ -1833,10 +1833,11 @@ CREATE TABLE `Neighbors` (
 	, `cat_from` varchar(255) NOT NULL
 	, `sumSim` bigint NOT NULL
 	, `nSim` int NOT NULL
-	, `simAvg100` int NOT NULL
 	, `tUpdate` datetime NOT NULL
 	, PRIMARY KEY (`user_i`, `cat_i`, `user_from`, `cat_from`)
 );
+
+ALTER TABLE `Neighbors` DROP `simAvg100`;
 
 `tUpdate`: Time of update.
 
