@@ -1302,12 +1302,12 @@ ptnURI.regEx1=/^https?:\/\/kr[\d]+\.sogirl\.co(?:(\/[\s\S]*))?/i;
 ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:`<a target="_blank" href="https://kr53.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr53.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+		return {html:`<a target="_blank" href="https://kr55.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr55.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return {html:`<a target="_blank" href="https://kr53.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr53.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+			return {html:`<a target="_blank" href="https://kr55.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr55.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
 		}
 	}
 	return false;
