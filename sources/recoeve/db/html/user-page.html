@@ -3050,7 +3050,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				let strHTML=``;
 				for (let i=neighbors.length-1;i>=until;i--) {
 					let neighborI=neighbors[sorted[i]];
-					strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net</a></div></div>`;
+					strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a></div></div>`;
 				}
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
