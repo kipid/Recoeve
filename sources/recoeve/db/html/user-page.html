@@ -3036,14 +3036,14 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				for (let i=1;i<respJSON.length;i++) {
 					let neighborI=respJSON[i];
 					neighborI.cat_from=cat_from;
-					neighborI.sumSim=parseInt(neighborI.sumSim, 16);
-					neighborI.nSim=parseInt(neighborI.nSim, 16);
-					neighborI["simAvg100"]=parseInt(neighborI["simAvg100"], 16);
-					if (!neighbors[`${neighborI.user_id}\t${neighborI.cat_to}`]) {
+					let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
+					let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
+					neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
+					if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
 						neighbors[n]=neighborI;
 						sorted[n]=n;
 						n++;
-						neighbors[`${neighborI.user_id}\t${neighborI.cat_to}`]=neighborI;
+						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
 					}
 				}
 				let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
