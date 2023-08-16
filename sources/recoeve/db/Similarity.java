@@ -11,46 +11,47 @@ import java.util.HashMap;
 public class Similarity {
 	public long sumSim;
 	public int nSim;
-	public int simAvg100;
+	// public int simAvg100;
 
 	public Similarity() {
 		sumSim=0;
 		nSim=0;
-		simAvg100=0;
+		// simAvg100=0;
 	}
 	public Similarity(long simSingle) {
 		sumSim=simSingle;
 		nSim=1;
-		simAvg100=simAvg100(sumSim, nSim);
+		// simAvg100=simAvg100(sumSim, nSim);
 	}
 	public Similarity(long sumSim, int nSim) {
 		this.sumSim=sumSim;
 		this.nSim=nSim;
-		this.simAvg100=Similarity.simAvg100(sumSim, nSim);
+		// this.simAvg100=Similarity.simAvg100(sumSim, nSim);
 	}
 	public void simpleAdd(long simSingle) {
 		sumSim+=simSingle;
 		nSim++;
 	}
-	public void add(long simSingle) {
-		sumSim+=simSingle;
-		nSim++;
-		simAvg100=simAvg100(sumSim, nSim);
-	}
-	public void calc() {
-		simAvg100=simAvg100(sumSim, nSim);
-	}
+	// public void add(long simSingle) {
+	// 	sumSim+=simSingle;
+	// 	nSim++;
+	// 	simAvg100=simAvg100(sumSim, nSim);
+	// }
+	// public int calc() {
+	// 	simAvg100=simAvg100(sumSim, nSim);
+	// }
 	public boolean remove(long simSingle) {
 		if (nSim>0&&sumSim>=simSingle) {
 			sumSim-=simSingle;
 			nSim--;
-			simAvg100=simAvg100(sumSim, nSim);
+			// simAvg100=simAvg100(sumSim, nSim);
 			return true;
 		}
 		return false;
 	}
 	public String toString() {
-		return "nSim:"+nSim+", sumSim"+sumSim+", simAvg100"+simAvg100;
+		return "nSim:"+nSim+", sumSim"+sumSim;
+			// +", simAvg100"+simAvg100;
 	}
 
 	public static long sim(double d) {
