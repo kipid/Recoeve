@@ -104,20 +104,20 @@ public class Categories {
 			return cat.split("--").length;
 		}
 	}
-	public static boolean isSuperCat(String superCat, String strCats) {
-		strCats=";"+strCats;
-		if (strCats.indexOf(";"+superCat)!=-1) {
-			Categories cats=new Categories(strCats);
-			return cats.hasSuperCat(superCat);
-		}
-		return false;
-	}
+	// public static boolean isSuperCat(String superCat, String strCats) {
+	// 	strCats=";"+strCats;
+	// 	if (strCats.indexOf(";"+superCat)!=-1) {
+	// 		Categories cats=new Categories(strCats);
+	// 		return cats.hasSuperCat(superCat);
+	// 	}
+	// 	return false;
+	// }
 	
 	
 	
 	public String cats;
 	public Set<String> setOfCats;
-	public Set<String> setOfSuperCats;
+	// public Set<String> setOfSuperCats;
 	
 	public Categories(String strCats) { // strCats must be well-formatted. (user-side handling)
 		if (strCats==null) {
@@ -129,13 +129,13 @@ public class Categories {
 		for (String cat: cats.split(";")) {
 			setOfCats.add(cat);
 		}
-		setOfSuperCats=new HashSet<String>();
-		for (String cat: setOfCats) {
-			while (cat!=null) {
-				setOfSuperCats.add(cat);
-				cat=getSuperCat(cat);
-			}
-		}
+		// setOfSuperCats=new HashSet<String>();
+		// for (String cat: setOfCats) {
+		// 	while (cat!=null) {
+		// 		setOfSuperCats.add(cat);
+		// 		cat=getSuperCat(cat);
+		// 	}
+		// }
 	}
 	public Categories(Set<String> setCats) {
 		Iterator<String> iterator=setCats.iterator();
@@ -148,13 +148,13 @@ public class Categories {
 			cats=null;
 		}
 		setOfCats=setCats;
-		setOfSuperCats=new HashSet<String>();
-		for (String cat: setOfCats) {
-			while (cat!=null) {
-				setOfSuperCats.add(cat);
-				cat=getSuperCat(cat);
-			}
-		}
+		// setOfSuperCats=new HashSet<String>();
+		// for (String cat: setOfCats) {
+		// 	while (cat!=null) {
+		// 		setOfSuperCats.add(cat);
+		// 		cat=getSuperCat(cat);
+		// 	}
+		// }
 	}
 	
 	public boolean contains(String cat) {
@@ -164,37 +164,37 @@ public class Categories {
 		// Equality of set.
 		return setOfCats.equals(cat2.setOfCats);
 	}
-	public boolean hasSuperCat(String superCat) {
-		// When superCat==null, this return false.
-		return setOfSuperCats.contains(superCat);
-	}
-	public boolean hasCatIndif() {
-		return hasSuperCat(Categories.indif);
-	}
-	public boolean hasCatLater() {
-		return hasSuperCat(Categories.later);
-	}
-	public Set<String> setOfSuperCatsUnderDepth(int depth) {
-		Set<String> set=new HashSet<String>();
-		for (String cat: setOfSuperCats) {
-			if (Categories.depthOfCat(cat)<=depth) {
-				set.add(cat);
-			}
-		}
-		return set;
-	}
-	public boolean isInTheSameTree(String strCats2) {
-		Categories cats2=new Categories(strCats2);
-		return this.isInTheSameTree(cats2);
-	}
-	public boolean isInTheSameTree(Categories cats2) {
-		for (String superCat: setOfSuperCats) {
-			if (cats2.setOfSuperCats.contains(superCat)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	// public boolean hasSuperCat(String superCat) {
+	// 	// When superCat==null, this return false.
+	// 	return setOfSuperCats.contains(superCat);
+	// }
+	// public boolean hasCatIndif() {
+	// 	return hasSuperCat(Categories.indif);
+	// }
+	// public boolean hasCatLater() {
+	// 	return hasSuperCat(Categories.later);
+	// }
+	// public Set<String> setOfSuperCatsUnderDepth(int depth) {
+	// 	Set<String> set=new HashSet<String>();
+	// 	for (String cat: setOfSuperCats) {
+	// 		if (Categories.depthOfCat(cat)<=depth) {
+	// 			set.add(cat);
+	// 		}
+	// 	}
+	// 	return set;
+	// }
+	// public boolean isInTheSameTree(String strCats2) {
+	// 	Categories cats2=new Categories(strCats2);
+	// 	return this.isInTheSameTree(cats2);
+	// }
+	// public boolean isInTheSameTree(Categories cats2) {
+	// 	for (String superCat: setOfSuperCats) {
+	// 		if (cats2.setOfSuperCats.contains(superCat)) {
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 	public String toString() {
 		return cats;
 	}
