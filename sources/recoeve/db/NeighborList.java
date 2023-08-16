@@ -8,15 +8,20 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 
 
 public class NeighborList {
+	// public class UserCat {
+	// 	public long user;
+	// 	public String cat;
+	// }
+
 	public static final Pattern delimiter;
-	public static final Pattern lastQuote;
 	static {
 		delimiter=Pattern.compile("[\\t\\n]");
-		lastQuote=Pattern.compile("[^\"](?:\"\")*\"([\\t\\n])");
 	}
 
 	public String str;
@@ -26,14 +31,14 @@ public class NeighborList {
 	public Map<String, Map<String, String>> mapMap;
 	private int row; // The last row number will be saved.
 	private int col; // The last col number of the last row will be saved.
-	
+
 	public int getRowSize() {
 		return arrayArray.size();
 	}
 	public int getColSizeAtRow(int r) {
 		return arrayArray.get(r).size();
 	}
-	
+
 	public NeighborList() {
 		this(true, false);
 	}
@@ -81,7 +86,7 @@ public class NeighborList {
 		}
 		this.updateLists(colMap, rowMap);
 	}
-	
+
 	public boolean increaseRC(String delim) {
 		if (delim.equals("\t")) {
 			col++;
@@ -94,7 +99,9 @@ public class NeighborList {
 		}
 		return false;
 	}
-	
+
+	public static final String[] COLNAMES={"user", "cat"};
+
 	public void updateLists() {
 		updateLists(true, false);
 	}
@@ -108,34 +115,17 @@ public class NeighborList {
 			int start=0;
 			int end=0;
 			Matcher matchDelim=delimiter.matcher(str);
-			Matcher matchLastQuote=lastQuote.matcher(str);
 			while (start<str.length()&&this.increaseRC(delim)) {
-				if (str.substring(start,start+1).equals("\"")) {
-					if (matchLastQuote.find(start+1)) {
-						end=matchLastQuote.end();
-						strElem=str.substring(start+1, end-2);
-						delim=matchLastQuote.group(1);
-						start=end;
-					}
-					else {
-						strElem=str.substring(start+1);
-						delim="";
-						start=end=str.length();
-					}
-					strElem=strElem.replaceAll("\"\"","\"");
+				if (matchDelim.find(start)) {
+					delim=matchDelim.group();
+					end=matchDelim.end();
+					strElem=str.substring(start, end-1);
+					start=end;
 				}
 				else {
-					if (matchDelim.find(start)) {
-						delim=matchDelim.group();
-						end=matchDelim.end();
-						strElem=str.substring(start, end-1);
-						start=end;
-					}
-					else {
-						delim="";
-						strElem=str.substring(start);
-						start=end=str.length();
-					}
+					delim="";
+					strElem=str.substring(start);
+					start=end=str.length();
 				}
 				arrayArray.get(row).add(strElem);
 			}
@@ -146,7 +136,7 @@ public class NeighborList {
 					int jMax=arrayArray.get(i).size();
 					if (jMax>firstColSize) { jMax=firstColSize; }
 					for (int j=0;j<jMax;j++) {
-						String key=arrayArray.get(0).get(j);
+						String key=COLNAMES[j];
 						// if (key!=null) {
 							arrayMap.get(i).putIfAbsent(key, arrayArray.get(i).get(j));
 						// }
@@ -156,12 +146,12 @@ public class NeighborList {
 			if (rowMap) {
 				for (int i=0;i<arrayArray.size();i++) {
 					ArrayList<String> aL=arrayArray.get(i);
-					mapArray.putIfAbsent(aL.get(0), aL);
+					mapArray.putIfAbsent(aL.get(0)+"\t"+aL.get(1), aL);
 				}
 			}
 			if (colMap&&rowMap) {
 				for (int i=0;i<arrayArray.size();i++) {
-					String key=arrayArray.get(i).get(0);
+					String key=arrayArray.get(i).get(0)+"\t"+arrayArray.get(i).get(1);
 					Map<String,String> map=arrayMap.get(i);
 					mapMap.putIfAbsent(key, map);
 				}
@@ -175,17 +165,20 @@ public class NeighborList {
 		}
 		return null;
 	}
-	
+
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
 		int rowSize=this.getRowSize();
+		Set setOfUserCat=new HashSet<String>(2*rowSize);
 		for (int i=0;i<rowSize;i++) {
 			int colSize=this.getColSizeAtRow(i);
-			sb.append(enclose(arrayArray.get(i).get(0)));
-			for (int j=1;j<colSize;j++) {
-				sb.append("\t"+enclose(arrayArray.get(i).get(j)));
+			if (setOfUserCat.add(arrayArray.get(i).get(0)+"\t"+arrayArray.get(i).get(1))) {
+				sb.append(arrayArray.get(i).get(0));
+				for (int j=1;j<colSize;j++) {
+					sb.append("\t"+arrayArray.get(i).get(j));
+				}
+				sb.append("\n");
 			}
-			sb.append("\n");
 		}
 		return sb.toString().trim();
 	}
@@ -198,9 +191,9 @@ public class NeighborList {
 		}
 		for (int i=0;i<rowSize;i++) {
 			int colSize=this.getColSizeAtRow(sorted[i]);
-			sb.append(enclose(arrayArray.get(sorted[i]).get(0)));
+			sb.append(arrayArray.get(sorted[i]).get(0));
 			for (int j=1;j<colSize;j++) {
-				sb.append("\t"+enclose(arrayArray.get(sorted[i]).get(j)));
+				sb.append("\t"+arrayArray.get(sorted[i]).get(j));
 			}
 			sb.append("\n");
 		}
@@ -213,11 +206,11 @@ public class NeighborList {
 		for (int i=0;i<rowSize;i++) {
 			int colSize=this.getColSizeAtRow(i);
 			for (int j=0;j<colSize;j++) {
-				sb.append(" "+i+","+j+" : "+enclose(arrayArray.get(i).get(j))+"\n");
+				sb.append(" "+i+","+j+" : "+arrayArray.get(i).get(j)+"\n");
 			}
 			if (arrayMap!=null) {
 				for (Map.Entry<String, String> entry: arrayMap.get(i).entrySet()) {
-					sb.append(" "+i+","+enclose(entry.getKey())+" : "+enclose(entry.getValue())+"\n");
+					sb.append(" "+i+","+entry.getKey()+" : "+entry.getValue()+"\n");
 				}
 			}
 			sb.append("\n");
