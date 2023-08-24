@@ -623,7 +623,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button" id="show-only-unrecoed">[--Show only unrecoed on mine--]</div>
 	<div class="cBoth"></div>
 </div>
-<div class="side2"><div class="numbers-of-recos"></div></div>
+<div class="side2">
+	<div class="numbers-of-recos"></div>
+	<div class="button button-mode button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>
+</div>
+<div class="side2 multireco" id="contents-recoms"></div>
 <div class="side2" id="headPlay">
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Showing reco list play--]</div>
@@ -778,6 +782,7 @@ $show_only_unrecoed=$("#show-only-unrecoed");
 $numbers_of_recos=$(".numbers-of-recos");
 
 $subCats=$("#subCats");
+$contents_recoms=$("#contents-recoms")
 $contents=$("#contents");
 $scripts=$("#scripts");
 
@@ -808,6 +813,7 @@ m.lineHeight10=16;
 m.defaultStyles={mode:m.mode, fontFamily:m.fontFamily, fontSize:m.fontSize, lineHeight10:m.lineHeight10};
 m.$deviceInfo=$(".deviceInfo");
 m.$container=$("#container");
+m.neighborUpto=200;
 
 m.printDeviceInfo=function () {
 	if (m.$deviceInfo) {
@@ -955,40 +961,10 @@ m.a_log_out=function (e, elem) {
 }
 
 m.toggleNeighborsMode=function () {
-	$contents.removeClass("multireco");
-	if ($button_neighbors_mode.hasClass("enabled")) {
-		m.recoMode="";
-		$button_mode.removeClass("enabled");
-		m.showRecosOnCat();
-	}
-	else {
-		m.recoMode="neighbors";
-		$button_mode.removeClass("enabled");
-		$button_neighbors_mode.addClass("enabled");
-	}
-	m.openCat(m.currentCat);
 }
 
 m.toggleMultirecoMode=function () {
-	if ($button_multireco_mode.hasClass("enabled")) {
-		m.recoMode="";
-		$button_mode.removeClass("enabled");
-		$contents.removeClass("multireco");
-		if (!m.myPage) {
-			$multireco_cats_container.hide();
-		}
-	}
-	else {
-		m.recoMode="multireco";
-		$button_mode.removeClass("enabled");
-		$button_multireco_mode.addClass("enabled");
-		$contents.addClass("multireco");
-		if (!m.myPage) {
-			$multireco_cats_container.show();
-			$multireco_input_cats[0].value=m.currentCat;
-		}
-	}
-	m.openCat(m.currentCat);
+
 };
 
 m.toggleNewReco=function () {
@@ -1105,6 +1081,9 @@ m.YtPlayer=null;
 m.YtAPILoaded=false;
 
 m.neighbors={};
+m.neighborsRecos={};
+m.recoms={};
+m.recomsSorted={};
 
 
 
@@ -1145,6 +1124,9 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-mode button-neighbors-mode" style="border-top:2px solid rgb(50,50,50)" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">
 		[--Neigh_b_ors mode--]
 	</div>
+	<div class="button button-mode button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
+		[--_Get _R_ecoms--]
+	</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">
 		[--_M_ultireco mode--]
 	</div>
@@ -1177,6 +1159,7 @@ $button_ToR=$(".button-ToR");
 $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
+$button_get_recoms=$(".button-get-recoms");
 $button_new_reco=$(".button-new-reco");
 $button_goto_cats=$(".button-goto-cats");
 
@@ -3023,12 +3006,11 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 					}
 				}
 			}
-			let cat_from=m.currentCat;
+			let cat_from=m.currentCat=cat;
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 				, dataType:"text"
 			}).done(function (resp) {
-				console.log(resp);
 				let respJSON=m.strToJSON(resp);
 				let neighbors=[];
 				neighbors.sorted=[];
@@ -3047,7 +3029,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
 					}
 				}
-				let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
+				let until=sorted.sortedUltil=m.heapsort(neighbors, "simAvg100", sorted, m.neighborUpto);
 				let strHTML=``;
 				for (let i=neighbors.length-1;i>=until;i--) {
 					let neighborI=neighbors[sorted[i]];
@@ -3058,6 +3040,137 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				m.neighbors[cat_from]=neighbors;
 				console.log(m.neighbors);
 			});
+			break;
+		case "recoms":
+			if (m.neighbors[cat]) {
+				if (m.neighborsRecos[cat]) {
+
+				}
+				else {
+					let req=`user\tcat`;
+					let n=m.neighbors[cat].length;
+					let until=m.neighborUpto>n?0:n-m.neighborUpto;
+					let sorted=m.neighbors[cat].sorted;
+					for (let i=n-1;i>=until;i--) {
+						let neighborI=m.neighbors[cat][sorted[i]];
+						req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
+					}
+					$.ajax({
+						type:"POST", url:m.userPath+"/get-Recoms", data:req
+						, dataType:"text"
+					}).done(function (resp) {
+						let respJSON=m.strToJSON(resp);
+						for (let i=1;i<respJSON.length;i++) {
+							let val=m.val(respJSON[i].val);
+							if (val.valid) {
+								respJSON[i].val=val.val;
+							}
+							else {
+								respJSON.splice(i, 1);
+								i--;
+							}
+						}
+						respJSON.splice(0, 1);
+						let sorted=respJSON.sorted=[];
+						for (let i=0;i<respJSON.length;i++) {
+							sorted[i]=i;
+						}
+						let until=respJSON.sortedUntil=m.heapsort(respJSON, "val", sorted, 12);
+						// for (let i=respJSON.length-1;i>=until;i--) {
+						// 	console.log(respJSON[sorted[i]]);
+						// }
+						m.neighborsRecos[cat]=respJSON;
+						let recoms=[];
+						for (let i=respJSON.length-1;i>=0;i--) {
+							let respJSONi=respJSON[sorted[i]];
+							let uri=respJSONi.uri;
+							if (!recoms[uri]) {
+								recoms[uri]={uri:uri, vals:[]};
+								recoms.push(recoms[uri]);
+							}
+							let val={user:respJSONi.user, val:respJSONi.val};
+							let catList=respJSONi.cats.split(";");
+							let simAvg100=0;
+							for (let j=0;j<catList.length;j++) {
+								let sim=m.neighbors[cat][`${val.user}\t${catList[j]}`];
+								if (!!sim&&sim.simAvg100>simAvg100) {
+									simAvg100=sim.simAvg100;
+								}
+							}
+							val.simAvg100=simAvg100;
+							recoms[uri].vals.push(val);
+						}
+						m.recomsSorted[cat]=[];
+						for (let i=0;i<recoms.length;i++) {
+							m.recomsSorted[cat].push(i);
+							let recomsI=recoms[i];
+							let valSimSum=0;
+							let simSum=0;
+							for (let j=0;j<recomsI.vals.length;j++) {
+								let valJ=recomsI.vals[j];
+								valSimSum+=valJ.val*valJ.simAvg100;
+								simSum+=valJ.simAvg100;
+							}
+							let avgVal=0;
+							if (simSum!==0) {
+								simSum=simSum<10000?10000:simSum;
+								avgVal=10.0*valSimSum/simSum;
+							}
+							let avgValStr=avgVal.toFixed(2);
+							recomsI.avgVal=avgVal;
+							recomsI.avgValStr=avgValStr;
+						}
+						m.recoms[cat]=recoms;
+						let recomsUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
+						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+							console.log(m.recoms[cat][m.recomsSorted[cat][i]]);
+						}
+					});
+				}
+			}
+			else {
+				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}.`);
+				$contents.html("");
+				if (m.catList[cat]) {
+					$catList.find(".cat").removeClass("selected");
+					let $cat=$("#cat-"+m.catList[cat].i);
+					$cat.addClass("selected");
+					let $parents=$cat.parents(".subCat");
+					for (let i=$parents.length-1;i>=0;i--) {
+						if (!$parents.eq(i).is(":visible")) {
+							$parents.eq(i).prev().find(">.EC").trigger("click");
+						}
+					}
+				}
+				let cat_from=m.currentCat=cat;
+				$.ajax({
+					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
+					, dataType:"text"
+				}).done(function (resp) {
+					let respJSON=m.strToJSON(resp);
+					let neighbors=[];
+					neighbors.sorted=[];
+					let sorted=neighbors.sorted;
+					let n=0;
+					for (let i=1;i<respJSON.length;i++) {
+						let neighborI=respJSON[i];
+						neighborI.cat_from=cat_from;
+						let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
+						let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
+						neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
+						if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
+							neighbors[n]=neighborI;
+							sorted[n]=n;
+							n++;
+							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+						}
+					}
+					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
+					m.neighbors[cat_from]=neighbors;
+					m.getUriListAndShowRecosOnCat(cat);
+				});
+			}
 			break;
 		case "multireco": case "": default:
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
@@ -4646,11 +4759,55 @@ m.processShortKey=function (e) {
 			break;
 		case 66: // B=66
 			e.preventDefault();
-			m.toggleNeighborsMode();
+			$contents.removeClass("multireco");
+			if ($button_neighbors_mode.hasClass("enabled")) {
+				m.recoMode="";
+				$button_mode.removeClass("enabled");
+				m.showRecosOnCat();
+			}
+			else {
+				m.recoMode="neighbors";
+				$button_mode.removeClass("enabled");
+				$button_neighbors_mode.addClass("enabled");
+			}
+			m.openCat(m.currentCat);
 			break;
 		case 77: // M=77
 			e.preventDefault();
-			m.toggleMultirecoMode();
+			if ($button_multireco_mode.hasClass("enabled")) {
+				m.recoMode="";
+				$button_mode.removeClass("enabled");
+				$contents.removeClass("multireco");
+				if (!m.myPage) {
+					$multireco_cats_container.hide();
+				}
+			}
+			else {
+				m.recoMode="multireco";
+				$button_mode.removeClass("enabled");
+				$button_multireco_mode.addClass("enabled");
+				$contents.addClass("multireco");
+				if (!m.myPage) {
+					$multireco_cats_container.show();
+					$multireco_input_cats[0].value=m.currentCat;
+				}
+			}
+			m.openCat(m.currentCat);
+			break;
+		case 82: // R=82
+			e.preventDefault();
+			$contents.html("");
+			if ($button_get_recoms.hasClass("enabled")) {
+				m.recoMode="";
+				$button_mode.removeClass("enabled");
+				$button_get_recoms.removeClass("enabled");
+			}
+			else {
+				m.recoMode="recoms";
+				$button_mode.removeClass("enabled");
+				$button_get_recoms.addClass("enabled");
+			}
+			m.openCat(m.currentCat);
 			break;
 		case 78: // N=78
 			e.preventDefault();
@@ -4704,7 +4861,7 @@ m.processShortKey=function (e) {
 		default:
 	}
 }
-$window.on("keydown", m.processShortKey);
+$window.on("keydown.sk", m.processShortKey);
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.prepend(
@@ -4863,10 +5020,13 @@ $document.ready(function () {
 		m.openCat(m.currentCat);
 	}
 	else if (m.recoMode==="multireco") {
-		m.toggleMultirecoMode();
+		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
 	}
 	else if (m.recoMode==="neighbors") {
-		m.toggleNeighborsMode();
+		$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})
+	}
+	else if (m.recoMode==="recoms") {
+		$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})
 	}
 
 	if (window.location.pathname==="/reco") {
