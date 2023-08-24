@@ -522,6 +522,17 @@ m.heapsort=function (arr, key, sorted, upto) {
 	}
 	return until;
 };
+m.heapsortRest=function (arr, key, sorted, upto, n) {
+	upto=upto>n?n:upto;
+	let until=n-upto;
+	for (let i=n-1;i>=until;i--) {
+		let temp=sorted[0];
+		sorted[0]=sorted[i];
+		sorted[i]=temp;
+		m.heapify(arr, key, sorted, i, 0);
+	}
+	return until;
+};
 
 
 
