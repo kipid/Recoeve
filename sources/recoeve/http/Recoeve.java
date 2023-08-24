@@ -290,6 +290,13 @@ public static void main(String... args) {
 							System.out.println("Sended neighbors.");
 						});
 						break;
+					case "get-Recoms": // e.g. path=/user/kipid/get-Recoms
+						PrintLog.req.bodyHandler((Buffer data) -> {
+							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+							PrintLog.req.response().end(PrintLog.db.getRecoms(finalUserId, data.toString()), ENCODING);
+							System.out.println("Sended recoms.");
+						});
+						break;
 					case "/get-URI-cats-val": // e.g. path=/user/kipid/get-URI-cats-val
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
@@ -335,6 +342,15 @@ public static void main(String... args) {
 						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().end(res);
 						System.out.println("Sended defs of uri="+uri+".");
+					});
+					break;
+				case "multidefs": // path=/reco/multidefs
+					PrintLog.req.bodyHandler((Buffer data) -> {
+						final String[] uris=data.toString().trim().split(";");
+						String res=PrintLog.db.recoDefs(uris);
+						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+						PrintLog.req.response().end(res);
+						System.out.println("Sended defs of uris.");
 					});
 					break;
 				case "do": // path=/reco/do
