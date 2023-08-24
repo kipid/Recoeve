@@ -1394,6 +1394,38 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 	}
 	return res;
 }
+public String getRecoms(String user_id_from, String userCatList) {
+	String res="";
+	try {
+		ResultSet user=findUserById(user_id_from);
+		if (user.next()) {
+			long user_from=user.getLong("i");
+			NeighborList neighborList=new NeighborList(userCatList, false, false);
+			res="user\turi\tcats\tval";
+			int jSize=neighborList.getRowSize();
+			for (int j=1;j<jSize;j++) {
+				String neighborJStr=neighborList.get(j, 0);
+				long neighborJ=Long.parseLong(neighborJStr, 16);
+				UriList uriList=getUriList(neighborJ, neighborList.get(j, 1));
+				String[] uris=uriList.listOfURIs();
+				for (int k=0;k<uris.length;k++) {
+					String uri=uris[k];
+					ResultSet reco=getReco(user_from, uri);
+					if (!reco.next()) {
+						ResultSet neighborReco=getReco(neighborJ, uri);
+						if (neighborReco.next()) {
+							res+="\n"+neighborJStr+"\t"+uri+"\t"+neighborReco.getString("cats")+"\t"+neighborReco.getString("val");
+						}
+					}
+				}
+			}
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return res;
+}
 public String getRecos(String user_id, StrArray uris) {
 	String res="";
 	try {
@@ -2409,6 +2441,43 @@ public String recoDefs(String uri) {
 		}
 
 		res=heads+"\n"+contents;
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return res;
+}
+public String recoDefs(String[] uris) {
+	String res="";
+	String heads="uri\tdef-cats\tdef-titles\tdef-descs";
+	try {
+		String contents="";
+		for (int i=0;i<uris.length;i++) {
+			String uri=uris[i];
+			contents+="\n"+uri;
+
+			pstmtGetRecoStatDefCatSet.setString(1, uri);
+			ResultSet defCats=pstmtGetRecoStatDefCatSet.executeQuery();
+			contents+="\t";
+			if (defCats.next()) {
+				contents=StrArray.enclose(defCats.getString("catSet"));
+			}
+
+			pstmtGetRecoStatDefTitleSet.setString(1, uri);
+			ResultSet defTitles=pstmtGetRecoStatDefTitleSet.executeQuery();
+			contents+="\t";
+			if (defTitles.next()) {
+				contents+=StrArray.enclose(defTitles.getString("titleSet"));
+			}
+
+			pstmtGetRecoStatDefDescSet.setString(1, uri);
+			ResultSet defDescs=pstmtGetRecoStatDefDescSet.executeQuery();
+			contents+="\t";
+			if (defDescs.next()) {
+				contents+=StrArray.enclose(defDescs.getString("descSet"));
+			}
+		}
+		res=heads+contents;
 	}
 	catch (SQLException e) {
 		err(e);
