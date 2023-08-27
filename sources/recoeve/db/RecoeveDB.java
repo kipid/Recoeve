@@ -2447,37 +2447,35 @@ public String recoDefs(String uri) {
 	}
 	return res;
 }
-public String recoDefs(String[] uris) {
-	String res="";
-	String heads="uri\tdef-cats\tdef-titles\tdef-descs";
+public String recoDefs(StrArray uris) {
+	String res="uri\tdef-cats\tdef-titles\tdef-descs";
 	try {
-		String contents="";
-		for (int i=0;i<uris.length;i++) {
-			String uri=uris[i];
-			contents+="\n"+uri;
+		int iSize=uris.getRowSize();
+		for (int i=0;i<iSize;i++) {
+			String uri=uris.get(i, 0);
+			res+="\n"+StrArray.enclose(uri);
 
 			pstmtGetRecoStatDefCatSet.setString(1, uri);
 			ResultSet defCats=pstmtGetRecoStatDefCatSet.executeQuery();
-			contents+="\t";
+			res+="\t";
 			if (defCats.next()) {
-				contents=StrArray.enclose(defCats.getString("catSet"));
+				res+=StrArray.enclose(defCats.getString("catSet"));
 			}
 
 			pstmtGetRecoStatDefTitleSet.setString(1, uri);
 			ResultSet defTitles=pstmtGetRecoStatDefTitleSet.executeQuery();
-			contents+="\t";
+			res+="\t";
 			if (defTitles.next()) {
-				contents+=StrArray.enclose(defTitles.getString("titleSet"));
+				res+=StrArray.enclose(defTitles.getString("titleSet"));
 			}
 
 			pstmtGetRecoStatDefDescSet.setString(1, uri);
 			ResultSet defDescs=pstmtGetRecoStatDefDescSet.executeQuery();
-			contents+="\t";
+			res+="\t";
 			if (defDescs.next()) {
-				contents+=StrArray.enclose(defDescs.getString("descSet"));
+				res+=StrArray.enclose(defDescs.getString("descSet"));
 			}
 		}
-		res=heads+contents;
 	}
 	catch (SQLException e) {
 		err(e);
