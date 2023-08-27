@@ -346,8 +346,7 @@ public static void main(String... args) {
 					break;
 				case "multidefs": // path=/reco/multidefs
 					PrintLog.req.bodyHandler((Buffer data) -> {
-						final String[] uris=data.toString().trim().split(";");
-						String res=PrintLog.db.recoDefs(uris);
+						String res=PrintLog.db.recoDefs(new StrArray(data.toString().trim(), false, false));
 						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().end(res);
 						System.out.println("Sended defs of uris.");
@@ -369,22 +368,22 @@ public static void main(String... args) {
 						System.out.println("No session.");
 					}
 					break;
-				case "put": // path=/reco/put
-					if (PrintLog.sessionPassed) {
-						PrintLog.req.bodyHandler((Buffer data) -> {
-							final String recoStr=data.toString();
-							String res=PrintLog.db.putReco(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr);
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-							PrintLog.req.response().end(res);
-							System.out.println("Put reco:\n"+recoStr);
-						});
-					}
-					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-						PrintLog.req.response().end("No session.");
-						System.out.println("No session.");
-					}
-					break;
+				// case "put": // path=/reco/put
+				// 	if (PrintLog.sessionPassed) {
+				// 		PrintLog.req.bodyHandler((Buffer data) -> {
+				// 			final String recoStr=data.toString();
+				// 			String res=PrintLog.db.putReco(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr);
+				// 			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+				// 			PrintLog.req.response().end(res);
+				// 			System.out.println("Put reco:\n"+recoStr);
+				// 		});
+				// 	}
+				// 	else {
+				// 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+				// 		PrintLog.req.response().end("No session.");
+				// 		System.out.println("No session.");
+				// 	}
+				// 	break;
 				default:
 					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
