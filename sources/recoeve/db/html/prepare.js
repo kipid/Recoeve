@@ -512,7 +512,12 @@ m.heapsort=function (arr, key, sorted, upto) {
 	for (let i=Math.floor(n/2)-1;i>=0;i--) {
 		m.heapify(arr, key, sorted, n, i);
 	}
-	upto=upto>n?n:upto;
+	if (upto) {
+		upto=upto>n?n:upto;
+	}
+	else {
+		upto=n;
+	}
 	let until=n-upto;
 	for (let i=n-1;i>=until;i--) {
 		let temp=sorted[0];
