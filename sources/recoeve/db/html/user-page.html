@@ -359,13 +359,11 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
 .reco>.val {margin:.5em 0 .3em}
-.multireco .reco>.val {display:none}
 .reco>.val>.str, .reco>.my-point>.str {border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
 	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 .multireco .reco .tFirst, .multireco .reco .tLast {display:none}
 .reco .val {display:block}
-.multireco .reco .val {display:none}
 .reco .my-point {display:none}
 .multireco .reco .my-point {display:block}
 .reco .result {font-size:.7em; padding:.5em}
@@ -1161,7 +1159,7 @@ $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 if (m.myPage) {
-	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
+	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 	$button_get_recoms=$(".button-get-recoms");
 	$button0_get_recoms=$("#button-get-recoms");
 }
@@ -2428,9 +2426,9 @@ m.renderStrDescCmt=function (str) {
 m.recomHTML=function (r) {
 	console.log(r);
 	if (r?.has) {
-		return m.recoHTML(r, false, true);
+		return m.recoHTML(r, false, true, true);
 	}
-	let res=`<div class="reco recom">
+	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
 	<div class="edit button" onclick="m.editOrRecoToMine(this, true)">+</div>
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>`;
@@ -2481,10 +2479,10 @@ m.recomHTML=function (r) {
 	res+=`</div>`;
 	return res;
 }
-m.recoHTML=function (r, inListPlay, inRange) {
+m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
@@ -2497,22 +2495,20 @@ m.recoHTML=function (r, inListPlay, inRange) {
 		else {
 			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
 		}
-		if (m.recoMode==="multireco") {
-			if (m.myPage) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
-			}
-			else if (m.myRecos[r.uri]) {
-				let mR=m.myRecos[r.uri];
-				if (mR.has) {
-					res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
-				}
-				else {
-					res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
-				}
+		if (m.myPage) {
+			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else if (m.myRecos[r.uri]) {
+			let mR=m.myRecos[r.uri];
+			if (mR.has) {
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
 			}
 			else {
 				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 			}
+		}
+		else {
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 		}
 		res+=`<div class="result"></div>`;
 		if (r.desc) {
@@ -2612,7 +2608,7 @@ m.reco_pointChange_do=function (args, err) {
 			args.$result?.html(res[1]?.result);
 			setTimeout(function () {
 				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-			}, 2000);
+			}, 5000);
 		}
 	});
 };
@@ -2714,6 +2710,135 @@ m.starsOnClick=function (e) {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
+m.starsOnTouchMove=function (e) {
+	let $target=$(e.target);
+	if (!$target.hasClass("stars-container")) {
+		$target=$target.parents(".stars-container");
+	}
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $bar=$target.find(".bar");
+	let barW=$bar.width();
+	let $str=$target.siblings(".str");
+	$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let w=x-$bar.offset().left+$window.scrollLeft();
+		if (w<-15) {
+			w=-1;
+		}
+		else if (w<0) {
+			w=0;
+		}
+		else if (w>m.starsWidth) {
+			w=m.starsWidth;
+		}
+		if (w!==barW) {
+			barW=w;
+			if (w<0) {
+				$str.html("");
+				w=0;
+			}
+			else {
+				$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
+			}
+			$bar.css({width:w});
+		}
+	});
+	return {$str, uri, $result, $reco};
+};
+m.starsOnUps=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("10.0/10");
+		}
+		else {
+			val.num+=0.1;
+			if (val.num>val.divisor) {
+				val.num=val.divisor;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("10.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2048);
+};
+m.starsOnDowns=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("0.0/10");
+		}
+		else {
+			val.num-=0.1;
+			if (val.num<0) {
+				val.num=0;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("0.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2048);
+};
+m.reNewAndReOn=function () {
+	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+	$window.off("scroll.delayedLoad");
+	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	$window.trigger("scroll.delayedLoad");
+	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
+	let $stars=$(".my-point>.stars-container");
+	$stars.off("click.mdInStars");
+	$stars.on("click.mdInStars", m.starsOnClick);
+	$stars.off("mousedown.mdInStars touchstart.mdInStars");
+	$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+	$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+		let {$str, uri, $result, $reco}=m.starsOnTouchMove(e);
+		$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+			m.timeout[uri]=setTimeout(function () {
+				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+			}, 2048);
+		});
+	});
+	let $ups=$(".my-point>.up");
+	let $downs=$(".my-point>.down");
+	$ups.off("click.ud");
+	$downs.off("click.ud");
+	$ups.on("click.ud", m.starsOnUps);
+	$downs.on("click.ud", m.starsOnDowns);
+};
 m.showRecosOnCat=function (elem, from) {
 	let $elem=$(elem);
 	let fs=m.fsToRs;
@@ -2792,146 +2917,16 @@ m.showRecosOnCat=function (elem, from) {
 			let beforeLoadSH=document.documentElement.scrollHeight;
 			let beforeST=$window.scrollTop();
 			if ($elem.offset().top-beforeST<=window.innerHeight/2.0) { // Scroll from downside to upside.
-				let $strHTML=$(strHTML);
-				let $recos=$strHTML.find(".reco");
-				for (k=0;k<$recos.length;k++) {
-					let $recoK=$recos.eq(k);
-					let uri=m.unescapeHTML($recoK.find(".textURI").html());
-					m.userRecos[uri].$recoElem=$recoK;
-				}
-				$elem.replaceWith($strHTML);
+				$elem.replaceWith(strHTML);
 				$window.scrollTop($window.scrollTop()+$elem.outerHeight()+document.documentElement.scrollHeight-beforeLoadSH+200);
 			}
 			else { // Scroll from upside to downside.
-				let $strHTML=$(strHTML);
-				let $recos=$strHTML.find(".reco");
-				for (k=0;k<$recos.length;k++) {
-					let $recoK=$recos.eq(k);
-					let uri=m.unescapeHTML($recoK.find(".textURI").html());
-					m.userRecos[uri].$recoElem=$recoK;
-				}
-				$elem.replaceWith($strHTML);
+				$elem.replaceWith(strHTML);
 			}
 			let afterLoadSH=document.documentElement.scrollHeight;
-			if (m.recoMode==="multireco") {
-				let $stars=$contents.find(".my-point>.stars-container");
-				$stars.on("click.mdInStars", m.starsOnClick);
-				$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-					let $target=$(e.target);
-					if (!$target.hasClass("stars-container")) {
-						$target=$target.parents(".stars-container");
-					}
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					$result.html("");
-					let $bar=$target.find(".bar");
-					let barW=$bar.width();
-					let $str=$target.siblings(".str");
-					$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
-						window.getSelection().removeAllRanges();
-						e.preventDefault();
-						e.stopPropagation();
-						let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-						let w=x-$bar.offset().left+$window.scrollLeft();
-						if (w<-15) {
-							w=-1;
-						}
-						else if (w<0) {
-							w=0;
-						}
-						else if (w>m.starsWidth) {
-							w=m.starsWidth;
-						}
-						if (w!==barW) {
-							barW=w;
-							if (w<0) {
-								$str.html("");
-								w=0;
-							}
-							else {
-								$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
-							}
-							$bar.css({width:w});
-						}
-					});
-					$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
-						$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
-						m.timeout[uri]=setTimeout(function () {
-							m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-						}, 2048);
-					});
-				});
-				let $ups=$contents.find(".my-point>.up");
-				let $downs=$contents.find(".my-point>.down");
-				$ups.on("click.ud", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					$result.html("");
-					let $str=$target.siblings(".str");
-					let $star=$reco.find(".my-point>.stars-container");
-					let val=m.val($str.html());
-					if (val.valid) {
-						if (val.val===-1) {
-							$str.html("10.0/10");
-						}
-						else {
-							val.num+=0.1;
-							if (val.num>val.divisor) {
-								val.num=val.divisor;
-							}
-							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-						}
-					} else {
-						$str.html("10.0/10");
-					}
-					val=m.val($str.html());
-					$star.find(".bar").css({width:m.starsWidth*val.val});
-					m.timeout[uri]=setTimeout(function () {
-						m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-					}, 2048);
-				});
-				$downs.on("click.ud", function (e) {
-					let $target=$(e.target);
-					let $reco=$target.parents(".reco");
-					let uri=m.unescapeHTML($reco.find(".textURI").html());
-					clearTimeout(m.timeout[uri]);
-					let $result=$reco.find(".result");
-					$result.html("");
-					let $str=$target.siblings(".str");
-					let $star=$reco.find(".my-point>.stars-container");
-					let val=m.val($str.html());
-					if (val.valid) {
-						if (val.val===-1) {
-							$str.html("0.0/10");
-						}
-						else {
-							val.num-=0.1;
-							if (val.num<0) {
-								val.num=0;
-							}
-							$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
-						}
-					} else {
-						$str.html("0.0/10");
-					}
-					val=m.val($str.html());
-					$star.find(".bar").css({width:m.starsWidth*val.val});
-					m.timeout[uri]=setTimeout(function () {
-						m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-					}, 2048);
-				});
-			}
 		}
 	}
-	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-	$window.trigger("scroll.delayedLoad");
-	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
+	m.reNewAndReOn();
 };
 m.editOrRecoToMine=function (elem, fillDefs) {
 	if (!$new_reco.is(":visible")) {
@@ -2958,9 +2953,9 @@ m.recoDowned=function (urisStr, recos) {
 	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
-		let p=recos[uri];
-		if (!p) { p=recos[uri]={}; }
-		p.down=true; // User's or My reco on the uri is downloaded.
+		let r=recos[uri];
+		if (!r) { r=recos[uri]={}; }
+		r.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
 m.recoToEve=function (resp, recos, cat, uris) {
@@ -2998,7 +2993,7 @@ m.recoToEve=function (resp, recos, cat, uris) {
 			let respK=resp[k];
 			let uri=respK.uri;
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:r.cats.split(";"), uri:uri, reco:r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:r.cats.split(";"), uri:uri, reco:r, r:r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
 			fsFLk.html=m.escapeHTML(r.title);
@@ -3010,12 +3005,11 @@ m.recoToEve=function (resp, recos, cat, uris) {
 	if ((cat===""||cat)&&uris) {
 		for (k=0;k<uris.length;k++) {
 			let uri=uris[k];
-			if (fs.fullList[uri]) {
-				let kOfUriList=fs.fullList[uri].kOfUriList||{};
-				kOfUriList[cat]=uris.length-1-k;
-				fs.fullList[uri].kOfUriList=kOfUriList;
-			}
+			let r=m.userRecos[uri];
+			if (!r) {r={};}
+			r.index=uris.length-1-k;
 		}
+		m.lastIndexOfUriList=uris.length;
 	}
 };
 m.getRecos=function (uris, recos, cat) {
@@ -3118,11 +3112,8 @@ m.loadMoreRecoms=function (elem, sortedUntil, sortN) {
 	if (recomsUntil>0) {
 		strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
 	}
-	$(elem).replaceWith(strHTML);
-	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-	$window.trigger("scroll.delayedLoad");
-	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
+	$(elem)?.replaceWith(strHTML);
+	m.reNewAndReOn();
 };
 m.getUriListAndShowRecosOnCat=function (cat) {
 	switch (m.recoMode) {
@@ -3187,20 +3178,8 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 					if (recomsUntil>0) {
 						strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
 					}
-					let $strHTML=$(strHTML);
-					let $recoms=$strHTML.find(".recom");
-					for (let k=0;k<$recoms.length;k++) {
-						let $recomK=$recoms.eq(k);
-						let uri=m.unescapeHTML($recomK.find(".textURI").html());
-						m.userRecos[uri].$recomElem=$recomK;
-					}
-					$contents_recoms.html($strHTML);
-					m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-					$window.trigger("scroll.delayedLoad");
-					m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
-					let $stars=$contents_recoms.find(".my-point>.stars-container");
-					$stars.on("click.mdInStars", m.starsOnClick);
+					$contents_recoms.html(strHTML);
+					m.reNewAndReOn();
 				}
 				else {
 					let req=`user\tcat`;
@@ -3227,21 +3206,13 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 							}
 						}
 						respJSON.splice(0, 1);
-						// let sorted=respJSON.sorted=[];
-						// for (let i=0;i<respJSON.length;i++) {
-						// 	sorted[i]=i;
-						// }
-						// let until=respJSON.sortedUntil=m.heapsort(respJSON, "val", sorted, 12);
-						// for (let i=respJSON.length-1;i>=until;i--) {
-						// 	console.log(respJSON[sorted[i]]);
-						// }
 						m.neighborsRecos[cat]=respJSON;
 						let recoms=[];
 						for (let i=respJSON.length-1;i>=0;i--) {
 							let respJSONi=respJSON[i];
 							let uri=respJSONi.uri;
 							if (!recoms[uri]) {
-								recoms[uri]={uri:uri, vals:[]};
+								recoms[uri]={uri:uri, vals:[], index:recoms.length};
 								recoms.push(recoms[uri]);
 							}
 							let val={user:respJSONi.user, val:respJSONi.val};
@@ -3305,20 +3276,8 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 							if (recomsUntil>0) {
 								strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
 							}
-							let $strHTML=$(strHTML);
-							let $recoms=$strHTML.find(".recom");
-							for (let k=0;k<$recoms.length;k++) {
-								let $recomK=$recoms.eq(k);
-								let uri=m.unescapeHTML($recomK.find(".textURI").html());
-								m.userRecos[uri].$recomElem=$recomK;
-							}
-							$contents_recoms.html($strHTML);
-							m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-							$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-							$window.trigger("scroll.delayedLoad");
-							m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
-							let $stars=$contents_recoms.find(".my-point>.stars-container");
-							$stars.on("click.mdInStars", m.starsOnClick);
+							$contents_recoms.html(strHTML);
+							m.reNewAndReOn();
 						});
 					});
 				}
@@ -3411,16 +3370,13 @@ m.refresh=function (cats, option, uri) {
 	else {
 		switch (option) {
 		case "recoed":
-			let $newRecomElem=$(m.recoHTML(r, false, true));
-			r.$recomElem?.replaceWith($newRecomElem);
-			r.$recomElem=$newRecomElem;
-			let $newRecoElem=$(m.recoHTML(r, false, true));
-			$contents.prepend($newRecoElem);
-			r.$recoElem=$newRecoElem;
-			m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-			$window.trigger("scroll.delayedLoad");
-			m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
+			r.index=m.lastIndexOfUriList;
+			m.lastIndexOfUriList++;
+			if (m.recoms[m.currentCat]) {
+				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true, true));
+			}
+			$contents.prepend(m.recoHTML(r, false, true));
+			m.reNewAndReOn();
 
 			let fs=m.fsGo;
 			if (fs.shuffled) {
@@ -3445,9 +3401,7 @@ m.refresh=function (cats, option, uri) {
 				if (option==="changed") {
 					let r=m.myRecos[uri];
 					$reco_playing.html(m.recoHTML(r, true, true));
-					m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-					$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-					$window.trigger("scroll.delayedLoad");
+					m.reNewAndReOn();
 				}
 				else if (option==="deleted") {
 					$reco_playing.html('');
@@ -3457,21 +3411,15 @@ m.refresh=function (cats, option, uri) {
 					$rC_youtube_uri_rendered.hide();
 				}
 			}
-			$newRecomElem=$(m.recoHTML(r, false, true));
-			r.$recomElem?.replaceWith($newRecomElem);
-			r.$recomElem=$newRecomElem;
-			$newRecoElem=$(m.recoHTML(r, false, true));
-			r.$recoElem?.replaceWith($newRecoElem);
-			r.$recoElem=$newRecoElem;
+			if (m.recoms[m.currentCat]) {
+				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true, true));
+			}
+			$(`#reco-${m.userRecos[uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true));
 			if (option==="changed") {
-				m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-				$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-				$window.trigger("scroll.delayedLoad");
-				m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, .reco, .to-be-executed");
+				m.reNewAndReOn();
 
 				let fs=m.fsGo;
 				let fsFLk=fs.fullList[uri];
-				fsFLk.$recoElem=$newRecoElem;
 				fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
 				fsFLk.html=m.escapeHTML(r.title);
 				fs[1]=null;
@@ -3490,11 +3438,15 @@ m.refresh=function (cats, option, uri) {
 			else if (option==="deleted") {
 				let r=m.myRecos[uri];
 				r.deleted=true;
+				r.has=false;
 				m.lastURI="x*L2$zp-|,O";
-				r.$recomElem?.addClass("none deleted");
-				r.$recoElem?.addClass("none deleted");
-				r.$recomElem?.find(".button.edit").addClass("deleted");
-				r.$recoElem?.find(".button.edit").addClass("deleted");
+				if (m.recoms[m.currentCat]) {
+					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recomHTML(r));
+					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.find(".button.edit").addClass("deleted");
+				}
+				$(`#reco-${r?.index}`)?.addClass("none deleted");
+				$(`#reco-${r?.index}`)?.find(".button.edit").addClass("deleted");
+				m.reNewAndReOn();
 
 				let fs=m.fsGo;
 				let fsFLk=fs.fullList[uri];
@@ -3536,6 +3488,7 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
+m.lastIndexOfUriList=0;
 m.openCat=function (cat, e) {
 	m.currentCat=cat;
 	let path=m.pathOfCat(m.currentCat, m.recoMode);
@@ -3544,9 +3497,17 @@ m.openCat=function (cat, e) {
 		return true;
 	}
 	m.fsToRs.shuffled=null;
-	for (let l=0;l<m.fsGo.fullList.length;l++) {
-		m.fsGo.fullList[l].$recoElem=null;
+	if (m.catUriList[cat]?.has) {
+		let uris=m.catUriList[cat].uris;
+		for (let k=0;k<uris.length;k++) {
+			let uri=uris[k];
+			m.userRecos[uri].index=uris.length-1-k;
+		}
+		m.lastIndexOfUriList=uris.length;
 	}
+	// for (let l=0;l<m.fsGo.fullList.length;l++) {
+	// 	m.fsGo.fullList[l].$recoElem=null;
+	// }
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
@@ -4635,28 +4596,29 @@ m.gotoLi=function (e, elem, k, fs) {
 		fs.$fsLis.removeClass("clicked-once");
 		$elem.addClass("selected");
 	}
-	let $recoElem=fsFLk.$recoElem;
-	if ($recoElem) {
+	let beInCurrentCat=false;
+	let catSplit=fsFLk.catSplit;
+	for (let i=0;i<catSplit.length;i++) {
+		if (m.currentCat==catSplit[i]) {
+			beInCurrentCat=true;
+			break;
+		}
+	}
+	if (!beInCurrentCat) {
+		m.openCat(catSplit[0]);
+	}
+	let $recoElem=$(`#reco-${m.userRecos[uri]?.index}`);
+	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
-		let beInCurrentCat=false;
-		let catSplit=fsFLk.catSplit;
-		for (let i=0;i<catSplit.length;i++) {
-			if (m.currentCat==catSplit[i]) {
-				beInCurrentCat=true;
-				break;
-			}
-		}
-		if (!beInCurrentCat) {
-			m.openCat(catSplit[0]);
-		}
-		let k=fsFLk.kOfUriList[m.currentCat];
+		// let k=fsFLk.kOfUriList[m.currentCat];
+		let k=m.userRecos[uri]?.index;
 		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function () {
-			let $recoElem=fs.fullList[k].$recoElem;
-			if ($recoElem) {
+			let $recoElem=$(`#reco-${k}`);
+			if ($recoElem.exists()) {
 				m.showAndScrollTo($recoElem);
 			}
 		}, 512);
@@ -5430,9 +5392,7 @@ m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
 		$eveElse_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 	}
-	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-	$window.trigger("scroll.delayedLoad");
+	m.reNewAndReOn();
 };
 m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
