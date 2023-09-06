@@ -290,18 +290,25 @@ public static void main(String... args) {
 							System.out.println("Sended neighbors.");
 						});
 						break;
+					case "cut-Neighbors": // e.g. path=/user/kipid/cut-Neighbors
+						if (PrintLog.sessionPassed) {
+							PrintLog.req.bodyHandler((Buffer data) -> {
+								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+								PrintLog.req.response().end(PrintLog.db.cutNeighbors(finalUserId, Long.parseLong(PrintLog.cookie.get("I"), 16), data.toString()), ENCODING);
+								System.out.println("Sended neighbors.");
+							});
+						}
+						else {
+							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+							PrintLog.req.response().end("No session.");
+							System.out.println("No session.");
+						}
+						break;
 					case "get-Recoms": // e.g. path=/user/kipid/get-Recoms
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(PrintLog.db.getRecoms(finalUserId, data.toString()), ENCODING);
 							System.out.println("Sended recoms.");
-						});
-						break;
-					case "/get-URI-cats-val": // e.g. path=/user/kipid/get-URI-cats-val
-						PrintLog.req.bodyHandler((Buffer data) -> {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-							PrintLog.req.response().end(PrintLog.db.getUriCatsVal(finalUserId, new StrArray(data.toString())), ENCODING);
-							System.out.println("Sended URI-cats-val.");
 						});
 						break;
 					default:
