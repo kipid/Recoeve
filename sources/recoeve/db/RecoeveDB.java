@@ -1338,12 +1338,19 @@ public boolean logsCommit(long user_i, String t, String ip, String log, boolean 
 }
 
 public String cutNeighbors(String user_id_from, long user_me, String toBeCut) {
-	ResultSet user=findUserById(user_id_from);
-	if (user.next()&&user.getLong("i")==user_me) {
-		StrArray sAToBeCut=new StrArray(toBeCut, false, true);
-		String cat_from=sAToBeCut.get("cat_from", 1);
-
-		return "cut";
+	try {
+		ResultSet user=findUserById(user_id_from);
+		if (user.next()&&user.getLong("i")==user_me) {
+			StrArray sAToBeCut=new StrArray(toBeCut, false, true);
+			String cat_from=sAToBeCut.get("cat_from", 1);
+			List<String> user_tos=sAToBeCut.get("user_to");
+			List<String> cat_tos=sAToBeCut.get("cat_to");
+			List<String> cuts=sAToBeCut.get("cut");
+			return "cut";
+		}
+	}
+	catch (SQLException e) {
+		err(e);
 	}
 	return "not";
 }
