@@ -2478,7 +2478,7 @@ m.recomHTML=function (r) {
 	}
 	res+=`</div>`;
 	return res;
-}
+};
 m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
@@ -3115,6 +3115,16 @@ m.loadMoreRecoms=function (elem, sortedUntil, sortN) {
 	$(elem)?.replaceWith(strHTML);
 	m.reNewAndReOn();
 };
+m.cutNeighbors=function (str) {
+	$.ajax({
+		type:"POST", url:m.userPath+"/cut-Neighbors", data:str
+		, dataType:"text"
+	}).done(function (resp) {
+		if (resp==="cut") {
+			$numbers_of_recos.html("Neighbors are cut.");
+		}
+	});
+};
 m.getUriListAndShowRecosOnCat=function (cat) {
 	switch (m.recoMode) {
 		case "neighbors":
@@ -3154,7 +3164,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
 					}
 				}
-				let until=sorted.sortedUltil=m.heapsort(neighbors, "simAvg100", sorted, m.neighborUpto);
+				let until=sorted.sortedUntil=m.heapsort(neighbors, "simAvg100", sorted, m.neighborUpto);
 				let strHTML=``;
 				for (let i=neighbors.length-1;i>=until;i--) {
 					let neighborI=neighbors[sorted[i]];
@@ -3163,7 +3173,27 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
 				m.neighbors[cat_from]=neighbors;
-				console.log(m.neighbors);
+				if (m.myPage&&neighbors.length>1000) {
+					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, 100, until);
+					let str=`user_me\t${m.myIndex}\ncat_from\t${cat_from}\n`;
+					let str_user_to=`user_to`;
+					let str_cat_to=`cat_to`;
+					let str_cut=`cut`;
+					for (let i=neighbors.length-1;i>=until;i--) {
+						let neighborI=neighbors[sorted[i]];
+						str_user_to+=`\t${neighborI.user_to}`;
+						str_cat_to+=`\t${neighborI.cat_to}`;
+						str_cut+=`\tx`;
+					}
+					for (let i=until-1;i>=0;i--) {
+						let neighborI=neighbors[sorted[i]];
+						str_user_to+=`\t${neighborI.user_to}`;
+						str_cat_to+=`\t${neighborI.cat_to}`;
+						str_cut+=`\to`;
+					}
+					str+=str_user_to+"\n"+str_cat_to+"\n"+str_cut;
+					m.rmb_me(m.cutNeighbors, str);
+				}
 			});
 			break;
 		case "recoms":
