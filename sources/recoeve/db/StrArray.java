@@ -34,6 +34,8 @@ public class StrArray {
 	public ArrayList<Map<String, String>> arrayMap;
 	public Map<String, ArrayList<String>> mapArray;
 	public Map<String, Map<String, String>> mapMap;
+	public boolean colMap;
+	public boolean rowMap;
 	private int row; // The last row number will be saved.
 	private int col; // The last col number of the last row will be saved.
 	
@@ -51,6 +53,8 @@ public class StrArray {
 		this(colMap, false);
 	}
 	public StrArray(boolean colMap, boolean rowMap) {
+		this.colMap=colMap;
+		this.rowMap=rowMap;
 		str="";
 		arrayArray=new ArrayList<ArrayList<String>>();
 		if (colMap) {
@@ -260,6 +264,12 @@ public class StrArray {
 		Map<String,String> map=mapMap.get(rowKey);
 		if (map!=null) {
 			return map.get(colKey);
+		}
+		return null;
+	}
+	public ArrayList<String> get(String rowKey) {
+		if (mapArray!=null) {
+			return mapArray.get(rowKey);
 		}
 		return null;
 	}
