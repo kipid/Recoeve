@@ -1663,6 +1663,7 @@ public ResultSet getRSNeighborListFrom(long user_from, String cat_from) throws S
 	}
 	return null;
 }
+// pstmtUpdateNeighborListFrom=con.prepareStatement("UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
 public boolean updateNeighborListFrom(long user_from, String cat_from, NeighborList userCatList, String now) throws SQLException {
 	pstmtUpdateNeighborListFrom.setString(1, userCatList.toString());
 	pstmtUpdateNeighborListFrom.setTimestamp(2, Timestamp.valueOf(now));
@@ -1716,6 +1717,7 @@ public static final int N_SET=400;
 public static final int N_CUT_NEIGHBOR=200;
 public void updateNeighbors(long user_from, String uri, Categories cats, Points pts, CatList catL, String now, int increment) throws SQLException {
 	if (pts.valid()) {
+		System.out.println("increment:"+increment);
 		if (increment==1) {
 			// Update existing neighbors and recentests.
 			long[] recentests=getRecentests(uri); // recentests upto RECENTESTS_N (200).
@@ -1727,7 +1729,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			for (String cat_from: cats.setOfCats) {
 				System.out.println("cat_from:"+cat_from);
 				NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
-				System.out.println("neighborListFrom:"+neighborListFrom);
+				System.out.println("neighborListFrom:\n"+neighborListFrom);
 				int n=neighborListFrom.getRowSize();
 				for (int i=0;i<n;i++) { // 이미 계산된 neighborListFrom 에서 1개 new URI update 하기.
 					long user_to=Long.parseLong(neighborListFrom.get(i, 0), 16);
@@ -1743,6 +1745,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (cats_to.contains(cat_to)) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.simpleAdd(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update/simpleAdd\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
@@ -1753,7 +1756,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 					}
 				}
 				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
-				System.out.println("neighborListTo:"+neighborListTo);
+				System.out.println("neighborListTo:\n"+neighborListTo);
 				n=neighborListTo.getRowSize();
 				for (int i=0;i<n;i++) { // 이미 계산된 neighborListTo 에서 1개 new URI update 하기.
 					long user_to=Long.parseLong(neighborListTo.get(i, 0), 16);
@@ -1769,6 +1772,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (cats_to.contains(cat_to)) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.simpleAdd(Similarity.sim(pts, pts_to));
+									System.out.println("\n\n1sim update/simpleAdd\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
@@ -1851,7 +1855,12 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 									putNeighborListTo(user_to, cat_to, neighborListTo, now);
 								}
 								else {
-									updateNeighborListTo(user_to, cat_to, neighborListTo, now);
+									// rSneighborListTo.close();
+									// updateNeighborListTo(user_to, cat_to, neighborListTo, now);
+									rSneighborListTo.updateString("userCatList", neighborListTo.toString());
+									rSneighborListTo.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+									rSneighborListTo.updateInt("nUpdate", rSneighborListTo.getInt("nUpdate")+1);
+									rSneighborListTo.updateRow();
 								}
 							}
 						}
@@ -1863,7 +1872,12 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 				}
 				else {
 					System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toString());
-					updateNeighborListFrom(user_from, cat_from, neighborListFrom, now);
+					// pstmtUpdateNeighborListFrom=con.prepareStatement("UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
+					rSneighborListFrom.updateString("userCatList", neighborListFrom.toString());
+					rSneighborListFrom.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+					rSneighborListFrom.updateInt("nUpdate", rSneighborListFrom.getInt("nUpdate")+1);
+					rSneighborListFrom.updateRow();
+					// updateNeighborListFrom(user_from, cat_from, neighborListFrom, now);
 				}
 			}
 		}
@@ -1872,13 +1886,13 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			for (String cat_from: cats.setOfCats) {
 				System.out.println("cat_from:"+cat_from);
 				NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
-				System.out.println("neighborListFrom:"+neighborListFrom);
+				System.out.println("neighborListFrom:\n"+neighborListFrom);
 				int n=neighborListFrom.getRowSize();
 				for(int i=0;i<n;i++) {
 					userSet.add(Long.parseLong(neighborListFrom.get(i, 0), 16));
 				}
 				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
-				System.out.println("neighborListTo:"+neighborListTo);
+				System.out.println("neighborListTo:\n"+neighborListTo);
 				n=neighborListTo.getRowSize();
 				for(int i=0;i<n;i++) {
 					userSet.add(Long.parseLong(neighborListTo.get(i, 0), 16));
@@ -1896,7 +1910,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (neighbor.next()) {
 									Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
 									sim.remove(Similarity.sim(pts, pts_to));
-									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
+									System.out.println("\n\n1sim update/remove\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateTimestamp("tUpdate", Timestamp.valueOf(now));
@@ -1907,7 +1921,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								if (neighborRev.next()) {
 									Similarity sim=new Similarity(neighborRev.getLong("sumSim"), neighborRev.getInt("nSim"));
 									sim.remove(Similarity.sim(pts, pts_to));
-									System.out.println("\n\n1sim update\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
+									System.out.println("\n\n1sim update/remove\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
 									neighborRev.updateLong("sumSim", sim.sumSim);
 									neighborRev.updateInt("nSim", sim.nSim);
 									neighborRev.updateTimestamp("tUpdate", Timestamp.valueOf(now));
@@ -2105,32 +2119,15 @@ public void deleteCatsUriFromList(long user_i, Categories cats, String uri, CatL
 	}
 }
 public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats, String uri, CatList catL, boolean equalityOfValuesOfPts, Points oldPts, Points newPts, String now) throws SQLException {
-	Iterator<String> iterator=newCats.setOfCats.iterator();
-	while (iterator.hasNext()) {
-		String newCat=iterator.next();
-		if (oldCats.setOfCats.remove(newCat)) {
-			iterator.remove();
-			// newCats.setOfCats.remove(newCat);
+	for (String oldCat: oldCats.setOfCats) {
+		if (newCats.setOfCats.remove(oldCat)) {
+			oldCats.setOfCats.remove(oldCat);
 		}
 	}
 	deleteCatsUriFromList(user_i, oldCats, uri, catL);
 	putCatsUriToList(user_i, newCats, uri, catL);
 	updateDefCat(uri, oldCats, -1);
 	updateDefCat(uri, newCats, 1);
-	if (equalityOfValuesOfPts) {
-		iterator=newCats.setOfCats.iterator();
-		while (iterator.hasNext()) {
-			String newCat=iterator.next();
-			if (oldCats.setOfCats.remove(newCat)) {
-				iterator.remove();
-				newCats.setOfCats.remove(newCat);
-			}
-		}
-		updateRecoStat(user_i, uri, oldPts, now, -1);
-		updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-		updateRecoStat(user_i, uri, newPts, now, 1);
-		updateNeighbors(user_i, uri, newCats, newPts, catL, now, 1);
-	}
 }
 
 // Reco, Edit 일 때 둘 다 recentests 마지막에 user_i 추가.
@@ -2138,7 +2135,7 @@ public void updateRecentests(long user_i) {
 
 }
 
-public static final int sortPer=100;
+public static final int SORTPER=100;
 
 public void updateDefCat(String uri, Categories cats, int increment) throws SQLException {
 if (cats!=null&&!(cats.toString().isEmpty())) {
@@ -2181,7 +2178,7 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 				if (catSet.next()) {
 					int nUpdate=catSet.getInt("nUpdate")+1;
 					catSet.updateInt("nUpdate", nUpdate);
-					if (nUpdate%sortPer==0) {
+					if (nUpdate%SORTPER==0) {
 						StrArray catSetArray=new StrArray(catSet.getString("catSet"), false, false);
 						int n=catSetArray.getRowSize();
 						int[] sorted=new int[n];
@@ -2271,7 +2268,7 @@ if (title!=null&&!(title.isEmpty())) {
 			if (titleSet.next()) {
 				int nUpdate=titleSet.getInt("nUpdate")+1;
 				titleSet.updateInt("nUpdate", nUpdate);
-				if (nUpdate%sortPer==0) {
+				if (nUpdate%SORTPER==0) {
 					StrArray titleSetArray=new StrArray(titleSet.getString("titleSet"), false, false);
 					int n=titleSetArray.getRowSize();
 					int[] sorted=new int[n];
@@ -2368,7 +2365,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 			if (descSet.next()) {
 				int nUpdate=descSet.getInt("nUpdate")+1;
 				descSet.updateInt("nUpdate", nUpdate);
-				if (nUpdate%sortPer==0) {
+				if (nUpdate%SORTPER==0) {
 					StrArray descSetArray=new StrArray(descSet.getString("descSet"), false, false);
 					int n=descSetArray.getRowSize();
 					int[] sorted=new int[n];
@@ -2559,6 +2556,7 @@ public String recoDo(long user_i, String recoStr, String now) {
 					}
 					break;
 				}
+				System.out.println("toDo:"+toDo);
 				switch (toDo) {
 				case "put":
 					pstmtPutReco.setLong(1, user_i);
@@ -2635,7 +2633,7 @@ public String recoDo(long user_i, String recoStr, String now) {
 							}
 						}
 						reco.updateRow();
-						if (!equalityOfValuesOfPts) {
+						if (!equalityOfValuesOfPts||!equalityOfCats) {
 							updateRecoStat(user_i, uri, oldPts, now, -1);
 							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 							updateRecoStat(user_i, uri, pts, now, 1);
@@ -2684,129 +2682,6 @@ public String recoDo(long user_i, String recoStr, String now) {
 	}
 	return res;
 }
-
-// put or overwrite Reco
-public String putReco(long user_i, String recoStr) {
-	boolean done=false;
-	String res="i\tresult";
-	String now=now();
-	StrArray sa=new StrArray(recoStr);
-	try {
-		con.setAutoCommit(false);
-		CatList catL=getCatList(user_i);
-		for (int i=1;i<sa.getRowSize();i++) {
-			res+="\n"+i+"\t";
-			String uri=sa.get(i, "uri");
-			String catsStr=sa.get(i, "cats");
-			Categories cats=new Categories(catsStr);
-			String title=sa.get(i, "title");
-			String desc=sa.get(i, "desc");
-			String cmt=sa.get(i, "cmt");
-			Points pts=new Points(sa.get(i, "val"));
-			String previousCatListStr=catL.fullCats;
-			try {
-				ResultSet reco=getReco(user_i, uri);
-				if (reco.next()) {
-					Categories oldCats=new Categories(reco.getString("cats"));
-					boolean equalityOfStringOfCats=(catsStr==null||catsStr.equals(oldCats.toString()));
-					boolean equalityOfCats=(catsStr==null||cats.equals(oldCats));
-					String oldTitle=reco.getString("title");
-					boolean equalityOfTitle=(title==null||title.equals(oldTitle));
-					String oldDesc=reco.getString("desc");
-					boolean equalityOfDesc=(desc==null||desc.equals(oldDesc));
-					boolean equalityOfCmt=(cmt==null||cmt.equals(reco.getString("cmt")));
-					Points oldPts=new Points(reco.getString("val")); // can be null.
-					boolean equalityOfPts=(sa.get(i, "val")==null||pts.equals(oldPts));
-					boolean equalityOfValuesOfPts=(sa.get(i, "val")==null||pts.equalValue(oldPts));
-					if (equalityOfStringOfCats&&equalityOfTitle&&equalityOfDesc&&equalityOfCmt&&equalityOfPts) {
-						res+="no change";
-					}
-					else {
-						if (!equalityOfValuesOfPts) {
-							updateRecoStat(user_i, uri, oldPts, now, -1);
-							updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
-							updateRecoStat(user_i, uri, pts, now, 1);
-							updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
-						}
-						reco.updateString("tLast", now);
-						if (!equalityOfStringOfCats) {
-							reco.updateString("cats", cats.toString());
-							if (!equalityOfCats) {
-								catsChangedOnUri(user_i, oldCats, cats, uri, catL, equalityOfValuesOfPts, oldPts, pts, now);
-							}
-						}
-						if (!equalityOfTitle) {
-							reco.updateString("title", title);
-							updateDefTitle(uri, oldTitle, -1);
-							updateDefTitle(uri, title, 1);
-						}
-						if (!equalityOfDesc) {
-							reco.updateString("desc", desc);
-							updateDefDesc(uri, oldDesc, -1);
-							updateDefDesc(uri, desc, 1);
-						}
-						if (!equalityOfCmt) {
-							reco.updateString("cmt", cmt);
-						}
-						if (!equalityOfPts) {
-							if (pts.valid()) {
-								reco.updateString("val", pts.str());
-							}
-							else {
-								reco.updateString("val", null);
-							}
-						}
-						reco.updateRow();
-						res+="changed";
-					}
-				}
-				else {
-					pstmtPutReco.setLong(1, user_i);
-					pstmtPutReco.setString(2, uri);
-					pstmtPutReco.setTimestamp(3, Timestamp.valueOf(now));
-					pstmtPutReco.setTimestamp(4, Timestamp.valueOf(now));
-					pstmtPutReco.setString(5, cats.toString());
-						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
-						updateDefCat(uri, cats, 1);
-					pstmtPutReco.setString(6, title); // Null can be put?
-						updateDefTitle(uri, title, 1);
-					pstmtPutReco.setString(7, desc); // Null can be put?
-						updateDefDesc(uri, desc, 1);
-					pstmtPutReco.setString(8, cmt); // Null can be put?
-					if (pts.valid()) {
-						pstmtPutReco.setString(9, pts.str());
-					}
-					else {
-						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
-					}
-					pstmtPutReco.executeUpdate();
-						updateRecoStat(user_i, uri, pts, now, 1);
-						updateNeighbors(user_i, uri, cats, pts, catL, now, 1);
-					res+="recoed";
-				}
-				updateCatList(user_i, catL);
-				con.commit();
-				done=true;
-			}
-			catch (SQLException e) {
-				err(e);
-				res+="error";
-				catL.fullCats=previousCatListStr;
-				try {
-					con.rollback();
-				}
-				catch (SQLException e2) {
-					err(e2);
-				}
-			}
-		}
-	}
-	catch (SQLException e) {
-		err(e);
-	}
-	return res+" :: done:"+done;
-}
-
 public void updateDefs() {
 	try {
 		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
