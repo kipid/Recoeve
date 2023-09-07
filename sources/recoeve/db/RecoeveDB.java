@@ -1537,8 +1537,8 @@ public boolean putRecoRecentests(String uri, long user_i, String now) {
 	}
 	return false;
 }
-public static final int N_MAX=8191;
-public static final int N_PADDING=1024;
+public static final int N_MAX=8000;
+public static final int N_PADDING=1600;
 public static final int N_REMAIN=N_MAX-N_PADDING;
 public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) throws SQLException {
 	pstmtGetRecoStat.setString(1, uri);
