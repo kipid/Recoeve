@@ -2496,15 +2496,14 @@ public String recoDefs(StrArray uris) {
 	}
 	return res;
 }
-public String recoDo(long user_i, String recoStr) {
-	String res="i\tresult";
-	String now=now();
-	StrArray sa=new StrArray(recoStr);
+public String recoDo(long user_i, String recoStr, String now) {
+	String res="result\ttLast";
+	StrArray sa=new StrArray(recoStr.trim());
 	try {
 		con.setAutoCommit(false);
 		CatList catL=getCatList(user_i);
 		for (int i=1;i<sa.getRowSize();i++) {
-			res+="\n"+i+"\t";
+			res+="\n";
 			String doStr=sa.get(i, "do");
 			String uri=sa.get(i, "uri");
 			String catsStr=sa.get(i, "cats");
@@ -2660,6 +2659,8 @@ public String recoDo(long user_i, String recoStr) {
 					updateNeighbors(user_i, uri, oldCats, oldPts, catL, now, -1);
 					res+="deleted";
 					break;
+				case "nothing": default:
+					break;
 				}
 				updateCatList(user_i, catL);
 				con.commit();
@@ -2675,6 +2676,7 @@ public String recoDo(long user_i, String recoStr) {
 					err(e2);
 				}
 			}
+			res+="\t"+now;
 		}
 	}
 	catch (SQLException e) {
