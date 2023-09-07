@@ -72,7 +72,7 @@ public static void main(String... args) {
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			PrintLog.req.response().end(""+PrintLog.db.putBlogVisitor(PrintLog.now, PrintLog.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+			PrintLog.req.response().end(""+PrintLog.db.putBlogVisitor(PrintLog.tNow, PrintLog.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
 			System.out.println("Recorded:\n"+inputs);
 		});
 	});
@@ -186,7 +186,7 @@ public static void main(String... args) {
 						System.out.println("Sended prepare.js.");
 						break;
 					case "sessionIter": // e.g. path=/sessionIter
-						String iter=PrintLog.db.sessionIter(PrintLog.cookie);
+						String iter=PrintLog.db.sessionIter(PrintLog.cookie, PrintLog.tNow);
 						PrintLog.req.response().putHeader("Content-Type", "text/plain");
 						PrintLog.req.response().end(iter);
 						System.out.println("iter: "+iter);
@@ -363,7 +363,7 @@ public static void main(String... args) {
 					if (PrintLog.sessionPassed) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
-							String res=PrintLog.db.recoDo(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr, PrintLog.now);
+							String res=PrintLog.db.recoDo(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr, PrintLog.tNow);
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(res);
 							System.out.println("Do reco:\n"+recoStr);
@@ -424,7 +424,7 @@ public static void main(String... args) {
 						catch (UnsupportedEncodingException e) {
 							System.out.println(e);
 						}
-						boolean verified=PrintLog.db.verifyUser(PrintLog.cookie.get("I"), userId, token, PrintLog.ip);
+						boolean verified=PrintLog.db.verifyUser(PrintLog.cookie.get("I"), userId, token, PrintLog.ip, PrintLog.tNow);
 						System.out.println("Verified:"+verified);
 						if (verified) {
 							// User is verified.
@@ -452,7 +452,7 @@ public static void main(String... args) {
 					}
 					break;
 				case "changePwd": // path=/account/changePwd
-					if (PrintLog.db.checkChangePwdToken(PrintLog.req.params(), PrintLog.now)) {
+					if (PrintLog.db.checkChangePwdToken(PrintLog.req.params(), PrintLog.tNow)) {
 						PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						PrintLog.req.response().end(FileMap.get("changePwd.html", PrintLog.lang), ENCODING);
 						System.out.println("Sended changePwd.html.");
@@ -471,7 +471,7 @@ public static void main(String... args) {
 							if (i>0) {
 								String id=dataStr.substring(0,i);
 								String token=dataStr.substring(i+1);
-								boolean tokenChecked=PrintLog.db.checkChangePwdToken(id, token, PrintLog.now);
+								boolean tokenChecked=PrintLog.db.checkChangePwdToken(id, token, PrintLog.tNow);
 								System.out.println("tokenChecked: "+tokenChecked);
 								if (tokenChecked) {
 									String new_salt=PrintLog.db.getNewPwdSalt("id", id);
@@ -503,9 +503,9 @@ public static void main(String... args) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							BodyData inputs=new BodyData(data.toString());
 							System.out.println("data:\n"+inputs);
-							if (PrintLog.db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), PrintLog.now)) {
+							if (PrintLog.db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), PrintLog.tNow)) {
 								System.out.println("Token is verified. User ID: "+inputs.get("userId"));
-								if (PrintLog.db.changePwd(inputs, PrintLog.ip, PrintLog.now)) {
+								if (PrintLog.db.changePwd(inputs, PrintLog.ip, PrintLog.tNow)) {
 									final String res=FileMap.replaceStr("[--Your password is changed.--]", PrintLog.lang);
 									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end(res, ENCODING);
@@ -583,7 +583,7 @@ public static void main(String... args) {
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							List<io.vertx.core.http.Cookie> setCookieSSN=PrintLog.db.authUser(inputs, PrintLog.ip, PrintLog.userAgent);
+							List<io.vertx.core.http.Cookie> setCookieSSN=PrintLog.db.authUser(inputs, PrintLog.ip, PrintLog.userAgent, PrintLog.tNow);
 							if (setCookieSSN!=null) {
 								// Log-in success!
 								for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
@@ -631,13 +631,13 @@ public static void main(String... args) {
 								byte[] token=PrintLog.db.randomBytes(128);
 								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(
-									idAvailable+"\t"+emailAvailable+"\t"+(PrintLog.db.createAuthToken(PrintLog.now, PrintLog.ip, token)?PrintLog.now+"\t"+PrintLog.db.hex(token):"Token is not created.")
+									idAvailable+"\t"+emailAvailable+"\t"+(PrintLog.db.createAuthToken(PrintLog.tNow, PrintLog.ip, token)?PrintLog.tNow+"\t"+PrintLog.db.hex(token):"Token is not created.")
 								, ENCODING);
 								System.out.println("Both ID: "+id+" and email: "+email+" are available. So a token is created.");
 							}
 							else {
 								PrintLog.db.logsCommit(1 // `user_i`=1 for anonymous.
-									, PrintLog.now, PrintLog.ip, "chk", false, "ID: "+id+" ["+idAvailable+"] and E-mail: "+email+" ["+emailAvailable+"] availability check.");
+									, PrintLog.tNow, PrintLog.ip, "chk", false, "ID: "+id+" ["+idAvailable+"] and E-mail: "+email+" ["+emailAvailable+"] availability check.");
 								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(
 									idAvailable+"\t"+emailAvailable
@@ -656,7 +656,7 @@ public static void main(String... args) {
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							String forgotPwd=PrintLog.db.forgotPwd(inputs, PrintLog.lang);
+							String forgotPwd=PrintLog.db.forgotPwd(inputs, PrintLog.lang, PrintLog.tNow);
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(forgotPwd, ENCODING);
 							System.out.println("Sended forgotPwd: "+forgotPwd);
@@ -672,9 +672,9 @@ public static void main(String... args) {
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							if (PrintLog.db.checkAuthToken(inputs, PrintLog.ip, PrintLog.now)) {
+							if (PrintLog.db.checkAuthToken(inputs, PrintLog.ip, PrintLog.tNow)) {
 								System.out.println("Token is verified.");
-								if (PrintLog.db.createUser(inputs, PrintLog.ip, PrintLog.now)) {
+								if (PrintLog.db.createUser(inputs, PrintLog.ip, PrintLog.tNow)) {
 									Map<String,String> varMap=new HashMap<String,String>();
 									varMap.put("{--user id--}", inputs.get(1, "userId"));
 									varMap.put("{--user email--}", inputs.get(1, "userEmail"));
@@ -720,7 +720,7 @@ public static void main(String... args) {
 		PrintLog.printLog(ctx);
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip, PrintLog.userAgent);
+			List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip, PrintLog.userAgent, PrintLog.tNow);
 			for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 				PrintLog.req.response().addCookie(singleCookie);
 				System.out.println(singleCookie.getName()+": "+singleCookie.getValue());

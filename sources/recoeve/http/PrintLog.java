@@ -28,6 +28,7 @@ public static boolean sessionPassed=false;
 public static String user_i=null;
 public static HttpMethod method=null;
 public static String now=null;
+public static Timestamp tNow=null;
 public static String referer=null;
 public static String ip=null;
 public static String userAgent=null;
@@ -41,6 +42,7 @@ public static void printLog(RoutingContext ctx) {
 	////////////////////////////////////
 	System.out.println("\n\nA client has connected!: "+(++numberOfClients));
 	now=db.now();
+	tNow=Timestamp.valueOf(now);
 	userAgent=req.getHeader("User-Agent");
 	referer=req.headers().get("Referer");
 		System.out.println("Time: "+now);
@@ -101,7 +103,7 @@ public static void printLog(RoutingContext ctx) {
 	// Session cookie 확인.
 	////////////////////////////////////
 	cookie=new Cookie(req.headers().get("Cookie"));
-	sessionPassed=db.sessionCheck(cookie);
+	sessionPassed=db.sessionCheck(cookie, tNow);
 	System.out.println("Cookie: "+cookie);
 	System.out.println("Session passed?: "+sessionPassed);
 	user_i=cookie.get("rmbdI");
