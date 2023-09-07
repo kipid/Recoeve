@@ -182,7 +182,7 @@ public class NeighborList {
 						if (aL.size()>=2) {
 							mapArray.putIfAbsent(aL.get(0)+"\t"+aL.get(1), aL);
 						}
-						else if (aL.size()>=1) {
+						else if (aL.size()>=1&&!aL.get(0).isEmpty()) {
 							aL.add("");
 							mapArray.putIfAbsent(aL.get(0)+"\t", aL);
 						}

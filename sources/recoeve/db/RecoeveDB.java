@@ -1365,7 +1365,13 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 			System.out.println("neighborListFrom:\n"+neighborListFrom.toString());
 			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
 			System.out.println("neighborListTo:\n"+neighborListTo.toString());
-			NeighborList neighborList=new NeighborList(neighborListFrom.toString()+"\n"+neighborListTo.toString());
+			NeighborList neighborList=null;
+			if (neighborListFrom.toString().trim().isEmpty()||neighborListTo.toString().trim().isEmpty()) {
+				neighborList=new NeighborList((neighborListFrom.toString()+"\n"+neighborListTo.toString()).trim());
+			}
+			else {
+				neighborList=new NeighborList(neighborListFrom.toString()+"\n"+neighborListTo.toString());
+			}
 			int jSize=neighborList.getRowSize();
 			for (int j=0;j<jSize;j++) {
 				ResultSet neighbor=getNeighbor(user_from, cat_from, Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1));
