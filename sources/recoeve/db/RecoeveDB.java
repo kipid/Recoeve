@@ -2684,7 +2684,7 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 	}
 	return res;
 }
-public void updateDefs(Timestamp tNow) {
+public void updateDefsAll(Timestamp tNow) {
 	try {
 		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs=pstmtGetAllRecos.executeQuery();
@@ -2707,38 +2707,22 @@ public void updateDefs(Timestamp tNow) {
 	}
 }
 
+public static void main(String... args) {
 /*
-// RecoStat update all.
-	// RecoeveDB db=new RecoeveDB();
-	// String now=db.now();
-	// try {
-	// 	// TRUNCATE `RecoStat`;
-	// 	PreparedStatement pstmt=db.con.prepareStatement("SELECT * FROM `Recos`;");
-	// 	ResultSet rs=pstmt.executeQuery();
-	// 	while (rs.next()) {
-	// 		long user_i=rs.getLong("user_i");
-	// 		String uri=rs.getString("uri");
-	// 		Points pts=new Points(rs.getString("val"));
-	// 		db.updateRecoStat(user_i, uri, pts, tNow, 1);
-	// 	}
-	// }
-	// catch (SQLException e) {
-	// 	err(e);
-	// }
+	RecoeveDB db=new RecoeveDB();
+	String now=db.now();
+	// TRUNCATE `RecoStat`;
+	// TRUNCATE `RecoStatDefCat`;
+	// TRUNCATE `RecoStatDefTitle`;
+	// TRUNCATE `RecoStatDefDesc`;
+	// TRUNCATE `RecoStatDefCatSet`;
+	// TRUNCATE `RecoStatDefTitleSet`;
+	// TRUNCATE `RecoStatDefDescSet`;
+	updateDefsAll(Timestamp.valueOf(now));
 */
 
-public static void main(String... args) {
+
 	// RecoeveDB db=new RecoeveDB();
-	// try {
-	// 	long[] r=db.getRecentests("https://www.youtube.com/watch?v=qD1kP_nJU3o");
-	// 	System.out.println(r.length);
-	// 	for (int i=0;i<r.length;i++) {
-	// 		System.out.println(r[i]);
-	// 	}
-	// }
-	// catch (SQLException e) {
-	// 	err(e);
-	// }
-	// db.delBlogVisitor();
+	// System.out.println(db.delBlogVisitor());
 }
 }// public class RecoeveDB
