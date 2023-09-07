@@ -1159,7 +1159,7 @@ if (m.myPage) {
 	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
 else {
-	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
+	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
 $button_get_recoms=$(".button-get-recoms");
 $button0_get_recoms=$("#button-get-recoms");
