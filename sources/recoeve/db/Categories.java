@@ -126,7 +126,8 @@ public class Categories {
 			cats=strCats; // toFormatNoDuplicateCat(strCats)? in javascript (user-side handling)
 		}
 		setOfCats=new HashSet<String>();
-		for (String cat: cats.split(";")) {
+		String[] catsSplit=cats.split(";");
+		for (String cat: catsSplit) {
 			setOfCats.add(cat);
 		}
 		// setOfSuperCats=new HashSet<String>();
@@ -200,6 +201,28 @@ public class Categories {
 	}
 	
 	public static void main(String... args) {
+		// String str=null;
+		// Categories newCats=new Categories(str);
+		// Categories oldCats=new Categories(";[Music]");
+		// for (String newCat: newCats.setOfCats) {
+		// 	System.out.println(newCat);
+		// 	newCats.setOfCats.remove(newCat);
+		// }
+		// // oldCats.setOfCats.add("");
+		// System.out.println(oldCats.setOfCats);
+		// Iterator<String> iterator=newCats.setOfCats.iterator();
+		// while (iterator.hasNext()) {
+		// 	String newCat=iterator.next();
+		// 	System.out.println("newCat:"+newCat);
+		// 	if (oldCats.setOfCats.remove(newCat)) {
+		// 		// iterator.remove();
+		// 		System.out.println("removed.");
+		// 		newCats.setOfCats.remove(newCat);
+		// 	}
+		// }
+		// System.out.println(newCats.setOfCats);
+		// System.out.println(oldCats.setOfCats);
+
 		// String catsStr="; --A; B--F-- ; C--D--F  ";
 		// System.out.println("toFormat(\""+catsStr+"\") : "+toFormat(catsStr));
 		// catsStr=" ; --A; B---------F-- ; C---D--F  ;   -----";
