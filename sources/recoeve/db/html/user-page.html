@@ -361,6 +361,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.val>.str, .reco>.my-point>.str {border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
 	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
+.multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
 .reco .result {font-size:.7em; padding:.5em}
 
 .lyricsC {}
@@ -668,8 +669,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <script>
 (function (m, $, undefined) {
 $("#javascript-disable").hide();
+m.kakaoTries=0;
 m.kakaoInitDo=function () {
-	if (typeof Kakao!=='undefined') {
+	if (typeof Kakao!=='undefined'||m.kakaoTries++>15) {
 		clearInterval(m.kakaoInit);
 		if (!Kakao.isInitialized()) {
 			Kakao.init('f076e37310bc101c5c50c9e2714b59ca');
