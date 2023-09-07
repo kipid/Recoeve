@@ -178,7 +178,15 @@ public class NeighborList {
 			if (rowMap) {
 				for (int i=0;i<arrayArray.size();i++) {
 					ArrayList<String> aL=arrayArray.get(i);
-					mapArray.putIfAbsent(aL.get(0)+"\t"+aL.get(1), aL);
+					if (aL!=null) {
+						if (aL.size()>=2) {
+							mapArray.putIfAbsent(aL.get(0)+"\t"+aL.get(1), aL);
+						}
+						else if (aL.size()>=1) {
+							aL.add("");
+							mapArray.putIfAbsent(aL.get(0)+"\t", aL);
+						}
+					}
 				}
 			}
 			if (colMap&&rowMap) {
