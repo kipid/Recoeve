@@ -3314,7 +3314,6 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 			}
 			else {
 				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}.`);
-				$contents.html("");
 				if (m.catList[cat]) {
 					$catList.find(".cat").removeClass("selected");
 					let $cat=$("#cat-"+m.catList[cat].i);
@@ -5008,8 +5007,8 @@ m.processShortKey=function (e) {
 					m.recoMode="recoms";
 					$button_mode.removeClass("enabled");
 					$button_get_recoms.addClass("enabled");
-					$window.scrollTop($button0_get_recoms?.offset()?.top);
 				}
+				$window.scrollTop($button0_get_recoms?.offset()?.top);
 				m.openCat(m.currentCat);
 			}
 			break;
