@@ -2146,48 +2146,6 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 	updateDefCat(uri, newCats, 1);
 }
 
-// Reco, Edit 일 때 둘 다 recentests 마지막에 user_i 추가.
-// BLOB: 65,535 bytes ~= 8000 longs.
-public void updateRecentests(String uri, long user_i, ResultSet rSRecoStat, String now) {
-	if (rSRecoStat!=null) {
-		byte[] byte_user_i=longToBytes(user_i);
-		try {
-			byte[] recentests=rSRecoStat.getBytes("recentests");
-			if (lastLongOfBytes(recentests)==user_i) {
-				return;
-			}
-			if (recentests.length>64000) {
-				byte[] recentestsCut=new byte[8*201];
-				int recentestsStart=recentests.length-8*200;
-				for (int i=recentestsStart;i<recentests.length;i++) {
-					recentestsCut[i-recentestsStart]=recentests[i];
-				}
-				int offset=recentests.length-recentestsStart;
-				for (int i=0;i<8;i++) {
-					recentestsCut[offset+i]=byte_user_i[i];
-				}
-				rSRecoStat.updateBytes("recentests", recentestsCut);
-			}
-			else {
-				byte[] recentestsNew=Arrays.copyOf(recentests, recentests.length+8);
-				int offset=recentests.length;
-				for (int i=0;i<8;i++) {
-					recentestsNew[offset+i]=byte_user_i[i];
-				}
-				rSRecoStat.updateBytes("recentests", recentestsNew);
-			}
-			rSRecoStat.updateTimestamp("tUpdate", Timestamp.valueOf(now));
-			rSRecoStat.updateRow();
-		}
-		catch (SQLException e) {
-			err(e);
-		}
-	}
-	else {
-		putRecoRecentests(uri, user_i, now);
-	}
-}
-
 public static final int SORTPER=100;
 
 public void updateDefCat(String uri, Categories cats, int increment) throws SQLException {
