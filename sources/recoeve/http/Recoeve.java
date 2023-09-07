@@ -363,7 +363,7 @@ public static void main(String... args) {
 					if (PrintLog.sessionPassed) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
-							String res=PrintLog.db.recoDo(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr);
+							String res=PrintLog.db.recoDo(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr, PrintLog.now);
 							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(res);
 							System.out.println("Do reco:\n"+recoStr);
