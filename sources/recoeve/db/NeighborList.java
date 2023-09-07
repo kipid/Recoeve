@@ -14,14 +14,21 @@ import java.util.HashSet;
 
 
 public class NeighborList {
-	// public class UserCat {
-	// 	public long user;
-	// 	public String cat;
-	// }
-
 	public static final Pattern delimiter;
+	public static final Pattern lastQuote;
 	static {
 		delimiter=Pattern.compile("[\\t\\n]");
+		lastQuote=Pattern.compile("[^\"](?:\"\")*\"([\\t\\n])");
+	}
+
+	public static String enclose(String str) {
+		if (str==null) { return ""; }
+		if (str.startsWith("\"")||str.indexOf("\n")!=-1||str.indexOf("\t")!=-1) {
+			return "\""+str.replaceAll("\"","\"\"")+"\"";
+		}
+		else {
+			return str;
+		}
 	}
 
 	public String str;
@@ -29,6 +36,8 @@ public class NeighborList {
 	public ArrayList<Map<String, String>> arrayMap;
 	public Map<String, ArrayList<String>> mapArray;
 	public Map<String, Map<String, String>> mapMap;
+	public boolean colMap;
+	public boolean rowMap;
 	private int row; // The last row number will be saved.
 	private int col; // The last col number of the last row will be saved.
 
@@ -46,6 +55,8 @@ public class NeighborList {
 		this(colMap, false);
 	}
 	public NeighborList(boolean colMap, boolean rowMap) {
+		this.colMap=colMap;
+		this.rowMap=rowMap;
 		str="";
 		arrayArray=new ArrayList<ArrayList<String>>();
 		if (colMap) {
@@ -77,11 +88,14 @@ public class NeighborList {
 	}
 	public NeighborList(String strData, boolean colMap, boolean rowMap) {
 		this(colMap, rowMap);
-		strData=strData.trim();
-		if (strData.isEmpty()) {
+		if (strData==null) {
 			return;
 		}
 		str=strData.replaceAll("\\r","");
+		str=str.trim();
+		if (str.isEmpty()) {
+			return;
+		}
 		if (str.charAt(str.length()-1)!='\n') {
 			str+="\n";
 		}
@@ -116,17 +130,34 @@ public class NeighborList {
 			int start=0;
 			int end=0;
 			Matcher matchDelim=delimiter.matcher(str);
+			Matcher matchLastQuote=lastQuote.matcher(str);
 			while (start<str.length()&&this.increaseRC(delim)) {
-				if (matchDelim.find(start)) {
-					delim=matchDelim.group();
-					end=matchDelim.end();
-					strElem=str.substring(start, end-1);
-					start=end;
+				if (str.substring(start,start+1).equals("\"")) {
+					if (matchLastQuote.find(start+1)) {
+						end=matchLastQuote.end();
+						strElem=str.substring(start+1, end-2);
+						delim=matchLastQuote.group(1);
+						start=end;
+					}
+					else {
+						strElem=str.substring(start+1);
+						delim="";
+						start=end=str.length();
+					}
+					strElem=strElem.replaceAll("\"\"","\"");
 				}
 				else {
-					delim="";
-					strElem=str.substring(start);
-					start=end=str.length();
+					if (matchDelim.find(start)) {
+						delim=matchDelim.group();
+						end=matchDelim.end();
+						strElem=str.substring(start, end-1);
+						start=end;
+					}
+					else {
+						delim="";
+						strElem=str.substring(start);
+						start=end=str.length();
+					}
 				}
 				arrayArray.get(row).add(strElem);
 			}
@@ -170,13 +201,13 @@ public class NeighborList {
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
 		int rowSize=this.getRowSize();
-		Set setOfUserCat=new HashSet<String>(2*rowSize);
+		Set setOfUserCat=new HashSet<String>(rowSize>0?2*rowSize:1);
 		for (int i=0;i<rowSize;i++) {
 			int colSize=this.getColSizeAtRow(i);
-			if (setOfUserCat.add(arrayArray.get(i).get(0)+"\t"+arrayArray.get(i).get(1))) {
-				sb.append(arrayArray.get(i).get(0));
+			if (colSize>=2&&setOfUserCat.add(arrayArray.get(i).get(0)+"\t"+arrayArray.get(i).get(1))) {
+				sb.append(enclose(arrayArray.get(i).get(0)));
 				for (int j=1;j<colSize;j++) {
-					sb.append("\t"+arrayArray.get(i).get(j));
+					sb.append("\t"+enclose(arrayArray.get(i).get(j)));
 				}
 				sb.append("\n");
 			}

@@ -86,10 +86,14 @@ public class StrArray {
 	}
 	public StrArray(String strData, boolean colMap, boolean rowMap) {
 		this(colMap, rowMap);
-		if (strData.isEmpty()) {
+		if (strData==null) {
 			return;
 		}
 		str=strData.replaceAll("\\r","");
+		str=str.trim();
+		if (str.isEmpty()) {
+			return;
+		}
 		if (str.charAt(str.length()-1)!='\n') {
 			str+="\n";
 		}
