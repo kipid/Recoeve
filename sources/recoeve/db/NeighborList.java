@@ -92,7 +92,7 @@ public class NeighborList {
 			return;
 		}
 		str=strData.replaceAll("\\r","");
-		str=str.trim();
+		// str=str.trim();
 		if (str.isEmpty()) {
 			return;
 		}
