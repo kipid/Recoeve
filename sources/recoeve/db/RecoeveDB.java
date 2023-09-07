@@ -1498,7 +1498,17 @@ public static long bytesToLong(final byte[] b) {
 	}
 	return result;
 }
-
+public static long lastLongOfBytes(byte[] byteData) {
+	if (byteData.length<8) {
+		return 0L;
+	}
+	else {
+		byte[] portion=new byte[8];
+		System.arraycopy(byteData, byteData.length-8, portion, 0, 8);
+		ByteBuffer buffer=ByteBuffer.wrap(portion);
+		return buffer.getLong();
+	}
+}
 private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
 	int N_min=N>RECENTESTS_N?RECENTESTS_N:N;
 	System.out.println("N_min:"+N_min);
@@ -1511,7 +1521,7 @@ private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
 	ByteBuffer buffer=ByteBuffer.wrap(portion);
 	for (int i=0;i<N_min;i++) {
 		longArray[i]=buffer.getLong();
-	}
+	} // Recentest to the last index.
 	return longArray;
 }
 
@@ -1539,47 +1549,47 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, String now) th
 		ByteArrayOutputStream oStream=new ByteArrayOutputStream();
 		byte[] recentests=rs.getBytes("recentests");
 		byte[] user_i_bytes=longToBytes(user_i);
-		System.out.println("Reading recentests... "+hex(recentests));
 		int rsL=0;
 		try {
 			if (recentests!=null) {
 				rsL=recentests.length;
-				System.out.println("recentests length... "+rsL);
 				if (rsL>=8) {
 					equalityOfRecentest=Arrays.equals(Arrays.copyOfRange(recentests, rsL-8, rsL), user_i_bytes);
+					if (equalityOfRecentest) {
+						return rs;
+					}
 				}
-				System.out.println("equalityOfRecentest:"+equalityOfRecentest);
-				if (!equalityOfRecentest) {
-					oStream.write(recentests);
+				if (rsL>64000) {
+					byte[] recentestsCut=new byte[8*201];
+					int recentestsStart=rsL-8*200;
+					for (int i=recentestsStart;i<rsL;i++) {
+						recentestsCut[i-recentestsStart]=recentests[i];
+					}
+					int offset=rsL-recentestsStart;
+					for (int i=0;i<8;i++) {
+						recentestsCut[offset+i]=user_i_bytes[i];
+					}
+					rs.updateBytes("recentests", recentestsCut);
 				}
-			}
-			if (!equalityOfRecentest) {
-				oStream.write(user_i_bytes);
-				rs.updateBytes("recentests", oStream.toByteArray());
-				System.out.println("Writed recentests... "+hex(oStream.toByteArray()));
+				else {
+					byte[] recentestsNew=Arrays.copyOf(recentests, rsL+8);
+					int offset=rsL;
+					for (int i=0;i<8;i++) {
+						recentestsNew[offset+i]=user_i_bytes[i];
+					}
+					rs.updateBytes("recentests", recentestsNew);
+				}
+				rs.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+				rs.updateRow();
 			}
 		}
-		catch (IOException e) {
+		catch (SQLException e) {
 			err(e);
-		}
-		if (!equalityOfRecentest) {
-			rs.updateInt("N", N+1);
-			if (N+1==N_MAX) {
-				byte[] remains=new byte[N_REMAIN*8];
-				System.arraycopy(rs.getBytes("recentests"), N_PADDING*8, remains, 0, N_REMAIN*8);
-				rs.updateBytes("recentests", remains);
-				rs.updateInt("N", N_REMAIN);
-			}
-			rs.updateRow();
 		}
 		return rs;
 	}
 	else {
-		pstmtPutRecoStat.setString(1, uri);
-		System.out.println("Writing recentests... "+hex(longToBytes(user_i)));
-		pstmtPutRecoStat.setBytes(2, longToBytes(user_i));
-		pstmtPutRecoStat.setTimestamp(3, Timestamp.valueOf(now));
-		pstmtPutRecoStat.executeUpdate();
+		putRecoRecentests(uri, user_i, now);
 		rs=pstmtGetRecoStat.executeQuery();
 		if (rs.next()) {
 			return rs;
@@ -2137,8 +2147,45 @@ public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats
 }
 
 // Reco, Edit 일 때 둘 다 recentests 마지막에 user_i 추가.
-public void updateRecentests(long user_i) {
-
+// BLOB: 65,535 bytes ~= 8000 longs.
+public void updateRecentests(String uri, long user_i, ResultSet rSRecoStat, String now) {
+	if (rSRecoStat!=null) {
+		byte[] byte_user_i=longToBytes(user_i);
+		try {
+			byte[] recentests=rSRecoStat.getBytes("recentests");
+			if (lastLongOfBytes(recentests)==user_i) {
+				return;
+			}
+			if (recentests.length>64000) {
+				byte[] recentestsCut=new byte[8*201];
+				int recentestsStart=recentests.length-8*200;
+				for (int i=recentestsStart;i<recentests.length;i++) {
+					recentestsCut[i-recentestsStart]=recentests[i];
+				}
+				int offset=recentests.length-recentestsStart;
+				for (int i=0;i<8;i++) {
+					recentestsCut[offset+i]=byte_user_i[i];
+				}
+				rSRecoStat.updateBytes("recentests", recentestsCut);
+			}
+			else {
+				byte[] recentestsNew=Arrays.copyOf(recentests, recentests.length+8);
+				int offset=recentests.length;
+				for (int i=0;i<8;i++) {
+					recentestsNew[offset+i]=byte_user_i[i];
+				}
+				rSRecoStat.updateBytes("recentests", recentestsNew);
+			}
+			rSRecoStat.updateTimestamp("tUpdate", Timestamp.valueOf(now));
+			rSRecoStat.updateRow();
+		}
+		catch (SQLException e) {
+			err(e);
+		}
+	}
+	else {
+		putRecoRecentests(uri, user_i, now);
+	}
 }
 
 public static final int SORTPER=100;
