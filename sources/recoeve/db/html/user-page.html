@@ -1157,9 +1157,12 @@ $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 if (m.myPage) {
 	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
-	$button_get_recoms=$(".button-get-recoms");
-	$button0_get_recoms=$("#button-get-recoms");
 }
+else {
+	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
+}
+$button_get_recoms=$(".button-get-recoms");
+$button0_get_recoms=$("#button-get-recoms");
 $button_new_reco=$(".button-new-reco");
 $button_goto_cats=$(".button-goto-cats");
 
