@@ -148,7 +148,6 @@ private PreparedStatement pstmtGetUriList;
 private PreparedStatement pstmtPutUriList;
 
 private PreparedStatement pstmtPutRecentests;
-private PreparedStatement pstmtUpdateRecentests;
 private PreparedStatement pstmtCutAndPutRecentests;
 
 private PreparedStatement pstmtPutNeighbor;
@@ -221,8 +220,7 @@ public RecoeveDB() {
 		pstmtGetUriList=con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutUriList=con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
-		pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?, ?, 1);");
-		pstmtUpdateRecentests=con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(`recentests`, ?), `N`=`N`+1, `tUpdate`=? WHERE `uri`=?;");
+		pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
 		pstmtCutAndPutRecentests=con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?), ?), `N`=? WHERE `uri`=?;");
 
 		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?);");
@@ -1516,13 +1514,14 @@ private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
 	} // Recentest to the last index.
 	return longArray;
 }
-
+// pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`, `N`) VALUES (?, ?, ?, ?, 1);");
 public boolean putRecoRecentests(String uri, long user_i, Timestamp tNow) {
 	try {
-		pstmtUpdateRecentests.setBytes(1, longToBytes(user_i));
-		pstmtUpdateRecentests.setTimestamp(2, tNow);
-		pstmtUpdateRecentests.setString(3, uri);
-		return pstmtUpdateRecentests.executeUpdate()>0;
+		pstmtPutRecentests.setString(1, uri);
+		pstmtPutRecentests.setBytes(2, longToBytes(user_i));
+		pstmtPutRecentests.setTimestamp(3, tNow);
+		pstmtPutRecentests.setTimestamp(4, tNow);
+		return pstmtPutRecentests.executeUpdate()>0;
 	}
 	catch (SQLException e) {
 		err(e);
@@ -1537,7 +1536,6 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, Timestamp tNow
 	ResultSet rs=pstmtGetRecoStat.executeQuery();
 	if (rs.next()) {
 		boolean equalityOfRecentest=false;
-		int N=rs.getInt("N");
 		byte[] recentests=rs.getBytes("recentests");
 		byte[] user_i_bytes=longToBytes(user_i);
 		int rsL=0;
@@ -2708,18 +2706,18 @@ public void updateDefsAll(Timestamp tNow) {
 }
 
 public static void main(String... args) {
-/*
-	RecoeveDB db=new RecoeveDB();
-	String now=db.now();
-	// TRUNCATE `RecoStat`;
-	// TRUNCATE `RecoStatDefCat`;
-	// TRUNCATE `RecoStatDefTitle`;
-	// TRUNCATE `RecoStatDefDesc`;
-	// TRUNCATE `RecoStatDefCatSet`;
-	// TRUNCATE `RecoStatDefTitleSet`;
-	// TRUNCATE `RecoStatDefDescSet`;
-	updateDefsAll(Timestamp.valueOf(now));
-*/
+
+	// RecoeveDB db=new RecoeveDB();
+	// String now=db.now();
+	// // TRUNCATE `RecoStat`;
+	// // TRUNCATE `RecoStatDefCat`;
+	// // TRUNCATE `RecoStatDefTitle`;
+	// // TRUNCATE `RecoStatDefDesc`;
+	// // TRUNCATE `RecoStatDefCatSet`;
+	// // TRUNCATE `RecoStatDefTitleSet`;
+	// // TRUNCATE `RecoStatDefDescSet`;
+	// updateDefsAll(Timestamp.valueOf(now));
+
 
 
 	// RecoeveDB db=new RecoeveDB();
