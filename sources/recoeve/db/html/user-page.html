@@ -4381,7 +4381,7 @@ $button_edit.on("click", function (e) {
 
 		if (changed) {
 			$error.html("Being changed.");
-			m.rmb_me(m.reco_change_do, {strHeads:strHeads, strContents:strContents, cats:cats, r:r, uri:uri, title:title, desc:desc, cmt:cmt, val:val});
+			m.rmb_me(m.reco_change_do, {strHeads, strContents, cats, r, uri, title, desc, cmt, val});
 		}
 		else {
 			$error.html("You have made no change.");
