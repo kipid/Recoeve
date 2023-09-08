@@ -2716,7 +2716,7 @@ public static void main(String... args) {
 	// // TRUNCATE `RecoStatDefCatSet`;
 	// // TRUNCATE `RecoStatDefTitleSet`;
 	// // TRUNCATE `RecoStatDefDescSet`;
-	// updateDefsAll(Timestamp.valueOf(now));
+	// db.updateDefsAll(Timestamp.valueOf(now));
 
 
 
