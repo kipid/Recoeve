@@ -644,7 +644,7 @@ m.rmb_me=function (callback, args) {
 				callback(args, resp);
 			}
 			else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 16, "/", false, true);
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null); // null means no error.
 				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
