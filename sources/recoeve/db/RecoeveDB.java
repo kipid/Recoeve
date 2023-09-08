@@ -1499,7 +1499,8 @@ public static long lastLongOfBytes(byte[] byteData) {
 		return buffer.getLong();
 	}
 }
-private static long[] convertByteArrayToLongArray(byte[] byteData, int N) {
+private static long[] convertByteArrayToLongArray(byte[] byteData) {
+	int N=byteData.length/Long.BYTES;
 	int N_min=N>RECENTESTS_N?RECENTESTS_N:N;
 	System.out.println("N_min:"+N_min);
 	int byteLength=N_min*Long.BYTES;
@@ -1711,9 +1712,8 @@ public boolean updateNeighborListTo(long user_to, String cat_to, NeighborList us
 public long[] getRecentests(String uri) throws SQLException {
 	ResultSet rs=getRecoStat(uri);
 	if (rs!=null) {
-		int N=rs.getInt("N");
 		byte[] recentests=rs.getBytes("recentests");
-		return convertByteArrayToLongArray(recentests, N);
+		return convertByteArrayToLongArray(recentests);
 	}
 	return new long[0];
 }
