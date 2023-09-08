@@ -3201,12 +3201,17 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				if (m.neighborsRecos[cat]&&m.recomsSorted[cat]) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
-					for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
-						let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-						strHTML+=m.recomHTML(m.userRecos[uri]);
+					if (m.recoms[cat].length===0) {
+						strHTML="[--You have no recoms yet from your neighbors.--]";
 					}
-					if (recomsUntil>0) {
-						strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+					else {
+						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
+							strHTML+=m.recomHTML(m.userRecos[uri]);
+						}
+						if (recomsUntil>0) {
+							strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+						}
 					}
 					$contents_recoms.html(strHTML);
 					m.reNewAndReOn();
@@ -3251,7 +3256,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 							for (let j=0;j<catList.length;j++) {
 								let sim=m.neighbors[cat][`${val.user}\t${catList[j]}`];
 								if (sim?.simAvg100>simAvg100) {
-									simAvg100=sim.simAvg100;
+									simAvg100=sim.simAvg100; // Get the largest sim of user cats.
 								}
 							}
 							val.simAvg100=simAvg100;
