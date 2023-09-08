@@ -1482,8 +1482,9 @@ URI list 의 순서도 user 가 정하는 경우가 많을테니 순서대로 UR
 ```[.linenums.scrollable.lang-sql]
 CREATE TABLE `RecoStat` (
 	`uri` varchar(255) NOT NULL
-	, `N` SMALLINT UNSIGNED DEFAULT 0
+	# , `N` SMALLINT UNSIGNED DEFAULT 0
 	, `recentests` BLOB
+	, `tFirst` datetime DEFAULT NULL
 	, `tUpdate` datetime DEFAULT NULL
 	, `sumV100` bigint DEFAULT 0 # sum of round(value*100)
 	, `nV` bigint DEFAULT 0 # number of values (not including null, i.e. equal to the sum n0~n100.)
@@ -1594,6 +1595,7 @@ CREATE TABLE `RecoStat` (
 	, PRIMARY KEY (`uri`)
 );
 
+ALTER TABLE `RecoStat` ADD `tFirst` datetime DEFAULT NULL;
 ALTER TABLE `RecoStat` MODIFY COLUMN `recentests` BLOB;
 ALTER TABLE `RecoStat` ADD `N` SMALLINT UNSIGNED DEFAULT 0;
 
