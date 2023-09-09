@@ -2871,7 +2871,21 @@ m.reNewAndReOn=function () {
 	$ups.on("click.ud", m.starsOnUps);
 	$downs.on("click.ud", m.starsOnDowns);
 };
+m.lastRecoMode="nothing";
 m.showRecosOnCat=function (elem, from) {
+	m.modeToggle=false;
+	if (m.lastRecoMode=""&&m.recoMode="multireco") {
+		$contents.addClass("multireco");
+		m.lastRecoMode="multireco";
+		m.modeToggle=true;
+		return;
+	}
+	else if (m.lastRecoMode="multireco"&&m.recoMode="") {
+		$contents.removeClass("multireco");
+		m.lastRecoMode="";
+		m.modeToggle=true;
+		return;
+	}
 	let $elem=$(elem);
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
@@ -3064,37 +3078,37 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
-return new Promise(function (resolve, reject) {
-	if (getRecosN>0) {
-		let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(!!m.myId?`/user/${m.myId}/get-Recos`:null));
-		if (postURL) {
-			$.ajax({
-				type:"POST", url:postURL, data:getRecosStr
-				, dataType:"text"
-			}).fail(function () {
-				$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
-				$contents.html("");
-			}).done(function (resp) {
-				m.recoDowned(getRecosStr.substring(4), recos);
-				if (recos===m.userRecos) {
-					m.recoToEve(resp, recos, cat, uris);
-				}
-				else {
-					m.recoToEve(resp, recos);
-				}
-				resolve();
-			});
+	return new Promise(function (resolve, reject) {
+		if (getRecosN>0) {
+			let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(!!m.myId?`/user/${m.myId}/get-Recos`:null));
+			if (postURL) {
+				$.ajax({
+					type:"POST", url:postURL, data:getRecosStr
+					, dataType:"text"
+				}).fail(function () {
+					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
+					$contents.html("");
+				}).done(function (resp) {
+					m.recoDowned(getRecosStr.substring(4), recos);
+					if (recos===m.userRecos) {
+						m.recoToEve(resp, recos, cat, uris);
+					}
+					else {
+						m.recoToEve(resp, recos);
+					}
+					resolve();
+				});
+			}
 		}
-	}
-	else {
-		resolve();
-	}
-});
+		else {
+			resolve();
+		}
+	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
-	if (m.recoMode==="multireco"&&!m.myPage&&!!m.myIndex) {
+	if (!m.myPage&&!!m.myIndex) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
 	m.showRecosOnCat();
@@ -3103,9 +3117,11 @@ m.getAndShowRecosOnCat=async function (cat) {
 	fs1[1]=null;
 	fs1[0].ptnSH=m.splitHangul("$!@#");
 	fs1.$fs.trigger("input.fs");
-	setTimeout(function () {
-		fs1.playNext(-1, true, true);
-	}, m.wait*2);
+	if (!m.modeToggle) {
+		setTimeout(function () {
+			fs1.playNext(-1, true, true);
+		}, m.wait*2);
+	}
 };
 m.getUriList=function (catStrArray) {
 	$.ajax({
@@ -3114,10 +3130,10 @@ m.getUriList=function (catStrArray) {
 	}).fail(function () {
 		$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
 		$contents.html("");
-	}).done(function (resp) {
+	}).done(function (resp) { // resp=cat\tUriList\tcutP\terr
 		let respJSON=m.strToJSON(resp);
 		for (let i=1;i<respJSON.length;i++) {
-			let catUL=m.catUriList[respJSON[i].cat];
+			let catUL=m.catUriList[respJSON[i].cat]=m.catUriList[respJSON[i].cat]||{};
 			catUL.down=true;
 			catUL.has=true;
 			for (let p in respJSON[i]) {
@@ -3127,7 +3143,7 @@ m.getUriList=function (catStrArray) {
 			}
 			catUL.uris=[];
 			if (catUL.UriList?.length!==0) {
-				catUL.uris=catUL.UriList.split("\n");
+				catUL.uris=catUL.UriList.trim().split("\n");
 			}
 		}
 		m.getAndShowRecosOnCat(m.currentCat);
@@ -3159,21 +3175,21 @@ m.cutNeighbors=function (str) {
 };
 m.valsStatN=21;
 m.getUriListAndShowRecosOnCat=function (cat) {
+	if (m.catList[cat]) {
+		$catList.find(".cat").removeClass("selected");
+		let $cat=$("#cat-"+m.catList[cat].i);
+		$cat.addClass("selected");
+		let $parents=$cat.parents(".subCat");
+		for (let i=$parents.length-1;i>=0;i--) {
+			if (!$parents.eq(i).is(":visible")) {
+				$parents.eq(i).prev().find(">.EC").trigger("click");
+			}
+		}
+	}
 	switch (m.recoMode) {
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
 			$contents.html("");
-			if (m.catList[cat]) {
-				$catList.find(".cat").removeClass("selected");
-				let $cat=$("#cat-"+m.catList[cat].i);
-				$cat.addClass("selected");
-				let $parents=$cat.parents(".subCat");
-				for (let i=$parents.length-1;i>=0;i--) {
-					if (!$parents.eq(i).is(":visible")) {
-						$parents.eq(i).prev().find(">.EC").trigger("click");
-					}
-				}
-			}
 			let cat_from=m.currentCat=cat;
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -3364,17 +3380,6 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 			}
 			else {
 				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}.`);
-				if (m.catList[cat]) {
-					$catList.find(".cat").removeClass("selected");
-					let $cat=$("#cat-"+m.catList[cat].i);
-					$cat.addClass("selected");
-					let $parents=$cat.parents(".subCat");
-					for (let i=$parents.length-1;i>=0;i--) {
-						if (!$parents.eq(i).is(":visible")) {
-							$parents.eq(i).prev().find(">.EC").trigger("click");
-						}
-					}
-				}
 				let cat_from=m.currentCat=cat;
 				$.ajax({
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -3409,15 +3414,6 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
 			let catI=m.catList[cat];
 			if (catI) {
-				$catList.find(".cat").removeClass("selected");
-				let $cat=$("#cat-"+catI.i);
-				$cat.addClass("selected");
-				let $parents=$cat.parents(".subCat");
-				for (let i=$parents.length-1;i>=0;i--) {
-					if (!$parents.eq(i).is(":visible")) {
-						$parents.eq(i).prev().find(">.EC").trigger("click");
-					}
-				}
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
 				if (catUriList.down) {
 					m.getAndShowRecosOnCat(cat);
@@ -3570,7 +3566,7 @@ m.ExpCol=function (elem, catEC) {
 m.lastIndexOfUriList=0;
 m.openCat=function (cat, e) {
 	m.currentCat=cat;
-	let path=m.pathOfCat(m.currentCat, m.recoMode);
+	let path=m.pathOfCat(cat, m.recoMode);
 	if (e?.which===2) { // wheel click.
 		window.open(path, "_blank");
 		return true;
@@ -3589,7 +3585,7 @@ m.openCat=function (cat, e) {
 	// }
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
+		window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
