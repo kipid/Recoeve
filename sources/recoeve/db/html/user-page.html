@@ -617,6 +617,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--_M_ultireco mode--]</div>
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--_N_ew reco--]</div>
 </div><!-- div#head -->
+<div class="side2">
+	<div class="numbers-of-recos"></div>
+	<div id="button-get-recoms" class="none"></div>
+</div>
+<div class="side2 multireco" id="contents-recoms"></div>
 <div class="side2" id="subCats">
 	<span class="point-range-result">0~10/10</span>
 	<div class="point-range">
@@ -626,11 +631,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button" id="show-only-unrecoed">[--Show only unrecoed on mine--]</div>
 	<div class="cBoth"></div>
 </div>
-<div class="side2">
-	<div class="numbers-of-recos"></div>
-	<div id="button-get-recoms" class="none"></div>
-</div>
-<div class="side2 multireco" id="contents-recoms"></div>
 <div class="side2" id="headPlay">
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">[--Showing reco list play--]</div>
