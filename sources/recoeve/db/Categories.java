@@ -203,7 +203,8 @@ public class Categories {
 	public static void main(String... args) {
 		// String str=null;
 		// Categories newCats=new Categories(str);
-		// Categories oldCats=new Categories(";[Music]");
+		// Categories oldCats=new Categories(";str");
+		// System.out.println(oldCats.setOfCats.size());
 		// for (String newCat: newCats.setOfCats) {
 		// 	System.out.println(newCat);
 		// 	newCats.setOfCats.remove(newCat);
