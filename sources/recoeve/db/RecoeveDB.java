@@ -1660,6 +1660,15 @@ public NeighborList getNeighborListFrom(long user_from, String cat_from) throws 
 	}
 	return new NeighborList("", false, true);
 }
+public NeighborList getNeighborListFrom(long user_from, String cat_from, boolean rowMap) throws SQLException {
+	pstmtGetNeighborListFrom.setLong(1, user_from);
+	pstmtGetNeighborListFrom.setString(2, cat_from);
+	ResultSet rs=pstmtGetNeighborListFrom.executeQuery();
+	if (rs.next()) {
+		return new NeighborList(rs.getString("userCatList"), false, rowMap);
+	}
+	return new NeighborList("", false, rowMap);
+}
 public ResultSet getRSNeighborListFrom(long user_from, String cat_from) throws SQLException {
 	pstmtGetNeighborListFrom.setLong(1, user_from);
 	pstmtGetNeighborListFrom.setString(2, cat_from);
@@ -1692,6 +1701,15 @@ public NeighborList getNeighborListTo(long user_to, String cat_to) throws SQLExc
 		return new NeighborList(rs.getString("userCatList"), false, true);
 	}
 	return new NeighborList("", false, true);
+}
+public NeighborList getNeighborListTo(long user_to, String cat_to, boolean rowMap) throws SQLException {
+	pstmtGetNeighborListTo.setLong(1, user_to);
+	pstmtGetNeighborListTo.setString(2, cat_to);
+	ResultSet rs=pstmtGetNeighborListTo.executeQuery();
+	if (rs.next()) {
+		return new NeighborList(rs.getString("userCatList"), false, rowMap);
+	}
+	return new NeighborList("", false, rowMap);
 }
 public ResultSet getRSNeighborListTo(long user_to, String cat_to) throws SQLException {
 	pstmtGetNeighborListTo.setLong(1, user_to);
@@ -1758,6 +1776,9 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								}
 							}
 						}
+					}
+					else {
+						// TODO: when neighbor does not exist.
 					}
 				}
 				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
@@ -1890,13 +1911,13 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			Set<Long> userSet=new HashSet<>(10*N_SET);
 			for (String cat_from: cats.setOfCats) {
 				System.out.println("cat_from:"+cat_from);
-				NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
+				NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from, false);
 				System.out.println("neighborListFrom:\n"+neighborListFrom);
 				int n=neighborListFrom.getRowSize();
 				for(int i=0;i<n;i++) {
 					userSet.add(Long.parseLong(neighborListFrom.get(i, 0), 16));
 				}
-				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
+				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from, false);
 				System.out.println("neighborListTo:\n"+neighborListTo);
 				n=neighborListTo.getRowSize();
 				for(int i=0;i<n;i++) {
