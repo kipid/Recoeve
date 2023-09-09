@@ -2874,13 +2874,13 @@ m.reNewAndReOn=function () {
 m.lastRecoMode="nothing";
 m.showRecosOnCat=function (elem, from) {
 	m.modeToggle=false;
-	if (m.lastRecoMode=""&&m.recoMode="multireco") {
+	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		$contents.addClass("multireco");
 		m.lastRecoMode="multireco";
 		m.modeToggle=true;
 		return;
 	}
-	else if (m.lastRecoMode="multireco"&&m.recoMode="") {
+	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
 		$contents.removeClass("multireco");
 		m.lastRecoMode="";
 		m.modeToggle=true;
@@ -3221,6 +3221,9 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				}
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
+				setTimeout(function () {
+					$window.scrollTop($contents.offset().top);
+				}, 2048);
 				m.neighbors[cat_from]=neighbors;
 				if (m.myPage&&neighbors.length>1000) {
 					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, 100, until);
@@ -3427,6 +3430,9 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
 				$contents.html("");
 			}
+			setTimeout(function () {
+				$window.scrollTop($contents.offset().top);
+			}, 2048);
 			break;
 	}
 };
