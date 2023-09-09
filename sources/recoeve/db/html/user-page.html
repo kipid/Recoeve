@@ -364,6 +364,14 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
 .reco .result {font-size:.7em; padding:.5em}
 
+.vals-stat rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
+.vals-stat line.bar {stroke:darkgray; stroke-width:3}
+.vals-stat line.expected {stroke:green; stroke-width:2}
+.vals-stat text.expected {fill:green; font-size:.9em}
+	.bright .vals-stat line.expected {stroke:blue}
+	.bright .vals-stat text.expected {fill:blue}
+.vals-stat text.tick {fill:gray; font-size:.8em}
+
 .lyricsC {}
 .lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
 .lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
@@ -2438,7 +2446,30 @@ m.recomHTML=function (r) {
 	}
 	res+=`<div class="cats">${m.escapeHTML(m.currentCat)}</div>
 	${m.uriRendering(r.uri, false, false).html}`;
-	// TODO: recoms statistics.
+	let recomsI=m.recoms[m.currentCat][r.uri];
+	console.log("TODO: recoms statistics.", recomsI);
+	if (recomsI?.valsStat) {
+		console.log("vals-stat is being printed.");
+		let valsStat=recomsI.valsStat;
+		let dx=100.0/(m.valsStatN+2);
+		res+=`<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+		for (let k=0;k<m.valsStatN;k++) {
+			let h=79.0*valsStat[k]/valsStat.max;
+			res+=`<rect class="column" x="${dx*(k+1)}%" y="${80-h}%" width="${dx}%" height="${h}%"></rect>`;
+		}
+		res+=`<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
+		for (let k=0;k<m.valsStatN;k++) {
+			let x=dx*(k+1);
+			res+=`<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
+		}
+		res+=`<text class="tick" x="${dx-2}%" y="90%">0`
+		for (let k=2;k<m.valsStatN;k+=2) {
+			res+=`<tspan x="${dx*(k+1)-2}%" y="90%">${k/2}</tspan>`;
+		}
+		res+=`</text>`;
+		let x_expected=dx+(100.0-dx*3)*recomsI.avgVal/10.0;
+		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" x="${x_expected-4}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
+	}
 	if (m.myPage) {
 		res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
 	}
@@ -3126,6 +3157,7 @@ m.cutNeighbors=function (str) {
 		}
 	});
 };
+m.valsStatN=21;
 m.getUriListAndShowRecosOnCat=function (cat) {
 	switch (m.recoMode) {
 		case "neighbors":
@@ -3202,7 +3234,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				if (m.neighborsRecos[cat]&&m.recomsSorted[cat]) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
-					if (m.recoms[cat].length===0) {
+					if (!m.recoms[cat]||m.recoms[cat].length===0) {
 						strHTML="[--You have no recoms yet from your neighbors.--]";
 					}
 					else {
@@ -3248,7 +3280,11 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 							let respJSONi=respJSON[i];
 							let uri=respJSONi.uri;
 							if (!recoms[uri]) {
-								recoms[uri]={uri:uri, vals:[], index:recoms.length};
+								recoms[uri]={uri:uri, vals:[], valsStat:[], index:recoms.length};
+								for (let k=0;k<m.valsStatN;k++) {
+									recoms[uri].valsStat[k]=0;
+								}
+								recoms[uri].valsStat["max"]=0;
 								recoms.push(recoms[uri]);
 							}
 							let val={user:respJSONi.user, val:respJSONi.val};
@@ -3262,6 +3298,14 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 							}
 							val.simAvg100=simAvg100;
 							recoms[uri].vals.push(val);
+							recoms[uri].valsStat[Math.floor(val.val*20.0)]+=simAvg100;
+						}
+						for (let i=0;i<recoms.length;i++) {
+							for (let k=0;k<m.valsStatN;k++) {
+								if (recoms[i].valsStat[k]>recoms[i].valsStat.max) {
+									recoms[i].valsStat.max=recoms[i].valsStat[k];
+								}
+							}
 						}
 						m.recomsSorted[cat]=[];
 						for (let i=0;i<recoms.length;i++) {
