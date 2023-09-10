@@ -276,6 +276,25 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+추천 weighted max 값 작게 표시하기.
+
+Multireco recoByOnlyStars 로 reco change 할때, oldCats, newCats 포함관계 잘 설정해서 overwrite (cats is changed.) 되도록 만들기.
+
+Go 이후 filter button 만들어서 Go 에 찾아진 것들만 모아서 보여주도록 만들자?
+스트레이 키즈 팬은 스트레이 키즈 노래 먼저 찾아서 reco 하고 싶을텐데 이게 쉽게 되도록??????? (보류. 복잡해지기만 할듯. 이득은 적고.)
+
+HTML 단에서도 multireco with recoByOnlyStars 로 reco 했을때, catUriList 도 바뀌고 다 잘 바뀌도록 디자인. (그냥 reco 할때도 cats 따라서 catUriList 다운 받고 uri 추가해주고 등이 되도록 잘 디자인. catUriList 에서 delete 는 하지 말고 추가만 잘 해주자. 이전 옮기기 전 cat 에서도 우선 recos 가 보이도록. 이게 구현하기도 더 쉽고, 유저 경험도 더 좋을듯?)
+
+기본 모드일때도 남의 페이지에서 내 reco 정보 가져와서 포인트 채워주기.
+
+cat 한번에 다 바꾸는 것도 구현할까? 한개씩 옮기면 sim 계산을 여러번에 걸쳐서 해야 하는데, 한방에 한가지 cat 의 UriList 의 cat 만 전체적으로 바꾸면 Neighbor user_from cat_from user_to cat_to 에서 cat_from, cat_to 만 바꾸면 되긴 하는데... 이건 좀 미루긴 하자. 당장 필요한건 아닌듯. (Multireco mode 에서 점수 바꾸면 한번에 하나씩 바꿀수는 있음.)
+
+Reco 이후 $new_reco 가 안닫혀서 setInterval 해놨었는데... 바꿔야 할듯? 왜 안닫혔던거지?
+
+Session iter 틀리면 log-out 시키기. (Log-out 시키고는 있는데 왜이리 로그인이 자주 풀리지? ㅡ,.ㅡ;;; 유저 경험을 안좋게 만드는거 같은데... 빨리 고쳐야.)
+
+Multireco mode 에서 cats 를 replace 할지 add 할지 선택 가능하도록 2가지 옵션만 있으면 될듯? 기본적으로 add 가 되도록 만들어 놓자. multireco cats 가 정해지면, 특정 URI 의 reco 가 이 cats 를 기존 cats 에서 더 포함하도록. (보류. 그냥 덮어 씌우는 걸로 통일.)
+
 이웃모드나 그냥, 멀티레코 모드갈때 scrollTop 적당하게... contents?
 
 처음 가입한 사람에게 multireco 할만한 /user/kipid?cat=[Music/Break]--K-Pop&mode=multireco 페이지 같은것들 리스트 카테고리 분류없음에 넣어주고, 그 카테고리 분류없음 페이지 바로 보여주기.

@@ -368,8 +368,10 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .vals-stat line.bar {stroke:darkgray; stroke-width:3}
 .vals-stat line.expected {stroke:green; stroke-width:2}
 .vals-stat text.expected {fill:green; font-size:.9em}
+.vals-stat text.max-simSum {fill:green; font-size:.7em}
 	.bright .vals-stat line.expected {stroke:blue}
 	.bright .vals-stat text.expected {fill:blue}
+	.bright .vals-stat text.max-simSum {fill:blue}
 .vals-stat text.tick {fill:gray; font-size:.8em}
 
 .lyricsC {}
@@ -1789,7 +1791,7 @@ m.completeCat=function (elem, j) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.completeMRCat=function (elem, j) { // TODO: Edit this better.
+m.completeMRCat=function (elem, j) {
 	let $elem=$(elem);
 	let fs=m.fsMRCat;
 	fs.$fsLis.removeClass("selected");
@@ -2088,7 +2090,7 @@ m.deleteCat=function (cat) {
 	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
 	return res;
 };
-m.putCats_UriToLists=function (cats, uri) {
+m.putCats_UriToLists=async function (cats, uri) {
 	let catSplit=cats.split(";");
 	let catIsPut=false;
 	for (let i=0;i<catSplit.length;i++) {
@@ -2100,7 +2102,7 @@ m.putCats_UriToLists=function (cats, uri) {
 			}
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
-				m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
@@ -2117,29 +2119,30 @@ m.putCats_UriToLists=function (cats, uri) {
 		m.updateCatFS();
 	}
 };
-m.delCats_UriFromLists=function (cats, uri) {
+m.delCats_UriFromLists=async function (cats, uri) {
 if (m.myPage) {
 	let catSplit=cats.split(";");
-	let catIsDeleted=false;
+	let subcatIsDeleted=false;
 	for (let i=0;i<catSplit.length;i++) {
 		let cat=catSplit[i];
-		if (m.catUriList[cat]&&m.catUriList[cat].has) {
-			let fullURIs="\n"+m.catUriList[cat].UriList.trim()+"\n";
-			let k=fullURIs.indexOf("\n"+uri+"\n");
-			if (k!==-1) {
-				m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
-				// Intentionally no change on m.catUriList[cat].uris;
-			}
-			if (m.catUriList[cat].UriList.length===0) {
-				let c=true;
-				while (cat!==null&&c) {
-					c=false;
-					if (m.catUriList[cat].has&&m.catUriList[cat].UriList.length===0) {
-						c=m.deleteCat(cat);
-						catIsDeleted=catIsDeleted||c;
-					}
-					cat=m.getSuperCat(cat);
+		if (!(m.catUriList[cat]&&m.catUriList[cat].has)) {
+			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		}
+		let fullURIs="\n"+m.catUriList[cat].UriList.trim()+"\n";
+		let k=fullURIs.indexOf("\n"+uri+"\n");
+		if (k!==-1) {
+			m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
+			// Intentionally no change on m.catUriList[cat].uris;
+		}
+		if (m.catUriList[cat].UriList.length===0) {
+			let catIsDeleted=true;
+			while (cat!==null&&catIsDeleted) {
+				catIsDeleted=false;
+				if (m.catUriList[cat].has&&m.catUriList[cat].UriList.length===0) {
+					catIsDeleted=m.deleteCat(cat);
+					subcatIsDeleted=subcatIsDeleted||catIsDeleted;
 				}
+				cat=m.getSuperCat(cat);
 			}
 		}
 	}
@@ -2483,7 +2486,6 @@ m.renderStrDescCmt=function (str) {
 	return res;
 };
 m.recomHTML=function (r) {
-	console.log(r);
 	if (r?.has) {
 		return m.recoHTML(r, false, true, true);
 	}
@@ -2497,9 +2499,7 @@ m.recomHTML=function (r) {
 	res+=`<div class="cats">${m.escapeHTML(m.currentCat)}</div>
 	${m.uriRendering(r.uri, false, false).html}`;
 	let recomsI=m.recoms[m.currentCat][r.uri];
-	console.log("TODO: recoms statistics.", recomsI);
 	if (recomsI?.valsStat) {
-		console.log("vals-stat is being printed.");
 		let valsStat=recomsI.valsStat;
 		let dx=100.0/(m.valsStatN+2);
 		res+=`<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
@@ -2517,6 +2517,7 @@ m.recomHTML=function (r) {
 			res+=`<tspan x="${dx*(k+1)-2}%" y="90%">${k/2}</tspan>`;
 		}
 		res+=`</text>`;
+		res+=`<text class="max-simSum" x="0%" y="7%">${(valsStat.max/10000.0).toFixed(2)}</text>`;
 		let x_expected=dx+(100.0-dx*3)*recomsI.avgVal/10.0;
 		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" x="${x_expected-4}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 	}
@@ -2651,10 +2652,10 @@ m.reco_pointChange_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function (resp) {
 		if (args.inRecoms) {
-			args.$result?.html(`[--Reco failed. You may not be logged-in.--]: ${resp}`);
+			args.$result?.html(`[--Reco failed. You may not be logged-in.--]: ${m.escapeHTML(resp)}`);
 		}
 		else {
-			args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${resp}`);
+			args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${m.escapeHTML(resp)}`);
 		}
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
@@ -2720,11 +2721,13 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			let strHeads="do\turi\tval";
 			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
 			let msg="";
-			if (m.recoMode==="multireco") {
+			let cats=m.formatCats($multireco_input_cats[0].value);
+			if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 				strHeads+="\tcats"
-				let cats=m.formatCats($multireco_input_cats[0].value);
 				strContents+=`\t${m.encloseStr(cats)}`;
 				msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
+				m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+				m.putCats_UriToLists(cats, uri);
 			}
 			$result.html("[--Changing your points.--]"+msg);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
@@ -2735,7 +2738,8 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			if (m.myRecos[uri]?.val?.str!==valStr) {
 				let strHeads="do\turi\tval";
 				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-				if (m.recoMode==="multireco") {
+				let cats=m.formatCats($multireco_input_cats[0].value);
+				if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 					strHeads+="\tcats"
 					let cats=m.formatCats($multireco_input_cats[0].value);
 					strContents+=`\t${m.encloseStr(cats)}`;
@@ -3151,6 +3155,7 @@ m.getRecos=function (uris, recos, cat) {
 				}).fail(function () {
 					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
 					$contents.html("");
+					resolve();
 				}).done(function (resp) {
 					m.recoDowned(getRecosStr.substring(4), recos);
 					if (recos===m.userRecos) {
@@ -3161,6 +3166,9 @@ m.getRecos=function (uris, recos, cat) {
 					}
 					resolve();
 				});
+			}
+			else {
+				resolve();
 			}
 		}
 		else {
@@ -3187,29 +3195,32 @@ m.getAndShowRecosOnCat=async function (cat) {
 	}
 };
 m.getUriList=function (catStrArray) {
-	$.ajax({
-		type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
-		, dataType:"text"
-	}).fail(function () {
-		$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
-		$contents.html("");
-	}).done(function (resp) { // resp=cat\tUriList\tcutP\terr
-		let respJSON=m.strToJSON(resp);
-		for (let i=1;i<respJSON.length;i++) {
-			let catUL=m.catUriList[respJSON[i].cat]=m.catUriList[respJSON[i].cat]||{};
-			catUL.down=true;
-			catUL.has=true;
-			for (let p in respJSON[i]) {
-				if (isNaN(p)) {
-					catUL[p]=respJSON[i][p]; // cat, UriList
+	return new Promise(function (resolve, reject) {
+		$.ajax({
+			type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
+			, dataType:"text"
+		}).fail(function () {
+			$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+			$contents.html("");
+			resolve();
+		}).done(function (resp) { // resp=cat\tUriList\tcutP\terr
+			let respJSON=m.strToJSON(resp);
+			for (let i=1;i<respJSON.length;i++) {
+				let catUL=m.catUriList[respJSON[i].cat]=m.catUriList[respJSON[i].cat]||{};
+				catUL.down=true;
+				catUL.has=true;
+				for (let p in respJSON[i]) {
+					if (isNaN(p)) {
+						catUL[p]=respJSON[i][p]; // cat, UriList
+					}
+				}
+				catUL.uris=[];
+				if (catUL.UriList?.length!==0) {
+					catUL.uris=catUL.UriList.trim().split("\n");
 				}
 			}
-			catUL.uris=[];
-			if (catUL.UriList?.length!==0) {
-				catUL.uris=catUL.UriList.trim().split("\n");
-			}
-		}
-		m.getAndShowRecosOnCat(m.currentCat);
+			resolve();
+		});
 	});
 };
 m.loadMoreRecoms=function (elem, sortedUntil, sortN) {
@@ -3237,7 +3248,7 @@ m.cutNeighbors=function (str) {
 	});
 };
 m.valsStatN=21;
-m.getUriListAndShowRecosOnCat=function (cat) {
+m.getUriListAndShowRecosOnCat=async function (cat) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
 		let $cat=$("#cat-"+m.catList[cat].i);
@@ -3284,9 +3295,7 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 				}
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
-				setTimeout(function () {
-					$window.scrollTop($contents.offset().top);
-				}, 2048);
+				$window.scrollTop($contents.offset().top);
 				m.neighbors[cat_from]=neighbors;
 				if (m.myPage&&neighbors.length>1000) {
 					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, 100, until);
@@ -3482,20 +3491,19 @@ m.getUriListAndShowRecosOnCat=function (cat) {
 			if (catI) {
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
 				if (catUriList.down) {
-					m.getAndShowRecosOnCat(cat);
+					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
 					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-					m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					await m.getAndShowRecosOnCat(cat);
 				}
 			}
 			else {
 				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
 				$contents.html("");
 			}
-			setTimeout(function () {
-				$window.scrollTop($contents.offset().top);
-			}, 2048);
+			$window.scrollTop($contents.offset().top);
 			break;
 	}
 };
@@ -3788,6 +3796,22 @@ m.formatCats=function (cats) {
 		}
 	}
 	return cats;
+};
+m.catsContainsAllAnotCats=function (cats0, cats1) {
+	let cats0Split=m.formatCats(cats0).split(";");
+	let cats1Split=m.formatCats(cats1).split(";");
+	let setOfCats0=[];
+	for (let i=0;i<cats0Split.length;i++) {
+		setOfCats0[cats0Split[i]]=true;
+	}
+	let contains=true;
+	for (let i=0;i<cats1Split.length;i++) {
+		contains=contains&&setOfCats0[cats1Split[i]];
+		if (!contains) {
+			break;
+		}
+	}
+	return contains;
 };
 
 m.myRecos[""]=m.userRecos[""]={
@@ -5102,7 +5126,6 @@ m.processShortKey=function (e) {
 		case 82: // R=82
 			if (m.myPage) {
 				e.preventDefault();
-				$contents.html("");
 				if ($button_get_recoms.hasClass("enabled")) {
 					m.recoMode="";
 					$contents_recoms.html("");
