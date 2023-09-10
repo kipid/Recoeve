@@ -1379,7 +1379,7 @@ $multireco_cats_container_move.on("mousedown.move touchstart.move", function (e)
 		e.preventDefault();
 		e.stopPropagation();
 		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
-		$table_of_recos_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$multireco_cats_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
 		$html.on("mouseup.move touchend.move", function () {
 			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
 		});
