@@ -364,6 +364,28 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
 .reco .result {font-size:.7em; padding:.5em}
 
+.loading {text-align:center}
+.loading .outerCircle {background-color:transparent; border:8px solid rgba(97,82,72,0.9); opacity:.9; border-right:5px solid transparent; border-left:5px solid transparent; border-radius:100px; width:110px; height:110px; margin:0 auto; -moz-animation:spinPulse 5s infinite ease-in-out; -webkit-animation:spinPulse 5s infinite ease-in-out}
+.loading .innerCircle {background-color:transparent; border:5px solid rgba(189,215,60,0.6); opacity:.9; border-left:5px solid transparent; border-right:5px solid transparent; border-radius:100px; top:-100px; width:90px; height:90px; margin:0 auto; position:relative; -moz-animation:spinoffPulse 3s infinite linear; -webkit-animation:spinoffPulse 3s infinite linear}
+@-moz-keyframes spinPulse {
+0% {-moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
+50% {-moz-transform:rotate(145deg); opacity:1}
+100% {-moz-transform:rotate(-320deg); opacity:0}
+}
+@-moz-keyframes spinoffPulse {
+0% {-moz-transform:rotate(0deg)}
+100% {-moz-transform:rotate(360deg);  }
+}
+@-webkit-keyframes spinPulse {
+0% {-webkit-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
+50% {-webkit-transform:rotate(145deg); opacity:1}
+100% {-webkit-transform:rotate(-320deg); opacity:0}
+}
+@-webkit-keyframes spinoffPulse {
+0% {-webkit-transform:rotate(0deg)}
+100% {-webkit-transform:rotate(360deg)}
+}
+
 .vals-stat rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
 .vals-stat line.bar {stroke:darkgray; stroke-width:3}
 .vals-stat line.expected {stroke:green; stroke-width:2}
@@ -405,7 +427,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #SNS-floating {width:100%; text-align:center}
 #SNS-floating .SNS-img {box-sizing:border-box; padding:0; margin:0; width:1.8em; height:1.8em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
-#floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em;}
+#floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em}
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
 	.pink #floating-key, .pink #toggle-floating-key {color:wheat}
 
@@ -3248,6 +3270,7 @@ m.cutNeighbors=function (str) {
 	});
 };
 m.valsStatN=21;
+m.recosShown=false;
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
@@ -3508,6 +3531,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			if (scroll) {
 				$window.scrollTop($contents.offset().top);
 			}
+			m.recosShown=true;
 			break;
 	}
 };
@@ -3646,6 +3670,9 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
 m.openCat=function (cat, e) {
+	if (cat!==m.currentCat) {
+		m.recosShown=false;
+	}
 	m.currentCat=cat;
 	let path=m.pathOfCat(cat, m.recoMode);
 	if (e?.which===2) { // wheel click.
@@ -5097,6 +5124,7 @@ m.processShortKey=function (e) {
 		case 66: // B=66
 			e.preventDefault();
 			$contents.removeClass("multireco");
+			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 			if ($button_neighbors_mode.hasClass("enabled")) {
 				m.recoMode="";
 				$button_mode.removeClass("enabled");
@@ -5125,7 +5153,13 @@ m.processShortKey=function (e) {
 				$multireco_cats_container.show();
 				$multireco_input_cats[0].value=m.currentCat;
 			}
-			m.openCat(m.currentCat);
+			if (!m.recosShown) {
+				$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
+				m.openCat(m.currentCat);
+			}
+			else {
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+			}
 			break;
 		case 82: // R=82
 			if (m.myPage) {
@@ -5140,6 +5174,7 @@ m.processShortKey=function (e) {
 					m.recoMode="recoms";
 					$button_mode.removeClass("enabled");
 					$button_get_recoms.addClass("enabled");
+					$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 				}
 				$window.scrollTop($button0_get_recoms?.offset()?.top);
 				m.openCat(m.currentCat);
