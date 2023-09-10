@@ -167,14 +167,57 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	color:rgb(170,250,170)
 }
 
-#fuzzy-search-container, #table-of-recos-container, #goto-cats-container {
-	position:fixed; left:0; top:0;
-	z-index:10010;
+#multireco-cats-container textarea {
+	display:block;
+	max-width:100%;
+	width:100%;
+	resize:vertical;
+	font:inherit;
+	font-weight:bold;
+	overflow-x:hidden;
+	overflow-y:auto;
+	padding:0.2em 0.3em;
+	background:white;
+	color:rgb(50,50,50)
+}
+#multireco-cat-fs-container {
+	position:relative;
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left
 }
-.fs-name {background:black; padding:.1em 3em}
+#multireco-cat-fs-list {
+	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	border:.15em gray solid;
+	background:rgb(20,20,20)
+}
+#multireco-cat-fs-list .list-item {
+	background:black; color:white;
+	padding:.2em .5em .4em
+}
+#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+#multireco-cat-fs-list .list-item .list-index {display:none}
+#multireco-cat-fs-list .list-item:nth-child(2n) {
+	background:rgb(40,40,40)
+}
+#multireco-cat-fs-list .list-item .cat {font-size:.9em}
+#multireco-cat-fs-list .list-item .highlighted {
+	font-size:.5em; color:rgb(150,150,150)
+}
+#multireco-cat-fs-list .list-item .highlighted .bold {
+	color:rgb(170,250,170)
+}
+
+#fuzzy-search-container, #table-of-recos-container, #goto-cats-container, #multireco-cats-container {
+	position:fixed; left:0; top:0;
+	z-index:10010;
+	background:black;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left
+}
+	.bright #fuzzy-search-container, .bright #table-of-recos-container, .bright #goto-cats-container, .bright #multireco-cats-container {background:wheat}
+.fs-name {padding:.1em 3em}
 #fuzzy-search, #table-of-recos, #goto-cats {
 	height:2em; max-height:5em; overflow-y:auto;
 	font:inherit; font-size:1.3em; color:black;
@@ -246,56 +289,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
 #delete-cat, #multireco-delete-cat {background:#ff7600}
 #new-reco .def-cmd {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-
-#multireco-cats-container {
-	position:fixed;
-	left:0; top:0;
-	z-index:10000;
-	background:black;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-#multireco-cats-container textarea {
-	display:block;
-	max-width:100%;
-	width:100%;
-	resize:vertical;
-	font:inherit;
-	font-weight:bold;
-	overflow-x:hidden;
-	overflow-y:auto;
-	padding:0.2em 0.3em;
-	background:white;
-	color:rgb(50,50,50)
-}
-#multireco-cat-fs-container {
-	position:relative;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-#multireco-cat-fs-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20)
-}
-#multireco-cat-fs-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em
-}
-#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#multireco-cat-fs-list .list-item .list-index {display:none}
-#multireco-cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40)
-}
-#multireco-cat-fs-list .list-item .cat {font-size:.9em}
-#multireco-cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150)
-}
-#multireco-cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170)
-}
 
 #javascript-disable {font-size:3em}
 
@@ -411,6 +404,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .rC>.pc {text-align:center; font-size:10px} /* position change */
 
 .neighbor-con {position:relative; margin:1.5em 0; padding:1.1em; border:2px solid rgb(150,100,100); width:100%; background:black}
+	.bright .neighbor-con {background:wheat}
 .neighbor-sim {background:yellow; position:absolute; left:0; top:0; bottom:0}
 .neighbor-a {position:absolute; overflow-wrap:normal; word-wrap:normal; word-break:normal; left:0; right:0; top:0; bottom:0; padding:.2em}
 .neighbor-tUpdate {font-size:.5em; color:cornflowerblue}
