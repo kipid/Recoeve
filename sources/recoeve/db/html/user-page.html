@@ -1046,6 +1046,7 @@ m.fsGotoCats[0].k=m.fsGotoCats[1].k=-1;
 m.fsGotoCats.fullList=[];
 m.fsGotoCats.$fs=$goto_cats;
 m.fsGotoCats.$fsl=$goto_cats_list;
+m.fsGotoCats.$fs_container=$goto_cats_container;
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
@@ -1053,6 +1054,15 @@ m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
+m.fsCat.$fs_container=$cat_fs_container;
+
+m.fsMRCat=[];
+m.fsMRCat[0]=m.fsMRCat[1]=[];
+m.fsMRCat[0].k=m.fsMRCat[1].k=-1;
+m.fsMRCat.fullList=[];
+m.fsMRCat.$fs=$multireco_input_cats;
+m.fsMRCat.$fsl=$multireco_cat_fs_list;
+m.fsMRCat.$fs_container=$multireco_cat_fs_container;
 
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
@@ -1416,6 +1426,7 @@ $("#table-of-recos-container>.reset").on("click.reset", function (e) {
 ////////////////////////////////////////////////////
 m.fsGotoCats[0].ptnSH=m.fsGotoCats[1].ptnSH
 =m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
+=m.fsMRCat[0].ptnSH=m.fsMRCat[1].ptnSH
 =m.fsGo[0].ptnSH=m.fsGo[1].ptnSH
 =m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH=m.splitHangul("$!@#");
 
@@ -1732,6 +1743,12 @@ m.putCatToFSFullList=function (i, cat) {
 	else {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
+	if (m.fsMRCat.fullList[cat]) {
+		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
+	}
+	else {
+		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	}
 	if (m.myPage) {
 		if (m.fsGotoCats.fullList[cat]) {
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
@@ -1743,6 +1760,7 @@ m.putCatToFSFullList=function (i, cat) {
 };
 m.updateCatFS=function () {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
+	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
 	if (m.myPage) {
 		m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	}
@@ -1773,7 +1791,7 @@ m.completeCat=function (elem, j) {
 };
 m.completeMRCat=function (elem, j) { // TODO: Edit this better.
 	let $elem=$(elem);
-	let fs=m.fsCat;
+	let fs=m.fsMRCat;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
@@ -1855,14 +1873,14 @@ m.fsMRCatOn=function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doMRFSCat(m.fsCat);
+		m.doMRFSCat(m.fsMRCat);
 	}
 	else {
 		$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 			m.previous=Date.now();
-			m.doMRFSCat(m.fsCat);
+			m.doMRFSCat(m.fsMRCat);
 		}, m.wait*1.1-passed);
 	}
 };
@@ -1888,8 +1906,10 @@ m.fsCatsOnTimeout=function () {
 	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 };
 m.fsCatsOnTimeout();
-m.onKeydownInFS=function (e, fs, $fsl, $fs_container) {
+m.onKeydownInFS=function (e, fs) {
 	clearTimeout(m.setTimeoutTargetOn);
+	let $fsl=fs.$fsl;
+	let $fs_container=fs.$fs_container;
 	let $target=$(e.target);
 	let catsTxt=$target[0].value;
 	$target.focus();
@@ -1961,18 +1981,19 @@ m.onKeydownInFS=function (e, fs, $fsl, $fs_container) {
 	}, m.wait);
 }
 $input_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, m.fsCat, $cat_fs_list, $cat_fs_container);
+	m.onKeydownInFS(e, m.fsCat);
 });
 $multireco_input_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, m.fsCat, $multireco_cat_fs_list, $multireco_cat_fs_container);
+	m.onKeydownInFS(e, m.fsMRCat);
 });
 $goto_cats.on("keydown.fs", function (e) {
-	m.onKeydownInFS(e, m.fsGotoCats, $goto_cats_list, $goto_cats_container);
+	m.onKeydownInFS(e, m.fsGotoCats);
 });
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
 	let cat=m.myCatList[i].cat;
 	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	m.fsMRCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 }
 l=m.catList.length;
 for (let i=l-1;i>=0;i--) {
@@ -3970,7 +3991,7 @@ $def_cmd.on("click", function (e) {
 });
 $multirecoReplaceCats.on("click", function (e) {
 	let $this=$(this);
-	let fs=m.fsCat;
+	let fs=m.fsMRCat;
 	$multirecoDefCats.removeClass("selected");
 	$this.addClass("selected");
 	let k=fs.k;
@@ -4001,7 +4022,7 @@ $multirecoAddTxts.on("click", function (e) {
 });
 $multirecoDeleteCat.on("click", function (e) {
 	let $this=$(this);
-	let fs=m.fsCat;
+	let fs=m.fsMRCat;
 	$multirecoDefCats.removeClass("selected");
 	$this.addClass("selected");
 	let k=fs.k;
