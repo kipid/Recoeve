@@ -3248,7 +3248,7 @@ m.cutNeighbors=function (str) {
 	});
 };
 m.valsStatN=21;
-m.getUriListAndShowRecosOnCat=async function (cat) {
+m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
 		let $cat=$("#cat-"+m.catList[cat].i);
@@ -3295,7 +3295,9 @@ m.getUriListAndShowRecosOnCat=async function (cat) {
 				}
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
-				$window.scrollTop($contents.offset().top);
+				if (scroll) {
+					$window.scrollTop($contents.offset().top);
+				}
 				m.neighbors[cat_from]=neighbors;
 				if (m.myPage&&neighbors.length>1000) {
 					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, 100, until);
@@ -3481,7 +3483,7 @@ m.getUriListAndShowRecosOnCat=async function (cat) {
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 					m.neighbors[cat_from]=neighbors;
-					m.getUriListAndShowRecosOnCat(cat);
+					m.getUriListAndShowRecosOnCat(cat, true);
 				});
 			}
 			break;
@@ -3503,7 +3505,9 @@ m.getUriListAndShowRecosOnCat=async function (cat) {
 				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
 				$contents.html("");
 			}
-			$window.scrollTop($contents.offset().top);
+			if (scroll) {
+				$window.scrollTop($contents.offset().top);
+			}
 			break;
 	}
 };
