@@ -792,6 +792,12 @@ $multireco_def_cats=$("#multireco-def-cats");
 $multireco_input_cats=$("#multireco-input-cats");
 $multireco_cat_fs_container=$("#multireco-cat-fs-container");
 $multireco_cat_fs_list=$("#multireco-cat-fs-list");
+$multirecoDefCats=$multireco_def_cats.find(".def-cat");
+$multirecoReplaceCats=$multireco_def_cats.find(".replace-cat");
+$multirecoAddTxts=$multireco_def_cats.find(".add-txt");
+$multirecoDeleteCat=$multireco_def_cats.find(".delete-cat");
+
+$def_cmd=$("#def-cmds").find(".def-cmd");
 
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
@@ -3951,7 +3957,6 @@ m.showDefs=function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
-let $def_cmd=$("#def-cmds").find(".def-cmd");
 $def_cmd.on("click", function (e) {
 	$input_desc.focus();
 	let sStart=$input_desc[0].selectionStart;
@@ -3963,8 +3968,6 @@ $def_cmd.on("click", function (e) {
 	sEnd=sStart+inserted.length;
 	$input_desc[0].setSelectionRange(sEnd,sEnd);
 });
-let $multirecoDefCats=$multireco_def_cats.find(".def-cat");
-let $multirecoReplaceCats=$multireco_def_cats.find(".replace-cat");
 $multirecoReplaceCats.on("click", function (e) {
 	let $this=$(this);
 	let fs=m.fsCat;
@@ -3981,7 +3984,6 @@ $multirecoReplaceCats.on("click", function (e) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 });
-let $multirecoAddTxts=$multireco_def_cats.find(".add-txt");
 $multirecoAddTxts.on("click", function (e) {
 	let $this=$(this);
 	$multirecoDefCats.removeClass("selected");
@@ -3997,7 +3999,6 @@ $multirecoAddTxts.on("click", function (e) {
 	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 	$multireco_input_cats.trigger("keyup.fs");
 });
-let $multirecoDeleteCat=$multireco_def_cats.find(".delete-cat");
 $multirecoDeleteCat.on("click", function (e) {
 	let $this=$(this);
 	let fs=m.fsCat;
