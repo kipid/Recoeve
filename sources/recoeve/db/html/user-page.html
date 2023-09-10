@@ -5151,6 +5151,7 @@ m.processShortKey=function (e) {
 				$button_multireco_mode.addClass("enabled");
 				$contents.addClass("multireco");
 				$multireco_cats_container.show();
+				$multireco_cats_container.css({zIndex:++m.zIndex});
 				$multireco_input_cats[0].value=m.currentCat;
 			}
 			if (!m.recosShown) {
