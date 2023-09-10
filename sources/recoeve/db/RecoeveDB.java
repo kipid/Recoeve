@@ -2660,7 +2660,10 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 							updateRecoStat(user_i, uri, pts, tNow, 1);
 							updateNeighbors(user_i, uri, cats, pts, catL, tNow, 1);
 						}
-						res+="changed";
+						res+="changed.";
+						if (!equalityOfCats) {
+							res+=" Cats is changed to \""+cats.toString()+"\".";
+						}
 					}
 					break;
 				case "delete":
