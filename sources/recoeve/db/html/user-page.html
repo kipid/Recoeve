@@ -573,7 +573,19 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</form>
 </div><!-- div#new-reco -->
 <div id="multireco-cats-container" style="display:none">
-	<label for="multireco-input-cats">[--Multireco Categories--]</label>
+	<label for="multireco-input-cats" style="padding:.1em 3em">[--Multireco Categories--]</label>
+	<div class="move" style="z-index:10000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
+		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
+		<line x1="80%" y1="40%" x2="90%" y2="50%"></line>
+		<line x1="80%" y1="60%" x2="90%" y2="50%"></line>
+		<line x1="50%" y1="10%" x2="50%" y2="90%"></line>
+		<line x1="50%" y1="10%" x2="40%" y2="20%"></line>
+		<line x1="50%" y1="10%" x2="60%" y2="20%"></line>
+		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
+		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
+	</g></svg></div>
 		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat add-txt" id="multireco-add-cat">;</div> <div class="def-cat add-txt" id="multireco-sub-cat">--</div> <div class="def-cat delete-cat" id="multireco-delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="multireco-input-cats" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
 		<div class="fs-container" id="multireco-cat-fs-container" style="display:none">
@@ -775,6 +787,7 @@ $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
 
 $multireco_cats_container=$("#multireco-cats-container");
+$multireco_cats_container_move=$("#multireco-cats-container .move");
 $multireco_def_cats=$("#multireco-def-cats");
 $multireco_input_cats=$("#multireco-input-cats");
 $multireco_cat_fs_container=$("#multireco-cat-fs-container");
@@ -964,13 +977,6 @@ m.a_log_out=function (e, elem) {
 		return false;
 	}
 }
-
-m.toggleNeighborsMode=function () {
-}
-
-m.toggleMultirecoMode=function () {
-
-};
 
 m.toggleNewReco=function () {
 	if ($new_reco.is(":visible")) {
@@ -1354,6 +1360,24 @@ $("#fuzzy-search-container>.reset").on("click.reset", function (e) {
 	$fuzzy_search.html("");
 	$fuzzy_search.focus();
 	$fuzzy_search.trigger("input.fs");
+});
+
+$multireco_cats_container_move.on("mousedown.move touchstart.move", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($multireco_cats_container_move.offset().left)+$window.scrollLeft();
+	let relativeY=touch0.clientY-Math.round($multireco_cats_container_move.offset().top)+$window.scrollTop();
+	$html.on("mousemove.move touchmove.move", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		$table_of_recos_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$html.on("mouseup.move touchend.move", function () {
+			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+		});
+	});
 });
 
 $table_of_recos_container_move.on("mousedown.move touchstart.move", function (e) {
