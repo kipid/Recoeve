@@ -1805,14 +1805,7 @@ m.completeMRCat=function (elem, j) { // TODO: Edit this better.
 	$multireco_input_cats.focus();
 	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function (fs, $input) {
-	if ($input!==undefined&&$input!==null&&!!$input) {
-		fs.$fs=$input;
-	}
-	else {
-		fs.$fs=$input_cats;
-	}
-	// TODO: Fast Fuzzy search with check previous search var. e.g. mu to mus.
+m.doFSCat=function (fs) {
 	let catsTxt=fs.$fs[0].value;
 	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -1830,26 +1823,32 @@ m.doFSCat=function (fs, $input) {
 	let fsCatSH=m.splitHangul(fs.listOfCats[fs.k].trim());
 	let res=m.fuzzySearch(fsCatSH, fs);
 	let str="";
-	if ($input===$goto_cats) {
+	if (fs===m.fsGotoCats) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
-	else {
+	else if (fs===m.fsCat) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
+	else if (fs===m.fsMRCat) {
+		for (let i=0;i<res.length;i++) {
+			let fsSortedI=res[res.sorted[i]];
+			str+=`<div class="list-item" onclick="m.completeMRCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+		}
+	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
-m.doMRFSCat=function (fs) {
-	m.doFSCat(fs, $multireco_input_cats);
+m.doMRFSCat=function () {
+	m.doFSCat(m.fsMRCat);
 };
-m.doFSGotoCats=function (fs) {
-	m.doFSCat(fs, $goto_cats);
+m.doFSGotoCats=function () {
+	m.doFSCat(m.fsGotoCats);
 };
 
 m.fsCatOn=function () {
@@ -1873,14 +1872,14 @@ m.fsMRCatOn=function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doMRFSCat(m.fsMRCat);
+		m.doMRFSCat();
 	}
 	else {
 		$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 			m.previous=Date.now();
-			m.doMRFSCat(m.fsMRCat);
+			m.doMRFSCat();
 		}, m.wait*1.1-passed);
 	}
 };
@@ -1889,14 +1888,14 @@ m.fsGotoCatsOn=function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doFSGotoCats(m.fsGotoCats);
+		m.doFSGotoCats();
 	}
 	else {
 		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
-			m.doFSGotoCats(m.fsGotoCats);
+			m.doFSGotoCats();
 		}, m.wait*1.1-passed);
 	}
 };
@@ -2659,9 +2658,9 @@ m.reco_pointChange_do=function (args, err) {
 		}
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
-		if (res[1]?.result==="changed") {
+		if (res[1]?.result?.substring(0,7)==="changed") {
 			let val=m.myRecos[uri].val=m.val(args.valStr);
-			args.$result?.html(`[--Your point on this URI is changed.--]`);
+			args.$result?.html(m.escapeHTML(res[1].result));
 		}
 		else if (res[1]?.result==="recoed") {
 			let r=m.myRecos[uri];
@@ -2720,7 +2719,14 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 		else if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
 			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
-			$result.html("[--Changing your points.--]");
+			let msg="";
+			if (m.recoMode==="multireco") {
+				strHeads+="\tcats"
+				let cats=m.formatCats($multireco_input_cats[0].value);
+				strContents+=`\t${m.encloseStr(cats)}`;
+				msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
+			}
+			$result.html("[--Changing your points.--]"+msg);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
 		}
 	}
@@ -2729,7 +2735,13 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			if (m.myRecos[uri]?.val?.str!==valStr) {
 				let strHeads="do\turi\tval";
 				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-				$result.html("[--Changing your points.--]");
+				if (m.recoMode==="multireco") {
+					strHeads+="\tcats"
+					let cats=m.formatCats($multireco_input_cats[0].value);
+					strContents+=`\t${m.encloseStr(cats)}`;
+					msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
+				}
+				$result.html("[--Changing your points.--]"+msg);
 				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
 			}
 		}
@@ -2748,7 +2760,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				strContents+="\t"+m.encloseStr(uR.desc);
 			}
 			strHeads+="\tcats";
-			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value.trim()));
+			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value));
 			let strRecoDo=strHeads+"\n"+strContents;
 			$result.html("[--Recoing to your recoeve.net.--]");
 			m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
@@ -4350,11 +4362,11 @@ $button_reco.on("click", function (e) {
 		let strHeads="do\turi";
 		let strContents="reco\t"+m.encloseStr(uri);
 
-		let title=m.formatTitle($input_title[0].value.trim());
+		let title=m.formatTitle($input_title[0].value);
 		strHeads+="\ttitle";
 		strContents+="\t"+m.encloseStr(title);
 
-		let cats=m.formatCats($input_cats[0].value.trim());
+		let cats=m.formatCats($input_cats[0].value);
 		strHeads+="\tcats";
 		strContents+="\t"+m.encloseStr(cats);
 
@@ -4393,8 +4405,8 @@ m.reco_change_do=function (args, err) {
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]) {
-			if (res[1].result==="changed") {
-				$error.html("Changed");
+			if (res[1].result?.substring(0,7)==="changed") {
+				$error.html(m.escapeHTML(res[1].result));
 				if (args.cats!==args.r.cats) {
 					m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
 					args.r.cats=args.cats;
@@ -4436,14 +4448,14 @@ $button_edit.on("click", function (e) {
 		let strContents="change"+"\t"+m.encloseStr(uri);
 		let changed=false;
 
-		let title=m.formatTitle($input_title[0].value.trim());
+		let title=m.formatTitle($input_title[0].value);
 		if (title!==r.title) {
 			changed=true;
 			strHeads+="\t"+"title";
 			strContents+="\t"+m.encloseStr(title);
 		}
 
-		let cats=m.formatCats($input_cats[0].value.trim());
+		let cats=m.formatCats($input_cats[0].value);
 		if (cats!==r.cats) {
 			changed=true;
 			strHeads+="\t"+"cats";
@@ -5075,19 +5087,15 @@ m.processShortKey=function (e) {
 				m.recoMode="";
 				$button_mode.removeClass("enabled");
 				$contents.removeClass("multireco");
-				if (!m.myPage) {
-					$multireco_cats_container.hide();
-				}
+				$multireco_cats_container.hide();
 			}
 			else {
 				m.recoMode="multireco";
 				$button_mode.removeClass("enabled");
 				$button_multireco_mode.addClass("enabled");
 				$contents.addClass("multireco");
-				if (!m.myPage) {
-					$multireco_cats_container.show();
-					$multireco_input_cats[0].value=m.currentCat;
-				}
+				$multireco_cats_container.show();
+				$multireco_input_cats[0].value=m.currentCat;
 			}
 			m.openCat(m.currentCat);
 			break;
