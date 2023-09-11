@@ -139,35 +139,26 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	.pink #catList .cat.selected>.baseCat {color:white}
 #catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
-#cat-fs-container {
-	position:relative;
+.fs-container {
+	position:fixed; left:0; top:0;
+	z-index:10010;
+	background:black;
 	width:25em; max-width:100%;
 	height:auto;
 	text-align:left
 }
-#cat-fs-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
+	.bright .fs-container {background:wheat}
+#cat-fs-container {position:relative}
+.fs-name {padding:.1em 3em}
+.fs-input {
+	height:2em; max-height:5em; overflow-y:auto;
+	font:inherit; font-size:1.3em; color:black;
+	width:100%;
+	padding:.1em;
 	border:.15em gray solid;
-	background:rgb(20,20,20)
+	background:white
 }
-#cat-fs-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em
-}
-#cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#cat-fs-list .list-item .list-index {display:none}
-#cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40)
-}
-#cat-fs-list .list-item .cat {font-size:.9em}
-#cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150)
-}
-#cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170)
-}
-
-#multireco-cats-container textarea {
+.fs-container textarea {
 	display:block;
 	max-width:100%;
 	width:100%;
@@ -180,75 +171,23 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	background:white;
 	color:rgb(50,50,50)
 }
-#multireco-cat-fs-container {
-	position:relative;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-#multireco-cat-fs-list {
+	#goto-cats {height:4em; margin-bottom:-0.4em}
+.fs-list {
 	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
 	border:.15em gray solid;
 	background:rgb(20,20,20)
 }
-#multireco-cat-fs-list .list-item {
+.fs-list .list-item {
 	background:black; color:white;
 	padding:.2em .5em .4em
 }
-#multireco-cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#multireco-cat-fs-list .list-item .list-index {display:none}
-#multireco-cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40)
-}
-#multireco-cat-fs-list .list-item .cat {font-size:.9em}
-#multireco-cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150)
-}
-#multireco-cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170)
-}
-
-#fuzzy-search-container, #table-of-recos-container, #goto-cats-container, #multireco-cats-container {
-	position:fixed; left:0; top:0;
-	z-index:10010;
-	background:black;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-	.bright #fuzzy-search-container, .bright #table-of-recos-container, .bright #goto-cats-container, .bright #multireco-cats-container {background:wheat}
-.fs-name {padding:.1em 3em}
-#fuzzy-search, #table-of-recos, #goto-cats {
-	height:2em; max-height:5em; overflow-y:auto;
-	font:inherit; font-size:1.3em; color:black;
-	width:100%;
-	padding:.1em;
-	border:.15em gray solid;
-	background:white
-}
-#goto-cats {height:4em; margin-bottom:-0.4em}
-#fuzzy-search-list, #table-of-recos-list, #goto-cats-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20)
-}
-#fuzzy-search-list .list-item, #table-of-recos-list .list-item, #goto-cats-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em
-}
-#fuzzy-search-list .list-item.selected, #table-of-recos-list .list-item.selected, #goto-cats-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#fuzzy-search-list .list-item .list-index, #table-of-recos-list .list-item .list-index, #goto-cats-list .list-item .list-index {display:none}
-#fuzzy-search-list .list-item:nth-child(2n), #table-of-recos-list .list-item:nth-child(2n), #goto-cats-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40)
-}
-#fuzzy-search-list .list-item.deleted, #goto-cats-list .list-item.deleted {background:rgb(108 50 0); border:.15em solid rgb(120,120,150)}
-#fuzzy-search-list .list-item .cat, #table-of-recos-list .list-item .cat, #goto-cats-list .list-item .cat {font-size:.9em}
-#fuzzy-search-list .list-item .highlighted, #table-of-recos-list .list-item .highlighted, #goto-cats-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150)
-}
-#fuzzy-search-list .list-item .highlighted .bold, #table-of-recos-list .list-item .highlighted .bold, #goto-cats-list .list-item .highlighted .bold {
-	color:rgb(170,250,170)
-}
+.fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
+.fs-list .list-item .list-index {display:none}
+.fs-list .list-item:nth-child(2n) {background:rgb(40,40,40)}
+.fs-list .list-item.deleted {background:rgb(108 50 0); border:.15em solid rgb(120,120,150)}
+.fs-list .list-item .cat {font-size:.9em}
+.fs-list .list-item .highlighted {font-size:.5em; color:rgb(150,150,150)}
+.fs-list .list-item .highlighted .bold {color:rgb(170,250,170)}
 .exit {
 	z-index:10010;
 	position:absolute; display:inline-block;
@@ -453,7 +392,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 }
 
 @media all and (min-height:500px) {
-	#fuzzy-search-list, #table-of-recos-list {max-height:430px}
+	.fs-list {max-height:430px}
 }
 </style>
 </head>
@@ -476,9 +415,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<div class="button" id="change-catList-order-cancel">[--Cancel--]</div>
 	</div>
 </div><!-- div#sidebar -->
-<div id="fuzzy-search-container" style="display:none">
+<div id="fuzzy-search-container" class="fs-container" style="display:none">
 	<div class="fs-name">Go: Fuzzy search</div>
-	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
@@ -490,9 +429,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="fuzzy-search" contenteditable="true"></div>
-	<div id="fuzzy-search-list"></div>
-	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div id="fuzzy-search" class="fs-input" contenteditable="true"></div>
+	<div id="fuzzy-search-list" class="fs-list"></div>
+	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
 		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
@@ -501,9 +440,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
-<div id="table-of-recos-container" style="display:none">
+<div id="table-of-recos-container" class="fs-container" style="display:none">
 	<div class="fs-name">Table of Recos</div>
-	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
@@ -515,9 +454,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="table-of-recos" contenteditable="true"></div>
-	<div id="table-of-recos-list"></div>
-	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div id="table-of-recos" class="fs-input" contenteditable="true"></div>
+	<div id="table-of-recos-list" class="fs-list"></div>
+	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
 		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
@@ -526,9 +465,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
-<div id="goto-cats-container" style="display:none">
+<div id="goto-cats-container" class="fs-container" style="display:none">
 	<div class="fs-name">Go to Cats</div>
-	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
@@ -540,9 +479,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<textarea id="goto-cats" type="text"></textarea>
-	<div id="goto-cats-list"></div>
-	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<textarea id="goto-cats" class="fs-input" type="text"></textarea>
+	<div id="goto-cats-list" class="fs-list"></div>
+	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
 		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
@@ -561,8 +500,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<label for="input-cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
-		<div class="fs-container" id="cat-fs-container" style="display:none">
-			<div id="cat-fs-list"></div>
+		<div id="cat-fs-container" class="fs-container" style="display:none">
+			<div id="cat-fs-list" class="fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 		<div id="show-URI"></div>
@@ -590,7 +529,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 	</form>
 </div><!-- div#new-reco -->
-<div id="multireco-cats-container" style="display:none">
+<div id="multireco-cats-container" class="fs-container" style="display:none">
 	<label for="multireco-input-cats" style="padding:.1em 3em">[--Multireco Categories--]</label>
 	<div class="move" style="z-index:10000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
@@ -606,8 +545,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</g></svg></div>
 		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat add-txt" id="multireco-add-cat">;</div> <div class="def-cat add-txt" id="multireco-sub-cat">--</div> <div class="def-cat delete-cat" id="multireco-delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="multireco-input-cats" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
-		<div class="fs-container" id="multireco-cat-fs-container" style="display:none">
-			<div id="multireco-cat-fs-list"></div>
+		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
+			<div id="multireco-cat-fs-list" class="fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
@@ -625,10 +564,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
 <div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 <div class="cBoth"></div>
-<div class="side2" id="choose-timezone-list" style="border:solid 1px gray; display:none">
-<div id="search-timezone-container" style="z-index: 10011;">
-	<div class="fs-name">Go: Fuzzy search</div>
-	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+<div id="search-timezone-container" class="fs-container">
+	<div class="fs-name">Fuzzy search Timezone</div>
+	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="60%"></line>
@@ -640,9 +578,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="fuzzy-search" contenteditable="true"></div>
-	<div id="fuzzy-search-list"></div>
-	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+	<div id="search-timezone" class="fs-input" contenteditable="true"></div>
+	<div id="search-timezone-list" class="fs-list"></div>
+	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
 		<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
@@ -651,6 +589,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
+<div class="side2" id="choose-timezone-list" style="border:solid 1px gray; display:none">
 <table class="timezone" style="font-size:.7em; line-height:1.2">
 <tbody><tr>
 <th>UTC offset
@@ -5675,8 +5614,8 @@ $choose_timezone.on("click", function (e) {
 	}
 });
 $timezone_trs=$("table.timezone").find("tr");
-for (let i=0;i<$timezone_trs.length;i++) {
-	console.log($timezone_trs.eq(i).text());
+for (let i=1;i<$timezone_trs.length;i++) {
+	console.log($timezone_trs.eq(i).text().replace(/[\s\r\n\t]+/g," "));
 }
 // $choose_timezone_input.on("keydown.fs", function (e) {
 
