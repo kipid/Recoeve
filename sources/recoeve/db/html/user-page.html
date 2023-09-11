@@ -232,7 +232,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 textarea.single-line {min-height:2.2em; height:3.8em}
 textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco input#input-val {display:inline-block; width:6.2em}
-.upDown {border:solid 1px white; padding:1px}
+.upDown {float:left; border:solid 1px white; padding:1px; margin:0 .3em}
 .up, .down {vertical-align:top}
 #input-val-stars {display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
@@ -303,12 +303,12 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
 	.pink .reco>.cmt {background:rgb(75,47,47)}
-.stars-container {position:relative; display:inline-block; cursor:text}
+.stars-container {float:left; position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
 .reco>.val {margin:.5em 0 .3em}
-.reco>.val>.str, .reco>.my-point>.str {border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
+.reco>.val>.str, .reco>.my-point>.str {float:left; font-size:.7em; border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
 	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 .multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
@@ -2151,14 +2151,17 @@ m.setTimezone=function (elem, timezone) {
 	fs.$fs.focus();
 };
 m.toLocalTime=function (UTCDateTime) {
-	let [datePart, timePart]=UTCDateTime.split(' ');
-	let [year, month, day]=datePart.split('-');
-	let [hours, minutes, seconds]=timePart.split(':');
-	let utcDate=new Date(Date.UTC(year, month-1, day, hours, minutes, seconds)); // Month from 0 base.
+	if (UTCDateTime!==undefined&&UTCDateTime?.constructor===String) {
+		let [datePart, timePart]=UTCDateTime.split(' ');
+		let [year, month, day]=datePart.split('-');
+		let [hours, minutes, seconds]=timePart.split(':');
+		let utcDate=new Date(Date.UTC(year, month-1, day, hours, minutes, seconds)); // Month from 0 base.
 
-	let dateTimeISO=new Date(utcDate.getTime()+m.timezoneAddMs).toISOString(); // UTC+09:00
-	let [dateT, timeT]=dateTimeISO.split("T");
-	return `${dateT} ${timeT.substring(0,8)}`;
+		let dateTimeISO=new Date(utcDate.getTime()+m.timezoneAddMs).toISOString(); // UTC+09:00
+		let [dateT, timeT]=dateTimeISO.split("T");
+		return `${dateT} ${timeT.substring(0,8)}`;
+	}
+	return "";
 };
 
 
@@ -2349,33 +2352,33 @@ m.fsTimezoneOn=function () {
 		m.doFSTimezone();
 	}
 	else {
-		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		$search_timezone.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+			$search_timezone.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 			m.previous=Date.now();
 			m.doFSTimezone();
 		}, m.wait*1.1-passed);
 	}
 };
 m.fsCatsOnTimeout=function () {
+	$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+	$table_of_recos.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	$search_timezone.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 
+	$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+	$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 	$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 	$search_timezone.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
-
-	// $input_cats.trigger("input.fs");
-	// $multireco_input_cats.trigger("input.fs");
-	// $goto_cats.trigger("input.fs");
-	// $search_timezone.trigger("input.fs");
 };
 m.fsCatsOnTimeout();
 m.onKeydownInFS=function (e, fs) {
 	clearTimeout(m.setTimeoutTargetOn);
+	e.stopPropagation();
 	let $fsl=fs.$fsl;
 	let $fs_container=fs.$fs_container;
 	let $target=$(e.target);
@@ -2398,9 +2401,8 @@ m.onKeydownInFS=function (e, fs) {
 	switch (e.keyCode) {
 		case 9: // Tab=9
 			e.preventDefault();
-			e.stopPropagation();
 			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-			$lis.eq(0).trigger("click");
+			$lis.eq(0)?.trigger("click");
 			break;
 		case 27: // ESC=27
 			e.preventDefault();
@@ -2409,7 +2411,6 @@ m.onKeydownInFS=function (e, fs) {
 		case 38: // up=38
 		case 40: // down=40
 			e.preventDefault();
-			e.stopPropagation();
 			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 			let $liTo=null;
 			if ($liSelected.exists()) {
@@ -2987,14 +2988,14 @@ m.recomHTML=function (r) {
 			res+=`<tspan x="${dx*(k+1)-2}%" y="90%">${k/2}</tspan>`;
 		}
 		res+=`</text>`;
-		res+=`<text class="max-simSum" x="0%" y="7%">${(valsStat.max/10000.0).toFixed(2)}</text>`;
+		res+=`<text class="max-simSum" x="0%" y="10%">${(valsStat.max/10000.0).toFixed(2)}</text>`;
 		let x_expected=dx+(100.0-dx*3)*recomsI.avgVal/10.0;
 		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" x="${x_expected-4}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 	}
 	if (m.myPage) {
-		res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
 	}
-	res+=`<div class="result"></div>`;
+	res+=`<div class="cBoth"></div><div class="result"></div>`;
 	if (r.defDescs[0]&&r.defDescs[0][0]) {
 		let descR=m.renderStrDescCmt(r.defDescs[0][0]);
 		res+=`<div class="desc">`;
@@ -3042,12 +3043,14 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 	<div class="title">${m.escapeHTML(r.title)}</div>
 	<div class="cats">${m.catsToA(r.cats)}</div>
 	${inListPlay?"":m.uriRendering(r.uri, false, inListPlay).html}`;
+	res+=`<div class="cBoth"></div>`;
 		if (r.val?.str) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
 		else {
 			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
 		}
+		res+=`<div class="cBoth"></div>`;
 		if (m.myPage) {
 			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
@@ -3063,7 +3066,7 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 		else {
 			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
 		}
-		res+=`<div class="result"></div>`;
+		res+=`<div class="cBoth"></div><div class="result"></div>`;
 		if (r.desc) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
@@ -3184,8 +3187,16 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				strHeads+="\tdesc";
 				strContents+=`\t${m.encloseStr(r.defDescs[0][0])}`;
 			}
-			$result?.html("Recoing...");
+			let cats=m.formatCats($multireco_input_cats[0].value);
+			if (m.recoMode!=="multireco") {
+				cats=m.currentCat;
+			}
+			strHeads+="\tcats";
+			strContents+=`\t${m.encloseStr(cats)}`;
+			let msg=` The cats on this URI is ${m.escapeHTML(cats)}.`;
+			$result?.html("Recoing..."+msg);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
+			m.putCats_UriToLists(cats, uri);
 		}
 		else if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
@@ -3195,7 +3206,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 				strHeads+="\tcats"
 				strContents+=`\t${m.encloseStr(cats)}`;
-				msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
+				msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}.`;
 				m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
 				m.putCats_UriToLists(cats, uri);
 			}
@@ -4132,7 +4143,9 @@ m.openCat=function (cat, e) {
 		let uris=m.catUriList[cat].uris;
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
-			m.userRecos[uri].index=uris.length-1-k;
+			if (m.userRecos[uri]) {
+				m.userRecos[uri].index=uris.length-1-k;
+			}
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
@@ -5150,15 +5163,15 @@ m.fsGotoCatsOn=function () {
 		m.doGotoCatsFSGo(m.fsGotoCats);
 	}
 	else {
-		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs");
+		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs", m.fsGotoCatsOn);
+			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
 			m.doGotoCatsFSGo(m.fsGotoCats);
 		}, m.wait*1.1-passed);
 	}
 };
-$goto_cats.on("input.fs keyup.fs cut.fs paste.fs", m.fsGotoCatsOn);
+$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 $goto_cats.trigger("input.fs");
 
 
@@ -5166,18 +5179,27 @@ $goto_cats.trigger("input.fs");
 ///////////////////////////////////////////
 // Fuzzy search on Titles (Go)
 ///////////////////////////////////////////
-$fuzzy_search.on("keydown.fs", function (e) {
+m.onKeydownInFS0=function (e, shortKey, fs) {
+	clearTimeout(m.setTimeoutTargetOn0);
 	e.stopPropagation();
+	let $target=$(e.target);
+	let $fsl=fs.$fsl;
+	let $lis=$fsl.find(".list-item");
 	switch (e.keyCode) {
+	case 9: // Tab=9
+		e.preventDefault();
+		$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		$lis.eq(0)?.trigger("click");
+		break;
 	case 27: // ESC=27
 		e.preventDefault();
-		$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)});
+		$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		$window.trigger({type:'keydown', keyCode:shortKey.charCodeAt(0)});
 		break;
 	case 38: // up=38
 	case 40: // down=40
 		e.preventDefault();
-		let $fsl=$fuzzy_search_list;
-		let $lis=$fsl.find(".list-item");
+		$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		let $liSelected=$fsl.find(".list-item.selected").eq(0);
 		let $liTo=null;
 		if ($liSelected.exists()) {
@@ -5212,6 +5234,12 @@ $fuzzy_search.on("keydown.fs", function (e) {
 		}
 		break;
 	}
+	m.setTimeoutTargetOn0=setTimeout(function () {
+		m.fsCatsOnTimeout();
+	}, m.wait);
+};
+$fuzzy_search.on("keydown.fs", function (e) {
+	m.onKeydownInFS0(e, 'G', m.fsGo);
 });
 m.showAndScrollTo=function ($recoElem) {
 	if (!$recoElem?.is(":visible")) {
@@ -5270,7 +5298,7 @@ m.gotoLi=function (e, elem, k, fs) {
 	}
 };
 m.doFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
@@ -5294,15 +5322,15 @@ m.fsGoOn=function () {
 		m.doFSGo(m.fsGo);
 	}
 	else {
-		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
+		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
 		}, m.wait*1.1-passed);
 	}
 };
-$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 $fuzzy_search.trigger("input.fs");
 
 
@@ -5334,7 +5362,7 @@ m.playLi=function (e, elem, k, fs) {
 	}
 };
 m.doFSToRs=function (fs, shuffle) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (shuffle) {
 		let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
 		let l=fs.fullList.length;
@@ -5379,24 +5407,18 @@ m.fsToRsOn=function () {
 		m.doFSToRs(m.fsToRs);
 	}
 	else {
-		$table_of_recos.off("input.fs keyup.fs cut.fs paste.fs");
+		$table_of_recos.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
+			$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 			m.previous=Date.now();
 			m.doFSToRs(m.fsToRs);
 		}, m.wait*1.1-passed);
 	}
 };
-$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs", m.fsToRsOn);
+$table_of_recos.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 $table_of_recos.trigger("input.fs");
 $table_of_recos.on("keydown", function (e) {
-	e.stopPropagation();
-	switch (e.keyCode) {
-	case 27: // ESC=27
-		e.preventDefault();
-		$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
-		break;
-	}
+	m.onKeydownInFS0(e, 'T', m.fsToRs)
 });
 
 
