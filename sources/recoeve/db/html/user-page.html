@@ -2146,6 +2146,7 @@ m.setTimezone=function (elem, timezone) {
 	// 	m.refreshTimezone();
 	// }
 	$search_timezone[0].value=timezone;
+	m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
 	fs.$fs.focus();
 };
 m.toLocalTime=function (UTCDateTime) {
