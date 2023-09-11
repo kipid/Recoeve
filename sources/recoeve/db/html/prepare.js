@@ -46,21 +46,21 @@ m.pathOfNeighbor=function (user_id, cat, mode, lang, hashURI, args) {
 	return `/user/${user_id}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
 };
 
-/*  :: cookies.js :: Slightly edited by kipid at 2023-06-06.
+/*	:: cookies.js :: Slightly edited by kipid at 2023-06-06.
 |*|
-|*|  A complete cookies reader/writer framework with full unicode support.
+|*|	A complete cookies reader/writer framework with full unicode support.
 |*|
-|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|	https://developer.mozilla.org/en-US/docs/DOM/document.cookie
 |*|
-|*|  This framework is released under the GNU Public License, version 3 or later.
-|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|	This framework is released under the GNU Public License, version 3 or later.
+|*|	http://www.gnu.org/licenses/gpl-3.0-standalone.html
 |*|
-|*|  Syntaxes:
-|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]) // end :: Number: max-age in seconds
-|*|  * docCookies.getItem(name)
-|*|  * docCookies.removeItem(name[, path], domain)
-|*|  * docCookies.hasItem(name)
-|*|  * docCookies.keys()
+|*|	Syntaxes:
+|*|	* docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]) // end :: Number: max-age in seconds
+|*|	* docCookies.getItem(name)
+|*|	* docCookies.removeItem(name[, path], domain)
+|*|	* docCookies.hasItem(name)
+|*|	* docCookies.keys()
  */
 m.docCookies={
 	hasItem:function(sKey) {
@@ -373,84 +373,84 @@ m.unescapeHTML=function (str) {
 // String to Array
 ////////////////////////////
 m.encloseStr=function (str) {
-  if (!str || str.constructor!==String) { return ''; }
-  if (str.charAt(0)==='"' || /[\n\t]/.test(str)) {
-    return `"${str.replace(/"/g,'""')}"`;
-  } return str;
+	if (!str || str.constructor!==String) { return ''; }
+	if (str.charAt(0)==='"' || /[\n\t]/.test(str)) {
+		return `"${str.replace(/"/g,'""')}"`;
+	} return str;
 };
 m.strToJSON=function (str, colMap=true, rowMap=false) {
-  if (!str||str.constructor!==String) { return []; }
-  if (str.charAt(str.length-1)!=="\n") {
-    str+="\n";
-  }
-  const ret=[];
-  const delimiter=/([^\t\n]*)([\t\n])/g;
-  const lastQuote=/[^"](?:"")*"([\t\n])/g;
-  let exec;
-  let start=0;
-  let row=-1, col=-1, delim="\n";
-  let strElem="";
-  function increaseRC(delim) {
-    if (delim==='\t') {
-      col++; return true;
-    }
-    else if (delim==='\n') {
-      row++; col=0; ret.push([]); return true;
-    } return false;
-  }
-  while (start<str.length&&increaseRC(delim)) {
-    if ((str.substring(start, start+1))==='"') {
-      lastQuote.lastIndex=start+1;
-      if ((exec=lastQuote.exec(str))!==null) {
-        strElem=str.substring(start+1, lastQuote.lastIndex-2);
-        delim=exec[1];
-        start=delimiter.lastIndex=lastQuote.lastIndex;
-      }
-      else {
-        strElem=str.substring(start+1);
-        delim="";
-        start=str.length;
-      }
-      strElem=strElem.replace(/""/g,'"');
-    }
-    else {
-      if ((exec=delimiter.exec(str))!==null) {
-        strElem=exec[1];
-        delim=exec[2];
-        start=delimiter.lastIndex;
-      }
-      else {
-        strElem=str.substring(start);
-        delim="";
-        start=str.length;
-      }
-    }
-    ret[row][col]=strElem;
-  }
-  if (colMap) {
-    const firstColSize=ret[0].length;
-    for (let i=0;i<ret.length;i++) {
-      let jMax=ret[i].length;
-      if (jMax>firstColSize) { jMax=firstColSize; }
-      for (let j=0;j<jMax;j++) {
-        let key=ret[0][j];
-        if (key!==undefined) {
-          ret[i][key]=ret[i][j];
-        }
-      }
-    }
-  }
-  if (rowMap) {
-    for (let i=0;i<ret.length;i++) {
-      let key=ret[i][0];
-      if (key!==undefined) {
-        ret[key]=ret[i];
-      }
-    }
-  }
-  return ret;
-};
-m.csvToJSON=function (str, colMap=true, rowMap=false) {
+	if (!str||str.constructor!==String) { return []; }
+	if (str.charAt(str.length-1)!=="\n") {
+		str+="\n";
+	}
+	const ret=[];
+	const delimiter=/([^\t\n]*)([\t\n])/g;
+	const lastQuote=/[^"](?:"")*"([\t\n])/g;
+	let exec;
+	let start=0;
+	let row=-1, col=-1, delim="\n";
+	let strElem="";
+	function increaseRC(delim) {
+		if (delim==='\t') {
+			col++; return true;
+		}
+		else if (delim==='\n') {
+			row++; col=0; ret.push([]); return true;
+		} return false;
+	}
+	while (start<str.length&&increaseRC(delim)) {
+		if ((str.substring(start, start+1))==='"') {
+			lastQuote.lastIndex=start+1;
+			if ((exec=lastQuote.exec(str))!==null) {
+				strElem=str.substring(start+1, lastQuote.lastIndex-2);
+				delim=exec[1];
+				start=delimiter.lastIndex=lastQuote.lastIndex;
+			}
+			else {
+				strElem=str.substring(start+1);
+				delim="";
+				start=str.length;
+			}
+			strElem=strElem.replace(/""/g,'"');
+		}
+		else {
+			if ((exec=delimiter.exec(str))!==null) {
+				strElem=exec[1];
+				delim=exec[2];
+				start=delimiter.lastIndex;
+			}
+			else {
+				strElem=str.substring(start);
+				delim="";
+				start=str.length;
+			}
+		}
+		ret[row][col]=strElem;
+	}
+	if (colMap) {
+		const firstColSize=ret[0].length;
+		for (let i=0;i<ret.length;i++) {
+			let jMax=ret[i].length;
+			for (let j=0;j<firstColSize;j++) {
+				let key=ret[0][j];
+				if (j>=jMax) {
+					ret[i][key]="";
+				}
+				else {
+					ret[i][key]=ret[i][j];
+				}
+			}
+		}
+	}
+	if (rowMap) {
+		for (let i=0;i<ret.length;i++) {
+			let key=ret[i][0];
+			ret[key]=ret[i];
+		}
+	}
+	return ret;
+	};
+	m.csvToJSON=function (str, colMap=true, rowMap=false) {
 	if (!str||str.constructor!==String) { return []; }
 	let rows=str.split("\n");
 	for (let i=0;i<rows.length;i++) {
