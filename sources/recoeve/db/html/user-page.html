@@ -231,10 +231,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50)}
 textarea.single-line {min-height:2.2em; height:3.8em}
 textarea.multi-line {font-size:.9em; min-height:10em}
-#new-reco input#input-val {display:inline-block; width:6.2em}
+#new-reco input#input-val {float:left; display:inline-block; width:6.2em}
 .upDown {float:left; border:solid 1px white; padding:1px; margin:0 .3em}
 .up, .down {vertical-align:top}
-#input-val-stars {display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
+#input-val-stars {float:left; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
 #new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
@@ -524,12 +524,14 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
 		<div id="show-URI"></div>
-	<label for="input-val">[--Points--]</label>
-		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4"/>
+	<div style="margin:.4em 0">
+		<label for="input-val">[--Points--]</label>
+		<div id="input-val-stars"></div>
 		<span class="upDown" id="input-val-down">&lt;</span>
 		<span class="upDown" id="input-val-up">&gt;</span>
-		<div id="input-val-stars"></div>
-	<div id="error-msg"></div>
+		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4"/>
+	</div>
+	<div id="error-msg" class="cBoth"></div>
 	<div class="buttons">
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
