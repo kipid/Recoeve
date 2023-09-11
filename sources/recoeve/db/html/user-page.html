@@ -2148,7 +2148,7 @@ m.setTimezone=function (elem, timezone) {
 	$search_timezone[0].value=timezone;
 	fs.$fs.focus();
 };
-m.toLacalTime=function (UTCDateTime) {
+m.toLocalTime=function (UTCDateTime) {
 	let [datePart, timePart]=UTCDateTime.split(' ');
 	let [year, month, day]=datePart.split('-');
 	let [hours, minutes, seconds]=timePart.split(':');
