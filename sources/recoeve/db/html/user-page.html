@@ -5798,7 +5798,8 @@ $document.ready(function () {
 		$search_timezone[0].value=timezone;
 	}
 	else if (m.docCookies.hasItem("timezone")) {
-		m.setTimezone(null, m.docCookies.getItem("timezone"));
+		let timezone=m.docCookies.getItem("timezone");
+		m.setTimezone(null, timezone);
 		$search_timezone[0].value=timezone;
 	}
 
