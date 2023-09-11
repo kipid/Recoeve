@@ -2126,13 +2126,12 @@ $change_catList_order_cancel.on("click", function (e) {
 	$change_catList_order.show();
 });
 
-
-
 $timezone_trs=$("table.timezone").find("tr");
 for (let i=$timezone_trs.length-1;i>=1;i--) {
 	let timezoneTxt=$timezone_trs.eq(i).text().replace(/[\s\r\n\t]+/g," ").trim();
 	m.fsTimezone.fullList.push({i:$timezone_trs.length-1-i, txt:m.splitHangul(timezoneTxt), html:m.escapeHTML(timezoneTxt), timezone:timezoneTxt.substring(0,9)});
 }
+m.timezoneAddMs=0;
 m.setTimezone=function (elem, timezone) {
 	let fs=m.fsTimezone;
 	fs.$fsLis.removeClass("selected");
@@ -2148,7 +2147,20 @@ m.setTimezone=function (elem, timezone) {
 	// }
 	$search_timezone[0].value=timezone;
 	fs.$fs.focus();
-}
+};
+m.toLacalTime=function (UTCDateTime) {
+	let [datePart, timePart]=UTCDateTime.split(' ');
+	let [year, month, day]=datePart.split('-');
+	let [hours, minutes, seconds]=timePart.split(':');
+	let utcDate=new Date(Date.UTC(year, month-1, day, hours, minutes, seconds)); // Month from 0 base.
+
+	let dateTimeISO=new Date(utcDate.getTime()+m.timezoneAddMs).toISOString(); // UTC+09:00
+	let [dateT, timeT]=dateTimeISO.split("T");
+	return `${dateT} ${timeT.substring(0,8)}`;
+};
+
+
+
 //////////////////////////////////////
 // Fuzzy search on Cat
 //////////////////////////////////////
@@ -3085,9 +3097,9 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 			res+=`</div>`;
 		}
 		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
-		res+=`<div class="tFirst">Firstly Recoed at ${r.tFirst}</div><div class="cBoth"></div>`;
+		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
-			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
+			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 		}
 		res+=`</div>`;
 	}
@@ -3748,7 +3760,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				let strHTML=``;
 				for (let i=neighbors.length-1;i>=until;i--) {
 					let neighborI=neighbors[sorted[i]];
-					strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${neighborI.tUpdate}</span></div></div>`;
+					strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
 				}
 				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 				$contents.html(strHTML);
