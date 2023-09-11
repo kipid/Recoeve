@@ -3147,7 +3147,7 @@ m.reco_pointChange_do=function (args, err) {
 			else {
 				r.title="";
 			}
-			r.cats=m.currentCat;
+			r.cats=args.cats;
 			if (r.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
 				r.desc=r.defDescs[0][0];
 			}
@@ -3195,7 +3195,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			strContents+=`\t${m.encloseStr(cats)}`;
 			let msg=` The cats on this URI is ${m.escapeHTML(cats)}.`;
 			$result?.html("Recoing..."+msg);
-			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			m.putCats_UriToLists(cats, uri);
 		}
 		else if (valStr!==m.myRecos[uri]?.val?.str) {
@@ -3210,8 +3210,11 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
 				m.putCats_UriToLists(cats, uri);
 			}
+			else {
+				cats=m.myRecos[uri].cats;
+			}
 			$result.html("[--Changing your points.--]"+msg);
-			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		}
 	}
 	else {
