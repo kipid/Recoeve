@@ -149,6 +149,12 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 }
 	.bright .fs-container {background:wheat}
 #cat-fs-container {position:relative}
+#multireco-cat-fs-container {
+	position:relative;
+	width:25em; max-width:100%;
+	height:auto;
+	text-align:left
+}
 .fs-name {padding:.1em 3em}
 .fs-input {
 	height:2em; max-height:5em; overflow-y:auto;
@@ -429,7 +435,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="fuzzy-search" class="fs-input" contenteditable="true"></div>
+	<textarea id="fuzzy-search" class="fs-input" type="text"></textarea>
 	<div id="fuzzy-search-list" class="fs-list"></div>
 	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
@@ -454,7 +460,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="table-of-recos" class="fs-input" contenteditable="true"></div>
+	<textarea id="table-of-recos" class="fs-input" type="text"></textarea>
 	<div id="table-of-recos-list" class="fs-list"></div>
 	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
@@ -545,7 +551,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	</g></svg></div>
 		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat add-txt" id="multireco-add-cat">;</div> <div class="def-cat add-txt" id="multireco-sub-cat">--</div> <div class="def-cat delete-cat" id="multireco-delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="multireco-input-cats" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
-		<div id="multireco-cat-fs-container" class="fs-container" style="display:none">
+		<div id="multireco-cat-fs-container" style="display:none">
 			<div id="multireco-cat-fs-list" class="fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 		</div>
@@ -564,7 +570,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
 <div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 <div class="cBoth"></div>
-<div id="search-timezone-container" class="fs-container">
+<div id="search-timezone-container" class="fs-container" style="display:none">
 	<div class="fs-name">Fuzzy search Timezone</div>
 	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
@@ -578,7 +584,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="search-timezone" class="fs-input" contenteditable="true"></div>
+	<textarea id="search-timezone" class="fs-input" type="text"></textarea>
 	<div id="search-timezone-list" class="fs-list"></div>
 	<div class="reset" style="position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
@@ -587,7 +593,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="$choose_timezone.trigger('click')"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
 <div class="side2" id="choose-timezone-list" style="border:solid 1px gray; display:none">
 <table class="timezone" style="font-size:.7em; line-height:1.2">
@@ -1059,9 +1065,13 @@ $data_myCatList=$("#data-myCatList");
 $data_CatList=m.myPage?$data_myCatList:$("#data-CatList");
 $choose_lang=$("#choose-lang");
 $choose_lang_list=$("#choose-lang-list");
+$data_lang=$("#data-lang");
 $choose_timezone=$("#choose-timezone");
 $choose_timezone_list=$("#choose-timezone-list");
-$data_lang=$("#data-lang");
+$search_timezone_container=$("#search-timezone-container");
+$search_timezone_container_move=$("#search-timezone-container>.move");
+$search_timezone=$("#search-timezone");
+$search_timezone_list=$("#search-timezone-list");
 
 $user_noti=$("#user-noti");
 $my_id=$("#my-id");
@@ -1380,6 +1390,14 @@ m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
 m.timeout={};
 m.maxShowReco=20;
+
+m.fsTimezone=[];
+m.fsTimezone[0]=m.fsTimezone[1]=[];
+m.fsTimezone[0].k=m.fsTimezone[1].k=-1;
+m.fsTimezone.fullList=[];
+m.fsTimezone.$fs=$search_timezone;
+m.fsTimezone.$fsl=$search_timezone_list;
+m.fsTimezone.$fs_container=$search_timezone_container;
 
 m.fsGotoCats=[];
 m.fsGotoCats[0]=m.fsGotoCats[1]=[];
@@ -1714,7 +1732,7 @@ $fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
 	});
 });
 $("#fuzzy-search-container>.reset").on("click.reset", function (e) {
-	$fuzzy_search.html("");
+	$fuzzy_search[0].value="";
 	$fuzzy_search.focus();
 	$fuzzy_search.trigger("input.fs");
 });
@@ -1755,9 +1773,32 @@ $table_of_recos_container_move.on("mousedown.move touchstart.move", function (e)
 	});
 });
 $("#table-of-recos-container>.reset").on("click.reset", function (e) {
-	$table_of_recos.html("");
+	$table_of_recos[0].value="";
 	$table_of_recos.focus();
 	$table_of_recos.trigger("input.fs");
+});
+
+$search_timezone_container_move.on("mousedown.move touchstart.move", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let relativeX=touch0.clientX-Math.round($search_timezone_container_move.offset().left)+$window.scrollLeft();
+	let relativeY=touch0.clientY-Math.round($search_timezone_container_move.offset().top)+$window.scrollTop();
+	$html.on("mousemove.move touchmove.move", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let touch0=(e.type==='touchmove')?e.originalEvent.touches[0]:e;
+		$search_timezone_container.css({left:touch0.clientX-relativeX, top:touch0.clientY-relativeY});
+		$html.on("mouseup.move touchend.move", function () {
+			$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+		});
+	});
+});
+$("#search-timezone-container>.reset").on("click.reset", function (e) {
+	$search_timezone[0].value="";
+	$search_timezone.focus();
+	$search_timezone.trigger("input.fs");
 });
 
 
@@ -1765,7 +1806,8 @@ $("#table-of-recos-container>.reset").on("click.reset", function (e) {
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
-m.fsGotoCats[0].ptnSH=m.fsGotoCats[1].ptnSH
+m.fsTimezone[0].ptnSH=m.fsTimezone[1].ptnSH
+=m.fsGotoCats[0].ptnSH=m.fsGotoCats[1].ptnSH
 =m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
 =m.fsMRCat[0].ptnSH=m.fsMRCat[1].ptnSH
 =m.fsGo[0].ptnSH=m.fsGo[1].ptnSH
@@ -2074,6 +2116,27 @@ $change_catList_order_cancel.on("click", function (e) {
 
 
 
+$timezone_trs=$("table.timezone").find("tr");
+for (let i=1;i<$timezone_trs.length;i++) {
+	let timezoneTxt=$timezone_trs.eq(i).text().replace(/[\s\r\n\t]+/g," ").trim();
+	m.fsTimezone.fullList.push({i:i-1, txt:m.splitHangul(timezoneTxt), html:m.escapeHTML(timezoneTxt), timezone:timezoneTxt.substring(0,9)});
+}
+m.setTimezone=function (elem, timezone) {
+	let fs=m.fsTimezone;
+	fs.$fsLis.removeClass("selected");
+	if (elem) {
+		let $elem=$(elem);
+		$elem.addClass("selected");
+	}
+	let [addHours, addMinutes]=timezone.substring(3).split(":");
+	// let prev=m.timezoneAddMs;
+	m.timezoneAddMs=(Number(addHours)*60+Number(addMinutes))*60*1000;
+	// if (prev!==m.timezoneAddMs) {
+	// 	m.refreshTimezone();
+	// }
+	$search_timezone[0].value=timezone;
+	fs.$fs.focus();
+}
 //////////////////////////////////////
 // Fuzzy search on Cat
 //////////////////////////////////////
@@ -2191,6 +2254,18 @@ m.doMRFSCat=function () {
 m.doFSGotoCats=function () {
 	m.doFSCat(m.fsGotoCats);
 };
+m.doFSTimezone=function () {
+	let fs=m.fsTimezone;
+	fs.$fs.focus();
+	let res=m.fuzzySearch(m.splitHangul(fs.$fs[0].value), fs);
+	let str="";
+	for (let i=0;i<res.length;i++) {
+		let fsSortedI=res[res.sorted[i]];
+		str+=`<div class="list-item" onclick="m.setTimezone(this,'${fs.fullList[fsSortedI.i].timezone}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+	}
+	fs.$fsl.html(str);
+	fs.$fsLis=fs.$fsl.find(".list-item");
+};
 
 m.fsCatOn=function () {
 	let now=Date.now();
@@ -2240,10 +2315,37 @@ m.fsGotoCatsOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
+m.fsTimezoneOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSTimezone();
+	}
+	else {
+		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		setTimeout(function () {
+			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+			m.previous=Date.now();
+			m.doFSTimezone();
+		}, m.wait*1.1-passed);
+	}
+};
 m.fsCatsOnTimeout=function () {
+	$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+	$multireco_input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+	$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+	$search_timezone.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+
 	$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+	$search_timezone.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+
+	// $input_cats.trigger("input.fs");
+	// $multireco_input_cats.trigger("input.fs");
+	// $goto_cats.trigger("input.fs");
+	// $search_timezone.trigger("input.fs");
 };
 m.fsCatsOnTimeout();
 m.onKeydownInFS=function (e, fs) {
@@ -2328,6 +2430,9 @@ $multireco_input_cats.on("keydown.fs", function (e) {
 });
 $goto_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, m.fsGotoCats);
+});
+$search_timezone.on("keydown.fs", function (e) {
+	m.onKeydownInFS(e, m.fsTimezone);
 });
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
@@ -5035,7 +5140,7 @@ $goto_cats.trigger("input.fs");
 ///////////////////////////////////////////
 // Fuzzy search on Titles (Go)
 ///////////////////////////////////////////
-$fuzzy_search.on("keydown", function (e) {
+$fuzzy_search.on("keydown.fs", function (e) {
 	e.stopPropagation();
 	switch (e.keyCode) {
 	case 27: // ESC=27
@@ -5605,21 +5710,20 @@ $choose_lang.on("click", function (e) {
 });
 $choose_timezone.on("click", function (e) {
 	if ($choose_timezone.hasClass("enabled")) {
-		$choose_timezone.removeClass("enabled");
 		$choose_timezone_list.hide();
+		$search_timezone_container.hide();
+		$out_focus.focus();
+		$choose_timezone.removeClass("enabled");
 	}
 	else {
-		$choose_timezone.addClass("enabled");
 		$choose_timezone_list.show();
+		$search_timezone_container.show();
+		$search_timezone_container.css({zIndex:++m.zIndex});
+		$search_timezone.focus();
+		$choose_timezone.addClass("enabled");
 	}
 });
-$timezone_trs=$("table.timezone").find("tr");
-for (let i=1;i<$timezone_trs.length;i++) {
-	console.log($timezone_trs.eq(i).text().replace(/[\s\r\n\t]+/g," "));
-}
-// $choose_timezone_input.on("keydown.fs", function (e) {
 
-// });
 
 
 ////////////////////////////////////////////////
@@ -5660,7 +5764,19 @@ $document.ready(function () {
 		$input_val[0].value=points;
 		$input_val.trigger("keyup");
 	}
+
 	m.args={};
+	if (vars.timezone) {
+		let timezone=m.args.timezone=vars.timezone;
+		m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
+		m.setTimezone(null, timezone);
+		$search_timezone[0].value=timezone;
+	}
+	else if (m.docCookies.hasItem("timezone")) {
+		m.setTimezone(null, m.docCookies.getItem("timezone"));
+		$search_timezone[0].value=timezone;
+	}
+
 	if (vars.PRL||vars.PRR) {
 		if (vars.PRL) {
 			let val=vars.PRL.val;
