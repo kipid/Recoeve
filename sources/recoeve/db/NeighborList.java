@@ -166,12 +166,14 @@ public class NeighborList {
 				for (int i=0;i<arrayArray.size();i++) {
 					arrayMap.add(new HashMap<String, String>());
 					int jMax=arrayArray.get(i).size();
-					if (jMax>firstColSize) { jMax=firstColSize; }
-					for (int j=0;j<jMax;j++) {
+					for (int j=0;j<firstColSize;j++) {
 						String key=COLNAMES[j];
-						// if (key!=null) {
+						if (j>=jMax) {
+							arrayMap.get(i).putIfAbsent(key, "");
+						}
+						else {
 							arrayMap.get(i).putIfAbsent(key, arrayArray.get(i).get(j));
-						// }
+						}
 					}
 				}
 			}
