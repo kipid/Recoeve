@@ -67,13 +67,9 @@
 
 cloud 서비스로 수익구조 만들어도 좋을듯? 아니면 연예인 영상이나 사진 구매해야만 reco 되도록, 그리고 링크에 대한 auth 도 구매해야만 제대로된 response 를 받도록 만들어서 수익구조 내도 될듯.
 
-cat=RSS-- 하위 cat 들에서는 feedly 처럼 새로운 글 알려주는 식으로 짜볼까나? (이건 좀 미뤄도 될듯? 합병을 생각해도 되는거고 feedly 랑.)
-
 수정 눌렀을때 (cats 하나 뺌) new-reco 가 안닫힘. Reco to mine 할때 창이 그냥 닫힘. 이미 있는 reco on the URI 일 경우에만 그러는거 같기도 하고...
 
 각 cat 마다 comment 달 수 있는 widget 넣을까? 다른 서버 돌려서 iframe 으로 가져오기? DISQUS 좀 베껴야 할듯? 이건 유료 구독 판매할수도 있을듯?
-
-최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기? Reco revision history 도 같이 보이도록... path=/statistics[/mode/multireco]?cat=...#encodeURIComponent(UserIndex-recoURI) 정도의 path 로...
 
 UriList sort : 정렬 가능하도록. Reco title 순서대로 정렬, Reco 한 날짜순으로 정렬. Point/점수 순으로 정렬 등. 오름차순/내림차순 가능하게. (이건 위 아래 화살표 표시해서 버튼 하나로 toggle 되도록 하면 될듯? 구글 스프레드시트 참고.) 정렬 후 Save this order 도 있어야 할듯? path=<code>/changeOrders/UriList</code> 로 구현.<br>
 UriList 순서 바꿀때 Set of URIs 가 같은지 한번은 체크 해야함.<br>
@@ -107,30 +103,16 @@ Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 
 
 검색 google 에서 "site:recoeve.net/user/kipid 검색어" 식으로 검색 대신 해주는거 input 만들어 주기.
 
-edit 이후에 $reco.replaceWith($newReco) 가 되어서 그런지, G/T 에서 scroll to reco 가 안먹힘.
-
-로그인 안한채로 User page 에 왔다면 Account 부분에 Log-in 버튼 만들기. 여기서 back path 가 필요할듯? 오 back path= empty 해놓으면, 로그인 이후 다른 페이지로 이동 안하게 해놓으면 될듯? 이러면 reco/do 같은거에서도 바로 로그인 시키고 하던일 계속 하게 가능할래나?
-
-Account 부분 만들기. styles (bright/dark, font-size, font-family, line-height, and so on), shortkeys, settings, log-out 등이 들어가야 함. UI 만들어야. (우선 대충 #head 에 집어넣음. log-out, shortkeys 만.)
-
-Server 의 time zone : Universial 로 어느 지역에서 서비스하던지 일치하는 시간 같도록. 그리고 javascript 단에서 time lap 은 바꾸도록?
-
 Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
 
 여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까? 이게 mode/multireco 일듯.<br>
 여러 URI 한꺼번에 stat 볼 수 있도록, path=/recostat?uri=... 에서 uri 에 /user/kipid?cat=SomeCat 들어오면 이 SomeCat 에 있는 URI 들 모두의 stat 을 정리해서 보여주면 좋을듯? 너무 많은 URI 를 한꺼번에 통계내면 서버 부하가 클테니 첫 100개 정도의 stat 만?
 
-탈퇴하는 페이지 만들기.
-
-점수 분포도 보여주기?
-
 Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. 첫 recoer 에게 reco 할거 같은 URI 받으면 그때 crawler 가 동작해서 title, desc 등 긁어오면 될듯? (Crawling 하는 법을 아직 몰라서... 배우는데 좀 걸릴듯?)
 
-Cats 바꾸는거 간단하게 여러개 동시에 쉽게 할 수 있도록 디자인하기.
 
 
-
-### 보류
+### 보류 (qhfb)
 
 
 
@@ -151,6 +133,10 @@ desc, cmt SEE (Super Easy Edit) 처럼 처리되도록 만들자. 그리고 subl
 #### 정말 필요한지 안한지 헷갈려서 보류한 것들.
 
 
+
+최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기? Reco revision history 도 같이 보이도록... path=/statistics[/mode/multireco]?cat=...#encodeURIComponent(UserIndex-recoURI) 정도의 path 로...
+
+cat=RSS-- 하위 cat 들에서는 feedly 처럼 새로운 글 알려주는 식으로 짜볼까나? (이건 좀 미뤄도 될듯? 합병을 생각해도 되는거고 feedly 랑.)
 
 Reco 하루에 수십 수백개씩 작성하는 사람들에게는 Machine Learning training 시키도록 간단한 작업을 주자. 티스토리 글쓰기 할때, "로봇이 아닙니다." 나오고 그림 고르게 시키는 것처럼. (그런데 많이 써주면 내 입장에선 좋은거 아닐까나? 그냥 맘껏 쓰게 놔둘까?)
 
@@ -274,6 +260,22 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+탈퇴하는 페이지 만들기. (우선 메일로만 요청 받아서 수동처리 하기. 보낸 메일과 user_email 같은지 꼭 확인 후 지우자.)
+
+점수 분포도 보여주기?
+
+Cats 바꾸는거 간단하게 여러개 동시에 쉽게 할 수 있도록 디자인하기.
+
+edit 이후에 $reco.replaceWith($newReco) 가 되어서 그런지, G/T 에서 scroll to reco 가 안먹힘.
+
+Account 부분 만들기. styles (bright/dark, font-size, font-family, line-height, and so on), shortkeys, settings, log-out 등이 들어가야 함. UI 만들어야. (우선 대충 #head 에 집어넣음. log-out, shortkeys 만.)
+
+Server 의 time zone : Universial 로 어느 지역에서 서비스하던지 일치하는 시간 같도록. 그리고 javascript 단에서 time lap 은 바꾸도록?
+
+Session iter 틀리면 log-out 시키기. (Log-out 시키고는 있는데 왜이리 로그인이 자주 풀리지? ㅡ,.ㅡ;;; 유저 경험을 안좋게 만드는거 같은데... 빨리 고쳐야. sessionPassed 일 때만 server 단의 session, auth 지우기로 해결.)
+
+로그인 안한채로 User page 에 왔다면 Account 부분에 Log-in 버튼 만들기. 여기서 back path 가 필요할듯? 오 back path= empty 해놓으면, 로그인 이후 다른 페이지로 이동 안하게 해놓으면 될듯? 이러면 reco/do 같은거에서도 바로 로그인 시키고 하던일 계속 하게 가능할래나?
+
 Timezone 설정해 놓을 수 있게. Language 옆에 버튼 넣어놓으면 될듯. 이것도 Fuzzy Search 도 같이 동작하도록 디자인 하자.
 
 .bright 에서 G/T/C/M 에서 글자 검정인거 해결하기.
@@ -304,8 +306,6 @@ HTML 단에서도 multireco with recoByOnlyStars 로 reco 했을때, catUriList 
 cat 한번에 다 바꾸는 것도 구현할까? 한개씩 옮기면 sim 계산을 여러번에 걸쳐서 해야 하는데, 한방에 한가지 cat 의 UriList 의 cat 만 전체적으로 바꾸면 Neighbor user_from cat_from user_to cat_to 에서 cat_from, cat_to 만 바꾸면 되긴 하는데... 이건 좀 미루긴 하자. 당장 필요한건 아닌듯. (Multireco mode 에서 점수 바꾸면 한번에 하나씩 바꿀수는 있음.)
 
 Reco 이후 $new_reco 가 안닫혀서 setInterval 해놨었는데... 바꿔야 할듯? 왜 안닫혔던거지?
-
-Session iter 틀리면 log-out 시키기. (Log-out 시키고는 있는데 왜이리 로그인이 자주 풀리지? ㅡ,.ㅡ;;; 유저 경험을 안좋게 만드는거 같은데... 빨리 고쳐야.)
 
 Multireco mode 에서 cats 를 replace 할지 add 할지 선택 가능하도록 2가지 옵션만 있으면 될듯? 기본적으로 add 가 되도록 만들어 놓자. multireco cats 가 정해지면, 특정 URI 의 reco 가 이 cats 를 기존 cats 에서 더 포함하도록. (보류. 그냥 덮어 씌우는 걸로 통일.)
 
