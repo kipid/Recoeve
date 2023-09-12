@@ -3771,9 +3771,13 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
 					neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
 					if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
+						neighborI.i=n;
 						neighbors[n]=neighborI;
 						sorted[n]=n;
 						n++;
+						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+					}
+					else if (neighborI.nSim>neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`].nSim) {
 						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
 					}
 				}
