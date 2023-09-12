@@ -86,8 +86,8 @@ public static byte[] unhex(String s) {
 	return data;
 }
 
-public static String longToHexString(long user_i) {
-	return String.format("%016X", user_i);
+public static String longToHexString(long user_me) {
+	return String.format("%016X", user_me);
 }
 
 private static final MysqlConnectionPoolDataSource ds;
@@ -691,10 +691,10 @@ public boolean changePwd(BodyData inputs, String ip, Timestamp tNow) {
 }
 public boolean verifyUser(String cookieI, String id, String veriKey, String ip, Timestamp tNow) {
 	boolean done=false;
-	long user_i=Long.parseLong(cookieI, 16);
+	long user_me=Long.parseLong(cookieI, 16);
 	try {
 		con.setAutoCommit(false);
-		ResultSet user=findUserByIndex(user_i);
+		ResultSet user=findUserByIndex(user_me);
 		if ( user.next()
 			&&user.getString("id").equals(id)
 			&&user.getString("veriKey").equals(veriKey)
@@ -709,7 +709,7 @@ public boolean verifyUser(String cookieI, String id, String veriKey, String ip, 
 			updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 			user.updateString("veriKey", null);
 			user.updateRow();
-			logsCommit(user_i, tNow, ip, "vrf", true); // verified.
+			logsCommit(user_me, tNow, ip, "vrf", true); // verified.
 			done=true;
 		}
 	}
@@ -719,7 +719,7 @@ public boolean verifyUser(String cookieI, String id, String veriKey, String ip, 
 	try {
 		if (!done) {
 			con.rollback();
-			logsCommit(user_i, tNow, ip, "vrf", false); // not verified.
+			logsCommit(user_me, tNow, ip, "vrf", false); // not verified.
 		}
 		con.commit();
 	}
@@ -914,9 +914,9 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 	try {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
-			long user_i=user.getLong("i");
-			if ((cookie.get("I")==null&&cookie.get("rmbdI")==null)||user_i!=my_i) {
-				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_i).toString()));
+			long user_me=user.getLong("i");
+			if ((cookie.get("I")==null&&cookie.get("rmbdI")==null)||user_me!=my_i) {
+				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_me).toString()));
 			}
 		}
 	}
@@ -960,12 +960,12 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 }
 public String sessionIter(Cookie cookie, Timestamp tNow) {
 	if (cookie.get("I")!=null) {
-		long user_i=Long.parseLong(cookie.get("I"), 16);
+		long user_me=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
 		if (tCreate!=null) {
 			if (checkTimeDiff(tNow, tCreate, hoursSSN*60*60)) {
 				try {
-					pstmtSession.setLong(1, user_i);
+					pstmtSession.setLong(1, user_me);
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
 					if (rs.next()) {
@@ -985,13 +985,13 @@ public String sessionIter(Cookie cookie, Timestamp tNow) {
 }
 public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 	if (cookie.get("I")!=null) {
-		long user_i=Long.parseLong(cookie.get("I"), 16);
+		long user_me=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
 		String session=cookie.get("SSN");
 		if (tCreate!=null&&session!=null) {
 			if (checkTimeDiff(tNow, tCreate, hoursSSN*60*60)) {
 				try {
-					pstmtSession.setLong(1, user_i);
+					pstmtSession.setLong(1, user_me);
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
 					if ( rs.next()
@@ -1012,7 +1012,7 @@ public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 }
 public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, String userAgent, Timestamp tNow) {
 	boolean done=false;
-	long user_i=1; // anonymous
+	long user_me=1; // anonymous
 	List<io.vertx.core.http.Cookie> setCookie=null;
 	try {
 		con.setAutoCommit(false);
@@ -1026,7 +1026,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 				break;
 		}
 		if ( user!=null&&user.next() ) {
-			user_i=user.getLong("i");
+			user_me=user.getLong("i");
 			byte[] salt=user.getBytes("pwd_salt");
 			int iter=user.getInt("pwd_iteration");
 			if ( Arrays.equals(
@@ -1037,7 +1037,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 				byte[] session=randomBytes(32);
 				byte[] saltSSN=randomBytes(32);
 				// int ssnC=user.getInt("ssnC");
-				setCookie=createUserSession(user_i, tNow, session, saltSSN, ip, userAgent);
+				setCookie=createUserSession(user_me, tNow, session, saltSSN, ip, userAgent);
 				// user.updateInt("ssnC", ssnC+1);
 				String logDesc="Not remembered";
 				String rmb=inputs.get(1, "rememberMe");
@@ -1045,21 +1045,21 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 					byte[] rmbdAuth=randomBytes(32);
 					byte[] rmbdToken=randomBytes(32);
 					// int rmbdC=user.getInt("rmbdC");
-					setCookie.addAll(createUserRemember(user_i, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
+					setCookie.addAll(createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
 					// user.updateInt("rmbdC", rmbdC+1);
 					logDesc="Remembered";
 				}
 				user.updateRow();
-				logsCommit(user_i, tNow, ip, "lgi", true, logDesc); // log-in success
+				logsCommit(user_me, tNow, ip, "lgi", true, logDesc); // log-in success
 			}
 			else {
 				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
 				System.out.println(hex(user.getBytes("pwd")));
-				logsCommit(user_i, tNow, ip, "lgi", false); // log-in fail
+				logsCommit(user_me, tNow, ip, "lgi", false); // log-in fail
 			}
 		}
 		else {
-			logsCommit(user_i, tNow, ip, "lgi", false); // user_i=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
+			logsCommit(user_me, tNow, ip, "lgi", false); // user_me=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
 		}
 		done=true;
 	}
@@ -1093,7 +1093,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "").setSecure(true)
 			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
 	if (cookie.get("rmbdI")!=null) {
-	long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
+	long user_me=Long.parseLong(cookie.get("rmbdI"), 16);
 	String rmbdT=cookie.get("rmbdT").replaceAll("_", " ");
 	String rmbdAuth=cookie.get("rmbdAuth");
 	String rmbdToken=cookie.get("rmbdToken");
@@ -1102,7 +1102,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	String sH=inputs.get(1, "sH");
 	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
 	try {
-		pstmtCheckUserRemember.setLong(1, user_i);
+		pstmtCheckUserRemember.setLong(1, user_me);
 		pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
 		String errMsg="Error: ";
@@ -1118,7 +1118,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				&&rs.getString("userAgent").equals(userAgent) ) {
 				byte[] session=randomBytes(32);
 				byte[] token=randomBytes(32);
-				ResultSet user=findUserByIndex(user_i);
+				ResultSet user=findUserByIndex(user_me);
 				if (user!=null&&user.next()) {
 					setCookie=createUserSession(user.getLong("i"), tNow, session, token, ip, userAgent);
 					byte[] newToken=randomBytes(32);
@@ -1127,7 +1127,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken)).setSecure(true)
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 					System.out.println("Remembered.");
-					logsCommit(user_i, tNow, ip, "rmb", true);
+					logsCommit(user_me, tNow, ip, "rmb", true);
 					rs.updateRow();
 					return setCookie;
 				}
@@ -1164,18 +1164,18 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 			errMsg+="Not remembered.";
 		}
 		System.out.println(errMsg);
-		logsCommit(user_i, tNow, ip, "rmb", false, errMsg);
+		logsCommit(user_me, tNow, ip, "rmb", false, errMsg);
 	}
 	catch (SQLException e) {
 		err(e);
 	}}}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> createUserSession(long user_i, Timestamp tNow, byte[] session, byte[] salt, String ip, String userAgent)
+public List<io.vertx.core.http.Cookie> createUserSession(long user_me, Timestamp tNow, byte[] session, byte[] salt, String ip, String userAgent)
 	throws SQLException {
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	try {
-		pstmtCreateUserSession.setLong(1, user_i);
+		pstmtCreateUserSession.setLong(1, user_me);
 		pstmtCreateUserSession.setTimestamp(2, tNow);
 		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3, 11), Encrypt.iterSSNFull)));
 		pstmtCreateUserSession.setBytes(4, salt);
@@ -1183,7 +1183,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, Timestamp 
 		pstmtCreateUserSession.setString(6, userAgent);
 		String now_=tNow.toString().replaceAll("\\s", "_");
 		if (pstmtCreateUserSession.executeUpdate()>0) {
-			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_i, 16)).setSecure(true)
+			setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_me, 16)).setSecure(true)
 					.setPath("/").setHttpOnly(true).setMaxAge(secondsSSN));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_).setSecure(true)
 					.setPath("/").setMaxAge(secondsSSN-30));
@@ -1200,9 +1200,9 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_i, Timestamp 
 	}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, Timestamp tNow, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip, String userAgent)
+public List<io.vertx.core.http.Cookie> createUserRemember(long user_me, Timestamp tNow, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip, String userAgent)
 	throws SQLException {
-	pstmtCreateUserRemember.setLong(1, user_i);
+	pstmtCreateUserRemember.setLong(1, user_me);
 	pstmtCreateUserRemember.setTimestamp(2, tNow);
 	pstmtCreateUserRemember.setBytes(3, rmbdAuth);
 	pstmtCreateUserRemember.setBytes(4, rmbdToken);
@@ -1215,7 +1215,7 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, Timestamp
 	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
 	if (pstmtCreateUserRemember.executeUpdate()>0) {
 		// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
-		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_i, 16)).setSecure(true)
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_me, 16)).setSecure(true)
 				.setPath("/").setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_).setSecure(true)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
@@ -1238,11 +1238,11 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_i, Timestamp
 }
 public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	if (cookie.get("I")!=null) {
-		long user_i=Long.parseLong(cookie.get("I"), 16);
+		long user_me=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
 		if (tCreate!=null) {
 			try {
-				pstmtSession.setLong(1, user_i);
+				pstmtSession.setLong(1, user_me);
 				pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 				ResultSet rs=pstmtSession.executeQuery();
 				if (rs.next()) {
@@ -1255,11 +1255,11 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 		}
 	}
 	if (cookie.get("rmbdI")!=null) {
-		long user_i=Long.parseLong(cookie.get("rmbdI"), 16);
+		long user_me=Long.parseLong(cookie.get("rmbdI"), 16);
 		String rmbdT=cookie.get("rmbdT").replaceAll("_", " ");
 		if(rmbdT!=null) {
 			try {
-				pstmtCheckUserRemember.setLong(1, user_i);
+				pstmtCheckUserRemember.setLong(1, user_me);
 				pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 				ResultSet rs=pstmtCheckUserRemember.executeQuery();
 				if (rs.next()) {
@@ -1293,12 +1293,12 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	return setCookie;
 }
 
-public boolean logs(long user_i, Timestamp tNow, String ip, String log, boolean success) throws SQLException {
-	return this.logs(user_i, tNow, ip, log, success, null);
+public boolean logs(long user_me, Timestamp tNow, String ip, String log, boolean success) throws SQLException {
+	return this.logs(user_me, tNow, ip, log, success, null);
 }
-public boolean logs(long user_i, Timestamp tNow, String ip, String log, boolean success, String desc)
+public boolean logs(long user_me, Timestamp tNow, String ip, String log, boolean success, String desc)
 	throws SQLException {
-	pstmtLog.setLong(1, user_i);
+	pstmtLog.setLong(1, user_me);
 	pstmtLog.setTimestamp(2, tNow);
 	pstmtLog.setString(3, ip);
 	pstmtLog.setString(4, log);
@@ -1306,20 +1306,20 @@ public boolean logs(long user_i, Timestamp tNow, String ip, String log, boolean 
 	pstmtLog.setString(6, desc);
 	return (pstmtLog.executeUpdate()>0);
 }
-public boolean logsCommit(long user_i, Timestamp tNow, String ip, String log, boolean success) {
+public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success) {
 	try {
 		con.setAutoCommit(false);
-		return logs(user_i, tNow, ip, log, success, null);
+		return logs(user_me, tNow, ip, log, success, null);
 	}
 	catch (SQLException e) {
 		err(e);
 	}
 	return false;
 }
-public boolean logsCommit(long user_i, Timestamp tNow, String ip, String log, boolean success, String desc) {
+public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success, String desc) {
 	try {
 		con.setAutoCommit(false);
-		return logs(user_i, tNow, ip, log, success, desc);
+		return logs(user_me, tNow, ip, log, success, desc);
 	}
 	catch (SQLException e) {
 		err(e);
@@ -1352,51 +1352,53 @@ public String getStrOfNeighbors(String user_id_from, String cat_from) {
 			long user_from=user.getLong("i");
 			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\ttUpdate";
 			NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
-			System.out.println("neighborListFrom:\n"+neighborListFrom.toString());
+			System.out.println("neighborListFrom:\n"+neighborListFrom.toStringRowMap());
 			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
-			System.out.println("neighborListTo:\n"+neighborListTo.toString());
+			System.out.println("neighborListTo:\n"+neighborListTo.toStringRowMap());
 			NeighborList neighborList=null;
-			if (neighborListFrom.toString().trim().isEmpty()||neighborListTo.toString().trim().isEmpty()) {
-				neighborList=new NeighborList((neighborListFrom.toString()+"\n"+neighborListTo.toString()).trim());
-			}
-			else {
-				neighborList=new NeighborList(neighborListFrom.toString()+"\n"+neighborListTo.toString());
-			}
+			neighborList=new NeighborList(neighborListFrom.toStringRowMap()+"\n"+neighborListTo.toStringRowMap());
 			int jSize=neighborList.getRowSize();
 			for (int j=0;j<jSize;j++) {
-				ResultSet neighbor=getNeighbor(user_from, cat_from, Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1));
+				long user_to=Long.parseLong(neighborList.get(j, 0), 16);
+				String cat_to=neighborList.get(j, 1);
+				ResultSet neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
 				if (neighbor.next()) {
 					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
-					if (rS_user_from.next()) {
-						res+="\n"+rS_user_from.getString("id");
+					if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
+						res+="\n"+rS_user_from.getString("id")
+							+"\t"+Long.toString(neighbor.getLong("user_from"), 16)
+							+"\t"+neighbor.getString("cat_from")
+							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
+							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
+							+"\t"+neighbor.getString("tUpdate");
 					}
 					else {
-						res+="\n";
+						delNeighbor(user_from, cat_from, user_to, cat_to);
+						neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
 					}
-					res+="\t"+Long.toString(neighbor.getLong("user_from"), 16)
-						+"\t"+neighbor.getString("cat_from")
-						+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
-						+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-						+"\t"+neighbor.getString("tUpdate");
 				}
-				else {
-					neighbor=getNeighbor(Long.parseLong(neighborList.get(j, 0), 16), neighborList.get(j, 1), user_from, cat_from);
-					if (neighbor.next()) {
-						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
-						if (rS_user_from.next()) {
-							res+="\n"+rS_user_from.getString("id");
-						}
-						else {
-							res+="\n";
-						}
-						res+="\t"+Long.toString(neighbor.getLong("user_i"), 16)
+				neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+				if (neighbor.next()) {
+					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
+					if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
+						res+="\n"+rS_user_from.getString("id")
+							+"\t"+Long.toString(neighbor.getLong("user_i"), 16)
 							+"\t"+neighbor.getString("cat_i")
 							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
 							+"\t"+neighbor.getString("tUpdate");
 					}
+					else {
+						delNeighbor(user_to, cat_to, user_from, cat_from);
+						neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
+					}
+				}
+				else {
+					neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
 				}
 			}
+			// TODO: neighborListFrom update, neighborListTo delete.
+			// neighborList
 		}
 	}
 	catch (SQLException e) {
@@ -1441,12 +1443,12 @@ public String getRecos(String user_id, StrArray uris) {
 	try {
 		ResultSet user=findUserById(user_id);
 		if (user.next()) {
-			long user_i=user.getLong("i");
+			long user_me=user.getLong("i");
 			res+="uri\tcats\ttitle\tdesc\tcmt\tval\ttFirst\ttLast";
 			int size=uris.getRowSize();
 			for (int i=1;i<size;i++) {
 				String uri=uris.get(i, "uri");
-				ResultSet reco=getReco(user_i, uri);
+				ResultSet reco=getReco(user_me, uri);
 				if (reco.next()) {
 					res+="\n"+uri
 						+"\t"+StrArray.enclose(reco.getString("cats"))
@@ -1465,8 +1467,8 @@ public String getRecos(String user_id, StrArray uris) {
 	}
 	return res;
 }
-public ResultSet getReco(long user_i, String uri) throws SQLException {
-	pstmtGetReco.setLong(1, user_i);
+public ResultSet getReco(long user_me, String uri) throws SQLException {
+	pstmtGetReco.setLong(1, user_me);
 	pstmtGetReco.setString(2, uri);
 	return pstmtGetReco.executeQuery();
 }
@@ -1516,10 +1518,10 @@ private static long[] convertByteArrayToLongArray(byte[] byteData) {
 	return longArray;
 }
 // pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`, `N`) VALUES (?, ?, ?, ?, 1);");
-public boolean putRecoRecentests(String uri, long user_i, Timestamp tNow) {
+public boolean putRecoRecentests(String uri, long user_me, Timestamp tNow) {
 	try {
 		pstmtPutRecentests.setString(1, uri);
-		pstmtPutRecentests.setBytes(2, longToBytes(user_i));
+		pstmtPutRecentests.setBytes(2, longToBytes(user_me));
 		pstmtPutRecentests.setTimestamp(3, tNow);
 		pstmtPutRecentests.setTimestamp(4, tNow);
 		return pstmtPutRecentests.executeUpdate()>0;
@@ -1532,19 +1534,19 @@ public boolean putRecoRecentests(String uri, long user_i, Timestamp tNow) {
 public static final int N_MAX=8000;
 public static final int N_PADDING=1600;
 public static final int N_REMAIN=N_MAX-N_PADDING;
-public ResultSet putAndGetRecoRecentests(String uri, long user_i, Timestamp tNow) throws SQLException {
+public ResultSet putAndGetRecoRecentests(String uri, long user_me, Timestamp tNow) throws SQLException {
 	pstmtGetRecoStat.setString(1, uri);
 	ResultSet rs=pstmtGetRecoStat.executeQuery();
 	if (rs.next()) {
 		boolean equalityOfRecentest=false;
 		byte[] recentests=rs.getBytes("recentests");
-		byte[] user_i_bytes=longToBytes(user_i);
+		byte[] user_me_bytes=longToBytes(user_me);
 		int rsL=0;
 		try {
 			if (recentests!=null) {
 				rsL=recentests.length;
 				if (rsL>=8) {
-					equalityOfRecentest=Arrays.equals(Arrays.copyOfRange(recentests, rsL-8, rsL), user_i_bytes);
+					equalityOfRecentest=Arrays.equals(Arrays.copyOfRange(recentests, rsL-8, rsL), user_me_bytes);
 					if (equalityOfRecentest) {
 						return rs;
 					}
@@ -1557,7 +1559,7 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, Timestamp tNow
 					}
 					int offset=rsL-recentestsStart;
 					for (int i=0;i<8;i++) {
-						recentestsCut[offset+i]=user_i_bytes[i];
+						recentestsCut[offset+i]=user_me_bytes[i];
 					}
 					rs.updateBytes("recentests", recentestsCut);
 				}
@@ -1565,7 +1567,7 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, Timestamp tNow
 					byte[] recentestsNew=Arrays.copyOf(recentests, rsL+8);
 					int offset=rsL;
 					for (int i=0;i<8;i++) {
-						recentestsNew[offset+i]=user_i_bytes[i];
+						recentestsNew[offset+i]=user_me_bytes[i];
 					}
 					rs.updateBytes("recentests", recentestsNew);
 				}
@@ -1579,7 +1581,7 @@ public ResultSet putAndGetRecoRecentests(String uri, long user_i, Timestamp tNow
 		return rs;
 	}
 	else {
-		putRecoRecentests(uri, user_i, tNow);
+		putRecoRecentests(uri, user_me, tNow);
 		rs=pstmtGetRecoStat.executeQuery();
 		if (rs.next()) {
 			return rs;
@@ -1596,10 +1598,10 @@ public ResultSet getRecoStat(String uri) throws SQLException {
 	throw new SQLException("No RecoStat on the uri.");
 }
 
-public void updateRecoStat(long user_i, String uri, Points pts, Timestamp tNow, int increment) throws SQLException {
+public void updateRecoStat(long user_me, String uri, Points pts, Timestamp tNow, int increment) throws SQLException {
 	ResultSet recoStat=null;
 	if (increment>0) {
-		recoStat=putAndGetRecoRecentests(uri, user_i, tNow);
+		recoStat=putAndGetRecoRecentests(uri, user_me, tNow);
 	}
 	else {
 		recoStat=getRecoStat(uri);
@@ -1620,9 +1622,9 @@ public void updateRecoStat(long user_i, String uri, Points pts, Timestamp tNow, 
 	recoStat.updateRow();
 }
 public static final int SORT_AND_CUT_PER=8;
-public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat_from, long sumSim, int nSim, Timestamp tNow) throws SQLException {
-	pstmtPutNeighbor.setLong(1, user_i);
-	pstmtPutNeighbor.setString(2, cat_i);
+public boolean putNeighbor(long user_to, String cat_to, long user_from, String cat_from, long sumSim, int nSim, Timestamp tNow) throws SQLException {
+	pstmtPutNeighbor.setLong(1, user_to);
+	pstmtPutNeighbor.setString(2, cat_to);
 	pstmtPutNeighbor.setLong(3, user_from);
 	pstmtPutNeighbor.setString(4, cat_from);
 	pstmtPutNeighbor.setLong(5, sumSim);
@@ -1630,16 +1632,16 @@ public boolean putNeighbor(long user_i, String cat_i, long user_from, String cat
 	pstmtPutNeighbor.setTimestamp(7, tNow);
 	return pstmtPutNeighbor.executeUpdate()==1;
 }
-public ResultSet getNeighbor(long user_i, String cat_i, long user_from, String cat_from) throws SQLException {
-	pstmtGetNeighbor.setLong(1, user_i);
-	pstmtGetNeighbor.setString(2, cat_i);
+public ResultSet getNeighbor(long user_to, String cat_to, long user_from, String cat_from) throws SQLException {
+	pstmtGetNeighbor.setLong(1, user_to);
+	pstmtGetNeighbor.setString(2, cat_to);
 	pstmtGetNeighbor.setLong(3, user_from);
 	pstmtGetNeighbor.setString(4, cat_from);
 	return pstmtGetNeighbor.executeQuery();
 }
-public boolean delNeighbor(long user_i, String cat_i, long user_from, String cat_from) throws SQLException {
-	pstmtDelNeighbor.setLong(1, user_i);
-	pstmtDelNeighbor.setString(2, cat_i);
+public boolean delNeighbor(long user_to, String cat_to, long user_from, String cat_from) throws SQLException {
+	pstmtDelNeighbor.setLong(1, user_to);
+	pstmtDelNeighbor.setString(2, cat_to);
 	pstmtDelNeighbor.setLong(3, user_from);
 	pstmtDelNeighbor.setString(4, cat_from);
 	return pstmtDelNeighbor.executeUpdate()>0;
@@ -1647,7 +1649,7 @@ public boolean delNeighbor(long user_i, String cat_i, long user_from, String cat
 public boolean putNeighborListFrom(long user_from, String cat_from, NeighborList userCatList, Timestamp tNow) throws SQLException {
 	pstmtPutNeighborListFrom.setLong(1, user_from);
 	pstmtPutNeighborListFrom.setString(2, cat_from);
-	pstmtPutNeighborListFrom.setString(3, userCatList.toString());
+	pstmtPutNeighborListFrom.setString(3, userCatList.toStringRowMap());
 	pstmtPutNeighborListFrom.setTimestamp(4, tNow);
 	return pstmtPutNeighborListFrom.executeUpdate()==1;
 }
@@ -1680,7 +1682,7 @@ public ResultSet getRSNeighborListFrom(long user_from, String cat_from) throws S
 }
 // pstmtUpdateNeighborListFrom=con.prepareStatement("UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
 public boolean updateNeighborListFrom(long user_from, String cat_from, NeighborList userCatList, Timestamp tNow) throws SQLException {
-	pstmtUpdateNeighborListFrom.setString(1, userCatList.toString());
+	pstmtUpdateNeighborListFrom.setString(1, userCatList.toStringRowMap());
 	pstmtUpdateNeighborListFrom.setTimestamp(2, tNow);
 	pstmtUpdateNeighborListFrom.setLong(3, user_from);
 	pstmtUpdateNeighborListFrom.setString(4, cat_from);
@@ -1689,7 +1691,7 @@ public boolean updateNeighborListFrom(long user_from, String cat_from, NeighborL
 public boolean putNeighborListTo(long user_to, String cat_to, NeighborList userCatList, Timestamp tNow) throws SQLException {
 	pstmtPutNeighborListTo.setLong(1, user_to);
 	pstmtPutNeighborListTo.setString(2, cat_to);
-	pstmtPutNeighborListTo.setString(3, userCatList.toString());
+	pstmtPutNeighborListTo.setString(3, userCatList.toStringRowMap());
 	pstmtPutNeighborListTo.setTimestamp(4, tNow);
 	return pstmtPutNeighborListTo.executeUpdate()==1;
 }
@@ -1721,7 +1723,7 @@ public ResultSet getRSNeighborListTo(long user_to, String cat_to) throws SQLExce
 	return null;
 }
 public boolean updateNeighborListTo(long user_to, String cat_to, NeighborList userCatList, Timestamp tNow) throws SQLException {
-	pstmtUpdateNeighborListTo.setString(1, userCatList.toString());
+	pstmtUpdateNeighborListTo.setString(1, userCatList.toStringRowMap());
 	pstmtUpdateNeighborListTo.setTimestamp(2, tNow);
 	pstmtUpdateNeighborListTo.setLong(3, user_to);
 	pstmtUpdateNeighborListTo.setString(4, cat_to);
@@ -1734,6 +1736,56 @@ public long[] getRecentests(String uri) throws SQLException {
 		return convertByteArrayToLongArray(recentests);
 	}
 	return new long[0];
+}
+public void putNeighborWithScanAll(long user_to, String cat_to, long user_from, String cat_from, Timestamp tNow) throws SQLException {
+	ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+	if (neighbor.next()) {
+		delNeighbor(user_to, cat_to, user_from, cat_from);
+	}
+
+	UriList uriList_from=getUriList(user_from, cat_from);
+	Set<String> uriListSet_from=uriList_from.setOfURIs();
+	UriList uriList_to=getUriList(user_to, cat_to);
+	Set<String> uriListSet_to=uriList_to.setOfURIs();
+	Similarity sim=new Similarity();
+	if (uriListSet_from.size()<uriListSet_to.size()) { // 좀 더 작은 uriListSet 으로부터 matching calculation.
+		for (String uri_from: uriListSet_from) {
+		if (uriListSet_to.contains(uri_from)) {
+			ResultSet reco_from=getReco(user_from, uri_from);
+			if (reco_from.next()) {
+				Points pts_from=new Points(reco_from.getString("val"));
+				if (pts_from.valid()) {
+					ResultSet reco_to_corresponding=getReco(user_to, uri_from);
+					if (reco_to_corresponding.next()) {
+						Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
+						if (pts_to_corresponding.valid()) {
+							sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
+						}
+					}
+				}
+			}
+		}}
+	}
+	else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
+		for (String uri_to: uriListSet_to) {
+		// System.out.println("uri_to:"+uri_to);
+		if (uriListSet_from.contains(uri_to)) {
+			ResultSet reco_to_corresponding=getReco(user_to, uri_to);
+			if (reco_to_corresponding.next()) {
+				Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
+				if (pts_to_corresponding.valid()) {
+					ResultSet reco_from=getReco(user_from, uri_to);
+					if (reco_from.next()) {
+						Points pts_from=new Points(reco_from.getString("val"));
+						if (pts_from.valid()) {
+							sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
+						}
+					}
+				}
+			}
+		}}
+	}
+	putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, tNow);
 }
 public static final int RECENTESTS_N=200;
 public static final int N_SET=400;
@@ -1778,7 +1830,37 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 						}
 					}
 					else {
-						// TODO: when neighbor does not exist.
+						neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
+						if (neighbor.next()) {
+							ResultSet reco_to=getReco(user_to, uri);
+							if (reco_to.next()) {
+								Points pts_to=new Points(reco_to.getString("val"));
+								if (pts_to.valid()) {
+									Categories cats_to=new Categories(reco_to.getString("cats"));
+									if (cats_to.contains(cat_to)) {
+										Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
+										sim.simpleAdd(Similarity.sim(pts, pts_to));
+										System.out.println("\n\n1sim update/simpleAdd\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
+										neighbor.updateLong("sumSim", sim.sumSim);
+										neighbor.updateInt("nSim", sim.nSim);
+										neighbor.updateTimestamp("tUpdate", tNow);
+										neighbor.updateRow();
+									}
+								}
+							}
+						}
+						else { // TODO: tScanAll
+							ResultSet reco_to=getReco(user_to, uri);
+							if (reco_to.next()) {
+								Points pts_to=new Points(reco_to.getString("val"));
+								if (pts_to.valid()) {
+									Categories cats_to=new Categories(reco_to.getString("cats"));
+									if (cats_to.contains(cat_to)) {
+										putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
+									}
+								}
+							}
+						}
 					}
 				}
 				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
@@ -1805,6 +1887,30 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 									neighbor.updateRow();
 								}
 							}
+						}
+					}
+					else {
+						neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+						if (neighbor.next()) {
+							ResultSet reco_to=getReco(user_to, uri);
+							if (reco_to.next()) {
+								Points pts_to=new Points(reco_to.getString("val"));
+								if (pts_to.valid()) {
+									Categories cats_to=new Categories(reco_to.getString("cats"));
+									if (cats_to.contains(cat_to)) {
+										Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
+										sim.simpleAdd(Similarity.sim(pts, pts_to));
+										System.out.println("\n\n1sim update/simpleAdd\nuser_to:"+user_to+", cat_to:"+cat_to+", user_from:"+user_from+", cat_from:"+cat_from);
+										neighbor.updateLong("sumSim", sim.sumSim);
+										neighbor.updateInt("nSim", sim.nSim);
+										neighbor.updateTimestamp("tUpdate", tNow);
+										neighbor.updateRow();
+									}
+								}
+							}
+						}
+						else { // TODO: tScanAll
+
 						}
 					}
 				}
@@ -1836,7 +1942,6 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								Set<String> uriListSet_to=uriList_to.setOfURIs();
 								if (uriListSet_from.size()<uriListSet_to.size()) { // 좀 더 작은 uriListSet 으로부터 matching calculation.
 									for (String uri_from: uriListSet_from) {
-									// System.out.println("uri_from:"+uri_from);
 									if (uriListSet_to.contains(uri_from)) {
 										ResultSet reco_from=getReco(user_from, uri_from);
 										if (reco_from.next()) {
@@ -1872,18 +1977,16 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 										}
 									}}
 								}
-								neighborListFrom.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
+								neighborListFrom.mapArray.putIfAbsent(user_to+"\t"+cat_to, new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
 								putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, tNow);
 								NeighborList neighborListTo=getNeighborListTo(user_to, cat_to);
 								ResultSet rSneighborListTo=getRSNeighborListTo(user_to, cat_to);
-								neighborListTo.arrayArray.add(new ArrayList<String>(Arrays.asList(Long.toString(user_from, 16), cat_from)));
+								neighborListTo.mapArray.putIfAbsent(Long.toString(user_from, 16)+"\t"+cat_from, new ArrayList<String>(Arrays.asList(Long.toString(user_from, 16), cat_from)));
 								if (rSneighborListTo==null) {
 									putNeighborListTo(user_to, cat_to, neighborListTo, tNow);
 								}
 								else {
-									// rSneighborListTo.close();
-									// updateNeighborListTo(user_to, cat_to, neighborListTo, tNow);
-									rSneighborListTo.updateString("userCatList", neighborListTo.toString());
+									rSneighborListTo.updateString("userCatList", neighborListTo.toStringRowMap());
 									rSneighborListTo.updateTimestamp("tUpdate", tNow);
 									rSneighborListTo.updateInt("nUpdate", rSneighborListTo.getInt("nUpdate")+1);
 									rSneighborListTo.updateRow();
@@ -1893,17 +1996,15 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 					}
 				}
 				if (rSneighborListFrom==null) {
-					System.out.println("neighborListFrom.toString() (null)\n"+neighborListFrom.toString());
+					System.out.println("neighborListFrom.toString() (null)\n"+neighborListFrom.toStringRowMap());
 					putNeighborListFrom(user_from, cat_from, neighborListFrom, tNow);
 				}
 				else {
-					System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toString());
-					// pstmtUpdateNeighborListFrom=con.prepareStatement("UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
-					rSneighborListFrom.updateString("userCatList", neighborListFrom.toString());
+					System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toStringRowMap());
+					rSneighborListFrom.updateString("userCatList", neighborListFrom.toStringRowMap());
 					rSneighborListFrom.updateTimestamp("tUpdate", tNow);
 					rSneighborListFrom.updateInt("nUpdate", rSneighborListFrom.getInt("nUpdate")+1);
 					rSneighborListFrom.updateRow();
-					// updateNeighborListFrom(user_from, cat_from, neighborListFrom, tNow);
 				}
 			}
 		}
@@ -1968,8 +2069,8 @@ public String getStringCatList(String user_id) {
 	try {
 		ResultSet user=findUserById(user_id);
 		if (user.next()) {
-			long user_i=user.getLong("i");
-			res=getStringCatList(user_i);
+			long user_me=user.getLong("i");
+			res=getStringCatList(user_me);
 		}
 	}
 	catch (SQLException e) {
@@ -1977,10 +2078,10 @@ public String getStringCatList(String user_id) {
 	}
 	return res;
 }
-public String getStringCatList(long user_i) {
+public String getStringCatList(long user_me) {
 	String res="";
 	try {
-		CatList catL=getCatList(user_i);
+		CatList catL=getCatList(user_me);
 		res=catL.toString();
 	}
 	catch (SQLException e) {
@@ -1988,15 +2089,15 @@ public String getStringCatList(long user_i) {
 	}
 	return res;
 }
-public CatList getCatList(long user_i) throws SQLException {
-	CatList catL=getCatList(user_i, CatList.defListName);
+public CatList getCatList(long user_me) throws SQLException {
+	CatList catL=getCatList(user_me, CatList.defListName);
 	if (catL==null) {
 		catL=new CatList();
 	}
 	return catL;
 }
-public CatList getCatList(long user_i, String listName) throws SQLException {
-	pstmtGetCatList.setLong(1, user_i);
+public CatList getCatList(long user_me, String listName) throws SQLException {
+	pstmtGetCatList.setLong(1, user_me);
 	pstmtGetCatList.setString(2, listName);
 	ResultSet rs=pstmtGetCatList.executeQuery();
 	if (rs.next()) {
@@ -2004,20 +2105,20 @@ public CatList getCatList(long user_i, String listName) throws SQLException {
 	}
 	return new CatList();
 }
-public boolean putCatList(long user_i, CatList catL) throws SQLException {
-	return putCatList(user_i, CatList.defListName, catL);
+public boolean putCatList(long user_me, CatList catL) throws SQLException {
+	return putCatList(user_me, CatList.defListName, catL);
 }
-public boolean putCatList(long user_i, String listName, CatList catL) throws SQLException {
-	pstmtPutCatList.setLong(1, user_i);
+public boolean putCatList(long user_me, String listName, CatList catL) throws SQLException {
+	pstmtPutCatList.setLong(1, user_me);
 	pstmtPutCatList.setString(2, listName);
 	pstmtPutCatList.setString(3, catL.toString());
 	return pstmtPutCatList.executeUpdate()==1;
 }
-public boolean updateCatList(long user_i, CatList catL) throws SQLException {
-	return updateCatList(user_i, CatList.defListName, catL);
+public boolean updateCatList(long user_me, CatList catL) throws SQLException {
+	return updateCatList(user_me, CatList.defListName, catL);
 }
-public boolean updateCatList(long user_i, String listName, CatList catL) throws SQLException {
-	pstmtGetCatList.setLong(1, user_i);
+public boolean updateCatList(long user_me, String listName, CatList catL) throws SQLException {
+	pstmtGetCatList.setLong(1, user_me);
 	pstmtGetCatList.setString(2, listName);
 	ResultSet rs=pstmtGetCatList.executeQuery();
 	if (rs.next()) {
@@ -2026,15 +2127,15 @@ public boolean updateCatList(long user_i, String listName, CatList catL) throws 
 		return true;
 	}
 	else {
-		return putCatList(user_i, listName, catL);
+		return putCatList(user_me, listName, catL);
 	}
 }
-public boolean changeOrdersCatList(long user_i, String newFullCats) {
-	return changeOrdersCatList(user_i, CatList.defListName, newFullCats);
+public boolean changeOrdersCatList(long user_me, String newFullCats) {
+	return changeOrdersCatList(user_me, CatList.defListName, newFullCats);
 }
-public boolean changeOrdersCatList(long user_i, String listName, String newFullCats) {
+public boolean changeOrdersCatList(long user_me, String listName, String newFullCats) {
 	try {
-		pstmtGetCatList.setLong(1, user_i);
+		pstmtGetCatList.setLong(1, user_me);
 		pstmtGetCatList.setString(2, listName);
 		ResultSet rs=pstmtGetCatList.executeQuery();
 		if (rs.next()) {
@@ -2070,14 +2171,14 @@ public String getStringCatUriList(String user_id, StrArray catList) {
 	}
 	return res;
 }
-public String getStringCatUriList(long user_i, StrArray catList) {
+public String getStringCatUriList(long user_me, StrArray catList) {
 	String res="";
 	try {
 		res+="cat\tUriList\tcutP\terr";
 		int size=catList.getRowSize();
 		for (int i=1;i<size;i++) {
 			String cat=catList.get(i, "cat");
-			res+="\n"+cat+"\t"+getUriList(user_i, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
+			res+="\n"+cat+"\t"+getUriList(user_me, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 		}
 	}
 	catch (SQLException e) {
@@ -2088,8 +2189,8 @@ public String getStringCatUriList(long user_i, StrArray catList) {
 	}
 	return res;
 }
-public UriList getUriList(long user_i, String cat) throws SQLException {
-	pstmtGetUriList.setLong(1, user_i);
+public UriList getUriList(long user_me, String cat) throws SQLException {
+	pstmtGetUriList.setLong(1, user_me);
 	pstmtGetUriList.setString(2, cat);
 	ResultSet rs=pstmtGetUriList.executeQuery();
 	if (rs.next()) {
@@ -2097,15 +2198,15 @@ public UriList getUriList(long user_i, String cat) throws SQLException {
 	}
 	return new UriList();
 }
-public boolean putUriList(long user_i, String cat, UriList uriL) throws SQLException {
-	pstmtPutUriList.setLong(1, user_i);
+public boolean putUriList(long user_me, String cat, UriList uriL) throws SQLException {
+	pstmtPutUriList.setLong(1, user_me);
 	pstmtPutUriList.setString(2, cat);
 	pstmtPutUriList.setString(3, uriL.toString());
 	return pstmtPutUriList.executeUpdate()==1;
 }
-public void putCatsUriToList(long user_i, Categories cats, String uri, CatList catL) throws SQLException {
+public void putCatsUriToList(long user_me, Categories cats, String uri, CatList catL) throws SQLException {
 	for (String cat: cats.setOfCats) {
-		pstmtGetUriList.setLong(1, user_i);
+		pstmtGetUriList.setLong(1, user_me);
 		pstmtGetUriList.setString(2, cat);
 		ResultSet rs=pstmtGetUriList.executeQuery();
 		if (rs.next()) {
@@ -2118,14 +2219,14 @@ public void putCatsUriToList(long user_i, Categories cats, String uri, CatList c
 			catL.putCat(cat);
 			UriList uriL=new UriList();
 			uriL.putURI(uri);
-			putUriList(user_i, cat, uriL);
+			putUriList(user_me, cat, uriL);
 		}
 	}
 }
-public void deleteCatsUriFromList(long user_i, Categories cats, String uri, CatList catL) throws SQLException {
+public void deleteCatsUriFromList(long user_me, Categories cats, String uri, CatList catL) throws SQLException {
 	// Reco 를 지우거나, Reco cats 를 바꿀때 빈 cat 들은 자동으로 지우도록. 지워졌을 경우 superCat 들도 비었는지 check 하면서 지워나가야 함.
 	for (String cat: cats.setOfCats) {
-		pstmtGetUriList.setLong(1, user_i);
+		pstmtGetUriList.setLong(1, user_me);
 		pstmtGetUriList.setString(2, cat);
 		ResultSet rs=pstmtGetUriList.executeQuery();
 		if (rs.next()) {
@@ -2133,7 +2234,7 @@ public void deleteCatsUriFromList(long user_i, Categories cats, String uri, CatL
 			uriL.deleteURI(uri);
 			if (uriL.isEmpty()) {
 				rs.deleteRow();
-				while (cat!=null&&getUriList(user_i, cat).isEmpty()&&catL.deleteCat(cat)) {
+				while (cat!=null&&getUriList(user_me, cat).isEmpty()&&catL.deleteCat(cat)) {
 					cat=Categories.getSuperCat(cat);
 				}
 			}
@@ -2144,14 +2245,14 @@ public void deleteCatsUriFromList(long user_i, Categories cats, String uri, CatL
 		}
 	}
 }
-public void catsChangedOnUri(long user_i, Categories oldCats, Categories newCats, String uri, CatList catL, boolean equalityOfValuesOfPts, Points oldPts, Points newPts, Timestamp tNow) throws SQLException {
+public void catsChangedOnUri(long user_me, Categories oldCats, Categories newCats, String uri, CatList catL, boolean equalityOfValuesOfPts, Points oldPts, Points newPts, Timestamp tNow) throws SQLException {
 	for (String oldCat: oldCats.setOfCats) {
 		if (newCats.setOfCats.remove(oldCat)) {
 			oldCats.setOfCats.remove(oldCat);
 		}
 	}
-	deleteCatsUriFromList(user_i, oldCats, uri, catL);
-	putCatsUriToList(user_i, newCats, uri, catL);
+	deleteCatsUriFromList(user_me, oldCats, uri, catL);
+	putCatsUriToList(user_me, newCats, uri, catL);
 	updateDefCat(uri, oldCats, -1);
 	updateDefCat(uri, newCats, 1);
 }
@@ -2514,12 +2615,12 @@ public String recoDefs(StrArray uris) {
 	}
 	return res;
 }
-public String recoDo(long user_i, String recoStr, Timestamp tNow) {
+public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 	String res="result\ttLast";
 	StrArray sa=new StrArray(recoStr.trim());
 	try {
 		con.setAutoCommit(false);
-		CatList catL=getCatList(user_i);
+		CatList catL=getCatList(user_me);
 		for (int i=1;i<sa.getRowSize();i++) {
 			res+="\n";
 			String doStr=sa.get(i, "do");
@@ -2532,7 +2633,7 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 			Points pts=new Points(sa.get(i, "val"));
 			String previousCatListStr=catL.fullCats;
 			try {
-				ResultSet reco=getReco(user_i, uri);
+				ResultSet reco=getReco(user_me, uri);
 				boolean hasReco=reco.next();
 				String toDo="nothing";
 				switch (doStr) {
@@ -2580,12 +2681,12 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 				System.out.println("toDo:"+toDo);
 				switch (toDo) {
 				case "put":
-					pstmtPutReco.setLong(1, user_i);
+					pstmtPutReco.setLong(1, user_me);
 					pstmtPutReco.setString(2, uri);
 					pstmtPutReco.setTimestamp(3, tNow);
 					pstmtPutReco.setTimestamp(4, tNow);
 					pstmtPutReco.setString(5, cats.toString());
-						putCatsUriToList(user_i, cats, uri, catL); // Update `CatList` and `UriList`
+						putCatsUriToList(user_me, cats, uri, catL); // Update `CatList` and `UriList`
 						updateDefCat(uri, cats, 1);
 					pstmtPutReco.setString(6, title); // Null can be put?
 						updateDefTitle(uri, title, 1);
@@ -2599,8 +2700,8 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 						pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 					}
 					pstmtPutReco.executeUpdate();
-					updateRecoStat(user_i, uri, pts, tNow, 1);
-						updateNeighbors(user_i, uri, cats, pts, catL, tNow, 1);
+					updateRecoStat(user_me, uri, pts, tNow, 1);
+						updateNeighbors(user_me, uri, cats, pts, catL, tNow, 1);
 					res+="recoed";
 					break;
 				case "change":
@@ -2629,7 +2730,7 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 						if (!equalityOfStringOfCats) {
 							reco.updateString("cats", cats.toString());
 							if (!equalityOfCats) {
-								catsChangedOnUri(user_i, oldCats, cats, uri, catL, equalityOfValuesOfPts, oldPts, pts, tNow);
+								catsChangedOnUri(user_me, oldCats, cats, uri, catL, equalityOfValuesOfPts, oldPts, pts, tNow);
 							}
 						}
 						if (!equalityOfTitle) {
@@ -2655,10 +2756,10 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 						}
 						reco.updateRow();
 						if (!equalityOfValuesOfPts||!equalityOfCats) {
-							updateRecoStat(user_i, uri, oldPts, tNow, -1);
-							updateNeighbors(user_i, uri, oldCats, oldPts, catL, tNow, -1);
-							updateRecoStat(user_i, uri, pts, tNow, 1);
-							updateNeighbors(user_i, uri, cats, pts, catL, tNow, 1);
+							updateRecoStat(user_me, uri, oldPts, tNow, -1);
+							updateNeighbors(user_me, uri, oldCats, oldPts, catL, tNow, -1);
+							updateRecoStat(user_me, uri, pts, tNow, 1);
+							updateNeighbors(user_me, uri, cats, pts, catL, tNow, 1);
 						}
 						res+="changed.";
 						if (!equalityOfCats) {
@@ -2672,19 +2773,19 @@ public String recoDo(long user_i, String recoStr, Timestamp tNow) {
 					oldDesc=reco.getString("desc");
 					oldPts=new Points(reco.getString("val")); // can be null.
 					System.out.println("deleting "+reco.getString("uri"));
-					deleteCatsUriFromList(user_i, oldCats, uri, catL);
+					deleteCatsUriFromList(user_me, oldCats, uri, catL);
 					reco.deleteRow();
 					updateDefCat(uri, oldCats, -1);
 					updateDefTitle(uri, oldTitle, -1);
 					updateDefDesc(uri, oldDesc, -1);
-					updateRecoStat(user_i, uri, oldPts, tNow, -1);
-					updateNeighbors(user_i, uri, oldCats, oldPts, catL, tNow, -1);
+					updateRecoStat(user_me, uri, oldPts, tNow, -1);
+					updateNeighbors(user_me, uri, oldCats, oldPts, catL, tNow, -1);
 					res+="deleted";
 					break;
 				case "nothing": default:
 					break;
 				}
-				updateCatList(user_i, catL);
+				updateCatList(user_me, catL);
 				con.commit();
 			}
 			catch (SQLException e) {
@@ -2711,7 +2812,7 @@ public void updateDefsAll(Timestamp tNow) {
 		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs=pstmtGetAllRecos.executeQuery();
 		while (rs.next()) {
-			long user_i=rs.getLong("user_i");
+			long user_me=rs.getLong("user_i");
 			String uri=rs.getString("uri");
 			String title=rs.getString("title");
 			String catsStr=rs.getString("cats");
@@ -2721,7 +2822,7 @@ public void updateDefsAll(Timestamp tNow) {
 			updateDefCat(uri, cats, 1);
 			updateDefTitle(uri, title, 1);
 			updateDefDesc(uri, desc, 1);
-			updateRecoStat(user_i, uri, pts, tNow, 1);
+			updateRecoStat(user_me, uri, pts, tNow, 1);
 		}
 	}
 	catch (SQLException e) {
