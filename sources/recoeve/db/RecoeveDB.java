@@ -597,6 +597,7 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 			if (user.next()) {
 				NaverMail.sendVeriKey(email, id, veriKey);
 				updateUserClass(0, 1); // 0: Not verified yet
+				updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 				logsCommit(user.getLong("i"), tNow, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
 				done=true;
 				con.commit();
@@ -623,17 +624,36 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	}
 	return done;
 }
-private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
+private boolean deleteUser(String userEmail, Timestamp tNow) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
 	boolean done=false;
 	ResultSet user=null;
 	try {
 		con.setAutoCommit(false);
 		ResultSet rsUser=findUserByEmail(userEmail);
-		pstmtDeleteUser.setString(1, userEmail);
-		updateUserClass(rsUser.getInt("class"), -1);
-		pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
-		pstmtDeleteUserCatList.executeUpdate();
-		done=pstmtDeleteUser.executeUpdate()>0;
+		if (rsUser.next()) {
+			long user_me=rsUser.getLong("user_i");
+			updateUserClass(rsUser.getInt("class"), -1);
+			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
+			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
+			pstmtDeleteUserCatList.executeUpdate();
+			PreparedStatement pstmtGetAllRecosUser=con.prepareStatement("SELECT * FROM `Recos` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			pstmtGetAllRecosUser.setLong(1, user_me);
+			ResultSet rs=pstmtGetAllRecosUser.executeQuery();
+			while (rs.next()) {
+				String uri=rs.getString("uri");
+				String title=rs.getString("title");
+				String catsStr=rs.getString("cats");
+				Categories cats=new Categories(catsStr);
+				String desc=rs.getString("desc");
+				Points pts=new Points(rs.getString("val"));
+				updateDefCat(uri, cats, -1);
+				updateDefTitle(uri, title, -1);
+				updateDefDesc(uri, desc, -1);
+				updateRecoStat(user_me, uri, pts, tNow, -1);
+			}
+			pstmtDeleteUser.setString(1, userEmail);
+			done=pstmtDeleteUser.executeUpdate()>0;
+		}
 	}
 	catch (SQLException e) {
 		err(e);
@@ -708,7 +728,6 @@ public boolean verifyUser(String cookieI, String id, String veriKey, String ip, 
 			updateUserClass(6, 1); // 6: Initial
 			updateUserClass(-2, 1); // -2: Total number of accounts
 			String email=user.getString("email");
-			updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 			user.updateString("veriKey", null);
 			user.updateRow();
 			logsCommit(user_me, tNow, ip, "vrf", true); // verified.
@@ -1238,11 +1257,11 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_me, Timestam
 	}
 	return setCookie;
 }
-public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
+public List<io.vertx.core.http.Cookie> logout(Cookie cookie, boolean sessionPassed) {
 	if (cookie.get("I")!=null) {
 		long user_me=Long.parseLong(cookie.get("I"), 16);
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
-		if (tCreate!=null) {
+		if (tCreate!=null&&sessionPassed) {
 			try {
 				pstmtSession.setLong(1, user_me);
 				pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
@@ -1259,7 +1278,7 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie) {
 	if (cookie.get("rmbdI")!=null) {
 		long user_me=Long.parseLong(cookie.get("rmbdI"), 16);
 		String rmbdT=cookie.get("rmbdT").replaceAll("_", " ");
-		if(rmbdT!=null) {
+		if(rmbdT!=null&&sessionPassed) {
 			try {
 				pstmtCheckUserRemember.setLong(1, user_me);
 				pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));

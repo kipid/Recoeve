@@ -608,13 +608,22 @@ public static void main(String... args) {
 					}
 					break;
 				case "log-out": // path=/account/log-out
-					List<io.vertx.core.http.Cookie> setDelCookie=PrintLog.db.logout(PrintLog.cookie);
+					List<io.vertx.core.http.Cookie> setDelCookie=PrintLog.db.logout(PrintLog.cookie, PrintLog.sessionPassed);
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie) {
 						PrintLog.req.response().addCookie(singleCookie);
 					}
 					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					PrintLog.req.response().end(FileMap.get("log-out.html", PrintLog.lang), ENCODING);
 					System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
+					break;
+				case "log-out.do": // path=/account/log-out.do
+					List<io.vertx.core.http.Cookie> setDelCookie1=PrintLog.db.logout(PrintLog.cookie, PrintLog.sessionPassed);
+					for (io.vertx.core.http.Cookie singleCookie: setDelCookie1) {
+						PrintLog.req.response().addCookie(singleCookie);
+					}
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+					PrintLog.req.response().end("Log-out : All log-in | session in server are deleted.", ENCODING);
+					System.out.println("Sended log-out msg.");
 					break;
 				case "check": // path=/account/check
 					if (PrintLog.method==HttpMethod.POST) {

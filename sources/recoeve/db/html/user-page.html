@@ -3232,7 +3232,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 					msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
 				}
 				$result.html("[--Changing your points.--]"+msg);
-				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms});
+				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			}
 		}
 		else {
@@ -3253,7 +3253,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value));
 			let strRecoDo=strHeads+"\n"+strContents;
 			$result.html("[--Recoing to your recoeve.net.--]");
-			m.rmb_me(m.reco_do, {strRecoDo, uri, $result});
+			m.rmb_me(m.reco_do, {strRecoDo, uri, $result}, true);
 		}
 	}
 };
@@ -4905,7 +4905,7 @@ $button_reco.on("click", function (e) {
 
 		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
-		m.rmb_me(m.reco_do, {strRecoDo, uri});
+		m.rmb_me(m.reco_do, {strRecoDo, uri}, true);
 	}
 	else {
 		$error.html(errorMsg);
@@ -5006,7 +5006,7 @@ $button_edit.on("click", function (e) {
 
 		if (changed) {
 			$error.html("Being changed.");
-			m.rmb_me(m.reco_change_do, {strHeads, strContents, cats, r, uri, title, desc, cmt, val});
+			m.rmb_me(m.reco_change_do, {strHeads, strContents, cats, r, uri, title, desc, cmt, val}, true);
 		}
 		else {
 			$error.html("You have made no change.");
@@ -5069,7 +5069,7 @@ $button_del.on("click", function (e) {
 	if (uri.length!==0&&!!r) {
 		let strHeads="do"+"\t"+"uri";
 		let strContents="delete"+"\t"+m.encloseStr(uri);
-		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri});
+		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri}, true);
 	}
 	else {
 		let errorMsg="";
