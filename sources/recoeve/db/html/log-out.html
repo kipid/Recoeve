@@ -32,6 +32,7 @@ m.logOutDo=function (args, err) {
 		$("#err").html(msg);
 	}).done(function (resp) {
 		console.log(resp);
+		$("#a-log-in").trigger("click");
 		window.location.href=args.href;
 		window.open(args.href);
 	});
