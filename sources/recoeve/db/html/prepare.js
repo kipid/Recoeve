@@ -685,7 +685,7 @@ m.rmb_me=function (callback, args, saveNewRecoInputs) {
 		});
 	}
 	else {
-		callback(args);
+		callback(args, "Error: No rmbdI cookie.");
 	}
 };
 
