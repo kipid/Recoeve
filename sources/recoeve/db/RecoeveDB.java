@@ -159,6 +159,7 @@ private PreparedStatement pstmtGetNeighborListFrom;
 private PreparedStatement pstmtPutNeighborListTo;
 private PreparedStatement pstmtUpdateNeighborListTo;
 private PreparedStatement pstmtGetNeighborListTo;
+private PreparedStatement pstmtDelNeighborListTo;
 
 private PreparedStatement pstmtPutRecoStat;
 private PreparedStatement pstmtGetRecoStat;
@@ -188,7 +189,7 @@ public RecoeveDB() {
 
 		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
-		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?");
+		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
@@ -232,6 +233,7 @@ public RecoeveDB() {
 		pstmtPutNeighborListTo=con.prepareStatement("INSERT INTO `NeighborListTo` (`user_to`, `cat_to`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
 		pstmtUpdateNeighborListTo=con.prepareStatement("UPDATE `NeighborListTo` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_to`=? and `cat_to`=?;");
 		pstmtGetNeighborListTo=con.prepareStatement("SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtDelNeighborListTo=con.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
 
 		pstmtPutRecoStat=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?, ?, 1);");
 		pstmtGetRecoStat=con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -1344,61 +1346,69 @@ public String cutNeighbors(String user_id_from, long user_me, String toBeCut) {
 	}
 	return "not";
 }
-public String getStrOfNeighbors(String user_id_from, String cat_from) {
+public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp tNow) {
 	String res="";
 	try {
 		ResultSet user=findUserById(user_id_from);
 		if (user.next()) {
 			long user_from=user.getLong("i");
 			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\ttUpdate";
-			NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
+			NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from, true);
 			System.out.println("neighborListFrom:\n"+neighborListFrom.toStringRowMap());
-			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
+			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from, true);
 			System.out.println("neighborListTo:\n"+neighborListTo.toStringRowMap());
 			NeighborList neighborList=null;
-			neighborList=new NeighborList(neighborListFrom.toStringRowMap()+"\n"+neighborListTo.toStringRowMap());
+			neighborList=new NeighborList(neighborListFrom.toStringRowMap()+"\n"+neighborListTo.toStringRowMap(), false, true);
 			int jSize=neighborList.getRowSize();
 			for (int j=0;j<jSize;j++) {
-				long user_to=Long.parseLong(neighborList.get(j, 0), 16);
 				String cat_to=neighborList.get(j, 1);
-				ResultSet neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
-				if (neighbor.next()) {
-					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
-					if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
-						res+="\n"+rS_user_from.getString("id")
-							+"\t"+Long.toString(neighbor.getLong("user_from"), 16)
-							+"\t"+neighbor.getString("cat_from")
-							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
-							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-							+"\t"+neighbor.getString("tUpdate");
+				if (!neighborList.get(j, 0).isEmpty()) {
+					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
+					ResultSet neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
+					if (neighbor.next()) {
+						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
+						if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
+							res+="\n"+rS_user_from.getString("id")
+								+"\t"+Long.toString(neighbor.getLong("user_from"), 16)
+								+"\t"+neighbor.getString("cat_from")
+								+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
+								+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
+								+"\t"+neighbor.getString("tUpdate");
+						}
+						else {
+							delNeighbor(user_from, cat_from, user_to, cat_to);
+							neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
+						}
 					}
-					else {
-						delNeighbor(user_from, cat_from, user_to, cat_to);
-						neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
-					}
-				}
-				neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
-				if (neighbor.next()) {
-					ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
-					if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
-						res+="\n"+rS_user_from.getString("id")
-							+"\t"+Long.toString(neighbor.getLong("user_i"), 16)
-							+"\t"+neighbor.getString("cat_i")
-							+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
-							+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-							+"\t"+neighbor.getString("tUpdate");
-					}
-					else {
-						delNeighbor(user_to, cat_to, user_from, cat_from);
-						neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
+					neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+					if (neighbor.next()) {
+						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_i"));
+						if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
+							res+="\n"+rS_user_from.getString("id")
+								+"\t"+Long.toString(neighbor.getLong("user_i"), 16)
+								+"\t"+neighbor.getString("cat_i")
+								+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
+								+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
+								+"\t"+neighbor.getString("tUpdate");
+						}
+						else {
+							delNeighbor(user_to, cat_to, user_from, cat_from);
+							neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
+						}
 					}
 				}
 				else {
 					neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
 				}
 			}
-			// TODO: neighborListFrom update, neighborListTo delete.
-			// neighborList
+			updateNeighborListFrom(user_from, cat_from, neighborList, tNow);
+			for (int j=0;j<jSize;j++) {
+				if (!neighborList.get(j, 0).isEmpty()) {
+					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
+					String cat_to=neighborList.get(j, 1);
+					delNeighborListTo(user_to, cat_to);
+				}
+			}
 		}
 	}
 	catch (SQLException e) {
@@ -1687,6 +1697,11 @@ public boolean updateNeighborListFrom(long user_from, String cat_from, NeighborL
 	pstmtUpdateNeighborListFrom.setLong(3, user_from);
 	pstmtUpdateNeighborListFrom.setString(4, cat_from);
 	return pstmtUpdateNeighborListFrom.executeUpdate()>0;
+}
+public boolean delNeighborListTo(long user_to, String cat_to) throws SQLException {
+	pstmtDelNeighborListTo.setLong(1, user_to);
+	pstmtDelNeighborListTo.setString(2, cat_to);
+	return pstmtDelNeighborListTo.executeUpdate()>0;
 }
 public boolean putNeighborListTo(long user_to, String cat_to, NeighborList userCatList, Timestamp tNow) throws SQLException {
 	pstmtPutNeighborListTo.setLong(1, user_to);
