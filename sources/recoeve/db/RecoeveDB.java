@@ -224,7 +224,7 @@ public RecoeveDB() {
 		pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
 		pstmtCutAndPutRecentests=con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?), ?), `N`=? WHERE `uri`=?;");
 
-		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`) VALUES (?, ?, ?, ?, ?, ?, ?);");
+		pstmtPutNeighbor=con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtGetNeighbor=con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtDelNeighbor=con.prepareStatement("DELETE FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;");
 		pstmtPutNeighborListFrom=con.prepareStatement("INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
@@ -623,7 +623,7 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	}
 	return done;
 }
-private boolean deleteUser(String userEmail) { // TODO: Delete user with 30 days suspending.
+private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
 	boolean done=false;
 	ResultSet user=null;
 	try {
@@ -1640,6 +1640,7 @@ public boolean putNeighbor(long user_to, String cat_to, long user_from, String c
 	pstmtPutNeighbor.setLong(5, sumSim);
 	pstmtPutNeighbor.setInt(6, nSim);
 	pstmtPutNeighbor.setTimestamp(7, tNow);
+	pstmtPutNeighbor.setTimestamp(8, tNow);
 	return pstmtPutNeighbor.executeUpdate()==1;
 }
 public ResultSet getNeighbor(long user_to, String cat_to, long user_from, String cat_from) throws SQLException {
@@ -1864,7 +1865,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								}
 							}
 						}
-						else { // TODO: tScanAll
+						else {
 							ResultSet reco_to=getReco(user_to, uri);
 							if (reco_to.next()) {
 								Points pts_to=new Points(reco_to.getString("val"));
@@ -1924,8 +1925,17 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								}
 							}
 						}
-						else { // TODO: tScanAll
-
+						else {
+							ResultSet reco_to=getReco(user_to, uri);
+							if (reco_to.next()) {
+								Points pts_to=new Points(reco_to.getString("val"));
+								if (pts_to.valid()) {
+									Categories cats_to=new Categories(reco_to.getString("cats"));
+									if (cats_to.contains(cat_to)) {
+										putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
+									}
+								}
+							}
 						}
 					}
 				}
