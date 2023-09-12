@@ -222,7 +222,19 @@ public class NeighborList {
 				sb.append("\n");
 			}
 		}
-		return sb.toString().trim();
+		return sb.toString();
+	}
+	public String toStringRowMap() {
+		StringBuilder sb=new StringBuilder();
+		mapArray.forEach((k, aL) -> {
+			int colSize=aL.size();
+			sb.append(enclose(aL.get(0)));
+			for (int i=1;i<colSize;i++) {
+				sb.append("\t"+enclose(aL.get(i)));
+			}
+			sb.append("\n");
+		});
+		return sb.toString();
 	}
 
 	public String toString(int[] sorted) {
