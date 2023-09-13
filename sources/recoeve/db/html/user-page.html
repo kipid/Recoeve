@@ -4363,7 +4363,7 @@ m.showMyReco=function (r) {
 		});
 	}
 };
-m.showReco=function (r, fillDefs) {
+m.fillRecoInNewReco=function (r, fillDefs) {
 	if (r.has) {
 		$input_title[0].value=r.title;
 		$input_cats[0].value=r.cats;
@@ -4381,30 +4381,28 @@ m.showReco=function (r, fillDefs) {
 			$input_desc[0].value=r.defDescs[0][0];
 		}
 	}
-	if (m.myPage) {
-		if (r.has) {
-			if (r.deleted) {
-				$button_reco.show();
-				$button_edit.hide();
-				$button_del.hide();
-				$button_back.show();
-			}
-			else {
-				$button_reco.hide();
-				$button_edit.show();
-				$button_del.show();
-				$button_back.show();
-			}
-		}
-		else {
+	if (r.has) {
+		if (r.deleted) {
 			$button_reco.show();
 			$button_edit.hide();
 			$button_del.hide();
-			$button_back.hide();
+			$button_back.show();
+		}
+		else {
+			$button_reco.hide();
+			$button_edit.show();
+			$button_del.show();
+			$button_back.show();
 		}
 	}
+	else {
+		$button_reco.show();
+		$button_edit.hide();
+		$button_del.hide();
+		$button_back.hide();
+	}
 };
-m.emptifyReco=function () {
+m.emptifyRecoInNewReco=function () {
 	$input_uri[0].value="";
 	$input_title[0].value="";
 	$input_cats[0].value="";
@@ -4576,27 +4574,27 @@ $multirecoDeleteCat.on("click", function (e) {
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	$multireco_input_cats.trigger("keyup.fs");
 });
-m.getAndShowRecoInNewReco=function (r, fillDefs) {
+m.getAndFillRecoInNewReco=function (r, fillDefs) {
 	return new Promise(function (resolve, reject) {
 		if (r.down) {
-			m.showReco(r, fillDefs);
+			m.fillRecoInNewReco(r, fillDefs);
 			resolve();
 		}
 		else {
-			let getRecosStr="uri"+"\n"+uri;
+			let getRecosStr="uri"+"\n"+r.uri;
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 				, dataType:"text"
 			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
 				m.recoDowned(uri, m.myRecos);
 				m.recoToEve(resp, m.myRecos);
-				m.showReco(r, fillDefs);
+				m.fillRecoInNewReco(r, fillDefs);
 				resolve();
 			});
 		}
 	});
 };
-m.getAndShowDefsInNewReco=function (r, fillDefs) {
+m.getAndFillDefsInNewReco=function (r, fillDefs) {
 	return new Promise(function (resolve, reject) {
 		if (r.defs) {
 			m.showDefs(r, fillDefs);
@@ -4605,7 +4603,7 @@ m.getAndShowDefsInNewReco=function (r, fillDefs) {
 		else {
 			m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
 			$.ajax({
-				type:"POST", url:"/reco/defs", data:uri
+				type:"POST", url:"/reco/defs", data:r.uri
 				, dataType:"text"
 			}).done(function (resp) {
 				let defs=m.strToJSON(resp);
@@ -4621,7 +4619,7 @@ m.getAndShowDefsInNewReco=function (r, fillDefs) {
 		}
 	});
 };
-m.getAndShowMyRecoInNewReco=function () {
+m.getAndShowMyRecoInNewReco=function (r) {
 	return new Promise(function (resolve, reject) {
 		if (m.myPage) {
 			$error.html("");
@@ -4633,7 +4631,7 @@ m.getAndShowMyRecoInNewReco=function () {
 				resolve();
 			}
 			else {
-				let getRecosStr="uri"+"\n"+uri;
+				let getRecosStr="uri"+"\n"+r.uri;
 				$.ajax({
 					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
 					, dataType:"text"
@@ -4683,10 +4681,10 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 		}
 	}
 	let r=m.myRecos[uri];
-	if (!r) { r=m.myRecos[uri]={}; }
-	await m.getAndShowRecoInNewReco(r, fillDefs);
-	await m.getAndShowDefsInNewReco(r, fillDefs);
-	await m.getAndShowMyRecoInNewReco(r);
+	if (!r) { r=m.myRecos[uri]={uri}; }
+	await m.getAndFillRecoInNewReco(r, fillDefs);
+	await m.getAndFillDefsInNewReco(r, fillDefs);
+	// await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
@@ -4824,7 +4822,7 @@ $input_val_up.on("click", function (e) {
 	$input_val.trigger("keyup");
 });
 $button_back.on("click", function (e) {
-	m.showReco(m.userRecos[$input_uri[0].value]);
+	m.fillRecoInNewReco(m.userRecos[$input_uri[0].value]);
 });
 
 m.delayedLogOut=function (msg, delayTime=27, $result) {
@@ -4871,7 +4869,7 @@ m.reco_do=function (args, err) {
 				m.refresh(cats, "recoed", args.uri);
 			}
 			setTimeout(function () {
-				m.emptifyReco();
+				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 			}, 1024);
 		}
@@ -4969,7 +4967,7 @@ m.reco_change_do=function (args, err) {
 				if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
 				if (m.myPage) { m.refresh(args.cats, "changed", args.uri); }
 				setTimeout(function () {
-					m.emptifyReco();
+					m.emptifyRecoInNewReco();
 					$button_close.trigger("click");
 				}, 1024);
 			}
