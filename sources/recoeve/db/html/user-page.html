@@ -4576,7 +4576,7 @@ $multirecoDeleteCat.on("click", function (e) {
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	$multireco_input_cats.trigger("keyup.fs");
 });
-m.getAndShowRecoInNewReco=function (r) {
+m.getAndShowRecoInNewReco=function (r, fillDefs) {
 	return new Promise(function (resolve, reject) {
 		if (r.down) {
 			m.showReco(r, fillDefs);
@@ -4596,7 +4596,7 @@ m.getAndShowRecoInNewReco=function (r) {
 		}
 	});
 };
-m.getAndShowDefsInNewReco=function (r) {
+m.getAndShowDefsInNewReco=function (r, fillDefs) {
 	return new Promise(function (resolve, reject) {
 		if (r.defs) {
 			m.showDefs(r, fillDefs);
@@ -4684,8 +4684,8 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	}
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={}; }
-	await m.getAndShowRecoInNewReco(r);
-	await m.getAndShowDefsInNewReco(r);
+	await m.getAndShowRecoInNewReco(r, fillDefs);
+	await m.getAndShowDefsInNewReco(r, fillDefs);
 	await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
