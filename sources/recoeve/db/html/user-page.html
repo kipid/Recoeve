@@ -3543,18 +3543,14 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		$input_uri[0].value=r.uri;
 		$input_uri[0].disabled=true;
 		if (uri.length!==0&&uri!==m.lastURI) {
-			if (m.myPage) {
-
-			}
-			else {
-				m.getAndShowDefsAndReco(true, fillDefs);
-			}
+			m.getAndShowDefsAndReco(true, fillDefs);
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
 			e.preventDefault();
 			$window.scrollTop(m.wST);
 		});
+		m.reNewAndReOn();
 	}
 	else {
 		$window.off("scroll.stop");
@@ -4373,14 +4369,8 @@ m.showReco=function (r, fillDefs) {
 		$input_title[0].value=r.title;
 		$input_cats[0].value=r.cats;
 		$input_desc[0].value=r.desc;
-		if (m.myPage) {
-			$input_cmt[0].value=r.cmt;
-			$input_val[0].value=r.val.str;
-		}
-		else {
-			$input_cmt[0].value="";
-			$input_val[0].value="";
-		}
+		$input_cmt[0].value=r.cmt;
+		$input_val[0].value=r.val.str;
 		$input_val.trigger("keyup");
 	}
 	else if (fillDefs) {
