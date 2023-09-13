@@ -1399,7 +1399,7 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
 					ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 					if (neighbor.next()) {
-						ResultSet rS_user_to=findUserByIndex(neighbor.getLong("user_to"));
+						ResultSet rS_user_to=findUserByIndex(neighbor.getLong("user_i"));
 						if (rS_user_to.next()&&neighbor.getLong("sumSim")!=0L) {
 							res+="\n"+rS_user_to.getString("id")
 								+"\t"+Long.toString(neighbor.getLong("user_to"), 16)
