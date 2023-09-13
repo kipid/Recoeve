@@ -1399,7 +1399,7 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
 					ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 					if (neighbor.next()) {
-						ResultSet rS_user_to=findUserByIndex(neighbor.getLong("user_i"));
+						ResultSet rS_user_to=findUserByIndex(user_to);
 						if (rS_user_to.next()&&neighbor.getLong("sumSim")!=0L) {
 							res+="\n"+rS_user_to.getString("id")
 								+"\t"+Long.toString(neighbor.getLong("user_to"), 16)
@@ -1415,9 +1415,9 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 					}
 					neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
 					if (neighbor.next()) {
-						ResultSet rS_user_from=findUserByIndex(neighbor.getLong("user_from"));
-						if (rS_user_from.next()&&neighbor.getLong("sumSim")!=0L) {
-							res+="\n"+rS_user_from.getString("id")
+						ResultSet rS_user_to=findUserByIndex(user_to);
+						if (rS_user_to.next()&&neighbor.getLong("sumSim")!=0L) {
+							res+="\n"+rS_user_to.getString("id")
 								+"\t"+Long.toString(neighbor.getLong("user_i"), 16)
 								+"\t"+neighbor.getString("cat_i")
 								+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
