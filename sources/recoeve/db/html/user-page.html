@@ -3543,7 +3543,7 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		$input_uri[0].value=r.uri;
 		$input_uri[0].disabled=true;
 		if (uri.length!==0&&uri!==m.lastURI) {
-			m.getAndShowDefsAndReco(true, fillDefs);
+			m.getAndShowDefsAndRecoInNewReco(true, fillDefs);
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
@@ -4352,8 +4352,7 @@ m.showMyReco=function (r) {
 	let $mR=$("#my-reco");
 	$mR.html( m.recoHTML(r, true, true) ); // need to be edit.
 	if (r.has) {
-		let $edit=$mR.find(".button.edit");
-		$edit.html("Edit mine");
+		let $edit=$mR.find(".button.edit").remove();
 		$edit.on("click", function (e) {
 			$input_title[0].value=r.title;
 			$input_cats[0].value=r.cats;
@@ -4413,7 +4412,8 @@ m.emptifyReco=function () {
 	$input_cmt[0].value="";
 	$input_val[0].value="";
 	$input_val.trigger("keyup");
-	m.getAndShowDefsAndReco(true);
+	m.getAndShowDefsAndRecoInNewReco(true);
+	m.reNewAndReOn();
 };
 m.showDefs=function (r) {
 	let defTitles=r.defTitles;
@@ -4576,7 +4576,78 @@ $multirecoDeleteCat.on("click", function (e) {
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	$multireco_input_cats.trigger("keyup.fs");
 });
-m.getAndShowDefsAndReco=function (noFormatURI, fillDefs) {
+m.getAndShowRecoInNewReco=function (r) {
+	return new Promise(function (resolve, reject) {
+		if (r.down) {
+			m.showReco(r, fillDefs);
+			resolve();
+		}
+		else {
+			let getRecosStr="uri"+"\n"+uri;
+			$.ajax({
+				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
+				, dataType:"text"
+			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+				m.recoDowned(uri, m.myRecos);
+				m.recoToEve(resp, m.myRecos);
+				m.showReco(r, fillDefs);
+				resolve();
+			});
+		}
+	});
+};
+m.getAndShowDefsInNewReco=function (r) {
+	return new Promise(function (resolve, reject) {
+		if (r.defs) {
+			m.showDefs(r, fillDefs);
+			resolve();
+		}
+		else {
+			m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
+			$.ajax({
+				type:"POST", url:"/reco/defs", data:uri
+				, dataType:"text"
+			}).done(function (resp) {
+				let defs=m.strToJSON(resp);
+				r.defs=true;
+				if (defs[1]) {
+					r.defCats=m.strToJSON(defs[1]["def-cats"], false);
+					r.defTitles=m.strToJSON(defs[1]["def-titles"], false);
+					r.defDescs=m.strToJSON(defs[1]["def-descs"], false);
+					m.showDefs(r);
+				}
+				resolve();
+			});
+		}
+	});
+};
+m.getAndShowMyRecoInNewReco=function () {
+	return new Promise(function (resolve, reject) {
+		if (m.myPage) {
+			$error.html("");
+		}
+		else {
+			$error.html("[--Be careful! This is not your page. On this URI, you have--]");
+			if (r.down) {
+				m.showMyReco(r);
+				resolve();
+			}
+			else {
+				let getRecosStr="uri"+"\n"+uri;
+				$.ajax({
+					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
+					, dataType:"text"
+				}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+					m.recoDowned(uri, m.userRecos);
+					m.recoToEve(resp, m.userRecos);
+					m.showMyReco(r);
+					resolve();
+				});
+			}
+		}
+	});
+};
+m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	let elem=$input_uri[0];
 	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
@@ -4611,64 +4682,11 @@ m.getAndShowDefsAndReco=function (noFormatURI, fillDefs) {
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 		}
 	}
-	$("#show-URI").html(uriRendered.html.replace(/delayed-src/gi,"src"));
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={}; }
-	if (r.down) {
-		m.showReco(r, fillDefs);
-	}
-	else {
-		let getRecosStr="uri"+"\n"+uri;
-		$.ajax({
-			type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
-			, dataType:"text"
-		}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
-			m.recoDowned(uri, m.myRecos);
-			m.recoToEve(resp, m.myRecos);
-			m.showReco(r, fillDefs);
-		});
-	}
-	if (r.defs) {
-		m.showDefs(r, fillDefs);
-	}
-	else {
-		m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
-		$.ajax({
-			type:"POST", url:"/reco/defs", data:uri
-			, dataType:"text"
-		}).done(function (resp) {
-			let defs=m.strToJSON(resp);
-			r.defs=true;
-			if (defs[1]) {
-				r.defCats=m.strToJSON(defs[1]["def-cats"], false);
-				r.defTitles=m.strToJSON(defs[1]["def-titles"], false);
-				r.defDescs=m.strToJSON(defs[1]["def-descs"], false);
-				m.showDefs(r);
-			}
-		});
-	}
-	if (m.myPage) {
-		$error.html("");
-	}
-	else {
-		$error.html("[--Be careful! This is not your page. On this URI, you have--]");
-		let r=m.userRecos[uri];
-		if (!r) { r=m.userRecos[uri]={}; }
-		if (r.down) {
-			m.showMyReco(r);
-		}
-		else {
-			let getRecosStr="uri"+"\n"+uri;
-			$.ajax({
-				type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
-				, dataType:"text"
-			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
-				m.recoDowned(uri, m.userRecos);
-				m.recoToEve(resp, m.userRecos);
-				m.showMyReco(r);
-			});
-		}
-	}
+	await m.getAndShowRecoInNewReco(r);
+	await m.getAndShowDefsInNewReco(r);
+	await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
@@ -4691,7 +4709,8 @@ $input_uri.on("input keyup cut paste click", function (e) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
-			m.getAndShowDefsAndReco(false);
+			m.getAndShowDefsAndRecoInNewReco(false);
+			m.reNewAndReOn();
 		}, 1024);
 	}
 });
