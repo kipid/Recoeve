@@ -3228,6 +3228,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				let strHeads="do\turi\tval";
 				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
 				let cats=m.formatCats($multireco_input_cats[0].value);
+				let msg="";
 				if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 					strHeads+="\tcats"
 					let cats=m.formatCats($multireco_input_cats[0].value);
