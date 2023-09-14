@@ -1412,9 +1412,6 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 								+"\t"+neighbor.getString("tScanAll");
 							nbExists=nbExists||true;
 						}
-						else {
-							delNeighbor(user_to, cat_to, user_from, cat_from);
-						}
 					}
 					neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
 					if (neighbor.next()) {
@@ -1428,9 +1425,6 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 								+"\t"+neighbor.getString("tUpdate")
 								+"\t"+neighbor.getString("tScanAll");
 							nbExists=nbExists||true;
-						}
-						else {
-							delNeighbor(user_from, cat_from, user_to, cat_to);
 						}
 					}
 					if (!nbExists) {
