@@ -318,7 +318,9 @@ public boolean timeDiff(Timestamp tNow, Timestamp tFrom) {
 		pstmtTimeDiff.setTimestamp(1, tNow);
 		pstmtTimeDiff.setTimestamp(2, tFrom);
 		ResultSet rs=pstmtTimeDiff.executeQuery();
-		return rs.getBoolean(1);
+		if (rs.next()) {
+			return rs.getBoolean(1);
+		}
 	}
 	catch (SQLException e) {
 		err(e);
