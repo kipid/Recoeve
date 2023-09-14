@@ -60,6 +60,38 @@ mysql recoeve0.1 -u root -p &lt; mydump.sql
 
 
 
+## Reset
+
+### Reset RecoStat
+
+```[.lang-sql]
+TRUNCATE `RecoStat`;
+TRUNCATE `RecoStatDefCat`;
+TRUNCATE `RecoStatDefTitle`;
+TRUNCATE `RecoStatDefDesc`;
+TRUNCATE `RecoStatDefCatSet`;
+TRUNCATE `RecoStatDefTitleSet`;
+TRUNCATE `RecoStatDefDescSet`;
+```/
+
+```[.lang-java]
+RecoeveDB db=new RecoeveDB();
+String now=db.now();
+db.updateDefsAll(Timestamp.valueOf(now));
+```/
+
+
+
+### Reset Neighbors, NeighborListFrom, NeighborListTo
+
+```[.lang-sql]
+TRUNCATE `Neighbors`;
+TRUNCATE `NeighborListFrom`;
+TRUNCATE `NeighborListTo`;
+```/
+
+
+
 ## Set-up
 
 ```[.linenums.lang-sql]
