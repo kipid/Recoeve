@@ -726,19 +726,18 @@ public static void main(String... args) {
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip, PrintLog.userAgent, PrintLog.tNow);
+			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 				PrintLog.req.response().addCookie(singleCookie);
 				System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
 			}
 			if (setCookieRMB.get(0).getName()=="I") {
 				// Success: Session cookie and New token.
-				PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				PrintLog.req.response().end("Rmbd", ENCODING);
 				System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 			}
 			else { // if (setCookieRMB.startsWith("rmbdI="))
 				// Failed: Delete rmbd cookie.
-				PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				PrintLog.req.response().end("Remembering you failed. We deleted your cookie | session. Please log-in again.", ENCODING);
 				System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 			}
