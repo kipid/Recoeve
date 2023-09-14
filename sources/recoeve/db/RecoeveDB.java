@@ -1385,7 +1385,7 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 		ResultSet user=findUserById(user_id_from);
 		if (user.next()) {
 			long user_from=user.getLong("i");
-			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\ttUpdate";
+			res="user_id\tuser_to\tcat_to\tsumSim\tnSim\ttUpdate\ttScanAll";
 			NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from, true);
 			System.out.println("neighborListFrom:\n"+neighborListFrom.toStringRowMap());
 			NeighborList neighborListTo=getNeighborListTo(user_from, cat_from, true);
@@ -1394,23 +1394,26 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 			neighborList=new NeighborList(neighborListFrom.toStringRowMap()+"\n"+neighborListTo.toStringRowMap(), false, true);
 			int jSize=neighborList.getRowSize();
 			for (int j=0;j<jSize;j++) {
+				String user_to_str=neighborList.get(j, 0);
 				String cat_to=neighborList.get(j, 1);
-				if (!neighborList.get(j, 0).isEmpty()) {
-					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
+				if (!user_to_str.isEmpty()) {
+					long user_to=Long.parseLong(user_to_str, 16);
 					ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
+					boolean nbExists=false;
 					if (neighbor.next()) {
 						ResultSet rS_user_to=findUserByIndex(user_to);
 						if (rS_user_to.next()&&neighbor.getLong("sumSim")!=0L) {
 							res+="\n"+rS_user_to.getString("id")
-								+"\t"+Long.toString(neighbor.getLong("user_i"), 16)
-								+"\t"+neighbor.getString("cat_i")
+								+"\t"+user_to_str
+								+"\t"+cat_to
 								+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 								+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-								+"\t"+neighbor.getString("tUpdate");
+								+"\t"+neighbor.getString("tUpdate")
+								+"\t"+neighbor.getString("tScanAll");
+							nbExists=nbExists||true;
 						}
 						else {
 							delNeighbor(user_to, cat_to, user_from, cat_from);
-							neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
 						}
 					}
 					neighbor=getNeighbor(user_from, cat_from, user_to, cat_to);
@@ -1418,28 +1421,32 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 						ResultSet rS_user_to=findUserByIndex(user_to);
 						if (rS_user_to.next()&&neighbor.getLong("sumSim")!=0L) {
 							res+="\n"+rS_user_to.getString("id")
-								+"\t"+Long.toString(neighbor.getLong("user_from"), 16)
-								+"\t"+neighbor.getString("cat_from")
+								+"\t"+Long.toString(user_to, 16)
+								+"\t"+cat_to
 								+"\t"+Long.toString(neighbor.getLong("sumSim"), 16)
 								+"\t"+Integer.toString(neighbor.getInt("nSim"), 16)
-								+"\t"+neighbor.getString("tUpdate");
+								+"\t"+neighbor.getString("tUpdate")
+								+"\t"+neighbor.getString("tScanAll");
+							nbExists=nbExists||true;
 						}
 						else {
 							delNeighbor(user_from, cat_from, user_to, cat_to);
-							neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
 						}
+					}
+					if (!nbExists) {
+						neighborList.mapArray.remove(user_to_str+"\t"+cat_to);
 					}
 				}
 				else {
-					neighborList.mapArray.remove(neighborList.get(j, 0)+"\t"+cat_to);
+					neighborList.mapArray.remove(user_to_str+"\t"+cat_to);
 				}
 			}
 			updateNeighborListFrom(user_from, cat_from, neighborList, tNow);
 			for (int j=0;j<jSize;j++) {
-				if (!neighborList.get(j, 0).isEmpty()) {
-					long user_to=Long.parseLong(neighborList.get(j, 0), 16);
-					String cat_to=neighborList.get(j, 1);
-					delNeighborListTo(user_to, cat_to);
+				String cat_to=neighborList.get(j, 1);
+				String user_to_str=neighborList.get(j, 0);
+				if (!user_to_str.isEmpty()) {
+					delNeighborListTo(Long.parseLong(user_to_str, 16), cat_to);
 				}
 			}
 		}
@@ -1816,17 +1823,16 @@ public void putNeighborWithScanAll(long user_to, String cat_to, long user_from, 
 	}
 	else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
 		for (String uri_to: uriListSet_to) {
-		// System.out.println("uri_to:"+uri_to);
 		if (uriListSet_from.contains(uri_to)) {
-			ResultSet reco_to_corresponding=getReco(user_to, uri_to);
-			if (reco_to_corresponding.next()) {
-				Points pts_to_corresponding=new Points(reco_to_corresponding.getString("val"));
-				if (pts_to_corresponding.valid()) {
-					ResultSet reco_from=getReco(user_from, uri_to);
-					if (reco_from.next()) {
-						Points pts_from=new Points(reco_from.getString("val"));
-						if (pts_from.valid()) {
-							sim.simpleAdd(Similarity.sim(pts_to_corresponding, pts_from));
+			ResultSet reco_to=getReco(user_to, uri_to);
+			if (reco_to.next()) {
+				Points pts_to=new Points(reco_to.getString("val"));
+				if (pts_to.valid()) {
+					ResultSet reco_from_corresponding=getReco(user_from, uri_to);
+					if (reco_from_corresponding.next()) {
+						Points pts_from_corresponding=new Points(reco_from_corresponding.getString("val"));
+						if (pts_from_corresponding.valid()) {
+							sim.simpleAdd(Similarity.sim(pts_to, pts_from_corresponding));
 						}
 					}
 				}
@@ -1847,6 +1853,11 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			Set<Long> recentestsSet=new HashSet<>(N_SET);
 			for (int i=0;i<recentests.length;i++) {
 				recentestsSet.add(recentests[i]);
+			}
+			System.out.println("recentestsSet:");
+			for (long recoer: recentestsSet) {
+				ResultSet user=findUserByIndex(recoer);
+				System.out.println(user.getString("id"));
 			}
 			recentestsSet.remove(user_from); // remove myself.
 			for (String cat_from: cats.setOfCats) {
@@ -1930,7 +1941,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 							}
 						}
 					}
-				}
+				} // 이미 계산된 neighborListFrom 에서 1개 new URI update 하기.
 				NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
 				System.out.println("neighborListTo:\n"+neighborListTo);
 				n=neighborListTo.getRowSize();
@@ -1946,10 +1957,12 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 							if (cats_to.contains(cat_to)) {
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 								boolean nbExists=neighbor.next();
+								Timestamp nbTScanAll=neighbor.getTimestamp("tScanAll");
 								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 								boolean nbRevExists=neighborRev.next();
+								Timestamp nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
 								if (nbExists&&nbRevExists) {
-									if (timeDiff(neighbor.getTimestamp("tScanAll"), neighborRev.getTimestamp("tScanAll"))) { // neighbor 가 더 최신.
+									if (timeDiff(nbTScanAll, nbRevTScanAll)) { // neighbor 가 더 최신.
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
 										Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
@@ -2012,13 +2025,13 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 							}
 						}
 					}
-				}
+				} // 이미 계산된 neighborListTo 에서 1개 new URI update 하기.
 			}
 			System.out.println("recentestsSet.size():"+recentestsSet.size());
 			for (String cat_from: cats.setOfCats) {
 				NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
 				ResultSet rSneighborListFrom=getRSNeighborListFrom(user_from, cat_from);
-				for (Long user_to: recentestsSet) { // 새로운 recentestsSet neighbor 로 추가하기.
+				for (Long user_to: recentestsSet) { // 새로운 recentestsSet 에서 new neighbor 추가하기.
 					ResultSet reco_to=getReco(user_to, uri);
 					System.out.println("uri:"+uri);
 					if (reco_to.next()) {
@@ -2027,7 +2040,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 							Categories cats_to=new Categories(reco_to.getString("cats"));
 							for (String cat_to: cats_to.setOfCats) {
 								putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
-								neighborListFrom.mapArray.putIfAbsent(user_to+"\t"+cat_to, new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
+								neighborListFrom.mapArray.putIfAbsent(Long.toString(user_to, 16)+"\t"+cat_to, new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
 								NeighborList neighborListTo=getNeighborListTo(user_to, cat_to);
 								ResultSet rSneighborListTo=getRSNeighborListTo(user_to, cat_to);
 								neighborListTo.mapArray.putIfAbsent(Long.toString(user_from, 16)+"\t"+cat_from, new ArrayList<String>(Arrays.asList(Long.toString(user_from, 16), cat_from)));
