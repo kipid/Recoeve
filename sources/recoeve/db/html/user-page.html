@@ -1016,12 +1016,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>
 			</div>
 		</div>
-		<div class="button" onclick="m.fsToRs.Preceding()">[--Preceding--]</div>
-		<div class="button" onclick="m.fsToRs.Following()">[--Following--]</div>
-		<div class="button" onclick="m.fsToRs.shuffle()">[--Shuffle--]</div>
-		<div class="button enabled" onclick="m.fsToRs.autoSkip(this)">[--Auto skip--]</div>
-		<div class="button" onclick="m.fsToRs.toggleLoop(this)">[--Loop--]</div>
-		<div class="button" onclick="m.fsToRs.toggleOneLoop(this)">[--One-loop--]</div>
+		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'Q'.charCodeAt(0)})">[--Preceding(_Q_)--]</div>
+		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'W'.charCodeAt(0)})">[--Follo_w_ing--]</div>
+		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'S'.charCodeAt(0)})">[--_S_huffle--]</div>
+		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
+		<div class="button button-loop" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">[--_L_oop--]</div>
+		<div class="button button-one-loop" onclick="$window.trigger({type:'keydown', keyCode:'P'.charCodeAt(0)})">[--One-loo_p_--]</div>
 		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--_T_ofR--]</div>
 		<div id="reco-playing"></div>
 	</div>
@@ -1567,6 +1567,9 @@ if ((!m.myPage)&&m.myId) {
 	$button_hideFK.after(`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`);
 }
 
+$button_auto_skip=$(".button-auto-skip");
+$button_loop=$(".button-loop");
+$button_one_loop=$(".button-one-loop");
 $button_Go=$(".button-Go");
 $button_ToR=$(".button-ToR");
 $button_mode=$(".button-mode");
@@ -5580,193 +5583,233 @@ m.processShortKey=function (e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
-		case 69: // E=69
-			m.toggleFK();
-			break;
-		case 65: // A=65 To my page
-			if ((!m.myPage)&&m.myId) {
-				window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
-			}
-			break;
-		case 85: // U=85 Block touch
-			$block_touch.show();
-			$block_touch_exit.show();
-			break;
-		case 67: // C=67 Go to Cat or Cats?
-			e.preventDefault();
-			if ($goto_cats_container.is(":visible")) {
-				$goto_cats_container.hide();
-				$out_focus.focus();
-				$button_goto_cats.removeClass("enabled");
-				m.gotoCats=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			else {
-				$goto_cats_container.show();
-				$goto_cats_container.css({zIndex:++m.zIndex});
-				$goto_cats.focus();
-				$button_goto_cats.addClass("enabled");
-				m.gotoCats=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			break;
-		case 71: // G=71
-			e.preventDefault();
-			if ($fuzzy_search_container.is(":visible")) {
-				$fuzzy_search_container.hide();
-				$out_focus.focus();
-				$button_Go.removeClass("enabled");
-				m.goOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			else {
-				$fuzzy_search_container.show();
-				$fuzzy_search_container.css({zIndex:++m.zIndex});
-				$fuzzy_search.focus();
-				$button_Go.addClass("enabled");
-				m.goOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			break;
-		case 84: // T=84
-			e.preventDefault();
-			if ($table_of_recos_container.is(":visible")) {
-				$table_of_recos_container.hide();
-				$out_focus.focus();
-				$button_ToR.removeClass("enabled");
-				m.ToRsOn=false;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			else {
-				$table_of_recos_container.show();
-				$table_of_recos_container.css({zIndex:++m.zIndex});
-				$table_of_recos.focus();
-				$button_ToR.addClass("enabled");
-				m.ToRsOn=true;
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			break;
-		case 66: // B=66
-			e.preventDefault();
-			$contents.removeClass("multireco");
-			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			if ($button_neighbors_mode.hasClass("enabled")) {
-				if ($playlist_container.is(":visible")) {
-					let scrollTop=$window.scrollTop();
-					let pHeight=$playlist_container.height();
-					if (m.fsToRs.fixed) {
-						$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
-					}
-					else {
-						$window.scrollTop($playlist_container.offset().top);
-					}
-				}
-				m.recoMode="";
-				$button_mode.removeClass("enabled");
-				m.showRecosOnCat();
-			}
-			else {
-				$window.scrollTop($contents.offset().top);
-				m.recoMode="neighbors";
-				$button_mode.removeClass("enabled");
-				$button_neighbors_mode.addClass("enabled");
-			}
-			m.openCat(m.currentCat);
-			break;
-		case 77: // M=77
-			e.preventDefault();
-			if ($button_multireco_mode.hasClass("enabled")) {
-				m.recoMode="";
-				$button_mode.removeClass("enabled");
-				$contents.removeClass("multireco");
-				$multireco_cats_container.hide();
-			}
-			else {
-				m.recoMode="multireco";
-				$button_mode.removeClass("enabled");
-				$button_multireco_mode.addClass("enabled");
-				$contents.addClass("multireco");
-				$multireco_cats_container.show();
-				$multireco_cats_container.css({zIndex:++m.zIndex});
-				$multireco_input_cats[0].value=m.currentCat;
-			}
-			if (!m.recosShown) {
-				$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-				m.openCat(m.currentCat);
-			}
-			else {
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
-			}
-			break;
-		case 82: // R=82
-			if (m.myPage) {
-				e.preventDefault();
-				if ($button_get_recoms.hasClass("enabled")) {
-					m.recoMode="";
-					$contents_recoms.html("");
-					$button_mode.removeClass("enabled");
-					$button_get_recoms.removeClass("enabled");
+	case 81: // Q=81 Preceding
+		m.fsToRs.playNext(1);
+		break;
+	case 87: // W=87 Following
+		m.fsToRs.playNext();
+		break;
+	case 83: // S=83 Shuffle
+		m.doFSToRs(m.fsToRs, true);
+		m.fsToRs.playNext(-1, true, true);
+		break;
+	case 75: // K=75 Auto skip
+		if ($button_auto_skip.hasClass("enabled")) {
+			$button_auto_skip.removeClass("enabled");
+			m.fsToRs.skip=false;
+		}
+		else {
+			$button_auto_skip.addClass("enabled");
+			m.fsToRs.skip=true;
+		}
+		break;
+	case 76: // L=76 Loop
+		if ($button_loop.hasClass("enabled")) {
+			$button_loop.removeClass("enabled");
+			m.fsToRs.loop=false;
+		}
+		else {
+			$button_loop.addClass("enabled");
+			m.fsToRs.loop=true;
+		}
+		break;
+	case 80: // P=80 One loop
+		if ($button_one_loop.hasClass("enabled")) {
+			$button_one_loop.removeClass("enabled");
+			m.fsToRs.oneLoop=false;
+		}
+		else {
+			$button_one_loop.addClass("enabled");
+			m.fsToRs.oneLoop=true;
+		}
+		break;
+	case 69: // E=69 Expand/Hide floating keys
+		m.toggleFK();
+		break;
+	case 65: // A=65 To my page
+		if ((!m.myPage)&&m.myId) {
+			window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
+		}
+		break;
+	case 85: // U=85 Block touch
+		$block_touch.show();
+		$block_touch_exit.show();
+		break;
+	case 67: // C=67 Go to Cat or Cats?
+		e.preventDefault();
+		if ($goto_cats_container.is(":visible")) {
+			$goto_cats_container.hide();
+			$out_focus.focus();
+			$button_goto_cats.removeClass("enabled");
+			m.gotoCats=false;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		else {
+			$goto_cats_container.show();
+			$goto_cats_container.css({zIndex:++m.zIndex});
+			$goto_cats.focus();
+			$button_goto_cats.addClass("enabled");
+			m.gotoCats=true;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		break;
+	case 71: // G=71
+		e.preventDefault();
+		if ($fuzzy_search_container.is(":visible")) {
+			$fuzzy_search_container.hide();
+			$out_focus.focus();
+			$button_Go.removeClass("enabled");
+			m.goOn=false;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		else {
+			$fuzzy_search_container.show();
+			$fuzzy_search_container.css({zIndex:++m.zIndex});
+			$fuzzy_search.focus();
+			$button_Go.addClass("enabled");
+			m.goOn=true;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		break;
+	case 84: // T=84
+		e.preventDefault();
+		if ($table_of_recos_container.is(":visible")) {
+			$table_of_recos_container.hide();
+			$out_focus.focus();
+			$button_ToR.removeClass("enabled");
+			m.ToRsOn=false;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		else {
+			$table_of_recos_container.show();
+			$table_of_recos_container.css({zIndex:++m.zIndex});
+			$table_of_recos.focus();
+			$button_ToR.addClass("enabled");
+			m.ToRsOn=true;
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		break;
+	case 66: // B=66
+		e.preventDefault();
+		$contents.removeClass("multireco");
+		$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
+		if ($button_neighbors_mode.hasClass("enabled")) {
+			if ($playlist_container.is(":visible")) {
+				let scrollTop=$window.scrollTop();
+				let pHeight=$playlist_container.height();
+				if (m.fsToRs.fixed) {
+					$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
 				}
 				else {
-					m.recoMode="recoms";
-					$button_mode.removeClass("enabled");
-					$button_get_recoms.addClass("enabled");
-					$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
+					$window.scrollTop($playlist_container.offset().top);
 				}
-				$window.scrollTop($button0_get_recoms?.offset()?.top);
-				m.openCat(m.currentCat);
 			}
-			break;
-		case 78: // N=78
+			m.recoMode="";
+			$button_mode.removeClass("enabled");
+			m.showRecosOnCat();
+		}
+		else {
+			$window.scrollTop($contents.offset().top);
+			m.recoMode="neighbors";
+			$button_mode.removeClass("enabled");
+			$button_neighbors_mode.addClass("enabled");
+		}
+		m.openCat(m.currentCat);
+		break;
+	case 77: // M=77
+		e.preventDefault();
+		if ($button_multireco_mode.hasClass("enabled")) {
+			m.recoMode="";
+			$button_mode.removeClass("enabled");
+			$contents.removeClass("multireco");
+			$multireco_cats_container.hide();
+		}
+		else {
+			m.recoMode="multireco";
+			$button_mode.removeClass("enabled");
+			$button_multireco_mode.addClass("enabled");
+			$contents.addClass("multireco");
+			$multireco_cats_container.show();
+			$multireco_cats_container.css({zIndex:++m.zIndex});
+			$multireco_input_cats[0].value=m.currentCat;
+		}
+		if (!m.recosShown) {
+			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
+			m.openCat(m.currentCat);
+		}
+		else {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode));
+		}
+		break;
+	case 82: // R=82
+		if (m.myPage) {
 			e.preventDefault();
-			m.toggleNewReco();
-			break;
-		case 70: // F=70
-		case 68: // D=68
-			let scrollTop=$window.scrollTop();
-			let i, k=m.fdList.length;
-			let $hI;
-			if (e.keyCode===70) { // F=70
-				scrollTop+=10;
-				for (i=0;i<k;i++) {
-					$hI=m.fdList.eq(i);
-					if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
-				}
-				if (i===k) {
-					// $hI=m.fdList.eq(0);
-					// alert("This is the last section.");
-					return;
-				}
+			if ($button_get_recoms.hasClass("enabled")) {
+				m.recoMode="";
+				$contents_recoms.html("");
+				$button_mode.removeClass("enabled");
+				$button_get_recoms.removeClass("enabled");
 			}
-			else{ // D=68
-				scrollTop-=10;
-				for (i=k-1;i>=0;i--) {
-					$hI=m.fdList.eq(i);
-					if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
-				}
-				if (i===-1) {
-					// $hI=m.fdList.eq(k-1);
-					// alert("This is the first section.");
-					return;
-				}
+			else {
+				m.recoMode="recoms";
+				$button_mode.removeClass("enabled");
+				$button_get_recoms.addClass("enabled");
+				$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 			}
-			let hIID=$hI[0].id;
-			if (hIID) {
-				window.location.hash=`#${hIID}`;
+			$window.scrollTop($button0_get_recoms?.offset()?.top);
+			m.openCat(m.currentCat);
+		}
+		break;
+	case 78: // N=78
+		e.preventDefault();
+		m.toggleNewReco();
+		break;
+	case 70: // F=70
+	case 68: // D=68
+		let scrollTop=$window.scrollTop();
+		let i, k=m.fdList.length;
+		let $hI;
+		if (e.keyCode===70) { // F=70
+			scrollTop+=10;
+			for (i=0;i<k;i++) {
+				$hI=m.fdList.eq(i);
+				if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 			}
-			else if ($hI.hasClass("reco")) {
-				let recoURI=m.unescapeHTML($hI.find(".textURI").html());
-				window.location.hash=`#${encodeURIComponent(recoURI)}`;
+			if (i===k) {
+				// $hI=m.fdList.eq(0);
+				// alert("This is the last section.");
+				return;
 			}
-			$window.scrollTop($hI.offset().top);
-			break;
-		case 73: // I=73
-			$a_log_in.trigger("click");
-			break;
-		case 79: // O=79
-			$a_log_out.trigger("click");
-			break;
-		default:
+		}
+		else{ // D=68
+			scrollTop-=10;
+			for (i=k-1;i>=0;i--) {
+				$hI=m.fdList.eq(i);
+				if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
+			}
+			if (i===-1) {
+				// $hI=m.fdList.eq(k-1);
+				// alert("This is the first section.");
+				return;
+			}
+		}
+		let hIID=$hI[0].id;
+		if (hIID) {
+			window.location.hash=`#${hIID}`;
+		}
+		else if ($hI.hasClass("reco")) {
+			let recoURI=m.unescapeHTML($hI.find(".textURI").html());
+			window.location.hash=`#${encodeURIComponent(recoURI)}`;
+		}
+		$window.scrollTop($hI.offset().top);
+		break;
+	case 73: // I=73
+		$a_log_in.trigger("click");
+		break;
+	case 79: // O=79
+		$a_log_out.trigger("click");
+		break;
+	default:
 	}
 }
 $window.on("keydown.sk", m.processShortKey);
@@ -6034,50 +6077,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
-m.fsToRs.Preceding=function () {
-	m.fsToRs.playNext(1);
-};
-m.fsToRs.Following=function () {
-	m.fsToRs.playNext();
-};
-m.fsToRs.shuffle=function () {
-	let fs=m.fsToRs;
-	m.doFSToRs(fs, true);
-	fs.playNext(-1, true, true);
-};
-m.fsToRs.autoSkip=function (elem) {
-	let $elem=$(elem);
-	if ($elem.hasClass("enabled")) {
-		$elem.removeClass("enabled");
-		m.fsToRs.skip=false;
-	}
-	else {
-		$elem.addClass("enabled");
-		m.fsToRs.skip=true;
-	}
-};
-m.fsToRs.toggleLoop=function (elem) {
-	let $elem=$(elem);
-	if ($elem.hasClass("enabled")) {
-		$elem.removeClass("enabled");
-		m.fsToRs.loop=false;
-	}
-	else {
-		$elem.addClass("enabled");
-		m.fsToRs.loop=true;
-	}
-};
-m.fsToRs.toggleOneLoop=function (elem) {
-	let $elem=$(elem);
-	if ($elem.hasClass("enabled")) {
-		$elem.removeClass("enabled");
-		m.fsToRs.oneLoop=false;
-	}
-	else {
-		$elem.addClass("enabled");
-		m.fsToRs.oneLoop=true;
-	}
-};
 m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
 	let fs=m.fsToRs;
 	fs.pauseVideo();
