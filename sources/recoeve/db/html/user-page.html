@@ -3117,7 +3117,7 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 };
 m.reco_pointChange_do=function (args, err) {
 	if (err) {
-		m.delayedLogOut(err, 27, args.$result);
+		m.delayedLogOut(err, 60*60*24, args.$result);
 		return;
 	}
 	let fs=m.fsGo;
@@ -3173,7 +3173,7 @@ m.reco_pointChange_do=function (args, err) {
 };
 m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("", 27 , $result);
+		m.delayedLogOut("", 60*60*24 , $result);
 		return;
 	}
 	let valStr=$str.html();
@@ -4967,7 +4967,7 @@ $button_reco.on("click", function (e) {
 });
 m.reco_change_do=function (args, err) {
 	if (err) {
-		m.delayedLogOut(`[--Failed change. You may not be logged-in.--] ${err}`, 27);
+		m.delayedLogOut(`[--Failed change. You may not be logged-in.--] ${err}`, 60*60*24);
 		$button_edit.removeClass("disabled");
 		return;
 	}
@@ -5083,7 +5083,7 @@ $button_edit.on("click", function (e) {
 });
 m.reco_delete_do=function (args, err) {
 	if (err) {
-		m.delayedLogOut(`[--Failed delete. You may not be logged-in.--] ${err}`, 27);
+		m.delayedLogOut(`[--Failed delete. You may not be logged-in.--] ${err}`, 60*60*24);
 		$button_del.removeClass("disabled");
 		return;
 	}
