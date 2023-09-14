@@ -47,7 +47,9 @@ public static void printLog(RoutingContext ctx) {
 	referer=req.headers().get("Referer");
 		System.out.println("Time: "+now);
 		System.out.println("User-Agent: "+userAgent);
-		System.out.println("User-Agent.length: "+userAgent.length());
+		if (userAgent!=null) {
+			System.out.println("User-Agent.length: "+userAgent.length());
+		}
 		if (referer!=null) {
 			try {
 				System.out.println("Referer: "+URLDecoder.decode(referer, "UTF-8"));
