@@ -5842,6 +5842,16 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(function () {
+	let blogStat=`URI	referer	REACTION_GUEST
+${window.location.href}	${document.referrer}	${m.myId}`;
+	$.ajax({
+		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+	}).fail(function (resp) {
+		console.log("fail", resp);
+	}).done(function (resp) {
+		console.log("done", resp);
+	});
+
 	m.initialOpen=true;
 	let vars=m.searchVars;
 	let uri=m.localStorage.getItem("uri");
