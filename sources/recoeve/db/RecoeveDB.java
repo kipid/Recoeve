@@ -2110,12 +2110,20 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 								NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 								boolean nbExists=neighbor.next();
+								Timestamp nbTScanAll=OLD;
+								if (nbExists) {
+									nbTScanAll=neighbor.getTimestamp("tScanAll");
+								}
 								boolean nbRemoved=false;
 								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 								boolean nbRevExists=neighborRev.next();
+								Timestamp nbRevTScanAll=OLD;
+								if (nbRevExists) {
+									nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
+								}
 								boolean nbRevRemoved=false;
 								if (nbExists&&nbRevExists) {
-									if (timeDiff(neighbor.getTimestamp("tScanAll"), neighborRev.getTimestamp("tScanAll"))) { // neighbor 가 더 최신.
+									if (timeDiff(nbTScanAll, nbRevTScanAll)) { // neighbor 가 더 최신.
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
 										Similarity sim=new Similarity(neighbor.getLong("sumSim"), neighbor.getInt("nSim"));
