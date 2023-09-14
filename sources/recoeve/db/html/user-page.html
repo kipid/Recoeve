@@ -5627,14 +5627,24 @@ m.processShortKey=function (e) {
 				m.recoMode="";
 				$button_mode.removeClass("enabled");
 				m.showRecosOnCat();
+				if ($playlist_container.is(":visible")) {
+					let scrollTop=$window.scrollTop();
+					let pHeight=$playlist_container.height();
+					if (fs.fixed) {
+						$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
+					}
+					else {
+						$window.scrollTop($playlist_container.offset().top);
+					}
+				}
 			}
 			else {
 				m.recoMode="neighbors";
 				$button_mode.removeClass("enabled");
 				$button_neighbors_mode.addClass("enabled");
+				$window.scrollTop($contents.offset().top);
 			}
 			m.openCat(m.currentCat);
-			$window.scrollTop($contents.offset().top);
 			break;
 		case 77: // M=77
 			e.preventDefault();
