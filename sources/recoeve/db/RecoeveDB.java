@@ -58,6 +58,8 @@ public static final long secondsRMB=daysRMB*24*60*60L;
 public static final int daysRMBtoken=10;
 public static final long secondsRMBtoken=daysRMBtoken*24*60*60L;
 
+public static final Timestamp OLD=Timestamp.valueOf("2000-01-01 00:00:00");
+
 public static byte[] randomBytes(int length) {
 	byte[] rb=new byte[length];
 	new Random().nextBytes(rb);
@@ -1862,10 +1864,16 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 					String cat_to=neighborListFrom.get(i, 1);
 					ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 					boolean nbExists=neighbor.next();
-					Timestamp nbTScanAll=neighbor.getTimestamp("tScanAll");
+					Timestamp nbTScanAll=OLD;
+					if (nbExists) {
+						nbTScanAll=neighbor.getTimestamp("tScanAll");
+					}
 					ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 					boolean nbRevExists=neighborRev.next();
-					Timestamp nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
+					Timestamp nbRevTScanAll=OLD;
+					if (nbRevExists) {
+						nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
+					}
 					ResultSet reco_to=getReco(user_to, uri);
 					if (reco_to.next()) {
 						Points pts_to=new Points(reco_to.getString("val"));
@@ -1950,10 +1958,16 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 							if (cats_to.contains(cat_to)) {
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 								boolean nbExists=neighbor.next();
-								Timestamp nbTScanAll=neighbor.getTimestamp("tScanAll");
+								Timestamp nbTScanAll=OLD;
+								if (nbExists) {
+									nbTScanAll=neighbor.getTimestamp("tScanAll");
+								}
 								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 								boolean nbRevExists=neighborRev.next();
-								Timestamp nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
+								Timestamp nbRevTScanAll=OLD;
+								if (nbRevExists) {
+									nbRevTScanAll=neighborRev.getTimestamp("tScanAll");
+								}
 								if (nbExists&&nbRevExists) {
 									if (timeDiff(nbTScanAll, nbRevTScanAll)) { // neighbor 가 더 최신.
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
