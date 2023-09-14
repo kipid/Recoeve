@@ -2974,7 +2974,7 @@ m.recomHTML=function (r) {
 		return m.recoHTML(r, false, true, true);
 	}
 	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
-	<div class="edit button" onclick="m.editOrRecoToMine(this, true)">+</div>
+	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>`;
 	if (r.defTitles[0]&&r.defTitles[0][0]) {
