@@ -3135,7 +3135,8 @@ m.reco_pointChange_do=function (args, err) {
 	}).done(function (resp) {
 		let res=m.strToJSON(resp);
 		if (res[1]?.result?.substring(0,7)==="changed") {
-			let val=m.myRecos[uri].val=m.val(args.valStr);
+			m.myRecos[uri].val=m.val(args.valStr);
+			m.myRecos[uri].cats=args.cats;
 			args.$result?.html(m.escapeHTML(res[1].result));
 		}
 		else if (res[1]?.result==="recoed") {
@@ -3189,33 +3190,46 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				strHeads+="\tdesc";
 				strContents+=`\t${m.encloseStr(r.defDescs[0][0])}`;
 			}
-			let cats=m.formatCats($multireco_input_cats[0].value);
-			if (m.recoMode!=="multireco") {
-				cats=m.currentCat;
-			}
 			strHeads+="\tcats";
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
 			strContents+=`\t${m.encloseStr(cats)}`;
-			let msg=` The cats on this URI is ${m.escapeHTML(cats)}.`;
-			$result?.html("Recoing..."+msg);
+			$result?.html(`Recoing... The cats on this URI is ${m.escapeHTML(cats)}.`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			m.putCats_UriToLists(cats, uri);
 		}
 		else if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
 			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
-			let msg="";
-			let cats=m.formatCats($multireco_input_cats[0].value);
-			if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
-				strHeads+="\tcats"
-				strContents+=`\t${m.encloseStr(cats)}`;
-				msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}.`;
-				m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
-				m.putCats_UriToLists(cats, uri);
+			let cats="";
+			let catsChanged=true;
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+				if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+					cats=m.formatCats(m.myRecos[uri]?.cats);
+					catsChanged=false;
+				} else {
+					m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+					m.putCats_UriToLists(cats, uri);
+				}
+			}
+			else if (m.myRecos[uri]?.cats) {
+				cats=m.formatCats(m.myRecos[uri]?.cats);
+				catsChanged=false;
 			}
 			else {
-				cats=m.myRecos[uri].cats;
+				cats=m.formatCats(m.currentCat);
 			}
-			$result.html("[--Changing your points.--]"+msg);
+			if (catsChanged) {
+				strHeads+="\tcats";
+				strContents+=`\t${m.encloseStr(cats)}`;
+			}
+			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		}
 	}
@@ -3223,35 +3237,54 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 		if (m.myRecos[uri]?.has) {
 			if (m.myRecos[uri]?.val?.str!==valStr) {
 				let strHeads="do\turi\tval";
-				let strContents="change\t"+m.encloseStr(uri)+"\t"+m.encloseStr(valStr);
-				let cats=m.formatCats($multireco_input_cats[0].value);
-				let msg="";
-				if (m.recoMode==="multireco"&&cats!==m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
-					strHeads+="\tcats"
-					let cats=m.formatCats($multireco_input_cats[0].value);
-					strContents+=`\t${m.encloseStr(cats)}`;
-					msg=` The cats on this URI is changed to ${m.escapeHTML(cats)}`;
+				let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+				let cats="";
+				let catsChanged=true;
+				if (m.recoMode==="multireco") {
+					cats=m.formatCats($multireco_input_cats[0].value);
+					if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+						cats=m.formatCats(m.myRecos[uri]?.cats);
+						catsChanged=false;
+					}
 				}
-				$result.html("[--Changing your points.--]"+msg);
+				else if (m.myRecos[uri]?.cats) {
+					cats=m.formatCats(m.myRecos[uri]?.cats);
+					catsChanged=false;
+				}
+				else {
+					cats=m.formatCats(m.currentCat);
+				}
+				if (catsChanged) {
+					strHeads+="\tcats";
+					strContents+=`\t${m.encloseStr(cats)}`;
+				}
+				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
 				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			}
 		}
 		else {
-			let strHeads="do\turi";
-			let strContents="reco\t"+m.encloseStr(uri);
-			strHeads+="\tval";
-			strContents+="\t"+valStr;
+			let strHeads="do\turi\tval";
+			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
 			let uR=m.userRecos[uri];
-			if (uR.title) {
-				strHeads+="\ttitle";
-				strContents+="\t"+m.encloseStr(uR.title);
+			if (uR) {
+				if (uR.title) {
+					strHeads+="\ttitle";
+					strContents+="\t"+m.encloseStr(uR.title);
+				}
+				if (uR.desc) {
+					strHeads+="\tdesc";
+					strContents+="\t"+m.encloseStr(uR.desc);
+				}
 			}
-			if (uR.desc) {
-				strHeads+="\tdesc";
-				strContents+="\t"+m.encloseStr(uR.desc);
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
 			}
 			strHeads+="\tcats";
-			strContents+="\t"+m.encloseStr(m.formatCats($multireco_input_cats[0].value));
+			strContents+=`\t${m.encloseStr(cats)}`;
 			let strRecoDo=strHeads+"\n"+strContents;
 			$result.html("[--Recoing to your recoeve.net.--]");
 			m.rmb_me(m.reco_do, {strRecoDo, uri, $result}, true);
@@ -4840,7 +4873,7 @@ m.closeNewReco=function () {
 };
 m.reco_do=function (args, err) {
 	if (err) {
-		m.delayedLogOut(`[--Reco failed. You may be not logged-in.--] ${err}`, 27);
+		m.delayedLogOut(`[--Reco failed. You may be not logged-in.--] ${err}`, 31*24*60*60);
 		$button_reco.removeClass("disabled");
 		return;
 	}
