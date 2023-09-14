@@ -186,7 +186,7 @@ public RecoeveDB() {
 		ds.setServerTimezone("UTC");
 		con=ds.getConnection();
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
-		pstmtTimeDiff=con.prepareStatement("SELECT TIMDDIFF(?, ?)>0;");
+		pstmtTimeDiff=con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
 		pstmtCheckDayDiffLessThan1=con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
