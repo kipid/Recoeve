@@ -1552,10 +1552,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"></div>`)
 $button_hideFK=$("#button-hideFK");
 if ((!m.myPage)&&m.myId) {
-	$button_hideFK.after(`<div id="button-to-my-page" class="button">[--To my page--]</div>`);
-	$("#button-to-my-page").on("click", function (e) {
-		window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
-	});
+	$button_hideFK.after(`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`);
 }
 
 $button_Go=$(".button-Go");
@@ -5561,6 +5558,11 @@ m.processShortKey=function (e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
+		case 65: // A=65 To my page
+			if ((!m.myPage)&&m.myId) {
+				window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
+			}
+			break;
 		case 85: // U=85 Block touch
 			$block_touch.show();
 			$block_touch_exit.show();
