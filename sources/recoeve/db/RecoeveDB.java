@@ -2384,11 +2384,13 @@ public void deleteCatsUriFromList(long user_me, Categories cats, String uri, Cat
 	}
 }
 public void catsChangedOnUri(long user_me, Categories oldCats, Categories newCats, String uri, CatList catL, boolean equalityOfValuesOfPts, Points oldPts, Points newPts, Timestamp tNow) throws SQLException {
-	oldCats.setOfCats.forEach((oldCat) -> {
+	Iterator<String> iter=oldCats.setOfCats.iterator();
+	while (iter.hasNext()) {
+		String oldCat=iter.next();
 		if (newCats.setOfCats.remove(oldCat)) {
-			oldCats.setOfCats.remove(oldCat);
+			iter.remove();
 		}
-	});
+	}
 	deleteCatsUriFromList(user_me, oldCats, uri, catL);
 	putCatsUriToList(user_me, newCats, uri, catL);
 	updateDefCat(uri, oldCats, -1);
