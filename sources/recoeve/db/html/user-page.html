@@ -5591,6 +5591,9 @@ m.processShortKey=function (e) {
 		case "INPUT": case "SELECT": case "TEXTAREA": return;
 	}
 	switch (e.keyCode) {
+		case 69: // E=69
+			m.toggleFK();
+			break;
 		case 65: // A=65 To my page
 			if ((!m.myPage)&&m.myId) {
 				window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
