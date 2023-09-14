@@ -1348,7 +1348,18 @@ m.a_log_out=function (e, elem) {
 		window.location.href=href;
 		return false;
 	}
-}
+};
+m.delayedLogOut=function (msg, delayTime=27, $result) {
+	let delay=delayTime&&typeof delayTime==="number"?delayTime:27;
+	setInterval(function () {
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
+		$result?.html($error.html());
+		delay--;
+	}, 1000);
+	setTimeout(function () {
+		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+	}, delay*1000);
+};
 
 m.toggleNewReco=function () {
 	if ($new_reco.is(":visible")) {
@@ -3164,16 +3175,13 @@ m.reco_pointChange_do=function (args, err) {
 			}
 		}
 		else {
-			args.$result?.html(res[1]?.result);
-			setTimeout(function () {
-				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-			}, 5000);
+			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
 		}
 	});
 };
 m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("", 60*60*24 , $result);
+		m.delayedLogOut("Not logged-in.", 1, $result);
 		return;
 	}
 	let valStr=$str.html();
@@ -4855,17 +4863,6 @@ $button_back.on("click", function (e) {
 	m.fillRecoInNewReco(m.userRecos[$input_uri[0].value]);
 });
 
-m.delayedLogOut=function (msg, delayTime=27, $result) {
-	let delay=delayTime&&typeof delayTime==="number"?delayTime:27;
-	setInterval(function () {
-		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--]`);
-		$result?.html($error.html());
-		delay--;
-	}, 1000);
-	setTimeout(function () {
-		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-	}, delay*1000);
-};
 m.closeNewReco=function () {
 	if ($new_reco.is(":visible")) {
 		m.toggleNewReco();
@@ -4904,11 +4901,7 @@ m.reco_do=function (args, err) {
 			}, 1024);
 		}
 		else {
-			$error.html(res[1]?.result);
-			args.$result?.html(res[1]?.result);
-			setTimeout(function () {
-				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-			}, 2000);
+			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -5002,10 +4995,7 @@ m.reco_change_do=function (args, err) {
 				}, 1024);
 			}
 			else {
-				$error.html(res[1]?.result);
-				setTimeout(function () {
-					window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-				}, 2000);
+				m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
 			}
 		}
 	}).always(function () {
@@ -5106,10 +5096,7 @@ m.reco_delete_do=function (args, err) {
 			}, 1024);
 		}
 		else {
-			$error.html(res[1]?.result);
-			setTimeout(function () {
-				window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
-			}, 2000);
+			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
 		}
 	}).always(function () {
 		$button_del.removeClass("disabled");
