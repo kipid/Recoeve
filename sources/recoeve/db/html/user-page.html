@@ -1115,6 +1115,7 @@ $video=$("#video");
 $reco_playing=$("#reco-playing");
 
 $input_uri=$("#input-uri");
+$show_URI=$("#show-URI");
 $def_titles=$("#def-titles");
 $input_title=$("#input-title");
 $def_cats=$("#def-cats");
@@ -4718,6 +4719,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 		}
 	}
+	$show_URI.html(uriRendered.html);
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
@@ -4739,7 +4741,7 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	}
 });
 $input_cats.off("keydown.common");
-$input_uri.on("input keyup cut paste click", function (e) {
+$input_uri.on("input keyup keydown cut paste click focus", function (e) {
 	let uri=this.value;
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
