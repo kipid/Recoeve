@@ -771,6 +771,9 @@ public static void main(String... args) {
 		catch (NullPointerException e) {
 			System.out.println(e);
 		}
+		catch (IllegalStateException e) {
+			RecoeveDB.err(e);
+		}
 	}).listen(443);
 	// UnderConstruction.HOST
 	// 탄력적 IP | 할당된 IPv4 주소 | 퍼블릭 IPv4 주소 : "43.200.166.14"
