@@ -315,8 +315,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco .result {font-size:.7em; padding:.5em}
 
 .loading {text-align:center}
-.loading .outerCircle {background-color:transparent; border:8px solid rgba(97,82,72,0.9); opacity:.9; border-right:5px solid transparent; border-left:5px solid transparent; border-radius:100px; width:110px; height:110px; margin:0 auto; -moz-animation:spinPulse 5s infinite ease-in-out; -webkit-animation:spinPulse 5s infinite ease-in-out}
-.loading .innerCircle {background-color:transparent; border:5px solid rgba(189,215,60,0.6); opacity:.9; border-left:5px solid transparent; border-right:5px solid transparent; border-radius:100px; top:-100px; width:90px; height:90px; margin:0 auto; position:relative; -moz-animation:spinoffPulse 3s infinite linear; -webkit-animation:spinoffPulse 3s infinite linear}
+.loading .outerCircle {background-color:transparent; border:8px solid rgba(97,82,72,0.9); opacity:.9; border-right:5px solid transparent; border-left:5px solid transparent; border-radius:100px; width:110px; height:110px; margin:5em auto 0; -moz-animation:spinPulse 5s infinite ease-in-out; -webkit-animation:spinPulse 5s infinite ease-in-out}
+.loading .innerCircle {background-color:transparent; border:5px solid rgba(189,215,60,0.6); opacity:.9; border-left:5px solid transparent; border-right:5px solid transparent; border-radius:100px; top:-100px; width:90px; height:90px; margin:0 auto 20em; position:relative; -moz-animation:spinoffPulse 3s infinite linear; -webkit-animation:spinoffPulse 3s infinite linear}
 @-moz-keyframes spinPulse {
 0% {-moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
 50% {-moz-transform:rotate(145deg); opacity:1}
@@ -5624,25 +5624,25 @@ m.processShortKey=function (e) {
 			$contents.removeClass("multireco");
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 			if ($button_neighbors_mode.hasClass("enabled")) {
-				m.recoMode="";
-				$button_mode.removeClass("enabled");
-				m.showRecosOnCat();
 				if ($playlist_container.is(":visible")) {
 					let scrollTop=$window.scrollTop();
 					let pHeight=$playlist_container.height();
-					if (fs.fixed) {
+					if (m.fsToRs.fixed) {
 						$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
 					}
 					else {
 						$window.scrollTop($playlist_container.offset().top);
 					}
 				}
+				m.recoMode="";
+				$button_mode.removeClass("enabled");
+				m.showRecosOnCat();
 			}
 			else {
+				$window.scrollTop($contents.offset().top);
 				m.recoMode="neighbors";
 				$button_mode.removeClass("enabled");
 				$button_neighbors_mode.addClass("enabled");
-				$window.scrollTop($contents.offset().top);
 			}
 			m.openCat(m.currentCat);
 			break;
