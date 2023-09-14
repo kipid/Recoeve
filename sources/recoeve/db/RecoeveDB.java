@@ -1889,13 +1889,14 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 										neighbor.updateLong("sumSim", sim.sumSim);
 										neighbor.updateInt("nSim", sim.nSim);
 										neighbor.updateTimestamp("tUpdate", tNow);
+										Timestamp tScanAll=neighbor.getTimestamp("tScanAll");
 										neighbor.updateRow();
 										neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 										neighborRev.next();
 										neighborRev.updateLong("sumSim", sim.sumSim);
 										neighborRev.updateInt("nSim", sim.nSim);
 										neighborRev.updateTimestamp("tUpdate", tNow);
-										neighborRev.updateTimestamp("tScanAll", neighbor.getTimestamp("tScanAll"));
+										neighborRev.updateTimestamp("tScanAll", tScanAll);
 										neighborRev.updateRow();
 									}
 									else { // neighborRev 가 더 최신.
@@ -1906,13 +1907,14 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 										neighborRev.updateLong("sumSim", sim.sumSim);
 										neighborRev.updateInt("nSim", sim.nSim);
 										neighborRev.updateTimestamp("tUpdate", tNow);
+										Timestamp tScanAll=neighborRev.getTimestamp("tScanAll");
 										neighborRev.updateRow();
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
 										neighbor.updateLong("sumSim", sim.sumSim);
 										neighbor.updateInt("nSim", sim.nSim);
 										neighbor.updateTimestamp("tUpdate", tNow);
-										neighbor.updateTimestamp("tScanAll", neighborRev.getTimestamp("tScanAll"));
+										neighbor.updateTimestamp("tScanAll", tScanAll);
 										neighbor.updateRow();
 									}
 								}
