@@ -1840,6 +1840,8 @@ CREATE TABLE `Neighbors` (
 	, PRIMARY KEY (`user_i`, `cat_i`, `user_from`, `cat_from`)
 );
 
+ALTER TABLE `Neighbors` RENAME COLUMN `user_to` TO `user_i`;
+ALTER TABLE `Neighbors` RENAME COLUMN `cat_to` TO `cat_i`;
 ALTER TABLE `Neighbors` ADD `tScanAll` datetime NOT NULL DEFAULT '2000-01-01 00:00:00';
 ALTER TABLE `Neighbors` DROP `simAvg100`;
 
