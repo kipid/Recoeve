@@ -1857,7 +1857,9 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 			System.out.println("recentestsSet:");
 			for (long recoer: recentestsSet) {
 				ResultSet user=findUserByIndex(recoer);
-				System.out.println(user.getString("id"));
+				if (user.next()) {
+					System.out.println(user.getString("id"));
+				}
 			}
 			recentestsSet.remove(user_from); // remove myself.
 			for (String cat_from: cats.setOfCats) {
