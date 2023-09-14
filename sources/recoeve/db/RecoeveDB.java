@@ -1442,13 +1442,7 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 				}
 			}
 			updateNeighborListFrom(user_from, cat_from, neighborList, tNow);
-			for (int j=0;j<jSize;j++) {
-				String cat_to=neighborList.get(j, 1);
-				String user_to_str=neighborList.get(j, 0);
-				if (!user_to_str.isEmpty()) {
-					delNeighborListTo(Long.parseLong(user_to_str, 16), cat_to);
-				}
-			}
+			delNeighborListTo(user_from, cat_from);
 		}
 	}
 	catch (SQLException e) {
@@ -1840,6 +1834,7 @@ public void putNeighborWithScanAll(long user_to, String cat_to, long user_from, 
 		}}
 	}
 	putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim, tNow);
+	// putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim, tNow);
 }
 public static final int RECENTESTS_N=200;
 public static final int N_SET=400;
@@ -2097,10 +2092,14 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 						Categories cats_to=new Categories(reco_to.getString("cats"));
 						for (String cat_to: cats_to.setOfCats) {
 							for (String cat_from: cats.setOfCats) {
+								NeighborList neighborListFrom=getNeighborListFrom(user_from, cat_from);
+								NeighborList neighborListTo=getNeighborListTo(user_from, cat_from);
 								ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 								boolean nbExists=neighbor.next();
+								boolean nbRemoved=false;
 								ResultSet neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 								boolean nbRevExists=neighborRev.next();
+								boolean nbRevRemoved=false;
 								if (nbExists&&nbRevExists) {
 									if (timeDiff(neighbor.getTimestamp("tScanAll"), neighborRev.getTimestamp("tScanAll"))) { // neighbor 가 더 최신.
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
@@ -2111,14 +2110,24 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 										neighbor.updateInt("nSim", sim.nSim);
 										neighbor.updateTimestamp("tUpdate", tNow);
 										Timestamp tScanAll=neighbor.getTimestamp("tScanAll");
-										neighbor.updateRow();
+										if (sim.nSim==0) {
+											nbRemoved=nbRemoved||true;
+											neighbor.deleteRow();
+										} else {
+											neighbor.updateRow();
+										}
 										neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
 										neighborRev.next();
 										neighborRev.updateLong("sumSim", sim.sumSim);
 										neighborRev.updateInt("nSim", sim.nSim);
 										neighborRev.updateTimestamp("tUpdate", tNow);
 										neighborRev.updateTimestamp("tScanAll", tScanAll);
-										neighborRev.updateRow();
+										if (sim.nSim==0) {
+											nbRevRemoved=nbRevRemoved||true;
+											neighborRev.deleteRow();
+										} else {
+											neighborRev.updateRow();
+										}
 									}
 									else { // neighborRev 가 더 최신.
 										neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
@@ -2129,14 +2138,24 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 										neighborRev.updateInt("nSim", sim.nSim);
 										neighborRev.updateTimestamp("tUpdate", tNow);
 										Timestamp tScanAll=neighborRev.getTimestamp("tScanAll");
-										neighborRev.updateRow();
+										if (sim.nSim==0) {
+											nbRevRemoved=nbRevRemoved||true;
+											neighborRev.deleteRow();
+										} else {
+											neighborRev.updateRow();
+										}
 										neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
 										neighbor.updateLong("sumSim", sim.sumSim);
 										neighbor.updateInt("nSim", sim.nSim);
 										neighbor.updateTimestamp("tUpdate", tNow);
 										neighbor.updateTimestamp("tScanAll", tScanAll);
-										neighbor.updateRow();
+										if (sim.nSim==0) {
+											nbRemoved=nbRemoved||true;
+											neighbor.deleteRow();
+										} else {
+											neighbor.updateRow();
+										}
 									}
 								}
 								else if (nbExists) {
@@ -2147,7 +2166,12 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 									neighbor.updateLong("sumSim", sim.sumSim);
 									neighbor.updateInt("nSim", sim.nSim);
 									neighbor.updateTimestamp("tUpdate", tNow);
-									neighbor.updateRow();
+									if (sim.nSim==0) {
+										nbRemoved=nbRemoved||true;
+										neighbor.deleteRow();
+									} else {
+										neighbor.updateRow();
+									}
 								}
 								else if (nbRevExists) {
 									neighborRev=getNeighbor(user_from, cat_from, user_to, cat_to);
@@ -2157,10 +2181,23 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 									neighborRev.updateLong("sumSim", sim.sumSim);
 									neighborRev.updateInt("nSim", sim.nSim);
 									neighborRev.updateTimestamp("tUpdate", tNow);
-									neighborRev.updateRow();
+									if (sim.nSim==0) {
+										nbRevRemoved=nbRevRemoved||true;
+										neighborRev.deleteRow();
+									} else {
+										neighborRev.updateRow();
+									}
 								}
 								else { // ScanAll
 									putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
+								}
+								if (nbRemoved) {
+									neighborListFrom.mapArray.remove(Long.toString(user_to, 16)+"\t"+cat_to);
+									updateNeighborListFrom(user_from, cat_from, neighborListFrom, tNow);
+								}
+								if (nbRevRemoved) {
+									neighborListTo.mapArray.remove(Long.toString(user_to, 16)+"\t"+cat_to);
+									updateNeighborListTo(user_from, cat_from, neighborListTo, tNow);
 								}
 							}
 						}
