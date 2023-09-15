@@ -4,6 +4,38 @@
 		"selected_items":
 		[
 			[
+				"neighborL",
+				"neighborList"
+			],
+			[
+				"gray",
+				"darkgray"
+			],
+			[
+				"neighLT",
+				"neighborListTo"
+			],
+			[
+				"reco_cha",
+				"reco_pointChange_do"
+			],
+			[
+				"rece",
+				"recentests"
+			],
+			[
+				"recS",
+				"recentestsSet"
+			],
+			[
+				"Path",
+				"pathOfCat"
+			],
+			[
+				"Http",
+				"HttpServerRequest"
+			],
+			[
 				"outerH",
 				"getOuterHTML"
 			],
@@ -63,6 +95,312 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "sources/recoeve/http/Recoeve.java",
+			"settings":
+			{
+				"buffer_size": 35304,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+			]
+		},
+		{
+			"file": "sources/recoeve/db/html/user-page.html",
+			"settings":
+			{
+				"buffer_size": 392452,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+				[
+					19,
+					1,
+					"insert",
+					{
+						"characters": " keydown"
+					},
+					"CAAAAOtNBQAAAAAA7E0FAAAAAAAAAAAA7E0FAAAAAADtTQUAAAAAAAAAAADtTQUAAAAAAO5NBQAAAAAAAAAAAO5NBQAAAAAA700FAAAAAAAAAAAA700FAAAAAADwTQUAAAAAAAAAAADwTQUAAAAAAPFNBQAAAAAAAAAAAPFNBQAAAAAA8k0FAAAAAAAAAAAA8k0FAAAAAADzTQUAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAA600FAAAAAADrTQUAAAAAAAAAAAAAAPC/"
+				],
+				[
+					21,
+					1,
+					"insert",
+					{
+						"characters": " focus"
+					},
+					"BgAAAANOBQAAAAAABE4FAAAAAAAAAAAABE4FAAAAAAAFTgUAAAAAAAAAAAAFTgUAAAAAAAZOBQAAAAAAAAAAAAZOBQAAAAAAB04FAAAAAAAAAAAAB04FAAAAAAAITgUAAAAAAAAAAAAITgUAAAAAAAlOBQAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAAA04FAAAAAAADTgUAAAAAAAAAAAAAAPC/"
+				],
+				[
+					55,
+					1,
+					"toggle_comment",
+					{
+						"block": false
+					},
+					"AQAAAPlLBQAAAAAA+UsFAAAAAAADAAAALy8g",
+					"AgAAAAAAAAABAAAArk4FAAAAAADMTgUAAAAAAAAAAAAAAPC/AQAAAAEAAAAOTAUAAAAAAA5MBQAAAAAAAAAAAAAA8L8"
+				],
+				[
+					75,
+					1,
+					"toggle_comment",
+					{
+						"block": false
+					},
+					"AQAAAPlLBQAAAAAA/EsFAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAAXTAUAAAAAABdMBQAAAAAAAAAAAAAA8L8CAAAAAQAAABpFBQAAAAAAJEUFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					113,
+					1,
+					"insert",
+					{
+						"characters": "\n"
+					},
+					"AgAAAF1LBQAAAAAAXksFAAAAAAAAAAAAXksFAAAAAABfSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAACuTgUAAAAAAMxOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAF1LBQAAAAAAXUsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					114,
+					1,
+					"insert",
+					{
+						"characters": "$show"
+					},
+					"BQAAAF9LBQAAAAAAYEsFAAAAAAAAAAAAYEsFAAAAAABhSwUAAAAAAAAAAABhSwUAAAAAAGJLBQAAAAAAAAAAAGJLBQAAAAAAY0sFAAAAAAAAAAAAY0sFAAAAAABkSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAACwTgUAAAAAAM5OBQAAAAAAAAAAAAAA8L8CAAAAAQAAAF9LBQAAAAAAX0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					115,
+					1,
+					"insert",
+					{
+						"characters": "_U"
+					},
+					"AgAAAGRLBQAAAAAAZUsFAAAAAAAAAAAAZUsFAAAAAABmSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAC1TgUAAAAAANNOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGRLBQAAAAAAZEsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					116,
+					1,
+					"insert",
+					{
+						"characters": "RI"
+					},
+					"AgAAAGZLBQAAAAAAZ0sFAAAAAAAAAAAAZ0sFAAAAAABoSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAC3TgUAAAAAANVOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGZLBQAAAAAAZksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					117,
+					4,
+					"left_delete",
+					null,
+					"BAAAAGdLBQAAAAAAZ0sFAAAAAAABAAAASWZLBQAAAAAAZksFAAAAAAABAAAAUmVLBQAAAAAAZUsFAAAAAAABAAAAVWRLBQAAAAAAZEsFAAAAAAABAAAAXw",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAC5TgUAAAAAANdOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGhLBQAAAAAAaEsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					118,
+					1,
+					"insert",
+					{
+						"characters": "URI"
+					},
+					"AwAAAGRLBQAAAAAAZUsFAAAAAAAAAAAAZUsFAAAAAABmSwUAAAAAAAAAAABmSwUAAAAAAGdLBQAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAC1TgUAAAAAANNOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGRLBQAAAAAAZEsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					119,
+					6,
+					"left_delete",
+					null,
+					"BgAAAGZLBQAAAAAAZksFAAAAAAABAAAASWVLBQAAAAAAZUsFAAAAAAABAAAAUmRLBQAAAAAAZEsFAAAAAAABAAAAVWNLBQAAAAAAY0sFAAAAAAABAAAAd2JLBQAAAAAAYksFAAAAAAABAAAAb2FLBQAAAAAAYUsFAAAAAAABAAAAaA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAAC4TgUAAAAAANZOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGdLBQAAAAAAZ0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					120,
+					2,
+					"left_delete",
+					null,
+					"AgAAAGBLBQAAAAAAYEsFAAAAAAABAAAAc19LBQAAAAAAX0sFAAAAAAABAAAAJA",
+					"AwAAAAAAAAABAAAAKSQFAAAAAAAcJAUAAAAAAAAAAAAAAPC/AQAAAAEAAACyTgUAAAAAANBOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGFLBQAAAAAAYUsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					123,
+					1,
+					"insert",
+					{
+						"characters": "\n$"
+					},
+					"AgAAALWRAwAAAAAAtpEDAAAAAAAAAAAAtpEDAAAAAAC3kQMAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAtZEDAAAAAAC1kQMAAAAAAAAAAAAAAPC/AQAAAAEAAACwTgUAAAAAAM5OBQAAAAAAAAAAAAAA8L8CAAAAAQAAAF9LBQAAAAAAX0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					124,
+					1,
+					"insert_snippet",
+					{
+						"contents": "($0)"
+					},
+					"AQAAALeRAwAAAAAAuZEDAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAt5EDAAAAAAC3kQMAAAAAAAAAAAAAAPC/AQAAAAEAAACyTgUAAAAAANBOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGFLBQAAAAAAYUsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					125,
+					1,
+					"insert_snippet",
+					{
+						"contents": "\"$0\""
+					},
+					"AQAAALiRAwAAAAAAupEDAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAuJEDAAAAAAC4kQMAAAAAAAAAAAAAAPC/AQAAAAEAAAC0TgUAAAAAANJOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGNLBQAAAAAAY0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					126,
+					1,
+					"insert",
+					{
+						"characters": "#"
+					},
+					"AQAAALmRAwAAAAAAupEDAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAuZEDAAAAAAC5kQMAAAAAAAAAAAAAAPC/AQAAAAEAAAC2TgUAAAAAANROBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGVLBQAAAAAAZUsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					127,
+					1,
+					"paste",
+					null,
+					"AQAAALqRAwAAAAAAwpEDAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAupEDAAAAAAC6kQMAAAAAAAAAAAAAAPC/AQAAAAEAAAC3TgUAAAAAANVOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAGZLBQAAAAAAZksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					129,
+					1,
+					"insert",
+					{
+						"characters": ";"
+					},
+					"AQAAAMSRAwAAAAAAxZEDAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAxJEDAAAAAADEkQMAAAAAAAAAAAAAAPC/AQAAAAEAAAC/TgUAAAAAAN1OBQAAAAAAAAAAAAAA8L8CAAAAAQAAAG5LBQAAAAAAbksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					133,
+					1,
+					"insert",
+					{
+						"characters": "$show"
+					},
+					"BQAAALaRAwAAAAAAt5EDAAAAAAAAAAAAt5EDAAAAAAC4kQMAAAAAAAAAAAC4kQMAAAAAALmRAwAAAAAAAAAAALmRAwAAAAAAupEDAAAAAAAAAAAAupEDAAAAAAC7kQMAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAtpEDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADATgUAAAAAAN5OBQAAAAAAAAAAAAAA8L8CAAAAAQAAAG9LBQAAAAAAb0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					134,
+					1,
+					"insert",
+					{
+						"characters": "_URI="
+					},
+					"BQAAALuRAwAAAAAAvJEDAAAAAAAAAAAAvJEDAAAAAAC9kQMAAAAAAAAAAAC9kQMAAAAAAL6RAwAAAAAAAAAAAL6RAwAAAAAAv5EDAAAAAAAAAAAAv5EDAAAAAADAkQMAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAu5EDAAAAAAC7kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADFTgUAAAAAAONOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAHRLBQAAAAAAdEsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					140,
+					1,
+					"paste",
+					null,
+					"AQAAAHlLBQAAAAAAgksFAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADKTgUAAAAAAOhOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAHlLBQAAAAAAeUsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					141,
+					1,
+					"insert",
+					{
+						"characters": ".html"
+					},
+					"BQAAAIJLBQAAAAAAg0sFAAAAAAAAAAAAg0sFAAAAAACESwUAAAAAAAAAAACESwUAAAAAAIVLBQAAAAAAAAAAAIVLBQAAAAAAhksFAAAAAAAAAAAAhksFAAAAAACHSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADTTgUAAAAAAPFOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAIJLBQAAAAAAgksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					142,
+					1,
+					"insert_snippet",
+					{
+						"contents": "($0)"
+					},
+					"AQAAAIdLBQAAAAAAiUsFAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADYTgUAAAAAAPZOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAIdLBQAAAAAAh0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					143,
+					1,
+					"insert",
+					{
+						"characters": "ur"
+					},
+					"AgAAAIhLBQAAAAAAiUsFAAAAAAAAAAAAiUsFAAAAAACKSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADaTgUAAAAAAPhOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAIhLBQAAAAAAiEsFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					144,
+					1,
+					"insert",
+					{
+						"characters": "iRen"
+					},
+					"BAAAAIpLBQAAAAAAi0sFAAAAAAAAAAAAi0sFAAAAAACMSwUAAAAAAAAAAACMSwUAAAAAAI1LBQAAAAAAAAAAAI1LBQAAAAAAjksFAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADcTgUAAAAAAPpOBQAAAAAAAAAAAAAA8L8CAAAAAQAAAIpLBQAAAAAAiksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					145,
+					1,
+					"insert",
+					{
+						"characters": "dered"
+					},
+					"BQAAAI5LBQAAAAAAj0sFAAAAAAAAAAAAj0sFAAAAAACQSwUAAAAAAAAAAACQSwUAAAAAAJFLBQAAAAAAAAAAAJFLBQAAAAAAkksFAAAAAAAAAAAAkksFAAAAAACTSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADgTgUAAAAAAP5OBQAAAAAAAAAAAAAA8L8CAAAAAQAAAI5LBQAAAAAAjksFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					146,
+					1,
+					"insert",
+					{
+						"characters": ".html"
+					},
+					"BQAAAJNLBQAAAAAAlEsFAAAAAAAAAAAAlEsFAAAAAACVSwUAAAAAAAAAAACVSwUAAAAAAJZLBQAAAAAAAAAAAJZLBQAAAAAAl0sFAAAAAAAAAAAAl0sFAAAAAACYSwUAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADlTgUAAAAAAANPBQAAAAAAAAAAAAAA8L8CAAAAAQAAAJNLBQAAAAAAk0sFAAAAAAAAAAAAAADwvw"
+				],
+				[
+					148,
+					1,
+					"insert",
+					{
+						"characters": ";"
+					},
+					"AQAAAJlLBQAAAAAAmksFAAAAAAAAAAAA",
+					"AwAAAAAAAAABAAAAv5EDAAAAAAC2kQMAAAAAAAAAAAAAAPC/AQAAAAEAAADqTgUAAAAAAAhPBQAAAAAAAAAAAAAA8L8CAAAAAQAAAJlLBQAAAAAAmUsFAAAAAAAAAAAAAADwvw"
+				]
+			]
+		},
+		{
+			"file": "sources/recoeve/db/RecoeveDB.java",
+			"settings":
+			{
+				"buffer_size": 105868,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+			]
+		}
 	],
 	"build_system": "Packages/Java/JavaC.sublime-build",
 	"build_system_choices":
@@ -96,6 +434,34 @@
 				"Set Syntax: HTML"
 			],
 			[
+				"s s text",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"s s javasc",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"s s java",
+				"Set Syntax: Java"
+			],
+			[
+				"s s json",
+				"Set Syntax: JSON"
+			],
+			[
+				"s syntax",
+				"Set Syntax: Ruby (Rails)"
+			],
+			[
+				"s s proto",
+				"Snippet: Prototype"
+			],
+			[
+				"s s latex",
+				"Set Syntax: LaTeX"
+			],
+			[
 				"s s css",
 				"Set Syntax: CSS"
 			],
@@ -118,10 +484,6 @@
 			[
 				"indent",
 				"Indentation: Convert to Tabs"
-			],
-			[
-				"s s javasc",
-				"Set Syntax: JavaScript"
 			],
 			[
 				"s sy javascript",
@@ -166,146 +528,153 @@
 		"/C/Recoeve/sources/recoeve",
 		"/C/Recoeve/sources/recoeve/db",
 		"/C/Recoeve/sources/recoeve/db/html",
+		"/C/Recoeve/sources/recoeve/db/html/back-up",
+		"/C/Recoeve/sources/recoeve/http",
 		"/C/blog",
 		"/C/blog/posts",
 		"/C/blog/posts/IT,Programming",
+		"/C/blog/posts/Physics,Math",
+		"/C/blog/posts/Recoeve.net",
 		"/C/blog/posts/사회,정치,경제",
-		"/C/blog/slabs"
+		"/C/blog/slabs",
+		"/C/docuK",
+		"/C/vertx",
+		"/C/vertx/bin"
 	],
 	"file_history":
 	[
-		"/C/vertx/bin/vertx.bat",
-		"/C/Recoeve/vertx.bat",
-		"/C/Recoeve/sources/recoeve/db/FileMap.java",
-		"/C/Recoeve/sources/recoeve/http/HelloWorldServer.java",
-		"/C/Recoeve/sources/recoeve/http/HelloWorld.java",
-		"/C/Recoeve/sources/recoeve/http/NaverMail.java",
-		"/C/Recoeve/sources/recoeve/db/html/to-log-in.html",
-		"/C/Recoeve/sources/recoeve/db/RecoeveDB.java",
-		"/C/Recoeve/sources/recoeve/db/html/log-in.html",
-		"/C/Recoeve/sources/recoeve/http/PrintLog.java",
-		"/C/Recoeve/sources/recoeve/http/Recoeve.java",
-		"/C/Recoeve/sources/recoeve/http/UnderConstruction.java",
-		"/C/Recoeve/sources/recoeve/db/html/prepare.js",
-		"/C/vert.x/pom.xml",
-		"/C/Recoeve/build.gradle.kts",
-		"/C/Recoeve/gradlew.bat",
-		"/C/blog/posts/IT,Programming/HTTP Cookie in Web HTML Javascript and Server.html",
-		"/C/Recoeve/sources/recoeve/db/FileMapWithVar.java",
-		"/C/Recoeve/UnderConstruction.java",
-		"/C/Recoeve/sources/recoeve/db/html/user-page.html",
-		"/C/Recoeve/PrintLog.java",
-		"/C/Recoeve/need-log-in temp.html",
-		"/C/Recoeve/Recoeve.java",
-		"/C/docuK/docuK-postProcess-2.3.js",
-		"/C/docuK/floating-key temp.html",
-		"/C/docuK/docuK-2.3.css",
-		"/C/docuK/docuK-prepare-2.3.js",
-		"/C/blog/blog skin.html",
-		"/C/blog/blog style.css",
+		"/C/blog/posts/IT,Programming/Statistics of kipid's blog.html",
 		"/C/Recoeve/Recoeve progress.html",
-		"/C/blog/works-to-do.html",
-		"/C/blog/skin.html",
-		"/C/blog/posts/사회,정치,경제/성물 반지.html",
-		"/C/blog/Lists.html",
-		"/C/docuK/pure SEE copiable.html",
-		"/C/blog/posts/IT,Programming/Installing and Learning gradle.html",
-		"/C/blog/posts/IT,Programming/Career Portfolio - 이강수.html",
-		"/C/blog/slabs/To correct inaccurate location measured by GPS with Wi-Fi RSSI (Received Signal Strength Indicatior). (Wi-Fi 신호세기를 이용해 GPS 튀는거 잡는 방법.).html",
-		"/C/blog/slabs/Gradle tutorial.html",
-		"/C/docuK/pure SEE.html",
-		"/C/Recoeve/.gitignore",
-		"/C/Users/kipac/AppData/Local/Temp/Temp1_kipid.zip/.gitignore",
-		"/C/Recoeve/gradle.gitignore",
-		"/C/Gradle/gradle-8.1.1/bin/gradle.bat",
-		"/C/Recoeve/CDN/favicon.ico",
-		"/C/blog/posts/Physics,Math/텐서와 상대론 (Tensor and Relativity) - 0 텐서 (What is Tensor) 란.html",
-		"/C/Users/kipac/Downloads/transactions_history_2023-06-04T02_41_07.658Z.csv",
-		"/C/Recoeve/sources/recoeve/db/html/redirect.html",
-		"/C/Recoeve/sources/recoeve/db/html/404.html",
-		"/C/Recoeve/sources/recoeve/db/html/log-in snippet.html",
-		"/C/Recoeve/sources/recoeve/db/html/log-in-first.html",
-		"/C/Recoeve/sources/recoeve/db/html/desc.html",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/img.sublime-snippet",
-		"/C/docuK/SEE (Super Easy Edit of docuK).html",
-		"/C/docuK/README.md",
-		"/C/blog/posts/Recoeve.net/jquery.min.js pending problem.html",
 		"/C/Recoeve/CDN/right-to-commit-suicide.html",
-		"/C/Recoeve/CDN/jquery.js",
-		"/C/Recoeve/CDN/jquery.min.js",
-		"/C/Recoeve/CDN/jquery-3.7.0.min.js",
-		"/C/blog/posts/사회,정치,경제/고통없이-죽는-방법-안락사-방법-자살할-권리.html",
-		"/C/blog/posts/IT,Programming/삼성 노트북 9L32OPT 중고 판매 (안산시 단원구 고잔동) 당근마켓.html",
-		"/C/blog/posts/IT,Programming/기계 학습 (Machine Learning - Deep Learning).html",
-		"/C/Users/kipac/AppData/Local/Microsoft/Windows/INetCache/IE/4A7ZOQI4/20230601_082923[1].jpg",
-		"/C/blog/posts/IT,Programming/정렬법 (Sorting Algorithm).html",
-		"/C/blog/posts/IT,Programming/인터넷, Web, HTML, 블로그에서 수식 사용하기 (Equation or math in HTML, blog), equations in html.html",
-		"/C/blog/posts/IT,Programming/Auto Completion, and Fuzzy Search.html",
-		"/C/blog/posts/IT,Programming/인스타그램 (Instagram) 퍼오는 법, instagram embed, iframe, home.html",
-		"/C/blog/posts/IT,Programming/Open AI chatbot ChatGPT 가 신 (GOD) 이 될 수 있을까.html",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/iframe.sublime-snippet",
-		"/C/blog/posts/IT,Programming/2023 AI 그림 사이트 (그림 그려주는 AI) 정리.html",
-		"/C/blog/posts/사회,정치,경제/깨달음.html",
-		"/C/blog/posts/Break,Music/구하라의 On and Off (온앤오프) at MBC Music.html",
-		"/C/blog/posts/Break,Music/구하라의 on and off (온앤오프) 전편.html",
-		"/C/blog/posts/Break,Music/릴 에이블 (lil AIBLE) 사용 설명서.html",
-		"/C/blog/posts/Physics,Math/Method of Lagrange multipliers.html",
-		"/C/blog/posts/Physics,Math/최적화, 라그랑지 승수법 (Optimization with the Method of Lagrange multipliers).html",
-		"/C/blog/posts/사회,정치,경제/고위공직자 및 국회의원 정기 재산 신고 사항 (2011~2015), government officials property.html",
-		"/C/blog/posts/사회,정치,경제/당신은 상위 몇 입니까 (고위직 재산 통계), How rich are you.html",
-		"/C/blog/posts/IT,Programming/Sharing-URI-through-SNS.html",
-		"/C/blog/posts/Physics,Math/Entropy.html",
-		"/C/blog/posts/IT,Programming/Javascript (자바스크립트) async 와 await.html",
-		"/C/blog/slabs/Guessing a distance from wifi with signal strength (rssi).html",
-		"/C/blog/posts/Physics,Math/Runge-Kutta method, Matrix exponential.html",
-		"/C/blog/posts/Recoeve.net/Recoeve.net page loading and scrollTop Error.html",
-		"/C/blog/posts/Physics,Math/수면의 과학 (Science of Sleeping).html",
-		"/C/blog/posts/사회,정치,경제/정신과 의사 되는 방법 (How to become a psychiatrist).html",
-		"/C/blog/posts/Physics,Math/Truncated many-body dynamics of interacting bosons - A variational principle with error monitoring.html",
-		"/C/blog/posts/IT,Programming/Installing and Learning JAVA.html",
-		"/C/blog/posts/IT,Programming/Learning MySQL (Structured Query Language).html",
-		"/C/Recoeve/Recoeve setting.html",
-		"/C/blog/posts/IT,Programming/HTML a href tag with onclick return.html",
-		"/C/blog/posts/사회,정치,경제/예수 그리스도 수난 15기도.html",
-		"/C/blog/posts/IT,Programming/Learning Vert.x.html",
-		"/C/blog/posts/IT,Programming/Sublime Text (editor) 소개.html",
-		"/C/blog/posts/IT,Programming/java.time.LocalDateTime to SQL type.html",
-		"/C/docuK/docuK All in one.html",
-		"/C/docuK/backup/2.2/docuK short copiable version.html",
-		"/C/docuK/test.html",
-		"/C/Recoeve/sources/recoeve/db/html/cookie-test.html",
+		"/C/Recoeve/sources/recoeve/http/Recoeve.java",
+		"/C/Recoeve/sources/recoeve/db/RecoeveDB.java",
+		"/C/docuK/docuK-postProcess-2.3.js",
+		"/C/Recoeve/sources/recoeve/db/html/user-page.html",
+		"/C/Recoeve/sources/recoeve/db/html/prepare.js",
+		"/C/docuK/docuK-prepare-2.3.js",
 		"/C/Recoeve/Recoeve Database setup.html",
-		"/C/Users/kipac/OneDrive/문서/Recoeve.net.logs.txt",
-		"/C/Users/kipac/OneDrive/문서/Recoeve.net.logs.full.txt",
-		"/C/Recoeve/sources/recoeve/db/html/changePwd.html",
-		"/C/Recoeve/sources/recoeve/db/html/robots.txt",
-		"/C/blog/nodejs/node.js-mysql-1/node_modules/yallist/iterator.js",
 		"/C/Recoeve/sources/recoeve/db/html/lang.txt",
-		"/C/Recoeve/sources/recoeve/db/html/jquery.min.js",
-		"/C/Recoeve/CDN/prepare.js",
-		"/C/Recoeve/runJava.bat",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/runJavaC.sublime-build",
-		"/C/Recoeve/sources/recoeve/db/html/log-in.js",
-		"/C/Recoeve/CDN/docuK-prepare-2.3.js",
-		"/C/blog/style.css",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/eq.sublime-snippet",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/li.sublime-snippet",
+		"/C/Recoeve/sources/recoeve/db/Categories.java",
+		"/C/blog/posts/IT,Programming/Rotating circles using CSS.html",
+		"/C/Recoeve/sources/recoeve/db/html/log-out.html",
+		"/C/blog/Lists.html",
+		"/C/blog/posts/IT,Programming/For loop examples in JAVA and Javascript.html",
+		"/C/Recoeve/Recoeve Feedbacks, Error reports, and Suggestions.html",
+		"/C/Recoeve/sources/recoeve/db/NeighborList.java",
 		"/C/Recoeve/.gitattributes",
-		"/C/Recoeve/my.ini",
-		"/C/Recoeve/my.cnf",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/eqq.sublime-snippet",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/aWithBlank.sublime-snippet",
-		"/C/Recoeve/sublime-project.sublime-project",
-		"/C/Users/kipac/AppData/Local/Temp/Temp1_kipid.zip/src/test/java/recoeve/net/TestMainVerticle.java",
-		"/C/Recoeve/runVertx.bat",
-		"/C/Recoeve/runJavaC.bat",
-		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/a with blank.sublime-snippet",
-		"/C/blog/posts/IT,Programming/Vertx 로 https (SSL-TLS) server 만들기.html",
-		"/C/Recoeve/sources/recoeve/db/html/Theory of Cold Atoms - Seoul National University (SNU).html"
+		"/C/blog/posts/Recoeve.net/Time zone table-setting.html",
+		"/C/Recoeve/sources/recoeve/db/StrArray.java",
+		"/C/docuK/pure SEE copiable.html",
+		"/C/blog/nodejs/openssl-master/test/cms-examples.pl",
+		"/C/Recoeve/sources/recoeve/db/FileMap.java",
+		"/C/Recoeve/sources/recoeve/db/FileMapWithVar.java",
+		"/C/Recoeve/sources/recoeve/db/html/back-up/user-page 2015-11-20.html",
+		"/C/blog/posts/Recoeve.net/Neighbors points plot plan (svg).html",
+		"/C/blog/nodejs/openssl-master/doc/man7/openssl-core_dispatch.h.pod",
+		"/C/Recoeve/sources/recoeve/http/PrintLog.java",
+		"/C/blog/posts/IT,Programming/Learning MySQL (Structured Query Language).html",
+		"/C/Recoeve/sources/recoeve/db/back up/OldUpdateNeighbors.java",
+		"/C/docuK/Promoting recoeve.net, 서울덕은치과, 이숨정신과병원 in DocuK SEE (Super Easy Edit).html",
+		"/C/blog/nodejs/openssl-master/Configurations/platform/BASE.pm",
+		"/C/Recoeve/sources/recoeve/db/UriList.java",
+		"/C/blog/posts/IT,Programming/Javascript (자바스크립트) async 와 await.html",
+		"/C/blog/posts/사회,정치,경제/시급, 일급, 월급, 연봉 자동 환산기, 계산기 (최저임금).html",
+		"/C/Recoeve/sources/kipid/hello/HeapSort.java",
+		"/C/Recoeve/sources/recoeve/db/HeapSortUpto.java",
+		"/C/Recoeve/sources/recoeve/db/Similarity.java",
+		"/C/Recoeve/Recoeve setting.html",
+		"/C/Recoeve/mysqldump cmd.txt",
+		"/C/blog/posts/Physics,Math/Runge-Kutta method, Matrix exponential.html",
+		"/C/Recoeve/gradlew",
+		"/C/blog/posts/Physics,Math/엔트로피 (Entropy) 개념에 대한 이해.html",
+		"/C/blog/posts/IT,Programming/2023 AI 그림 사이트 (그림 그려주는 AI) 정리.html",
+		"/C/blog/posts/사회,정치,경제/지구는 어느정도의 인구수까지 수용가능할까.html",
+		"/C/blog/posts/Break,Music/MBC M드로메다 스튜디오-게임광규리-남규리.html",
+		"/C/docuK/docuK-2.3.css",
+		"/C/blog/posts/Recoeve.net/Timezone table test.html",
+		"/C/Recoeve/sources/recoeve/db/Points.java",
+		"/C/blog/slabs/sources/kipid/hello/ToNumberTest.java",
+		"/C/blog/nodejs/VtoV-test/public/html/index.html",
+		"/C/blog/works-to-do.html",
+		"/C/Recoeve/.gitignore",
+		"/C/blog/posts/Physics,Math/Second quantization of many-body Quantum mechanics.html",
+		"/C/blog/posts/IT,Programming/Implementing multicursor like sublime text Ctrl+D in HTML javascript textarea.html",
+		"/C/blog/slabs/To correct inaccurate location measured by GPS with Wi-Fi RSSI (Received Signal Strength Indicatior). (Wi-Fi 신호세기를 이용해 GPS 튀는거 잡는 방법.).html",
+		"/C/blog/posts/IT,Programming/Installing and Learning JAVA.html",
+		"/C/Recoeve/sources/recoeve/db/html/log-in.html",
+		"/C/blog/posts/IT,Programming/Career Portfolio - 이강수.html",
+		"/C/Recoeve/sources/recoeve/db/html/remember-me.html",
+		"/C/Recoeve/sources/recoeve/db/html/to-log-in.html",
+		"/C/Recoeve/sources/recoeve/db/html/signed-up.html",
+		"/C/Recoeve/sources/recoeve/db/html/changePwd.html",
+		"/C/Recoeve/sources/recoeve/db/html/verify.html",
+		"/C/vertx/conf/logging.properties",
+		"/C/Recoeve/example.bat",
+		"/C/vertx/bin/vertx.bat",
+		"/C/Windows.old/Users/kipac/AppData/Local/Temp/vertx.log",
+		"/C/Windows.old/Users/kipac/AppData/Local/Temp/JavaLauncher.log",
+		"/C/Windows.old/Users/kipac/AppData/Local/Temp/StructuredQuery.log",
+		"/C/Windows.old/Users/kipac/AppData/Local/Temp/MpCmdRun.log",
+		"/C/blog/posts/IT,Programming/example.bat",
+		"/C/blog/nodejs/openssl-master/crypto/ripemd/rmd_dgst.c",
+		"/C/vertx/bin/vertx",
+		"/C/blog/posts/IT,Programming/인스타그램 (Instagram) 퍼오는 법, instagram embed, iframe, home.html",
+		"/C/blog/posts/Physics,Math/Truncated many-body dynamics of interacting bosons - A variational principle with error monitoring.html",
+		"/C/blog/posts/Recoeve.net/AWS_요금_since_2023-06-04.csv",
+		"/G/내 드라이브/iris/lemon/src/main/java/com/wisefour/iris/lemon/protoutil/WifiUtil.java",
+		"/G/내 드라이브/iris/android/sdk/src/main/java/com/wisefour/iris/android/sdk/model/signal/WifiSignal.java",
+		"/C/Recoeve/sources/kipid/test/WifiUtil.java",
+		"/G/내 드라이브/iris/lemon/src/test/java/com/wisefour/iris/lemon/protoutil/WifiUtilTest.java",
+		"/C/Recoeve/sources/kipid/test/signal.proto",
+		"/G/내 드라이브/iris/onion/src/main/proto/signal.proto",
+		"/G/내 드라이브/iris/pipeline/build/extracted-include-protos/main/signal.proto",
+		"/G/내 드라이브/iris/pipeline/build/extracted-include-protos/test/signal.proto",
+		"/G/내 드라이브/iris/android/sdk/src/main/java/com/wisefour/iris/android/sdk/model/signal/Signal.java",
+		"/G/내 드라이브/iris/lemon/src/main/java/com/wisefour/iris/lemon/protoutil/ProtoUtil.java",
+		"/G/내 드라이브/iris/android/sdk/src/test/java/com/wisefour/iris/android/sdk/model/signal/WifiSignalTest.java",
+		"/C/Recoeve/sources/kipid/test/HttpCookieTest.java",
+		"/G/내 드라이브/iris/android/sdk/src/main/java/com/wisefour/iris/android/sdk/receiver/WifiScanReceiver.java",
+		"/C/blog/slabs/sources/kipid/hello/data/EnumTest.java",
+		"/C/blog/slabs/sources/kipid/hello/CalendarTest.java",
+		"/C/blog/posts/Physics,Math/지구 기후정보 (기온, 바람, 해류) 관련 - 바람-온도 지도.html",
+		"/C/blog/posts/IT,Programming/CSS position-absolute-left-right-test.html",
+		"/C/blog/posts/IT,Programming/Learning Git (버전관리 시스템인 깃 배우기).html",
+		"/C/Recoeve/sources/recoeve/db/Encrypt.java",
+		"/C/blog/posts/Recoeve.net/introducing what we are making, recoeve.net.html",
+		"/C/blog/posts/IT,Programming/Email by JAVA (자바 프로그램을 이용해 이메일 보내기, javax.mail.jar).html",
+		"/C/Recoeve/sources/recoeve/http/NaverMail.java",
+		"/C/blog/posts/Physics,Math/괄호, 중괄호, 대괄호 LaTeX equation 크기별 구분.html",
+		"/C/blog/posts/Physics,Math/A Proof of the Kahn-Kalai Conjecture (expectation threshold conjecture).latex",
+		"/C/blog/posts/Physics,Math/A Proof of the Kahn-Kalai Conjecture (expectation threshold conjecture).html",
+		"/C/blog/posts/사회,정치,경제/법령 - 형법 전문 (The whole script of criminal law of Korea).html",
+		"/C/blog/posts/사회,정치,경제/민사 소송법 전문 (The whole script of Code of Civil Procedure of Korea).html",
+		"/C/blog/posts/사회,정치,경제/국정원 대선개입 수사 - 서울경찰청 사이버 범죄수사대 디지털 증거분석실 CCTV 녹취록.html",
+		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/video.sublime-snippet",
+		"/C/Users/kipac/AppData/Roaming/Sublime Text/Packages/User/iframe.sublime-snippet",
+		"/C/blog/posts/Physics,Math/Conjecture about the Unification between Electro-Magnetic Lorentz force and Gravity.html",
+		"/C/blog/posts/Physics,Math/Proof of Geometrization and Poincaré conjectures, by Grigori Perelman (푸앵카레 추측 증명 by 페렐만).html",
+		"/C/blog/posts/IT,Programming/삼성 노트북 9L32OPT 중고 판매 (안산시 단원구 고잔동) 당근마켓.html",
+		"/C/blog/posts/IT,Programming/HTTP Cookie in Web HTML Javascript and Server.html",
+		"/C/blog/posts/IT,Programming/Sublime Text (editor) 소개.html",
+		"/C/blog/posts/사회,정치,경제/예수 그리스도 수난 15기도.html",
+		"/C/blog/posts/Physics,Math/리드 추측 (Read's conjecture) 과 로타 추측 (Rota-Heron-Welsh conjecture).html",
+		"/C/blog/posts/Physics,Math/텐서와 상대론 (Tensor and Relativity) - 0 텐서 (What is Tensor) 란.html",
+		"/C/blog/posts/Break,Music/릴 에이블 (lil AIBLE) 사용 설명서.html",
+		"/C/blog/posts/IT,Programming/SNS 로 URI 링크 내보내기-공유하기 (Sharing a URI link through SNS).html",
+		"/C/blog/posts/IT,Programming/HTML 에서 동영상 연속 재생하기 (playlist, shuffle, replay).html",
+		"/C/blog/posts/사회,정치,경제/동성애, LGBT 관련 개인의견.html",
+		"/C/blog/posts/사회,정치,경제/금융 종결자 (참고 책-화폐전쟁) by rokiroki.html",
+		"/C/blog/posts/Physics,Math/물리학자들의 명언들 (Physicist Quotations or Sayings).html",
+		"/C/blog/posts/사회,정치,경제/공정한 경제란 무엇일까 - 1 두 명만으로 구성된 사회에서의 경제성장.html",
+		"/C/Users/kipac/Downloads/2203.17207",
+		"/C/blog/posts/IT,Programming/인터넷, Web, HTML, 블로그에서 수식 사용하기 (Equation or math in HTML, blog), equations in html.html",
+		"/C/blog/nodejs/VtoV-test/public/html/nearest-get.html",
+		"/C/blog/nodejs/VtoV-test/main.js",
+		"/C/blog/nodejs/VtoV-test/public/html/hotspot-post.html"
 	],
 	"find":
 	{
-		"height": 29.3333333333
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -319,134 +688,134 @@
 		"case_sensitive": true,
 		"find_history":
 		[
-			"vertxVersion",
-			"  ",
-			"    ",
-			"   ",
-			"  ",
-			"else {\n\t\t\treq.response().putHeader(\"Content-Type\",\"text/plain; charset=utf-8\");\n\t\t\treq.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);\n\t\t\tSystem.out.println(INVALID_ACCESS+\" (Referer not allowed.)\");\n\t\t}",
-			"cookie",
-			"lang",
-			"docCookies",
-			"m.docCookies",
-			"goto",
+			"getAndShowDefsAndRecoInNewReco",
+			"$input_uri.on(\"",
+			"getAndFillRecoInNewReco",
+			"getAndShowMyRecoInNewReco",
+			"uriRendered",
+			"getAndShowDefsAndRecoInNewReco",
+			"$input_uri",
+			"Done",
+			"BlogStat",
+			"router0",
+			"class=\"reco",
+			".getBoolean(",
+			"remember-me.do",
+			"m.docCookies.removeItem",
+			"rmb_me",
+			"TIMDDIFF",
+			"\tTimestamp",
+			"nbRevExists",
+			"nbExists",
+			"\tTimestamp",
+			"Timestamp",
+			"OLD",
+			"m.delayedLogOut",
+			"log-out",
+			", 27",
+			"m.delayedLogOut",
+			"{e",
+			", 27",
+			"delayedLogOut",
+			"Hide",
+			"m.toggleFK",
+			"65",
+			"recoToEve",
+			"msg",
+			"catsChanged",
+			"recoByOnlyStars",
+			"strHeads",
+			"val",
+			"result",
+			"valStr",
+			"get-Neighbors",
+			"contains",
+			".remove",
+			"updateNeighborListFrom",
+			"eighborListFrom",
+			"rSneighborListFrom",
+			"rSneighborListTo",
+			"rSneighborListFrom",
+			"putNeighborWithScanAll",
+			".outer",
+			"m.playLi",
+			"let pHeight=$playlist_container.height();",
+			"m.fsToRs.playNext",
+			"B=",
+			"user_to",
+			"nbRevExists",
+			"nbTScanAll",
+			"pstmtDelNeighborListTo",
+			"user_to_str",
+			"neighborList.get(j, 0)",
+			"user_to_str",
+			"recentestsSet",
+			"getNeighborList",
+			"neighborListFrom",
+			"putNeighborWithScanAll",
+			"putNeighbor",
+			"pstmtPutNeighbor",
+			"pts_from",
+			"reco_from",
+			"pts_to_corresponding",
+			"reco_to_corresponding",
+			"RecoStat",
+			"// ",
+			"\t// ",
+			"user_to",
+			"_to",
+			"_i",
+			"to",
 			"user_i",
-			"sessionPassed",
-			"cookie",
-			"method",
-			"path",
-			"refererAllowed",
-			"lang",
-			"FileMap",
-			"PrintLog",
-			"FileMap",
-			"HttpServerRequest",
-			"Handler",
-			"HttpServerRequest",
-			"@media",
-			"#menubar_wrapper",
-			"$window.on(\"res",
-			"@media only screen and (max-width:1260px) {",
-			"@media only screen ",
-			"@media only screen",
-			"@media only screen and (max-width:1260px) {\n\t.menu_toolbar {display:inline-block; position:fixed; top:15px; right:70px}\n}",
-			".docuK #floating-key, .docuK #toggle-floating-key",
-			"#fuzzy-search-list",
-			"#floating-key",
-			"floating-key",
-			"#floating-key {",
-			"font-size",
-			"/CDN/link.png",
-			"https://tistory1.daumcdn.net/tistory/1468360/skin/images/",
-			"em",
-			"<div class=\"shortkey\">\n\tShort Keys",
-			"<ul>",
-			"menu_toolbar",
-			".menu_toolbar",
-			".#menubar.menu_toolbar",
-			"block",
-			"@media all",
-			"@media",
-			"fuzzy-search-list",
-			"#fuzzy-search-list",
-			";}",
-			"@media",
-			".button",
-			"</span></li>",
-			"Z",
-			"H",
-			"=\"floating-key\">\n\t<div id=\"button-hideFK\" class=\"button\" onclick=\"m.hideFK()\">▼ Hide</div>\n\t<div class=\"button button-Go\" style=\"width:4em\" onclick=\"$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})\">\n\t\t<span class=\"bold underline\">G</span>o\n\t</div>\n\t<div class=\"button\" style=\"width:5em\" onclick=\"$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})\">\n\t\t<span class=\"bold ",
-			"div",
-			"class=\"button\" ",
-			"shortkey",
-			"=\"floating-key\">\n\t<div id=\"button-hideFK\" class=\"button\" onclick=\"m.hideFK()\">▼ Hide</div>\n\t<div class=\"button button-Go\" style=\"width:4em\" onclick=\"$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})\">\n\t\t<span clas",
-			"76",
-			"m.proc",
-			" I=",
-			"I=",
-			": ",
-			"@media",
-			"@media ",
-			"@media",
-			".menu_toolbar",
-			"#menubar menu_toolbar",
-			"m.proc",
-			"<div id=\"floating-key\">\n\t<div id=\"button-hideFK\" class=\"button\" onclick=\"m.hideFK()\">▼ Hide</div>\n\t<div class=\"button button-Go\" style=\"width:4em\" onclick=\"$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})\">\n\t\t<span class=\"bold underline\">G</span>o\n\t</div>\n\t<div class=\"button\" style=\"width:5em\" onclick=\"$window.trigger({type:'keydown', keyCode:'T'.",
-			"m.docCookies.has",
-			"//tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png\" onclick=\"m.shareSNS('kakao')\"></div></div><div class=\"button\" id=\"toggle-floa",
-			"90",
-			"F",
-			".cBoth",
-			"<div class=\"button right",
-			"html",
-			"$(elem)",
-			"m.HandleAhrefInComment",
-			"m.handle",
-			"4em",
-			"em",
-			".before",
-			"L",
-			"R",
-			"T",
-			"G",
-			"button-ToC",
-			"$button_log",
-			"$window.on(\"",
-			"$floating_key",
-			".before",
-			"2px",
-			"shareSNS",
-			".after",
-			".before",
-			"blockquote",
-			"h4",
-			"economy philosophy",
-			"https://kipid.tistory.com/entry/Guessing-a-distance-from-wifi-with-signal-strength-RSSI",
-			"Guessing a distance from wifi with signal strength (RSSI: Received Signal Strength Indicatior). GPS 튀는거 잡는 방법.",
-			"RSSI",
-			"https://kipid.tistory.com/entry/Guessing-a-distance-from-wifi-with-signal-strength-RSSI",
-			" ",
-			"wifi",
-			"Wifi",
-			"wifi",
-			"Wifi",
-			"wifi",
-			"Wifi",
-			"- ",
-			" - ",
-			"indent",
-			"kipid's blog - ",
-			"RRA",
-			"rssi",
-			"## RRA",
-			"July",
-			" ",
-			"APP_HOME",
-			"RoutingContext",
-			"ctx",
-			"router",
-			"req.response().end(INVALID_ACCESS",
-			"getCDNFile"
+			"_i",
+			"user_",
+			"table_name",
+			"Neighbor",
+			"_i",
+			"to",
+			"m.getAndFillRecoInNewReco",
+			"fillRecoInNewReco",
+			"m.fillRecoInNewReco",
+			"m.getAndShowMyRecoInNewReco",
+			"// await m.getAndShowMyRecoInNewReco",
+			"emptifyReco",
+			"showReco",
+			"recomHTML",
+			"inRecom",
+			"recoHTML",
+			"recomHTML",
+			"m.getAndShowDefsInNewReco",
+			", uri",
+			"getAndFillRecoInNewReco",
+			"getAndShowMyRecoInNewReco",
+			"getAndFillDefsInNewReco",
+			"getAndShowDefsInNewReco",
+			"getAndShowRecoInNewReco",
+			"getAndShowDefsInNewReco",
+			"getAndShowRecoInNewReco",
+			"fillDefs",
+			"m.getAndShowRecoInNewReco",
+			"getAndShowDefsAndRecoInNewReco",
+			"getAndShowDefsAndReco",
+			"getAndShowMyRecoInNewReco",
+			"getAndShowUserRecoInNewReco",
+			"showMyReco",
+			"showUserReco",
+			"showMyReco",
+			"m.getAndShowDefsAndReco",
+			"await m.getAndShowDefsAndReco",
+			"my-reco",
+			"id=\"my-reco\"",
+			"$contents.offset().top)",
+			"m.userId",
+			"my",
+			"mR",
+			"showReco",
+			"m.myId",
+			"user",
+			"uri",
+			"editOrRecoToMine",
+			"m.editOrRecoToMine"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -469,17 +838,574 @@
 		{
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "sources/recoeve/http/Recoeve.java",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 35304,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								645,
+								645
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/Java/Java.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "sources/recoeve/db/html/user-page.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 392452,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								347883,
+								347913
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										347858,
+										347859
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"region.yellowish"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										347852,
+										347853
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 150392.666667,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "sources/recoeve/db/html/user-page.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 392452,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								233919,
+								233910
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+									"1":
+									[
+										231979,
+										231980
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 76246.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				}
 			]
 		},
 		{
 			"sheets":
 			[
+				{
+					"buffer": 2,
+					"file": "sources/recoeve/db/RecoeveDB.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 105868,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								415,
+								415
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/Java/Java.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "sources/recoeve/db/html/user-page.html",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 392452,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								347034,
+								347034
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										347231,
+										347232
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"region.purplish"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										345854,
+										345855
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 149656.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 29.3333333333
+		"height": 28.0
 	},
 	"input":
 	{
@@ -505,7 +1431,7 @@
 		"cols":
 		[
 			0.0,
-			0.512209871604,
+			0.5,
 			1.0
 		],
 		"rows":
@@ -517,9 +1443,13 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 310.0
+		"height": 252.0
 	},
 	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
 	{
 		"height": 0.0
 	},
@@ -527,7 +1457,7 @@
 	"project": "sublime-project.sublime-project",
 	"replace":
 	{
-		"height": 54.6666666667
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -537,55 +1467,31 @@
 		"selected_items":
 		[
 			[
-				"Recoeve.java",
-				"Recoeve\\sources\\recoeve\\http\\Recoeve.java"
-			],
-			[
-				"cookie",
-				"blog\\posts\\IT,Programming\\HTTP Cookie in Web HTML Javascript and Server.html"
-			],
-			[
-				"prepare.js",
-				"Recoeve\\sources\\recoeve\\db\\html\\prepare.js"
+				"user-page.html",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
 			],
 			[
 				"RDB",
 				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
 			],
 			[
-				"log-in.html",
-				"Recoeve\\sources\\recoeve\\db\\html\\log-in.html"
+				"Recoeve.java",
+				"Recoeve\\sources\\recoeve\\http\\Recoeve.java"
 			],
 			[
-				"FileMap.java",
-				"Recoeve\\sources\\recoeve\\db\\FileMap.java"
+				"progress",
+				"Recoeve\\Recoeve progress.html"
 			],
 			[
-				"UnderConstru",
-				"Recoeve\\UnderConstruction.java"
+				"statisti",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
 			],
 			[
-				"FilMapWithVar",
-				"Recoeve\\sources\\recoeve\\db\\FileMapWithVar.java"
+				"commit-sui",
+				"Recoeve\\CDN\\right-to-commit-suicide.html"
 			],
 			[
-				"FileMap",
-				"Recoeve\\sources\\recoeve\\db\\FileMap.java"
-			],
-			[
-				"recoeve.java",
-				"Recoeve\\Recoeve.java"
-			],
-			[
-				"user-page.html",
-				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
-			],
-			[
-				"need-log",
-				"Recoeve\\need-log-in temp.html"
-			],
-			[
-				"docuK postProcess",
+				"docuK postP",
 				"docuK\\docuK-postProcess-2.3.js"
 			],
 			[
@@ -593,460 +1499,484 @@
 				"docuK\\docuK-prepare-2.3.js"
 			],
 			[
-				"docuK temp",
-				"docuK\\floating-key temp.html"
+				"right",
+				"Recoeve\\CDN\\right-to-commit-suicide.html"
 			],
 			[
-				"docuKcss",
-				"docuK\\docuK-2.3.css"
-			],
-			[
-				"blog style",
-				"blog\\blog style.css"
-			],
-			[
-				"blog skin",
-				"blog\\blog skin.html"
-			],
-			[
-				"",
-				"docuK\\docuK-postProcess-2.3.js"
-			],
-			[
-				"skin.html",
-				"blog\\skin.html"
-			],
-			[
-				"progress",
-				"Recoeve\\Recoeve progress.html"
-			],
-			[
-				"workstodo",
-				"blog\\works-to-do.html"
-			],
-			[
-				"docuK post",
-				"docuK\\docuK-postProcess-2.3.js"
-			],
-			[
-				"works to",
-				"blog\\works-to-do.html"
-			],
-			[
-				"성물",
-				"blog\\posts\\사회,정치,경제\\성물 반지.html"
-			],
-			[
-				"이강수",
-				"blog\\posts\\IT,Programming\\Career Portfolio - 이강수.html"
-			],
-			[
-				"lists.html",
-				"blog\\Lists.html"
-			],
-			[
-				"wifi signal",
-				"blog\\slabs\\Guessing a distance from wifi with signal strength (rssi).html"
-			],
-			[
-				"works to do",
-				"blog\\works-to-do.html"
-			],
-			[
-				"pure SEE copi",
-				"docuK\\pure SEE copiable.html"
-			],
-			[
-				"pure SEE.html",
-				"docuK\\pure SEE.html"
-			],
-			[
-				".gitig",
-				"Recoeve\\.gitignore"
-			],
-			[
-				"Unde",
-				"Recoeve\\UnderConstruction.java"
-			],
-			[
-				"404",
-				"Recoeve\\sources\\recoeve\\db\\html\\404.html"
-			],
-			[
-				"rDB",
-				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
-			],
-			[
-				"naver",
-				"Recoeve\\sources\\recoeve\\http\\NaverMail.java"
-			],
-			[
-				"tensor",
-				"blog\\posts\\Physics,Math\\텐서와 상대론 (Tensor and Relativity) - 0 텐서 (What is Tensor) 란.html"
-			],
-			[
-				"prepare",
+				"prepare.js",
 				"Recoeve\\sources\\recoeve\\db\\html\\prepare.js"
-			],
-			[
-				"U",
-				"Recoeve\\UnderConstruction.java"
-			],
-			[
-				"Reco",
-				"Recoeve\\Recoeve.java"
-			],
-			[
-				"snippet",
-				"User\\img.sublime-snippet"
-			],
-			[
-				"pure SEE",
-				"docuK\\pure SEE.html"
-			],
-			[
-				"user-page",
-				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
-			],
-			[
-				"postProcess",
-				"docuK\\docuK-postProcess-2.3.js"
-			],
-			[
-				"pureSEE",
-				"docuK\\pure SEE.html"
-			],
-			[
-				"readme",
-				"docuK\\README.md"
-			],
-			[
-				"SEE",
-				"docuK\\SEE (Super Easy Edit of docuK).html"
-			],
-			[
-				"docuKpre",
-				"docuK\\docuK-prepare-2.3.js"
-			],
-			[
-				"docuK",
-				"docuK\\docuK-2.3.css"
-			],
-			[
-				"jquery3.",
-				"Recoeve\\CDN\\jquery-3.7.0.min.js"
-			],
-			[
-				"고통",
-				"Recoeve\\CDN\\고통없이-죽는-방법-안락사-방법-자살할-권리.html"
-			],
-			[
-				"자살할",
-				"blog\\posts\\사회,정치,경제\\고통없이 죽는 방법 (안락사 방법), 자살할 권리.html"
-			],
-			[
-				"user-page.htl",
-				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
-			],
-			[
-				"Machine Learning",
-				"blog\\posts\\IT,Programming\\기계 학습 (Machine Learning - Deep Learning).html"
-			],
-			[
-				"sorting",
-				"blog\\posts\\IT,Programming\\정렬법 (Sorting Algorithm).html"
-			],
-			[
-				"equation in",
-				"blog\\posts\\IT,Programming\\equations in html.html"
-			],
-			[
-				"auto com",
-				"blog\\posts\\IT,Programming\\Auto Completion, and Fuzzy Search.html"
-			],
-			[
-				"user-p",
-				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
-			],
-			[
-				"instagram",
-				"blog\\posts\\IT,Programming\\instagram embed, iframe, home.html"
-			],
-			[
-				"iframe",
-				"User\\iframe.sublime-snippet"
-			],
-			[
-				"iframe.sublime",
-				"User\\iframe.sublime-snippet"
-			],
-			[
-				"Open AI chatbot",
-				"blog\\posts\\IT,Programming\\Open AI chatbot ChatGPT 가 신 (GOD) 이 될 수 있을까.html"
-			],
-			[
-				"AI 그림",
-				"blog\\posts\\IT,Programming\\2023 AI 그림 사이트 (그림 그려주는 AI) 정리.html"
-			],
-			[
-				"깨달음",
-				"blog\\posts\\사회,정치,경제\\깨달음.html"
-			],
-			[
-				"구하라",
-				"blog\\posts\\Break,Music\\구하라의 on and off (온앤오프) 전편.html"
-			],
-			[
-				"릴 에이블",
-				"blog\\posts\\Break,Music\\릴 에이블 (lil AIBLE) 사용 설명서.html"
-			],
-			[
-				"Method of Lagrange",
-				"blog\\posts\\Physics,Math\\Method of Lagrange multipliers.html"
-			],
-			[
-				"라그랑지",
-				"blog\\posts\\Physics,Math\\최적화, 라그랑지 승수법 (Optimization with the Method of Lagrange multipliers).html"
-			],
-			[
-				"고위공직자",
-				"blog\\posts\\사회,정치,경제\\고위공직자 및 국회의원 정기 재산 신고 사항 (2011~2015), government officials property.html"
-			],
-			[
-				"how rich are",
-				"blog\\posts\\사회,정치,경제\\당신은 상위 몇 입니까 (고위직 재산 통계), How rich are you.html"
-			],
-			[
-				"Sharing a URI",
-				"blog\\posts\\IT,Programming\\Sharing-URI-through-SNS.html"
-			],
-			[
-				"entropy",
-				"blog\\posts\\Physics,Math\\Entropy.html"
-			],
-			[
-				"async await",
-				"blog\\posts\\IT,Programming\\Javascript (자바스크립트) async 와 await.html"
-			],
-			[
-				"Guessing a distance from",
-				"blog\\slabs\\Guessing a distance from wifi with signal strength (rssi).html"
-			],
-			[
-				"Runge-Kutta method",
-				"blog\\posts\\Physics,Math\\Runge-Kutta method, Matrix exponential.html"
-			],
-			[
-				"scrollTop Error",
-				"blog\\posts\\Recoeve.net\\Recoeve.net page loading and scrollTop Error.html"
-			],
-			[
-				"sience",
-				"blog\\posts\\Physics,Math\\수면의 과학 (Science of Sleeping).html"
-			],
-			[
-				"Science of Sleeping",
-				"blog\\posts\\Physics,Math\\수면의 과학 (Science of Sleeping).html"
-			],
-			[
-				"정신과 의사",
-				"blog\\posts\\사회,정치,경제\\정신과 의사 되는 방법 (How to become a psychiatrist).html"
-			],
-			[
-				"Truncated",
-				"blog\\posts\\Physics,Math\\Truncated many-body dynamics of interacting bosons - A variational principle with error monitoring.html"
-			],
-			[
-				"Learning JAVA",
-				"blog\\posts\\IT,Programming\\Installing and Learning JAVA.html"
-			],
-			[
-				"learSQL",
-				"blog\\posts\\IT,Programming\\Learning MySQL (Structured Query Language).html"
-			],
-			[
-				"Recoeve setting",
-				"Recoeve\\Recoeve setting.html"
-			],
-			[
-				"onclick return",
-				"blog\\posts\\IT,Programming\\HTML a href tag with onclick return.html"
-			],
-			[
-				"15기도",
-				"blog\\posts\\사회,정치,경제\\예수 그리스도 수난 15기도.html"
-			],
-			[
-				"lear vert",
-				"blog\\posts\\IT,Programming\\Learning Vert.x.html"
-			],
-			[
-				"sublime",
-				"blog\\posts\\IT,Programming\\Sublime Text (editor) 소개.html"
-			],
-			[
-				"LocalDateTime to SQL type",
-				"blog\\posts\\IT,Programming\\java.time.LocalDateTime to SQL type.html"
-			],
-			[
-				"recoeve progress",
-				"Recoeve\\Recoeve progress.html"
-			],
-			[
-				"short copi",
-				"docuK\\backup\\2.2\\docuK short copiable version.html"
-			],
-			[
-				"docuK all in",
-				"docuK\\docuK All in one.html"
-			],
-			[
-				"docuK All",
-				"docuK\\docuK All in one.html"
-			],
-			[
-				"cookie.html",
-				"Recoeve\\sources\\recoeve\\db\\html\\cookie-test.html"
-			],
-			[
-				"docuK prepa",
-				"docuK\\docuK-prepare-2.3.js"
-			],
-			[
-				"docuK postP",
-				"docuK\\docuK-postProcess-2.3.js"
-			],
-			[
-				"NaverMa",
-				"Recoeve\\sources\\recoeve\\http\\NaverMail.java"
-			],
-			[
-				"database",
-				"Recoeve\\Recoeve Database setup.html"
-			],
-			[
-				"Recoevjava",
-				"Recoeve\\Recoeve.java"
-			],
-			[
-				"robots.txt",
-				"Recoeve\\sources\\recoeve\\db\\html\\robots.txt"
-			],
-			[
-				"SQL type",
-				"blog\\posts\\IT,Programming\\java.time.LocalDateTime to SQL type.html"
-			],
-			[
-				"Iter",
-				"blog\\nodejs\\node.js-mysql-1\\node_modules\\yallist\\iterator.js"
-			],
-			[
-				"user-pa",
-				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
-			],
-			[
-				"Recoeve.jaa",
-				"Recoeve\\Recoeve.java"
-			],
-			[
-				"NaverMail.java",
-				"Recoeve\\sources\\recoeve\\http\\NaverMail.java"
-			],
-			[
-				"changePWd.hml",
-				"Recoeve\\sources\\recoeve\\db\\html\\changePwd.html"
 			],
 			[
 				"lang.txt",
 				"Recoeve\\sources\\recoeve\\db\\html\\lang.txt"
 			],
 			[
-				"jquery.min",
-				"Recoeve\\sources\\recoeve\\db\\html\\jquery.min.js"
+				"Categories",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
 			],
 			[
-				".gitignore",
-				"Recoeve\\.gitignore"
+				"databae",
+				"Recoeve\\Recoeve Database setup.html"
 			],
 			[
-				"learvert",
-				"blog\\posts\\IT,Programming\\Learning Vert.x.html"
+				"circle",
+				"blog\\posts\\IT,Programming\\Rotating circles using CSS.html"
 			],
 			[
-				"runJava.bat",
-				"Recoeve\\runJava.bat"
-			],
-			[
-				"fileMap",
-				"Recoeve\\sources\\recoeve\\db\\FileMap.java"
-			],
-			[
-				"CDN\\docuKprepare",
-				"Recoeve\\CDN\\docuK-prepare-2.3.js"
-			],
-			[
-				"vertx.bat",
-				"vertx\\bin\\vertx.bat"
-			],
-			[
-				"learni vert.x",
-				"blog\\posts\\IT,Programming\\Learning Vert.x.html"
-			],
-			[
-				"docuK postp",
-				"docuK\\docuK-postProcess-2.3.js"
-			],
-			[
-				"docuKprepa",
-				"docuK\\docuK-prepare-2.3.js"
-			],
-			[
-				"기도",
-				"blog\\posts\\사회,정치,경제\\예수 그리스도 수난 15기도.html"
-			],
-			[
-				"SEE docuK",
-				"docuK\\SEE (Super Easy Edit of docuK).html"
-			],
-			[
-				".css",
-				"blog\\style.css"
-			],
-			[
-				"SEE of docuK",
-				"docuK\\SEE (Super Easy Edit of docuK).html"
-			],
-			[
-				"log-in.htl",
-				"Recoeve\\sources\\recoeve\\db\\html\\log-in.html"
-			],
-			[
-				"ReDB",
+				"RDB.jav",
 				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
 			],
 			[
-				"Recoeve.jvaa",
-				"Recoeve\\Recoeve.java"
+				"database",
+				"Recoeve\\Recoeve Database setup.html"
 			],
 			[
-				"log-in.h",
-				"Recoeve\\sources\\recoeve\\db\\html\\log-in.html"
+				"",
+				"Recoeve\\Recoeve progress.html"
 			],
 			[
-				"worksto",
+				"log-out",
+				"Recoeve\\sources\\recoeve\\db\\html\\log-out.html"
+			],
+			[
+				"RDB.java",
+				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
+			],
+			[
+				"for loop",
+				"blog\\posts\\IT,Programming\\For loop examples in JAVA and Javascript.html"
+			],
+			[
+				"lists.html",
+				"blog\\Lists.html"
+			],
+			[
+				"Feedbacks",
+				"Recoeve\\Recoeve Feedbacks, Error reports, and Suggestions.html"
+			],
+			[
+				"log-out.html",
+				"Recoeve\\sources\\recoeve\\db\\html\\log-out.html"
+			],
+			[
+				"NeighborList.java",
+				"Recoeve\\sources\\recoeve\\db\\NeighborList.java"
+			],
+			[
+				"recoeve.java",
+				"Recoeve\\sources\\recoeve\\http\\Recoeve.java"
+			],
+			[
+				"timezone",
+				"blog\\posts\\Recoeve.net\\Time zone table-setting.html"
+			],
+			[
+				"RDB.ja",
+				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
+			],
+			[
+				"StrArray.java",
+				"Recoeve\\sources\\recoeve\\db\\StrArray.java"
+			],
+			[
+				"rotatinCSS",
+				"blog\\posts\\IT,Programming\\Rotating circles using CSS.html"
+			],
+			[
+				"pure SEE copia",
+				"docuK\\pure SEE copiable.html"
+			],
+			[
+				"css example",
+				"blog\\nodejs\\openssl-master\\test\\cms-examples.pl"
+			],
+			[
+				"FileMap",
+				"Recoeve\\sources\\recoeve\\db\\FileMap.java"
+			],
+			[
+				"FileMapWith",
+				"Recoeve\\sources\\recoeve\\db\\FileMapWithVar.java"
+			],
+			[
+				"user-page",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
+			],
+			[
+				"Categori",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
+			],
+			[
+				"pure SE copi",
+				"docuK\\pure SEE copiable.html"
+			],
+			[
+				"ReDB.java",
+				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
+			],
+			[
+				"openCat",
+				"blog\\nodejs\\openssl-master\\doc\\man7\\openssl-core_dispatch.h.pod"
+			],
+			[
+				"neighplan",
+				"blog\\posts\\Recoeve.net\\Neighbors points plot plan (svg).html"
+			],
+			[
+				"pure SEE copi",
+				"docuK\\pure SEE copiable.html"
+			],
+			[
+				"user-page.",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
+			],
+			[
+				"PrintLog.java",
+				"Recoeve\\sources\\recoeve\\http\\PrintLog.java"
+			],
+			[
+				"learnin mysql",
+				"blog\\posts\\IT,Programming\\Learning MySQL (Structured Query Language).html"
+			],
+			[
+				"updateNeighbors",
+				"Recoeve\\sources\\recoeve\\db\\back up\\OldUpdateNeighbors.java"
+			],
+			[
+				"Catego",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
+			],
+			[
+				"StrArray.ja",
+				"Recoeve\\sources\\recoeve\\db\\StrArray.java"
+			],
+			[
+				"docuKprepare",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"promoting",
+				"docuK\\Promoting recoeve.net, 서울덕은치과, 이숨정신과병원 in DocuK SEE (Super Easy Edit).html"
+			],
+			[
+				"prepare.",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"prepare",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"postprocess",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"UriList.java",
+				"Recoeve\\sources\\recoeve\\db\\UriList.java"
+			],
+			[
+				"async await",
+				"blog\\posts\\IT,Programming\\Javascript (자바스크립트) async 와 await.html"
+			],
+			[
+				"최저임금",
+				"blog\\posts\\사회,정치,경제\\시급, 일급, 월급, 연봉 자동 환산기, 계산기 (최저임금).html"
+			],
+			[
+				"Simila.java",
+				"Recoeve\\sources\\recoeve\\db\\Similarity.java"
+			],
+			[
+				"Categoi",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
+			],
+			[
+				"preparejs",
+				"Recoeve\\sources\\recoeve\\db\\html\\prepare.js"
+			],
+			[
+				"HepSort",
+				"Recoeve\\sources\\kipid\\hello\\HeapSort.java"
+			],
+			[
+				"HeapSortUpto",
+				"Recoeve\\sources\\recoeve\\db\\HeapSortUpto.java"
+			],
+			[
+				"setting",
+				"Recoeve\\Recoeve setting.html"
+			],
+			[
+				"setup",
+				"Recoeve\\Recoeve Database setup.html"
+			],
+			[
+				"HeapSortUpto.java",
+				"Recoeve\\sources\\recoeve\\db\\HeapSortUpto.java"
+			],
+			[
+				"dump",
+				"Recoeve\\mysqldump cmd.txt"
+			],
+			[
+				"Categories.java",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
+			],
+			[
+				"Similarity",
+				"Recoeve\\sources\\recoeve\\db\\Similarity.java"
+			],
+			[
+				"lan.txt",
+				"Recoeve\\sources\\recoeve\\db\\html\\lang.txt"
+			],
+			[
+				"HeapSort",
+				"Recoeve\\sources\\kipid\\hello\\HeapSort.java"
+			],
+			[
+				"StrArray.jv",
+				"Recoeve\\sources\\recoeve\\db\\StrArray.java"
+			],
+			[
+				"databasesetup",
+				"Recoeve\\Recoeve Database setup.html"
+			],
+			[
+				"StrArray.jav",
+				"Recoeve\\sources\\recoeve\\db\\StrArray.java"
+			],
+			[
+				"Similarity.java",
+				"Recoeve\\sources\\recoeve\\db\\Similarity.java"
+			],
+			[
+				"Similarity.jaa",
+				"Recoeve\\sources\\recoeve\\db\\Similarity.java"
+			],
+			[
+				"rDB.java",
+				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
+			],
+			[
+				"Categories.jva",
+				"Recoeve\\sources\\recoeve\\db\\Categories.java"
+			],
+			[
+				"RBD.java",
+				"Recoeve\\sources\\recoeve\\db\\RecoeveDB.java"
+			],
+			[
+				"right to commit",
+				"Recoeve\\CDN\\right-to-commit-suicide.html"
+			],
+			[
+				"pure SEE cpi",
+				"docuK\\pure SEE copiable.html"
+			],
+			[
+				"지구 인구수",
+				"blog\\posts\\사회,정치,경제\\지구는 어느정도의 인구수까지 수용가능할까.html"
+			],
+			[
+				"AI 그림",
+				"blog\\posts\\IT,Programming\\2023 AI 그림 사이트 (그림 그려주는 AI) 정리.html"
+			],
+			[
+				"entropy",
+				"blog\\posts\\Physics,Math\\엔트로피 (Entropy) 개념에 대한 이해.html"
+			],
+			[
+				"runge",
+				"blog\\posts\\Physics,Math\\Runge-Kutta method, Matrix exponential.html"
+			],
+			[
+				"docuK",
+				"docuK\\docuK-2.3.css"
+			],
+			[
+				"Time zone",
+				"blog\\posts\\Recoeve.net\\Time zone table-setting.html"
+			],
+			[
+				"docuK postProcess",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"Timezone",
+				"blog\\posts\\Recoeve.net\\Timezone table test.html"
+			],
+			[
+				"stati",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
+			],
+			[
+				"docuK postPro",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"남규리",
+				"blog\\posts\\Break,Music\\MBC M드로메다 스튜디오-게임광규리-남규리.html"
+			],
+			[
+				"user-page.htl",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
+			],
+			[
+				"Points.java",
+				"Recoeve\\sources\\recoeve\\db\\Points.java"
+			],
+			[
+				"R.java",
+				"Recoeve\\sources\\recoeve\\http\\Recoeve.java"
+			],
+			[
+				"number",
+				"blog\\slabs\\sources\\kipid\\hello\\ToNumberTest.java"
+			],
+			[
+				"hex",
+				"blog\\nodejs\\VtoV-test\\public\\html\\index.html"
+			],
+			[
+				"docuK pepare",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"docuK2.3",
+				"docuK\\docuK-2.3.css"
+			],
+			[
+				"dock post",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"statistic",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
+			],
+			[
+				"docuKpost",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"docuK prepar",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"workso",
 				"blog\\works-to-do.html"
 			],
 			[
-				"a tag with",
-				"blog\\posts\\IT,Programming\\HTML a href tag with onclick return.html"
+				"statis",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
 			],
 			[
-				".gitigno",
-				"Recoeve\\.gitignore"
+				"최저임",
+				"blog\\posts\\사회,정치,경제\\시급, 일급, 월급, 연봉 자동 환산기, 계산기 (최저임금).html"
 			],
 			[
-				"snip",
-				"User\\eq.sublime-snippet"
+				"progress.html",
+				"Recoeve\\Recoeve progress.html"
+			],
+			[
+				"user-page.hml",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
+			],
+			[
+				"implementing multicu",
+				"blog\\posts\\IT,Programming\\Implementing multicursor like sublime text Ctrl+D in HTML javascript textarea.html"
+			],
+			[
+				"To correc",
+				"blog\\slabs\\To correct inaccurate location measured by GPS with Wi-Fi RSSI (Received Signal Strength Indicatior). (Wi-Fi 신호세기를 이용해 GPS 튀는거 잡는 방법.).html"
+			],
+			[
+				"correct in",
+				"blog\\slabs\\To correct inaccurate location measured by GPS with Wi-Fi RSSI (Received Signal Strength Indicatior). (Wi-Fi 신호세기를 이용해 GPS 튀는거 잡는 방법.).html"
+			],
+			[
+				"statistics",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
+			],
+			[
+				"learing java",
+				"blog\\posts\\IT,Programming\\Installing and Learning JAVA.html"
+			],
+			[
+				"workstodo",
+				"blog\\works-to-do.html"
+			],
+			[
+				"user-page.tml",
+				"Recoeve\\sources\\recoeve\\db\\html\\user-page.html"
+			],
+			[
+				"log-in.html",
+				"Recoeve\\sources\\recoeve\\db\\html\\log-in.html"
+			],
+			[
+				"이강수",
+				"blog\\posts\\IT,Programming\\Career Portfolio - 이강수.html"
+			],
+			[
+				"recoeve setting",
+				"Recoeve\\Recoeve setting.html"
+			],
+			[
+				"docuKprepar",
+				"docuK\\docuK-prepare-2.3.js"
+			],
+			[
+				"log-in",
+				"Recoeve\\sources\\recoeve\\db\\html\\log-in.html"
+			],
+			[
+				"to-log-in.html",
+				"Recoeve\\sources\\recoeve\\db\\html\\to-log-in.html"
+			],
+			[
+				"log-out.tml",
+				"Recoeve\\sources\\recoeve\\db\\html\\log-out.html"
+			],
+			[
+				"remember-me",
+				"Recoeve\\sources\\recoeve\\db\\html\\remember-me.html"
+			],
+			[
+				"RDG",
+				"blog\\nodejs\\openssl-master\\crypto\\ripemd\\rmd_dgst.c"
+			],
+			[
+				"kipid's",
+				"blog\\posts\\IT,Programming\\Statistics of kipid's blog.html"
+			],
+			[
+				"FileMap.java",
+				"Recoeve\\sources\\recoeve\\db\\FileMap.java"
+			],
+			[
+				"docuKpostP",
+				"docuK\\docuK-postProcess-2.3.js"
+			],
+			[
+				"인스타그램",
+				"blog\\posts\\IT,Programming\\인스타그램 (Instagram) 퍼오는 법, instagram embed, iframe, home.html"
+			],
+			[
+				"databases",
+				"Recoeve\\Recoeve Database setup.html"
+			],
+			[
+				".csv",
+				"blog\\posts\\Recoeve.net\\AWS_요금_since_2023-06-04.csv"
+			],
+			[
+				"truncated",
+				"blog\\posts\\Physics,Math\\Truncated many-body dynamics of interacting bosons - A variational principle with error monitoring.html"
+			],
+			[
+				"remember-me.html",
+				"Recoeve\\sources\\recoeve\\db\\html\\remember-me.html"
 			]
 		],
 		"width": 0.0
@@ -1076,7 +2006,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 424.0,
 	"status_bar_visible": true,
 	"template_settings":
