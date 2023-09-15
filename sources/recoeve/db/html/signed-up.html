@@ -1,28 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
-</head>
-<body>
-<h1>[--Your account is created.--]</h1>
+<h3>[--Your account is created.--]</h3>
 <div>[--Thanks for your registration. We sent a verification key to your email.--]</div>
 <div>[--ID--]: <span class="id">{--user id--}</span>, [--E-mail--]: <span class="email">{--user email--}</span></div>
 <div>[--Log in first, then click the verification link in your email.--]</div>
 <div>[--You have to verify your account within a day. Otherwise your sign-up will be evicted/canceled.--]</div>
 <div>[--This page will be moved to <a target="_blank" href="/account/log-in">log-in | sign-up</a> page in <span id="sec-left"></span> sec.--]</div>
-<script src="/jquery.js"></script>
-<script>
-let time=10;
-setInterval(function () {
-	$("#sec-left").html(time--);
-}, 1000);
-
-setTimeout(function () {
-	let fullPath=window.location.pathname+window.location.search+window.location.hash;
-	window.location.href="/account/log-in?goto="+encodeURIComponent(fullPath);
-}, 10000);
-</script>
-</body>
-</html>
