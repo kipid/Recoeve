@@ -9,6 +9,10 @@ import java.util.regex.Matcher;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.net.URLDecoder;
+
+import java.io.UnsupportedEncodingException;
+
 
 
 public class StrArray {
@@ -209,7 +213,26 @@ public class StrArray {
 		}
 		return sb.toString().trim();
 	}
-
+	public String toStringDecoded() {
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		for (int i=0;i<rowSize;i++) {
+			int colSize=this.getColSizeAtRow(i);
+			sb.append(enclose(arrayArray.get(i).get(0)));
+			for (int j=1;j<colSize;j++) {
+				sb.append("\t"+enclose(arrayArray.get(i).get(j)));
+			}
+			sb.append("\n");
+		}
+		String res=sb.toString().trim();
+		try {
+			return URLDecoder.decode(res, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			RecoeveDB.err(e);
+		}
+		return res;
+	}
 	public String toString(int[] sorted) {
 		StringBuilder sb=new StringBuilder();
 		int rowSize=this.getRowSize();

@@ -74,7 +74,7 @@ public static void main(String... args) {
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			PrintLog.req.response().end(""+PrintLog.db.putBlogVisitor(PrintLog.tNow, PrintLog.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
-			System.out.println("Recorded:\n"+inputs);
+			System.out.println("Recorded:\n"+inputs.toStringDecoded());
 		});
 	});
 
