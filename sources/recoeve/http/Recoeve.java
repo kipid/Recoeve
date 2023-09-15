@@ -254,6 +254,7 @@ public static void main(String... args) {
 
 	router.postWithRegex("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+)").handler(ctx -> { // e.g. path=/user/kipid/get-Recos
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		if (PrintLog.refererAllowed) { // referer check.
 			String userId=null;
 			try {
@@ -272,21 +273,18 @@ public static void main(String... args) {
 				switch (wildcard) {
 					case "get-Recos": // e.g. path=/user/kipid/get-Recos
 						PrintLog.req.bodyHandler((Buffer data) -> {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(PrintLog.db.getRecos(finalUserId, new StrArray(data.toString())), ENCODING);
 							System.out.println("Sended recos.");
 						});
 						break;
 					case "get-UriList": // e.g. path=/user/kipid/get-UriList
 						PrintLog.req.bodyHandler((Buffer data) -> {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(PrintLog.db.getStringCatUriList(finalUserId, new StrArray(data.toString())), ENCODING);
 							System.out.println("Sended uriLists.");
 						});
 						break;
 					case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
 						PrintLog.req.bodyHandler((Buffer data) -> {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(PrintLog.db.getStrOfNeighbors(finalUserId, data.toString(), PrintLog.tNow), ENCODING);
 							System.out.println("Sended neighbors.");
 						});
@@ -294,44 +292,37 @@ public static void main(String... args) {
 					case "cut-Neighbors": // e.g. path=/user/kipid/cut-Neighbors
 						if (PrintLog.sessionPassed) {
 							PrintLog.req.bodyHandler((Buffer data) -> {
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(PrintLog.db.cutNeighbors(finalUserId, Long.parseLong(PrintLog.cookie.get("I"), 16), data.toString()), ENCODING);
 								System.out.println("Sended neighbors.");
 							});
 						}
 						else {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end("No session.");
 							System.out.println("No session.");
 						}
 						break;
 					case "get-Recoms": // e.g. path=/user/kipid/get-Recoms
 						PrintLog.req.bodyHandler((Buffer data) -> {
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(PrintLog.db.getRecoms(finalUserId, data.toString()), ENCODING);
 							System.out.println("Sended recoms.");
 						});
 						break;
 					default:
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS);
 				}}
 				else {
-					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().end("Wrong method POST.", ENCODING);
 					System.out.println("Sended 'Wrong method' POST.");
 				}
 			}
 			else {
 				String res=FileMap.replaceStr("[--User does not exist.--] UserID="+finalUserId, PrintLog.lang);
-				PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				PrintLog.req.response().end(res, ENCODING);
 				System.out.println("Sended '"+res+"'");
 			}
 		}
 		else {
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Referer is not allowed.)");
 		}
