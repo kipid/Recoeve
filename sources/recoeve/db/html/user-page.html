@@ -4408,6 +4408,7 @@ m.showMyReco=function (r) {
 	}
 };
 m.fillRecoInNewReco=function (r, fillDefs) {
+	m.localStorage.clear();
 	if (r.has) {
 		$input_title[0].value=r.title;
 		$input_cats[0].value=r.cats;
