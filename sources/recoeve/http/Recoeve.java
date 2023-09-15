@@ -70,9 +70,9 @@ public static void main(String... args) {
 
 	router0.post("/BlogStat").handler(ctx -> { // e.g. path=/BlogStat
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			PrintLog.req.response().end(""+PrintLog.db.putBlogVisitor(PrintLog.tNow, PrintLog.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
 			System.out.println("Recorded:\n"+inputs);
 		});
@@ -80,9 +80,9 @@ public static void main(String... args) {
 
 	router0.post("/BlogStat/Get").handler(ctx -> { // e.g. path=/BlogStat/Get
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			System.out.println("from:"+inputs.get(1, "from")+", to:"+inputs.get(1, "to"));
 			String res=PrintLog.db.getBlogVisitor(inputs.get(1, "from"), inputs.get(1, "to"));
 			PrintLog.req.response().end(res, ENCODING);
@@ -150,13 +150,12 @@ public static void main(String... args) {
 	// String[] pathSplit=path.split("/");
 	router.get("/").handler(ctx -> { // path=/
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		if (PrintLog.cookie.get("I")!=null||PrintLog.cookie.get("rmbdI")!=null) {
-			PrintLog.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapMyPage(PrintLog.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
 			System.out.println("Sended user-page.html");
 		}
 		else {
-			PrintLog.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			PrintLog.req.response().end(FileMap.get("log-in.html", PrintLog.lang), ENCODING); // to "/account/log-in".
 			System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 		}
@@ -223,6 +222,7 @@ public static void main(String... args) {
 
 	router.getWithRegex("\\/user\\/([^\\/]+)(?:\\/mode\\/[^\\/]+)?").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 		if (PrintLog.refererAllowed) { // referer check.
 			String userId=null;
 			try {
@@ -234,19 +234,16 @@ public static void main(String... args) {
 				userId=ctx.pathParam("userId");
 			}
 			if (userId!=null&&!userId.isEmpty()&&PrintLog.db.idExists(userId)) {
-				PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 				PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapUserPage(PrintLog.cookie, userId)), ENCODING);
 				System.out.println("Sended user-page.html");
 			}
 			else {
 				String res=FileMap.replaceStr("<h1>[--User does not exist.--] UserID="+userId+"</h1>", PrintLog.lang);
-				PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 				PrintLog.req.response().end(res, ENCODING);
 				System.out.println("Sended '"+res+"'");
 			}
 		}
 		else {
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Referer is not allowed.)");
 		}
@@ -330,6 +327,7 @@ public static void main(String... args) {
 
 	router.post("/reco/:toDo").handler(ctx -> {
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		if (PrintLog.refererAllowed) { // referer check.
 			String toDo=ctx.pathParam("toDo");
 			System.out.println("/reco/:toDo :: toDo="+toDo);
@@ -338,7 +336,6 @@ public static void main(String... args) {
 					PrintLog.req.bodyHandler((Buffer data) -> {
 						final String uri=data.toString();
 						String res=PrintLog.db.recoDefs(uri);
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().end(res);
 						System.out.println("Sended defs of uri="+uri+".");
 					});
@@ -346,7 +343,6 @@ public static void main(String... args) {
 				case "multidefs": // path=/reco/multidefs
 					PrintLog.req.bodyHandler((Buffer data) -> {
 						String res=PrintLog.db.recoDefs(new StrArray(data.toString().trim(), false, false));
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().end(res);
 						System.out.println("Sended defs of uris.");
 					});
@@ -356,41 +352,21 @@ public static void main(String... args) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
 							String res=PrintLog.db.recoDo(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr, PrintLog.tNow);
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(res);
 							System.out.println("Do reco:\n"+recoStr);
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().end("No session.");
 						System.out.println("No session.");
 					}
 					break;
-				// case "put": // path=/reco/put
-				// 	if (PrintLog.sessionPassed) {
-				// 		PrintLog.req.bodyHandler((Buffer data) -> {
-				// 			final String recoStr=data.toString();
-				// 			String res=PrintLog.db.putReco(Long.parseLong(PrintLog.cookie.get("I"), 16), recoStr);
-				// 			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-				// 			PrintLog.req.response().end(res);
-				// 			System.out.println("Put reco:\n"+recoStr);
-				// 		});
-				// 	}
-				// 	else {
-				// 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-				// 		PrintLog.req.response().end("No session.");
-				// 		System.out.println("No session.");
-				// 	}
-				// 	break;
 				default:
-					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 			}
 		}
 		else {
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Referer is not allowed.)");
 		}
@@ -403,6 +379,7 @@ public static void main(String... args) {
 			System.out.println("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$ :: param0="+param0);
 			switch (param0) {
 				case "verify": // path=/account/verify/:userId/:token
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.sessionPassed&&PrintLog.method==HttpMethod.POST) {
 						// VeriKey check.
 						String userId=ctx.pathParam("param1");
@@ -420,13 +397,11 @@ public static void main(String... args) {
 						System.out.println("Verified:"+verified);
 						if (verified) {
 							// User is verified.
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end("You are verified.", ENCODING);
 							System.out.println("Sended 'You are verified.'.");
 						}
 						else {
 							// User is NOT verified.
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end("Wrong verification key. You are not verified.", ENCODING);
 							System.out.println("Sended 'Wrong verification key. You are not verified.'.");
 						}
@@ -438,24 +413,23 @@ public static void main(String... args) {
 						System.out.println("Sended 'Please log in first to verify your account.'.");
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Wrong method:"+PrintLog.method+")");
 					}
 					break;
 				case "changePwd": // path=/account/changePwd
+					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (PrintLog.db.checkChangePwdToken(PrintLog.req.params(), PrintLog.tNow)) {
-						PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						PrintLog.req.response().end(FileMap.get("changePwd.html", PrintLog.lang), ENCODING);
 						System.out.println("Sended changePwd.html.");
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS);
 					}
 					break;
 				case "getNewSalt": // path=/account/getNewSalt
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							final String dataStr=data.toString();
@@ -467,30 +441,27 @@ public static void main(String... args) {
 								System.out.println("tokenChecked: "+tokenChecked);
 								if (tokenChecked) {
 									String new_salt=PrintLog.db.getNewPwdSalt("id", id);
-									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end(new_salt, ENCODING);
 									System.out.println("Sended new password_salt: "+new_salt+".");
 								}
 								else {
-									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end("Invalid token.", ENCODING);
 									System.out.println("Invalid token.");
 								}
 							}
 							else {
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 								System.out.println(INVALID_ACCESS+" (Invalid form: no tab.)");
 							}
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid method: "+PrintLog.method+")");
 					}
 					break;
 				case "changePwd.do": // path=/account/changePwd.do
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							BodyData inputs=new BodyData(data.toString());
@@ -499,55 +470,45 @@ public static void main(String... args) {
 								System.out.println("Token is verified. User ID: "+inputs.get("userId"));
 								if (PrintLog.db.changePwd(inputs, PrintLog.ip, PrintLog.tNow)) {
 									final String res=FileMap.replaceStr("[--Your password is changed.--]", PrintLog.lang);
-									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 								else {
 									final String res=FileMap.replaceStr("[--Error occured during changing password. Please try again.--]", PrintLog.lang);
-									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 							}
 							else {
 								final String res=FileMap.replaceStr("[--Token is invalid.--]", PrintLog.lang);
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(res, ENCODING);
 								System.out.println("Sended "+res);
 							}
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid method: "+PrintLog.method+")");
 					}
 					break;
 				case "log-in": // path=/account/log-in
+					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (PrintLog.sessionPassed) {
-						PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapMyPage(PrintLog.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
 					else if (PrintLog.cookie.get("rmbdI")!=null) {
-						PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						PrintLog.req.response().end(FileMap.get("remember-me.html", PrintLog.lang), ENCODING);
 						System.out.println("Sended remember-me.html.");
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 						PrintLog.req.response().end(FileMap.get("log-in.html", PrintLog.lang), ENCODING);
 						System.out.println("Sended log-in.html. (No rmbd cookie)");
 					}
 					break;
 				case "pwd_iteration": // path=/account/pwd_iteration
-					if (PrintLog.sessionPassed) {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-						PrintLog.req.response().end("pwd_iteration: You are already logged in Recoeve.", ENCODING);
-						System.out.println("Sended 'You are already logged in Recoeve.'");
-					}
-					else if (PrintLog.method==HttpMethod.POST) {
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							String dataStr=data.toString();
 							int i=dataStr.indexOf("\t");
@@ -559,19 +520,18 @@ public static void main(String... args) {
 								System.out.println("Sended pwd_iteration for "+idType+" "+id+": "+iter);
 							}
 							else {
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end("Invalid form of data (no tab).", ENCODING);
 								System.out.println("Invalid form of data (no tab). dataStr: "+dataStr);
 							}
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid method: "+PrintLog.method+")");
 					}
 					break;
 				case "log-in.do": // path=/account/log-in.do
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
@@ -581,20 +541,17 @@ public static void main(String... args) {
 								for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
 									PrintLog.req.response().addCookie(singleCookie);
 								}
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end("log-in success", ENCODING);
 								System.out.println("Sended log-in success: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
 							}
 							else {
 								// Log-in failed.
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end("log-in fail", ENCODING);
 								System.out.println("log-in fail: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
 							}
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS+" (Invalid method: "+PrintLog.method+")");
 					}
@@ -605,15 +562,16 @@ public static void main(String... args) {
 					System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
 					break;
 				case "log-out.do": // path=/account/log-out.do
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					List<io.vertx.core.http.Cookie> setDelCookie1=PrintLog.db.logout(PrintLog.cookie, PrintLog.sessionPassed);
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie1) {
 						PrintLog.req.response().addCookie(singleCookie);
 					}
-					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().end("Log-out : All log-in | session in server are deleted.", ENCODING);
 					System.out.println("Sended log-out msg.");
 					break;
 				case "check": // path=/account/check
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							String dataStr=data.toString();
@@ -626,7 +584,6 @@ public static void main(String... args) {
 							System.out.println("Availability: "+idAvailable+"\t"+emailAvailable);
 							if (idAvailable&&emailAvailable) {
 								byte[] token=PrintLog.db.randomBytes(128);
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(
 									idAvailable+"\t"+emailAvailable+"\t"+(PrintLog.db.createAuthToken(PrintLog.tNow, PrintLog.ip, token)?PrintLog.tNow+"\t"+PrintLog.db.hex(token):"Token is not created.")
 								, ENCODING);
@@ -635,7 +592,6 @@ public static void main(String... args) {
 							else {
 								PrintLog.db.logsCommit(1 // `user_i`=1 for anonymous.
 									, PrintLog.tNow, PrintLog.ip, "chk", false, "ID: "+id+" ["+idAvailable+"] and E-mail: "+email+" ["+emailAvailable+"] availability check.");
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end(
 									idAvailable+"\t"+emailAvailable
 								, ENCODING);
@@ -644,28 +600,27 @@ public static void main(String... args) {
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println("check: invalid method "+PrintLog.method);
 					}
 					break;
 				case "forgotPwd": // path=/account/forgotPwd
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
 							String forgotPwd=PrintLog.db.forgotPwd(inputs, PrintLog.lang, PrintLog.tNow);
-							PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 							PrintLog.req.response().end(forgotPwd, ENCODING);
 							System.out.println("Sended forgotPwd: "+forgotPwd);
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println("forgotPwd: invalid method "+PrintLog.method);
 					}
 					break;
 				case "sign-up": // path=/account/sign-up
+					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (PrintLog.method==HttpMethod.POST) {
 						PrintLog.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
@@ -675,32 +630,27 @@ public static void main(String... args) {
 									Map<String,String> varMap=new HashMap<String,String>();
 									varMap.put("{--user id--}", inputs.get(1, "userId"));
 									varMap.put("{--user email--}", inputs.get(1, "userEmail"));
-									PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 									PrintLog.req.response().end(FileMapWithVar.get("signed-up.html", PrintLog.lang, varMap), ENCODING);
 									System.out.println("Sended signed-up.html.");
 								}
 								else {
 									final String res=FileMap.replaceStr("[--Error occured during registration. Please sign-up again.--]", PrintLog.lang);
-									PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 									PrintLog.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 							}
 							else {
-								PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 								PrintLog.req.response().end("Token is invalid.", ENCODING);
 								System.out.println("Token is invalid.");
 							}
 						});
 					}
 					else {
-						PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println("sign-up: invalid method "+PrintLog.method);
 					}
 					break;
 				default:
-					PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					PrintLog.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS+" (Invalid URI.)");
 					break;
@@ -715,10 +665,10 @@ public static void main(String... args) {
 
 	router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/log-in/remember-me.do
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			List<io.vertx.core.http.Cookie> setCookieRMB=PrintLog.db.authUserFromRmbd(PrintLog.cookie, inputs, PrintLog.ip, PrintLog.userAgent, PrintLog.tNow);
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 				PrintLog.req.response().addCookie(singleCookie);
 				System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
@@ -738,9 +688,9 @@ public static void main(String... args) {
 
 	router.post("/changeOrders/CatList").handler(ctx -> { // e.g. path=/changeOrders/CatList
 		PrintLog.printLog(ctx);
+		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			final boolean res=PrintLog.db.changeOrdersCatList(Long.parseLong(PrintLog.cookie.get("I"), 16), data.toString());
-			PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 			PrintLog.req.response().end(""+res);
 			System.out.println("Result: "+res);
 		});
