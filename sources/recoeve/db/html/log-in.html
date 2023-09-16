@@ -376,8 +376,7 @@ m.signUp=function (elem) {
 ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					userPwd=null; userPwdCfm=null;
 					$.ajax("/account/sign-up", {
-						type: "POST"
-						, data: form_data
+						type:"POST", data:form_data
 					}).done(function (resp) {
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
