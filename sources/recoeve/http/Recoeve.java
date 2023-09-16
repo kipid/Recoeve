@@ -588,6 +588,7 @@ public static void main(String... args) {
 									idAvailable+"\t"+emailAvailable+"\t"+(PrintLog.db.createAuthToken(PrintLog.tNow, PrintLog.ip, token)?PrintLog.tNow+"\t"+PrintLog.db.hex(token):"Token is not created.")
 								, ENCODING);
 								System.out.println("Both ID: "+id+" and email: "+email+" are available. So a token is created.");
+								System.out.println("tNow: "+PrintLog.tNow+"\n"+"token: "+PrintLog.db.hex(token));
 							}
 							else {
 								PrintLog.db.logsCommit(1 // `user_i`=1 for anonymous.
