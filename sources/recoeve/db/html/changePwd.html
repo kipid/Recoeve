@@ -191,6 +191,18 @@ $("input.go-next").on("keyup", function(e) {
 		$(this).next("input").focus();
 	}
 });
+
+$document.ready(function () {
+	let blogStat=`URI	referer	REACTION_GUEST
+${window.location.href}	${document.referrer}	${vars.id.val}`;
+	$.ajax({
+		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+	}).fail(function (resp) {
+		console.log("fail", resp);
+	}).done(function (resp) {
+		console.log("done", resp);
+	});
+});
 })(window.m, jQuery);
 </script>
 </body>
