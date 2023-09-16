@@ -36,7 +36,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import recoeve.http.NaverMail;
+import recoeve.http.Gmail;
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
 
@@ -613,7 +613,7 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 		if (pstmtCreateUser.executeUpdate()>0) {
 			user=findUserById(id);
 			if (user.next()) {
-				NaverMail.sendVeriKey(email, id, veriKey);
+				Gmail.sendVeriKey(email, id, veriKey);
 				updateUserClass(0, 1); // 0: Not verified yet
 				updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 				logsCommit(user.getLong("i"), tNow, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
@@ -897,7 +897,7 @@ public String forgotPwd(StrArray inputs, String lang, Timestamp tNow) {
 			user.updateTimestamp("tChangePwd", tNow);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
-			NaverMail.sendChangePwd(id, email, hex(token), lang);
+			Gmail.sendChangePwd(id, email, hex(token), lang);
 			user.updateRow();
 			return FileMap.replaceStr("[--pre sended email to--] "+encryptEmail(email)+"[--post sended email to--]", lang);
 		}
@@ -2999,10 +2999,25 @@ public void updateDefsAll(Timestamp tNow) {
 		err(e);
 	}
 }
+public void sendEmailAll() {
+	try {
+		PreparedStatement pstmtGetAllUsers=con.prepareStatement("SELECT * FROM `Users`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs=pstmtGetAllUsers.executeQuery();
+		while (rs.next()) {
+			String title="Hi, "+rs.getString("id")+". Now Recoeve.net is in beta test service stage.";
+			String msg="<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:20px'>안녕하세요? "+rs.getString("id")+" 님. 현재 Recoeve.net 은 거의 개발을 마쳐서 베터 서비스 단계에 있습니다.<br>다시 한번 방문 하셔서 Slow/Sexy/Sincere SNS 인 <a target=\"_blank\" href=\"https://recoeve.net/\">https://recoeve.net/</a> 서비스를 이용해보세요.<br><br>Hello, "+rs.getString("id")+". Now Recoeve.net (Slow/Sexy/Sincere SNS) is in beta service stage.<br>Please visit <a target=\"_blank\" href=\"https://recoeve.net/\">https://recoeve.net/</a> again, and try to use/play with it please.</span>";
+			Gmail.send(rs.getString("email"), "", title, msg);
+		}
+	}
+	catch (Exception e) {
+		err(e);
+	}
+}
 
 public static void main(String... args) {
 
 	// RecoeveDB db=new RecoeveDB();
+	// db.sendEmailAll();
 	// String now=db.now();
 	// // TRUNCATE `RecoStat`;
 	// // TRUNCATE `RecoStatDefCat`;
