@@ -1037,8 +1037,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
 	</ul>
 	</div>
-	<div style="margin:2em 0 0">Recoeve manual, How to use Multireco mode. (레코이브 사용 설명서, 다른 사람 페이지에서 멀티레코하기.)</div>
-	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe src="https://www.youtube.com/embed/sywP3H-3OUQ" frameborder="0" allowfullscreen></iframe></div></div>
+	<div style="margin:2em 0 0">Recoeve manual, How to use. (레코이브 사용 설명서, 가입하기, 다른 사람 페이지에서 multireco 하기, 내 페이지에서 자동으로 연결된 이웃들로부터 추천받기.)</div>
+	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe src="https://www.youtube.com/embed/YGadSrC2UXw" frameborder="0" allowfullscreen></iframe></div></div>
 	<div style="margin:2em 0 0">Recoeve.net 목록 재생하기, Playing MV (Music Videos) playlist.</div>
 	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe src="https://www.youtube.com/embed/t5Uc8Uyau38" frameborder="0"></iframe></div></div>
 </div><!-- div#promoting -->
@@ -3187,7 +3187,7 @@ m.reco_pointChange_do=function (args, err) {
 };
 m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("Not logged-in.", 1, $result);
+		m.delayedLogOut("Not logged-in.", 7, $result);
 		return;
 	}
 	let valStr=$str.html();
