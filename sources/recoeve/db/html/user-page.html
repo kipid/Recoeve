@@ -1530,7 +1530,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	</div>
 	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 		[--Log _i_n--]
-	</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+	</div>`:`<div class="button">Your id: ${m.escapeHTML(m.myId)}</div><div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 		[--Log _o_ut--]
 	</div>`}
 	<span class="point-range-result">0~10/10</span>
