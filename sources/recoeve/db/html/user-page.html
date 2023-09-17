@@ -1525,6 +1525,7 @@ $a_log_out=$(".a-log-out");
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hid_e_--]</div>
+	${(!m.myPage)&&m.myId?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`:""}
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
 	</div>
@@ -1568,10 +1569,6 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	</div>
 	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"></div>`)
 $button_hideFK=$("#button-hideFK");
-if ((!m.myPage)&&m.myId) {
-	$button_hideFK.after(`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`);
-}
-
 $button_auto_skip=$(".button-auto-skip");
 $button_loop=$(".button-loop");
 $button_one_loop=$(".button-one-loop");
