@@ -1029,7 +1029,7 @@ m.togglePosition=function (elem) {
 	}
 };
 m.rC=function (elemStr, option, id, noPc) {
-	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div></div>`}`;
+	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 };
 m.uriRendering=function (uri, toA, inListPlay) {
 	if (uri&&uri.constructor===String) {
