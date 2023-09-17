@@ -1127,7 +1127,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`, null, null, true), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`, "insta", null, true), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -1137,7 +1137,7 @@ ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><iframe class="tiktok" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}" sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe></div>`, null, null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
+		return {html:m.rC(`<div class="center"><iframe class="tiktok" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}" sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
 	}
 	return false;
 };
