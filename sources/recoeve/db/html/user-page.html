@@ -103,7 +103,6 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
 .block-touch-exit {z-index:31000}
 
-#not-my-page {position:fixed; z-index:50000; left:0; right:0; top:0; bottom:0; background:rgb(200,255,200,0.15); pointer-events:none}
 #right-top-log-in .button {display:inline-block; float:right}
 #choose-lang-list {display:inline-block; padding:.5em; line-height:1.5; float:right}
 
@@ -1049,7 +1048,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div id="floating-key"></div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
-<div id="not-my-page"></div>
 </body>
 <div id="scripts"></div>
 <script>
@@ -1072,13 +1070,6 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 //////////////////
 // Variables
 //////////////////
-$not_my_page=$("#not-my-page");
-if (m.myPage) {
-	$not_my_page.hide();
-}
-else {
-	$not_my_page.show();
-}
 $block_touch=$("#block-touch");
 $block_touch_exit=$("#block-touch-exit");
 $data_myCatList=$("#data-myCatList");
@@ -1531,7 +1522,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	</div>
 	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 		[--Log _i_n--]
-	</div>`:`<div class="button">Your id: ${m.escapeHTML(m.myId)}</div><div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+	</div>`:`<div class="button${m.myPage?" enabled":""}">Your id: ${m.escapeHTML(m.myId)}</div><div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 		[--Log _o_ut--]
 	</div>`}
 	<span class="point-range-result">0~10/10</span>
