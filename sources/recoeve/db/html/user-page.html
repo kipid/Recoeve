@@ -1516,15 +1516,15 @@ $a_log_out=$(".a-log-out");
 $floating_key=$("#floating-key");
 $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hid_e_--]</div>
-	${(!m.myPage)&&m.myId?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`:""}
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
-		[--Block to_u_ch--]
-	</div>
 	${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 		[--Log _i_n--]
 	</div>`:`<div class="button${m.myPage?" enabled":""}">Your id: ${m.escapeHTML(m.myId)}</div><div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 		[--Log _o_ut--]
 	</div>`}
+	${(!m.myPage)&&m.myId?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`:""}
+	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
+		[--Block to_u_ch--]
+	</div>
 	<span class="point-range-result">0~10/10</span>
 	<div class="point-range-con">
 		<div class="point-range">
