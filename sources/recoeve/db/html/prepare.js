@@ -1060,8 +1060,9 @@ m.uriRendering=function (uri, toA, inListPlay) {
 			let result=m.ptnURI[i].toIframe(uri, inListPlay); // img or video
 			if (result) { return result; }
 		}
+		return {html:(toA?m.uriToA(uri):"")};
 	}
-	return {html:(toA?m.uriToA(uri):"")};
+	return "";
 };
 
 m.YTiframe=function (v, inListPlay) {
@@ -1121,12 +1122,22 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 	return false;
 };
 
+ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
+ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`, (inListPlay&&m.fsToRs.fixed?"fixed instagram":"instagram")), from:"insta", imgId:exec[1]};
+	}
+	return false;
+};
+
 ptnURI=m.ptnURI["www.tiktok.com"]={};
 ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe class="tiktok" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}" sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed tiktok":"tiktok")), from:"tiktok", userId:exec[1], videoId:exec[2]};
+		return {html:m.rC(`<div class="center"><iframe class="tiktok" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}" sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe></div>`, (inListPlay&&m.fsToRs.fixed?"fixed tiktok":"tiktok")), from:"tiktok", userId:exec[1], videoId:exec[2]};
 	}
 	return false;
 };
@@ -1258,16 +1269,6 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 			}
 		}
 		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="no" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars.url&&vars.url.val};
-	}
-	return false;
-};
-
-ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
-ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
-ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed instagram":"instagram")), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
