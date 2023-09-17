@@ -354,7 +354,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright .rC.fixed {background:white; border-color:black}
 .rC>.rSC {box-sizing:content-box; position:relative; height:0; padding-bottom:63%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
-.rC.instagram>.rSC {padding-bottom:150%}
+.rC.instagram>.rSC, .rC.tiktok>.rSC {padding-bottom:150%; overflow-x:hidden; overflow-y:scroll}
 .rC.eveElse>.rSC {padding-bottom:80%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .rC>.pc {text-align:center; font-size:10px} /* position change */
@@ -394,7 +394,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	#my-id {margin-left:0}
 	.side2 {padding:.5em}
 	.rC.fixed {width:50%; border-right:.15em solid white}
-	.rC.instagram.fixed, .rC.eveElse.fixed {width:360px}
+	.rC.instagram.fixed, .rC.eveElse.fixed, .rC.tiktok.fixed {width:360px}
+	.rC.tiktok>.rSC {height:781px; padding-bottom:0}
+	.rC.tiktok.fixed>.rSC {padding-bottom:150%; overflow-x:hidden; overflow-y:scroll}
 	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
 }
@@ -411,6 +413,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 @media all and (min-height:500px) {
 	.fs-list {max-height:430px}
+}
+@media all and (max-height:700px) {
+	.rC.tiktok.fixed>.rSC {padding-bottom:150%; overflow-x:hidden; overflow-y:scroll}
 }
 </style>
 </head>
@@ -4683,32 +4688,29 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	if (elem.value!==uri) { elem.value=uri; }
 	let uriRendered=m.uriRendering(uri,true);
 	if (!noFormatURI) {
+		m.lastURI=uri;
 		if (uriRendered.from==="youtube") {
-			m.lastURI=uri;
 			uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
 		}
+		// else if (uriRendered.from==="tiktok") {
+		// 	uri=elem.value=`https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
+		// }
 		else if (uriRendered.from==="insta") {
-			m.lastURI=uri;
 			uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
 		}
 		else if (uriRendered.from==="naver") {
-			m.lastURI=uri;
 			uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
 		}
 		else if (uriRendered.from==="vlive") {
-			m.lastURI=uri;
 			uri=elem.value=`https://www.vlive.tv/video/${uriRendered.videoId}`;
 		}
 		else if (uriRendered.from==="kakao") {
-			m.lastURI=uri;
 			uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
 		}
 		else if (uriRendered.from==="ted") {
-			m.lastURI=uri;
 			uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
 		}
 		else if (uriRendered.from==="dailymotion") {
-			m.lastURI=uri;
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 		}
 	}

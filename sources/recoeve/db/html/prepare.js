@@ -1012,7 +1012,7 @@ m.uriToA=function (uri) {
 m.videoZIndex=10000;
 m.togglePosition=function (elem) {
 	let $elem=$(elem);
-	let $parent=$elem.parent().parent();
+	let $parent=$elem.parents(".rC");
 	if ($parent.hasClass("fixed")) {
 		$parent.removeClass("fixed");
 		$parent.css("z-index", 0);
@@ -1064,14 +1064,16 @@ m.uriRendering=function (uri, toA, inListPlay) {
 	return {html:(toA?m.uriToA(uri):"")};
 };
 
-m.YTiframe=function (v, vars, inListPlay) {
+m.YTiframe=function (v, inListPlay) {
 	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null));
 };
 
 let ptnURI;
-ptnURI=m.ptnURI["www.youtube.com"]={};
+ptnURI=m.ptnURI["www.youtube.com"]=m.ptnURI["youtube.com"]=m.ptnURI["youtu.be"]=m.ptnURI["m.youtube.com"]={};
 ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
 ptnURI.regEx1=/^shorts\/([\w-]+)/i;
+ptnURI.regEx2=/^([\w-]+)(\?\S+)?/i;
+ptnURI.regEx3=/^watch(\?\S+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 	if (exec!==null) {
@@ -1085,7 +1087,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 			v=vars.v.val;
 		}
 		if (v) {
-			return {html:m.YTiframe(v, vars, inListPlay), from:"youtube", videoId:v};
+			return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v};
 		}
 	}
 	else {
@@ -1093,49 +1095,38 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 		if (exec!==null) {
 			let v=exec[1];
 			if (v) {
-				return {html:m.YTiframe(v, null, inListPlay), from:"youtube", videoId:v};
+				return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v};
+			}
+		}
+		else {
+			exec=m.ptnURI["youtu.be"].regEx2.exec(uriRest);
+			if (exec!==null) {
+				let vars=null;
+				if (exec[2]) {
+					vars=m.getSearchVars(exec[2]);
+				}
+				return {html:m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1]};
+			}
+			else {
+				exec=m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
+				if (exec!==null) {
+					let vars=m.getSearchVars(exec[1]);
+					if (vars.v&&vars.v.val) {
+						return {html:m.YTiframe(vars.v.val, inListPlay), from:"youtube", videoId:vars.v.val};
+					}
+				}
 			}
 		}
 	}
 	return false;
 };
 
-ptnURI=m.ptnURI["youtube.com"]={};
-ptnURI.regEx=/^shorts\/([\w-]+)/i;
+ptnURI=m.ptnURI["www.tiktok.com"]={};
+ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["youtube.com"].regEx.exec(uriRest);
+	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		let v=exec[1];
-		if (v) {
-			return {html:m.YTiframe(v, null, inListPlay), from:"youtube", videoId:v};
-		}
-	}
-	return false;
-};
-
-ptnURI=m.ptnURI["youtu.be"]={};
-ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
-ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
-	if (exec!==null) {
-		let vars=null;
-		if (exec[2]) {
-			vars=m.getSearchVars(exec[2]);
-		}
-		return {html:m.YTiframe(exec[1], vars, inListPlay), from:"youtube", videoId:exec[1]};
-	}
-	return false;
-};
-
-ptnURI=m.ptnURI["m.youtube.com"]={};
-ptnURI.regEx=/^watch(\?\S+)/i;
-ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		let vars=m.getSearchVars(exec[1]);
-		if (vars.v&&vars.v.val) {
-			return {html:m.YTiframe(vars.v.val, vars, inListPlay), from:"youtube", videoId:vars.v.val};
-		}
+		return {html:m.rC(`<iframe class="tiktok" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}" sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed tiktok":"tiktok")), from:"tiktok", userId:exec[1], videoId:exec[2]};
 	}
 	return false;
 };
@@ -1150,7 +1141,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 	return false;
 };
 
-ptnURI=m.ptnURI["www.vlive.tv"]={};
+ptnURI=m.ptnURI["www.vlive.tv"]=m.ptnURI["vlive.tv"]={};
 ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
@@ -1160,32 +1151,19 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 	return false;
 };
 
-ptnURI=m.ptnURI["vlive.tv"]={};
-ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["vlive.tv"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vlive", videoId:exec[1]};
-	}
-	return false;
-};
-
-ptnURI=m.ptnURI["tv.kakao.com"]={};
+ptnURI=m.ptnURI["tv.kakao.com"]=m.ptnURI["entertain.daum.net"]={};
 ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
+ptnURI.regEx1=/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
 		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
 	}
-	return false;
-};
-
-ptnURI=m.ptnURI["entertain.daum.net"]={};
-ptnURI.regEx=/video\/([0-9]+)/i;
-ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["entertain.daum.net"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+	else {
+		exec=m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
+		if (exec!==null) {
+			return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+		}
 	}
 	return false;
 };
