@@ -1137,7 +1137,7 @@ ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
+		return {html:m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
 	}
 	return false;
 };
@@ -1147,17 +1147,17 @@ ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
 	}
 	return false;
 };
 
-ptnURI=m.ptnURI["www.vlive.tv"]=m.ptnURI["vlive.tv"]={};
-ptnURI.regEx=/^(?:video|embed)\/([0-9]+)/i;
+ptnURI=m.ptnURI["weverse.io"]={};
+ptnURI.regEx=/^(\S+)\/artist\/([0-9\-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
-	let exec=m.ptnURI["www.vlive.tv"].regEx.exec(uriRest);
+	let exec=m.ptnURI["weverse.io"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe src='https://vlive.tv/embed/${exec[1]}?autoPlay=false' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vlive", videoId:exec[1]};
+		return {html:m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]};
 	}
 	return false;
 };

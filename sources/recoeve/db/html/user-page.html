@@ -4697,11 +4697,14 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 		if (uriRendered.from==="youtube") {
 			uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="insta") {
+		else if (uriRendered.from==="instagram") {
 			uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
 		}
 		else if (uriRendered.from==="tiktok") {
 			uri=elem.value=`https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
+		}
+		else if (uriRendered.from==="weverse") {
+			uri=elem.value=`https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
 		}
 		else if (uriRendered.from==="naver") {
 			uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
