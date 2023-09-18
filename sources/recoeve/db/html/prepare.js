@@ -1127,7 +1127,7 @@ ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`, "instagram", null, true), from:"insta", imgId:exec[1]};
+		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from:"insta", imgId:exec[1]};
 	}
 	return false;
 };
@@ -1137,7 +1137,7 @@ ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
+		return {html:m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
 	}
 	return false;
 };
@@ -1147,7 +1147,7 @@ ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
 	}
 	return false;
 };
@@ -1157,7 +1157,7 @@ ptnURI.regEx=/^(\S+)\/artist\/([0-9\-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["weverse.io"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="no" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]};
+		return {html:m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]};
 	}
 	return false;
 };
@@ -1168,12 +1168,12 @@ ptnURI.regEx1=/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
 	}
 	else {
 		exec=m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
 		if (exec!==null) {
-			return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+			return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
 		}
 	}
 	return false;
@@ -1184,7 +1184,7 @@ ptnURI.regEx=/^v\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
-		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]};
 	}
 	return false;
 };
@@ -1195,7 +1195,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
 	if (exec!==null) {
 		let vars=m.getSearchVars(exec[1]);
-		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:vars.vid.val};
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:vars.vid.val};
 	}
 	return false;
 };
@@ -1236,7 +1236,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 		if (vars&&vars.language) {
 			uriRest="lang/"+vars.language.val+"/"+uriRest;
 		}
-		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
 	}
 	return false;
 };
@@ -1248,7 +1248,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 	if (exec!==null) {
 		uriRest=uriRest.substring(6);
 		let v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
-		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="no" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
 	}
 	return false;
 };
@@ -1268,7 +1268,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 				lastPath+=vars[i].key+"="+vars[i].val+"&";
 			}
 		}
-		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="no" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars.url&&vars.url.val};
+		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars.url&&vars.url.val};
 	}
 	return false;
 };
