@@ -544,8 +544,8 @@ m.heapsortRest=function (arr, key, sorted, upto, n) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
-m.delayPad=m.delayPad||256;
-m.wait=m.wait||512;
+m.delayPad=100;
+m.wait=1024;
 m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 m.previous=Date.now();
 $.fn.inView=function () {
