@@ -5916,7 +5916,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}
 	let cats=m.localStorage.getItem("cats");
 	if (vars.cats!==undefined) {
-		$input_cats[0].value=vars.cats;
+		$input_cats[0].value=vars.cats.val;
 	}
 	else if (!!cats&&cats!=='null') {
 		$input_cats[0].value=cats;
