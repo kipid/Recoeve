@@ -86,16 +86,23 @@ Based on your points on URIs (musics), you will be connected to your neighbors o
 <div class="caption p cmt">
 * 참고 링크들 (Refer my pages)<br>
 <ul>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00">[Physics/Math/Science]--Physics of kipid's Recoeve.net</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00">[음식/요리/건강]--건강 of kipid's Recoeve.net</a></li>
 </ul>
 </div>
-<div class="p">Kakao talk open chat (카카오톡 오픈 채팅방) :: <a class="wheat" target="_blank" href="https://open.kakao.com/me/kipid">open.kakao.com :: Recoeve.net 개발 관련</a></div>
-<div class="caption p cmt">Recoeve 사용 설명서/manual, How to use Multireco mode. (레코이브 사용 설명서, 다른 사람 페이지에서 멀티레코하기.)</div>
-<div class="rC"><div class="rSC">
-	<iframe delayed-src="https://www.youtube.com/embed/sywP3H-3OUQ" frameborder="0"></iframe>
+<div class="caption p cmt">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a></div>
+<div class="p bcf">Kakao talk open chat (카카오톡 오픈 채팅방) :: <a class="wheat" target="_blank" href="https://open.kakao.com/me/kipid">open.kakao.com :: Recoeve.net 개발 관련</a></div>
+<div class="caption p cmt">Recoeve manual, How to use. (레코이브 사용 설명서, 가입하기, 다른 사람 페이지에서 multireco 하기, 내 페이지에서 자동으로 연결된 이웃들로부터 추천받기.)</div>
+<div class="p rC"><div class="rSC">
+	<iframe delayed-src="https://www.youtube.com/embed/YGadSrC2UXw" frameborder="0"></iframe>
+</div></div>
+<div class="caption p cmt">Recoeve.net 유튜브 뮤비들 목록 재생하기, Playing Youtube MV (Music Videos) playlist.</div>
+<div class="p rC"><div class="rSC">
+	<iframe delayed-src="https://www.youtube.com/embed/t5Uc8Uyau38" frameborder="0"></iframe>
 </div></div>
 </div>`;
 
@@ -874,7 +881,7 @@ m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div id="shortkey" class="shortkey">
+<div id="shortkey" class="shortkey bcf">
 	Short Keys
 	<ul class="ul-short-key">
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>

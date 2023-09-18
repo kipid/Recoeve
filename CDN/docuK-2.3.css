@@ -216,7 +216,7 @@ codeprint.SEE {display:none}
 
 /* r(S)C:Ratio (Sub)Container */
 .rC {}
-.rC>.rSC {box-sizing:content-box; position:relative; height:3em; padding-bottom:63%}
+.rC>.rSC {position:relative; height:3em; padding-bottom:63%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .rC>.rSC>*>* {position:absolute; width:100%; height:100%; left:0; top:0}
 .rCfixed {position:fixed; z-index:100; top:0; right:0; width:640px; max-width:100%}
@@ -231,7 +231,7 @@ codeprint.SEE {display:none}
 .docuK figure {display:block; margin:1em 0 2em; padding:0; text-indent:0}
 .docuK figure img:not([width]) {width:auto}
 .docuK .fig {margin:1em 0; padding:1em; border:1px solid gray; text-align:center; text-indent:0; box-shadow:inset 0 0 20px white} .docuK.bright .fig {box-shadow:inset 0 0 20px black}
-.docuK img {box-sizing:content-box; max-width:100%; border:none; width:auto; height:auto; vertical-align:middle}
+.docuK img {max-width:100%; border:none; width:auto; height:auto; vertical-align:middle}
 .docuK .fig>.image {}
 .docuK .fig>.image img {display:block; margin:0 auto}
 .docuK .fig>.caption {display:inline-block; padding:0 .5em; text-align:justify; margin:0 auto; text-indent:0}
@@ -264,9 +264,9 @@ codeprint.SEE {display:none}
 	font-size:1.8em; line-height:1.0
 }
 
-.docuK ol, .docuK ul {margin:.3em 0 1.7em; padding:0} .docuK dl {margin:0 0 1em}
-.docuK ol {list-style-type:decimal} .docuK ul {list-style-type:disc}
-.docuK li, .docuK dd {margin:.3em 0 .5em 2em; color:rgb(210,210,210) !important}
+ol, ul {margin:.3em 0 1.7em; padding:0} dl {margin:0 0 1em}
+ol {list-style-type:decimal} ul {list-style-type:disc}
+li, dd {margin:.3em 0 .5em 2em; color:rgb(210,210,210) !important}
 .docuK.bright li, .docuK.bright dd {color:rgb(40,40,40) !important}
 .docuK ol.refs {counter-reset:item; list-style-type:none}
 .docuK ol.refs>li {margin:.3em 0 .5em 2em}
@@ -274,10 +274,10 @@ codeprint.SEE {display:none}
 .docuK ol.refs>li>.refN {display:none}
 .docuK ol.refs>.subsec {margin:1.5em 0 0 0}
 
-.docuK .cmt, .docuK .bcf {padding:.5em; margin:0 0 1.3em; background:rgb(15,15,15); color:white} .docuK.bright .cmt, .docuK.bright .bcf {background:rgb(200,200,200); color:black}
-.docuK .cmt {border-left:.5em solid rgb(70,0,70)}
-.docuK .bcf {border-left:.5em solid rgb(0,70,70)}
-.docuK .cmt>.p:last-child, .docuK .bcf>.p:last-child {padding-bottom:.2em}
+.cmt, .bcf {padding:.5em; margin:0 0 1.3em; background:rgb(15,15,15); color:white} .docuK.bright .cmt, .docuK.bright .bcf {background:rgb(200,200,200); color:black}
+.cmt {border-left:.5em solid rgb(70,0,70)}
+.bcf {border-left:.5em solid rgb(0,70,70)}
+.cmt>.p:last-child, .docuK .bcf>.p:last-child {padding-bottom:.2em}
 
 /* Pretty printing styles. Used with prettify.js. */
 /* Vim sunburst theme by David Leibovic */
