@@ -1673,27 +1673,29 @@ $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
 		m.queryDFFontSize();
+		if (m.browserWidth<701) {
+			m.sidebarOpened=false; // reverse setting.
+			$sidebar_dragger.show();
+			$sidebar_dragger_in.show();
+			$sidebar_exit.show();
+		}
+		else {
+			m.sidebarOpened=true; // reverse setting.
+			$sidebar_dragger.hide();
+			sidebar_dragger_in.hide();
+			$sidebar_exit.hide();
+		}
+		if (m.sidebarOpened) {
+			m.sidebarOpened=false;
+			$sidebar.css({"margina-left":-$sidebar.outerWidth()});
+		}
+		else {
+			m.sidebarOpened=true;
+			$sidebar.css({"margin-left":0});
+			$sidebar_dragger.css({display:"block", "left":0});
+		}
 	}
 	m.printDeviceInfo();
-	if (m.browserWidth<701) {
-		// resize 일 땐, 변화 무시.
-		$sidebar_dragger.show();
-		$sidebar_exit.show();
-	}
-	else {
-		m.sidebarOpened=false;
-		$sidebar_dragger.hide();
-		$sidebar_exit.hide();
-	}
-	if (m.sidebarOpened) {
-		m.sidebarOpened=false;
-		$sidebar.css({"margina-left":-$sidebar.outerWidth()});
-	}
-	else {
-		m.sidebarOpened=true;
-		$sidebar.css({"margin-left":0});
-		$sidebar_dragger.css({display:"block", "left":0});
-	}
 });
 m.sidebar_toggle=function (e) {
 	if (m.sidebarOpened) {
