@@ -1676,30 +1676,38 @@ $window.on("resize", function (e) {
 	}
 	m.printDeviceInfo();
 	if (m.browserWidth<701) {
-		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+		m.sidebarOpened=false;
 		$sidebar_dragger.css({display:"block", "left":0});
 		$sidebar_exit.hide();
 	}
 	else {
-		$sidebar.css({"margin-left":0});
+		m.sidebarOpened=true;
 		$sidebar_dragger.hide();
 		$sidebar_exit.hide();
 	}
+	if (m.sidebarOpened) {
+		$sidebar.css({"margin-left":0});
+	}
+	else {
+		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+	}
 });
 $window.trigger("resize");
-m.sidebar_show=function (e) {
-	$sidebar.css({"margin-left":0});
-	$sidebar_dragger.css({"left":$sidebar.outerWidth()});
-	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
-	$sidebar_toggle.on("click", m.sidebar_hide);
+m.sidebar_toggle=function (e) {
+	if (m.sidebarOpened) {
+		m.sidebarOpened=false;
+		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+		$sidebar_dragger.css({"left":0});
+		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	}
+	else {
+		m.sidebarOpened=true;
+		$sidebar.css({"margin-left":0});
+		$sidebar_dragger.css({"left":$sidebar.outerWidth()});
+		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
+	}
 };
-m.sidebar_hide=function (e) {
-	$sidebar.css({"margin-left":-$sidebar.outerWidth()});
-	$sidebar_dragger.css({"left":0});
-	$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
-	$sidebar_toggle.on("click", m.sidebar_show);
-};
-$sidebar_toggle.on("click", m.sidebar_show);
+$sidebar_toggle.on("click", m.sidebar_toggle);
 $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	let relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
@@ -1713,11 +1721,12 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 		$html.on("mouseup.sd touchend.sd", function () {
 			$html.off("mouseup.sd touchend.sd mousemove.sd touchmove.sd");
 			if (touch0.clientX-relativeX>$sidebar.outerWidth()/2) {
-				m.sidebar_show();
+				m.sidebarOpened=false;
 			}
 			else {
-				m.sidebar_hide();
+				m.sidebarOpened=true;
 			}
+			m.sidebar_toggle();
 		});
 	})
 });
