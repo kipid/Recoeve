@@ -1027,7 +1027,10 @@ public String sessionIter(Cookie cookie, Timestamp tNow) {
 public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 	if (cookie.get("I")!=null) {
 		long user_me=Long.parseLong(cookie.get("I"), 16);
-		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
+		String tCreate=cookie.get("tCreate");
+		if (tCreate!=null) {
+			tCreate=tCreate.replaceAll("_", " ");
+		}
 		String session=cookie.get("SSN");
 		if (tCreate!=null&&session!=null) {
 			if (checkTimeDiff(tNow, tCreate, hoursSSN*60*60)) {
