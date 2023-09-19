@@ -1113,7 +1113,6 @@ $sidebar_dragger=$("#sidebar-dragger");
 $sidebar_toggle=$("#sidebar-toggle");
 $sidebar_dragger_in=$("#sidebar-dragger-in");
 $sidebar=$("#sidebar");
-$sidebar_exit=$("#sidebar-exit");
 $catList=$("#catList");
 $change_catList_order=$("#change-catList-order");
 $change_catList_order_ok=$("#change-catList-order-ok");
@@ -1673,29 +1672,18 @@ $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
 		m.queryDFFontSize();
-		m.sidebarOpened=true;
 		if (m.browserWidth<701) {
 			$sidebar_dragger.show();
 			$sidebar_dragger_in.show();
 			$sidebar_exit.show();
 		}
 		else {
+			m.sidebarOpened=true; // reverse setting.
 			$sidebar_dragger.hide();
 			sidebar_dragger_in.hide();
 			$sidebar_exit.hide();
 		}
-		if (m.sidebarOpened) {
-			m.sidebarOpened=false;
-			$sidebar.css({"margina-left":-$sidebar.outerWidth()});
-			$sidebar_dragger.css({display:"block", "left":0});
-			$sidebar_dragger_in.css({"left":0});
-		}
-		else {
-			m.sidebarOpened=true;
-			$sidebar.css({"margin-left":0});
-			$sidebar_dragger.css({display:"block", "left":$sidebar.outerWidth()});
-			$sidebar_dragger_in.css({"left":$sidebar.outerWidth()});
-		}
+		m.sidebar_toggle({type:"none", touch:0});
 	}
 	m.printDeviceInfo();
 });
@@ -1715,7 +1703,7 @@ m.sidebar_toggle=function (e) {
 };
 $sidebar_toggle.on("click", m.sidebar_toggle);
 $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
-	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e.touch;
 	let relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
 	$html.on("mousemove.sd touchmove.sd", function (e) {
 		window.getSelection().removeAllRanges();
@@ -1735,11 +1723,6 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 			m.sidebar_toggle();
 		});
 	})
-});
-$sidebar_exit.on("click", function () {
-	$sidebar_exit.hide();
-	$sidebar.css({"margin-left":-$sidebar.outerWidth()});
-	$sidebar_dragger.css({"left":0});
 });
 
 
