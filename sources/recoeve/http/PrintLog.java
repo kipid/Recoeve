@@ -128,8 +128,6 @@ public static void printLog(RoutingContext ctx) {
 	}
 	lang=tmpLang;
 	System.out.println("Lang: "+lang);
-
-	req.response().putHeader("Permissions-Policy","ch-ua-form-factor");
 }
 
 @Override
