@@ -4048,7 +4048,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				}
 				else {
 					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-					m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					m.getAndShowRecosOnCat(cat);
 				}
 			}
