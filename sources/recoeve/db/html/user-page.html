@@ -3795,7 +3795,7 @@ m.cutNeighbors=function (str) {
 };
 m.valsStatN=21;
 m.recosShown=false;
-m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
+m.getUriListAndShowRecosOnCat=function (cat, scroll) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
 		let $cat=$("#cat-"+m.catList[cat].i);
