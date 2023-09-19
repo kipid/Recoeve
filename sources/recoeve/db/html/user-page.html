@@ -1676,13 +1676,13 @@ $window.on("resize", function (e) {
 	}
 	m.printDeviceInfo();
 	if (m.browserWidth<701) {
-		m.sidebarOpened=false;
-		$sidebar_dragger.css({display:"block", "left":0});
+		// resize 일 땐, 변화 무시.
+		$sidebar_dragger.hide();
 		$sidebar_exit.hide();
 	}
 	else {
 		m.sidebarOpened=true;
-		$sidebar_dragger.hide();
+		$sidebar_dragger.css({display:"block", "left":0});
 		$sidebar_exit.hide();
 	}
 	if (m.sidebarOpened) {
@@ -1690,6 +1690,7 @@ $window.on("resize", function (e) {
 	}
 	else {
 		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+
 	}
 });
 $window.trigger("resize");
@@ -5923,6 +5924,13 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}).done(function (resp) {
 		console.log("done", resp);
 	});
+
+	if (m.browserWidth<701) {
+		m.sidebarOpened=false;
+	}
+	else {
+		m.sidebarOpened=true;
+	}
 
 	m.initialOpen=true;
 	let vars=m.searchVars;
