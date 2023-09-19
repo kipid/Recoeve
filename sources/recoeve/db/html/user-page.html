@@ -4048,12 +4048,12 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				if (catI) {
 					let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
 					if (catUriList.down) {
-						await m.getAndShowRecosOnCat(cat);
+						m.getAndShowRecosOnCat(cat);
 					}
 					else {
 						$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
 						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-						await m.getAndShowRecosOnCat(cat);
+						m.getAndShowRecosOnCat(cat);
 					}
 				}
 				else {
