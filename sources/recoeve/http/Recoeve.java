@@ -152,7 +152,6 @@ public static void main(String... args) {
 		PrintLog.printLog(ctx);
 		PrintLog.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		if (PrintLog.cookie.get("I")!=null||PrintLog.cookie.get("rmbdI")!=null) {
-			PrintLog.req.response().putHeader("Permissions-Policy", "ch-ua-form-factor");
 			PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapMyPage(PrintLog.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
 			System.out.println("Sended user-page.html");
 		}
@@ -194,7 +193,6 @@ public static void main(String... args) {
 						break;
 					case "reco": // e.g. path=/reco
 						PrintLog.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-						PrintLog.req.response().putHeader("Permissions-Policy", "ch-ua-form-factor");
 						PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapMyPage(PrintLog.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 						break;
@@ -236,7 +234,6 @@ public static void main(String... args) {
 				userId=ctx.pathParam("userId");
 			}
 			if (userId!=null&&!userId.isEmpty()&&PrintLog.db.idExists(userId)) {
-				PrintLog.req.response().putHeader("Permissions-Policy", "ch-ua-form-factor");
 				PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapUserPage(PrintLog.cookie, userId)), ENCODING);
 				System.out.println("Sended user-page.html");
 			}
@@ -497,7 +494,6 @@ public static void main(String... args) {
 				case "log-in": // path=/account/log-in
 					PrintLog.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (PrintLog.sessionPassed) {
-						PrintLog.req.response().putHeader("Permissions-Policy", "ch-ua-form-factor");
 						PrintLog.req.response().end(FileMapWithVar.get("user-page.html", PrintLog.lang, PrintLog.db.varMapMyPage(PrintLog.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
