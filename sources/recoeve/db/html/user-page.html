@@ -5309,12 +5309,12 @@ m.showAndScrollTo=function ($recoElem) {
 	}
 	$window.scrollTop($recoElem?.offset()?.top);
 	if ($recoElem.hasClass("reco")) {
-		m.recoURI=m.unescapeHTML($recoElem.find(".textURI").html());
+		m.hashURI=m.unescapeHTML($recoElem.find(".textURI").html());
 	}
 	else if (hIID) {
-		m.recoURI=hIID;
+		m.hashURI=hIID;
 	}
-	window.location.hash=`#${encodeURIComponent(m.recoURI)}`;
+	window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 };
 m.gotoLi=async function (e, elem, k, fs) {
 	if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
@@ -5813,12 +5813,12 @@ m.processShortKey=function (e) {
 		}
 		let hIID=$hI[0].id;
 		if ($hI.hasClass("reco")) {
-			m.recoURI=m.unescapeHTML($hI.find(".textURI").html());
+			m.hashURI=m.unescapeHTML($hI.find(".textURI").html());
 		}
 		else if (hIID) {
-			m.recoURI=hIID;
+			m.hashURI=hIID;
 		}
-		window.location.hash=`#${encodeURIComponent(m.recoURI)}`;
+		window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 		$window.scrollTop($hI.offset().top);
 		break;
 	case 73: // I=73
