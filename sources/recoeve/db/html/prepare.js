@@ -624,6 +624,7 @@ if (m.sW<m.sH) {
 m.str_rmb_me='log\tsW\tsH\n'
 	+'web\t'+m.sW+'\t'+m.sH;
 m.rmb_me=function (callback, args, saveNewRecoInputs) {
+return new Promise(function (resolve, reject) {
 	if (saveNewRecoInputs) {
 		m.localStorage.setItem("uri", m.formatURI($input_uri[0].value));
 		m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
@@ -648,6 +649,7 @@ m.rmb_me=function (callback, args, saveNewRecoInputs) {
 			else {
 				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null); // null means no error.
+				resolve();
 				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
 		});
@@ -658,6 +660,7 @@ m.rmb_me=function (callback, args, saveNewRecoInputs) {
 		}
 		if (m.saltSSN&&m.session) {
 			SSNencrypt(callback, args);
+			resolve();
 			return;
 		}
 	}
@@ -681,12 +684,15 @@ m.rmb_me=function (callback, args, saveNewRecoInputs) {
 				else {
 					callback(args, resp);
 				}
+				resolve();
 			}, 1000);
 		});
 	}
 	else {
 		callback(args, "Error: No rmbdI cookie.");
+		resolve();
 	}
+});
 };
 
 
