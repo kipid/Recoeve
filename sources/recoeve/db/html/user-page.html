@@ -4037,7 +4037,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 						$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 						m.neighbors[cat_from]=neighbors;
-						await m.getUriListAndShowRecosOnCat(cat, true);
+						m.getUriListAndShowRecosOnCat(cat, true);
 						resolve();
 					});
 				}
