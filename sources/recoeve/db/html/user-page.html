@@ -3807,7 +3807,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			}
 		}
 	}
-	return new Promise(function (resolve, reject) {
+	return new Promise(async function (resolve, reject) {
 		switch (m.recoMode) {
 			case "neighbors":
 				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
@@ -4037,7 +4037,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 						$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 						m.neighbors[cat_from]=neighbors;
-						m.getUriListAndShowRecosOnCat(cat, true);
+						await m.getUriListAndShowRecosOnCat(cat, true);
 						resolve();
 					});
 				}
@@ -4053,7 +4053,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					else {
 						$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
 						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-						m.getAndShowRecosOnCat(cat);
+						await m.getAndShowRecosOnCat(cat);
 					}
 				}
 				else {
