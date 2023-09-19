@@ -3807,7 +3807,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			}
 		}
 	}
-	return new Promise(async function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		switch (m.recoMode) {
 			case "neighbors":
 				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
