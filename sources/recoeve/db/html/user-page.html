@@ -1677,23 +1677,24 @@ $window.on("resize", function (e) {
 	m.printDeviceInfo();
 	if (m.browserWidth<701) {
 		// resize 일 땐, 변화 무시.
+		$sidebar_dragger.show();
+		$sidebar_exit.show();
+	}
+	else {
+		m.sidebarOpened=false;
 		$sidebar_dragger.hide();
 		$sidebar_exit.hide();
 	}
+	if (m.sidebarOpened) {
+		m.sidebarOpened=false;
+		$sidebar.css({"margina-left":-$sidebar.outerWidth()});
+	}
 	else {
 		m.sidebarOpened=true;
-		$sidebar_dragger.css({display:"block", "left":0});
-		$sidebar_exit.hide();
-	}
-	if (m.sidebarOpened) {
 		$sidebar.css({"margin-left":0});
-	}
-	else {
-		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
-
+		$sidebar_dragger.css({display:"block", "left":0});
 	}
 });
-$window.trigger("resize");
 m.sidebar_toggle=function (e) {
 	if (m.sidebarOpened) {
 		m.sidebarOpened=false;
@@ -5931,6 +5932,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	else {
 		m.sidebarOpened=true;
 	}
+	$window.trigger("resize");
 
 	m.initialOpen=true;
 	let vars=m.searchVars;
