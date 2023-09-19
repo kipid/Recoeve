@@ -1688,11 +1688,14 @@ $window.on("resize", function (e) {
 		if (m.sidebarOpened) {
 			m.sidebarOpened=false;
 			$sidebar.css({"margina-left":-$sidebar.outerWidth()});
+			$sidebar_dragger.css({display:"block", "left":0});
+			$sidebar_dragger_in.css({"left":0});
 		}
 		else {
 			m.sidebarOpened=true;
 			$sidebar.css({"margin-left":0});
-			$sidebar_dragger.css({display:"block", "left":0});
+			$sidebar_dragger.css({display:"block", "left":$sidebar.outerWidth()});
+			$sidebar_dragger_in.css({"left":$sidebar.outerWidth()});
 		}
 	}
 	m.printDeviceInfo();
