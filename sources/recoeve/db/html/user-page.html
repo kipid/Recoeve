@@ -1675,13 +1675,11 @@ $window.on("resize", function (e) {
 		if (m.browserWidth<701) {
 			$sidebar_dragger.show();
 			$sidebar_dragger_in.show();
-			$sidebar_exit.show();
 		}
 		else {
 			m.sidebarOpened=true; // reverse setting.
 			$sidebar_dragger.hide();
-			sidebar_dragger_in.hide();
-			$sidebar_exit.hide();
+			$sidebar_dragger_in.hide();
 		}
 		m.sidebar_toggle({type:"none", touch:0});
 	}
@@ -1692,12 +1690,14 @@ m.sidebar_toggle=function (e) {
 		m.sidebarOpened=false;
 		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
 		$sidebar_dragger.css({"left":0});
+		$sidebar_toggle.css({"left":0});
 		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	}
 	else {
 		m.sidebarOpened=true;
 		$sidebar.css({"margin-left":0});
 		$sidebar_dragger.css({"left":$sidebar.outerWidth()});
+		$sidebar_toggle.css({"left":$sidebar.outerWidth()})
 		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	}
 };
@@ -5915,10 +5915,10 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	m.browserWidth=window.innerWidth;
 	if (m.browserWidth<701) {
-		m.sidebarOpened=false;
+		m.sidebarOpened=true; // reverse setting.
 	}
 	else {
-		m.sidebarOpened=true;
+		m.sidebarOpened=false; // reverse setting.
 	}
 	$window.trigger("resize");
 
