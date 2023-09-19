@@ -5320,7 +5320,7 @@ m.showAndScrollTo=function ($recoElem) {
 	}
 	else if (hIID) {
 		m.recoURI=hIID;
-		window.location.hash=`#${hIID}`;
+		window.location.hash=`#${encodeURIComponent(m.recoURI)}`;
 	}
 };
 m.gotoLi=async function (e, elem, k, fs) {
@@ -5825,7 +5825,7 @@ m.processShortKey=function (e) {
 		}
 		else if (hIID) {
 			m.recoURI=hIID;
-			window.location.hash=`#${hIID}`;
+			window.location.hash=`#${encodeURIComponent(m.recoURI)}`;
 		}
 		$window.scrollTop($hI.offset().top);
 		break;
