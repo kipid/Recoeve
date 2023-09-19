@@ -4037,7 +4037,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 						$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
 						m.neighbors[cat_from]=neighbors;
-						await m.getUriListAndShowRecosOnCat(cat, true);
+						m.getUriListAndShowRecosOnCat(cat, true);
 						resolve();
 					});
 				}
@@ -4052,8 +4052,8 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					}
 					else {
 						$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-						await m.getAndShowRecosOnCat(cat);
+						m.getUriList("cat\n"+(cat===""?"\tp":cat));
+						m.getAndShowRecosOnCat(cat);
 					}
 				}
 				else {
