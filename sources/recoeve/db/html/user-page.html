@@ -1673,14 +1673,13 @@ $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
 		m.queryDFFontSize();
+		m.sidebarOpened=true;
 		if (m.browserWidth<701) {
-			m.sidebarOpened=false; // reverse setting.
 			$sidebar_dragger.show();
 			$sidebar_dragger_in.show();
 			$sidebar_exit.show();
 		}
 		else {
-			m.sidebarOpened=true; // reverse setting.
 			$sidebar_dragger.hide();
 			sidebar_dragger_in.hide();
 			$sidebar_exit.hide();
