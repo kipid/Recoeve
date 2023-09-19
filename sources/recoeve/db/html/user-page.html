@@ -1672,11 +1672,6 @@ $window.on("resize", function (e) {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
 		m.queryDFFontSize();
-		if (m.browserWidth<701) {
-		}
-		else {
-			m.sidebarOpened=false; // reverse setting.
-		}
 		m.sidebar_toggle({type:"none", touch:0});
 	}
 	m.printDeviceInfo();
