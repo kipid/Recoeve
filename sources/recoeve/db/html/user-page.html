@@ -4300,24 +4300,27 @@ m.getUTF8Length=function (s) {
 	return len;
 };
 m.formatURI=function (uri) {
-	uri=uri.trim().replace(/[\t\n]/g," ");
-	let exec=m.ptnTag.exec(uri);
-	if (exec!==null) {
-		try {
-			let $uri=$(uri);
-			let src=$uri.attr("src");
-			if (src) {
-				uri=src;
+	if (!!uri&&uri.constructor===String) {
+		uri=uri.trim().replace(/[\t\n]/g," ");
+		let exec=m.ptnTag.exec(uri);
+		if (exec!==null) {
+			try {
+				let $uri=$(uri);
+				let src=$uri.attr("src");
+				if (src) {
+					uri=src;
+				}
+				else {
+					src=$uri.find("[src]").attr("src");
+					if (src) { uri=src; }
+				}
+			} catch (err) {
+				console.log(err);
 			}
-			else {
-				src=$uri.find("[src]").attr("src");
-				if (src) { uri=src; }
-			}
-		} catch (err) {
-			console.log(err);
 		}
+		return m.unescapeHTML(uri).trim();
 	}
-	return uri.replace(/&amp;/ig,"&").trim();
+	return "";
 };
 m.formatTitle=function (title) {
 	return title.trim().replace(/[\t\r\n]/g," ");
