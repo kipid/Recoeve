@@ -1038,34 +1038,37 @@ m.rC=function (elemStr, option, id, noPc) {
 };
 m.uriRendering=function (uri, toA, inListPlay) {
 	if (uri&&uri.constructor===String) {
-		if (uri.substring(0,4).toLowerCase()==="http") {
-			let k=4;
-			if (uri.charAt(k).toLowerCase()==='s') {
-				k++;
+		if (uri.length>6) {
+			if (uri.substring(0,4).toLowerCase()==="http") {
+				let k=4;
+				if (uri.charAt(k).toLowerCase()==='s') {
+					k++;
+				}
+				if (uri.substring(k,k+3)==="://") {
+					k+=3;
+					let l=uri.indexOf('/',k);
+					let uriHost=null;
+					let uriRest='';
+					if (l===-1) {
+						uriHost=uri.substring(k);
+					}
+					else {
+						uriHost=uri.substring(k,l);
+						uriRest=uri.substring(l+1);
+					}
+					if (m.ptnURI[uriHost]) {
+						let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest, inListPlay);
+						if (result) { return result; }
+					}
+				}
 			}
-			if (uri.substring(k,k+3)==="://") {
-				k+=3;
-				let l=uri.indexOf('/',k);
-				let uriHost=null;
-				let uriRest='';
-				if (l===-1) {
-					uriHost=uri.substring(k);
-				}
-				else {
-					uriHost=uri.substring(k,l);
-					uriRest=uri.substring(l+1);
-				}
-				if (m.ptnURI[uriHost]) {
-					let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest, inListPlay);
-					if (result) { return result; }
-				}
+			for (let i=0;i<m.ptnURI.length;i++) {
+				let result=m.ptnURI[i].toIframe(uri, inListPlay); // img or video
+				if (result) { return result; }
 			}
+			return {html:(toA?m.uriToA(uri):"")};
 		}
-		for (let i=0;i<m.ptnURI.length;i++) {
-			let result=m.ptnURI[i].toIframe(uri, inListPlay); // img or video
-			if (result) { return result; }
-		}
-		return {html:(toA?m.uriToA(uri):"")};
+		return uri;
 	}
 	return "";
 };

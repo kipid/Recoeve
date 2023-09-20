@@ -300,6 +300,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats>a {color:rgb(130,170,130)}
 .reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
+.reco>.desc .value {padding-bottom:1em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
@@ -3045,7 +3046,7 @@ m.recomHTML=function (r) {
 </div>`;
 				break;
 			case "related":
-				res+=`<div class="value"><span class="key">#${key}</span>`;
+				res+=`<div class="value"><span class="key">#${key}</span>:`;
 				let relateds=value.split("\n");
 				for (let p=0;p<relateds.length;p++) {
 					res+='<br>'+m.uriRendering(m.formatURI(relateds[p]), true).html;
@@ -3053,7 +3054,7 @@ m.recomHTML=function (r) {
 				res+=`</div>`;
 				break;
 			default :
-				res+=`<div class="value"><span class="key">#${key} </span>${value.replace(/\n/g,"<br>")}</div>`;
+				res+=`<div class="value"><span class="key">#${key}:</span><br>${value.replace(/\n/g,"<br>")}</div>`;
 			}
 		}
 		res+=`</div>`;
