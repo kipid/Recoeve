@@ -1037,7 +1037,7 @@ m.rC=function (elemStr, option, id, noPc) {
 	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 };
 m.uriRendering=function (uri, toA, inListPlay) {
-	if (!!uri&&uri.constructor===String) {
+	if (uri&&uri.constructor===String) {
 		if (uri.length>6) {
 			if (uri.substring(0,4).toLowerCase()==="http") {
 				let k=4;
@@ -1068,9 +1068,9 @@ m.uriRendering=function (uri, toA, inListPlay) {
 			}
 			return {html:(toA?m.uriToA(uri):"")};
 		}
-		return uri;
+		return {html:m.escapeHTML(uri)};
 	}
-	return "";
+	return {html:""};
 };
 
 m.YTiframe=function (v, inListPlay) {
