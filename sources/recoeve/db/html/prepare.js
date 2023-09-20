@@ -1003,7 +1003,6 @@ m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
 m.ptnTag=/^<\w+[\s\S]+>$/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
-m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
 
 m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
