@@ -1668,42 +1668,44 @@ if (m.docCookies.getItem("hideFK")==="y") {
 // Sidebar dragger and exit
 ////////////////////////////////////////////////////
 m.browserWidth=0;
-$window.on("resize", function (e) {
-	if (window.innerWidth!==m.browserWidth) {
-		m.browserWidth=window.innerWidth;
-		m.queryDFFontSize();
-		if (m.browserWidth<701) {
-			m.currnetSidebarOpened=!m.lastSidebarOpened;
-			m.currnetSidebarOpened=false;
+$window.on("resize.sb", function (e) {
+	m.browserWidth=window.innerWidth;
+	m.queryDFFontSize();
+	if (m.browserWidth<701) {
+		if (m.lastSidebarOpened===m.currentSidebarOpened) {
+			m.lastSidebarOpened=false;
+			m.currentSidebarOpened=true;
 		}
-		else {
-			m.currnetSidebarOpened=m.lastSidebarOpened;
+	}
+	else {
+		if (m.lastSidebarOpened===m.currentSidebarOpened) {
+			m.lastSidebarOpened=true;
+			m.currentSidebarOpened=false;
 		}
-		if (m.lastSidebarOpened!==m.currnetSidebarOpened) {
-			m.currnetSidebarOpened=m.lastSidebarOpened;
-			m.sidebar_toggle({type:"none", touch:0});
-		}
+	}
+	if (m.lastSidebarOpened!==m.currentSidebarOpened) {
+		m.sidebar_toggle({type:"none", touch:0});
 	}
 	m.printDeviceInfo();
 });
 m.sidebar_toggle=function (e) {
-if (window.innerWidth<701) {
-	if (m.lastSidebarOpened) {
-		m.lastSidebarOpened=false;
-		$sidebar.css({"margin-left":-$sidebar.outerWidth()});
+	if (m.currentSidebarOpened) {
+		m.currentSidebarOpened=false;
+		$sidebar.css({"margin-left":-Number($sidebar.outerWidth())});
 		$sidebar_dragger.css({"left":0});
 		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	}
 	else {
-		m.lastSidebarOpened=true;
+		m.currentSidebarOpened=true;
 		$sidebar.css({"margin-left":0});
-		$sidebar_dragger.css({"left":$sidebar.outerWidth()});
+		$sidebar_dragger.css({"left":Number($sidebar.outerWidth())});
 		$sidebar_toggle.html(`<g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="20%" y1="50%" x2="50%" y2="20%"></line><line x1="20%" y1="50%" x2="50%" y2="80%"></line></g>`);
 	}
-}};
+	m.lastSidebarOpened=m.currentSidebarOpened;
+};
 $sidebar_toggle.on("click", m.sidebar_toggle);
 $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
-	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e.touch;
+	let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 	let relativeX=touch0.clientX-Math.round($sidebar_dragger.offset().left)+$window.scrollLeft();
 	$html.on("mousemove.sd touchmove.sd", function (e) {
 		window.getSelection().removeAllRanges();
@@ -1715,10 +1717,10 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 		$html.on("mouseup.sd touchend.sd", function () {
 			$html.off("mouseup.sd touchend.sd mousemove.sd touchmove.sd");
 			if (touch0.clientX-relativeX>$sidebar.outerWidth()/2) {
-				m.lastSidebarOpened=false;
+				m.currentSidebarOpened=false;
 			}
 			else {
-				m.lastSidebarOpened=true;
+				m.currentSidebarOpened=true;
 			}
 			m.sidebar_toggle();
 		});
@@ -5907,7 +5909,7 @@ $document.ready(function () {
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
-		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+		type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
 		console.log("fail", resp);
 	}).done(function (resp) {
@@ -5916,14 +5918,14 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	m.browserWidth=window.innerWidth;
 	if (m.browserWidth<701) {
-		m.lastSidebarOpened=true; // reverse setting.
-		m.currnetSidebarOpened=false;
+		m.lastSidebarOpened=false; // reverse setting.
+		m.currentSidebarOpened=true;
 	}
 	else {
-		m.lastSidebarOpened=false; // reverse setting.
-		m.currnetSidebarOpened=true;
+		m.lastSidebarOpened=true; // reverse setting.
+		m.currentSidebarOpened=false;
 	}
-	// $window.trigger("resize");
+	$window.trigger("resize.sb");
 
 	m.initialOpen=true;
 	let vars=m.searchVars;
