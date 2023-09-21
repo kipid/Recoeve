@@ -1925,7 +1925,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[${i}].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		let beforeDepth=cL[i-1].depth;
@@ -1938,7 +1938,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[${i}].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
