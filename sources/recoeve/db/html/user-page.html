@@ -2200,12 +2200,14 @@ m.toLocalTime=function (UTCDateTime) {
 //////////////////////////////////////
 m.putCatToFSFullList=function (i, cat) {
 	if (m.fsCat.fullList[cat]) {
+		m.fsCat.fullList[cat].i=i;
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
 	}
 	else {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 	if (m.fsMRCat.fullList[cat]) {
+		m.fsMRCat.fullList[cat].i=i;
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
 	}
 	else {
@@ -2213,6 +2215,7 @@ m.putCatToFSFullList=function (i, cat) {
 	}
 	if (m.myPage) {
 		if (m.fsGotoCats.fullList[cat]) {
+			m.fsGotoCats.fullList[cat].i=i;
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
 		}
 		else {
