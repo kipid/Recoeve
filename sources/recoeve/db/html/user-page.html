@@ -2226,22 +2226,20 @@ m.updateCatFS=function () {
 	if (m.myPage) {
 		m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	}
-	if (!m.myPage) {
-		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
-	}
+	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	let l=m.myCatList.length;
 	for (let i=l-1;i>=0;i--) {
 		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat);
 	}
 };
 m.updateCatFS();
-m.completeCat=function (elem, j) {
+m.completeCat=function (elem, cat) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
-	fs.listOfCats[k]=fs.fullList[j].cat;
+	fs.listOfCats[k]=fs.fullList[cat].cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -2251,13 +2249,13 @@ m.completeCat=function (elem, j) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.completeMRCat=function (elem, j) {
+m.completeMRCat=function (elem, cat) {
 	let $elem=$(elem);
 	let fs=m.fsMRCat;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
-	fs.listOfCats[k]=fs.fullList[j].cat;
+	fs.listOfCats[k]=fs.fullList[cat].cat;
 	$multireco_input_cats[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -2294,13 +2292,13 @@ m.doFSCat=function (fs) {
 	else if (fs===m.fsCat) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeCat(this,'${fs.fullList[fsSortedI.i].cat}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	else if (fs===m.fsMRCat) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeMRCat(this,${fsSortedI.i})"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeMRCat(this,'${fs.fullList[fsSortedI.i].cat}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	fs.$fsl.html(str);
@@ -2549,7 +2547,10 @@ m.putCat=function (cat) {
 			res=true;
 		}
 	}
-	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
+	if (res) {
+		$data_myCatList.html(m.escapeHTML(fullCats));
+		m.updateCatFS();
+	}
 	return res;
 };
 m.deleteCat=function (cat) {
