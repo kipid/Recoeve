@@ -1096,7 +1096,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 			v=vars.v.val;
 		}
 		if (v) {
-			return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v, list:vars.list.val};
+			return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v, list:vars?.list?.val};
 		}
 	}
 	else {
@@ -1114,7 +1114,7 @@ ptnURI.toIframe=function (uriRest, inListPlay) {
 				if (exec[2]) {
 					vars=m.getSearchVars(exec[2]);
 				}
-				return {html:m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1], list:vars.list.val};
+				return {html:m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1], list:vars?.list?.val};
 			}
 			else {
 				exec=m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
