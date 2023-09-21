@@ -530,7 +530,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="input-cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
-		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]\n[--([\" \' \`] is forbidden.)--]" type="text" tabindex="3"></textarea>
+		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list" class="fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
@@ -1138,6 +1138,7 @@ $def_titles=$("#def-titles");
 $input_title=$("#input-title");
 $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
+$input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
 $def_descs=$("#def-descs");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
