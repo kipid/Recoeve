@@ -530,7 +530,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="input-cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
-		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
+		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--] [--([\" \' \`] is forbidden.)--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list" class="fs-list"></div>
 			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
@@ -1904,7 +1904,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 };
 m.catListToHTML=function () {
 	let cL=m.catList;
-	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat(m.catList[0].cat, event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat('${m.catList[0].cat}', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		let beforeDepth=cL[i-1].depth;
@@ -1925,7 +1925,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat(m.catList[${i}].cat, event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[${i}].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		let beforeDepth=cL[i-1].depth;
@@ -1938,7 +1938,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat(m.catList[${i}].cat, event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[${i}].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1961,13 +1961,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a href="${m.pathOfCat("")}" onclick="return m.openCat(m.catList[0].cat, event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a href="${m.pathOfCat("")}" onclick="return m.openCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat(m.catList[${m.catList[cat].i}].cat, event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeHTML(cat)}</a>`);
+		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat('${m.catList[${m.catList[cat].i}].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeHTML(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -2334,6 +2334,7 @@ m.fsCatOn=function () {
 	else {
 		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
+			$input_cats[0].value=$input_cats[0].value.replace(/[\"\'\`]+/ig,"");
 			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 			m.previous=Date.now();
 			m.doFSCat(m.fsCat);
