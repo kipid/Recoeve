@@ -1066,7 +1066,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div style="margin:2em 0 0">Recoeve.net 유튜브 뮤비들 목록 재생하기, Playing Youtube MV (Music Videos) playlist.</div>
 	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe src="https://www.youtube.com/embed/t5Uc8Uyau38" frameborder="0"></iframe></div></div>
 </div><!-- div#promoting -->
-<div class="numbers-of-recos"></div>
+<div class="numbers-of-recos" id="numbers-of-recos"></div>
 <div class="side2" id="contents"></div><!-- div#contents -->
 <div id="floating-key"></div>
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
@@ -3466,7 +3466,7 @@ m.reNewAndReOn=function () {
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .reco, .to-be-executed");
+	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
 	let $stars=$(".my-point>.stars-container");
 	$stars.off("click.mdInStars");
 	$stars.on("click.mdInStars", m.starsOnClick);
@@ -5605,7 +5605,7 @@ $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove m
 	e.stopPropagation();
 	e.preventDefault();
 });
-m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
@@ -5806,8 +5806,6 @@ m.processShortKey=function (e) {
 				if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 			}
 			if (i===k) {
-				// $hI=m.fdList.eq(0);
-				// alert("This is the last section.");
 				return;
 			}
 		}
@@ -5818,8 +5816,6 @@ m.processShortKey=function (e) {
 				if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
 			}
 			if (i===-1) {
-				// $hI=m.fdList.eq(k-1);
-				// alert("This is the first section.");
 				return;
 			}
 		}
