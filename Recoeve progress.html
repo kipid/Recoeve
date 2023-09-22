@@ -260,6 +260,12 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+Cats 가 추가 된 다음. m.fsCats 나 m.fsGotoCats 가 이상하게 동작하는거 같음. 하나씩 밀려서 검색이 된다던지... 김채원 검색했는데, --Links 로 찍힌적이 있음.
+
+```
+&lt;div class="cat" id="cat-170" style="margin-left: 1em;"&gt;&lt;span class="noEC"&gt;&lt;/span&gt;&lt;a href="/user/kipid?cat=%5BMusic%2FBreak%5D--IVE" class="baseCat" onclick="return m.openCat('[Music/Break]--IVE', event)"&gt;IVE&lt;/a&gt;&lt;/div&gt;
+```/
+
 #show-URI 에서 delayed-src 하지 말기. $window.trigger 가 안먹혀서 잘 동작 안할떄가 많음. 아니면 $window.trigger("scroll") 을 쏴줍시다. (setTimeout 써줘야 할수도?)
 
 Youtube 에 list 붙은건 #related 에서만은 toA link 로 만듭시다. rendering 하지말고.
