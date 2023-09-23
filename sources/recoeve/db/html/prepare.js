@@ -546,7 +546,7 @@ m.heapsortRest=function (arr, key, sorted, upto, n) {
 ////////////////////////////////////////////////////
 m.delayPad=1024;
 m.wait=1024;
-m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 m.previous=Date.now();
 $.fn.inView=function () {
 	if (this.is(":visible")) {
@@ -587,12 +587,12 @@ $.fn.delayedLoad=function () {
 	return done;
 };
 m.delayedLoadAll=function () {
-	m.delayedElems.each(function () {
+	m.$delayedElems.each(function () {
 		if ($(this).delayedLoad()) {
-			m.delayedElems=m.delayedElems.not(this);
+			m.$delayedElems=m.$delayedElems.not(this);
 		}
 	});
-	if (m.delayedElems.length>0) {
+	if (m.$delayedElems.length>0) {
 		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	}
 	m.previous=Date.now();
@@ -995,7 +995,6 @@ m.fuzzySearch=function (ptnSH, fs) {
 
 
 
-/* Renderings */
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.
 ////////////////////////////////////////////////////

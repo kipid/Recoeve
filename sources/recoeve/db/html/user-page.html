@@ -3462,11 +3462,11 @@ m.starsOnDowns=function (e) {
 	}, 2048);
 };
 m.reNewAndReOn=function () {
-	m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+	m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
 	let $stars=$(".my-point>.stars-container");
 	$stars.off("click.mdInStars");
 	$stars.on("click.mdInStars", m.starsOnClick);
@@ -5605,7 +5605,7 @@ $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove m
 	e.stopPropagation();
 	e.preventDefault();
 });
-m.fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
@@ -5797,12 +5797,12 @@ m.processShortKey=function (e) {
 	case 70: // F=70
 	case 68: // D=68
 		let scrollTop=$window.scrollTop();
-		let i, k=m.fdList.length;
+		let i, k=m.$fdList.length;
 		let $hI;
 		if (e.keyCode===70) { // F=70
 			scrollTop+=10;
 			for (i=0;i<k;i++) {
-				$hI=m.fdList.eq(i);
+				$hI=m.$fdList.eq(i);
 				if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 			}
 			if (i===k) {
@@ -5812,7 +5812,7 @@ m.processShortKey=function (e) {
 		else{ // D=68
 			scrollTop-=10;
 			for (i=k-1;i>=0;i--) {
-				$hI=m.fdList.eq(i);
+				$hI=m.$fdList.eq(i);
 				if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
 			}
 			if (i===-1) {
