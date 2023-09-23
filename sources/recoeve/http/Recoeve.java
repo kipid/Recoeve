@@ -58,9 +58,9 @@ public static void main(String... args) {
 	Router router=Router.router(vertx);
 
 	CorsHandler corsHandler=CorsHandler.create(".*")
-		.addOrigin("https://kipid.tistory.com")
-		.addOrigin("https://recoeve.net")
-		.addOrigin("null")
+		// .addOrigin("https://kipid.tistory.com")
+		// .addOrigin("https://recoeve.net")
+		// .addOrigin("null")
 		// .allowedMethod(HttpMethod.GET)
 		.allowedMethod(HttpMethod.POST)
 		// .allowedMethod(HttpMethod.PUT)
