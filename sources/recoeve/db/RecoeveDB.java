@@ -403,7 +403,7 @@ public String getBlogVisitor(String from, String to) {
 public boolean delBlogVisitor() {
 	try {
 		Calendar calendar=Calendar.getInstance();
-		calendar.add(Calendar.DAY_OF_MONTH, -30); // Subtract 30 days from the current date
+		calendar.add(Calendar.DAY_OF_MONTH, -60); // Subtract 60 days from the current date
 		Date date=new Date(calendar.getTimeInMillis());
 		pstmtDelBlogVisitor.setTimestamp(1, new Timestamp(date.getTime()));
 		return pstmtDelBlogVisitor.executeUpdate()>0;
@@ -3033,7 +3033,7 @@ public static void main(String... args) {
 
 
 
-	// RecoeveDB db=new RecoeveDB();
-	// System.out.println(db.delBlogVisitor());
+	RecoeveDB db=new RecoeveDB();
+	System.out.println(db.delBlogVisitor());
 }
 }// public class RecoeveDB
