@@ -1146,7 +1146,9 @@ $.fn.delayedLoad=function () {
 	let done=false;
 	if (this.inView()) {
 		if (this.hasClass("to-be-executed")) {
+			this.removeClass("to-be-executed");
 			this.trigger("click");
+			done=true;
 		}
 		// divs with background-image
 		if (this.attr("delayed-bgimage")) {
@@ -1160,11 +1162,11 @@ $.fn.delayedLoad=function () {
 			this.removeAttr("delayed-src");
 			done=true;
 		}
-		// MathJax Process
-		if (typeof MathJax!=='undefined'&&this.is(".MathJax_Preview")) {
-			MathJax.Hub.Queue(["Process", MathJax.Hub, this.next()[0]]);
-			done=true;
-		}
+		// MathJax Process :: TODO: update MathJax (maybe typesetPromise?)
+		// if (typeof MathJax!=='undefined'&&this.is(".MathJax_Preview")) {
+		// 	MathJax.Hub.Queue(["Process", MathJax.Hub, this.next()[0]]);
+		// 	done=true;
+		// }
 	}
 	return done;
 };
@@ -1174,7 +1176,7 @@ m.delayedLoadAll=function () {
 		m.$delayedElems.each(function () {
 			if ($(this).delayedLoad()) {
 				m.$delayedElems=m.$delayedElems.not(this);
-				m.logPrint(`<br><span class="emph">${this} at vertical position of ${(100*$(this).offset().top/$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${m.$delayedElems.length} of $delayedElems are remained.<br>`);
+				m.logPrint(`<br><span class="emph">${this} at vertical position of ${(100.0*$(this).offset().top/$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${m.$delayedElems.length} of $delayedElems are remained.<br>`);
 			}
 		});
 		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
