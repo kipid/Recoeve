@@ -564,6 +564,7 @@ $.fn.delayedLoad=function () {
 	let done=false;
 	if (this.inView()) {
 		if (this.hasClass("to-be-executed")) {
+			this.removeClass("to-be-executed");
 			this.trigger("click");
 		}
 		// divs with background-image
@@ -594,6 +595,9 @@ m.delayedLoadAll=function () {
 	});
 	if (m.$delayedElems.length>0) {
 		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	}
+	else {
+		$window.off("scroll.delayedLoad");
 	}
 	m.previous=Date.now();
 };
