@@ -566,6 +566,7 @@ $.fn.delayedLoad=function () {
 		if (this.hasClass("to-be-executed")) {
 			this.removeClass("to-be-executed");
 			this.trigger("click");
+			done=true;
 		}
 		// divs with background-image
 		if (this.attr("delayed-bgimage")) {
