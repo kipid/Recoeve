@@ -85,8 +85,7 @@ public static void main(String... args) {
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			System.out.println("from:"+inputs.get(1, "from")+", to:"+inputs.get(1, "to"));
-			String res=PrintLog.db.getBlogVisitor(inputs.get(1, "from"), inputs.get(1, "to"));
-			PrintLog.req.response().end(res, ENCODING);
+			PrintLog.req.response().end(PrintLog.db.getBlogVisitor(inputs.get(1, "from"), inputs.get(1, "to")), ENCODING);
 			System.out.println("Sended /BlogStat/Get.");
 		});
 	});
