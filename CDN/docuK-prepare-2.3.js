@@ -9,7 +9,37 @@ m.browserWidth=window.innerWidth;
 const docuK=$(".docuK");
 m.docuK=docuK;
 
+m.getSearchVars=function (searchStr) {
+	let vars=[];
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
+		let j=searchStr.indexOf("#");
+		if (j!==-1) { searchStr=searchStr.substring(0,j); }
+		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
+		for (let i=0;i<splits.length;i++) {
+			let key=splits[i];
+			let value="";
+			let k=key.indexOf("=");
+			if (k!==-1) {
+				value=decodeURIComponent(key.substring(k+1));
+				key=key.substring(0,k);
+			}
+			key=decodeURIComponent(key);
+			vars[i]=vars[key]={key:key, val:value};
+		}
+	}
+	return vars;
+};
+
+////////////////////////////////////////////////////
+// URI rendering :: http link itself, videos, images, maps.
+////////////////////////////////////////////////////
+m.fsToRs=[];
+m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
+m.ptnTag=/^<\w+[\s\S]+>$/i;
+m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+
 m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	let exec=m.ptnURL.exec(uri);
@@ -20,6 +50,321 @@ m.uriToA=function (uri) {
 		return m.escapeHTML(uri);
 	}
 };
+m.videoZIndex=10000;
+m.togglePosition=function (elem) {
+	let $elem=$(elem);
+	let $parent=$elem.parents(".rC");
+	if ($parent.hasClass("fixed")) {
+		$parent.removeClass("fixed");
+		$parent.css("z-index", 0);
+		window.scrollTo(0, $parent.offset().top);
+		$elem.text("▲ [--stick to the left top--]");
+		m.fsToRs.fixed=false;
+	}
+	else {
+		$parent.addClass("fixed");
+		$parent.css("z-index", m.videoZIndex--);
+		window.scrollBy(0, -$parent.height());
+		$elem.text("▲ [--return to the original position--]");
+		m.fsToRs.fixed=true;
+	}
+};
+m.rC=function (elemStr, option, id, noPc) {
+	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
+};
+m.uriRendering=function (uri, toA, inListPlay) {
+	if (uri&&uri.constructor===String) {
+		if (uri.length>6) {
+			if (uri.substring(0,4).toLowerCase()==="http") {
+				let k=4;
+				if (uri.charAt(k).toLowerCase()==='s') {
+					k++;
+				}
+				if (uri.substring(k,k+3)==="://") {
+					k+=3;
+					let l=uri.indexOf('/',k);
+					let uriHost=null;
+					let uriRest='';
+					if (l===-1) {
+						uriHost=uri.substring(k);
+					}
+					else {
+						uriHost=uri.substring(k,l);
+						uriRest=uri.substring(l+1);
+					}
+					if (m.ptnURI[uriHost]) {
+						let result=m.ptnURI[uriHost]&&m.ptnURI[uriHost].toIframe(uriRest, inListPlay);
+						if (result&&!result.list) { return result; }
+					}
+				}
+			}
+			for (let i=0;i<m.ptnURI.length;i++) {
+				let result=m.ptnURI[i].toIframe(uri, inListPlay); // img or video
+				if (result) { return result; }
+			}
+			return {html:(toA?m.uriToA(uri):"")};
+		}
+		return {html:m.escapeHTML(uri)};
+	}
+	return {html:""};
+};
+
+m.YTiframe=function (v, inListPlay) {
+	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null));
+};
+
+let ptnURI;
+ptnURI=m.ptnURI["www.youtube.com"]=m.ptnURI["youtube.com"]=m.ptnURI["youtu.be"]=m.ptnURI["m.youtube.com"]={};
+ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
+ptnURI.regEx1=/^shorts\/([\w-]+)/i;
+ptnURI.regEx2=/^([\w-]+)(\?\S+)?/i;
+ptnURI.regEx3=/^watch(\?\S+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let vars=null;
+		if (exec[2]) { vars=m.getSearchVars(exec[2]); }
+		let v=null;
+		if (exec[1]) {
+			v=exec[1];
+		}
+		else if (vars&&vars.v) {
+			v=vars.v.val;
+		}
+		if (v) {
+			return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v, list:vars?.list?.val};
+		}
+	}
+	else {
+		exec=m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
+		if (exec!==null) {
+			let v=exec[1];
+			if (v) {
+				return {html:m.YTiframe(v, inListPlay), from:"youtube", videoId:v};
+			}
+		}
+		else {
+			exec=m.ptnURI["youtu.be"].regEx2.exec(uriRest);
+			if (exec!==null) {
+				let vars=null;
+				if (exec[2]) {
+					vars=m.getSearchVars(exec[2]);
+				}
+				return {html:m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1], list:vars?.list?.val};
+			}
+			else {
+				exec=m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
+				if (exec!==null) {
+					let vars=m.getSearchVars(exec[1]);
+					if (vars.v&&vars.v.val) {
+						return {html:m.YTiframe(vars.v.val, inListPlay), from:"youtube", videoId:vars.v.val};
+					}
+				}
+			}
+		}
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
+ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from:"instagram", imgId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["www.tiktok.com"]={};
+ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["tv.naver.com"]={};
+ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["weverse.io"]={};
+ptnURI.regEx=/^(\S+)\/artist\/([0-9\-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["weverse.io"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["tv.kakao.com"]=m.ptnURI["entertain.daum.net"]={};
+ptnURI.regEx=/(?:v|cliplink)\/([0-9]+)/i;
+ptnURI.regEx1=/video\/([0-9]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+	}
+	else {
+		exec=m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
+		if (exec!==null) {
+			return {html:m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]};
+		}
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["tvpot.daum.net"]={};
+ptnURI.regEx=/^v\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["videofarm.daum.net"]={};
+ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let vars=m.getSearchVars(exec[1]);
+		return {html:m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${vars.vid.val}&play_loc=${vars.play_loc.val}" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:vars.vid.val};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["vimeo.com"]={};
+ptnURI.regEx=/^([0-9]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vimeo", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["www.dailymotion.com"]={};
+ptnURI.regEx=/video\/(\w+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return {html:m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"dailymotion", videoId:exec[1]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["www.ted.com"]={};
+ptnURI.regEx=/^talks\//i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		uriRest=uriRest.substring(6);
+		let k=uriRest.indexOf("?");
+		let vars=null;
+		if (k!==-1) {
+			vars=m.getSearchVars(uriRest.substring(k));
+			uriRest=uriRest.substring(0,k);
+		}
+		let v=uriRest;
+		if (vars&&vars.language) {
+			uriRest="lang/"+vars.language.val+"/"+uriRest;
+		}
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["embed.ted.com"]={};
+ptnURI.regEx=/^talks\//i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["embed.ted.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		uriRest=uriRest.substring(6);
+		let v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
+		return {html:m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI["w.soundcloud.com"]={};
+ptnURI.regEx=/^player\/(\?\S+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay) {
+	let exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let vars=m.getSearchVars(exec[1]);
+		let lastPath="player/?";
+		for (let i=0;i<vars.length;i++) {
+			if (vars[i].key==="auto_play") {
+				lastPath+="auto_play=false&";
+			}
+			else {
+				lastPath+=vars[i].key+"="+vars[i].val+"&";
+			}
+		}
+		return {html:m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars.url&&vars.url.val};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI[0]={};
+ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
+ptnURI.toIframe=function (uri, inListPlay) {
+	let exec=m.ptnURI[0].regEx.exec(uri);
+	if (exec!==null) {
+		return {html:m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI[1]={};
+ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
+ptnURI.toIframe=function (uri, inListPlay) {
+	let exec=m.ptnURI[1].regEx.exec(uri);
+	if (exec!==null) {
+		return {html:m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]};
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI[2]={};
+ptnURI.regEx=/^https?:\/\/kr[\d]+\.sogirl\.so(?:(\/[\s\S]*))?/i;
+ptnURI.regEx1=/^https?:\/\/kr[\d]+\.sogirl\.co(?:(\/[\s\S]*))?/i;
+ptnURI.toIframe=function (uri, inListPlay) {
+	let exec=m.ptnURI[2].regEx.exec(uri);
+	if (exec!==null) {
+		return {html:`<a target="_blank" href="https://kr55.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr55.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+	}
+	else {
+		exec=m.ptnURI[2].regEx1.exec(uri);
+		if (exec!==null) {
+			return {html:`<a target="_blank" href="https://kr55.sogirl.so${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr55.sogirl.so${exec[1]?exec[1]:"/"}`)}</a>`, from:'sogirl', src:exec[1]};
+		}
+	}
+	return false;
+};
+
+ptnURI=m.ptnURI[3]={};
+ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(?:(\/[\s\S]*))?/i;
+ptnURI.toIframe=function (uri, inListPlay) {
+	let exec=m.ptnURI[3].regEx.exec(uri);
+	if (exec!==null) {
+		return {html:`<a target="_blank" href="https://kr24.topgirl.co${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr24.topgirl.co${exec[1]?exec[1]:"/"}`)}</a>`, from:'topgirl', src:exec[1]};
+	}
+	return false;
+};
+
+
 
 // cookies.js (copied from cookie-test.html)
 m.expire=365*24*60*60; // max-age in seconds.
@@ -59,10 +404,6 @@ m.docCookies={
 	}
 };
 
-m.hideFK=function () {
-	$floating_key.hide();
-	m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
-};
 m.toggleFK=function () {
 	if ($floating_key.is(":visible")) {
 		m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
@@ -73,44 +414,53 @@ m.toggleFK=function () {
 	$floating_key.toggle();
 };
 
-m.promoting=`<div class="promoting">
-<div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net</div>
+m.promoting=function (id) {
+	return `<div class="promoting"${id?` id="${id}"`:""}>
+<div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S|Slow/Sexy/Sincere SNS)</div>
 <div class="bcf">
-유튜브 음악 MV 들을 광고없이 목록재생 해보세요.<br>
+<a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop&lang=ko#headPlay">유튜브 음악 MV 들을 광고없이 목록재생</a> 해보세요.<br>
 접속하셔서 별점만 드레그 하시면 자신의 페이지에 저장 됩니다.<br>
-그리고 자신의 페이지로 이동한 뒤 추천 받기를 누르시면 자신이 점수 메긴것들로 이웃을 자동으로 찾아주고 그 이웃들로부터 추천을 받을 수 있습니다.<br>
+그리고 자신의 페이지로 이동한 뒤 추천 받기 (단축키 R) 를 누르시면 자신이 점수 메긴것들로 이웃 (이웃보기 단축키 B) 을 자동으로 찾아주고 그 이웃들로부터 추천을 받을 수 있습니다.<br>
 <br>
-Come here and just drag stars/points.<br>
-Based on your points on URIs (musics), you will be connected to your neighbors of your kind. And you will get recoms (recommendations) from them, and also give recoms to them.<br>
+Come <a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop&lang=en#headPlay">here</a> and just drag stars/points.<br>
+Based on your points on URIs (musics), you will be connected to your neighbors (See neighbors: shortkey 'B') of your kind. And you will get recoms (recommendations: shortkey 'R') from them, and also give recoms to them.
 </div>
-<div class="caption p cmt">
-* 참고 링크들 (Refer my pages)<br>
+<div class="bcf">
+<span class="bold">평가와 기록</span>: 웹사이트에서 본 기사, 뉴스, 영상, 음악 등을 기록하고 평가하세요. 이 정보는 추천 알고리즘을 통해 사용자에게 맞춤형 추천을 제공하는 데 사용됩니다. 즉, 당신이 좋아하는 유형의 콘텐츠를 더 많이 발견할 수 있습니다.<br>
+<br>
+<span class="bold">Evaluate and Rate Content</span>: As you explore content on the platform, you can evaluate and rate it based on your preferences and interests. This could involve liking, rating, or commenting on articles, posts, or other types of content.<br>
+<br>
+<span class="bold">Connect with Like-Minded Users</span>: The platform likely has features for connecting with other users who share your interests. You might follow or connect with these users to build your network.
+</div>
+<div class="caption p cmt" style="margin:1em 0 0">
+* For the usage examples, visit my page (예제를 보시려면 제 페이지를 방문해 주세요.)
 <ul>
-<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00">[Physics/Math/Science]--Physics of kipid's Recoeve.net</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00">[음식/요리/건강]--건강 of kipid's Recoeve.net</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop#headPlay">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop#headPlay">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC#headPlay">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84#headPlay">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00#headPlay">[Physics/Math/Science]--Physics of kipid's Recoeve.net</a></li>
+<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00#headPlay">[음식/요리/건강]--건강 of kipid's Recoeve.net</a></li>
 </ul>
 </div>
-<div class="caption p cmt">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a></div>
+<div class="caption p cmt" style="margin:1em 0 0">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00#headPlay">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a></div>
 <div class="p bcf">Kakao talk open chat (카카오톡 오픈 채팅방) :: <a class="wheat" target="_blank" href="https://open.kakao.com/me/kipid">open.kakao.com :: Recoeve.net 개발 관련</a></div>
-<div class="caption p cmt">Recoeve manual, How to use. (레코이브 사용 설명서, 가입하기, 다른 사람 페이지에서 multireco 하기, 내 페이지에서 자동으로 연결된 이웃들로부터 추천받기.)</div>
+<div class="caption p cmt" style="margin:1em 0 0">Recoeve manual, How to use. (레코이브 사용 설명서, 가입하기, 다른 사람 페이지에서 multireco 하기, 내 페이지에서 자동으로 연결된 이웃들로부터 추천받기.)
 <div class="p rC"><div class="rSC">
 	<iframe delayed-src="https://www.youtube.com/embed/YGadSrC2UXw" frameborder="0"></iframe>
-</div></div>
-<div class="caption p cmt">Recoeve.net 유튜브 뮤비들 목록 재생하기, Playing Youtube MV (Music Videos) playlist.</div>
+</div></div></div>
+<div class="caption p cmt" style="margin:1em 0 0">Recoeve.net 유튜브 뮤비들 목록 재생하기, Playing Youtube MV (Music Videos) playlist.
 <div class="p rC"><div class="rSC">
 	<iframe delayed-src="https://www.youtube.com/embed/t5Uc8Uyau38" frameborder="0"></iframe>
-</div></div>
+</div></div></div>
 </div>`;
+};
 
 // logPrint function.
 m.$log=$("#docuK-log");
 m.$log.addClass("fixed");
 m.$log.before(`<div id="floating-key">
-	<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ Hide</div>
+	<div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
 	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
 		<span class="bold underline">G</span>o (FS)
 	</div>
@@ -744,7 +1094,7 @@ $window.on("resize.deviceInfo", function () {
 
 // Share a link through SNS
 m.shareSNS=function (service) {
-	let title=$("title").eq(0).html();
+	let title=$("title").eq(0).html()+` at ${window.location.host}`;
 	let url=window.location.href;
 	let open="";
 	switch (service) {
@@ -764,7 +1114,7 @@ m.shareSNS=function (service) {
 			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
 			break;
 		case 'recoeve':
-			open="https://recoeve.net/reco?uri="+encodeURIComponent(url)+"&title="+encodeURIComponent(title);
+			open=`https://recoeve.net/reco?uri=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}${m.recoCats?`&cats=${encodeURIComponent(m.recoCats)}`:""}`;
 			break;
 		case 'kakao':
 			m.popUpKakao();

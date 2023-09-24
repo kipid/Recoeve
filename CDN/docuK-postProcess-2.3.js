@@ -527,8 +527,8 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 	});
 
 	for (let i=1;i<m.docuK.length;i++) {
-		m.docuK.eq(i).before(m.promoting);
-		m.docuK.eq(i).after(m.promoting);
+		m.docuK.eq(i).before(m.promoting(`promoting-${i}-0`));
+		m.docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
 	}
 	// Printing codes in <codeprint> with id (which starts with "code-") into <pre id="pre-code-...">.
 	let codeprints=$("codeprint");
@@ -616,7 +616,7 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 			m.logPrint(`<br>Kakao.isInitialized()=${Kakao.isInitialized()};`);
 		}
 	};
-	m.kakaoInit=setInterval(m.kakaoInitDo, 2000);
+	m.kakaoInit=setInterval(m.kakaoInitDo, 4096);
 
 	m.popUpKakao=function () {
 		let $desc=$("meta[name='description']");
@@ -637,7 +637,7 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 
 	// google code prettify js script (from kipid.tistory CDN) is added.
 	if (docuK.find('.prettyprint').exists()) {
-		let $gcp=$(`<script id="prettyfy-js" defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
+		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
 		$headOrBody.append($gcp);
 		m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
 	}
@@ -682,8 +682,132 @@ window.MathJax={
 		m.mathJaxPreProcess=setInterval(m.mathJaxPreProcessDo, 2000);
 	}
 
+	m.getBlogStat=function (from, to) {
+		let reqTime=`from	to
+${from} 15:00:00	${to} 15:00:00`; // until 24:00:00 of today. UTC+09:00.
+		return new Promise(function (resolve, reject) {
+			$.ajax({
+				type:"POST", url:"https://recoeve.net/BlogStat/Get", data:reqTime, dataType:"text"
+			}).fail(function (resp) {
+				m.logPrint("<br><br>BlogStat is failed to be got.");
+				resolve(null);
+			}).done(function (resp) {
+				m.logPrint("<br><br>BlogStat is got.");
+				resolve(m.strToJSON(resp));
+			});
+		});
+	};
+	m.blogStatRes=[];
+	m.countBlogStat=function (from, to) {
+		return new Promise(async function (resolve, reject) {
+			let myIPs=["14.38.247.30", "175.212.158.53"];
+			let ignoreMe=true;
+			if (!m.blogStatRes[`${from} to ${to}`]) {
+				m.blogStatRes[`${from} to ${to}`]=await m.getBlogStat(from, to);
+			}
+			let blogStatRes=m.blogStatRes[`${from} to ${to}`];
+			let pageViews=0;
+			if (!!blogStatRes) {
+				for(i=1;i<blogStatRes.length;i++) {
+					let ip=blogStatRes[i]["ip"].split(":")[0];
+					if (ignoreMe&&(ip===myIPs[0]||ip===myIPs[1])) {
+						continue;
+					}
+					pageViews++;
+				}
+				blogStatRes.pageViews=pageViews;
+			}
+			else {
+				blogStatRes={pageViews};
+			}
+			resolve(blogStatRes);
+		});
+	};
+	m.weekDays=["일", "월", "화", "수", "목", "금", "토"];
+	m.daysToPlotCountChart=30;
+	m.to=[];
+	m.from=[];
+	let currentDate=new Date();
+	for (let i=0;i<m.daysToPlotCountChart;i++) {
+		let toDate=currentDate;
+		let year=toDate.getFullYear();
+		let month=String(toDate.getMonth()+1).padStart(2, '0'); // Adding 1 because months are zero-based
+		let day=String(toDate.getDate()).padStart(2, '0');
+		// Format the date as YYYY-MM-DD
+		m.to.push({date:`${year}-${month}-${day}`, month, day, weekday:m.weekDays[toDate.getDay()]});
+
+		let fromDate=new Date(currentDate.setDate(currentDate.getDate()-1));
+		year=fromDate.getFullYear();
+		month=String(fromDate.getMonth()+1).padStart(2, '0'); // Adding 1 because months are zero-based
+		day=String(fromDate.getDate()).padStart(2, '0');
+		m.from.push({date:`${year}-${month}-${day}`});
+	}
+	let countChartHTML=`<div class="rC" style="margin:1em 0"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+	let leftPadding=3.0;
+	let rightPadding=3.0;
+	let topPadding=7.0;
+	let bottomPadding=20.0;
+	let bottomLine=100.0-bottomPadding;
+	let maxHeight=100.0-topPadding-bottomPadding;
+	let dx=(100.0-leftPadding-rightPadding)/m.daysToPlotCountChart/2.0;
+	m.viewCounts=[];
+	(async function () {
+		m.blogStatRes[0]=await m.countBlogStat(m.from[0].date, m.to[0].date);
+		for (let i=1;i<m.daysToPlotCountChart;i++) {
+			m.blogStatRes[i]=await m.countBlogStat(m.from[i].date, m.to[i].date);
+		}
+	})();
+	m.setIntervalBlogStatN=0;
+	m.setIntervalBlogStat=setInterval(function () {
+		if (m.blogStatRes?.length>=m.daysToPlotCountChart||m.setIntervalBlogStatN++>17) {
+			clearInterval(m.setIntervalBlogStat);
+			let maxPageViews=0;
+			for (let i=0;i<m.blogStatRes.length;i++) {
+				let pageViews=m.blogStatRes[i].pageViews;
+				if (pageViews>maxPageViews) {
+					maxPageViews=pageViews;
+				}
+			}
+			let pageViewsOfADay=[];
+			for (let k=0;k<m.blogStatRes.length;k++) {
+				let blogStatRes=m.blogStatRes[k];
+				let x=leftPadding+(m.daysToPlotCountChart-1.0-k)*dx*2.0;
+				let tick=leftPadding+(m.daysToPlotCountChart-0.5-k)*dx*2.0;
+
+				let h=maxHeight*blogStatRes.pageViews/maxPageViews;
+				pageViewsOfADay[k]={pageViews:blogStatRes.pageViews, x, tick, month:m.to[k].month, day:m.to[k].day, weekday:m.to[k].weekday, h};
+			}
+			for (let i=0;i<pageViewsOfADay.length;i++) {
+				countChartHTML+=`<rect class="column" x="${pageViewsOfADay[i].x}%" y="${bottomLine-pageViewsOfADay[i].h}%" width="${2.0*dx}%" height="${pageViewsOfADay[i].h}%"></rect><text class="page-views" x="${pageViewsOfADay[i].tick}%" text-anchor="middle" y="${bottomLine-pageViewsOfADay[i].h-1.0}%" dominant-baseline="text-bottom">${pageViewsOfADay[i].pageViews.toFixed(0)}</text>`;
+			}
+			countChartHTML+=`<line class="bar" x1="${leftPadding}%" y1="${bottomLine}%" x2="${100.0-rightPadding}%" y2="${bottomLine}%"/>`;
+			for (let i=0;i<pageViewsOfADay.length;i++) {
+				countChartHTML+=`<line class="bar" x1="${pageViewsOfADay[i].tick}%" y1="${bottomLine-1.5}%" x2="${pageViewsOfADay[i].tick}%" y2="${bottomLine+1.0}%"/>
+<text class="tick${pageViewsOfADay[i].weekday==="토"?" saturday":pageViewsOfADay[i].weekday==="일"?" sunday":""}" x="${pageViewsOfADay[i].tick}%" y="${bottomLine}%">
+	<tspan x="${pageViewsOfADay[i].tick}%" text-anchor="middle" dy="2.0em">${pageViewsOfADay[i].month}</tspan>
+	<tspan x="${pageViewsOfADay[i].tick}%" text-anchor="middle" dy="1.1em">/${pageViewsOfADay[i].day}</tspan>
+	<tspan x="${pageViewsOfADay[i].tick}%" text-anchor="middle" dy="1.6em">${pageViewsOfADay[i].weekday}</tspan>
+</text>`
+			}
+			countChartHTML+=`<text class="now-local" x="100%" y="100%"><tspan x="100%" text-anchor="end" y="99%" dominant-baseline="text-bottom">${new Date().toLocaleString()}</tspan></text>`;
+			countChartHTML+=`</svg></div></div></div>`;
+			$page_views_chart=$("#page-views-chart");
+			if ($page_views_chart.exists()) {
+				$page_views_chart.html(countChartHTML);
+			}
+			else {
+				$disqus_thread=$("#disqus_thread");
+				if ($disqus_thread.exists()) {
+					$disqus_thread.after(`<div id="page-views-chart"></div>`);
+					$page_views_chart=$("#page-views-chart");
+					$page_views_chart.html(countChartHTML);
+				}
+			}
+		}
+	}, 2048);
+
 	// ShortKeys (including default 'processShortcut(event)' of tistory.)
-	m.fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, div.comments, #disqus_thread, #aside"); // Ordered automatically by jQuery.
+	m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart"); // Ordered automatically by jQuery.
 	m.tocs=$(".docuK>.sec").has(".toc");
 	m.rras=$(".docuK>.sec").has("ol.refs");
 	m.goOn=false;
@@ -696,6 +820,9 @@ window.MathJax={
 		let scrollTop=null;
 		let i, k;
 		switch (event.keyCode) {
+			case 69: // E=69 Expand/Hide floating keys
+				m.toggleFK();
+				break;
 			case 71: // G=71
 				event.preventDefault();
 				if ($fuzzy_search_container.is(":visible")) {
@@ -732,34 +859,34 @@ window.MathJax={
 			case 70: // F=70
 			case 68: // D=68
 				scrollTop=$window.scrollTop();
-				k=m.fdList.length;
-				let hI;
+				k=m.$fdList.length;
+				let $hI;
 
-				if (event.keyCode===70) {
+				if (event.keyCode===70) { // F=70
 					scrollTop+=10;
 					for (i=0;i<k;i++) {
-						hI=m.fdList.eq(i);
-						if (hI.is(":visible")&&scrollTop<hI.offset().top) { break; }
+						$hI=m.$fdList.eq(i);
+						if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 					}
 					if (i===k) {
-						// hI=m.fdList.eq(0);
-						// alert("This is the last section.");
 						return;
 					}
 				}
-				else{
+				else{ // D=68
 					scrollTop-=10;
 					for (i=k-1;i>=0;i--) {
-						hI=m.fdList.eq(i);
-						if (hI.is(":visible")&&scrollTop>hI.offset().top) { break; }
+						$hI=m.$fdList.eq(i);
+						if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
 					}
 					if (i===-1) {
-						// hI=m.fdList.eq(k-1);
-						// alert("This is the first section.");
 						return;
 					}
 				}
-				$window.scrollTop(hI.offset().top);
+				let hIID=$hI[0].id;
+				if (hIID) {
+					window.location.hash=`#${hIID}`;
+				}
+				$window.scrollTop($hI.offset().top);
 				break;
 			case 84: // T=84
 				scrollTop=$window.scrollTop();
@@ -824,6 +951,13 @@ window.MathJax={
 
 	m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
 
+	m.reNewAndReOn=function () {
+		m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+		$window.off("scroll.delayedLoad");
+		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+		$window.trigger("scroll.delayedLoad");
+		m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart");
+	};
 	m.HandleAhrefInComment=function () {
 		$("div.comments>.comment-list").find("p").each(function (i, elem) {
 			let $elem=$(elem);
@@ -833,7 +967,8 @@ window.MathJax={
 				let toBeAdded="";
 				if (contents[i].nodeType===Node.TEXT_NODE) { // Node.TEXT_NODE=3
 					toBeAdded=contents[i].innerHTML=contents[i].wholeText.replaceAll(/(https?:\/\/[^<>\s\t\n\r]+)/ig, function (match) {
-						return `<a style="color:wheat" target="_blank" href="${match}">${m.escapeHTML(decodeURIComponent(match))}</a>`
+						return `<a style="color:wheat" target="_blank" href="${match}">${m.escapeHTML(decodeURIComponent(match))}</a><br>
+${m.uriRendering(match, false, false).html}`
 					});
 				}
 				else {
@@ -843,6 +978,7 @@ window.MathJax={
 			}
 			$elem.html(elemHTML);
 		});
+		m.reNewAndReOn();
 	};
 	m.HandleAhrefInComment();
 
