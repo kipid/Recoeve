@@ -55,6 +55,7 @@ public static void main(String... args) {
 	Vertx vertx=Vertx.vertx();
 
 	Router router0=Router.router(vertx);
+	Router router1=Router.router(vertx);
 	Router router=Router.router(vertx);
 
 	CorsHandler corsHandler=CorsHandler.create(".*")
@@ -90,7 +91,12 @@ public static void main(String... args) {
 		});
 	});
 
-	router.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
+	StaticHandler staticHandler=StaticHandler.create()
+		.setCachingEnabled(true)
+		.setCacheEntryTimeout(60*60*24*30*12) // Cache timeout in seconds (1 hour)
+		.setFilesReadOnly(true);
+
+	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog.printLog(ctx);
 		if (PrintLog.refererAllowed) { // referer check.
 			String fileName=null;
@@ -706,7 +712,7 @@ public static void main(String... args) {
 				.setPassword("o8lx6xxp")
 			)
 	).requestHandler(req -> {
-		Router routerK=req.path().startsWith("/BlogStat")?router0:router;
+		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN")?router1:router;
 		try {
 			routerK.handle(req);
 		}
