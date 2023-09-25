@@ -4,6 +4,7 @@ import io.vertx.core.AbstractVerticle;
 // import io.vertx.core.Verticle;
 
 import io.vertx.core.Handler;;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 // import io.vertx.core.http.ClientAuth;
 import io.vertx.core.http.HttpMethod;
@@ -13,6 +14,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.CorsHandler;
 
 import java.sql.*;
 
@@ -42,21 +44,35 @@ import recoeve.db.StrArray;
 
 public class UnderConstruction extends AbstractVerticle {
 public static final String HOST
-	// ="recoeve.net";
+	="recoeve.net";
 	// ="0.0.0.0";
-	="localhost";
+	// ="localhost";
 public static final String ENCODING="UTF-8";
 public static final String INVALID_ACCESS="INVALID ACCESS";
 private static final RecoeveDB db=PrintLog.db;
 
 @Override
 public void start() {
+} // public void start()
+
+public static void main(String... args) {
+	Vertx vertx=Vertx.vertx();
+
 	Router router=Router.router(vertx);
-	// PrintLog printLog=new PrintLog();
 
-	// router.route().handler(printLog);
+	CorsHandler corsHandler=CorsHandler.create(".*")
+		// .addOrigin("https://kipid.tistory.com")
+		// .addOrigin("https://recoeve.net")
+		// .addOrigin("null")
+		.allowedMethod(HttpMethod.GET)
+		.allowedMethod(HttpMethod.POST)
+		.allowedMethod(HttpMethod.PUT)
+		.allowedMethod(HttpMethod.DELETE)
+		.allowedHeader("Content-Type");
 
-	router.route().handler(ctx -> {
+	router.route().handler(corsHandler);
+
+	router.routeWithRegex(".*").handler(ctx -> {
 		PrintLog.printLog(ctx);
 		HttpServerRequest req=ctx.request();
 		req.response().putHeader("Content-Type", "text/html; charset=utf-8");
@@ -70,10 +86,20 @@ public void start() {
 			.setUseAlpn(true)
 			.setSsl(true)
 			.setKeyStoreOptions(new JksOptions()
-				.setPath("C:/Recoeve/recoeve.jks")
-				.setPassword("Kd8#j$LL0@OM1")
+				.setPath("C:/RecoeveNet/Convert/recoeve.net_202302280263A.jks")
+				.setPassword("o8lx6xxp")
 			)
-	).requestHandler(router).listen(443);
+	).requestHandler(req -> {
+		try {
+			router.handle(req);
+		}
+		catch (NullPointerException e) {
+			System.out.println(e);
+		}
+		catch (IllegalStateException e) {
+			RecoeveDB.err(e);
+		}
+	}).listen(443);
 	// UnderConstruction.HOST
 	// 탄력적 IP | 할당된 IPv4 주소 | 퍼블릭 IPv4 주소 : "43.200.166.14"
 	// 퍼블릭 IPv4 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
@@ -84,7 +110,4 @@ public void start() {
 
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
-} // public void start()
-
-public static void main(String... args) {} // Do nothing.
-} // public class UnderConstruction extends AbstractVerticle
+}} // public class UnderConstruction extends AbstractVerticle
