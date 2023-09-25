@@ -11,7 +11,7 @@ m.getSearchVars=function (searchStr) {
 		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
 		let j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
-		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
+		let splits=searchStr.replace(/&amp;/ig,"&").replace(/\+/g,"%2B").split("&");
 		for (let i=0;i<splits.length;i++) {
 			let key=splits[i];
 			let value="";
