@@ -7,7 +7,7 @@ $.fn.exists=function () { return this.length!==0; };
 
 m.getSearchVars=function (searchStr) {
 	let vars=[];
-	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.constructor===String&&searchStr.length!==0) {
 		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
 		let j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
