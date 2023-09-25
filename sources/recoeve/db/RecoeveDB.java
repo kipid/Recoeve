@@ -49,7 +49,7 @@ public static final String domain="recoeve.net";
 	// "localhost:"+port;
 
 	// domain="localhost" does not works in cookie.
-public static final int hoursSSN=3;
+public static final int hoursSSN=24*7;
 public static final long secondsSSN=hoursSSN*60*60L;
 
 public static final int daysRMB=30;
