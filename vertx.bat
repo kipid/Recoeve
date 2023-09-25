@@ -1,4 +1,4 @@
-@if "%DEBUG%" == "" @echo off
+@echo off
 setlocal EnableDelayedExpansion
 @rem ##########################################################################
 @rem
@@ -7,6 +7,7 @@ setlocal EnableDelayedExpansion
 @rem ##########################################################################
 
 @rem Set local scope for the variables with windows NT shell
+echo OS=%OS%
 if "%OS%"=="Windows_NT" setlocal
 
 @rem Add default JVM options here. You can also use JAVA_OPTS and VERTX_OPTS to pass JVM options to this script.
@@ -16,18 +17,22 @@ if "%OS%"=="Windows_NT" setlocal
 @rem To enable vert.x sync agent, set the "ENABLE_VERTX_SYNC_AGENT" environment variable to "true". Be aware that you
 @rem need to install vert.x sync in the $VERTX_HOME/lib directory before.
 
-set JVM_OPTS=-Dfile.encoding=UTF8
+set JVM_OPTS=-Dfile.encoding=UTF-8 -XX:+IgnoreUnrecognizedVMOptions -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
+echo JVM_OPTS=%JVM_OPTS%
 
 set JMX_OPTS=
 @rem To enable JMX uncomment the following
 @rem set JMX_OPTS=-Dcom.sun.management.jmxremote -Dhazelcast.jmx=true -Dvertx.metrics.options.jmxEnabled=true
 
 set DIRNAME=%~dp0
+echo DIRNAME=%DIRNAME%
 if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
-set VERTX_HOME=%DIRNAME%..
+echo APP_BASE_NAME=%APP_BASE_NAME%
+@rem set VERTX_HOME=%DIRNAME%..
 
 @rem Find java.exe
+echo JAVA_HOME=%JAVA_HOME%
 if defined JAVA_HOME goto findJavaFromJavaHome
 
 set JAVA_EXE=java.exe
@@ -45,6 +50,7 @@ goto fail
 :findJavaFromJavaHome
 set JAVA_HOME=%JAVA_HOME:"=%
 set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+echo JAVA_EXE=%JAVA_EXE%
 
 if exist "%JAVA_EXE%" goto init
 
@@ -58,19 +64,19 @@ goto fail
 
 :init
 @rem Add module option to commandline, if VERTX_MODS was set
-if not "%VERTX_MODS%" == "" set VERTX_MODULE_OPTS="-Dvertx.mods=%VERTX_MODS%"
+@rem if not "%VERTX_MODS%" == "" set VERTX_MODULE_OPTS="-Dvertx.mods=%VERTX_MODS%"
 
 @rem enable vert.x sync agent
-if "%ENABLE_VERTX_SYNC_AGENT%" == "true" (
-    echo Enabling vert.x sync agent - please make sure vert.x sync and its dependencies have been installed in the 'lib' directory.
-    for %%a in (%VERTX_HOME%\lib\quasar-core-*.jar) do set VERTX_SYNC_AGENT="-javaagent:%%a"
-)
+@rem if "%ENABLE_VERTX_SYNC_AGENT%" == "true" (
+@rem     echo Enabling vert.x sync agent - please make sure vert.x sync and its dependencies have been installed in the 'lib' directory.
+@rem     for %%a in (%VERTX_HOME%\lib\quasar-core-*.jar) do set VERTX_SYNC_AGENT="-javaagent:%%a"
+@rem )
 
 @rem Configure JUL using custom properties file
-if "%VERTX_JUL_CONFIG%" == "" set VERTX_JUL_CONFIG=%VERTX_HOME%\conf\logging.properties
+set VERTX_JUL_CONFIG=%VERTX_HOME%\conf\logging.properties
 
 @rem Specify ClusterManagerFactory
-if "%VERTX_CLUSTERMANAGERFACTORY%" == "" set VERTX_CLUSTERMANAGERFACTORY=io.vertx.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory
+set VERTX_CLUSTERMANAGERFACTORY=io.vertx.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory
 
 @rem Get command-line arguments, handling Windowz variants
 
@@ -83,6 +89,7 @@ set CMD_LINE_ARGS=
 set _SKIP=2
 
 :win9xME_args_slurp
+echo x%~1
 if "x%~1" == "x" goto execute
 
 set CMD_LINE_ARGS=%*
@@ -93,9 +100,11 @@ goto execute
 set CMD_LINE_ARGS=%$
 
 :execute
+echo CMD_LINE_ARGS=%CMD_LINE_ARGS%
 @rem Setup the command line
 
 @rem set CLASSPATH=%CLASSPATH%;%VERTX_HOME%\conf;%VERTX_HOME%\lib\*
+echo CLASSPATH=%CLASSPATH%
 
 @rem Execute vertx
 "%JAVA_EXE%" %JVM_OPTS% %JMX_OPTS% %JAVA_OPTS% %VERTX_SYNC_AGENT% %VERTX_OPTS% %VERTX_MODULE_OPTS% -Dvertx.cli.usage.prefix=vertx -Djava.util.logging.config.file="%VERTX_JUL_CONFIG%" -Dvertx.home="%VERTX_HOME%" -Dvertx.clusterManagerFactory="%VERTX_CLUSTERMANAGERFACTORY%" -classpath "%CLASSPATH%" io.vertx.core.Launcher %CMD_LINE_ARGS%
