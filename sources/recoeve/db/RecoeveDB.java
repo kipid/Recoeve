@@ -388,24 +388,24 @@ public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String refe
 public String getBlogVisitor(StrArray fromTo) {
 	String heads="from\tto\tstats";
 	String contents="";
-	int iMax=fromTo.getRowSize();
-	for (int i=1;i<iMax;i++) {
-		String from=fromTo.get(i, "from");
-		String to=fromTo.get(i, "to");
-		contents+="\n"+from+"\t"+to+"\t";
-		String stats="t\tip\tURI\treferer\tREACTION_GUEST";
-		try {
+	try {
+		int iMax=fromTo.getRowSize();
+		for (int i=1;i<iMax;i++) {
+			String from=fromTo.get(i, "from");
+			String to=fromTo.get(i, "to");
+			contents+="\n"+from+"\t"+to;
+			String stats="t\tip\tURI\treferer\tREACTION_GUEST";
 			pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(from));
 			pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(to));
 			ResultSet rs=pstmtGetBlogVisitor.executeQuery();
 			while (rs.next()) {
 				stats+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
 			}
+			contents+="\t"+StrArray.enclose(stats);
 		}
-		catch (SQLException e) {
-			err(e);
-		}
-		contents+=StrArray.enclose(stats);
+	}
+	catch (SQLException e) {
+		err(e);
 	}
 	return heads+contents;
 }
