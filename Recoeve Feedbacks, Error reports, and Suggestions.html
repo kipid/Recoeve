@@ -17,10 +17,10 @@
 <codeprint class="SEE">
 # <span class="reco bold">Reco</span><span class="eve bold">eve</span>.net : Feedbacks, Error reports, and Suggestions
 
-The <a href="https://recoeve.net/">Recoeve.net</a> is currently on alpha test service stage. (Only the basic core operations are available now.) Please give us feedbacks, error reports, and suggestions of any kind on the comments board below.
+The <a href="https://recoeve.net/">Recoeve.net</a> is currently on beta test service stage. (Only the basic core operations are available now.) Please give us feedbacks, error reports, and suggestions of any kind on the comments board below.
 
 <div class="p">
-<a href="https://recoeve.net/">Recoeve.net</a> 가 알파 서비스 중입니다. (현재는 가장 핵심적인 기본 동작들만 가능. 계속 개발 및 업데이트 중.) 이상하게 동작하는 것들 (에러) 을 발견하시거나 이런 기능이 있었으면 좋겠다는 등의 의견 있으시면 댓글로 알려주세요.
+<a href="https://recoeve.net/">Recoeve.net</a> 가 베타 서비스 중입니다. (현재는 가장 핵심적인 기본 동작들만 가능. 계속 개발 및 업데이트 중.) 이상하게 동작하는 것들 (에러) 을 발견하시거나 이런 기능이 있었으면 좋겠다는 등의 의견 있으시면 댓글로 알려주세요.
 </div>
 
 
@@ -42,7 +42,7 @@ The <a href="https://recoeve.net/">Recoeve.net</a> is currently on alpha test se
 
 
 
-### If you want to unregister your account of recoeve.net, please e-mail to recoeve@gmail.com with your account e-mail.
+### Unregistering page is not implemented yet. If you want to unregister your account of recoeve.net, please e-mail to recoeve@gmail.com with your account e-mail.
 
 Only when your account email corresponds to the sended e-mail, we will unregister your account.
 
@@ -51,28 +51,36 @@ Only when your account email corresponds to the sended e-mail, we will unregiste
 ## RRA
 
 <ol class="refs">
-	<li><a href="https://recoeve.net/">Recoeve.net</a></li>
-	<li><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a>, 2014-12-02</li>
+	<li><a target="_blank" href="https://recoeve.net/">Recoeve.net</a></li>
+	<li><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a>, 2014-12-02</li>
+	<li><a target="_blank" href="https://kipid.tistory.com/entry/Recoeve-net-3S-Slow-Sexy-Sincere-SNS-%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C-Manual">Recoeve.net (3S|Slow/Sexy/Sincere SNS) 사용설명서/Manual</a></li>
 </ol>
 </codeprint><!-- SEE -->
 
 <codeprint id="docuK-script">
 <script>
-kipid.wait=512;
-kipid.delayPad=0;
+(function(m, $, undefined) {
+m.recoCats="[Recoeve]";
+m.wait=1024;
+m.delayPad=512;
+
+/**
+ *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+ *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+**/
+window.disqus_config=function () {
+	this.page.identifier="Recoeve-net-Feedbacks-Error-reports-and-Suggestions"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	this.page.url=`https://kipid.tistory.com/entry/${this.page.identifier}`; // Replace PAGE_URL with your page's canonical URL variable
+};
+})(window.m, jQuery);
 </script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-	skipStartupTypeset: true, // Skip startup typeset.
-	positionToHash: false, // No repositioning to #something anchor.
-	tex2jax: {
-		inlineMath: [['$','$'], ['\\(','\\)']], // Using $ for inline math.
-		displayMath: [['$$','$$'], ['\\[','\\]']], // Using $$ for outline math.
-		processEscapes: true, // Escape \$
-		processEnvironments: false, // Ignore \begin{something} ... \end{something}
-	}
-});
-</script>
+
 <!-- From kipid.tistory CDN -->
 <script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
+
+<!-- From recoeve.net CDN -->
+<!-- <script src="https://recoeve.net/CDN/docuK-postProcess-2.3.js" charset="utf-8"></script> -->
+
+<!-- From local -->
+<!-- <script src="./docuK-postProcess-2.3.js" charset="utf-8"></script> -->
 </codeprint><!-- docuK-script -->
