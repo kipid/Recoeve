@@ -128,6 +128,7 @@ public static void printLog(RoutingContext ctx) {
 	}
 	lang=tmpLang;
 	System.out.println("Lang: "+lang);
+	System.out.flush();
 }
 
 @Override
