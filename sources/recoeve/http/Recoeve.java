@@ -83,8 +83,8 @@ public static void main(String... args) {
 		PrintLog.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		PrintLog.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			System.out.println("from:"+inputs.get(1, "from")+", to:"+inputs.get(1, "to"));
-			PrintLog.req.response().end(PrintLog.db.getBlogVisitor(inputs.get(1, "from"), inputs.get(1, "to")), ENCODING);
+			System.out.println(inputs);
+			PrintLog.req.response().end(PrintLog.db.getBlogVisitor(inputs), ENCODING);
 			System.out.println("Sended /BlogStat/Get.");
 		});
 	});

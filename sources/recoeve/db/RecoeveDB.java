@@ -385,20 +385,28 @@ public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String refe
 	}
 	return false;
 }
-public String getBlogVisitor(String from, String to) {
-	String res="t\tip\tURI\treferer\tREACTION_GUEST";
-	try {
-		pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(from));
-		pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(to));
-		ResultSet rs=pstmtGetBlogVisitor.executeQuery();
-		while (rs.next()) {
-			res+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
+public String getBlogVisitor(StrArray fromTo) {
+	String heads="from\tto\tstats";
+	String contents="";
+	for (int i=1;i<fromTo.getRowSize();i++) {
+		String from=fromTo.get(i, "from");
+		String to=fromTo.get(i, "to");
+		contents="\n"+from+"\t"+to+"\t";
+		String stats="t\tip\tURI\treferer\tREACTION_GUEST";
+		try {
+			pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(from));
+			pstmtGetBlogVisitor.setTimestamp(2, Timestamp.valueOf(to));
+			ResultSet rs=pstmtGetBlogVisitor.executeQuery();
+			while (rs.next()) {
+				stats+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
+			}
 		}
+		catch (SQLException e) {
+			err(e);
+		}
+		contents+=StrArray.enclose(stats);
 	}
-	catch (SQLException e) {
-		err(e);
-	}
-	return res;
+	return heads+contents;
 }
 public boolean delBlogVisitor() {
 	try {
