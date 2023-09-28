@@ -391,7 +391,7 @@ public String getBlogVisitor(StrArray fromTo) {
 	for (int i=1;i<fromTo.getRowSize();i++) {
 		String from=fromTo.get(i, "from");
 		String to=fromTo.get(i, "to");
-		contents="\n"+from+"\t"+to+"\t";
+		contents+="\n"+from+"\t"+to+"\t";
 		String stats="t\tip\tURI\treferer\tREACTION_GUEST";
 		try {
 			pstmtGetBlogVisitor.setTimestamp(1, Timestamp.valueOf(from));
