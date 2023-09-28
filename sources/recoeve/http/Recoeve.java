@@ -44,18 +44,16 @@ public static final String HOST
 public static final String ENCODING="UTF-8";
 public static final String INVALID_ACCESS="INVALID ACCESS";
 public static final long day31InMs=31*24*60*60*1000;
+public static final Vertx vertx=Vertx.vertx();
+public static final Router router0=Router.router(vertx);
+public static final Router router1=Router.router(vertx);
+public static final Router router=Router.router(vertx);
 
 @Override
 public void start() {
 } // public void start()
 
 public static void main(String... args) {
-	Vertx vertx=Vertx.vertx();
-
-	Router router0=Router.router(vertx);
-	Router router1=Router.router(vertx);
-	Router router=Router.router(vertx);
-
 	CorsHandler corsHandler=CorsHandler.create(".*")
 		// .addOrigin("https://kipid.tistory.com")
 		// .addOrigin("https://recoeve.net")
