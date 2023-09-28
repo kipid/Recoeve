@@ -388,7 +388,8 @@ public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String refe
 public String getBlogVisitor(StrArray fromTo) {
 	String heads="from\tto\tstats";
 	String contents="";
-	for (int i=1;i<fromTo.getRowSize();i++) {
+	int iMax=fromTo.getRowSize();
+	for (int i=1;i<iMax;i++) {
 		String from=fromTo.get(i, "from");
 		String to=fromTo.get(i, "to");
 		contents+="\n"+from+"\t"+to+"\t";
