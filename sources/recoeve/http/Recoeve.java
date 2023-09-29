@@ -89,7 +89,7 @@ public static void main(String... args) {
 
 	StaticHandler staticHandler=StaticHandler.create()
 		.setCachingEnabled(true)
-		.setCacheEntryTimeout(60*60*24*30*12) // Cache timeout in seconds (1 hour)
+		.setCacheEntryTimeout(60*60*24*365) // Cache timeout in seconds (1 hour)
 		.setFilesReadOnly(true);
 
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png

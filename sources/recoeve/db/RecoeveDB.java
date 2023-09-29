@@ -401,7 +401,7 @@ public String getBlogVisitor(StrArray fromTo) {
 			while (rs.next()) {
 				stats+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
 			}
-			contents+="\t"+StrArray.enclose(stats);
+			contents+="\t"+StrArray.enclose(stats.trim());
 		}
 	}
 	catch (SQLException e) {
