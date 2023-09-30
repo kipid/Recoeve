@@ -1327,7 +1327,7 @@ ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(?:(\/[\s\S]*))?/i;
 ptnURI.toIframe=function (uri, inListPlay) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return {html:`<a target="_blank" href="https://kr24.topgirl.co${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr24.topgirl.co${exec[1]?exec[1]:"/"}`)}</a>`, from:'topgirl', src:exec[1]};
+		return {html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:"/"}">${decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:"/"}`)}</a>`, from:'topgirl', src:exec[1]};
 	}
 	return false;
 };
