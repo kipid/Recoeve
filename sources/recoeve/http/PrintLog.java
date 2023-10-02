@@ -19,23 +19,23 @@ import recoeve.db.FileMap;
 public class PrintLog implements Handler<RoutingContext> {
 private static long numberOfClients=0;
 public static final RecoeveDB db=new RecoeveDB();
-public static HttpServerRequest req=null;
-public static String lang="df";
-public static boolean refererAllowed=false;
-public static String path="/";
-public static Cookie cookie=null;
-public static boolean sessionPassed=false;
-public static String user_i=null;
-public static HttpMethod method=null;
-public static String now=null;
-public static Timestamp tNow=null;
-public static String referer=null;
-public static String ip=null;
-public static String userAgent=null;
+public HttpServerRequest req=null;
+public String lang="df";
+public boolean refererAllowed=false;
+public String path="/";
+public Cookie cookie=null;
+public boolean sessionPassed=false;
+public String user_i=null;
+public HttpMethod method=null;
+public String now=null;
+public Timestamp tNow=null;
+public String referer=null;
+public String ip=null;
+public String userAgent=null;
 
 public PrintLog() {}
 
-public static void printLog(RoutingContext ctx) {
+public void printLog(RoutingContext ctx) {
 	req=ctx.request();
 	////////////////////////////////////
 	// Console log.
