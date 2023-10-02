@@ -35,7 +35,7 @@ codeprint.SEE {display:none}
 	padding-left:38px
 }
 
-#shortkey.shortkey {font-size:16px; color:white; background-color:#141414; max-width:100%; margin:auto}
+#shortkey.shortkey {font-size:13px; color:white; background-color:black; max-width:100%; margin:auto}
 #shortkey.shortkey ul.ul-short-key {font-size:1em; line-height:1.4; padding:0 1.5em; margin:.7em 0}
 #shortkey.shortkey li {font-size:1em; color:white !important}
 
@@ -200,7 +200,7 @@ codeprint.SEE {display:none}
 .docuK a.tJump {display:inline-block; font-size:.6em; margin:0 1em 0 -.5em; vertical-align:middle; padding:0 .26em; border:2px solid rgb(50,50,122); font-weight:bold}
 .docuK.bright a.tJump {text-decoration:none}
 
-.docuK .p {overflow-x:auto; overflow-y:visible; padding:.2em .2em 1em .2em; text-indent:.5em}
+.docuK .p {overflow-x:visible; overflow-y:visible; padding:.2em .2em 1em .2em; text-indent:.5em}
 .docuK .ex {border:.2em solid gray; padding:0 .5em .5em; margin:.5em auto}
 .docuK cite, .docuK refer {font:inherit; font-size:1em; text-indent:0}
 .docuK div.borderByBackground {display:inline-block; padding:10px; background:white}
@@ -302,7 +302,7 @@ li, dd {margin:.3em 0 .5em 2em; color:rgb(210,210,210) !important}
 
 /* Specify class=linenums on a pre to get line numbering */
 .docuK pre ol.linenums {margin:0; color:#AEBEAE; padding-left:3em}
-.docuK pre.prettyprint li {margin:0; padding:0}
+.docuK pre.prettyprint li {margin:0; padding:0; min-height:1.5em}
 .docuK li.L0,.docuK li.L1,.docuK li.L2,.docuK li.L3,.docuK li.L5,.docuK li.L6,.docuK li.L7,.docuK li.L8 {list-style-type:none}
 /* Alternate shading for lines */
 .docuK pre li {background:inherit} .docuK.bright pre li {background:inherit}
