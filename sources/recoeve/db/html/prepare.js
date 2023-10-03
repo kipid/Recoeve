@@ -1083,12 +1083,13 @@ return new Promise(function (resolve, reject) {
 		else {
 			exec=m.ptnURI["youtu.be"].regEx2.exec(uriRest);
 			if (exec!==null) {
+				let v=exec[1];
 				let vars=null;
 				if (exec[2]) {
 					vars=m.getSearchVars(exec[2]);
 				}
 				let list=vars?.list?.val;
-				return resolve({html:(toA?`<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}">https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}</a><br>`:"")+m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1], list});
+				return resolve({html:(toA?`<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}">https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}</a><br>`:"")+m.YTiframe(v, inListPlay), from:"youtube", videoId:v, list});
 			}
 			else {
 				exec=m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
