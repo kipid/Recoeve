@@ -4770,7 +4770,9 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
-	$window.trigger("scroll.delayedLoad");
+	setTimeout(function () {
+		$window.trigger("scroll.delayedLoad");
+	}, 2048);
 	// await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
