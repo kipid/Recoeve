@@ -2991,9 +2991,10 @@ m.renderStrDescCmt=function (str) {
 	res[key]=str.substring(start).trim();
 	return res;
 };
-m.recomHTML=function (r) {
+m.recomHTML=async function (r) {
 	if (r?.has) {
-		return m.recoHTML(r, false, true, true);
+		let recoHTML=await m.recoHTML(r, false, true, true);
+		return String(recoHTML);
 	}
 	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
@@ -3002,8 +3003,9 @@ m.recomHTML=function (r) {
 	if (r.defTitles[0]&&r.defTitles[0][0]) {
 		res+=`<div class="title">${m.escapeHTML(r.defTitles[0][0])}</div>`;
 	}
-	res+=`<div class="cats">${m.escapeHTML(m.currentCat)}</div>
-	${m.uriRendering(r.uri, false, false).html}`;
+	res+=`<div class="cats">${m.escapeHTML(m.currentCat)}</div>`;
+	let uriRendered=await uriRendering(r.uri, false, false);
+	res+=String(uriRendered.html);
 	let recomsI=m.recoms[m.currentCat][r.uri];
 	if (recomsI?.valsStat) {
 		let valsStat=recomsI.valsStat;
@@ -3055,7 +3057,9 @@ m.recomHTML=function (r) {
 				res+=`<div class="value"><span class="key">#${key}</span>:`;
 				let relateds=value.split("\n");
 				for (let p=0;p<relateds.length;p++) {
-					res+='<br>'+m.uriRendering(m.formatURI(relateds[p]), true).html;
+					res+='<br>';
+					let uriRenderedInRelated=await uriRendering(m.formatURI(relateds[p]), true);
+					res+=String(uriRenderedInRelated.html);
 				}
 				res+=`</div>`;
 				break;
@@ -3068,7 +3072,7 @@ m.recomHTML=function (r) {
 	res+=`</div>`;
 	return res;
 };
-m.recoHTML=function (r, inListPlay, inRange, inRecom) {
+m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
@@ -3076,8 +3080,11 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
 	<div class="title">${m.escapeHTML(r.title)}</div>
-	<div class="cats">${m.catsToA(r.cats)}</div>
-	${inListPlay?"":m.uriRendering(r.uri, false, inListPlay).html}`;
+	<div class="cats">${m.catsToA(r.cats)}</div>`
+	if (!inListPlay) {
+		let uriRendered=await uriRendering(r.uri, false, inListPlay);
+		res+=String(uriRendered.html);
+	}
 	res+=`<div class="cBoth"></div>`;
 		if (r.val?.str) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
@@ -3126,7 +3133,9 @@ m.recoHTML=function (r, inListPlay, inRange, inRecom) {
 					res+=`<div class="value"><span class="key">#${key}</span>:`;
 					let relateds=value.split("\n");
 					for (let p=0;p<relateds.length;p++) {
-						res+='<br>'+m.uriRendering(m.formatURI(relateds[p]), true).html;
+						res+='<br>';
+						let uriRenderedInRelated=await uriRendering(m.formatURI(relateds[p]), true);
+						res+=String(uriRenderedInRelated.html);
 					}
 					res+=`</div>`;
 					break;
@@ -3165,8 +3174,8 @@ m.reco_pointChange_do=function (args, err) {
 		else {
 			args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${m.escapeHTML(resp)}`);
 		}
-	}).done(function (resp) {
-		let res=m.strToJSON(resp);
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
 		if (res[1]?.result?.substring(0,7)==="changed") {
 			m.myRecos[uri].val=m.val(args.valStr);
 			m.myRecos[uri].cats=args.cats;
@@ -3489,7 +3498,7 @@ m.reNewAndReOn=function () {
 	$downs.on("click.ud", m.starsOnDowns);
 };
 m.lastRecoMode="nothing";
-m.showRecosOnCat=function (elem, from) {
+m.showRecosOnCat=async function (elem, from) {
 	m.modeToggle=false;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		$contents.addClass("multireco");
@@ -3574,7 +3583,8 @@ m.showRecosOnCat=function (elem, from) {
 				for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
 					let fsFLi=fs.fullList[i];
 					let r=fsFLi.reco;
-					strHTML+=m.recoHTML(r, false, fsFLi.inRange);
+					let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
+					strHTML+=String(recoHTML);
 				}
 			}
 			let beforeLoadSH=document.documentElement.scrollHeight;
@@ -3625,8 +3635,8 @@ m.recoDowned=function (urisStr, recos) {
 		r.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
-m.recoToEve=function (resp, recos, cat, uris) {
-	resp=m.strToJSON(resp);
+m.recoToEve=async function (resp, recos, cat, uris) {
+	resp=await m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
 		let respK=resp[k];
 		let uri=respK.uri;
@@ -3757,8 +3767,8 @@ m.getUriList=function (catStrArray) {
 			$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
 			$contents.html("");
 			resolve();
-		}).done(function (resp) { // resp=cat\tUriList\tcutP\terr
-			let respJSON=m.strToJSON(resp);
+		}).done(async function (resp) { // resp=cat\tUriList\tcutP\terr
+			let respJSON=await m.strToJSON(resp);
 			for (let i=1;i<respJSON.length;i++) {
 				let catUL=m.catUriList[respJSON[i].cat]=m.catUriList[respJSON[i].cat]||{};
 				catUL.down=true;
@@ -3777,13 +3787,14 @@ m.getUriList=function (catStrArray) {
 		});
 	});
 };
-m.loadMoreRecoms=function (elem, sortedUntil, sortN) {
+m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 	let cat=m.currentCat;
 	let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsortRest(m.recoms[cat], "avgVal", m.recomsSorted[cat], sortN, sortedUntil);
 	let strHTML="";
 	for (let i=sortedUntil-1;i>=recomsUntil;i--) {
 		let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-		strHTML+=m.recomHTML(m.userRecos[uri]);
+		let recomHTML=await m.recomHTML(m.userRecos[uri]);
+		strHTML+=String(recomHTML);
 	}
 	if (recomsUntil>0) {
 		strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
@@ -3823,8 +3834,8 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 				, dataType:"text"
-			}).done(function (resp) {
-				let respJSON=m.strToJSON(resp);
+			}).done(async function (resp) {
+				let respJSON=await m.strToJSON(resp);
 				let neighbors=[];
 				neighbors.sorted=[];
 				let sorted=neighbors.sorted;
@@ -3892,7 +3903,8 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					else {
 						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-							strHTML+=m.recomHTML(m.userRecos[uri]);
+							let recomHTML=await m.recomHTML(m.userRecos[uri])
+							strHTML+=String(recomHTML);
 						}
 						if (recomsUntil>0) {
 							strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
@@ -3913,8 +3925,8 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					$.ajax({
 						type:"POST", url:m.userPath+"/get-Recoms", data:req
 						, dataType:"text"
-					}).done(function (resp) {
-						let respJSON=m.strToJSON(resp);
+					}).done(async function (resp) {
+						let respJSON=await m.strToJSON(resp);
 						for (let i=1;i<respJSON.length;i++) {
 							let val=m.val(respJSON[i].val);
 							if (val.valid) {
@@ -3990,20 +4002,21 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						$.ajax({
 							type:"POST", url:"/reco/multidefs", data:uris.trim()
 							, dataType:"text"
-						}).done(function (resp) {
-							let defs=m.strToJSON(resp.trim());
+						}).done(async function (resp) {
+							let defs=await m.strToJSON(resp.trim());
 							for (let j=1;j<defs.length;j++) {
 								let r=m.userRecos[defs[j].uri];
 								r.defs=true;
-								r.defCats=m.strToJSON(defs[j]["def-cats"], false);
-								r.defTitles=m.strToJSON(defs[j]["def-titles"], false);
-								r.defDescs=m.strToJSON(defs[j]["def-descs"], false);
+								r.defCats=await m.strToJSON(defs[j]["def-cats"], false);
+								r.defTitles=await m.strToJSON(defs[j]["def-titles"], false);
+								r.defDescs=await m.strToJSON(defs[j]["def-descs"], false);
 							}
 							let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
 							let strHTML="";
 							for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 								let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-								strHTML+=m.recomHTML(m.userRecos[uri]);
+								let recomHTML=await m.recomHTML(m.userRecos[uri]);
+								strHTML+=String(recomHTML);
 							}
 							if (recomsUntil>0) {
 								strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
@@ -4020,8 +4033,8 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				$.ajax({
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 					, dataType:"text"
-				}).done(function (resp) {
-					let respJSON=m.strToJSON(resp);
+				}).done(async function (resp) {
+					let respJSON=await m.strToJSON(resp);
 					let neighbors=[];
 					neighbors.sorted=[];
 					let sorted=neighbors.sorted;
@@ -4071,7 +4084,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			break;
 	}
 };
-m.refresh=function (cats, option, uri) {
+m.refresh=async function (cats, option, uri) {
 	let c=cats.split(";");
 	let k=0;
 	if (m.currentCat!==undefined) {
@@ -4089,9 +4102,11 @@ m.refresh=function (cats, option, uri) {
 			r.index=m.lastIndexOfUriList;
 			m.lastIndexOfUriList++;
 			if (m.recoms[m.currentCat]) {
-				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true, true));
+				let recoHTML=await m.recoHTML(r, false, true, true);
+				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recoHTML));
 			}
-			$contents.prepend(m.recoHTML(r, false, true));
+			let recoHTML=await m.recoHTML(r, false, true)
+			$contents.prepend(String(recoHTML));
 			m.reNewAndReOn();
 
 			let fs=m.fsGo;
@@ -4116,7 +4131,8 @@ m.refresh=function (cats, option, uri) {
 			if (uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 				if (option==="changed") {
 					let r=m.myRecos[uri];
-					$reco_playing.html(m.recoHTML(r, true, true));
+					let recoHTML=await m.recoHTML(r, true, true);
+					$reco_playing.html(String(recoHTML));
 					m.reNewAndReOn();
 				}
 				else if (option==="deleted") {
@@ -4128,9 +4144,11 @@ m.refresh=function (cats, option, uri) {
 				}
 			}
 			if (m.recoms[m.currentCat]) {
-				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true, true));
+				let recoHTML=await m.recoHTML(r, false, true, true);
+				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recoHTML));
 			}
-			$(`#reco-${m.userRecos[uri]?.index}`)?.replaceWith(m.recoHTML(r, false, true));
+			recoHTML=await m.recoHTML(r, false, true);
+			$(`#reco-${m.userRecos[uri]?.index}`)?.replaceWith(String(recoHTML));
 			if (option==="changed") {
 				m.reNewAndReOn();
 
@@ -4157,7 +4175,8 @@ m.refresh=function (cats, option, uri) {
 				r.has=false;
 				m.lastURI="x*L2$zp-|,O";
 				if (m.recoms[m.currentCat]) {
-					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(m.recomHTML(r));
+					let recomHTML=await m.recomHTML(r);
+					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recomHTML));
 					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.find(".button.edit").addClass("deleted");
 				}
 				$(`#reco-${r?.index}`)?.addClass("none deleted");
@@ -4391,7 +4410,7 @@ m.myRecos[""]=m.userRecos[""]={
 	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
 	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
 };
-m.showMyReco=function (r) {
+m.showMyReco=async function (r) {
 	if (r.has) {
 		if (r.deleted) {
 			$button_reco.show();
@@ -4413,7 +4432,8 @@ m.showMyReco=function (r) {
 		$button_back.hide();
 	}
 	let $mR=$("#my-reco");
-	$mR.html( m.recoHTML(r, true, true) ); // need to be edit.
+	let recoHTML=await m.recoHTML(r, true, true);
+	$mR.html(String(recoHTML)); // need to be edit.
 	if (r.has) {
 		let $edit=$mR.find(".button.edit").remove();
 		$edit.on("click", function (e) {
@@ -4669,13 +4689,13 @@ m.getAndFillDefsInNewReco=function (r, fillDefs) {
 			$.ajax({
 				type:"POST", url:"/reco/defs", data:r.uri
 				, dataType:"text"
-			}).done(function (resp) {
-				let defs=m.strToJSON(resp);
+			}).done(async function (resp) {
+				let defs=await m.strToJSON(resp);
 				r.defs=true;
 				if (defs[1]) {
-					r.defCats=m.strToJSON(defs[1]["def-cats"], false);
-					r.defTitles=m.strToJSON(defs[1]["def-titles"], false);
-					r.defDescs=m.strToJSON(defs[1]["def-descs"], false);
+					r.defCats=await m.strToJSON(defs[1]["def-cats"], false);
+					r.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
+					r.defDescs=await m.strToJSON(defs[1]["def-descs"], false);
 					m.showDefs(r);
 				}
 				resolve();
@@ -4713,38 +4733,39 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	let elem=$input_uri[0];
 	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
 	if (elem.value!==uri) { elem.value=uri; }
-	let uriRendered=m.uriRendering(uri,true);
+	let uriRendered=await uriRendering(uri,true);
+	let from=String(uriRendered.from);
 	if (!noFormatURI) {
 		m.lastURI=uri;
-		if (uriRendered.from==="youtube") {
+		if (from==="youtube") {
 			uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="instagram") {
+		else if (from==="instagram") {
 			uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
 		}
-		else if (uriRendered.from==="tiktok") {
+		else if (from==="tiktok") {
 			uri=elem.value=`https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="weverse") {
+		else if (from==="weverse") {
 			uri=elem.value=`https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="naver") {
+		else if (from==="naver") {
 			uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="vlive") {
+		else if (from==="vlive") {
 			uri=elem.value=`https://www.vlive.tv/video/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="kakao") {
+		else if (from==="kakao") {
 			uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="ted") {
+		else if (from==="ted") {
 			uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
 		}
-		else if (uriRendered.from==="dailymotion") {
+		else if (from==="dailymotion") {
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 		}
 	}
-	$show_URI.html(uriRendered.html);
+	$show_URI.html(promise.then(uriRendered => uriRendered.html));
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
@@ -4909,8 +4930,8 @@ m.reco_do=function (args, err) {
 		$error.html("[--Reco failed. You may be not logged-in.--]");
 		args.$result?.html($error.html());
 		$button_reco.removeClass("disabled");
-	}).done(function (resp) {
-		let res=m.strToJSON(resp);
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
 		console.log(res);
 		if (res[1]?.result==="recoed") {
 			$error.html(res[1].result);
@@ -4997,8 +5018,8 @@ m.reco_change_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function (resp) {
 		$error.html("[--Failed change. You may not be logged-in.--] "+resp);
-	}).done(function (resp) {
-		let res=m.strToJSON(resp);
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
 		if (res[1]) {
 			if (res[1].result?.substring(0,7)==="changed") {
 				$error.html(m.escapeHTML(res[1].result));
@@ -5108,8 +5129,8 @@ m.reco_delete_do=function (args, err) {
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
-	}).done(function (resp) {
-		let res=m.strToJSON(resp);
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
 		if (res[1]?.result==="deleted") {
 			$error.html("Deleted");
 			let cats=args.r.cats;
@@ -5884,7 +5905,8 @@ m.changeLang=function (lang, e, elem) {
 		return false;
 	}
 };
-let dataLang=m.strToJSON($data_lang.html().trim());
+(async function () {
+let dataLang=await m.strToJSON($data_lang.html().trim());
 let htmlLangs="";
 for (let i=0;i<dataLang[0].length;i++) {
 	htmlLangs+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
@@ -5915,7 +5937,7 @@ $choose_timezone.on("click", function (e) {
 		$choose_timezone.addClass("enabled");
 	}
 });
-
+})();
 
 
 ////////////////////////////////////////////////
@@ -6128,7 +6150,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
-m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
+m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	let fs=m.fsToRs;
 	fs.pauseVideo();
 	let i=fs.currentIndex;
@@ -6136,9 +6158,11 @@ m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
 		fs.$fsLis.removeClass("selected");
 		$(`#toR-${i}`).addClass("selected");
 		let r=fs.fullList[i].reco;
-		$reco_playing.html(m.recoHTML(r, inListPlay, true));
-		let uriRendered=m.uriRendering(r.uri, false, inListPlay);
-		if (uriRendered.from==="youtube") {
+		let recoHTML=await m.recoHTML(r, inListPlay, true);
+		$reco_playing.html(String(recoHTML));
+		let uriRendered=await uriRendering(r.uri, false, inListPlay);
+		let from=String(uriRendered.from);
+		if (from==="youtube") {
 			$eveElse.html('');
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
@@ -6177,7 +6201,7 @@ m.fsToRs.getAndPlayVideo=function (cue, inListPlay=true) {
 				fs.prepareRecoListPlay(true);
 			}
 		}
-		else if (uriRendered.from==="video") {
+		else if (from==="video") {
 			$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse"), "eveElse"));
 			$eveElse=$("#eveElse");
 			$video=$("#video");
