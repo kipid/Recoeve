@@ -32,8 +32,8 @@ m.logOutDo=function (args, err) {
 		$("#err").html(msg);
 	}).done(function (resp) {
 		console.log(resp);
-		window.close();
 		window.open(args.href);
+		window.close();
 	});
 }
 m.rmb_me(m.logOutDo, {href})

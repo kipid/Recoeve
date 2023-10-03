@@ -71,7 +71,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
 <script>
-(function(m, $, undefined) {
+(async function(m, $, undefined) {
 $(".replace-reco-eve").html(function(i, orgHtml) {
 	return orgHtml
 		.replace(/reco/ig,'<span class="reco bold">$&</span>')
@@ -92,7 +92,7 @@ if (vars.email?.val) {
 $("#input-cp-userEmail")[0].disabled=true;
 
 let $dataLang=$("#data-lang");
-let dataLang=m.strToJSON($dataLang.html().trim());
+let dataLang=await m.strToJSON($dataLang.html().trim());
 let originPathname=window.location.origin+window.location.pathname+'?';
 
 let htmlLang='<div class="p">';
