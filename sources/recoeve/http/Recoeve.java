@@ -59,9 +59,9 @@ public void start() {
 } // public void start()
 
 public static void main(String... args) {
-	CorsHandler corsHandler=CorsHandler.create(".*")
-		// .addOrigin("https://kipid.tistory.com")
-		// .addOrigin("https://recoeve.net")
+	CorsHandler corsHandler=CorsHandler.create()
+		.addOrigin("https://kipid.tistory.com")
+		.addOrigin("https://recoeve.net")
 		// .addOrigin("null")
 		// .allowedMethod(HttpMethod.GET)
 		.allowedMethod(HttpMethod.POST)
