@@ -123,7 +123,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div><!-- #recoeve-container -->
 
 <script>
-(function (m, $, undefined) {
+(async function (m, $, undefined) {
 $(".replace-reco-eve").html(function (i, orgHtml) {
 	return orgHtml
 		.replace(/reco/ig,'<span class="reco bold">$&</span>')
@@ -136,7 +136,7 @@ if (m.searchVars.lang!==undefined) {
 }
 
 let $dataLang=$("#data-lang");
-let dataLang=m.strToJSON( $dataLang.html().trim() );
+let dataLang=await m.strToJSON( $dataLang.html().trim() );
 let htmlLang=`<div class="p">`;
 for (let i=0;i<dataLang[0].length;i++) {
 	htmlLang+=`<a href="?lang=${dataLang[0][i]}">${dataLang[1][i]}</a><br>`;
