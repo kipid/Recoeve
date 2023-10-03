@@ -1,8 +1,8 @@
 window.m={};
 (function (m, $, undefined) {
-// 여러군데 쓰일거 같은 것만 모아놓자.
-// user-page.html, log-in.html
+// user-page.html, log-in.html, changePwd.html
 $window=$(window);
+$document=$(document);
 $.fn.exists=function () { return this.length!==0; };
 
 m.getSearchVars=function (searchStr) {
