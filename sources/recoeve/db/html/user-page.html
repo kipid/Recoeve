@@ -1413,7 +1413,6 @@ m.toggleNewReco=function () {
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
-			e.preventDefault();
 			$window.scrollTop(m.wST);
 		});
 		$input_uri.focus();
@@ -3617,7 +3616,6 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
-			e.preventDefault();
 			$window.scrollTop(m.wST);
 		});
 		m.reNewAndReOn();
@@ -4770,9 +4768,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
-	setTimeout(function () {
-		$window.trigger("scroll.delayedLoad");
-	}, 2048);
+	m.reNewAndReOn();
 	// await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
@@ -6107,8 +6103,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}
 		m.wST=$window.scrollTop();
 		$window.on("scroll.stop", function (e) {
-			e.stopPropagation();
-			e.preventDefault();
 			$window.scrollTop(m.wST);
 		});
 		$input_uri.focus();
