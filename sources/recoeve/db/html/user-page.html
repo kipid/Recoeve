@@ -4765,7 +4765,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
 		}
 	}
-	$show_URI.html(promise.then(uriRendered => uriRendered.html));
+	$show_URI.html(String(uriRendered.html));
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
