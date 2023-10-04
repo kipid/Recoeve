@@ -4083,6 +4083,9 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	}
 };
 m.refresh=async function (cats, option, uri) {
+	cats=String(cats);
+	option=String(option);
+	uri=String(uri);
 	let c=cats.split(";");
 	let k=0;
 	if (m.currentCat!==undefined) {
