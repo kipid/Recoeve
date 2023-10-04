@@ -3249,7 +3249,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			if (m.recoMode==="multireco") {
 				cats=m.formatCats($multireco_input_cats[0].value);
 				if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
-					cats=m.formatCats(m.myRecos[uri]?.cats);
+					cats=m.formatCats(m.myRecos[uri].cats);
 					catsChanged=false;
 				} else {
 					m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
@@ -3257,7 +3257,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				}
 			}
 			else if (m.myRecos[uri]?.cats) {
-				cats=m.formatCats(m.myRecos[uri]?.cats);
+				cats=m.formatCats(m.myRecos[uri].cats);
 				catsChanged=false;
 			}
 			else {
@@ -3281,12 +3281,12 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				if (m.recoMode==="multireco") {
 					cats=m.formatCats($multireco_input_cats[0].value);
 					if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
-						cats=m.formatCats(m.myRecos[uri]?.cats);
+						cats=m.formatCats(m.myRecos[uri].cats);
 						catsChanged=false;
 					}
 				}
 				else if (m.myRecos[uri]?.cats) {
-					cats=m.formatCats(m.myRecos[uri]?.cats);
+					cats=m.formatCats(m.myRecos[uri].cats);
 					catsChanged=false;
 				}
 				else {
