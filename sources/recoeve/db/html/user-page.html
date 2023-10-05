@@ -3814,6 +3814,7 @@ m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 	$(elem)?.replaceWith(strHTML);
 	m.reNewAndReOn();
 };
+m.cutNeighborsN=200;
 m.cutNeighbors=function (str) {
 	$.ajax({
 		type:"POST", url:m.userPath+"/cut-Neighbors", data:str
@@ -3841,7 +3842,6 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	switch (m.recoMode) {
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
-			$contents.html("");
 			let cat_from=m.currentCat=cat;
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -3882,18 +3882,19 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				}
 				m.neighbors[cat_from]=neighbors;
 				if (m.myPage&&neighbors.length>1000) {
-					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, 100, until);
+					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, until, until);
 					let str=`user_me\t${m.myIndex}\ncat_from\t${cat_from}\n`;
 					let str_user_to=`user_to`;
 					let str_cat_to=`cat_to`;
 					let str_cut=`cut`;
-					for (let i=neighbors.length-1;i>=until;i--) {
+					let cut_upto=neighbors.length-m.cutNeighborsN;
+					for (let i=neighbors.length-1;i>=cut_upto;i--) {
 						let neighborI=neighbors[sorted[i]];
 						str_user_to+=`\t${neighborI.user_to}`;
 						str_cat_to+=`\t${neighborI.cat_to}`;
 						str_cut+=`\tx`;
 					}
-					for (let i=until-1;i>=0;i--) {
+					for (let i=cut_upto-1;i>=0;i--) {
 						let neighborI=neighbors[sorted[i]];
 						str_user_to+=`\t${neighborI.user_to}`;
 						str_cat_to+=`\t${neighborI.cat_to}`;
@@ -5818,6 +5819,7 @@ m.processShortKey=function (e) {
 		break;
 	case 77: // M=77
 		e.preventDefault();
+		$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 		if ($button_multireco_mode.hasClass("enabled")) {
 			m.recoMode="";
 			$button_mode.removeClass("enabled");
