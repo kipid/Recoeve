@@ -3642,7 +3642,9 @@ m.recoToEve=async function (resp, recos, cat, uris) {
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={}; }
 		r.has=true; // User has a reco on the uri.
+		console.log("respK.cats: ", String(respK.cats));
 		for (let prop in respK) {
+			console.log(prop, respK[prop]);
 			if (isNaN(prop)) {
 				prop=String(prop);
 				r[prop]=String(respK[prop]);
