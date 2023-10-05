@@ -2607,7 +2607,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-				m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
+				await m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
 			else {
 				catIsPut=m.putCat(cat)||catIsPut;
@@ -3635,6 +3635,7 @@ m.recoDowned=function (urisStr, recos) {
 	}
 };
 m.recoToEve=async function (resp, recos, cat, uris) {
+return new Promise(function (resolve, reject) {
 	resp=await m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
 		let respK=await resp[k];
@@ -3690,6 +3691,8 @@ m.recoToEve=async function (resp, recos, cat, uris) {
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
+	return resolve();
+});
 };
 m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
@@ -3722,13 +3725,13 @@ m.getRecos=function (uris, recos, cat) {
 					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
 					$contents.html("");
 					resolve();
-				}).done(function (resp) {
+				}).done(async function (resp) {
 					m.recoDowned(getRecosStr.substring(4), recos);
 					if (recos===m.userRecos) {
-						m.recoToEve(resp, recos, cat, uris);
+						await m.recoToEve(resp, recos, cat, uris);
 					}
 					else {
-						m.recoToEve(resp, recos);
+						await m.recoToEve(resp, recos);
 					}
 					resolve();
 				});
@@ -4674,9 +4677,9 @@ m.getAndFillRecoInNewReco=function (r, fillDefs) {
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 				, dataType:"text"
-			}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 				m.recoDowned(r.uri, m.myRecos);
-				m.recoToEve(resp, m.myRecos);
+				await m.recoToEve(resp, m.myRecos);
 				m.fillRecoInNewReco(r, fillDefs);
 				resolve();
 			});
@@ -4724,9 +4727,9 @@ m.getAndShowMyRecoInNewReco=function (r) {
 				$.ajax({
 					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
 					, dataType:"text"
-				}).done(function (resp) { // User reco 가 없으면 head 만 보냄.
+				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 					m.recoDowned(uri, m.userRecos);
-					m.recoToEve(resp, m.userRecos);
+					await m.recoToEve(resp, m.userRecos);
 					m.showMyReco(r);
 					resolve();
 				});
@@ -4943,7 +4946,7 @@ m.reco_do=function (args, err) {
 			$error.html(result);
 			args.$result?.html(result);
 			m.recoDowned(args.uri, m.myRecos);
-			m.recoToEve(args.strRecoDo, m.myRecos);
+			await m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[args.uri].tFirst=m.myRecos[args.uri].tLast=res[1]?.tLast;
 			let cats=String(m.myRecos[args.uri].cats);
 			console.log("cats: ", cats, args.uri);
