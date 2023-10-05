@@ -440,6 +440,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 <div id="sidebar">
 	<div id="user-noti"></div>
 	<div id="catList"></div>
+	<div id="catList-result"></div>
 	<div class="right">
 		<div class="button" id="change-catList-order">[--Change orders--]</div>
 		<div class="button" id="change-catList-order-ok">[--OK--]</div>
@@ -1115,6 +1116,7 @@ $sidebar_toggle=$("#sidebar-toggle");
 $sidebar_dragger_in=$("#sidebar-dragger-in");
 $sidebar=$("#sidebar");
 $catList=$("#catList");
+$catList_result=$("#catList-result");
 $change_catList_order=$("#change-catList-order");
 $change_catList_order_ok=$("#change-catList-order-ok");
 $change_catList_order_cancel=$("#change-catList-order-cancel");
@@ -2098,20 +2100,27 @@ $change_catList_order.on("click", function (e) {
 m.change_catList_order_do=function (args, err) {
 	if (err) {
 		console.log(err);
-		$data_myCatList.html(m.escapeHTML(args));
+		$data_myCatList.html(m.escapeHTML(args.catListChanged));
 		m.updateCatFS();
 		$change_catList_order.show();
 	}
 	else {
 		$.ajax({
-			type:"POST", url:"/changeOrders/CatList", data:args
+			type:"POST", url:"/changeOrders/CatList", data:args.catListChanged
 			, dataType:"text"
 		}).fail(function () {
 			console.log("Changing CatList order has failed.");
+			args.$result?.html("Changing CatList order has failed.");
 		}).done(function (resp) {
+			if (args.$result) {
+				args.$result.html(m.escapeHTML(resp));
+				setTimeout(function () {
+					args.$result.html("");
+				}, 5000);
+			}
 			console.log(resp);
 		}).always(function () {
-			$data_myCatList.html(m.escapeHTML(args));
+			$data_myCatList.html(m.escapeHTML(args.catListChanged));
 			m.updateCatFS();
 			$change_catList_order.show();
 		});
@@ -2121,7 +2130,7 @@ $change_catList_order_ok.on("click", function (e) {
 	let catListChanged=m.getCatListChanged();
 	if (catListChanged!==m.unescapeHTML($data_CatList.html())) {
 		if (m.myPage) {
-			m.rmb_me(m.change_catList_order_do, catListChanged);
+			m.rmb_me(m.change_catList_order_do, {catListChanged, $result:$catList_result});
 		}
 		else {
 			$data_CatList.html(m.escapeHTML(catListChanged));
@@ -3643,9 +3652,7 @@ return new Promise(async function (resolve, reject) {
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={}; }
 		r.has=true; // User has a reco on the uri.
-		console.log("respK.cats: ", String(respK.cats));
 		for (let prop in respK) {
-			console.log(prop, respK[prop]);
 			if (isNaN(prop)) {
 				prop=String(prop);
 				r[prop]=String(respK[prop]);
@@ -4941,7 +4948,6 @@ m.reco_do=function (args, err) {
 	}).done(async function (resp) {
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
-		console.log(res);
 		if (result==="recoed") {
 			$error.html(result);
 			args.$result?.html(result);
