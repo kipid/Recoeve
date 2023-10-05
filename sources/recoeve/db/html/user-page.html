@@ -4158,12 +4158,24 @@ m.refresh=async function (cats, option, uri) {
 					$rC_youtube_uri_rendered.hide();
 				}
 			}
-			if (m.recoms[m.currentCat]) {
-				let recoHTML=await m.recoHTML(r, false, true, true);
-				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recoHTML));
+			let $recoms_recos=$("#contents-recoms").find(".reco");
+			for (let k=0;k<$recoms_recos.length;k++) {
+				let $reco=$recoms_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true, true);
+					$reco.replaceWith(String(recoHTML));
+				}
 			}
-			recoHTML=await m.recoHTML(r, false, true);
-			$(`#reco-${m.userRecos[uri]?.index}`)?.replaceWith(String(recoHTML));
+			let $recos_recos=$("#contents").find(".reco");
+			for (let k=0;k<$recos_recos.length;k++) {
+				let $reco=$recos_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true);
+					$reco.replaceWith(String(recoHTML));
+				}
+			}
 			if (option==="changed") {
 				m.reNewAndReOn();
 
@@ -4189,13 +4201,25 @@ m.refresh=async function (cats, option, uri) {
 				r.deleted=true;
 				r.has=false;
 				m.lastURI="x*L2$zp-|,O";
-				if (m.recoms[m.currentCat]) {
-					let recomHTML=await m.recomHTML(r);
-					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recomHTML));
-					$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.find(".button.edit").addClass("deleted");
+				let $recoms_recos=$("#contents-recoms").find(".reco");
+				for (let k=0;k<$recoms_recos.length;k++) {
+					let $reco=$recoms_recos.eq(k);
+					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+					if (recoURI===uri) {
+						let recomHTML=await m.recomHTML(r);
+						$reco.replaceWith(String(recomHTML));
+						$reco.find(".button.edit").addClass("deleted");
+					}
 				}
-				$(`#reco-${r?.index}`)?.addClass("none deleted");
-				$(`#reco-${r?.index}`)?.find(".button.edit").addClass("deleted");
+				let $recos_recos=$("#contents").find(".reco");
+				for (let k=0;k<$recos_recos.length;k++) {
+					let $reco=$recos_recos.eq(k);
+					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+					if (recoURI===uri) {
+						$reco.addClass("none deleted");
+						$reco.find(".button.edit").addClass("deleted");
+					}
+				}
 				m.reNewAndReOn();
 
 				let fs=m.fsGo;
