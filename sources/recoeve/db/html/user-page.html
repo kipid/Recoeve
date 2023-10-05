@@ -3175,12 +3175,13 @@ m.reco_pointChange_do=function (args, err) {
 		}
 	}).done(async function (resp) {
 		let res=await m.strToJSON(resp);
-		if (res[1]?.result?.substring(0,7)==="changed") {
+		let result=String(res[1]?.result);
+		if (result?.substring(0,7)==="changed") {
 			m.myRecos[uri].val=m.val(args.valStr);
 			m.myRecos[uri].cats=args.cats;
 			args.$result?.html(m.escapeHTML(res[1].result));
 		}
-		else if (res[1]?.result==="recoed") {
+		else if (result==="recoed") {
 			let r=m.myRecos[uri];
 			if (!r) {r=m.myRecos[uri]={};}
 			r.has=true;
@@ -3205,7 +3206,7 @@ m.reco_pointChange_do=function (args, err) {
 			}
 		}
 		else {
-			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
+			m.delayedLogOut(result, 60*60*24, args.$result);
 		}
 	});
 };
@@ -3636,42 +3637,43 @@ m.recoDowned=function (urisStr, recos) {
 m.recoToEve=async function (resp, recos, cat, uris) {
 	resp=await m.strToJSON(resp);
 	for (let k=1;k<resp.length;k++) {
-		let respK=resp[k];
-		let uri=respK.uri;
+		let respK=await resp[k];
+		let uri=String(respK.uri);
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={}; }
 		r.has=true; // User has a reco on the uri.
 		for (let prop in respK) {
 			if (isNaN(prop)) {
-				r[prop]=respK[prop];
+				prop=String(prop);
+				r[prop]=String(respK[prop]);
 			}
 		}
 		r.deleted=false;
 		if (r.desc!==undefined) {
-			r.descR=m.renderStrDescCmt(r.desc); // R for rendered.
+			r.descR=m.renderStrDescCmt(String(r.desc)); // R for rendered.
 		}
 		else {
 			r.descR=m.renderStrDescCmt("");
 		}
 		if (r.cmt!==undefined) {
-			r.cmtR=m.renderStrDescCmt(r.cmt); // R for rendered.
+			r.cmtR=m.renderStrDescCmt(String(r.cmt)); // R for rendered.
 		}
 		else {
 			r.cmtR=m.renderStrDescCmt("");
 		}
-		r.val=m.val(r.val);
+		r.val=m.val(String(r.val));
 	}
 	let fs=m.fsGo;
 	let fsFL=fs.fullList=fs.fullList||[];
 	if (recos===m.userRecos) {
 		for (let k=1;k<resp.length;k++) {
 			let respK=resp[k];
-			let uri=respK.uri;
+			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:r.cats.split(";"), uri:uri, reco:r, r:r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, reco:r, r};
 			fsFL.push(fsFLk);
-			fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
-			fsFLk.html=m.escapeHTML(r.title);
+			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
+			fsFLk.html=m.escapeHTML(String(r.title));
 		}
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
