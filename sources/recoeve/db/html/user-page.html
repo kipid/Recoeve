@@ -4933,10 +4933,11 @@ m.reco_do=function (args, err) {
 		$button_reco.removeClass("disabled");
 	}).done(async function (resp) {
 		let res=await m.strToJSON(resp);
+		let result=String(res[1]?.result);
 		console.log(res);
-		if (res[1]?.result==="recoed") {
-			$error.html(res[1].result);
-			args.$result?.html(res[1].result);
+		if (result==="recoed") {
+			$error.html(result);
+			args.$result?.html(result);
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[args.uri].tFirst=m.myRecos[args.uri].tLast=res[1]?.tLast;
@@ -4952,7 +4953,7 @@ m.reco_do=function (args, err) {
 			}, 1024);
 		}
 		else {
-			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
+			m.delayedLogOut(result, 60*60*24, args.$result);
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
