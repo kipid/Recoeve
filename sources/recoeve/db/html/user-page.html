@@ -3814,7 +3814,6 @@ m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 	$(elem)?.replaceWith(strHTML);
 	m.reNewAndReOn();
 };
-m.cutNeighborsN=200;
 m.cutNeighbors=function (str) {
 	$.ajax({
 		type:"POST", url:m.userPath+"/cut-Neighbors", data:str
@@ -3887,7 +3886,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let str_user_to=`user_to`;
 					let str_cat_to=`cat_to`;
 					let str_cut=`cut`;
-					let cut_upto=neighbors.length-m.cutNeighborsN;
+					let cut_upto=neighbors.length-m.neighborUpto;
 					for (let i=neighbors.length-1;i>=cut_upto;i--) {
 						let neighborI=neighbors[sorted[i]];
 						str_user_to+=`\t${neighborI.user_to}`;
@@ -3910,7 +3909,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				if (m.neighborsRecos[cat]&&m.recomsSorted[cat]) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
-					if (!m.recoms[cat]||m.recoms[cat]?.length<=0) {
+					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
 						strHTML="[--You have no recoms yet from your neighbors.--]";
 					}
 					else {
