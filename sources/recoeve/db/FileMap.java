@@ -39,7 +39,7 @@ public class FileMap {
 	private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] txtFileNames={
 			"jquery.js", "prepare.js"
-			, "robots.txt"
+			, "robots.txt", "ads.txt"
 			, "log-in.html", "verify.html", "changePwd.html", "log-out.html"
 			, "user-page.html", "remember-me.html"
 		};

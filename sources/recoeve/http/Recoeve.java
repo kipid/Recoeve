@@ -276,6 +276,11 @@ public static void main(String... args) {
 						pl.req.response().end(FileMap.get("robots.txt", "df"), ENCODING);
 						System.out.println("Sended robots.txt.");
 						break;
+					case "ads.txt": // e.g. path=/ads.txt
+						pl.req.response().putHeader("Content-Type", "text/plain");
+						pl.req.response().end(FileMap.get("ads.txt", "df"), ENCODING);
+						System.out.println("Sended ads.txt.");
+						break;
 					default:
 						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 						pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
