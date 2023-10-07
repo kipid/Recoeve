@@ -3845,6 +3845,29 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 		}
 	}
 	switch (m.recoMode) {
+		case "multireco": case "": default:
+			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
+			let catI=m.catList[cat];
+			if (catI) {
+				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
+				if (catUriList.down) {
+					m.getAndShowRecosOnCat(cat);
+				}
+				else {
+					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					m.getAndShowRecosOnCat(cat);
+				}
+			}
+			else {
+				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
+				$contents.html("");
+			}
+			if (scroll) {
+				$window.scrollTop($contents.offset().top);
+			}
+			m.recosShown=true;
+			break;
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
 			let cat_from=m.currentCat=cat;
@@ -4076,29 +4099,6 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					m.getUriListAndShowRecosOnCat(cat, true);
 				});
 			}
-			break;
-		case "multireco": case "": default:
-			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
-			let catI=m.catList[cat];
-			if (catI) {
-				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
-				if (catUriList.down) {
-					m.getAndShowRecosOnCat(cat);
-				}
-				else {
-					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
-					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-					m.getAndShowRecosOnCat(cat);
-				}
-			}
-			else {
-				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
-				$contents.html("");
-			}
-			if (scroll) {
-				$window.scrollTop($contents.offset().top);
-			}
-			m.recosShown=true;
 			break;
 	}
 };
@@ -5586,6 +5586,9 @@ m.shareCurrentPage=function (service) {
 	if (m.docCookies.hasItem(argName)) {
 		args[argName]=m.docCookies.getItem(argName);
 	}
+	if ($table_of_recos_container.is(":visible")) {
+		args["ToR"]=$table_of_recos[0].value;
+	}
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, args);
 	switch (service) {
 		case 'link':
@@ -6119,10 +6122,18 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
+	if (vars.ToR?.val) {
+		$table_of_recos[0].value=vars.ToR.val;
+	}
 	if (window.location.pathname==="/reco") {
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
 	}
 	else {
+		if (vars.ToR?.val&&m.browserWidth>701) {
+			if (!$table_of_recos_container.is(":visible")) {
+				$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+			}
+		}
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
 	m.saveSSN();
