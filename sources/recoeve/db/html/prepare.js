@@ -31,7 +31,7 @@ m.pathOfCat=function (cat, mode, lang, hashURI, args) {
 	let argsSearch="";
 	if (args) {
 		for (const prop in args) {
-			argsSearch+=`&${prop}=${args[prop]}`;
+			argsSearch+=`&${prop}=${encodeURIComponent(args[prop])}`;
 		}
 	}
 	return `${m.userPath}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
