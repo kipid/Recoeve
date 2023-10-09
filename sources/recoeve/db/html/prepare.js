@@ -1295,6 +1295,27 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["gall.dcinside.com"]={};
+ptnURI.regEx=/(\?\S+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let vars=m.getSearchVars(exec[1]);
+		let v=vars.no?.val;
+		if (v) {
+			return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br>`:"")+m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":"")), from:"dcinside", videoId:v});
+		}
+		else {
+			return resolve({html:`<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeHTML(decodeURIComponent(uriRest))}</a>`});
+		}
+	}
+	else {
+		return resolve(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI[0]={};
 ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
