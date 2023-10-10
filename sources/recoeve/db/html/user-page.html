@@ -5592,7 +5592,7 @@ m.shareCurrentPage=function (service) {
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, args);
 	switch (service) {
 		case 'link':
-			let written=`${title}\n${recoeveURI}`;
+			let written=`${title}\n${recoeveURI}\n${m.escapeHTML(decodeURIComponent(recoeveURI))}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`The following is copied!\n"${written}"`);
 			}
