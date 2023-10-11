@@ -1296,7 +1296,9 @@ return new Promise(function (resolve, reject) {
 };
 
 ptnURI=m.ptnURI["gall.dcinside.com"]={};
-ptnURI.regEx=/(\?\S+)/i;
+ptnURI.regEx=/\/movie\/share_movie(\?\S+)/i;
+ptnURI.regEx1=/\/poll\/vote(\?\S+)/i;
+https://gall.dcinside.com/board/poll/vote?no=710233
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
@@ -1311,8 +1313,16 @@ return new Promise(function (resolve, reject) {
 		}
 	}
 	else {
-		return resolve(false);
+		exec=m.ptnURI["gall.dcinside.com"].regEx1.exec(uriRest);
+		if (exec!==null) {
+			let vars=m.getSearchVars(exec[1]);
+			let no=vars.no?.val;
+			if (no) {
+				return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>`:"")+m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`)})
+			}
+		}
 	}
+	return resolve(false);
 });
 };
 
