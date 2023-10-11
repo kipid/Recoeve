@@ -17,7 +17,7 @@ import java.io.IOException;
 public class FileMapWithVar {
 	private static String filePath="C:/Recoeve/sources/recoeve/db/html/";
 	private static final String[] fileNames={
-			"user-page.html"
+			"user-page.html", "recostat.html"
 			, "signed-up.html"
 			, "reco.html"
 			, "multireco.html"
@@ -47,11 +47,13 @@ public class FileMapWithVar {
 			}
 			reader.close();
 			fileStr=sb.toString();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			System.out.println(e);
-		} finally {
+		}
+		finally {
 			file=null;
-		} }
+		}}
 		StrArray langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
@@ -67,9 +69,11 @@ public class FileMapWithVar {
 				}
 				reader.close();
 				fileStr=sb.toString();
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				System.out.println(e);
-			} finally {
+			}
+			finally {
 				file=null;
 			} }
 
