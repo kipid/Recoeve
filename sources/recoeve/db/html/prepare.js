@@ -5,6 +5,11 @@ $window=$(window);
 $document=$(document);
 $.fn.exists=function () { return this.length!==0; };
 
+window.awaitAll=async function (promises) {
+	const results=await Promise.all(promises);
+	return results;
+}
+
 m.getSearchVars=function (searchStr) {
 	let vars=[];
 	if (searchStr!==null&&searchStr!==undefined&&searchStr.constructor===String&&searchStr.length!==0) {
