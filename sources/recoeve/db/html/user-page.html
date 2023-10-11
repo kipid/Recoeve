@@ -4542,9 +4542,25 @@ m.emptifyRecoInNewReco=function () {
 	m.getAndShowDefsAndRecoInNewReco(true);
 	m.reNewAndReOn();
 };
-m.showDefs=function (r) {
+m.getH1=function (uri) {
+return new Promise(function (resolve, reject) {
+	$.ajax({
+		type:"POST", url:"/reco/getH1", data:uri
+		, dataType:"text"
+	}).done(function (resp) {
+		resolve(resp);
+	}).fail(function (resp) {
+		reject(resp);
+	});
+});
+}
+m.showDefs=async function (r) {
 	let defTitles=r.defTitles;
 	let defTitlesHTML="";
+	if (!r.h1) {
+		r.h1=await m.getH1(r.uri);
+	}
+	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeHTML(String(r.h1))}</div>`;
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
