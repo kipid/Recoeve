@@ -30,7 +30,7 @@ public void doUntilH1IsFound(HttpResponse response, PrintLog pl) {
 			Document document=Jsoup.parse(body);
 
 			// Select the first <h1> element and extract its text content
-			Elements h1Elements=document.select("h1");
+			Elements h1Elements=document.select("title, h1");
 			if (h1Elements.isEmpty()&&timerN<7) {
 				doUntilH1IsFound(response, pl);
 			}
