@@ -3104,11 +3104,16 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
 		else {
-			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
+			res+=`<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
 		}
 		res+=`<div class="cBoth"></div>`;
 		if (m.myPage) {
-			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+			if (r.val?.str) {
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+			}
 		}
 		else if (m.myRecos[r.uri]) {
 			let mR=m.myRecos[r.uri];
@@ -3116,11 +3121,11 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
 			}
 			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
 			}
 		}
 		else {
-			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
 		}
 		res+=`<div class="cBoth"></div><div class="result"></div>`;
 		if (r.desc) {
@@ -3195,6 +3200,7 @@ m.reco_pointChange_do=function (args, err) {
 			m.myRecos[uri].val=m.val(args.valStr);
 			m.myRecos[uri].cats=args.cats;
 			args.$result?.html(m.escapeHTML(res[1].result));
+			m.refresh(args.cats, "changed", uri);
 		}
 		else if (result==="recoed") {
 			let r=m.myRecos[uri];
@@ -3216,9 +3222,7 @@ m.reco_pointChange_do=function (args, err) {
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
-			if (m.myPage) {
-				m.refresh(r.cats, "recoed", uri);
-			}
+			m.refresh(r.cats, "recoed", uri);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -3227,7 +3231,7 @@ m.reco_pointChange_do=function (args, err) {
 };
 m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("Not logged-in.", 7, $result);
+		m.delayedLogOut("Not logged-in.", 70, $result);
 		return;
 	}
 	let valStr=$str.html();
@@ -4120,11 +4124,18 @@ m.refresh=async function (cats, option, uri) {
 	else {
 		switch (option) {
 		case "recoed":
-			r.index=m.lastIndexOfUriList;
-			m.lastIndexOfUriList++;
-			if (m.recoms[m.currentCat]) {
-				let recoHTML=await m.recoHTML(r, false, true, true);
-				$(`#recom-${m.recoms[m.currentCat][uri]?.index}`)?.replaceWith(String(recoHTML));
+			if (m.myPage) {
+				r.index=m.lastIndexOfUriList;
+				m.lastIndexOfUriList++;
+			}
+			let $recoms_recos=$("#contents-recoms").find(".reco");
+			for (let k=0;k<$recoms_recos.length;k++) {
+				let $reco=$recoms_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true, true);
+					$reco.replaceWith(String(recoHTML));
+				}
 			}
 			let recoHTML=await m.recoHTML(r, false, true)
 			$contents.prepend(String(recoHTML));
@@ -5003,9 +5014,21 @@ m.reco_do=function (args, err) {
 			let cats=String(m.myRecos[args.uri].cats);
 			console.log("cats: ", cats, args.uri);
 			m.putCats_UriToLists(cats, args.uri);
-			if (m.myPage) {
-				m.refresh(cats, "recoed", args.uri);
-			}
+			m.refresh(cats, "recoed", args.uri);
+			setTimeout(function () {
+				m.emptifyRecoInNewReco();
+				$button_close.trigger("click");
+			}, 1024);
+		}
+		else if (result.startsWith("changed")) {
+			$error.html(result);
+			args.$result?.html(result);
+			m.recoDowned(args.uri, m.myRecos);
+			await m.recoToEve(args.strRecoDo, m.myRecos);
+			m.myRecos[args.uri].tLast=res[1]?.tLast;
+			let cats=String(m.myRecos[args.uri].cats);
+			console.log("cats: ", cats, args.uri);
+			m.refresh(cats, "changed", args.uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
@@ -5082,8 +5105,8 @@ m.reco_change_do=function (args, err) {
 		$error.html("[--Failed change. You may not be logged-in.--] "+resp);
 	}).done(async function (resp) {
 		let res=await m.strToJSON(resp);
-		if (res[1]) {
-			if (res[1].result?.substring(0,7)==="changed") {
+		if (res[1]?.result) {
+			if (res[1].result.startsWith("changed")) {
 				$error.html(m.escapeHTML(res[1].result));
 				if (args.cats!==args.r.cats) {
 					m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
@@ -5099,7 +5122,7 @@ m.reco_change_do=function (args, err) {
 					args.r.cmtR=m.renderStrDescCmt(args.cmt);
 				}
 				if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
-				if (m.myPage) { m.refresh(args.cats, "changed", args.uri); }
+				m.refresh(args.cats, "changed", args.uri);
 				setTimeout(function () {
 					m.emptifyRecoInNewReco();
 					$button_close.trigger("click");
@@ -5200,8 +5223,8 @@ m.reco_delete_do=function (args, err) {
 			m.delCats_UriFromLists(cats, args.uri);
 			if (m.myPage) {
 				$numbers_of_recos.html(`Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.`);
-				m.refresh(cats, "deleted", args.uri);
 			}
+			m.refresh(cats, "deleted", args.uri);
 			setTimeout(function () {
 				$button_close.trigger("click");
 			}, 1024);
