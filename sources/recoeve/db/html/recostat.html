@@ -197,16 +197,42 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="cBoth"></div>
 <div id="new-reco">
 <form>
-	<label for="uri">URI</label>
-		<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
-		<div id="show-URI"></div>
+	<label for="input-uri">URI <span class="desc">([--required--])</span></label>
+		<textarea id="input-uri" class="single-line" name="input-uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
 	<label for="title">[--Title--]</label>
 		<div id="def-titles"></div>
+		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="cats">[--Categories--]</label>
-		<div id="def-cats"></div>
+		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
+		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
+		<div id="cat-fs-container" class="fs-container" style="display:none">
+			<div id="cat-fs-list" class="fs-list"></div>
+			<div class="exit" onclick="$(this).parent().hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+		</div>
+		<div id="show-URI"></div>
+	<div style="margin:.5em 0">
+		<label for="input-val" style="margin:.1em .5em">[--Points--]</label>
+		<div id="input-val-stars"></div>
+		<span class="upDown" id="input-val-down">&lt;</span>
+		<span class="upDown" id="input-val-up">&gt;</span>
+		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4"/>
+	</div>
+	<div id="error-msg" class="cBoth"></div>
+	<div class="buttons">
+		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
+		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
+		<div class="button" id="button-del" tabindex="9" style="background:#ff7600">[--Del--]</div>
+		<div class="button left" id="button-close" tabindex="5" onclick="m.closeNewReco()">[--Close--]</div>
+		<div class="button left" id="button-back" tabindex="6">[--Back--]</div>
+		<div class="cBoth"></div>
+	</div>
 	<label for="desc">[--Description--]</label>
+		<div id="def-cmds"><div class="def-cmd">#related</div> <div class="def-cmd">#lyrics</div></div>
+		<div id="def-descs"></div>
+		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
 	<label for="cmt">[--Comment--]</label>
-	<label for="val">[--Points--]</label>
+		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
+	<div id="my-reco"></div>
 </form>
 <div id="my-reco"></div>
 </div><!-- div#new-reco -->
@@ -1240,7 +1266,7 @@ m.formatCats=function (cats) {
 };
 
 m.myRecos[""]=m.userRecos[""]={
-	has:false, down:true, defs:true
+	has:false, down:true, h1:"Empty URI.", defs:true
 	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
 	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
 };
