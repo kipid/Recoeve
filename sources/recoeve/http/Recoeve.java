@@ -11,9 +11,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
@@ -29,6 +27,11 @@ import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
 
 import java.lang.StringBuilder;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
@@ -51,8 +54,6 @@ public static final Vertx vertx=Vertx.vertx();
 public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
 public static final Router router=Router.router(vertx);
-public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
-public static final WebClient webClient=WebClient.create(vertx, options);
 
 @Override
 public void start() {
@@ -101,8 +102,9 @@ public static void main(String... args) {
 			String shortURI=data.toString();
 			System.out.println(shortURI);
 			if (shortURI==null) {
-				pl.req.response().end("No URI.", ENCODING);
-				System.out.println("Sended \"No URI.\".");
+				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+					.end("No http-URI.", ENCODING);
+				System.out.println("Sended \"No http-URI.\".");
 			}
 			else if (shortURI.substring(0,4).toLowerCase().equals("http")) {
 				int k=4;
@@ -120,14 +122,15 @@ public static void main(String... args) {
 						shortURIHost=shortURI.substring(k,l);
 					}
 					System.out.println("shortURIHost: "+shortURIHost);
-					webClient.headAbs(shortURI)
+					RecoeveWebClient recoeveWebClient=new RecoeveWebClient();
+					recoeveWebClient.webClient.headAbs(shortURI)
 						.send()
 						.onSuccess(response -> {
 							if (response.statusCode()==200) {
 								// The response is a redirect, so get the followedRedirects().
 								List<String> followedURIs=response.followedRedirects();
 								String fullURI=followedURIs.get(followedURIs.size()-1);
-								System.out.println("Full TikTok URL: " + fullURI);
+								System.out.println("Full TikTok URL: "+fullURI);
 								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 									.end(fullURI, ENCODING);
 							}
@@ -143,6 +146,12 @@ public static void main(String... args) {
 							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 								.end(shortURI, ENCODING);
 						});
+					recoeveWebClient.webClient.close();
+				}
+				else {
+					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+						.end(shortURI, ENCODING);
+					System.out.println("Sended \"No http-URI.\".");
 				}
 			}
 			else {
@@ -411,6 +420,73 @@ public static void main(String... args) {
 			String toDo=ctx.pathParam("toDo");
 			System.out.println("/reco/:toDo :: toDo="+toDo);
 			switch (toDo) {
+				case "getH1": // path=/reco/getH1
+					pl.req.bodyHandler((Buffer data) -> {
+						final String uri=data.toString();
+						System.out.println(uri);
+						if (uri==null) {
+							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+								.end("No http-URI.", ENCODING);
+							System.out.println("Sended \"No http-URI.\".");
+						}
+						else if (uri.substring(0,4).toLowerCase().equals("http")) {
+							int k=4;
+							if (uri.charAt(k)=='s'||uri.charAt(k)=='S') {
+								k++;
+							}
+							if (uri.startsWith("://",k)) {
+								k+=3;
+								int l=uri.indexOf('/',k);
+								String shortURIHost=null;
+								if (l==-1) {
+									shortURIHost=uri.substring(k);
+								}
+								else {
+									shortURIHost=uri.substring(k,l);
+								}
+								System.out.println("shortURIHost: "+shortURIHost);
+								RecoeveWebClient recoeveWebClient=new RecoeveWebClient();
+								recoeveWebClient.webClient.getAbs(uri)
+									.send(ar -> {
+										if (ar.succeeded()) {
+											String body=ar.result().bodyAsString();
+											Document document=Jsoup.parse(body);
+
+											// Select the first <h1> element and extract its text content
+											Elements h1Elements=document.select("h1");
+											if (!h1Elements.isEmpty()) {
+												Element firstH1Element=h1Elements.first();
+												String h1Text=firstH1Element.text();
+												System.out.println("Content of the first <h1> tag: "+h1Text);
+												pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+													.end(h1Text, ENCODING);
+											} else {
+												System.out.println("No <h1> tags found on the page.");
+												pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+													.end("No h1 tag.", ENCODING);
+											}
+										}
+										else {
+											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
+											pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+												.end("Failed to retrieve the webpage.", ENCODING);
+										}
+									});
+								recoeveWebClient.webClient.close();
+							}
+							else {
+								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+									.end("No http-URI.", ENCODING);
+								System.out.println("Sended \"No http-URI.\".");
+							}
+						}
+						else {
+							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+								.end("No http-URI.", ENCODING);
+							System.out.println("Sended \"No http-URI.\".");
+						}
+					});
+					break;
 				case "defs": // path=/reco/defs
 					pl.req.bodyHandler((Buffer data) -> {
 						final String uri=data.toString();
