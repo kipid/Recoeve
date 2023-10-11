@@ -75,10 +75,10 @@ public static void main(String... args) {
 	router0.post("/BlogStat").handler(ctx -> { // e.g. path=/BlogStat
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
-		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			pl.req.response().end(""+pl.db.putBlogVisitor(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				.end(""+pl.db.putBlogVisitor(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
 			System.out.println("Recorded:\n"+inputs.toStringDecoded());
 		});
 	});
@@ -86,11 +86,11 @@ public static void main(String... args) {
 	router0.post("/BlogStat/Get").handler(ctx -> { // e.g. path=/BlogStat/Get
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
-		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			System.out.println(inputs);
-			pl.req.response().end(pl.db.getBlogVisitor(inputs), ENCODING);
+			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				.end(pl.db.getBlogVisitor(inputs), ENCODING);
 			System.out.println("Sended /BlogStat/Get.");
 		});
 	});
@@ -164,7 +164,7 @@ public static void main(String... args) {
 
 	StaticHandler staticHandler=StaticHandler.create()
 		.setCachingEnabled(true)
-		.setCacheEntryTimeout(60*60*24*365) // Cache timeout in seconds (1 hour)
+		.setCacheEntryTimeout(1000L*60L*60L*24L*365L) // Cache timeout in ms (1 year)
 		.setFilesReadOnly(true);
 
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
@@ -213,14 +213,14 @@ public static void main(String... args) {
 				System.out.println("Sended "+fullFilePath+".");
 			}
 			else {
-				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+					.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS+" (fileName is null or empty.: "+fileName+")");
 			}
 		}
 		else {
-			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Referer not allowed.)");
 		}
 	});
@@ -256,51 +256,56 @@ public static void main(String... args) {
 			if (fileName!=null&&!fileName.isEmpty()) {
 				switch (fileName) {
 					case "jquery.js": // e.g. path=/jquery.js
-						pl.req.response().putHeader("Content-Type","text/javascript");
-						pl.req.response().end(FileMap.get("jquery.js", pl.lang), ENCODING);
+						pl.req.response().putHeader("Content-Type","text/javascript")
+							.end(FileMap.get("jquery.js", pl.lang), ENCODING);
 						System.out.println("Sended jquery.js.");
 						break;
 					case "prepare.js": // e.g. path=/prepare.js
-						pl.req.response().putHeader("Content-Type","text/javascript");
-						pl.req.response().end(FileMap.get("prepare.js", pl.lang), ENCODING);
+						pl.req.response().putHeader("Content-Type","text/javascript")
+							.end(FileMap.get("prepare.js", pl.lang), ENCODING);
 						System.out.println("Sended prepare.js.");
 						break;
 					case "sessionIter": // e.g. path=/sessionIter
 						String iter=pl.db.sessionIter(pl.cookie, pl.tNow);
-						pl.req.response().putHeader("Content-Type", "text/plain");
-						pl.req.response().end(iter);
+						pl.req.response().putHeader("Content-Type", "text/plain")
+							.end(iter);
 						System.out.println("iter: "+iter);
 						break;
 					case "reco": // e.g. path=/reco
-						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-						pl.req.response().end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
+							.end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 						break;
+					case "recostat": // e.g. path=/recostat?uri=...
+						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
+							.end(FileMapWithVar.get("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+						System.out.println("Sended recostat.html.");
+						break;
 					case "robots.txt": // e.g. path=/robots.txt
-						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-						pl.req.response().end(FileMap.get("robots.txt", "df"), ENCODING);
+						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+							.end(FileMap.get("robots.txt", "df"), ENCODING);
 						System.out.println("Sended robots.txt.");
 						break;
 					case "ads.txt": // e.g. path=/ads.txt
-						pl.req.response().putHeader("Content-Type", "text/plain");
-						pl.req.response().end(FileMap.get("ads.txt", "df"), ENCODING);
+						pl.req.response().putHeader("Content-Type", "text/plain")
+							.end(FileMap.get("ads.txt", "df"), ENCODING);
 						System.out.println("Sended ads.txt.");
 						break;
 					default:
-						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-						pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS);
 				}
 			}
 			else {
-				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+					.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS+" (fileName is null or empty.: "+fileName+")");
 			}
 		}
 		else {
-			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-			pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 			System.out.println(INVALID_ACCESS+" (Referer is not allowed.)");
 		}
 	});
@@ -425,8 +430,7 @@ public static void main(String... args) {
 						final String uri=data.toString();
 						System.out.println(uri);
 						if (uri==null) {
-							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-								.end("No http-URI.", ENCODING);
+							pl.req.response().end("No http-URI.", ENCODING);
 							System.out.println("Sended \"No http-URI.\".");
 						}
 						else if (uri.length()>4&&uri.substring(0,4).toLowerCase().equals("http")) {
@@ -453,21 +457,18 @@ public static void main(String... args) {
 										}
 										else {
 											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
-											pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-												.end("Failed to retrieve the webpage.", ENCODING);
+											pl.req.response().end("Failed to retrieve the webpage.", ENCODING);
 										}
 									});
 								recoeveWebClient.webClient.close();
 							}
 							else {
-								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-									.end("No http-URI.", ENCODING);
+								pl.req.response().end("No http-URI.", ENCODING);
 								System.out.println("Sended \"No http-URI.\".");
 							}
 						}
 						else {
-							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-								.end("No http-URI.", ENCODING);
+							pl.req.response().end("No http-URI.", ENCODING);
 							System.out.println("Sended \"No http-URI.\".");
 						}
 					});
@@ -500,6 +501,12 @@ public static void main(String... args) {
 						pl.req.response().end("No session.");
 						System.out.println("No session.");
 					}
+					break;
+				case "stat":
+					pl.req.bodyHandler((Buffer data) -> {
+						final String uri=data.toString();
+						pl.req.response().end(pl.db.);
+					});
 					break;
 				default:
 					pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
