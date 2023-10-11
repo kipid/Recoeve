@@ -449,7 +449,7 @@ public static void main(String... args) {
 								recoeveWebClient.webClient.getAbs(uri)
 									.send(ar -> {
 										if (ar.succeeded()) {
-											recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 0);
+											recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 512);
 										}
 										else {
 											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
