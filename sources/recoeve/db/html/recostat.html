@@ -1401,6 +1401,18 @@ m.emptifyRecoInNewReco=function () {
 	m.getAndShowDefsAndRecoInNewReco(true);
 	m.reNewAndReOn();
 };
+m.getH1=function (uri) {
+return new Promise(function (resolve, reject) {
+	$.ajax({
+		type:"POST", url:"/reco/getH1", data:uri
+		, dataType:"text"
+	}).done(function (resp) {
+		resolve(resp);
+	}).fail(function (resp) {
+		reject(resp);
+	});
+});
+}
 m.showDefs=async function (r) {
 	let defTitles=r.defTitles;
 	let defTitlesHTML="";
