@@ -305,6 +305,9 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 // Variables
 //////////////////
 $data_myCatList=$("#data-myCatList");
+$choose_lang=$("#choose-lang");
+$choose_lang_list=$("#choose-lang-list");
+$data_lang=$("#data-lang");
 
 $new_reco=$("#new-reco");
 $input_uri=$("#input-uri");
@@ -314,6 +317,8 @@ $def_titles=$("#def-titles");
 $input_title=$("#input-title");
 $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
+$input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
+$def_descs=$("#def-descs");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
 $input_val=$("#input-val");
@@ -329,12 +334,11 @@ $button_close=$("#button-close");
 $cat_fs_container=$("#cat-fs-container");
 $cat_fs_list=$("#cat-fs-list");
 
-$window=$(window);
 $html=$("html");
+$title=$("title");
 $body=$("body");
-$.fn.exists=function() { return this.length!==0; };
 
-$("title").html(m.userId+" on Recoeve.net");
+$title.html(m.userId+" on Recoeve.net");
 
 m.myCatList=[];
 m.myRecos={};
@@ -343,16 +347,58 @@ m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
-m.fsCat.desc=false;
 m.fsCat.$fs=$input_cats;
 m.fsCat.$fsl=$cat_fs_list;
+m.fsCat.$fs_container=$cat_fs_container;
 
-m.ptnURI=[];
-m.ptnURL=/^https?:\/\/\S+/i;
-m.ptnTag=/^<\w+[\s\S]+>$/i;
-m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+m.fullPts=10.0;
 
-m.fullPts=10;
+m.a_log_in=function (e, elem) {
+	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+	if (e&&e.which===2) {
+		$a_log_in.attr("href", href);
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+m.a_log_out=function (e, elem) {
+	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let href=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
+	if (e&&e.which===2) {
+		$a_log_out.attr("href", href);
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+
+$right_top_log_in=$("#right-top-log-in");
+$right_top_log_in.append(`${m.myIndex===""?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
+</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
+</div>`}`);
+$a_log_in=$(".a-log-in");
+$a_log_out=$(".a-log-out");
+$my_id=$("#my-id");
+if (!!m.myIndex) {
+	$my_id.html(m.myId+" ▾");
+}
+else {
+	$my_id.hide();
+}
+if (!!m.myIndex) {
+	$a_log_in.hide();
+}
+else {
+	$a_log_out.hide();
+}
 
 
 
