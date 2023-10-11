@@ -80,11 +80,13 @@ public class FileMap {
 			}
 			reader.close();
 			fileStr=sb.toString();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			System.out.println(e);
-		} finally {
+		}
+		finally {
 			file=null;
-		} }
+		}}
 		langMap=new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr=null;
@@ -100,11 +102,13 @@ public class FileMap {
 				}
 				reader.close();
 				fileStr=sb.toString();
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				System.out.println(e);
-			} finally {
+			}
+			finally {
 				file=null;
-			} }
+			}}
 			
 			if (fileStr!=null) {
 				txtFileMap.put(txtFileName, new HashMap<String, String>(fileLangMapSize));
