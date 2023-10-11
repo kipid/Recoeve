@@ -816,17 +816,6 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 		else {
 			let strHeads="do\turi\tval";
 			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
-			let uR=m.userRecos[uri];
-			if (uR) {
-				if (uR.title) {
-					strHeads+="\ttitle";
-					strContents+="\t"+m.encloseStr(uR.title);
-				}
-				if (uR.desc) {
-					strHeads+="\tdesc";
-					strContents+="\t"+m.encloseStr(uR.desc);
-				}
-			}
 			let cats="";
 			if (m.recoMode==="multireco") {
 				cats=m.formatCats($multireco_input_cats[0].value);
@@ -1222,7 +1211,7 @@ m.formatCats=function (cats) {
 	return cats;
 };
 
-m.myRecos[""]=m.userRecos[""]={
+m.myRecos[""]={
 	has:false, down:true, h1:"Empty URI.", defs:true
 	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
 	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
@@ -1476,32 +1465,6 @@ m.getAndFillDefsInNewReco=function (r, fillDefs) {
 		}
 	});
 };
-m.getAndShowMyRecoInNewReco=function (r) {
-	return new Promise(function (resolve, reject) {
-		if (m.myPage) {
-			$error.html("");
-		}
-		else {
-			$error.html("[--Be careful! This is not your page. On this URI, you have--]");
-			if (r.down) {
-				m.showMyReco(r);
-				resolve();
-			}
-			else {
-				let getRecosStr="uri"+"\n"+r.uri;
-				$.ajax({
-					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
-					, dataType:"text"
-				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-					m.recoDowned(uri, m.userRecos);
-					await m.recoToEve(resp, m.userRecos);
-					m.showMyReco(r);
-					resolve();
-				});
-			}
-		}
-	});
-};
 m.getFullRecoStatAndPlotChart=function (uri) {
 return new Promise(function (resolve, reject) {
 	$.ajax({
@@ -1569,7 +1532,6 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	await m.getAndFillDefsInNewReco(r, fillDefs);
 	await m.getFullRecoStatAndPlotChart(uri);
 	m.reNewAndReOn();
-	// await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
