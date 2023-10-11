@@ -1653,7 +1653,44 @@ public ResultSet getRecoStat(String uri) throws SQLException {
 	}
 	throw new SQLException("No RecoStat on the uri.");
 }
-
+public String getFullRecoStat(String uri) {
+	String heads="result";
+	try {
+		pstmtGetRecoStat.setString(1, uri);
+		ResultSet rs=pstmtGetRecoStat.executeQuery();
+		if (rs.next()) {
+			heads+="\turi";
+			String contents="o\t"+uri;
+			String recentests="index\tid\tcmt";
+			Set<Long> recentestsSet=new HashSet<Long>(N_MAX);
+			long[] recentestsArray=convertByteArrayToLongArray(rs.getBytes("recentests"));
+			for (int i=recentestsArray.length-1;i>=0;i--) {
+				long rI=recentestsArray[i];
+				if (recentestsSet.add(rI)) {
+					ResultSet user=findUserByIndex(rI);
+					if (user.next()) {
+						ResultSet reco=getReco(rI, uri);
+						if (reco.next()) {
+							recentests+="\n"+Long.toString(rI, 16)+"\t"+user.getString("id")+"\t"+StrArray.enclose(reco.getString("cmt"));
+						}
+					}
+				}
+			}
+			heads+="\trecentests\ttFirst\ttUpdate\tsumV100\tnV";
+			contents+="\t"+StrArray.enclose(recentests)+"\t"+rs.getString("tFirst")+"\t"+rs.getString("tUpdate")+"\t"+Long.toString(rs.getLong("sumV100"), 16)+"\t"+Long.toString(rs.getLong("nV"), 16);
+			for (int i=0;i<=100;i++) {
+				heads+="\tn"+i;
+				contents+="\t"+Long.toString(rs.getLong("n"+i), 16);
+			}
+			return heads+"\n"+contents;
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	heads+="\nx";
+	return heads;
+}
 public void updateRecoStat(long user_me, String uri, Points pts, Timestamp tNow, int increment) throws SQLException {
 	ResultSet recoStat=null;
 	if (increment>0) {
