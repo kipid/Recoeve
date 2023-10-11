@@ -1597,6 +1597,10 @@ return new Promise(function (resolve, reject) {
 		}
 		console.log(r.stat);
 		console.log("maxN: ", maxN);
+		resolve();
+	}).fail(function (resp) {
+		console.log(resp);
+		reject();
 	});
 });
 };
