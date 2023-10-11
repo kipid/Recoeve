@@ -113,7 +113,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 	font-size:1.8em; line-height:1.0;
 }
 
-#new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
+#new-reco {background:rgba(0,0,0,0.8); color:white} .bright #new-reco {background:rgba(255,255,255,0.8); color:black}
 #new-reco form {position:relative; width:70em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
 #new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
 #new-reco label:first-child {margin-top:0}
@@ -166,17 +166,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .pc {text-align:center; font-size:.85em} /* position change */
 
 @media all and (min-width:701px) {
-	#container {margin-left:14.9em}
 	.rC.fixed {width:646px; border-right:.15em solid black}
 	.lyrics {text-align:right}
 	::-webkit-scrollbar {width:11px; height:11px}
-}
-@media all and (min-width:901px) {
-	#container {margin-left:19.9em}
-	#sidebar {width:20em}
-}
-@media all and (min-height:500px) {
-	#fuzzy-search-list {max-height:430px;}
 }
 </style>
 </head>
@@ -1683,26 +1675,17 @@ m.reco_do=function(args) {
 		, dataType:"text"
 	}).fail(function() {
 		$error.html("Reco failed. You may be not logged-in.");
-		// $button_reco.removeClass("disabled");
 	}).done(function(resp) {
 		var res=m.strToJSON(resp);
 		if (res[1]["result"]==="recoed") {
-			$error.html("Recoed");
+			$error.html("recoed");
 			m.recoDowned(args.uri, m.myRecos);
 			m.recoToEve(args.strRecoDo, m.myRecos);
 			var cats=m.myRecos[args.uri]["cats"];
 			m.putCats_UriToLists(cats, args.uri);
-			if (m.myPage) {
-				m.refresh(cats, "recoed", args.uri);
-			}
-			setTimeout(function() {
-				m.emptifyReco();
-				// $button_reco.removeClass("disabled");
-				$button_close.trigger("click");
-			}, 1000);
+			m.refresh(cats, "recoed", args.uri);
 		} else {
 			$error.html(res[1]["result"]);
-			// $button_reco.removeClass("disabled");
 		}
 	}).always(function() {
 		$button_reco.removeClass("disabled");
@@ -1746,42 +1729,50 @@ $button_reco.on("click", function(e) {
 		$button_reco.removeClass("disabled");
 	}
 });
-m.reco_change_do=function(args) {
+m.reco_change_do=function (args, err) {
+	if (err) {
+		m.delayedLogOut(`[--Failed change. You may not be logged-in.--] ${err}`, 60*60*24);
+		$button_edit.removeClass("disabled");
+		return;
+	}
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
-	}).fail(function() {
-		$error.html("Failed change. You may not be logged-in.");
-		// $button_edit.removeClass("disabled");
-	}).done(function(resp) {
-		var res=m.strToJSON(resp);
-		if (res[1]["result"]==="changed") {
-			$error.html("Changed");
-			if (args.cats!==args.r["cats"]) {
+	}).fail(function (resp) {
+		$error.html("[--Failed change. You may not be logged-in.--] "+resp);
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
+		let result=String(res[1]?.result)
+		if (result.startsWith("changed")) {
+			$error.html(m.escapeHTML(result));
+			if (args.cats!==args.r.cats) {
 				m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
-				args.r["cats"]=args.cats;
+				args.r.cats=args.cats;
 			}
-			if (args.title!==args.r["title"]) { args.r["title"]=args.title; }
-			if (args.desc!==args.r["desc"]) {
-				args.r["desc"]=args.desc;
-				args.r["descR"]=m.renderStrDescCmt(args.desc);
+			if (args.title!==args.r.title) { args.r.title=args.title; }
+			if (args.desc!==args.r.desc) {
+				args.r.desc=args.desc;
+				args.r.descR=m.renderStrDescCmt(args.desc);
 			}
-			if (args.cmt!==args.r["cmt"]) {
-				args.r["cmt"]=args.cmt;
-				args.r["cmtR"]=m.renderStrDescCmt(args.cmt);
+			if (args.cmt!==args.r.cmt) {
+				args.r.cmt=args.cmt;
+				args.r.cmtR=m.renderStrDescCmt(args.cmt);
 			}
-			if (args.val.str!==args.r["val"].str) { args.r["val"]=args.val; }
-			if (m.myPage) { m.refresh(args.cats, "changed", args.uri); }
-			setTimeout(function() {
-				m.emptifyReco();
-				// $button_edit.removeClass("disabled");
-				$button_close.trigger("click");
-			}, 1000);
-		} else {
-			$error.html(res[1]["result"]);
-			// $button_edit.removeClass("disabled");
+			if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
+			m.refresh(args.cats, "changed", args.uri);
 		}
-	}).always(function() {
+		else if (result.startsWith("recoed")) {
+			$error.html("recoed");
+			m.recoDowned(args.uri, m.myRecos);
+			m.recoToEve(args.strRecoDo, m.myRecos);
+			var cats=m.myRecos[args.uri]["cats"];
+			m.putCats_UriToLists(cats, args.uri);
+			m.refresh(args.cats, "recoed", args.uri);
+		}
+		else {
+			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
+		}
+	}).always(function () {
 		$button_edit.removeClass("disabled");
 	});
 };

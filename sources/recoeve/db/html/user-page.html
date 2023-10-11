@@ -5105,32 +5105,31 @@ m.reco_change_do=function (args, err) {
 		$error.html("[--Failed change. You may not be logged-in.--] "+resp);
 	}).done(async function (resp) {
 		let res=await m.strToJSON(resp);
-		if (res[1]?.result) {
-			if (res[1].result.startsWith("changed")) {
-				$error.html(m.escapeHTML(res[1].result));
-				if (args.cats!==args.r.cats) {
-					m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
-					args.r.cats=args.cats;
-				}
-				if (args.title!==args.r.title) { args.r.title=args.title; }
-				if (args.desc!==args.r.desc) {
-					args.r.desc=args.desc;
-					args.r.descR=m.renderStrDescCmt(args.desc);
-				}
-				if (args.cmt!==args.r.cmt) {
-					args.r.cmt=args.cmt;
-					args.r.cmtR=m.renderStrDescCmt(args.cmt);
-				}
-				if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
-				m.refresh(args.cats, "changed", args.uri);
-				setTimeout(function () {
-					m.emptifyRecoInNewReco();
-					$button_close.trigger("click");
-				}, 1024);
+		let result=String(res[1]?.result)
+		if (result.startsWith("changed")) {
+			$error.html(m.escapeHTML(res[1].result));
+			if (args.cats!==args.r.cats) {
+				m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
+				args.r.cats=args.cats;
 			}
-			else {
-				m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
+			if (args.title!==args.r.title) { args.r.title=args.title; }
+			if (args.desc!==args.r.desc) {
+				args.r.desc=args.desc;
+				args.r.descR=m.renderStrDescCmt(args.desc);
 			}
+			if (args.cmt!==args.r.cmt) {
+				args.r.cmt=args.cmt;
+				args.r.cmtR=m.renderStrDescCmt(args.cmt);
+			}
+			if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
+			m.refresh(args.cats, "changed", args.uri);
+			setTimeout(function () {
+				m.emptifyRecoInNewReco();
+				$button_close.trigger("click");
+			}, 1024);
+		}
+		else {
+			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
 		}
 	}).always(function () {
 		$button_edit.removeClass("disabled");
