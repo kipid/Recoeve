@@ -502,10 +502,10 @@ public static void main(String... args) {
 						System.out.println("No session.");
 					}
 					break;
-				case "stat":
+				case "stat": // path=/reco/stat
 					pl.req.bodyHandler((Buffer data) -> {
 						final String uri=data.toString();
-						pl.req.response().end(pl.db.);
+						pl.req.response().end(pl.db.getFullRecoStat(uri));
 					});
 					break;
 				default:
