@@ -4175,7 +4175,7 @@ m.refresh=async function (cats, option, uri) {
 					$rC_youtube_uri_rendered.hide();
 				}
 			}
-			let $recoms_recos=$("#contents-recoms").find(".reco");
+			$recoms_recos=$("#contents-recoms").find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
 				let $reco=$recoms_recos.eq(k);
 				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -4218,7 +4218,7 @@ m.refresh=async function (cats, option, uri) {
 				r.deleted=true;
 				r.has=false;
 				m.lastURI="x*L2$zp-|,O";
-				let $recoms_recos=$("#contents-recoms").find(".reco");
+				$recoms_recos=$("#contents-recoms").find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -4228,7 +4228,7 @@ m.refresh=async function (cats, option, uri) {
 						$reco.find(".button.edit").addClass("deleted");
 					}
 				}
-				let $recos_recos=$("#contents").find(".reco");
+				$recos_recos=$("#contents").find(".reco");
 				for (let k=0;k<$recos_recos.length;k++) {
 					let $reco=$recos_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
