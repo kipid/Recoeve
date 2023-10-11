@@ -366,6 +366,14 @@ m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
+m.escapeAMP=function(str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
+};
+m.unescapeAMP=function(str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
+};
 
 
 
