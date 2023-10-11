@@ -1507,13 +1507,17 @@ return new Promise(function (resolve, reject) {
 	$.ajax({
 		type:"POST", url:"/reco/stat", data:uri
 		, dataType:"text"
-	}).done(function (resp) {
-		let res=await m.strToJSON(resp);
-		res.recentests=await m.strToJSON(res.recentests);
-		console.log(res);
+	}).done(async function (resp) {
+		if (!m.myRecos[uri]) {
+			m.myRecos[uri]={};
+		}
+		let r=m.myRecos[uri];
+		r.stat=await m.strToJSON(resp);
+		r.stat.recentests=await m.strToJSON(r.stat.recentests);
+		console.log(r.stat);
 		let maxN=0;
 		for (let i=0;i<=100;i++) {
-			let nI=res["n"+i]=parseInt(res["n"+i], 16);
+			let nI=r.stat["n"+i]=parseInt(r.stat["n"+i], 16);
 			if (nI>maxN) {
 				maxN=nI;
 			}
