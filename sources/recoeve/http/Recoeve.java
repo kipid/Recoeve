@@ -51,7 +51,7 @@ public static final Vertx vertx=Vertx.vertx();
 public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
 public static final Router router=Router.router(vertx);
-public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384);
+public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
 public static final WebClient webClient=WebClient.create(vertx, options);
 
 @Override
@@ -120,33 +120,29 @@ public static void main(String... args) {
 						shortURIHost=shortURI.substring(k,l);
 					}
 					System.out.println("shortURIHost: "+shortURIHost);
-					if (shortURIHost.equals("vt.tiktok.com")) {
-						webClient.headAbs(shortURI)
-							.send()
-							.onSuccess(response -> {
-								if (response.statusCode()==200) {
-									// The response is a redirect, so get the followedRedirects().
-									List<String> followedURIs=response.followedRedirects();
-									String fullURI=followedURIs.get(followedURIs.size()-1);
-									System.out.println("Full TikTok URL: " + fullURI);
-									pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-										.end(fullURI, ENCODING);
-								}
-								else {
-									System.out.println("Sended shortURI.");
-									pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-										.end(shortURI, ENCODING);
-								}
-							})
-							.onFailure(throwable -> {
-								throwable.printStackTrace();
-							});
-					}
-					else {
-						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-							.end(shortURI, ENCODING);
-						System.out.println("Sended shortURI.");
-					}
+					webClient.headAbs(shortURI)
+						.send()
+						.onSuccess(response -> {
+							if (response.statusCode()==200) {
+								// The response is a redirect, so get the followedRedirects().
+								List<String> followedURIs=response.followedRedirects();
+								String fullURI=followedURIs.get(followedURIs.size()-1);
+								System.out.println("Full TikTok URL: " + fullURI);
+								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+									.end(fullURI, ENCODING);
+							}
+							else {
+								System.out.println("Sended shortURI.");
+								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+									.end(shortURI, ENCODING);
+							}
+						})
+						.onFailure(throwable -> {
+							throwable.printStackTrace();
+							System.out.println("Sended shortURI.");
+							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+								.end(shortURI, ENCODING);
+						});
 				}
 			}
 			else {
