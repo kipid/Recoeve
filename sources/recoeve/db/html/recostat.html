@@ -233,6 +233,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<label for="cmt">[--Comment--]</label>
 		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
 	<div id="my-reco"></div>
+	<div id="contents"></div>
 </form>
 <div id="my-reco"></div>
 </div><!-- div#new-reco -->
@@ -630,7 +631,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
-	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
+	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">[--Edit--]</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
 	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
 	<div class="title">${m.escapeHTML(r.title)}</div>
@@ -644,23 +645,14 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
 		else {
-			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
+			res+=`<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
 		}
 		res+=`<div class="cBoth"></div>`;
-		if (m.myPage) {
+		if (m.myIndex&&r.val?.str) {
 			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
 		}
-		else if (m.myRecos[r.uri]) {
-			let mR=m.myRecos[r.uri];
-			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
-			}
-			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
-			}
-		}
 		else {
-			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
 		}
 		res+=`<div class="cBoth"></div><div class="result"></div>`;
 		if (r.desc) {
@@ -756,9 +748,7 @@ m.reco_pointChange_do=function (args, err) {
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
-			if (m.myPage) {
-				m.refresh(r.cats, "recoed", uri);
-			}
+			m.refresh(r.cats, "recoed", uri);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -772,32 +762,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	}
 	let valStr=$str.html();
 	if (m.myPage) {
-		if (inRecoms) {
-			let strHeads="do\turi\tval";
-			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
-			let r=m.myRecos[uri];
-			if (r?.defTitles&&r.defTitles[0]&&r.defTitles[0][0]) {
-				strHeads+="\ttitle";
-				strContents+=`\t${m.encloseStr(r.defTitles[0][0])}`;
-			}
-			if (r?.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
-				strHeads+="\tdesc";
-				strContents+=`\t${m.encloseStr(r.defDescs[0][0])}`;
-			}
-			strHeads+="\tcats";
-			let cats="";
-			if (m.recoMode==="multireco") {
-				cats=m.formatCats($multireco_input_cats[0].value);
-			}
-			else {
-				cats=m.formatCats(m.currentCat);
-			}
-			strContents+=`\t${m.encloseStr(cats)}`;
-			$result?.html(`Recoing... The cats on this URI is ${m.escapeHTML(cats)}.`);
-			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
-			m.putCats_UriToLists(cats, uri);
-		}
-		else if (valStr!==m.myRecos[uri]?.val?.str) {
+		if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
 			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
 			let cats="";
@@ -1545,6 +1510,26 @@ m.getAndShowMyRecoInNewReco=function (r) {
 		}
 	});
 };
+m.getFullRecoStatAndPlotChart=function (uri) {
+return new Promise(function (resolve, reject) {
+	$.ajax({
+		type:"POST", url:"/reco/stat", data:uri
+		, dataType:"text"
+	}).done(function (resp) {
+		let res=await m.strToJSON(resp);
+		res.recentests=await m.strToJSON(res.recentests);
+		console.log(res);
+		let maxN=0;
+		for (let i=0;i<=100;i++) {
+			let nI=res["n"+i]=parseInt(res["n"+i], 16);
+			if (nI>maxN) {
+				maxN=nI;
+			}
+		}
+		console.log(maxN);
+	});
+});
+};
 m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	let elem=$input_uri[0];
 	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
@@ -1586,6 +1571,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	if (!r) { r=m.myRecos[uri]={uri}; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
+	await m.getFullRecoStatAndPlotChart(uri);
 	m.reNewAndReOn();
 	// await m.getAndShowMyRecoInNewReco(r);
 };
@@ -1612,7 +1598,6 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
-			m.reNewAndReOn();
 		}, 1024);
 	}
 });
@@ -1904,6 +1889,51 @@ $button_del.on("click", function(e) {
 		$button_del.removeClass("disabled");
 	}
 });
+m.refresh=async function (cats, option, uri) {
+	cats=String(cats);
+	option=String(option);
+	uri=String(uri);
+	switch (option) {
+		case "recoed":
+			let recoHTML=await m.recoHTML(r, false, true)
+			$contents.prepend(String(recoHTML));
+			m.reNewAndReOn();
+			break;
+		case "changed": case "deleted":
+			let $recos_recos=$("#contents").find(".reco");
+			for (let k=0;k<$recos_recos.length;k++) {
+				let $reco=$recos_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true);
+					$reco.replaceWith(String(recoHTML));
+				}
+			}
+			if (option==="changed") {
+				m.reNewAndReOn();
+			}
+			else if (option==="deleted") {
+				let r=m.myRecos[uri];
+				r.deleted=true;
+				r.has=false;
+				m.lastURI="x*L2$zp-|,O";
+				let $recos_recos=$("#contents").find(".reco");
+				for (let k=0;k<$recos_recos.length;k++) {
+					let $reco=$recos_recos.eq(k);
+					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+					if (recoURI===uri) {
+						$reco.addClass("none deleted");
+						$reco.find(".button.edit").addClass("deleted");
+					}
+				}
+				m.reNewAndReOn();
+			}
+			break;
+		default :
+	}
+};
+
+
 
 ////////////////////////////////////////////////
 // Lang : set cookie, Cat : get ans show recos
