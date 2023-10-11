@@ -23,7 +23,7 @@ public RecoeveWebClient() {
 	timerN=0;
 }
 public void doUntilH1IsFound(HttpResponse response, PrintLog pl) {
-	timerId=Recoeve.vertx.setTimer(2048, timerHandler -> {
+	timerId=Recoeve.vertx.setTimer(1024, timerHandler -> {
 		timerN++;
 		if (response.statusCode()==200) {
 			String body=response.bodyAsString();
