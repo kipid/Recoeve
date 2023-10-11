@@ -1331,9 +1331,13 @@ m.emptifyRecoInNewReco=function () {
 	m.getAndShowDefsAndRecoInNewReco(true);
 	m.reNewAndReOn();
 };
-m.showDefs=function (r) {
+m.showDefs=async function (r) {
 	let defTitles=r.defTitles;
 	let defTitlesHTML="";
+	if (!r.h1) {
+		r.h1=await m.getH1(r.uri);
+	}
+	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeHTML(String(r.h1))}</div>`;
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
 		if (title.length!==0) {

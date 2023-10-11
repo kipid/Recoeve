@@ -22,8 +22,8 @@ public RecoeveWebClient() {
 	webClient=WebClient.create(Recoeve.vertx, options);
 	timerN=0;
 }
-public void doUntilH1IsFound(HttpResponse response, PrintLog pl) {
-	timerId=Recoeve.vertx.setTimer(1024, timerHandler -> {
+public void doUntilH1IsFound(HttpResponse response, PrintLog pl, int delay) {
+	timerId=Recoeve.vertx.setTimer(delay, timerHandler -> {
 		timerN++;
 		if (response.statusCode()==200) {
 			String body=response.bodyAsString();
@@ -32,7 +32,7 @@ public void doUntilH1IsFound(HttpResponse response, PrintLog pl) {
 			// Select the first <h1> element and extract its text content
 			Elements h1Elements=document.select("title, h1");
 			if (h1Elements.isEmpty()&&timerN<7) {
-				doUntilH1IsFound(response, pl);
+				doUntilH1IsFound(response, pl, delay+512);
 			}
 			else {
 				if (!h1Elements.isEmpty()) {
