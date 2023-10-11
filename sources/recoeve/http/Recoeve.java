@@ -11,10 +11,10 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-
 import java.sql.*;
 
 import java.util.HashMap;
@@ -449,22 +449,7 @@ public static void main(String... args) {
 								recoeveWebClient.webClient.getAbs(uri)
 									.send(ar -> {
 										if (ar.succeeded()) {
-											String body=ar.result().bodyAsString();
-											Document document=Jsoup.parse(body);
-
-											// Select the first <h1> element and extract its text content
-											Elements h1Elements=document.select("h1");
-											if (!h1Elements.isEmpty()) {
-												Element firstH1Element=h1Elements.first();
-												String h1Text=firstH1Element.text();
-												System.out.println("Content of the first <h1> tag: "+h1Text);
-												pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-													.end(h1Text, ENCODING);
-											} else {
-												System.out.println("No <h1> tags found on the page.");
-												pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-													.end("No h1 tag.", ENCODING);
-											}
+											recoeveWebClient.doUntilH1IsFound(ar.result(), pl);
 										}
 										else {
 											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
