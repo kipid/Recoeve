@@ -1191,8 +1191,6 @@ $multirecoReplaceCats=$multireco_def_cats.find(".replace-cat");
 $multirecoAddTxts=$multireco_def_cats.find(".add-txt");
 $multirecoDeleteCat=$multireco_def_cats.find(".delete-cat");
 
-$def_cmd=$("#def-cmds").find(".def-cmd");
-
 $show_recos_without_points=$("#show-recos-without-points");
 m.showRWOP=true; // RWOP : Reco WithOut Point
 $show_only_unrecoed=$("#show-only-unrecoed");
@@ -1217,16 +1215,16 @@ m.fontFamily="맑은 고딕";
 m.defaultStyles.fontFamily=m.fontFamily;
 m.queryDFFontSize=function () {
 	if (window.innerWidth<600) {
-		m.defaultStyles.fontSize=15;
+		m.defaultStyles.fontSize=12;
 	}
 	else if (window.innerWidth<701) {
-		m.defaultStyles.fontSize=15.5;
+		m.defaultStyles.fontSize=13;
 	}
 	else if (window.innerWidth<901) {
-		m.defaultStyles.fontSize=16;
+		m.defaultStyles.fontSize=14;
 	}
 	else if (window.innerWidth<1210) {
-		m.defaultStyles.fontSize=16.5;
+		m.defaultStyles.fontSize=15;
 	}
 	else {
 		m.defaultStyles.fontSize=17;
@@ -4671,6 +4669,7 @@ m.showDefs=async function (r) {
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
 };
+$def_cmd=$("#def-cmds").find(".def-cmd");
 $def_cmd.on("click", function (e) {
 	$input_desc.focus();
 	let sStart=$input_desc[0].selectionStart;
