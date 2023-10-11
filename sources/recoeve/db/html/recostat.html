@@ -2,9 +2,34 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+<meta name="google-adsense-account" content="ca-pub-9843810906985249">
 <title>Recostat</title>
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+(function (m, $, undefined) {
+m.myIndex="{--myIndex--}";
+m.myId="{--myId--}";
+
+m.searchVars=m.getSearchVars(window.location.search);
+m.currentURI=m.searchVars?.uri?.val||"";
+m.pathName=window.location.pathname;
+
+m.lang=null;
+if (!!m.searchVars.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
+})(window.m, jQuery);
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9843810906985249" crossorigin="anonymous"></script>
 <style>
 body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
 
@@ -36,6 +61,9 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 ::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
 ::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
 ::-webkit-scrollbar-corner {background:transparent}
+
+#right-top-log-in .button {display:inline-block; float:right}
+#choose-lang-list {display:inline-block; padding:.5em; line-height:1.5; float:right}
 
 #container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
 	#container.dark {background:rgb(75,75,75); color:white}
@@ -86,7 +114,7 @@ a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decor
 }
 
 #new-reco {z-index:100; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white} .dark #new-reco {color:white}
-#new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
+#new-reco form {position:relative; width:70em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
 #new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
 #new-reco label:first-child {margin-top:0}
 #new-reco label>.desc {font-size:.8em}
@@ -153,13 +181,25 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 </style>
 </head>
 <body>
+<data id="data-myCatList">{--myCatList--}</data>
 <div id="container" class="dark">
+<div id="javascript-disable">
+	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
+</div><!-- div#javascript-disable -->
+<div id="right-top-log-in">
+	<div class="button" id="my-id"></div>
+	<div class="button" id="choose-lang">▼ Language/언어/語言</div>
+</div><!-- div#right-top-log-in -->
+<div class="cBoth"></div>
+<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
+<div class="cBoth"></div>
 <div id="new-reco">
-	<form>
+<form>
 	<label for="uri">URI</label>
 		<textarea id="input-uri" class="single-line" name="uri" placeholder="Uniform Resource Indentifier: like http-URL" type="text" tabindex="1"></textarea>
 		<div id="show-URI"></div>
-	</form>
 	<label for="title">[--Title--]</label>
 		<div id="def-titles"></div>
 	<label for="cats">[--Categories--]</label>
@@ -167,14 +207,28 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	<label for="desc">[--Description--]</label>
 	<label for="cmt">[--Comment--]</label>
 	<label for="val">[--Points--]</label>
-	<div id="my-reco"></div>
+</form>
+<div id="my-reco"></div>
 </div><!-- div#new-reco -->
 </div><!-- div#container -->
 </body>
 <div id="scripts"></div>
-<script src="/jquery.js"></script>
 <script>
 (function(m, $, undefined) {
+$("#javascript-disable").hide();
+m.kakaoTries=0;
+m.kakaoInitDo=function () {
+	if (typeof Kakao!=='undefined'||m.kakaoTries++>15) {
+		clearInterval(m.kakaoInit);
+		if (!Kakao.isInitialized()) {
+			Kakao.init('f076e37310bc101c5c50c9e2714b59ca');
+		}
+	}
+};
+m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
+
+
+
 /* Prerequisite */
 //////////////////
 // Variables
@@ -183,6 +237,8 @@ $data_myCatList=$("#data-myCatList");
 
 $new_reco=$("#new-reco");
 $input_uri=$("#input-uri");
+$input_uri[0].value=m.currentURI;
+$show_URI=$("#show-URI");
 $def_titles=$("#def-titles");
 $input_title=$("#input-title");
 $def_cats=$("#def-cats");
@@ -210,7 +266,6 @@ $.fn.exists=function() { return this.length!==0; };
 $("title").html(m.userId+" on Recoeve.net");
 
 m.myCatList=[];
-m.currentCat=null;
 m.myRecos={};
 
 m.fsCat=[];
@@ -225,174 +280,9 @@ m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
 m.ptnTag=/^<\w+[\s\S]+>$/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
-m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
 
 m.fullPts=10;
 
-////////////////////////////////////////////////////
-// Escape and Unescape HTML string.
-////////////////////////////////////////////////////
-m.escapeHTML=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-};
-m.unescapeHTML=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
-};
-m.escapeAMP=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
-};
-m.unescapeAMP=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
-};
-
-////////////////////////////
-// String to Array
-////////////////////////////
-m.encloseStr=function(str) {
-	if (!str||str.constructor!==String) { return ""; }
-	if (str.charAt(0)==="\""||/[\n\t]/.test(str)) {
-		return '"'+str.replace(/"/g,'""')+'"';
-	} return str;
-};
-m.strToJSON=function(str, colMap, rowMap) {
-	if (!str||str.constructor!==String) { return []; }
-	if (colMap===undefined||colMap===null) { colMap=true; }
-	// str=str.trim()+"\n";
-	if (str.charAt(str.length-1)!=="\n") {
-		str+="\n";
-	}
-	var ret=[];
-	var delimiter=/([^\t\n]*)([\t\n])/g;
-	var lastQuote=/[^"](?:"")*"([\t\n])/g;
-	var exec;
-	var start=0;
-	var row=-1, col=-1, delim="\n";
-	var strElem="";
-	function increseRC(str) {
-		if (str==='\t') {
-			col++; return true;
-		} else if (str==='\n') {
-			row++; col=0; ret.push([]); return true;
-		} return false;
-	}
-	while (start<str.length&&increseRC(delim)) {
-		if ((str.substring(start, start+1))==='"') {
-			lastQuote.lastIndex=start+1;
-			if ((exec=lastQuote.exec(str))!==null) {
-				strElem=str.substring(start+1, lastQuote.lastIndex-2);
-				delim=exec[1];
-				start=delimiter.lastIndex=lastQuote.lastIndex;
-			} else {
-				strElem=str.substring(start+1);
-				delim="";
-				start=str.length;
-			}
-			strElem=strElem.replace(/""/g,'"');
-		} else {
-			if ((exec=delimiter.exec(str))!==null) {
-				strElem=exec[1];
-				delim=exec[2];
-				start=delimiter.lastIndex;
-			} else {
-				strElem=str.substring(start);
-				delim="";
-				start=str.length;
-			}
-		}
-		ret[row][col]=strElem;
-	}
-	if (colMap) {
-		var firstColSize=ret[0].length;
-		for (var i=0;i<ret.length;i++) {
-			var jMax=ret[i].length;
-			if (jMax>firstColSize) { jMax=firstColSize; }
-			for (var j=0;j<jMax;j++) {
-				var key=ret[0][j];
-				if (key!==undefined) {
-					ret[i][key]=ret[i][j];
-				}
-			}
-		}
-	}
-	if (rowMap) {
-		for (var i=0;i<ret.length;i++) {
-			var key=ret[i][0];
-			if (key!==undefined) {
-				ret[key]=ret[i];
-			}
-		}
-	}
-	return ret;
-};
-
-/////////////////////////////
-// cookies.js
-/////////////////////////////
-m.docCookies={
-	hasItem:function(sKey) {
-		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
-	}
-	, getItem:function(sKey) {
-		return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null;
-	}
-	, removeItem:function(sKey, sPath, sDomain, bSecure) {
-		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-		document.cookie=encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
-		return true;
-	}
-	, setItem:function(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-		var sExpires="";
-		if (vEnd) { switch (vEnd.constructor) {
-			case Number:
-				sExpires=vEnd===Infinity?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+vEnd;
-				break;
-			case String:
-				sExpires="; expires="+vEnd;
-				break;
-			case Date:
-				sExpires="; expires="+vEnd.toUTCString();
-				break;
-		}}
-		document.cookie=encodeURIComponent(sKey)+"="+encodeURIComponent(sValue)+sExpires+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
-		return true;
-	}
-	, keys:function() {
-		var aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
-		for (var nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
-		return aKeys;
-	}
-};
-
-/* Remember user */
-m.sW=screen.width;
-m.sH=screen.height;
-if (m.sW<m.sH) {
-	m.sW=screen.height;
-	m.sH=screen.width;
-}
-m.str_rmb_me='log\tsW\tsH'
-	+'\nweb\t'+m.sW+'\t'+m.sH;
-m.rmb_me=function(callback, args) {
-	if (m.docCookies.hasItem('tCjs')) {
-		callback(args);
-	} else {
-		$.ajax({
-			type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
-			, dataType:"text"
-		}).done(function(resp) {
-			if (resp==="Rmbd") {
-				callback(args);
-			} else {
-				console.log(resp);
-			}
-		});
-	}
-};
 
 
 /* Fuzzy search */
@@ -455,663 +345,251 @@ m.splitHangul=function(str) {
 	return res;
 };
 
+
+
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
-m.fsCat[0].ptnSH=m.fsCat[1].ptnSH
-=m.splitHangul("$!@#");
-RegExp.quote=function(str) {
-	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
-};
-m.arrayRegExs=function(ptnSH) {
-	var str=ptnSH.splitted;
-	var res=[];
-	for (var i=0;i<str.length;i++) {
-		var c=str.charAt(i);
-		var mapKE=m.mapKE[c];
-		if (mapKE) {
-			res.push( new RegExp("["+c+mapKE+"]", "ig") );
-		} else {
-			res.push( new RegExp(RegExp.quote(c), "ig") );
-		}
-	}
-	return res;
-};
-m.highlightStrFromIndices=function(strSplitted, indices) {
-	var res="";
-	for (var i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
-		while (j<indices.length&&indices[j-1].end===indices[j].start) {
-			j++;
-		}
-		for (;k<strSplitted.length;k++) {
-			p1=p2;
-			p2=p1+strSplitted[k]["splitted"].length;
-			if (p2<=indices[i].start) {
-				strSplitted[k]["matched"]=false;
-			} else if (p1<indices[j-1].end) {
-				strSplitted[k]["matched"]=true;
-			} else {
-				if (j===indices.length) {
-					for (;k<strSplitted.length;k++) {
-						strSplitted[k]["matched"]=false;
-					}
-				}
-				p2=p1;
-				break;
-			}
-		}
-	}
-	for (var i=0;i<strSplitted.length;) {
-		if (strSplitted[i]["matched"]) {
-			res+='<span class="bold">';
-			while (i<strSplitted.length&&strSplitted[i]["matched"]) {
-				res+=m.escapeHTML(strSplitted[i]["char"]);
-				i++;
-			}
-			res+='</span>';
-		} else {
-			while (i<strSplitted.length&&!strSplitted[i]["matched"]) {
-				res+=m.escapeHTML(strSplitted[i]["char"]);
-				i++;
-			}
-		}
-	}
-	return res;
-};
-m.matchScoreFromIndices=function(strSH, ptnSH, indices) {
-	var res=0;
-	for (var i=0;i<indices.length;i++) {
-		if (strSH.pCho[indices[i].start])
-			res+=10;
-	}
-	for (var i=1;i<indices.length;i++) {
-		var diff=indices[i].start-indices[i-1].start;
-		if (diff<5) res+=8*(5-diff);
-	}
-	return res;
-};
-m.fuzzySearch=function(ptnSH, fs) {
-	var list=[];
-	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)===0) {
-		fs[1]=fs[0];
-	} else if (fs[1] && ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)===0) {
-		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
-			return fs[0]=fs[1];
-		}
-	} else {
-		fs[1]=null;
-	}
-	var listIsFullList=false;
-	if (fs[1]&&fs[1].sorted) {
-		var sorted=fs[1].sorted;
-		for (var i=0;i<sorted.length;i++) {
-			list.push(fs.fullList[ fs[1][sorted[i]].i ]);
-		}
-	} else {
-		list=fs.fullList;
-		listIsFullList=true;
-	}
-	fs[0]=[];
-	fs[0].ptnSH=ptnSH;
-	var regExs=m.arrayRegExs(ptnSH);
-	for (var i=0;i<list.length;i++) {
-	if (regExs.length>0) {
-		var txt=list[i].txt;
-		var txtS=txt.splitted;
-		regExs[0].lastIndex=0;
-		var exec=regExs[0].exec(txtS);
-		var matched=(exec!==null);
-		var indices=[];
-		if (matched) {
-			indices[0]={start:exec.index, end:regExs[0].lastIndex};
-		}
-		for (var j=1;matched&&(j<regExs.length);j++) {
-			regExs[j].lastIndex=regExs[j-1].lastIndex;
-			exec=regExs[j].exec(txtS);
-			matched=(exec!==null);
-			if (matched) {
-				indices[j]={start:exec.index, end:regExs[j].lastIndex};
-			}
-		}
-		if (matched) {
-			var maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
-			var indicesMMS=[]; // indices of max match score
-			for (var p=0;p<indices.length;p++) {
-				indicesMMS[p]=indices[p]; // hard copy of indices
-			}
-			for (var k=indices.length-2;k>=0;) {
-				regExs[k].lastIndex=indices[k].start+1;
-				exec=regExs[k].exec(txtS);
-				matched=(exec!==null);
-				if (matched) {
-					indices[k]={start:exec.index, end:regExs[k].lastIndex};
-				}
-				for (var j=k+1;matched&&(j<regExs.length);j++) {
-					regExs[j].lastIndex=regExs[j-1].lastIndex;
-					exec=regExs[j].exec(txtS);
-					matched=(exec!==null);
-					if (matched) {
-						indices[j]={start:exec.index, end:regExs[j].lastIndex};
-					}
-				}
-				if (matched) {
-					var matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
-					if (matchScore>maxMatchScore) {
-						maxMatchScore=matchScore;
-						for (var p=0;p<indices.length;p++) {
-							indicesMMS[p]=indices[p]; // hard copy of indices
-						}
-					}
-					k=indices.length-2;
-				} else {
-					k--;
-				}
-			}
-			fs[0].push({i:list[i].i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
-		}
-	} else {
-		fs[0].push({i:list[i].i, maxMatchScore:0});
-	}}
-	var sorted=fs[0].sorted=[];
-	for (var i=0;i<fs[0].length;i++) {
-		if (listIsFullList&&fs.desc) {
-			sorted[i]=fs[0].length-1-i;
-		} else {
-			sorted[i]=i;
-		}
-	}
-	for (var i=1;i<sorted.length;i++) {
-		var temp=sorted[i];
-		var j=i;
-		for (;(j>0) && (fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--)
-			sorted[j]=sorted[j-1];
-		sorted[j]=temp;
-	}
-};
+m.fsCat[0].ptnSH=m.fsCat[1].ptnSH=m.splitHangul("$!@#");
 
 /* CatList */
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
-m.pathOfCat=function(cat) {
-	return m.pathName+"?cat="+m.escapeAMP(cat);
-};
-m.getDepthOfTabs=function(str) {
-	var n=0;
+m.getDepthOfTabs=function (str) {
+	let n=0;
 	while (n<str.length&&str.charAt(n)==='\t') { n++; }
 	return n;
 };
-m.getSuperCat=function(cat) {
+m.getSuperCat=function (cat) {
 	if (cat&&cat.constructor===String) {
-		var i=cat.lastIndexOf("--");
+		let i=cat.lastIndexOf("--");
 		if (i!=-1) {
 			return cat.substring(0,i);
 		}
 	}
 	return null;
 };
-m.strCatListToJSON=function(strCatList, catList) {
-	var list=strCatList.trim().split("\n");
+m.strCatListToJSON=function (strCatList, catList) {
+	let list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
 		list=[];
 	}
-	list.unshift("");
+	list.unshift(""); // cat=uncategorized : empty cat.
 	if (catList===undefined||catList===null) {
-		if (m.catList) {
+		if (!!m.catList) {
 			catList=m.catList;
-		} else {
+		}
+		else {
 			catList=m.catList=[];
 		}
 	}
-	var superCats=[];
-	for (var i=0;i<list.length;i++) {
-		var baseCat=list[i].trim();
-		var depth=m.getDepthOfTabs(list[i]);
-		superCats.splice(depth, superCats.length-depth, baseCat);
-		var cat=superCats[0];
-		for (var j=1;j<=depth;j++) {
-			cat+="--"+superCats[j];
-		}
-		if (catList[cat]) {
-			catList[cat].i=i;
-			catList[i]=catList[cat];
-		} else {
-			catList[i]=catList[cat]={i:i, cat:cat, baseCat:baseCat, depth:depth};
+	let superCats=[];
+	if (strCatList.trim()==="") {
+		catList[""]=catList[0]={i:0, cat:"", baseCat:"", depth:0};
+	}
+	else {
+		for (let i=0;i<list.length;i++) {
+			let baseCat=list[i].trim();
+			let depth=m.getDepthOfTabs(list[i]);
+			superCats.splice(depth, superCats.length-depth, baseCat);
+			let cat=superCats.join("--");
+			catList[i]=catList[cat]={i, cat, baseCat, depth};
 		}
 	}
 };
 
-if (m.myIndex) { m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList); }
+if (m.myIndex) {
+	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+}
 
 //////////////////////////////////////
 // Fuzzy search on Cat
 //////////////////////////////////////
-m.putCatToFSFullList=function(i, cat) {
+m.putCatToFSFullList=function (i, cat) {
 	if (m.fsCat.fullList[cat]) {
+		m.fsCat.fullList[cat].i=i;
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
-	} else {
-		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	}
+	else {
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 };
 m.updateCatFS=function() {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
-	if (!m.myPage) {
-		m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
-	}
-	for (var i=0;i<m.myCatList.length;i++) {
-		m.putCatToFSFullList(i, m.myCatList[i].cat);
+	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+	let l=m.myCatList.length;
+	for (let i=l-1;i>=0;i--) {
+		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat);
 	}
 };
 m.updateCatFS();
-m.chooseCat=function(elem, j) {
-	var $elem=$(elem);
-	var fs=m.fsCat;
-	if ($elem.hasClass("selected")) {
-		// fs.$fs.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
-	} else {
-		fs.$fsLis.removeClass("selected");
-		$elem.addClass("selected");
-		var k=fs.k;
-		fs.listOfCats[k]=fs.fullList[j].cat;
-		fs.$fs[0].value=fs.listOfCats.join(";");
-		var sStart=0;
-		for (var i=0;i<k;i++) {
-			sStart+=fs.listOfCats[i].length+1;
-		}
-		var sEnd=sStart+fs.listOfCats[k].length;
-		fs.$fs.focus();
-		fs.$fs[0].setSelectionRange(sEnd,sEnd);
+m.completeCat=function (elem, cat) {
+	let $elem=$(elem);
+	let fs=m.fsCat;
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k=fs.k; // index of cat on sEnd.
+	fs.listOfCats[k]=fs.fullList[cat].cat;
+	fs.$fs[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
 	}
+	let sEnd=sStart+fs.listOfCats[k].length;
+	fs.$fs.focus();
+	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function(fs) {
-	var catsTxt=fs.$fs[0].value;
-	var sEnd=fs.$fs[0].selectionEnd;
-	var listOfCats=fs.listOfCats=catsTxt.split(";");
-	var l=catsTxt.length;
+m.doFSCat=function (fs) {
+	let catsTxt=fs.$fs[0].value;
+	fs.$fs.focus();
+	let sEnd=fs.$fs[0].selectionEnd;
+	fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	let lastK=fs.k;
 	fs.k=0;
-	for (var i=listOfCats.length-1;i>=0;i--) {
-		l-=listOfCats[i].length+1;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
 		if (l<sEnd) {
 			fs.k=i;
 			break;
 		}
+	} // Picking cat index k of the current selectionEnd.
+	let fsCatSH=m.splitHangul(fs.listOfCats[fs.k].trim());
+	let res=m.fuzzySearch(fsCatSH, fs);
+	let str="";
+	if (fs===m.fsCat) {
+		for (let i=0;i<res.length;i++) {
+			let fsSortedI=res[res.sorted[i]];
+			str+=`<div class="list-item" onclick="m.completeCat(this,'${fs.fullList[fsSortedI.i].cat}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+		}
 	}
-	var fsCatSH=m.splitHangul(listOfCats[fs.k]);
-	m.fuzzySearch(fsCatSH, fs);
-	var str="";
-	for (var i=0;i<fs[0].length;i++) {
-		var k=fs[0][fs[0].sorted[i]];
-		str+='<div class="list-item" onclick="m.chooseCat(this,'+k.i+')">'
-				+'<div class="list-index">'+i+'</div>'
-				+fs.fullList[k.i].html
-				+(k.highlight!==undefined?
-				'<div class="highlighted">'+'<span class="maxMatchScore">'+k.maxMatchScore+'</span> :: '+k.highlight+'</div>':'')
-			+'</div>';
-	}
-	$cat_fs_list.html(str);
+	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
-m.fsCatOn=function() {
-	var now=Date.now();
-	var passed=now-m.previous;
+m.fsCatOn=function () {
+	let now=Date.now();
+	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
 		m.doFSCat(m.fsCat);
-	} else {
+	}
+	else {
 		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-		setTimeout(function() {
+		setTimeout(function () {
+			$input_cats[0].value=$input_cats[0].value.replace(/[\"\'\`]+/ig,"");
 			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 			m.previous=Date.now();
 			m.doFSCat(m.fsCat);
 		}, m.wait*1.1-passed);
 	}
 };
-$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-$input_cats.on("keydown.fs", function(e) {
+m.fsCatsOnTimeout=function () {
+	$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+	$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+};
+m.fsCatsOnTimeout();
+m.onKeydownInFS=function (e, fs) {
+	clearTimeout(m.setTimeoutTargetOn);
 	e.stopPropagation();
+	let $fsl=fs.$fsl;
+	let $fs_container=fs.$fs_container;
+	let $target=$(e.target);
+	let catsTxt=$target[0].value;
+	$target.focus();
+	let sEnd=$target[0].selectionEnd;
+	fs.listOfCats=catsTxt.split(";");
+	let l=catsTxt.length;
+	let lastK=fs.k;
+	fs.k=0;
+	for (let i=fs.listOfCats.length-1;i>=0;i--) {
+		l-=fs.listOfCats[i].length+1;
+		if (l<sEnd) {
+			fs.k=i;
+			break;
+		}
+	} // Picking cat index k of the current selectionEnd.
+	let $lis=$fsl.find(".list-item");
+	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
-	// case 9: // Tab = 9
-	// 	e.preventDefault();
-	// 	m.fsTitle.$fsLis.eq(0).trigger("click");
-	// 	break;
-	case 27: // ESC = 27
-		e.preventDefault();
-		$cat_fs_container.hide();
-		break;
-	// case 38: // up = 38
-	// case 40: // down = 40
-	// 	e.preventDefault();
-	// 	var $fsl=$cat_fs_list;
-	// 	var $lis=$fsl.find(".list-item");
-	// 	var $liSelected=$fsl.find(".list-item.selected").eq(0);
-	// 	var $liTo=null;
-	// 	if ($liSelected.exists()) {
-	// 		if (e.keyCode===38) {
-	// 			$liTo=$liSelected.prev();
-	// 		} else {
-	// 			$liTo=$liSelected.next();
-	// 		}
-	// 		if ($liTo.exists()) {
-	// 			$liTo.eq(0).trigger("click");
-	// 			if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
-	// 				$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
-	// 			} else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
-	// 				$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
-	// 			}
-	// 		}
-	// 	} else {
-	// 		if ($lis.exists()) {
-	// 			if (e.keyCode===38) {
-	// 				$liTo=$lis.last();
-	// 				$fsl.scrollTop($fsl[0].scrollHeight);
-	// 			} else {
-	// 				$liTo=$lis.first();
-	// 				$fsl.scrollTop(0);
-	// 			}
-	// 			$liTo.eq(0).trigger("click");
-	// 		}
-	// 	}
-	// 	break;
+		case 9: // Tab=9
+			e.preventDefault();
+			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+			$lis.eq(0)?.trigger("click");
+			break;
+		case 27: // ESC=27
+			e.preventDefault();
+			$fs_container.hide();
+			break;
+		case 38: // up=38
+		case 40: // down=40
+			e.preventDefault();
+			$target.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+			let $liTo=null;
+			if ($liSelected.exists()) {
+				if (e.keyCode===38) {
+					$liTo=$liSelected.prev();
+				}
+				else {
+					$liTo=$liSelected.next();
+				}
+				if ($liTo.exists()) {
+					$liTo.eq(0).trigger("click");
+					if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+					}
+					else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
+						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+					}
+				}
+			}
+			else {
+				if ($lis.exists()) {
+					if (e.keyCode===38) {
+						$liTo=$lis.last();
+						$fsl.scrollTop($fsl[0].scrollHeight);
+					}
+					else {
+						$liTo=$lis.first();
+						$fsl.scrollTop(0);
+					}
+					$liTo.eq(0).trigger("click");
+				}
+			}
+			break;
 	}
+	m.setTimeoutTargetOn=setTimeout(function () {
+		m.fsCatsOnTimeout();
+	}, m.wait);
+};
+$input_cats.on("keydown.fs", function (e) {
+	m.onKeydownInFS(e, m.fsCat);
 });
 if (m.myIndex) {
-	for (var i=0;i<m.myCatList.length;i++) {
-		var cat=m.myCatList[i].cat;
-		m.fsCat.fullList[i]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	let l=m.myCatList.length;
+	for (let i=l-1;i>=0;i--) {
+		let cat=m.myCatList[i].cat;
+		m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
 	}
 }
-$input_cats.trigger("keyup");
+$input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function() {
 	$cat_fs_container.show();
 });
 
-/* Renderings */
-////////////////////////////////////////////////////
-// URI rendering :: http link itself, videos, images, maps.
-////////////////////////////////////////////////////
-m.uriToA=function(uri) {
-	if (!uri||uri.constructor!==String) { return ""; }
-	var exec=m.ptnURL.exec(uri);
-	if (exec!==null) {
-		return '<a target="_blank" href="'+exec[0]+'">'+m.escapeHTML(decodeURIComponent(uri))+'</a>';
-	} else {
-		return m.escapeHTML(uri);
-	}
-};
-m.togglePosition=function(elem) {
-	var $elem=$(elem);
-	var $parent=$elem.parent().parent();
-	if ($parent.hasClass("fixed")) {
-		$parent.removeClass("fixed");
-		window.scrollTo(0, $parent.offset().top);
-		$elem.text("▲ [--stick to the left top--]");
-	} else {
-		$parent.addClass("fixed");
-		window.scrollBy(0, -$parent.height());
-		$elem.text("▲ [--return to the original position--]");
-	}
-};
-m.rC=function(elemStr, pb) {
-	if (pb&&pb.constructor===Number) {
-		if (pb>200) {
-			pb=200;
-		} else if (pb<20) {
-			pb=20;
-		}
-	} else {
-		pb=null;
-	}
-	return '<div class="rC">'
-		+'<div class="rSC"'+(pb?' style="padding-bottom:'+pb+'%"':'')+'>'
-			+elemStr
-		+'</div>'
-		+(pb&&pb>70?'':'<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>')
-	+'</div>';
-};
-m.uriRendering=function(uri, toA) {
-	if (uri&&uri.constructor===String) {
-		if (uri.substring(0,4).toLowerCase()==="http") {
-			var k=4;
-			if (uri.charAt(k).toLowerCase()==='s') {
-				k++;
-			}
-			if (uri.substring(k,k+3)==="://") {
-				k+=3;
-				var l=uri.indexOf('/',k);
-				var uriHost=null;
-				var uriRest='';
-				if (l===-1) {
-					uriHost=uri.substring(k);
-				} else {
-					uriHost=uri.substring(k,l);
-					uriRest=uri.substring(l+1);
-				}
-				if (m.ptnURI[uriHost]) {
-					var result=m.ptnURI[uriHost].toIframe(uriRest);
-					if (result) { return result; }
-				}
-			}
-		}
-		for (var i=0;i<m.ptnURI.length;i++) {
-			var result=m.ptnURI[i].toIframe(uri);
-			if (result) { return result; }
-		}
-	}
-	return {html:(toA?m.uriToA(uri):"")};
-};
-m.YTiframe=function(v, vars) {
-	return m.rC('<iframe delayed-src="https://www.youtube.com/embed/'+v+(vars&&vars.list&&vars.list.val?'?list='+vars.list.val:'')+'" frameborder="0" allowfullscreen=""></iframe>');
-};
-var ptnURI;
-ptnURI=m.ptnURI["www.youtube.com"]={};
-ptnURI.regEx=/^(?:watch|embed\/([\w-]+))(\?\S+)?/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=null;
-		if (exec[2]) { vars=m.getSearchVars(exec[2]); }
-		var v=null;
-		if (exec[1]) {
-			v=exec[1];
-		} else if (vars&&vars.v) {
-			v=vars.v.val;
-		}
-		if (v) {
-			return {html:m.YTiframe(v,vars), from:"youtube", videoId:v};
-		}
-	}
-	return false;
-};
-ptnURI=m.ptnURI["youtu.be"]={};
-ptnURI.regEx=/^([\w-]+)(\?\S+)?/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["youtu.be"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=null;
-		if (exec[2]) {
-			vars=m.getSearchVars(exec[2]);
-		}
-		return {html:m.YTiframe(exec[1],vars), from:"youtube", videoId:exec[1]};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["m.youtube.com"]={};
-ptnURI.regEx=/^watch(\?\S+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["m.youtube.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		if (vars.v&&vars.v.val) {
-			return {html:m.YTiframe(vars.v.val,vars), from:"youtube", videoId:vars.v.val};
-		}
-	}
-	return false;
-};
-ptnURI=m.ptnURI["tvpot.daum.net"]={};
-ptnURI.regEx=/^v\/([\w-]+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+exec[1]+(exec[1].length<15?'$':'')+'&play_loc=undefined" frameborder="0" scrolling="no"></iframe>'), from:"daum", videoId:exec[1]};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["videofarm.daum.net"]={};
-ptnURI.regEx=/^controller\/video\/viewer\/Video\.html(\?\S+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["videofarm.daum.net"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		return {html:m.rC('<iframe delayed-src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='+vars.vid.val+'&play_loc='+vars.play_loc.val+'" frameborder="0" scrolling="no"></iframe>'), from:"daum"};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["serviceapi.rmcnmv.naver.com"]={};
-ptnURI.regEx=/^flash\/outKeyPlayer\.nhn(\?\S+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		var lastPath="flash/outKeyPlayer.nhn?";
-		for (var i=0;i<vars.length;i++) {
-			if (vars[i].key==="isAutoPlay") {
-				lastPath+="isAutoPlay=false&";
-			} else {
-				lastPath+=vars[i].key+"="+vars[i].val+"&";
-			}
-		}
-		return {html:m.rC('<iframe delayed-src="http://serviceapi.rmcnmv.naver.com/'+lastPath.substring(0,lastPath.length-1)+'" frameborder="0" scrolling="no"></iframe>'), from:"naver"};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["vimeo.com"]={};
-ptnURI.regEx=/^([0-9]+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["vimeo.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://player.vimeo.com/video/'+exec[1]+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'), from:"vimeo", videoId:exec[1]};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["www.dailymotion.com"]={};
-ptnURI.regEx=/^video\/(\w+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://www.dailymotion.com/embed/video/'+exec[1]+'" frameborder="0" allowfullscreen></iframe>'), from:"dailymotion", videoId:exec[1]};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["www.ted.com"]={};
-ptnURI.regEx=/^talks\//i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["www.ted.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		uriRest=uriRest.substring(6);
-		var k=uriRest.indexOf("?");
-		var vars=null;
-		if (k!==-1) {
-			vars=m.getSearchVars(uriRest.substring(k));
-			uriRest=uriRest.substring(0,k);
-		}
-		var v=uriRest;
-		if (vars&&vars.language) {
-			uriRest="lang/"+vars.language.val+"/"+uriRest;
-		}
-		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'.html" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["embed-ssl.ted.com"]={};
-ptnURI.regEx=/^talks\//i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["embed-ssl.ted.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		uriRest=uriRest.substring(6);
-		var v=uriRest.replace(/^lang\/\w+\//i,"").replace(/\.html$/i,"");
-		return {html:m.rC('<iframe delayed-src="https://embed-ssl.ted.com/talks/'+uriRest+'" frameborder="0" scrolling="no" allowfullscreen></iframe>'), from:"ted", videoId:v};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["w.soundcloud.com"]={};
-ptnURI.regEx=/^player\/(\?\S+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		var vars=m.getSearchVars(exec[1]);
-		var lastPath="player/?";
-		for (var i=0;i<vars.length;i++) {
-			if (vars[i].key==="auto_play") {
-				lastPath+="auto_play=false&";
-			} else {
-				lastPath+=vars[i].key+"="+vars[i].val+"&";
-			}
-		}
-		return {html:m.rC('<iframe delayed-src="https://w.soundcloud.com/'+lastPath.substring(0,lastPath.length-1)+'" scrolling="no" frameborder="no"></iframe>',40), from:"ted", videoId:vars.url&&vars.url.val};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["appsurprise.co.kr"]={};
-ptnURI.regEx=/^\S*/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["appsurprise.co.kr"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="http://appsurprise.co.kr/'+uriRest+'" frameborder="0"></iframe>')};
-	}
-	return false;
-};
-ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
-ptnURI.regEx=/^p\/([\w-]+)/i;
-ptnURI.toIframe=function(uriRest) {
-	var exec=m.ptnURI["instagram.com"].regEx.exec(uriRest);
-	if (exec!==null) {
-		return {html:m.rC('<iframe delayed-src="https://instagram.com/p/'+exec[1]+'/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>', 113)};
-	}
-	return false;
-};
 
-ptnURI=m.ptnURI[0]={};
-ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
-ptnURI.toIframe=function(uri) {
-	var exec=m.ptnURI[0].regEx.exec(uri);
-	if (exec!==null) {
-		return {html:'<div class="center"><img delayed-src="'+exec[0]+'"/></div>'};
-	}
-	return false;
-};
-ptnURI=m.ptnURI[1]={};
-ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
-ptnURI.toIframe=function(uri) {
-	var exec=m.ptnURI[1].regEx.exec(uri);
-	if (exec!==null) {
-		return {html:m.rC('<video controls preload="auto" delayed-src="'+exec[0]+'"></video>'), from:'video', src:exec[0]};
-	}
-	return false;
-};
 
 ////////////////////////////////////////////////////
 // desc and cmt rendering
 ////////////////////////////////////////////////////
-m.slideToggle=function(elem) {
-	var $elem=$(elem);
-	$elem.addClass("disabled");
-	$elem.parent().next().slideToggle(1000);
-	setTimeout(function() {
-		$elem.removeClass("disabled");
-	}, 1000);
-};
-m.slideUp=function(elem) {
-	var $elem=$(elem).parent().parent();
-	$elem.slideUp(1000);
-	$body.animate({scrollTop:'-='+$elem.height()}, 1000);
-};
-m.renderStrDescCmt=function(str) {
-	var res=[];
+m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
+m.renderStrDescCmt=function (str) {
+	let res=[];
 	str=str.trim();
-	var key="#";
-	var i=0;
-	var start=0;
-	var exec;
+	let key="#";
+	let i=0;
+	let start=0;
+	let exec;
 	while ((exec=m.ptnDescCmt.exec(str))!==null) {
 		res[i++]=key;
 		res[key]=str.substring(start, exec.index).trim();
@@ -1122,6 +600,432 @@ m.renderStrDescCmt=function(str) {
 	res[key]=str.substring(start).trim();
 	return res;
 };
+m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
+	let res="";
+	if (r?.has) {
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
+	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
+	<div class="textURI">${m.escapeHTML(r.uri)}</div>
+	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
+	<div class="title">${m.escapeHTML(r.title)}</div>
+	<div class="cats">${m.catsToA(r.cats)}</div>`
+	if (!inListPlay) {
+		let uriRendered=await uriRendering(r.uri, false, inListPlay);
+		res+=String(uriRendered.html);
+	}
+	res+=`<div class="cBoth"></div>`;
+		if (r.val?.str) {
+			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else {
+			res+=`<div class="val">${m.stars(0)} <span class="str"></span></div>`;
+		}
+		res+=`<div class="cBoth"></div>`;
+		if (m.myPage) {
+			res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+		}
+		else if (m.myRecos[r.uri]) {
+			let mR=m.myRecos[r.uri];
+			if (mR.has) {
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+			}
+		}
+		else {
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"></span></div>`;
+		}
+		res+=`<div class="cBoth"></div><div class="result"></div>`;
+		if (r.desc) {
+			let descR=r.descR;
+			res+=`<div class="desc">`;
+			for (let l=0;l<descR.length;l++) {
+				let key=m.escapeHTML( descR[l] );
+				let value=m.escapeHTML( descR[descR[l]] );
+				switch (key.toLowerCase()) {
+				case "#": case "":
+					res+=`<div class="value">${value.replace(/\n/g,"<br>")}</div>`;
+					break;
+				case "lyrics": case "lyric": case "가사":
+					res+=`<div class="value">
+<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
+<div class="lyricsC" style="display:none">
+	<div class="lyricsArrow"></div>
+	<div class="lyrics">${value.replace(/\n/g,"<br>")}</div>
+	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+</div>
+</div>`;
+					break;
+				case "related":
+					res+=`<div class="value"><span class="key">#${key}</span>:`;
+					let relateds=value.split("\n");
+					for (let p=0;p<relateds.length;p++) {
+						res+='<br>';
+						let uriRenderedInRelated=await uriRendering(m.formatURI(relateds[p]), true);
+						res+=String(uriRenderedInRelated.html);
+					}
+					res+=`</div>`;
+					break;
+				default :
+					res+=`<div class="value"><span class="key">#${key}:</span><br>${value.replace(/\n/g,"<br>")}</div>`;
+				}
+			}
+			res+=`</div>`;
+		}
+		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
+		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+		if (r.tFirst!==r.tLast) {
+			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
+		}
+		res+=`</div>`;
+	}
+	else {
+		res+=`<div class="reco">No Reco</div>`;
+	}
+	return res;
+};
+m.reco_pointChange_do=function (args, err) {
+	if (err) {
+		m.delayedLogOut(err, 60*60*24, args.$result);
+		return;
+	}
+	let fs=m.fsGo;
+	let uri=args.uri;
+	$.ajax({
+		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
+		, dataType:"text"
+	}).fail(function (resp) {
+		if (args.inRecoms) {
+			args.$result?.html(`[--Reco failed. You may not be logged-in.--]: ${m.escapeHTML(resp)}`);
+		}
+		else {
+			args.$result?.html(`[--Failed change. You may not be logged-in.--]: ${m.escapeHTML(resp)}`);
+		}
+	}).done(async function (resp) {
+		let res=await m.strToJSON(resp);
+		let result=String(res[1]?.result);
+		if (result?.substring(0,7)==="changed") {
+			m.myRecos[uri].val=m.val(args.valStr);
+			m.myRecos[uri].cats=args.cats;
+			args.$result?.html(m.escapeHTML(res[1].result));
+		}
+		else if (result==="recoed") {
+			let r=m.myRecos[uri];
+			if (!r) {r=m.myRecos[uri]={};}
+			r.has=true;
+			r.val=m.val(args.valStr);
+			if (r.defTitles&&r.defTitles[0]&&r.defTitles[0][0]) {
+				r.title=r.defTitles[0][0];
+			}
+			else {
+				r.title="";
+			}
+			r.cats=args.cats;
+			if (r.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
+				r.desc=r.defDescs[0][0];
+			}
+			else {
+				r.desc="";
+			}
+			r.descR=m.renderStrDescCmt(r.desc);
+			m.putCats_UriToLists(r.cats, uri);
+			if (m.myPage) {
+				m.refresh(r.cats, "recoed", uri);
+			}
+		}
+		else {
+			m.delayedLogOut(result, 60*60*24, args.$result);
+		}
+	});
+};
+m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
+	if (!m.myIndex) {
+		m.delayedLogOut("Not logged-in.", 7, $result);
+		return;
+	}
+	let valStr=$str.html();
+	if (m.myPage) {
+		if (inRecoms) {
+			let strHeads="do\turi\tval";
+			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let r=m.myRecos[uri];
+			if (r?.defTitles&&r.defTitles[0]&&r.defTitles[0][0]) {
+				strHeads+="\ttitle";
+				strContents+=`\t${m.encloseStr(r.defTitles[0][0])}`;
+			}
+			if (r?.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
+				strHeads+="\tdesc";
+				strContents+=`\t${m.encloseStr(r.defDescs[0][0])}`;
+			}
+			strHeads+="\tcats";
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			strContents+=`\t${m.encloseStr(cats)}`;
+			$result?.html(`Recoing... The cats on this URI is ${m.escapeHTML(cats)}.`);
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+			m.putCats_UriToLists(cats, uri);
+		}
+		else if (valStr!==m.myRecos[uri]?.val?.str) {
+			let strHeads="do\turi\tval";
+			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let cats="";
+			let catsChanged=true;
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+				if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+					cats=m.formatCats(m.myRecos[uri].cats);
+					catsChanged=false;
+				} else {
+					m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+					m.putCats_UriToLists(cats, uri);
+				}
+			}
+			else if (m.myRecos[uri]?.cats) {
+				cats=m.formatCats(m.myRecos[uri].cats);
+				catsChanged=false;
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			if (catsChanged) {
+				strHeads+="\tcats";
+				strContents+=`\t${m.encloseStr(cats)}`;
+			}
+			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+		}
+	}
+	else {
+		if (m.myRecos[uri]?.has) {
+			if (m.myRecos[uri]?.val?.str!==valStr) {
+				let strHeads="do\turi\tval";
+				let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+				let cats="";
+				let catsChanged=true;
+				if (m.recoMode==="multireco") {
+					cats=m.formatCats($multireco_input_cats[0].value);
+					if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+						cats=m.formatCats(m.myRecos[uri].cats);
+						catsChanged=false;
+					}
+				}
+				else if (m.myRecos[uri]?.cats) {
+					cats=m.formatCats(m.myRecos[uri].cats);
+					catsChanged=false;
+				}
+				else {
+					cats=m.formatCats(m.currentCat);
+				}
+				if (catsChanged) {
+					strHeads+="\tcats";
+					strContents+=`\t${m.encloseStr(cats)}`;
+				}
+				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
+				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+			}
+		}
+		else {
+			let strHeads="do\turi\tval";
+			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let uR=m.userRecos[uri];
+			if (uR) {
+				if (uR.title) {
+					strHeads+="\ttitle";
+					strContents+="\t"+m.encloseStr(uR.title);
+				}
+				if (uR.desc) {
+					strHeads+="\tdesc";
+					strContents+="\t"+m.encloseStr(uR.desc);
+				}
+			}
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			strHeads+="\tcats";
+			strContents+=`\t${m.encloseStr(cats)}`;
+			let strRecoDo=strHeads+"\n"+strContents;
+			$result.html("[--Recoing to your recoeve.net.--]");
+			m.rmb_me(m.reco_do, {strRecoDo, uri, $result}, true);
+		}
+	}
+};
+m.starsOnClick=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	if (!$target.hasClass("stars-container")) {
+		$target=$target.parents(".stars-container");
+	}
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $bar=$target.find(".bar");
+	let barW=$bar.width();
+	let $str=$target.siblings(".str");
+	let w=e.clientX-$bar.offset().left+$window.scrollLeft();
+	if (w<-15) {
+		w=-1;
+	}
+	else if (w<0) {
+		w=0;
+	}
+	else if (w>m.starsWidth) {
+		w=m.starsWidth;
+	}
+	if (w!==barW) {
+		barW=w;
+		if (w<0) {
+			$str.html("");
+			w=0;
+		}
+		else {
+			$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+		}
+		$bar.css({width:w});
+	}
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2048);
+};
+m.starsOnTouchMove=function (e) {
+	let $target=$(e.target);
+	if (!$target.hasClass("stars-container")) {
+		$target=$target.parents(".stars-container");
+	}
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $bar=$target.find(".bar");
+	let barW=$bar.width();
+	let $str=$target.siblings(".str");
+	$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let w=x-$bar.offset().left+$window.scrollLeft();
+		if (w<-15) {
+			w=-1;
+		}
+		else if (w<0) {
+			w=0;
+		}
+		else if (w>m.starsWidth) {
+			w=m.starsWidth;
+		}
+		if (w!==barW) {
+			barW=w;
+			if (w<0) {
+				$str.html("");
+				w=0;
+			}
+			else {
+				$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
+			}
+			$bar.css({width:w});
+		}
+	});
+	return {$str, uri, $result, $reco};
+};
+m.starsOnUps=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("10.0/10");
+		}
+		else {
+			val.num+=0.1;
+			if (val.num>val.divisor) {
+				val.num=val.divisor;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("10.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2048);
+};
+m.starsOnDowns=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("0.0/10");
+		}
+		else {
+			val.num-=0.1;
+			if (val.num<0) {
+				val.num=0;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("0.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2048);
+};
+m.reNewAndReOn=function () {
+	m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+	$window.off("scroll.delayedLoad");
+	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	$window.trigger("scroll.delayedLoad");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
+	let $stars=$(".my-point>.stars-container");
+	$stars.off("click.mdInStars");
+	$stars.on("click.mdInStars", m.starsOnClick);
+	$stars.off("mousedown.mdInStars touchstart.mdInStars");
+	$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+	$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+		let {$str, uri, $result, $reco}=m.starsOnTouchMove(e);
+		$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+			m.timeout[uri]=setTimeout(function () {
+				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+			}, 2048);
+		});
+	});
+	let $ups=$(".my-point>.up");
+	let $downs=$(".my-point>.down");
+	$ups.off("click.ud");
+	$downs.off("click.ud");
+	$ups.on("click.ud", m.starsOnUps);
+	$downs.on("click.ud", m.starsOnDowns);
+};
 
 
 
@@ -1129,21 +1033,29 @@ m.renderStrDescCmt=function(str) {
 ////////////////////////////////////////////////////
 // val, points, stars
 ////////////////////////////////////////////////////
-m.val=function(val) {
-	var res={};
+m.val=function (val) {
+	let res={valid:false, str:"", val:-1};
+	if (val===null||val===undefined) {
+		return res;
+	}
+	else if (val?.constructor!==String) {
+		return res;
+	}
 	res.str=val;
 	if (val.length===0) {
 		res.valid=true;
 		res.val=-1;
-	} else {
-		var exec=m.ptnVal.exec(val);
+	}
+	else {
+		let exec=m.ptnVal.exec(val);
 		if (exec!==null) {
 			res.num=Number(exec[1]);
-			res.divisor=Number(exec[2])
-			res.valid=(res.num<=res.divisor);
+			res.divisor=Number(exec[2]);
+			res.valid=(res.num>=0&&res.num<=res.divisor);
 			if (res.valid) {
 				res.val=res.num/res.divisor;
-			} else {
+			}
+			else {
 				res.val=-1;
 			}
 		}
@@ -1151,163 +1063,156 @@ m.val=function(val) {
 	return res;
 };
 {
-	var r=12; // outer radius of star
-	var r0=6; // inner radius of star
-	var pad=1; // padding of star
-	var pad0=9; // left/right pad
-	var thetas=[];
-	var coss=[];
-	var sins=[];
-	for (var i=0;i<10;i++) {
+	let r=12; // outer radius of star
+	let r0=6; // inner radius of star
+	let pad=1; // padding of star
+	let pad0=9; // left/right pad
+	let thetas=[];
+	let coss=[];
+	let sins=[];
+	for (let i=0;i<10;i++) {
 		thetas.push(-Math.PI/2+2*Math.PI/10*i);
 		coss.push(Math.cos(thetas[i]));
 		sins.push(Math.sin(thetas[i]));
 	}
-	var str=pad0+',0 ';
-	var yc=pad+r;
-	var xc=pad0+pad+r;
-	for (var k=0;k<5;k++,xc+=2*r+pad) {
-		str+=xc+',0 ';
-		for (var i=0;i<10;i++) {
-			var rp=(i%2==0)?r:r0;
-			str+=(xc+rp*coss[i]).toFixed(1)+','+(yc+rp*sins[i]).toFixed(1)+' ';
+	let str=`${pad0},0 `;
+	let yc=pad+r;
+	let xc=pad0+pad+r;
+	for (let k=0;k<5;k++,xc+=2*r+pad) {
+		str+=`${xc},0 `;
+		for (let i=0;i<10;i++) {
+			let rp=(i%2==0)?r:r0;
+			str+=`${(xc+rp*coss[i]).toFixed(1)},${(yc+rp*sins[i]).toFixed(1)} `;
 		}
-		str+=xc+','+pad+' '+xc+',0 ';
+		str+=`${xc},${pad} ${xc},0 `;
 	}
 	xc-=r;
 	yc+=r*sins[4]+pad;
-	str+=xc+',0 '+xc+','+yc.toFixed(1)+' '+pad0+','+yc.toFixed(1);
-	m["5stars-pre"]='<div class="stars-container" style="width:'+(xc+pad0)+'px; height:'+yc.toFixed(1)+'px"><div class="bar" style="left:'+(pad0+1)+'px; width:';
-	m["5stars-width"]=xc-pad0-2;
-	m["5stars-pad0+1"]=pad0+1;
-	m["5stars-post"]='px"></div><svg class="out-stars">'
-			+'<polygon points="'+str+'"/>'
-		+'</svg></div>';
-	m["5stars"]=function(val) {
+	str+=`${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
+	m.starsWidth=xc-pad0-2;
+	m.stars=function (val) {
 		if (val<0) { val=0; }
 		else if (val>1) { val=1; }
-		return m["5stars-pre"]+(m["5stars-width"]*val).toFixed(1)+m["5stars-post"];
+		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${(m.starsWidth*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
 	}
 }
+
+
 
 ////////////////////////////////////////////////////
 // Show recos
 ////////////////////////////////////////////////////
-m.recoDowned=function(urisStr, recos) {
-	var uris=urisStr.split("\n");
+m.recoDowned=function (urisStr, recos) {
+	let uris=urisStr.trim().split("\n");
 	for (k=0;k<uris.length;k++) {
-		var uri=uris[k];
-		var p=recos[uri];
-		if (!p) { p=recos[uri]={}; }
-		p.down=true;
+		let uri=uris[k];
+		let r=recos[uri];
+		if (!r) { r=recos[uri]={}; }
+		r.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
-m.recoToEve=function(resp, recos) {
-	var resp=m.strToJSON(resp);
-	for (var k=1;k<resp.length;k++) {
-		var recoK=resp[k];
-		var uri=recoK["uri"];
-		var p=recos[uri];
-		if (!p) { p=recos[uri]={}; }
-		p["has"]=true;
-		for (var prop in recoK) {
+m.recoToEve=async function (resp, recos, cat, uris) {
+return new Promise(async function (resolve, reject) {
+	resp=await m.strToJSON(resp);
+	for (let k=1;k<resp.length;k++) {
+		let respK=await resp[k];
+		let uri=String(respK.uri);
+		let r=recos[uri];
+		if (!r) { r=recos[uri]={}; }
+		r.has=true; // User has a reco on the uri.
+		for (let prop in respK) {
 			if (isNaN(prop)) {
-				p[prop]=recoK[prop];
+				prop=String(prop);
+				r[prop]=String(respK[prop]);
 			}
 		}
-		if (p.desc!==undefined) {
-			p.descR=m.renderStrDescCmt(p.desc); // R for rendered.
+		r.deleted=false;
+		if (r.desc!==undefined) {
+			r.descR=m.renderStrDescCmt(String(r.desc)); // R for rendered.
 		}
-		if (p.cmt!==undefined) {
-			p.cmtR=m.renderStrDescCmt(p.cmt); // R for rendered.
+		else {
+			r.descR=m.renderStrDescCmt("");
 		}
-		if (p.val!==undefined) {
-			p.val=m.val(p.val);
+		if (r.cmt!==undefined) {
+			r.cmtR=m.renderStrDescCmt(String(r.cmt)); // R for rendered.
 		}
+		else {
+			r.cmtR=m.renderStrDescCmt("");
+		}
+		r.val=m.val(String(r.val));
 	}
+	return resolve();
+});
 };
 
-/////////////////////////////////////////
-// Open Cat
-/////////////////////////////////////////
-m.getSearchVars=function(searchStr) {
-	var vars=[];
-	if (searchStr!==0) {
-		if (searchStr.substring(0,1)==="?") { searchStr=searchStr.substring(1); }
-		var j=searchStr.indexOf("#");
-		if (j!==-1) { searchStr=searchStr.substring(0,j); }
-		var splits=searchStr.replace(/&amp;/ig,"&").split("&");
-		for (var i=0;i<splits.length;i++) {
-			var key=splits[i];
-			var value="";
-			var k=key.indexOf("=");
-			if (k!==-1) {
-				value=decodeURIComponent(key.substring(k+1));
-				key=key.substring(0,k);
-			}
-			key=decodeURIComponent(key);
-			vars[i]=vars[key]={key:key, val:value};
-		}
-	}
-	return vars;
-};
+
 
 ////////////////////////////////////////////////////
 // New Reco or Edit
 ////////////////////////////////////////////////////
-m.getUTF8Length=function(s) {
-	var len=0;
-	for (var i=0;i<s.length;i++) {
-		var code=s.charCodeAt(i);
+m.getUTF8Length=function (s) {
+	let len=0;
+	for (let i=0;i<s.length;i++) {
+		let code=s.charCodeAt(i);
 		if (code<=0x7f) {
 			len+=1;
-		} else if (code<=0x7ff) {
+		}
+		else if (code<=0x7ff) {
 			len+=2;
-		} else if (code>=0xd800&&code<=0xdfff) {
+		}
+		else if (code>=0xd800&&code<=0xdfff) {
 			// Surrogate pair: These take 4 bytes in UTF-8 and 2 chars in UCS-2
 			// (Assume next char is the other [valid] half and just skip it)
 			len+=4; i++;
-		} else if (code<0xffff) {
+		}
+		else if (code<0xffff) {
 			len+=3;
-		} else {
+		}
+		else {
 			len+=4;
 		}
 	}
 	return len;
 };
-m.formatURI=function(uri) {
-	uri=uri.trim().replace(/[\t\n]/g," ");
-	var exec=m.ptnTag.exec(uri);
-	if (exec!==null) {
-		try {
-			var $uri=$(uri);
-			var src=$uri.attr("src");
-			if (src) {
-				uri=src;
-			} else {
-				src=$uri.find("[src]").attr("src");
-				if (src) { uri=src; }
+m.formatURI=function (uri) {
+	if (!!uri&&uri.constructor===String) {
+		uri=uri.trim().replace(/[\t\n]/g," ");
+		let exec=m.ptnTag.exec(uri);
+		if (exec!==null) {
+			try {
+				let $uri=$(uri);
+				let src=$uri.attr("src");
+				if (src) {
+					uri=src;
+				}
+				else {
+					src=$uri.find("[src]").attr("src");
+					if (src) { uri=src; }
+				}
+			} catch (err) {
+				console.log(err);
 			}
-		} catch (err) { console.log(err); }
+		}
+		return m.unescapeHTML(uri).trim();
 	}
-	return uri.replace(/&amp;/ig,"&").trim();
+	return "";
 };
-m.formatTitle=function(title) {
-	return title.trim().replace(/[\t\n]/g," ");
+m.formatTitle=function (title) {
+	return title.trim().replace(/[\t\r\n]/g," ");
 };
-m.formatCats=function(cats) {
+m.formatCats=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
 		return "";
 	}
 	cats=cats.trim().replace(/[\t\r\n]/g," ");
-	var list=cats.split(";");
-	for (var i=0;i<list.length;i++) {
-		var levels=list[i].split("--");
-		for (var j=0;j<levels.length;j++) {
+	let list=cats.split(";");
+	for (let i=0;i<list.length;i++) {
+		let levels=list[i].split("--");
+		for (let j=0;j<levels.length;j++) {
 			levels[j]=levels[j].replace(/^[\s-]+/,"").replace(/[\s-]+$/,"");
 		}
 		list[i]="";
-		var k=0;
+		let k=0;
 		for (;k<levels.length;k++) {
 			if (levels[k].length!==0) {
 				list[i]=levels[k];
@@ -1320,12 +1225,13 @@ m.formatCats=function(cats) {
 			}
 		}
 	}
-	var catsMap={};
+	let catsMap={};
 	catsMap[list[0]]=true;
 	cats=list[0];
-	for (var i=1;i<list.length;i++) {
+	for (let i=1;i<list.length;i++) {
 		if (catsMap[list[i]]) {
-		} else {
+		}
+		else {
 			catsMap[list[i]]=true;
 			cats+=";"+list[i];
 		}
@@ -1333,46 +1239,88 @@ m.formatCats=function(cats) {
 	return cats;
 };
 
-m.showMyReco=function(r) {
-	if (r["has"]) {
-		$button_reco.hide();
-		$button_edit.show();
-		$button_del.show();
-	} else {
-		$button_reco.show();
-		$button_edit.hide();
-		$button_del.hide();
-	}
+m.myRecos[""]=m.userRecos[""]={
+	has:false, down:true, defs:true
+	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
+	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
 };
-m.showReco=function(r) {
-	if (r["has"]) {
-		$input_title[0].value=r.title;
-		$input_cats[0].value=r.cats;
-		$input_desc[0].value=r.desc;
-		if (m.myPage) {
-			$input_cmt[0].value=r.cmt;
-			$input_val[0].value=r.val.str;
-		} else {
-			$input_cmt[0].value="";
-			$input_val[0].value="";
+m.showMyReco=async function (r) {
+	if (r.has) {
+		if (r.deleted) {
+			$button_reco.show();
+			$button_edit.hide();
+			$button_del.hide();
+			$button_back.show();
 		}
-		$input_val.trigger("keyup");
-	}
-	if (m.myPage) {
-		if (r["has"]) {
+		else {
 			$button_reco.hide();
 			$button_edit.show();
 			$button_del.show();
 			$button_back.show();
-		} else {
+		}
+	}
+	else {
+		$button_reco.show();
+		$button_edit.hide();
+		$button_del.hide();
+		$button_back.hide();
+	}
+	let $mR=$("#my-reco");
+	let recoHTML=await m.recoHTML(r, true, true);
+	$mR.html(String(recoHTML)); // need to be edit.
+	if (r.has) {
+		let $edit=$mR.find(".button.edit").remove();
+		$edit.on("click", function (e) {
+			$input_title[0].value=r.title;
+			$input_cats[0].value=r.cats;
+			$input_desc[0].value=r.desc;
+			$input_cmt[0].value=r.cmt;
+			$input_val[0].value=r.val.str;
+			$input_val.trigger("keyup");
+		});
+	}
+};
+m.fillRecoInNewReco=function (r, fillDefs) {
+	m.localStorage.clear();
+	if (r.has) {
+		$input_title[0].value=r.title;
+		$input_cats[0].value=r.cats;
+		$input_desc[0].value=r.desc;
+		$input_cmt[0].value=r.cmt;
+		$input_val[0].value=r.val.str;
+		$input_val.trigger("keyup");
+	}
+	else if (fillDefs) {
+		if (r.defTitles[0]&&r.defTitles[0][0]) {
+			$input_title[0].value=r.defTitles[0][0];
+		}
+		$input_cats[0].value=m.currentCat;
+		if (r.defDescs[0]&&r.defDescs[0][0]) {
+			$input_desc[0].value=r.defDescs[0][0];
+		}
+	}
+	if (r.has) {
+		if (r.deleted) {
 			$button_reco.show();
 			$button_edit.hide();
 			$button_del.hide();
-			$button_back.hide();
+			$button_back.show();
+		}
+		else {
+			$button_reco.hide();
+			$button_edit.show();
+			$button_del.show();
+			$button_back.show();
 		}
 	}
+	else {
+		$button_reco.show();
+		$button_edit.hide();
+		$button_del.hide();
+		$button_back.hide();
+	}
 };
-m.emptifyReco=function() {
+m.emptifyRecoInNewReco=function () {
 	$input_uri[0].value="";
 	$input_title[0].value="";
 	$input_cats[0].value="";
@@ -1380,122 +1328,262 @@ m.emptifyReco=function() {
 	$input_cmt[0].value="";
 	$input_val[0].value="";
 	$input_val.trigger("keyup");
-	m.getAndShowDefsAndReco();
+	m.getAndShowDefsAndRecoInNewReco(true);
+	m.reNewAndReOn();
 };
-m.addCat=function() {
-	$input_cats[0].value+=";";
-	var l=$input_cats[0].value.length;
-	$input_cats.focus();
-	$input_cats[0].setSelectionRange(l,l);
-};
-m.showDefs=function(r) {
-	var defTitles=r["def-titles"].trim().split("\n");
-	var defTitlesHTML="";
-	for (var i=0;i<defTitles.length;i++) {
-		var title=defTitles[i].trim();
+m.showDefs=function (r) {
+	let defTitles=r.defTitles;
+	let defTitlesHTML="";
+	for (let i=0;i<defTitles.length;i++) {
+		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
-			defTitlesHTML+='<div class="def-title">'+m.escapeHTML(title)+'</div>';
+			defTitlesHTML+=`<div class="def-title">${m.escapeHTML(title)}</div>`;
 		}
 	}
 	$def_titles.html(defTitlesHTML);
-	var $defTitle=$def_titles.find(".def-title");
-	$defTitle.on("click", function(e) {
-		$defTitle.removeClass("selected");
-		var $this=$(this);
+	let $defTitles=$def_titles.find(".def-title");
+	$defTitles.on("click", function (e) {
+		$defTitles.removeClass("selected");
+		let $this=$(this);
 		$this.addClass("selected");
 		$input_title[0].value=m.unescapeHTML($this.html());
 	});
-	
-	var defCats=r["def-cats"].trim().split("\n");
-	var defCatsHTML='<div class="def-cat">[--Indifferent--]</div> <div class="def-cat">[--Later--]</div> <div id="add-cat" onclick="m.addCat()">+;</div><br>';
-	for (var i=0;i<defCats.length;i++) {
-		var cat=defCats[i].trim();
+
+	let defCats=r.defCats;
+	let defCatsHTML=`<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
+	for (let i=0;i<defCats.length;i++) {
+		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
-			defCatsHTML+='<div class="def-cat">'+m.escapeHTML(cat)+'</div> ';
+			defCatsHTML+=`<div class="def-cat replace-cat">${m.escapeHTML(cat)}</div> `;
 		}
 	}
 	$def_cats.html(defCatsHTML);
-	var $defCat=$def_cats.find(".def-cat");
-	$defCat.on("click", function(e) {
-		$defCat.removeClass("selected");
-		var $this=$(this);
+	let $defCats=$def_cats.find(".def-cat");
+	let $replaceCats=$def_cats.find(".replace-cat");
+	$replaceCats.on("click", function (e) {
+		let $this=$(this);
+		let fs=m.fsCat;
+		$defCats.removeClass("selected");
 		$this.addClass("selected");
-		$input_cats[0].value=m.unescapeHTML($this.html());
+		let k=fs.k;
+		fs.listOfCats[k]=m.unescapeHTML($this.html()).trim();
+		fs.$fs[0].value=fs.listOfCats.join(";");
+		let sStart=0;
+		for (let i=0;i<k;i++) {
+			sStart+=fs.listOfCats[i].length+1;
+		}
+		let sEnd=sStart+fs.listOfCats[k].length;
+		fs.$fs.focus();
+		fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	});
-};
-m.getAndShowDefsAndReco=function(noFormatURI) {
-	var elem=$input_uri[0];
-	var uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
-	if (elem.value!==uri) { elem.value=uri; }
-	$("#show-URI").html(m.uriRendering(uri,true).html.replace(/delayed-src/gi,"src"));
-	var r=m.myRecos[uri];
-	if (!r) { r=m.myRecos[uri]={}; }
-	if (r.down) {
-		m.showReco(r);
-	} else {
-		var getRecosStr="uri"+"\n"+uri;
-		$.ajax({
-			type:"POST", url:m.pathName+"/get-Recos", data:getRecosStr
-			, dataType:"text"
-		}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-			m.recoDowned(uri, m.myRecos);
-			m.recoToEve(resp, m.myRecos);
-			m.showReco(r);
-		});
-	}
-	if (r.defs) {
-		m.showDefs(r);
-	} else {
-		m.showDefs({"def-titles":"", "def-cats":""});
-		$.ajax({
-			type:"POST", url:"/reco/infos", data:uri
-			, dataType:"text"
-		}).done(function(resp) {
-			var defs=m.strToJSON(resp);
-			r.defs=true;
-			r["def-cats"]=defs[1]["def-cats"];
-			r["def-titles"]=defs[1]["def-titles"];
-			m.showDefs(r);
-		});
-	}
-	if (m.myPage||uri==="") {
-		$error.html("");
-	} else {
-		$error.html("Be careful! This is not your page. On this URI, you have");
-		var mR=m.myRecos[uri];
-		if (!mR) { mR=m.myRecos[uri]={}; }
-		if (mR.down) {
-			m.showMyReco(mR);
-		} else {
-			var getRecosStr="uri"+"\n"+uri;
-			$.ajax({
-				type:"POST", url:"/user/"+m.myId+"/get-Recos", data:getRecosStr
-				, dataType:"text"
-			}).done(function(resp) { // User reco 가 없으면 head 만 보냄.
-				m.recoDowned(uri, m.myRecos);
-				m.recoToEve(resp, m.myRecos);
-				m.showMyReco(mR);
-			});
+	let $addTxts=$def_cats.find(".add-txt");
+	$addTxts.on("click", function (e) {
+		let $this=$(this);
+		$defCats.removeClass("selected");
+		$this.addClass("selected");
+		let sStart=$input_cats[0].selectionStart;
+		let sEnd=$input_cats[0].selectionEnd;
+		let inputValue=$input_cats[0].value;
+		let inserted=m.unescapeHTML($this.html());
+		$input_cats[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
+		let l=$input_cats[0].value.length;
+		$input_cats.focus();
+		sEnd=sStart+inserted.length;
+		$input_cats[0].setSelectionRange(sEnd,sEnd);
+		$input_cats.trigger("keyup.fs");
+	});
+	let $deleteCat=$def_cats.find(".delete-cat");
+	$deleteCat.on("click", function (e) {
+		let $this=$(this);
+		let fs=m.fsCat;
+		$defCats.removeClass("selected");
+		$this.addClass("selected");
+		let k=fs.k;
+		fs.listOfCats.splice(k, 1);
+		fs.$fs[0].value=fs.listOfCats.join(";");
+		let sStart=0;
+		for (let i=0;i<k;i++) {
+			sStart+=fs.listOfCats[i].length+1;
+		}
+		let sEnd=fs.listOfCats.length===k?sStart-1:sStart;
+		fs.$fs.focus();
+		fs.$fs[0].setSelectionRange(sEnd,sEnd);
+		$input_cats.trigger("keyup.fs");
+	});
+
+	let defDescs=r.defDescs;
+	let defDescsHTML="";
+	for (let i=0;i<defDescs.length;i++) {
+		let desc=defDescs[i][0].trim();
+		if (desc.length!==0) {
+			if (desc.length<30) {
+				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc)}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+			}
+			else {
+				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc.substring(0,15))} ... ${m.escapeHTML(desc.substring(desc.length-15))}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+			}
 		}
 	}
+	$def_descs.html(defDescsHTML);
+	let $defDesc=$def_descs.find(".def-desc");
+	$defDesc.on("click", function (e) {
+		$defDesc.removeClass("selected");
+		let $this=$(this);
+		$this.addClass("selected");
+		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
+	});
 };
-$new_reco.find("input, textarea").on("keydown.common", function(e) {
-	if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
-		var r=m.myRecos[$input_uri[0].value];
-		if (r["has"]) {
+$def_cmd.on("click", function (e) {
+	$input_desc.focus();
+	let sStart=$input_desc[0].selectionStart;
+	let sEnd=$input_desc[0].selectionEnd;
+	let inputValue=$input_desc[0].value;
+	let inserted=m.unescapeHTML($(this).html());
+	$input_desc[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
+	$input_desc.focus();
+	sEnd=sStart+inserted.length;
+	$input_desc[0].setSelectionRange(sEnd,sEnd);
+});
+m.getAndFillRecoInNewReco=function (r, fillDefs) {
+	return new Promise(function (resolve, reject) {
+		if (r.down) {
+			m.fillRecoInNewReco(r, fillDefs);
+			resolve();
+		}
+		else {
+			let getRecosStr="uri"+"\n"+r.uri;
+			$.ajax({
+				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
+				, dataType:"text"
+			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
+				m.recoDowned(r.uri, m.myRecos);
+				await m.recoToEve(resp, m.myRecos);
+				m.fillRecoInNewReco(r, fillDefs);
+				resolve();
+			});
+		}
+	});
+};
+m.getAndFillDefsInNewReco=function (r, fillDefs) {
+	return new Promise(function (resolve, reject) {
+		if (r.defs) {
+			m.showDefs(r, fillDefs);
+			resolve();
+		}
+		else {
+			m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
+			$.ajax({
+				type:"POST", url:"/reco/defs", data:r.uri
+				, dataType:"text"
+			}).done(async function (resp) {
+				let defs=await m.strToJSON(resp);
+				r.defs=true;
+				if (defs[1]) {
+					r.defCats=await m.strToJSON(defs[1]["def-cats"], false);
+					r.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
+					r.defDescs=await m.strToJSON(defs[1]["def-descs"], false);
+					m.showDefs(r);
+				}
+				resolve();
+			});
+		}
+	});
+};
+m.getAndShowMyRecoInNewReco=function (r) {
+	return new Promise(function (resolve, reject) {
+		if (m.myPage) {
+			$error.html("");
+		}
+		else {
+			$error.html("[--Be careful! This is not your page. On this URI, you have--]");
+			if (r.down) {
+				m.showMyReco(r);
+				resolve();
+			}
+			else {
+				let getRecosStr="uri"+"\n"+r.uri;
+				$.ajax({
+					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
+					, dataType:"text"
+				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
+					m.recoDowned(uri, m.userRecos);
+					await m.recoToEve(resp, m.userRecos);
+					m.showMyReco(r);
+					resolve();
+				});
+			}
+		}
+	});
+};
+m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
+	let elem=$input_uri[0];
+	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
+	if (elem.value!==uri) { elem.value=uri; }
+	let uriRendered=await uriRendering(uri,true);
+	let from=String(uriRendered.from);
+	if (!noFormatURI) {
+		m.lastURI=uri;
+		if (from==="youtube") {
+			uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+		}
+		else if (from==="instagram") {
+			uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
+		}
+		else if (from==="tiktok") {
+			uri=elem.value=`https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
+		}
+		else if (from==="weverse") {
+			uri=elem.value=`https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
+		}
+		else if (from==="naver") {
+			uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
+		}
+		else if (from==="vlive") {
+			uri=elem.value=`https://www.vlive.tv/video/${uriRendered.videoId}`;
+		}
+		else if (from==="kakao") {
+			uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
+		}
+		else if (from==="ted") {
+			uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
+		}
+		else if (from==="dailymotion") {
+			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
+		}
+	}
+	$show_URI.html(String(uriRendered.html));
+	let r=m.myRecos[uri];
+	if (!r) { r=m.myRecos[uri]={uri}; }
+	await m.getAndFillRecoInNewReco(r, fillDefs);
+	await m.getAndFillDefsInNewReco(r, fillDefs);
+	m.reNewAndReOn();
+	// await m.getAndShowMyRecoInNewReco(r);
+};
+$new_reco.find("input, textarea").on("keydown.common", function (e) {
+	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
+		$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)});
+	}
+	else if (e.ctrlKey&&e.keyCode===13) { // Ctrl+Enter
+		let r=m.myRecos[$input_uri[0].value];
+		if (r.has) {
 			$button_edit.trigger("click");
-		} else {
+		}
+		else {
 			$button_reco.trigger("click");
 		}
 	}
 });
 $input_cats.off("keydown.common");
-$input_uri.on("input.rd keyup.rd cut.rd paste.rd click.rd", function(e) {
-	var uri=this.value;
+m.lastURI="x*L2$zp-|,O";
+$input_uri.on("input keyup keydown cut paste click focus", function (e) {
+	let uri=this.value;
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
-		m.timeOutGetInfos=setTimeout(m.getAndShowDefsAndReco, 1000);
+		m.timeOutGetInfos=setTimeout(function () {
+			m.getAndShowDefsAndRecoInNewReco(false);
+			m.reNewAndReOn();
+		}, 1024);
 	}
 });
 
