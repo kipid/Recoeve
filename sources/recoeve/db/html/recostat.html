@@ -1614,78 +1614,115 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 });
 
 m.lastVal=m.val("");
-$input_val.before($(m["5stars"](0)).attr({id:"input-val-stars"}));
 $input_val_stars=$("#input-val-stars");
-$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function(e) {
-	var $bar=$input_val_stars.find(".bar");
-	var barW=$bar.width();
-	var $val=$input_val[0];
-	$html.on("mousemove.mdInStars touchmove.mdInStars", function(e) {
+$input_val_stars.html(m.stars(0));
+$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+	let $bar=$input_val_stars.find(".bar");
+	let barW=$bar.width();
+	let $val=$input_val[0];
+	$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		e.stopPropagation();
-		var x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
-		var w=x-$bar.offset().left+$window.scrollLeft();
+		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let w=x-$bar.offset().left+$window.scrollLeft();
 		if (w<-15) {
 			w=-1;
-		} else if (w<0) {
+		}
+		else if (w<0) {
 			w=0;
-		} else if (w>m["5stars-width"]) {
-			w=m["5stars-width"];
+		}
+		else if (w>m.starsWidth) {
+			w=m.starsWidth;
 		}
 		if (w!==barW) {
 			barW=w;
 			if (w<0) {
 				$val.value="";
 				w=0;
-			} else {
-				$val.value=(w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts;
+			}
+			else {
+				$val.value=(w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts;
 			}
 			$bar.css({width:w});
 			m.lastVal=m.val($val.value);
 		}
 	});
-	$html.on("mouseup.mdInStars touchend.mdInStars", function(e) {
+	$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 		$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 	});
 });
-$input_val_stars.on("click", function(e) {
-	var $bar=$(this).find(".bar");
-	var barW=$bar.width();
-	var $val=$input_val[0];
-	var w=e.clientX-$bar.offset().left+$window.scrollLeft();
+$input_val_stars.on("click", function (e) {
+	let $bar=$(this).find(".bar");
+	let barW=$bar.width();
+	let $val=$input_val[0];
+	let w=e.clientX-$bar.offset().left+$window.scrollLeft();
 	if (w<0) {
 		w=0;
-	} else if (w>m["5stars-width"]) {
-		w=m["5stars-width"];
+	}
+	else if (w>m.starsWidth) {
+		w=m.starsWidth;
 	}
 	if (w!==barW) {
 		$bar.css({width:w});
-		$val.value=(w/m["5stars-width"]*m.fullPts).toFixed(1)+"/"+m.fullPts;
+		$val.value=(w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts;
 		m.lastVal=m.val($val.value);
 	}
 });
-$input_val.on("keyup", function(e) {
+$input_val.on("keyup", function (e) {
 	if (this.value!==m.lastVal.str) {
-		var val=m.val(this.value);
-		var $bar=$("#input-val-stars .bar");
+		let val=m.val(this.value);
+		let $bar=$("#input-val-stars .bar");
 		if (val.valid&&val.str.length!==0) {
 			m.fullPts=val.divisor;
-			$bar.css({width:m["5stars-width"]*val.val});
-		} else {
+			$bar.css({width:m.starsWidth*val.val});
+		}
+		else {
 			$bar.css({width:0});
 		}
 		m.lastVal=val;
 	}
 });
-
-$button_close.on("click", function(e) {
-	$new_reco.hide();
-	$window.off("scroll.stop");
+$input_val_down=$("#input-val-down");
+$input_val_up=$("#input-val-up");
+$input_val_down.on("click", function (e) {
+	let val=m.val($input_val[0].value);
+	if (val.valid) {
+		if (val.val===-1) {
+			$input_val[0].value="0.0/10";
+		}
+		else {
+			val.num-=0.1;
+			if (val.num<0) {
+				val.num=0;
+			}
+			$input_val[0].value=`${val.num.toFixed(1)}/${val.divisor}`;
+		}
+	} else {
+		$input_val[0].value="0.0/10";
+	}
+	$input_val.trigger("keyup");
 });
-$button_back.on("click", function(e) {
-	var r=m.myRecos[$input_uri[0].value];
-	m.showReco(r);
+$input_val_up.on("click", function (e) {
+	let val=m.val($input_val[0].value);
+	if (val.valid) {
+		if (val.val===-1) {
+			$input_val[0].value="10.0/10";
+		}
+		else {
+			val.num+=0.1;
+			if (val.num>val.divisor) {
+				val.num=val.divisor;
+			}
+			$input_val[0].value=`${val.num.toFixed(1)}/${val.divisor}`;
+		}
+	} else {
+		$input_val[0].value="10.0/10";
+	}
+	$input_val.trigger("keyup");
+});
+$button_back.on("click", function (e) {
+	m.fillRecoInNewReco(m.myRecos[$input_uri[0].value]);
 });
 
 m.reco_do=function(args) {
