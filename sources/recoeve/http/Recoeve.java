@@ -429,7 +429,7 @@ public static void main(String... args) {
 								.end("No http-URI.", ENCODING);
 							System.out.println("Sended \"No http-URI.\".");
 						}
-						else if (uri.substring(0,4).toLowerCase().equals("http")) {
+						else if (uri.length()>4&&uri.substring(0,4).toLowerCase().equals("http")) {
 							int k=4;
 							if (uri.charAt(k)=='s'||uri.charAt(k)=='S') {
 								k++;
