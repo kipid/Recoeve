@@ -20,7 +20,7 @@ li, dd {margin:.3em 0 .5em 2em}
 	.pink .button {border-color:rgb(180,0,180); background:rgb(138,13,106)}
 .reco .button {margin:0}
 .reco .button.deleted {background:rgb(255, 118, 0)}
-.button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
+.button.to-be-executed {display:block; width:100%; text-align:center; margin:512px auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 	.bright .button.disabled {background:rgb(100,100,100); color:rgb(25,25,25)}
 .button.left {float:left; margin-right:.5em}

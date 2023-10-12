@@ -3252,13 +3252,11 @@ m.showRecosOnCat=async function (elem, from) {
 		$contents.addClass("multireco");
 		m.lastRecoMode="multireco";
 		m.modeToggle=true;
-		return;
 	}
 	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
 		$contents.removeClass("multireco");
 		m.lastRecoMode="";
 		m.modeToggle=true;
-		return;
 	}
 	let $elem=$(elem);
 	let fs=m.fsToRs;
@@ -3267,6 +3265,7 @@ m.showRecosOnCat=async function (elem, from) {
 	if (l<=0) {
 		$numbers_of_recos.html(`No reco in cat=${m.escapeHTML(m.currentCat)}.`);
 		$contents.html(strHTML);
+		m.fsToRs.pauseVideo();
 		$reco_playing.html('');
 		$eveElse.html('');
 		$youtube.html('');
@@ -3339,7 +3338,7 @@ m.showRecosOnCat=async function (elem, from) {
 			let beforeST=$window.scrollTop();
 			if ($elem.offset().top-beforeST<=window.innerHeight/2.0) { // Scroll from downside to upside.
 				$elem.replaceWith(strHTML);
-				$window.scrollTop($window.scrollTop()+$elem.outerHeight()+document.documentElement.scrollHeight-beforeLoadSH+200);
+				$window.scrollTop(beforeST+$elem.outerHeight()+128);
 			}
 			else { // Scroll from upside to downside.
 				$elem.replaceWith(strHTML);
