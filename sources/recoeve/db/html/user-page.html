@@ -4037,7 +4037,15 @@ m.openCat=function (cat, e) {
 	if (!m.initialOpen) {
 		window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
 		setTimeout(function () {
-			window.location.hash="#headPlay";
+			if ($button_get_recoms.hasClass("enabled")) {
+				window.location.hash="#button-get-recoms";
+			}
+			else if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+				window.location.hash="#numbers-of-recos";
+			}
+			else {
+				window.location.hash="#headPlay";
+			}
 		}, 2048);
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
@@ -5566,7 +5574,6 @@ m.processShortKey=function (e) {
 		break;
 	case 77: // M=77
 		e.preventDefault();
-		$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 		if ($button_multireco_mode.hasClass("enabled")) {
 			m.recoMode="";
 			$button_mode.removeClass("enabled");
