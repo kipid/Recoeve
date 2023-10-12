@@ -37,9 +37,6 @@ public PrintLog() {}
 
 public void printLog(RoutingContext ctx) {
 	req=ctx.request();
-	req.response().putHeader("Access-Control-Allow-Origin", "*")
-		.putHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		.putHeader("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
 	////////////////////////////////////
 	// Console log.
 	////////////////////////////////////
