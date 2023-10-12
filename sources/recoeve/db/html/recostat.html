@@ -1170,6 +1170,7 @@ m.showReco=async function (r) {
 		let recoHTML=await m.recoHTML(r, false, true);
 		$my_reco.html(String(recoHTML)); // need to be edit.
 		let $edit=$my_reco.find(".button.edit").remove();
+		m.reNewAndReOn();
 	}
 	else {
 		$my_reco.html("");
