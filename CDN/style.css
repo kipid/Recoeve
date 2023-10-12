@@ -193,6 +193,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.desc .value {padding-bottom:1em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
 	.pink .reco>.cmt {background:rgb(75,47,47)}

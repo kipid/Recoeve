@@ -53,6 +53,8 @@ else if (m.docCookies.hasItem("lang")) {
 #reco-stat line.bar {stroke:#c8c8c8; stroke-width:3}
 #reco-stat text.tick {fill:#c8c8c8; font-size:.8em}
 #reco-stat text.reco-stat {fill:#6495ed; font-size:.7em}
+
+#comments {height:30em; overflow-y:scroll}
 </style>
 </head>
 <body>
@@ -109,6 +111,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<label for="cmt">[--Comment--]</label>
 		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
 </form>
+<div id="comments"></div>
 <div id="my-reco"></div>
 <div id="contents"></div>
 </div><!-- div#new-reco -->
@@ -1476,7 +1479,12 @@ return new Promise(function (resolve, reject) {
 		let r=m.myRecos[uri];
 		r.stat=await m.strToJSON(resp);
 		if (String(r.stat[1]?.result)==="o") {
-			r.stat[1].recentests=await m.strToJSON(String(r.stat[1].recentests));
+			let rs=r.stat[1].recentests=await m.strToJSON(String(r.stat[1].recentests));
+			let commentsHTML="";
+			for (let i=1;i<rs.length;i++) {
+				commentsHTML+=`<div class="cmt">${rs[i].val} :: ${rs[i].cmt.replace(/\n/g, "<br>")}</div>`;
+			}
+			$("#comments").html(commentsHTML);
 			let maxN=0;
 			for (let i=0;i<=100;i++) {
 				let nI=r.stat[1]["n"+i]=parseInt(r.stat[1]["n"+i], 16);

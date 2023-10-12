@@ -1661,7 +1661,7 @@ public String getFullRecoStat(String uri) {
 		if (rs.next()) {
 			heads+="\turi";
 			String contents="o\t"+uri;
-			String recentests="index\tid\tcmt";
+			String recentests="index\tid\tval\tcmt";
 			Set<Long> recentestsSet=new HashSet<Long>(N_MAX);
 			long[] recentestsArray=convertByteArrayToLongArray(rs.getBytes("recentests"));
 			for (int i=recentestsArray.length-1;i>=0;i--) {
@@ -1671,7 +1671,7 @@ public String getFullRecoStat(String uri) {
 					if (user.next()) {
 						ResultSet reco=getReco(rI, uri);
 						if (reco.next()) {
-							recentests+="\n"+Long.toString(rI, 16)+"\t"+user.getString("id")+"\t"+StrArray.enclose(reco.getString("cmt"));
+							recentests+="\n"+Long.toString(rI, 16)+"\t"+user.getString("id")+"\t"+reco.getString("val")+"\t"+StrArray.enclose(reco.getString("cmt"));
 						}
 					}
 				}
