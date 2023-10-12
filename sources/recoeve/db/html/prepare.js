@@ -1057,7 +1057,7 @@ m.togglePosition=function (elem) {
 	}
 	else {
 		$parent.addClass("fixed");
-		let $z=parent.find(".z-index");
+		let $z=$parent.find(".z-index");
 		let zIndex=m.videoZIndex;
 		if ($z.exists()) {
 			zIndex=parseInt($z.html());
