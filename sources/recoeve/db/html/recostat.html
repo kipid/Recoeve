@@ -2106,20 +2106,60 @@ m.refresh=async function (cats, option, uri) {
 
 
 
+////////////////////////////////////////////////////
+// Language/언어/語言
+////////////////////////////////////////////////////
+m.changeLang=function (lang, e, elem) {
+	let search=window.location.search;
+	let vars=m.getSearchVars(search);
+	vars.push({key:"lang", val:lang})
+	let argsSearch="";
+	for (let i=0;i<vars.length;i++) {
+		argsSearch+=`&${vars[i].key}=${encodeURIComponent(vars[i].val)}`;
+	}
+	if (argsSearch.length>1&&argsSearch.startsWith("&")) {
+		argsSearch=argsSearch.substring(1);
+	}
+	let href=`${window.location.pathname}?${argsSearch}${window.location.hash}`;
+	if (e&&e.which===2) { // wheel click.
+		$(elem).attr({"href":href});
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+(async function () {
+let dataLang=await m.strToJSON($data_lang.html().trim());
+let htmlLangs="";
+for (let i=0;i<dataLang[0].length;i++) {
+	htmlLangs+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+}
+$choose_lang_list.html(htmlLangs);
+$choose_lang.on("click", function (e) {
+	if ($choose_lang.hasClass("enabled")) {
+		$choose_lang.removeClass("enabled");
+		$choose_lang_list.hide();
+	}
+	else {
+		$choose_lang.addClass("enabled");
+		$choose_lang_list.show();
+	}
+});
+})();
+
+
+
 ////////////////////////////////////////////////
 // Lang : set cookie, Cat : get ans show recos
 ////////////////////////////////////////////////
-var vars=m.getSearchVars(window.location.search);
+let vars=m.searchVars;
 if (vars.lang!==undefined) {
 	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
 }
-if (vars.title!==undefined) {
-	var title=vars.title.val;
-	$input_title[0].value=title;
-	// $input_title.trigger("input");
-}
 if (vars.uri!==undefined) {
-	var uri=vars.uri.val;
+	let uri=vars.uri.val;
 	$input_uri[0].value=uri;
 	$input_uri.trigger("input");
 }
