@@ -14,7 +14,17 @@
 <script>
 (function (m, $, undefined) {
 m.myIndex="{--myIndex--}";
-m.myId="{--myId--}";
+m.userId=m.myId="{--myId--}";
+
+m.myPage=true;
+m.userPath=`/user/${encodeURIComponent(m.userId)}`;
+m.recoMode="";
+if (window.location.hash.length>1) {
+	m.hashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
+}
+else {
+	m.hashURI="";
+}
 
 m.searchVars=m.getSearchVars(window.location.search);
 m.currentURI=m.searchVars?.uri?.val||"";

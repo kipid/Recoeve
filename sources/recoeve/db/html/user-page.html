@@ -34,7 +34,12 @@ m.userId=decodeURIComponent(m.pathNameSplit[2]);
 m.myPage=(m.myId===m.userId);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
-m.hashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
+if (window.location.hash.length>1) {
+	m.hashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
+}
+else {
+	m.hashURI="";
+}
 
 m.searchVars=m.getSearchVars(window.location.search);
 m.currentCat=m.searchVars?.cat?.val||"";
