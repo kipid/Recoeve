@@ -1616,9 +1616,9 @@ m.plotPointsStatChart=function (stat, maxN) {
 	}
 	chartHTML+=`<line class="bar" x1="${leftPadding-1}%" y1="${bottomLine}%" x2="${100.0-rightPadding+1}%" y2="${bottomLine}%"/>`;
 	for (let i=0;i<nOfPoints.length;i+=5) {
-		chartHTML+=`<line class="bar" x1="${pageViewsOfADay[i].tick}%" y1="${bottomLine-1.5}%" x2="${pageViewsOfADay[i].tick}%" y2="${bottomLine+1.0}%"/>
-<text class="tick" x="${pageViewsOfADay[i].tick}%" y="${bottomLine}%">
-<tspan x="${pageViewsOfADay[i].tick}%" text-anchor="middle" dy="2.0em">${(i/10.0).toFixed(1)}</tspan>
+		chartHTML+=`<line class="bar" x1="${nOfPoints[i].tick}%" y1="${bottomLine-1.5}%" x2="${nOfPoints[i].tick}%" y2="${bottomLine+1.0}%"/>
+<text class="tick" x="${nOfPoints[i].tick}%" y="${bottomLine}%">
+<tspan x="${nOfPoints[i].tick}%" text-anchor="middle" dy="2.0em">${(i/10.0).toFixed(1)}</tspan>
 </text>`;
 	}
 	chartHTML+=`</svg></div></div></div>`;
