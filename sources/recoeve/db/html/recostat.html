@@ -1482,7 +1482,7 @@ return new Promise(function (resolve, reject) {
 			let rs=r.stat[1].recentests=await m.strToJSON(String(r.stat[1].recentests));
 			let commentsHTML="";
 			for (let i=1;i<rs.length;i++) {
-				commentsHTML+=`<div class="cmt">${rs[i].val} :: ${rs[i].cmt.replace(/\n/g, "<br>")}</div>`;
+				commentsHTML+=`<div class="cmt">${m.escapeHTML(rs[i].id)} :: ${m.escapeHTML(rs[i].val)} :: ${m.escapeHTML(rs[i].cmt).replace(/\n/g, "<br>")}</div>`;
 			}
 			$("#comments").html(commentsHTML);
 			let maxN=0;
