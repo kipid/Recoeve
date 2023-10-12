@@ -5249,7 +5249,7 @@ m.playLi=function (e, elem, k, fs) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
 				if (fs.fixed) {
-					$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
+					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
 				}
 				else {
 					$window.scrollTop($playlist_container.offset().top);
@@ -5557,7 +5557,7 @@ m.processShortKey=function (e) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
 				if (m.fsToRs.fixed) {
-					$window.scrollTop($playlist_container.offset().top-fs.$playing.outerHeight());
+					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
 				}
 				else {
 					$window.scrollTop($playlist_container.offset().top);
@@ -6022,7 +6022,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
-			fs.$playing=$eveElse_uri_rendered.find(".rC");
+			fs.$playing=$eveElse_uri_rendered;
 			$video.on("ended", function () {
 				if (fs.oneLoop) {
 					$video[0].play();
@@ -6040,7 +6040,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
-			fs.$playing=$eveElse_uri_rendered.find(".rC");
+			fs.$playing=$eveElse_uri_rendered;
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
