@@ -57,7 +57,7 @@ m.pathOfRecoStat=function (uri, lang, hashURI, args) {
 			argsSearch+=`&${prop}=${encodeURIComponent(args[prop])}`;
 		}
 	}
-	return `/reco/stat?uri=${encodeURIComponent(uri)}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`
+	return `/recostat?uri=${encodeURIComponent(uri)}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`
 }
 
 /*	:: cookies.js :: Slightly edited by kipid at 2023-06-06.
