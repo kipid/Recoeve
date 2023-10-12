@@ -39,7 +39,7 @@ m.searchVars=m.getSearchVars(window.location.search);
 m.currentCat=m.searchVars?.cat?.val||"";
 
 m.lang=null;
-if (!!m.searchVars.lang) {
+if (m.searchVars?.lang) {
 	m.lang=m.searchVars.lang.val;
 	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
 }

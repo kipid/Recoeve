@@ -20,7 +20,7 @@ m.currentURI=m.searchVars?.uri?.val||"";
 m.pathName=window.location.pathname;
 
 m.lang=null;
-if (!!m.searchVars.lang) {
+if (m.searchVars?.lang) {
 	m.lang=m.searchVars.lang.val;
 	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
 }
@@ -363,7 +363,8 @@ m.fsCat.$fs_container=$cat_fs_container;
 m.fullPts=10.0;
 
 m.a_log_in=function (e, elem) {
-	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let uri=$input_uri[0].value;
+	let fullPath=m.pathOfRecoStat(uri, m.lang);
 	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
 		$a_log_in.attr("href", href);
@@ -375,7 +376,8 @@ m.a_log_in=function (e, elem) {
 	}
 };
 m.a_log_out=function (e, elem) {
-	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	let uri=$input_uri[0].value;
+	let fullPath=m.pathOfRecoStat(uri, m.lang);
 	let href=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
 		$a_log_out.attr("href", href);
@@ -1739,6 +1741,12 @@ window.onpopstate=function (e) {
 		}
 	}
 };
+if (m.searchVars?.uri??true) {
+	let uri=m.searchVars.uri.val;
+	$input_uri[0].value=uri;
+	$input_uri.trigger("input");
+	window.history.replaceState({uri}, "", m.pathOfRecoStat(uri, m.lang));
+}
 
 m.lastVal=m.val("");
 $input_val_stars=$("#input-val-stars");
@@ -2157,22 +2165,6 @@ $choose_lang.on("click", function (e) {
 	}
 });
 })();
-
-
-
-////////////////////////////////////////////////
-// Lang : set cookie, Cat : get ans show recos
-////////////////////////////////////////////////
-let vars=m.searchVars;
-if (vars.lang!==undefined) {
-	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
-}
-if (vars.uri!==undefined) {
-	let uri=vars.uri.val;
-	$input_uri[0].value=uri;
-	$input_uri.trigger("input");
-	window.history.replaceState({uri}, "", m.pathOfRecoStat(uri, m.lang));
-}
 })(window.m, jQuery);
 </script>
 </html>
