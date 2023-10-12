@@ -1746,7 +1746,7 @@ if (m.searchVars?.uri??true) {
 	$input_uri[0].value=m.uri=m.searchVars.uri.val;
 	$input_uri.trigger("input");
 }
-window.history.replaceState({m.uri}, "", m.pathOfRecoStat(m.uri, m.lang));
+window.history.replaceState({uri:m.uri}, "", m.pathOfRecoStat(m.uri, m.lang));
 
 m.lastVal=m.val("");
 $input_val_stars=$("#input-val-stars");
