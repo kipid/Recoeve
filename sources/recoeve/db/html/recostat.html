@@ -1460,17 +1460,19 @@ return new Promise(function (resolve, reject) {
 		}
 		let r=m.myRecos[uri];
 		r.stat=await m.strToJSON(resp);
-		r.stat[1].recentests=await m.strToJSON(r.stat[1].recentests);
-		let maxN=0;
-		for (let i=0;i<=100;i++) {
-			let nI=r.stat[1]["n"+i]=parseInt(r.stat[1]["n"+i], 16);
-			if (nI>maxN) {
-				maxN=nI;
+		if (String(r.stat[1]?.result)==="o") {
+			r.stat[1].recentests=await m.strToJSON(String(r.stat[1].recentests));
+			let maxN=0;
+			for (let i=0;i<=100;i++) {
+				let nI=r.stat[1]["n"+i]=parseInt(r.stat[1]["n"+i], 16);
+				if (nI>maxN) {
+					maxN=nI;
+				}
 			}
+			console.log(r.stat);
+			console.log("maxN: ", maxN);
+			m.plotPointsStatChart(r.stat[1], maxN);
 		}
-		console.log(r.stat);
-		console.log("maxN: ", maxN);
-		m.plotPointsStatChart(r.stat[1], maxN);
 		resolve();
 	}).fail(function (resp) {
 		console.log(resp);
