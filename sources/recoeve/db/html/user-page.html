@@ -7,6 +7,7 @@
 <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 <meta name="google-adsense-account" content="ca-pub-9843810906985249">
 <title>Recoeve.net</title>
+<link rel="stylesheet" href="/CDN/style.css">
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
@@ -50,78 +51,11 @@ else if (m.docCookies.hasItem("lang")) {
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9843810906985249" crossorigin="anonymous"></script>
 <style>
-body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
-
-div, form, input, textarea {box-sizing:border-box; max-width:100%}
-data {display:none}
-.none {display:none}
-.center {text-align:center}
-.right {text-align:right}
-.fLeft {float:left}
-.fRight {float:right}
-.cBoth {clear:both}
-.bold {font-weight:bold}
-.underline {text-decoration:underline}
-.p {padding-bottom:1em}
-img {min-width:1em; min-height:1em; max-width:100%; max-height:100%}
-ul, ol {margin:0; padding:0}
-li, dd {margin:.3em 0 .5em 2em}
-
-.button {display:inline-block; cursor:pointer; margin:0 .1em .5em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
-	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
-	.pink .button {border-color:rgb(180,0,180); background:rgb(138,13,106)}
-.reco .button {margin:0}
-.reco .button.deleted {background:rgb(255, 118, 0)}
-.button.to-be-executed {display:block; width:100%; text-align:center; margin:20em auto 50em}
-.button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
-	.bright .button.disabled {background:rgb(100,100,100); color:rgb(25,25,25)}
-.button.left {float:left; margin-right:.5em}
-.button:active {background:rgb(0,80,80)}
-	.bright .button:active {background:rgb(100,180,180)}
-.button.enabled {background:rgb(50,140,80)}
-	.bright .button.enabled {background:rgb(120,210,150)}
-	.pink .button.enabled {background:rgb(115,148,213)}
-.button.enabled:active {background:rgb(70,70,70)}
-	.bright .button.enabled:active {background:rgb(190,190,190)}
-	.pink .button.enabled:active {background:rgb(125,125,125)}
-
-a {text-decoration:none}
-a:link {color:rgb(190,190,235)}
-	.bright a:link {color:rgb(60,60,160)}
-	.pink a:link {color:rgb(155,195,131)}
-a:visited {color:rgb(170,170,215)}
-	.bright a:visited {color:rgb(40,40,140)}
-	.pink a:visited {color:rgb(111,146,235)}
-a:active {color:rgb(100,215,215)}
-	.bright a:active {color:rgb(0,100,100)}
-	.pink a:active {color:rgb(70,170,170)}
-a:hover {color:rgb(170,215,170); text-decoration:underline}
-	.bright a:hover {color:rgb(40,140,40)}
-	.pink a:hover {color:rgb(70,170,70)}
-
-::-webkit-scrollbar {width:7px; height:7px}
-::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
-::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
-::-webkit-scrollbar-corner {background:transparent}
-
 .block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
 .block-touch-exit {z-index:31000}
 
-#right-top-log-in .button {display:inline-block; float:right}
-#choose-lang-list {display:inline-block; padding:.5em; line-height:1.5; float:right}
-
-#container {font-size:12px; max-width:1000px; line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(75,75,75); color:white}
-	#container.bright {background:rgb(250,250,250); color:black}
-	#container.pink {background:rgb(68,0,59); color:wheat}
-#sidebar-dragger {position:fixed; z-index:1000; top:0; height:200px; left:0; width:1.5em; background:transparent}
-#sidebar-dragger-in {position:absolute; top:2em; left:0; right:0; bottom:0}
-#sidebar {position:fixed; z-index:10; letf:0; max-width:70%; width:15em; max-height:100%; margin:0; padding:.5em; background:rgb(35,35,35); color:white; border-right:1px solid white; border-bottom:1px solid white; overflow:auto}
-	.bright #sidebar {background:rgb(230,230,230); color:black; border-color:black}
-	.pink #sidebar {background:rgb(134,31,110); color:wheat; border-color:wheat}
-#sidebar-toggle {width:2em; height:2em; background:black; border:white 2px solid}
-
 #user-noti {padding:.3em .2em; font-size:1.1em; color:rgb(150,150,240)}
-.bright #user-noti {color:rgb(50,50,190)}
+	.bright #user-noti {color:rgb(50,50,190)}
 
 #catList {margin-bottom:1em}
 #catList .cat {border:1px solid transparent; margin-bottom:.15em}
@@ -154,111 +88,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	padding:0.2em 0.4em !important
 }
 
-.fs-container {
-	position:fixed; left:0; top:0;
-	z-index:10010;
-	background:black;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-	.bright .fs-container {background:wheat}
-#cat-fs-container {position:relative}
-#multireco-cat-fs-container {
-	position:relative;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left
-}
-.fs-name {padding:.1em 3em}
-.fs-input {
-	height:2em; max-height:5em; overflow-y:auto;
-	font:inherit; font-size:1.3em; color:black;
-	width:100%;
-	padding:.1em;
-	border:.15em gray solid;
-	background:white
-}
-.fs-container textarea {
-	display:block;
-	max-width:100%;
-	width:100%;
-	resize:vertical;
-	font:inherit;
-	font-weight:bold;
-	overflow-x:hidden;
-	overflow-y:auto;
-	padding:0.2em 0.3em;
-	background:white;
-	color:rgb(50,50,50)
-}
-	#goto-cats {height:4em; margin-bottom:-0.4em}
-.fs-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20)
-}
-.fs-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em
-}
-.fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-.fs-list .list-item .list-index {display:none}
-.fs-list .list-item:nth-child(2n) {background:rgb(40,40,40)}
-.fs-list .list-item.deleted {background:rgb(108 50 0); border:.15em solid rgb(120,120,150)}
-.fs-list .list-item .cat {font-size:.9em}
-.fs-list .list-item .highlighted {font-size:.5em; color:rgb(150,150,150)}
-.fs-list .list-item .highlighted .bold {color:rgb(170,250,170)}
-.exit {
-	z-index:10010;
-	position:absolute; display:inline-block;
-	right:0; top:0;
-	margin:0;
-	width:1.8em; height:1.8em; line-height:1.0;
-	text-align:center;
-	/*border-radius:.4em;*/
-	cursor:pointer;
-	border:.15em rgb(80, 80, 80) solid;
-	background-color:rgb(30,30,30); color:white
-}
-.exit>svg {
-	width:100%; height:100%;
-	font-size:1.8em; line-height:1.0
-}
-
 #new-reco {z-index:21000; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white}
-#new-reco form {position:relative; width:40em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
-#new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
-#new-reco label:first-child {margin-top:0}
-#new-reco label>.desc {font-size:.8em}
-#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50)}
-textarea.single-line {min-height:2.2em; height:3.8em}
-textarea.multi-line {font-size:.9em; min-height:10em}
-#new-reco input#input-val {float:left; display:inline-block; width:6.2em}
-.upDown {float:left; border:solid 1px white; padding:1px; margin:0 .3em}
-.up, .down {vertical-align:top}
-#input-val-stars {float:left; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
-#new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-title.selected {border-color:rgb(255,180,180)}
-#new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-desc.selected {border-color:rgb(255,180,180)}
-#new-reco .buttons {margin-top:1em; text-align:right}
-#new-reco #error-msg {margin:0}
-
-#new-reco .def-cat, #multireco-cats-container .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
-#delete-cat, #multireco-delete-cat {background:#ff7600}
-#new-reco .def-cmd {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-
-#javascript-disable {font-size:3em}
-
-#change-style {margin-top:10em; font-size:12px; line-height:1.6; text-align:right; padding:.5em}
-#change-style form {vertical-align:middle; text-indent:0; display:inline-block; border:2px gray solid; padding:2px; margin:0}
-#change-style form * {margin:0; padding:0; text-align:center; vertical-align:middle}
-#change-style form button {width:29px; height:25px; padding:0}
-#change-style .deviceInfo {font-size:1em}
-
-#shortkeys {line-height:1}
 
 .point-range {margin:1em 2.5em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
 .point-range-bar {position:absolute; left:0; right:0; height:100%; background:rgb(100,200,100)}
@@ -281,65 +111,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright #floating-key .point-range-result {background:white; color:black; border-color:black}
 	.pink #floating-key .point-range-result {background:pink; color:white; border-color:pink}
 
-.numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
-
-.multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
-.reco {margin:0 0 1em; border-top:.15em solid rgb(100,100,100); border-bottom:.15em solid rgb(100,100,100); background:black}
-	.bright .reco {border-color:black; background:rgb(230,230,230)}
-	.pink .reco {border-color:wheat; background:rgb(35,0,97)}
-.reco.deleted {border:.5em solid rgb(168 50 0)}
-.multireco .reco {width:49%}
-.edit.fRight {float:right; padding:.1em .5em; background:gray; text-align:center; font-weight:bold}
-.reco .SNS-img {margin:0; float:left; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
-.reco .SNS-img:first-child {border-left:2px gray solid}
-.reco>.textURI, .reco>.YTVideoId {display:none}
-.reco>.uri {font-size:.7em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
-.multireco .reco>.uri {font-size:.7em}
-.reco>.title {font-size:1.1em; border:2px solid rgb(150,100,100); padding:.2em .5em}
-.multireco .reco>.title {clear:both; font-size:0.9em}
-.reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
-.multireco .reco>.cats {font-size:.7em}
-.reco>.cats>a {color:rgb(130,170,130)}
-.reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
-.reco>.desc {margin:.5em 0; padding:.5em}
-.reco>.desc .value {padding-bottom:1em}
-.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
-.multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
-	.bright .reco>.cmt {background:rgb(200,200,200)}
-	.pink .reco>.cmt {background:rgb(75,47,47)}
-.stars-container {float:left; position:relative; display:inline-block; cursor:text}
-.stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
-.stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
-.stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
-.reco>.val {margin:.5em 0 .3em}
-.reco>.val>.str, .reco>.my-point>.str {float:left; font-size:.7em; border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
-	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
-.reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
-.multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
-.reco .result {font-size:.7em; padding:.5em}
-
-.loading {text-align:center}
-.loading .outerCircle {background-color:transparent; border:8px solid rgba(97,82,72,0.9); opacity:.9; border-right:5px solid transparent; border-left:5px solid transparent; border-radius:100px; width:110px; height:110px; margin:5em auto 0; -moz-animation:spinPulse 5s infinite ease-in-out; -webkit-animation:spinPulse 5s infinite ease-in-out}
-.loading .innerCircle {background-color:transparent; border:5px solid rgba(189,215,60,0.6); opacity:.9; border-left:5px solid transparent; border-right:5px solid transparent; border-radius:100px; top:-100px; width:90px; height:90px; margin:0 auto 20em; position:relative; -moz-animation:spinoffPulse 3s infinite linear; -webkit-animation:spinoffPulse 3s infinite linear}
-@-moz-keyframes spinPulse {
-0% {-moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
-50% {-moz-transform:rotate(145deg); opacity:1}
-100% {-moz-transform:rotate(-320deg); opacity:0}
-}
-@-moz-keyframes spinoffPulse {
-0% {-moz-transform:rotate(0deg)}
-100% {-moz-transform:rotate(360deg);  }
-}
-@-webkit-keyframes spinPulse {
-0% {-webkit-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
-50% {-webkit-transform:rotate(145deg); opacity:1}
-100% {-webkit-transform:rotate(-320deg); opacity:0}
-}
-@-webkit-keyframes spinoffPulse {
-0% {-webkit-transform:rotate(0deg)}
-100% {-webkit-transform:rotate(360deg)}
-}
-
 .vals-stat rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
 .vals-stat line.bar {stroke:darkgray; stroke-width:3}
 .vals-stat line.expected {stroke:green; stroke-width:2}
@@ -349,24 +120,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright .vals-stat text.expected {fill:blue}
 	.bright .vals-stat text.max-simSum {fill:blue}
 .vals-stat text.tick {fill:gray; font-size:.8em}
-
-.lyricsC {}
-.lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
-.lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
-
-.rC {margin:.5em 0}
-.rC.fixed {position:fixed; z-index:10000; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
-	.bright .rC.fixed {background:white; border-color:black}
-.rC>.rSC {position:relative; height:0; padding-bottom:63%}
-.rC.soundcloud>.rSC {padding-bottom:20%}
-.rC.instagram>.rSC {padding-bottom:165%; overflow:auto}
-.rC.tiktok>.rSC {height:895px; padding-bottom:0; overflow-x:hidden; overflow-y:scroll}
-.rC.eveElse>.rSC {padding-bottom:80%}
-.rC>.rSC>* {position:absolute; width:100%; height:100%; max-width:100%; max-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:hidden}
-.rC>.rSC>.center {position:absolute; text-align:center; width:100%; height:100%; max-width:100%; max-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:hidden}
-.rC>.rSC>.center>iframe {position:absolute; width:100%; height:100%; max-width:100%; min-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:auto}
-.rC>.rSC>.center>img {display:inline-block; max-width:100%; max-height:100%}
-.rC>.pc {text-align:center; font-size:10px} /* position change */
 
 .neighbor-con {position:relative; margin:1.5em 0; padding:1.1em; border:2px solid rgb(150,100,100); width:100%; background:black}
 	.bright .neighbor-con {background:wheat}
@@ -390,42 +143,15 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
 	.pink #floating-key, .pink #toggle-floating-key {color:wheat}
 
-@media all and (min-width:600px) {
-	#container {font-size:13px}
-	.multireco .reco {width:33%}
-}
 @media all and (min-width:701px) {
-	#container {font-size:14px; margin-left:14.9em}
-	.multireco .reco {width:49%}
+	#container {margin-left:15em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
 	#sidebar-dragger {display:none}
-	#change-style {margin-top:0}
-	#my-id {margin-left:0}
 	.side2 {padding:.5em}
-	.rC.fixed {width:50%; border-right:.15em solid white}
-	.rC.instagram.fixed, .rC.eveElse.fixed, .rC.tiktok.fixed {width:360px}
-	.rC.tiktok>.rSC {width:100%; height:895px; padding-bottom:0}
-	.lyrics {text-align:right}
-	::-webkit-scrollbar {width:11px; height:11px}
 }
 @media all and (min-width:901px) {
-	#container {font-size:15px; margin-left:19.9em}
-	.multireco .reco {width:33%}
+	#container {margin-left:19.9em}
 	#sidebar {width:20em}
-	.rC.fixed {width:55%}
-}
-@media all and (min-width:1210px) {
-	#container {font-size:17px}
-	.multireco .reco {width:24%}
-}
-
-@media all and (min-height:500px) {
-	.fs-list {max-height:430px}
-	.rC.tiktok.fixed {height:480px}
-}
-@media all and (min-height:905px) {
-	.rC.tiktok.fixed {height:895px}
-	.rC.tiktok.fixed>.rSC {height:100%; padding-bottom:0}
 }
 </style>
 </head>

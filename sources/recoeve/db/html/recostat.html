@@ -7,6 +7,7 @@
 <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 <meta name="google-adsense-account" content="ca-pub-9843810906985249">
 <title>Reco Statistics</title>
+<link rel="stylesheet" href="/CDN/style.css">
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
@@ -31,205 +32,15 @@ else if (m.docCookies.hasItem("lang")) {
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9843810906985249" crossorigin="anonymous"></script>
 <style>
-body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
+#new-reco {background:rgba(0,0,0,0.8); color:white}
+	.bright #new-reco {background:rgba(255,255,255,0.8); color:black}
+#new-reco form {width:70em}
 
-div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
-data {display:none}
-.none {display:none}
-.center {text-align:center}
-.right {text-align:right}
-.fLeft {float:left}
-.fRight {float:right}
-.cBoth {clear:both}
-img {min-width:1em; min-height:1em; max-width:100%}
-
-.button {display:inline-block; cursor:pointer; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110);}
-.button.to-be-executed {display:block; max-width:15em; margin:10em auto}
-.button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
-.button.left {float:left; margin-right:.5em}
-.button:active {background:rgb(0,80,80)}
-.button.enabled {background:rgb(50,130,50)}
-.button.enabled:active {background:rgb(70,70,70)}
-
-a {text-decoration:none}
-a:link {color:rgb(60,60,160)} .dark a:link {color:rgb(190,190,235)}
-a:visited {color:rgb(40,40,140)} .dark a:visited {color:rgb(170,170,215)}
-a:active {color:rgb(0,100,100)} .dark a:active {color:rgb(100,215,215)}
-a:hover {color:rgb(40,140,40)} .dark a:hover {color:rgb(170,215,170); text-decoration:underline}
-
-::-webkit-scrollbar {width:7px; height:7px}
-::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
-::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
-::-webkit-scrollbar-corner {background:transparent}
-
-#right-top-log-in .button {display:inline-block; float:right}
-#choose-lang-list {display:inline-block; padding:.5em; line-height:1.5; float:right}
-
-#container {line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(250,250,250); color:black; font-size:15px}
-	#container.dark {background:rgb(75,75,75); color:white}
-
-#cat-fs-container {
-	position:relative;
-	width:25em; max-width:100%;
-	height:auto;
-	text-align:left;
-}
-#cat-fs-list {
-	height:auto; min-height:2em; max-height:15em; overflow-y:auto;
-	border:.15em gray solid;
-	background:rgb(20,20,20);
-}
-#cat-fs-list .list-item {
-	background:black; color:white;
-	padding:.2em .5em .4em;
-}
-#cat-fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
-#cat-fs-list .list-item .list-index {display:none}
-#cat-fs-list .list-item:nth-child(2n) {
-	background:rgb(40,40,40);
-}
-#cat-fs-list .list-item .cat {font-size:.9em;}
-#cat-fs-list .list-item .highlighted {
-	font-size:.5em; color:rgb(150,150,150);
-}
-#cat-fs-list .list-item .highlighted .bold {
-	color:rgb(170,250,170);
-}
-
-.exit {
-	z-index:100;
-	position:absolute; display:inline-block;
-	right:0; top:0;
-	margin:0;
-	width:1.8em; height:1.8em; line-height:1.0;
-	text-align:center;
-	/*border-radius:.4em;*/
-	cursor:pointer;
-	border:.15em rgb(80, 80, 80) solid;
-	background-color:rgb(30,30,30); color:white;
-}
-.exit>svg {
-	width:100%; height:100%;
-	font-size:1.8em; line-height:1.0;
-}
-
-#new-reco {background:rgba(0,0,0,0.8); color:white} .bright #new-reco {background:rgba(255,255,255,0.8); color:black}
-#new-reco form {position:relative; width:70em; max-width:100%; margin:1em auto; padding:1em; background:black; border:.2em solid rgb(120,120,130); text-align:left}
-#new-reco label {display:inline-block; font-weight:bold; margin:.9em 0 .4em}
-#new-reco label:first-child {margin-top:0}
-#new-reco label>.desc {font-size:.8em}
-#new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50)}
-textarea.single-line {min-height:2.2em; height:2.2em}
-textarea.multi-line {font-size:.9em; min-height:10em}
-#new-reco input#input-val {display:inline-block; width:8.5em}
-.upDown {float:left; border:solid 1px white; padding:1px; margin:0 .3em}
-.up, .down {vertical-align:top}
-#input-val-stars {float:left; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
-#new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-title.selected {border-color:rgb(255,180,180)}
-#new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-desc.selected {border-color:rgb(255,180,180)}
-#new-reco .buttons {margin-top:1em; text-align:right}
-#new-reco #error-msg {margin:0}
-
-#new-reco .def-cat, #multireco-cats-container .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-#new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
-#delete-cat, #multireco-delete-cat {background:#ff7600}
-#new-reco .def-cmd {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
-
-#javascript-disable {font-size:3em}
-
-.numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
-
-.multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
-.reco {margin:0 0 1em; border-top:.15em solid rgb(100,100,100); border-bottom:.15em solid rgb(100,100,100); background:black}
-	.bright .reco {border-color:black; background:rgb(230,230,230)}
-	.pink .reco {border-color:wheat; background:rgb(35,0,97)}
-.reco.deleted {border:.5em solid rgb(168 50 0)}
-.multireco .reco {width:49%}
-.edit.fRight {float:right; padding:.1em .5em; background:gray; text-align:center; font-weight:bold}
-.reco .SNS-img {margin:0; float:left; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
-.reco .SNS-img:first-child {border-left:2px gray solid}
-.reco>.textURI, .reco>.YTVideoId {display:none}
-.reco>.uri {font-size:.7em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
-.multireco .reco>.uri {font-size:.7em}
-.reco>.title {font-size:1.1em; border:2px solid rgb(150,100,100); padding:.2em .5em}
-.multireco .reco>.title {clear:both; font-size:0.9em}
-.reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
-.multireco .reco>.cats {font-size:.7em}
-.reco>.cats>a {color:rgb(130,170,130)}
-.reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
-.reco>.desc {margin:.5em 0; padding:.5em}
-.reco>.desc .value {padding-bottom:1em}
-.reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
-.multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
-	.bright .reco>.cmt {background:rgb(200,200,200)}
-	.pink .reco>.cmt {background:rgb(75,47,47)}
-.stars-container {float:left; position:relative; display:inline-block; cursor:text}
-.stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
-.stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
-.stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
-.reco>.val {margin:.5em 0 .3em}
-.reco>.val>.str, .reco>.my-point>.str {float:left; font-size:.7em; border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
-	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
-.reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
-.multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}
-.reco .result {font-size:.7em; padding:.5em}
-
-.loading {text-align:center}
-.loading .outerCircle {background-color:transparent; border:8px solid rgba(97,82,72,0.9); opacity:.9; border-right:5px solid transparent; border-left:5px solid transparent; border-radius:100px; width:110px; height:110px; margin:5em auto 0; -moz-animation:spinPulse 5s infinite ease-in-out; -webkit-animation:spinPulse 5s infinite ease-in-out}
-.loading .innerCircle {background-color:transparent; border:5px solid rgba(189,215,60,0.6); opacity:.9; border-left:5px solid transparent; border-right:5px solid transparent; border-radius:100px; top:-100px; width:90px; height:90px; margin:0 auto 20em; position:relative; -moz-animation:spinoffPulse 3s infinite linear; -webkit-animation:spinoffPulse 3s infinite linear}
-@-moz-keyframes spinPulse {
-0% {-moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
-50% {-moz-transform:rotate(145deg); opacity:1}
-100% {-moz-transform:rotate(-320deg); opacity:0}
-}
-@-moz-keyframes spinoffPulse {
-0% {-moz-transform:rotate(0deg)}
-100% {-moz-transform:rotate(360deg);  }
-}
-@-webkit-keyframes spinPulse {
-0% {-webkit-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c}
-50% {-webkit-transform:rotate(145deg); opacity:1}
-100% {-webkit-transform:rotate(-320deg); opacity:0}
-}
-@-webkit-keyframes spinoffPulse {
-0% {-webkit-transform:rotate(0deg)}
-100% {-webkit-transform:rotate(360deg)}
-}
-
-.lyricsC {}
-.lyricsArrow {width:0; height:0; padding:0; margin:0 auto; border-color:transparent transparent rgb(0,30,0); border-style:solid; border-width:0.5em}
-.lyrics {border:0.3em solid rgb(0,30,0); padding:1em .5em; margin-top:-1px}
-
-.rC {margin:.5em 0}
-.rC.fixed {position:fixed; z-index:10000; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
-	.bright .rC.fixed {background:white; border-color:black}
-.rC>.rSC {position:relative; height:0; padding-bottom:63%}
-.rC.soundcloud>.rSC {padding-bottom:20%}
-.rC.instagram>.rSC {padding-bottom:165%; overflow:auto}
-.rC.tiktok>.rSC {height:895px; padding-bottom:0; overflow-x:hidden; overflow-y:scroll}
-.rC.eveElse>.rSC {padding-bottom:80%}
-.rC>.rSC>* {position:absolute; width:100%; height:100%; max-width:100%; max-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:hidden}
-.rC>.rSC>.center {position:absolute; text-align:center; width:100%; height:100%; max-width:100%; max-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:hidden}
-.rC>.rSC>.center>iframe {position:absolute; width:100%; height:100%; max-width:100%; min-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:auto}
-.rC>.rSC>.center>img {display:inline-block; max-width:100%; max-height:100%}
-.rC>.pc {text-align:center; font-size:10px} /* position change */
-
-#reco-stat {font-size:9px}
-rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
-line.bar {stroke:#c8c8c8; stroke-width:3}
-text.tick {fill:#c8c8c8; font-size:.8em}
-text.reco-stat {fill:#6495ed; font-size:.7em}
-
-@media all and (min-width:701px) {
-	.rC.fixed {width:50%; border-right:.15em solid white}
-	.rC.instagram.fixed, .rC.eveElse.fixed, .rC.tiktok.fixed {width:360px}
-	.rC.tiktok>.rSC {width:100%; height:895px; padding-bottom:0}
-	.lyrics {text-align:right}
-	#reco-stat {font-size:12px}
-	::-webkit-scrollbar {width:11px; height:11px}
-}
+#reco-stat {font-size:.8em}
+#reco-stat rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
+#reco-stat line.bar {stroke:#c8c8c8; stroke-width:3}
+#reco-stat text.tick {fill:#c8c8c8; font-size:.8em}
+#reco-stat text.reco-stat {fill:#6495ed; font-size:.7em}
 </style>
 </head>
 <body>
