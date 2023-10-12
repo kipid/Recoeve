@@ -335,10 +335,21 @@ m.strCatListToJSON=function (strCatList, catList) {
 		}
 	}
 };
-
 if (m.myIndex) {
 	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 }
+m.catsToA=function (cats) {
+	if (!cats||cats.constructor!==String||cats.trim().length===0) {
+		return `<a href="${m.pathOfCat("")}" onclick="return m.openCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+	}
+	let arrayHTML=[];
+	let list=cats.split(";");
+	for (let i=0;i<list.length;i++) {
+		let cat=list[i];
+		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeHTML(cat)}</a>`);
+	}
+	return arrayHTML.join(" ; ");
+};
 
 //////////////////////////////////////
 // Fuzzy search on Cat
