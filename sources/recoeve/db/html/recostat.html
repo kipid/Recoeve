@@ -96,10 +96,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
 	<label for="cmt">[--Comment--]</label>
 		<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
-	<div id="my-reco"></div>
-	<div id="contents"></div>
 </form>
 <div id="my-reco"></div>
+<div id="contents"></div>
 </div><!-- div#new-reco -->
 </div><!-- div#container -->
 </body>
@@ -1134,7 +1133,8 @@ m.myRecos[""]={
 	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
 	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
 };
-m.showMyReco=async function (r) {
+$my_reco=$("#my-reco");
+m.showReco=async function (r) {
 	if (r.has) {
 		if (r.deleted) {
 			$button_reco.show();
@@ -1155,19 +1155,13 @@ m.showMyReco=async function (r) {
 		$button_del.hide();
 		$button_back.hide();
 	}
-	let $mR=$("#my-reco");
-	let recoHTML=await m.recoHTML(r, true, true);
-	$mR.html(String(recoHTML)); // need to be edit.
 	if (r.has) {
-		let $edit=$mR.find(".button.edit").remove();
-		$edit.on("click", function (e) {
-			$input_title[0].value=r.title;
-			$input_cats[0].value=r.cats;
-			$input_desc[0].value=r.desc;
-			$input_cmt[0].value=r.cmt;
-			$input_val[0].value=r.val.str;
-			$input_val.trigger("keyup");
-		});
+		let recoHTML=await m.recoHTML(r, false, true);
+		$my_reco.html(String(recoHTML)); // need to be edit.
+		let $edit=$my_reco.find(".button.edit").remove();
+	}
+	else {
+		$my_reco.html("");
 	}
 };
 m.fillRecoInNewReco=function (r, fillDefs) {
@@ -1514,6 +1508,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
 	await m.getFullRecoStatAndPlotChart(uri);
+	m.showReco(r);
 	m.reNewAndReOn();
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
