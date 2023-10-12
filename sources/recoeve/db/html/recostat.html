@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
 <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 <meta name="google-adsense-account" content="ca-pub-9843810906985249">
-<title>Recostat</title>
+<title>Reco Statistics</title>
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
@@ -345,8 +345,6 @@ $cat_fs_list=$("#cat-fs-list");
 $html=$("html");
 $title=$("title");
 $body=$("body");
-
-$title.html(m.userId+" on Recoeve.net");
 
 m.myCatList=[];
 m.myRecos={};
@@ -2129,7 +2127,13 @@ m.refresh=async function (cats, option, uri) {
 m.changeLang=function (lang, e, elem) {
 	let search=window.location.search;
 	let vars=m.getSearchVars(search);
-	vars.push({key:"lang", val:lang})
+	if (vars.lang) {
+		vars.lang.val=lang;
+	}
+	else {
+		vars.lang={key:"lang", val:lang};
+		vars.push(vars.lang);
+	}
 	let argsSearch="";
 	for (let i=0;i<vars.length;i++) {
 		argsSearch+=`&${vars[i].key}=${encodeURIComponent(vars[i].val)}`;
