@@ -1727,9 +1727,18 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
+			window.history.pushState({uri}, "", m.pathOfRecoStat(uri, m.lang));
 		}, 1024);
 	}
 });
+window.onpopstate=function (e) {
+	if (!!e.state) {
+		if (e.state.uri) {
+			$input_uri[0].value=e.state.uri;
+			$input_uri.trigger("keyup");
+		}
+	}
+};
 
 m.lastVal=m.val("");
 $input_val_stars=$("#input-val-stars");
@@ -2162,6 +2171,7 @@ if (vars.uri!==undefined) {
 	let uri=vars.uri.val;
 	$input_uri[0].value=uri;
 	$input_uri.trigger("input");
+	window.history.replaceState({uri}, "", m.pathOfRecoStat(uri, m.lang));
 }
 })(window.m, jQuery);
 </script>
