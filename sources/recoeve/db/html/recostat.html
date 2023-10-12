@@ -1742,7 +1742,7 @@ window.onpopstate=function (e) {
 	}
 };
 m.uri="";
-if (m.searchVars?.uri??true) {
+if (m.searchVars?.uri) {
 	$input_uri[0].value=m.uri=m.searchVars.uri.val;
 	$input_uri.trigger("input");
 }
