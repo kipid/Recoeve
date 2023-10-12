@@ -4494,32 +4494,6 @@ m.getAndFillDefsInNewReco=function (r, fillDefs) {
 		}
 	});
 };
-m.getAndShowMyRecoInNewReco=function (r) {
-	return new Promise(function (resolve, reject) {
-		if (m.myPage) {
-			$error.html("");
-		}
-		else {
-			$error.html("[--Be careful! This is not your page. On this URI, you have--]");
-			if (r.down) {
-				m.showReco(r);
-				resolve();
-			}
-			else {
-				let getRecosStr="uri"+"\n"+r.uri;
-				$.ajax({
-					type:"POST", url:`/user/${m.userId}/get-Recos`, data:getRecosStr
-					, dataType:"text"
-				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-					m.recoDowned(uri, m.userRecos);
-					await m.recoToEve(resp, m.userRecos);
-					m.showReco(r);
-					resolve();
-				});
-			}
-		}
-	});
-};
 m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	let elem=$input_uri[0];
 	let uri=m.lastURI=noFormatURI?elem.value:m.formatURI(elem.value);
@@ -4562,7 +4536,6 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
 	m.reNewAndReOn();
-	// await m.getAndShowMyRecoInNewReco(r);
 };
 $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	if (e.keyCode===27&&$new_reco.is(":visible")) { // ESC
