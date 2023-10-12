@@ -5579,6 +5579,7 @@ m.processShortKey=function (e) {
 			$button_mode.removeClass("enabled");
 			$contents.removeClass("multireco");
 			$multireco_cats_container.hide();
+			window.location.hash="#headPlay";
 		}
 		else {
 			m.recoMode="multireco";
@@ -5588,6 +5589,7 @@ m.processShortKey=function (e) {
 			$multireco_cats_container.show();
 			$multireco_cats_container.css({zIndex:++m.zIndex});
 			$multireco_input_cats[0].value=m.currentCat;
+			window.location.hash="#numbers-of-recos";
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
