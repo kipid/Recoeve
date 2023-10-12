@@ -270,6 +270,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div class="button left" id="button-back" tabindex="6">[--Back--]</div>
 		<div class="cBoth"></div>
 	</div>
+	<div id="reco-stat" style="margin:1em 0"></div>
 	<label for="desc">[--Description--]</label>
 		<div id="def-cmds"><div class="def-cmd">#related</div> <div class="def-cmd">#lyrics</div></div>
 		<div id="def-descs"></div>
@@ -342,6 +343,7 @@ $title.html(m.userId+" on Recoeve.net");
 
 m.myCatList=[];
 m.myRecos={};
+m.timeout={};
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
@@ -845,12 +847,11 @@ m.reco_pointChange_do=function (args, err) {
 		}
 	});
 };
-m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
+m.recoByOnlyStars=function (valStr, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("Not logged-in.", 7, $result);
+		m.delayedLogOut("Not logged-in.", 70, $result);
 		return;
 	}
-	let valStr=$str.html();
 	if (m.myPage) {
 		if (valStr!==m.myRecos[uri]?.val?.str) {
 			let strHeads="do\turi\tval";
@@ -964,7 +965,7 @@ m.starsOnClick=function (e) {
 		$bar.css({width:w});
 	}
 	m.timeout[uri]=setTimeout(function () {
-		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+		m.recoByOnlyStars($str.html(), uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
 m.starsOnTouchMove=function (e) {
@@ -1036,7 +1037,7 @@ m.starsOnUps=function (e) {
 	val=m.val($str.html());
 	$star.find(".bar").css({width:m.starsWidth*val.val});
 	m.timeout[uri]=setTimeout(function () {
-		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+		m.recoByOnlyStars($str.html(), uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
 m.starsOnDowns=function (e) {
@@ -1066,7 +1067,7 @@ m.starsOnDowns=function (e) {
 	val=m.val($str.html());
 	$star.find(".bar").css({width:m.starsWidth*val.val});
 	m.timeout[uri]=setTimeout(function () {
-		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+		m.recoByOnlyStars($str.html(), uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
 m.reNewAndReOn=function () {
@@ -1085,7 +1086,7 @@ m.reNewAndReOn=function () {
 		$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
 			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 			m.timeout[uri]=setTimeout(function () {
-				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+				m.recoByOnlyStars($str.html(), uri, $result, $reco.hasClass("recom"));
 			}, 2048);
 		});
 	});
@@ -1576,6 +1577,53 @@ m.getAndFillDefsInNewReco=function (r, fillDefs) {
 		}
 	});
 };
+m.formatNOfPoints=function (n) {
+	if (n<1000) {
+		return ""+n;
+	}
+	else if (n<1000000) {
+		return (n/1000.0).toFixed(2)+"K";
+	}
+	else if (n<1000000000) {
+		return (n/1000000.0).toFixed(2)+"M";
+	}
+	else if (n<1000000000000) {
+		return (n/1000000000.0).toFixed(2)+"B";
+	}
+}
+$reco_stat=$("#reco-stat");
+m.nOfPointsToPlot=101;
+m.plotPointsStatChart=function (stat, maxN) {
+	let chartHTML=`<div class="rC"><div class="rSC"><div><svg width="100%" height="100%">`;
+	let leftPadding=3.0;
+	let rightPadding=3.0;
+	let topPadding=7.0;
+	let bottomPadding=15.0;
+	let bottomLine=100.0-bottomPadding;
+	let maxHeight=100.0-topPadding-bottomPadding;
+	let dx=(100.0-leftPadding-rightPadding)/m.nOfPointsToPlot/2.0;
+	let rectWidth=2.0*dx;
+	let nOfPoints=[];
+	for (let i=0;i<m.nOfPointsToPlot;i++) {
+		let x=leftPadding+(2.0*i-1.0)*dx;
+		let tick=leftPadding+2.0*i*dx;
+		let h=maxHeight*stat["n"+i]/maxN;
+		let y=bottomLine-h;
+		nOfPoints[i]={n:stat["n"+i], x, tick, h, y};
+	}
+	for (let i=0;i<nOfPoints.length;i++) {
+		chartHTML+=`<rect class="column" x="${nOfPoints[i].x}%" y="${nOfPoints[i].y}%" width="${rectWidth}%" height="${nOfPoints[i].h}%"></rect><text class="page-views" x="${nOfPoints[i].tick}%" text-anchor="middle" y="${nOfPoints[i].y-2.0}%" dominant-baseline="text-bottom">${m.formatNOfPoints(nOfPoints[i].n)}</text>`;
+	}
+	chartHTML+=`<line class="bar" x1="${leftPadding-1}%" y1="${bottomLine}%" x2="${100.0-rightPadding+1}%" y2="${bottomLine}%"/>`;
+	for (let i=0;i<nOfPoints.length;i+=5) {
+		chartHTML+=`<line class="bar" x1="${pageViewsOfADay[i].tick}%" y1="${bottomLine-1.5}%" x2="${pageViewsOfADay[i].tick}%" y2="${bottomLine+1.0}%"/>
+<text class="tick" x="${pageViewsOfADay[i].tick}%" y="${bottomLine}%">
+<tspan x="${pageViewsOfADay[i].tick}%" text-anchor="middle" dy="2.0em">${(i/10.0).toFixed(1)}</tspan>
+</text>`;
+	}
+	chartHTML+=`</svg></div></div></div>`;
+	$reco_stat.html(chartHTML);
+}
 m.getFullRecoStatAndPlotChart=function (uri) {
 return new Promise(function (resolve, reject) {
 	$.ajax({
@@ -1597,6 +1645,7 @@ return new Promise(function (resolve, reject) {
 		}
 		console.log(r.stat);
 		console.log("maxN: ", maxN);
+		m.plotPointsStatChart(r.stat[1], maxN);
 		resolve();
 	}).fail(function (resp) {
 		console.log(resp);
@@ -1707,7 +1756,7 @@ $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 				$val.value=(w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts;
 			}
 			$bar.css({width:w});
-			m.lastVal=m.val($val.value);
+			$input_val.trigger("keyup");
 		}
 	});
 	$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
@@ -1729,10 +1778,13 @@ $input_val_stars.on("click", function (e) {
 		$bar.css({width:w});
 		$val.value=(w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts;
 		m.lastVal=m.val($val.value);
+		$input_val.trigger("keyup");
 	}
 });
-$input_val.on("keyup", function (e) {
+$input_val.on("input keyup keydown cut paste click focus", function (e) {
 	if (this.value!==m.lastVal.str) {
+		let uri=$input_uri[0].value;
+		clearTimeout(m.timeout[uri]);
 		let val=m.val(this.value);
 		let $bar=$("#input-val-stars .bar");
 		if (val.valid&&val.str.length!==0) {
@@ -1743,6 +1795,9 @@ $input_val.on("keyup", function (e) {
 			$bar.css({width:0});
 		}
 		m.lastVal=val;
+		m.timeout[uri]=setTimeout(function () {
+			m.recoByOnlyStars(val.str, uri, $error, false);
+		}, 2048);
 	}
 });
 $input_val_down=$("#input-val-down");

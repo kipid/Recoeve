@@ -4926,7 +4926,7 @@ $input_val_stars.on("click", function (e) {
 		m.lastVal=m.val($val.value);
 	}
 });
-$input_val.on("keyup", function (e) {
+$input_val.on("input keyup keydown cut paste click focus", function (e) {
 	if (this.value!==m.lastVal.str) {
 		let val=m.val(this.value);
 		let $bar=$("#input-val-stars .bar");
