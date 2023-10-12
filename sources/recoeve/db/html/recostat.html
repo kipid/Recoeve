@@ -613,9 +613,9 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			res+=`</div>`;
 		}
 		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
-		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+		res+=`<div class="tFirst">Firstly Recoed at ${r.tFirst}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
-			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
+			res+=`<div class="tLast">Lastly Editted at ${r.tLast}</div><div class="cBoth"></div>`;
 		}
 		res+=`</div>`;
 	}
