@@ -94,6 +94,7 @@ else if (m.docCookies.hasItem("lang")) {
 }
 
 #new-reco {z-index:21000; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white}
+.button.button-recostat {margin:0 1em 0 0; padding:1px; color:wheat}
 
 .point-range {margin:1em 2.5em; padding:0; position:relative; display:inline-block; float:right; width:270px; height:30px; background:rgb(200,100,100)}
 .point-range-bar {position:absolute; left:0; right:0; height:100%; background:rgb(100,200,100)}
@@ -2741,7 +2742,7 @@ m.recomHTML=async function (r) {
 	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
-	<div class="uri cBoth">${m.uriToA(r.uri)}</div>`;
+	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>`;
 	if (r.defTitles[0]&&r.defTitles[0][0]) {
 		res+=`<div class="title">${m.escapeHTML(r.defTitles[0][0])}</div>`;
 	}
@@ -2820,7 +2821,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeHTML(r.uri)}</div>
-	<div class="uri cBoth">${m.uriToA(r.uri)}</div>
+	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
 	<div class="title">${m.escapeHTML(r.title)}</div>
 	<div class="cats">${m.catsToA(r.cats)}</div>`
 	if (!inListPlay) {
