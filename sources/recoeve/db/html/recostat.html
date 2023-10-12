@@ -1454,7 +1454,7 @@ m.plotPointsStatChart=function (stat, maxN) {
 	for (let i=0;i<nOfPoints.length;i++) {
 		chartHTML+=`<rect class="column" x="${nOfPoints[i].x}%" y="${nOfPoints[i].y}%" width="${rectWidth}%" height="${nOfPoints[i].h}%"></rect><text class="reco-stat" x="${nOfPoints[i].tick}%" text-anchor="middle" y="${nOfPoints[i].y-2.0}%" dominant-baseline="text-bottom">${m.formatNOfPoints(nOfPoints[i].n)}</text>`;
 	}
-	chartHTML+=`<line class="bar" x1="${leftPadding-1}%" y1="${bottomLine}%" x2="${100.0-rightPadding+1}%" y2="${bottomLine}%"/>`;
+	chartHTML+=`<line class="bar" x1="${leftPadding-1}%" y1="${bottomLine}%" x2="${100.0-rightPadding}%" y2="${bottomLine}%"/>`;
 	for (let i=0;i<nOfPoints.length;i+=5) {
 		chartHTML+=`<line class="bar" x1="${nOfPoints[i].tick}%" y1="${bottomLine-1.5}%" x2="${nOfPoints[i].tick}%" y2="${bottomLine+1.0}%"/>
 <text class="tick" x="${nOfPoints[i].tick}%" y="${bottomLine}%">
