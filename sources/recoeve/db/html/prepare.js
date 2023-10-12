@@ -1056,6 +1056,7 @@ m.togglePosition=function (elem) {
 		m.fsToRs.fixed=false;
 	}
 	else {
+		window.scrollBy({left:0, top:-$parent.height(), behavior:"smooth"});
 		$parent.addClass("fixed");
 		let $z=$parent.find(".z-index");
 		let zIndex=m.videoZIndex;
@@ -1067,7 +1068,6 @@ m.togglePosition=function (elem) {
 			m.videoZIndex--;
 		}
 		$parent.css("z-index", zIndex);
-		window.scrollBy(0, -$parent.height());
 		$elem.text("▲ [--return to the original position--]");
 		m.fsToRs.fixed=true;
 	}
