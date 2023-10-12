@@ -1124,7 +1124,7 @@ m.delayedLogOut=function (msg, delayTime=27, $result) {
 		delay--;
 	}, 1000);
 	setTimeout(function () {
-		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+`#${encodeURIComponent(m.hashURI)}`)}`;
 	}, delay*1000);
 };
 
@@ -4039,12 +4039,15 @@ m.openCat=function (cat, e) {
 		setTimeout(function () {
 			if ($button_get_recoms.hasClass("enabled")) {
 				window.location.hash="#button-get-recoms";
+				m.hashURI="button-get-recoms";
 			}
 			else if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
 				window.location.hash="#numbers-of-recos";
+				m.hashURI="numbers-of-recos";
 			}
 			else {
 				window.location.hash="#headPlay";
+				m.hashURI="headPlay";
 			}
 		}, 2048);
 	}
@@ -5484,7 +5487,7 @@ m.processShortKey=function (e) {
 		break;
 	case 65: // A=65 To my page
 		if ((!m.myPage)&&m.myId) {
-			window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, decodeURIComponent(window.location.hash.substring(1)), m.args);
+			window.location.href=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 		}
 		break;
 	case 85: // U=85 Block touch
@@ -5570,6 +5573,7 @@ m.processShortKey=function (e) {
 			$button_mode.removeClass("enabled");
 			$button_neighbors_mode.addClass("enabled");
 			window.location.hash="#numbers-of-recos";
+			m.hashURI="numbers-of-recos";
 		}
 		m.openCat(m.currentCat);
 		break;
@@ -5581,6 +5585,7 @@ m.processShortKey=function (e) {
 			$contents.removeClass("multireco");
 			$multireco_cats_container.hide();
 			window.location.hash="#headPlay";
+			m.hashURI="headPlay";
 		}
 		else {
 			m.recoMode="multireco";
@@ -5591,6 +5596,7 @@ m.processShortKey=function (e) {
 			$multireco_cats_container.css({zIndex:++m.zIndex});
 			$multireco_input_cats[0].value=m.currentCat;
 			window.location.hash="#numbers-of-recos";
+			m.hashURI="numbers-of-recos";
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
@@ -5694,7 +5700,7 @@ if ($shortkeyDesc.exists()) {
 m.changeLang=function (lang, e, elem) {
 	let search=window.location.search;
 	let vars=m.getSearchVars(search);
-	let href=`${window.location.pathname}${vars.cat?`?cat=${encodeURIComponent(vars.cat.val)}`:"?cat="}${lang?`&lang=${lang}`:""}${window.location.hash}`;
+	let href=`${window.location.pathname}${vars.cat?`?cat=${encodeURIComponent(vars.cat.val)}`:"?cat="}${lang?`&lang=${lang}`:""}#${encodeURIComponent(m.hashURI)}`;
 	if (e&&e.which===2) { // wheel click.
 		$(elem).attr({"href":href});
 		return true;
@@ -5875,7 +5881,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$table_of_recos[0].value=vars.ToR.val;
 	}
 	if (window.location.pathname==="/reco") {
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${window.location.hash}`);
+		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}#${encodeURIComponent(m.hashURI)}`);
 	}
 	else {
 		if (vars.ToR?.val&&m.browserWidth>701) {
@@ -5920,7 +5926,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}
 		else {
 			m.gotoLogIn=function (elem) {
-				let path=`/account/log-in?goto=${encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)}`;
+				let path=`/account/log-in?goto=${encodeURIComponent(window.location.pathname+window.location.search+`#${encodeURIComponent(m.hashURI)}`)}`;
 				if (e?.which===2) { // wheel click.
 					window.open(path, "_blank");
 					return true;
