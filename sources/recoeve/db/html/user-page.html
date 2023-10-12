@@ -3857,7 +3857,7 @@ m.refresh=async function (cats, option, uri) {
 				r.index=m.lastIndexOfUriList;
 				m.lastIndexOfUriList++;
 			}
-			let $recoms_recos=$("#contents-recoms").find(".reco");
+			let $recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
 				let $reco=$recoms_recos.eq(k);
 				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -3904,7 +3904,7 @@ m.refresh=async function (cats, option, uri) {
 					$rC_youtube_uri_rendered.hide();
 				}
 			}
-			$recoms_recos=$("#contents-recoms").find(".reco");
+			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
 				let $reco=$recoms_recos.eq(k);
 				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -3913,7 +3913,7 @@ m.refresh=async function (cats, option, uri) {
 					$reco.replaceWith(String(recoHTML));
 				}
 			}
-			let $recos_recos=$("#contents").find(".reco");
+			let $recos_recos=$contents.find(".reco");
 			for (let k=0;k<$recos_recos.length;k++) {
 				let $reco=$recos_recos.eq(k);
 				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -3947,7 +3947,7 @@ m.refresh=async function (cats, option, uri) {
 				r.deleted=true;
 				r.has=false;
 				m.lastURI="x*L2$zp-|,O";
-				$recoms_recos=$("#contents-recoms").find(".reco");
+				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
@@ -3957,7 +3957,7 @@ m.refresh=async function (cats, option, uri) {
 						$reco.find(".button.edit").addClass("deleted");
 					}
 				}
-				$recos_recos=$("#contents").find(".reco");
+				$recos_recos=$contents.find(".reco");
 				for (let k=0;k<$recos_recos.length;k++) {
 					let $reco=$recos_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
