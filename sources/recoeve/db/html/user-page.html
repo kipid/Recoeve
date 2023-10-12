@@ -6058,12 +6058,6 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	}
 	m.reNewAndReOn();
 };
-m.fsToRs.pauseVideo=function () {
-	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
-		$video[0]?.pause();
-	}
-	m.YtPlayer?.pauseVideo();
-};
 m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
 	let fs=m.fsToRs;
