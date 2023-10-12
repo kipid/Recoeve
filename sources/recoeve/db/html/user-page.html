@@ -4035,7 +4035,9 @@ m.openCat=function (cat, e) {
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", path);
-		window.location.hash="#headPlay";
+		setTimeout(function () {
+			window.location.hash="#headPlay";
+		}, 2048);
 	}
 	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
