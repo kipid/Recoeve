@@ -313,11 +313,11 @@ public String now() {
 	}
 	return now; // utc_timestamp()
 }
-public boolean timeDiff(Timestamp tNow, Timestamp tFrom) {
+public boolean timeDiff(Timestamp tNow, Timestamp tFrom) { // SELECT TIMEDIFF(?, ?)>0;
 	try {
 		pstmtTimeDiff.setTimestamp(1, tNow);
 		pstmtTimeDiff.setTimestamp(2, tFrom);
-		ResultSet rs=pstmtTimeDiff.executeQuery();
+		ResultSet rs=pstmtTimeDiff.executeQuery(); // tNow-tFrom>0?
 		if (rs.next()) {
 			return rs.getBoolean(1);
 		}
@@ -1382,18 +1382,41 @@ public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, b
 
 public String cutNeighbors(String user_id_from, long user_me, String toBeCut) {
 	try {
+		con.setAutoCommit(false);
 		ResultSet user=findUserById(user_id_from);
 		if (user.next()&&user.getLong("i")==user_me) {
 			StrArray sAToBeCut=new StrArray(toBeCut, false, true);
 			String cat_from=sAToBeCut.get("cat_from", 1);
 			List<String> user_tos=sAToBeCut.get("user_to");
 			List<String> cat_tos=sAToBeCut.get("cat_to");
-			List<String> cuts=sAToBeCut.get("cut");
+			int size=user_tos.size();
+			if (size!=cat_tos.size()) {
+				return "Size is different.";
+			}
+			StringBuilder sb=new StringBuilder(30*200);
+			for (int i=1;i<size;i++) {
+				sb.append(user_tos.get(i));
+				sb.append("\t");
+				sb.append(cat_tos.get(i));
+				sb.append("\n");
+			}
+			ResultSet rSneighborListFrom=getRSNeighborListFrom(user_me, cat_from);
+			rSneighborListFrom.updateString("userCatList", sb.toString());
+			rSneighborListFrom.updateRow();
+			ResultSet rSneighborListTo=getRSNeighborListTo(user_me, cat_from);
+			rSneighborListTo.deleteRow();
+			con.commit();
 			return "cut";
 		}
 	}
 	catch (SQLException e) {
 		err(e);
+		try {
+			con.rollback();
+		}
+		catch (SQLException e2) {
+			err(e2);
+		}
 	}
 	return "not";
 }

@@ -3560,6 +3560,9 @@ m.cutNeighbors=function (str) {
 		if (resp==="cut") {
 			$numbers_of_recos.html("Neighbors are cut.");
 		}
+		else {
+			$numbers_of_recos.html("Neighbors are not cut. There must be a problem.")
+		}
 	});
 };
 m.valsStatN=21;
@@ -3642,25 +3645,16 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				}
 				m.neighbors[cat_from]=neighbors;
 				if (m.myPage&&neighbors.length>1000) {
-					until=sorted.sortedUntil=m.heapsortRest(neighbors, "simAvg100", sorted, until, until);
-					let str=`user_me\t${m.myIndex}\ncat_from\t${cat_from}\n`;
+					let str=`cat_from\t${cat_from}\n`;
 					let str_user_to=`user_to`;
 					let str_cat_to=`cat_to`;
-					let str_cut=`cut`;
 					let cut_upto=neighbors.length-m.neighborUpto;
 					for (let i=neighbors.length-1;i>=cut_upto;i--) {
 						let neighborI=neighbors[sorted[i]];
 						str_user_to+=`\t${neighborI.user_to}`;
 						str_cat_to+=`\t${neighborI.cat_to}`;
-						str_cut+=`\tx`;
 					}
-					for (let i=cut_upto-1;i>=0;i--) {
-						let neighborI=neighbors[sorted[i]];
-						str_user_to+=`\t${neighborI.user_to}`;
-						str_cat_to+=`\t${neighborI.cat_to}`;
-						str_cut+=`\to`;
-					}
-					str+=str_user_to+"\n"+str_cat_to+"\n"+str_cut;
+					str+=str_user_to+"\n"+str_cat_to;
 					m.rmb_me(m.cutNeighbors, str);
 				}
 			});
@@ -3850,13 +3844,14 @@ m.refresh=async function (cats, option, uri) {
 		m.openCat(c[k]);
 	}
 	else {
+		let $recoms_recos=null;
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
 				r.index=m.lastIndexOfUriList;
 				m.lastIndexOfUriList++;
 			}
-			let $recoms_recos=$contents_recoms.find(".reco");
+			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
 				let $reco=$recoms_recos.eq(k);
 				let recoURI=m.unescapeHTML($reco.find(".textURI").html());

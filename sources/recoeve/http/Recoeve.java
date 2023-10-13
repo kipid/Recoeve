@@ -28,11 +28,6 @@ import java.io.UnsupportedEncodingException;
 
 import java.lang.StringBuilder;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
 import recoeve.db.RecoeveDB;
