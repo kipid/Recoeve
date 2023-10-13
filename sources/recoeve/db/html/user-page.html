@@ -1913,11 +1913,7 @@ m.setTimezone=function (elem, timezone) {
 		$elem.addClass("selected");
 	}
 	let [addHours, addMinutes]=timezone.substring(3).split(":");
-	// let prev=m.timezoneAddMs;
 	m.timezoneAddMs=(Number(addHours)*60+Number(addMinutes))*60*1000;
-	// if (prev!==m.timezoneAddMs) {
-	// 	m.refreshTimezone();
-	// }
 	$search_timezone[0].value=timezone;
 	m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
 	fs.$fs.focus();
@@ -2951,7 +2947,7 @@ m.reco_pointChange_do=function (args, err) {
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
-			m.refresh(r.cats, "recoed", uri);
+			m.refresh(r.cats, "recoed", uri, true);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -3828,7 +3824,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			break;
 	}
 };
-m.refresh=async function (cats, option, uri) {
+m.refresh=async function (cats, option, uri, openCat) {
 	cats=String(cats);
 	option=String(option);
 	uri=String(uri);
@@ -3840,7 +3836,7 @@ m.refresh=async function (cats, option, uri) {
 		}
 	}
 	let r=m.myRecos[uri];
-	if (c[k]!==m.currentCat) {
+	if (c[k]!==m.currentCat&&openCat) {
 		m.openCat(c[k]);
 	}
 	else {
@@ -4720,7 +4716,7 @@ m.reco_do=function (args, err) {
 			let cats=String(m.myRecos[args.uri].cats);
 			console.log("cats: ", cats, args.uri);
 			m.putCats_UriToLists(cats, args.uri);
-			m.refresh(cats, "recoed", args.uri);
+			m.refresh(cats, "recoed", args.uri, true);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
