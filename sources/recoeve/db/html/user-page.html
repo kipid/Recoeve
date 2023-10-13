@@ -2997,7 +2997,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			let catsChanged=true;
 			if (m.recoMode==="multireco") {
 				cats=m.formatCats($multireco_input_cats[0].value);
-				if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+				if (m.myRecos[uri]?.cats&&m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 					cats=m.formatCats(m.myRecos[uri].cats);
 					catsChanged=false;
 				} else {
@@ -3029,7 +3029,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				let catsChanged=true;
 				if (m.recoMode==="multireco") {
 					cats=m.formatCats($multireco_input_cats[0].value);
-					if (m.myRecos[uri]?.cats&&!m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+					if (m.myRecos[uri]?.cats&&m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 						cats=m.formatCats(m.myRecos[uri].cats);
 						catsChanged=false;
 					}
