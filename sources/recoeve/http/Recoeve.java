@@ -58,6 +58,7 @@ public static void main(String... args) {
 	CorsHandler corsHandler=CorsHandler.create()
 		.addOrigin("https://kipid.tistory.com")
 		.addOrigin("https://recoeve.net")
+		.addOrigin("https://localhost")
 		// .addOrigin("null")
 		// .allowedMethod(HttpMethod.GET)
 		.allowedMethod(HttpMethod.POST)
@@ -449,7 +450,7 @@ public static void main(String... args) {
 								recoeveWebClient.webClient.getAbs(uri)
 									.send(ar -> {
 										if (ar.succeeded()) {
-											recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 512);
+											recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
 										}
 										else {
 											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
