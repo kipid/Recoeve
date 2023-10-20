@@ -3725,7 +3725,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 							}
 							val.simAvg100=simAvg100;
 							recoms[uri].vals.push(val);
-							recoms[uri].valsStat[Math.floor(val.val*20.0)]+=simAvg100;
+							recoms[uri].valsStat[Math.round(val.val*20.0)]+=simAvg100;
 						}
 						for (let i=0;i<recoms.length;i++) {
 							for (let k=0;k<m.valsStatN;k++) {
