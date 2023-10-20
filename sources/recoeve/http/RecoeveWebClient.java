@@ -47,6 +47,7 @@ public void doUntilH1IsFound(HttpResponse response, PrintLog pl, int delay) {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 						.end("No <h1> tag.", Recoeve.ENCODING);
 				}
+				webClient.close();
 			}
 		}
 	});

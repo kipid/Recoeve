@@ -134,14 +134,15 @@ public static void main(String... args) {
 								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 									.end(shortURI, ENCODING);
 							}
+							recoeveWebClient.webClient.close();
 						})
 						.onFailure(throwable -> {
 							throwable.printStackTrace();
 							System.out.println("Sended shortURI.");
 							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 								.end(shortURI, ENCODING);
+							recoeveWebClient.webClient.close();
 						});
-					recoeveWebClient.webClient.close();
 				}
 				else {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
@@ -453,9 +454,9 @@ public static void main(String... args) {
 										else {
 											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
 											pl.req.response().end("Failed to retrieve the webpage.", ENCODING);
+											recoeveWebClient.webClient.close();
 										}
 									});
-								recoeveWebClient.webClient.close();
 							}
 							else {
 								pl.req.response().end("No http-URI.", ENCODING);
