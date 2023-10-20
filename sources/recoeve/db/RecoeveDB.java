@@ -412,9 +412,8 @@ public String getBlogVisitor(StrArray fromTo) {
 public boolean delBlogVisitor() {
 	try {
 		Calendar calendar=Calendar.getInstance();
-		calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 60 days from the current date
-		Date date=new Date(calendar.getTimeInMillis());
-		pstmtDelBlogVisitor.setTimestamp(1, new Timestamp(date.getTime()));
+		calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 32 days from the current date
+		pstmtDelBlogVisitor.setTimestamp(1, new Timestamp(calendar.getTimeInMillis()));
 		return pstmtDelBlogVisitor.executeUpdate()>0;
 	}
 	catch (SQLException e) {
