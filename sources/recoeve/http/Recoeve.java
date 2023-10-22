@@ -490,7 +490,7 @@ public static void main(String... args) {
 						pl.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
 							String res=pl.db.recoDo(Long.parseLong(pl.cookie.get("I"), 16), recoStr, pl.tNow);
-							pl.req.response().end(res);
+							pl.req.response().end(FileMap.replaceStr(res, pl.lang));
 							System.out.println("Do reco:\n"+recoStr);
 						});
 					}

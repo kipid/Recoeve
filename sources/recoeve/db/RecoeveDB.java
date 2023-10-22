@@ -3029,7 +3029,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 			}
 			catch (SQLException e) {
 				err(e);
-				res+="error";
+				res+="[--Error--]: [--"+e.getMessage()+"--]";
 				catL.fullCats=previousCatListStr;
 				try {
 					con.rollback();
