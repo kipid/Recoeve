@@ -164,6 +164,8 @@ public static void main(String... args) {
 		.setCacheEntryTimeout(1000L*60L*60L*24L*365L) // Cache timeout in ms (1 year)
 		.setFilesReadOnly(true);
 
+	router1.route().handler(staticHandler);
+
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
