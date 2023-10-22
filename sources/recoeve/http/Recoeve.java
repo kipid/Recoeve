@@ -831,7 +831,7 @@ public static void main(String... args) {
 				pl.req.response().addCookie(singleCookie);
 				System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
 			}
-			if (setCookieRMB.get(0).getName()=="I") {
+			if (setCookieRMB.size()>0&&setCookieRMB.get(0).getName()=="I") {
 				// Success: Session cookie and New token.
 				pl.req.response().end(FileMap.replaceStr("Rmbd: [--Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)--]", pl.lang), ENCODING);
 				System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
