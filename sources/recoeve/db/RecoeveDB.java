@@ -1689,7 +1689,6 @@ private static long[] convertByteArrayToLongArray(byte[] byteData) {
 // pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`, `N`) VALUES (?, ?, ?, ?, 1);");
 public boolean putRecoRecentests(String uri, long user_me, Timestamp tNow) {
 	try {
-		con.setAutoCommit(true);
 		pstmtPutRecentests.setString(1, uri);
 		pstmtPutRecentests.setBytes(2, longToBytes(user_me));
 		pstmtPutRecentests.setTimestamp(3, tNow);
