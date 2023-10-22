@@ -703,7 +703,7 @@ public static void main(String... args) {
 						System.out.println(INVALID_ACCESS+" (Invalid method: "+pl.method+")");
 					}
 					break;
-				case "log-out": // path=/account/log-out
+				case "log-out": case "log-out-from-all": // path=/account/log-out or /account/log-out-from-all
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					pl.req.response().end(FileMap.get("log-out.html", pl.lang), ENCODING);
 					System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
@@ -716,6 +716,15 @@ public static void main(String... args) {
 					}
 					pl.req.response().end("Log-out : All log-in | session in server are deleted.", ENCODING);
 					System.out.println("Sended log-out msg.");
+					break;
+				case "log-out-from-all.do": // path=/account/log-out-from-all.do
+					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
+					List<io.vertx.core.http.Cookie> setDelCookie2=pl.db.logoutFromAll(pl.cookie, pl.sessionPassed);
+					for (io.vertx.core.http.Cookie singleCookie: setDelCookie2) {
+						pl.req.response().addCookie(singleCookie);
+					}
+					pl.req.response().end("Log-out : All log-in | session in server from all devices are deleted.", ENCODING);
+					System.out.println("Sended log-out-from-all msg.");
 					break;
 				case "check": // path=/account/check
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");

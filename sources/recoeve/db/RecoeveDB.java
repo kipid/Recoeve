@@ -133,6 +133,9 @@ private PreparedStatement pstmtCreateUserSession;
 private PreparedStatement pstmtCreateUserRemember;
 private PreparedStatement pstmtCheckUserRemember;
 
+private PreparedStatement pstmtDelUserSession1;
+private PreparedStatement pstmtDelUserRemember;
+
 private PreparedStatement pstmtFindUserByIndex;
 private PreparedStatement pstmtFindUserById;
 private PreparedStatement pstmtFindUserByEmail;
@@ -208,7 +211,10 @@ public RecoeveDB() {
 		pstmtCreateUserSession=con.prepareStatement("INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
 		pstmtCreateUserRemember=con.prepareStatement("INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 		pstmtCheckUserRemember=con.prepareStatement("SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		
+
+		pstmtDelUserSession1=con.prepareStatement("DELETE FROM `UserSession1` WHERE `user_i`=?;");
+		pstmtDelUserRemember=con.prepareStatement("DELETE FROM `UserRemember` WHERE `user_i`=?;");
+
 		pstmtFindUserByIndex=con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtFindUserById=con.prepareStatement("SELECT * FROM `Users` WHERE `id`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtFindUserByEmail=con.prepareStatement("SELECT * FROM `Users` WHERE `email`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -1319,6 +1325,42 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie, boolean sessionPass
 				if (rs.next()) {
 					rs.deleteRow();
 				}
+			}
+			catch (SQLException e) {
+				err(e);
+			}
+		}
+	}
+	List<io.vertx.core.http.Cookie> setCookie=new ArrayList<>();
+	setCookie.add(io.vertx.core.http.Cookie.cookie("I", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("SSN", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("salt", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("session", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
+			.setPath("/").setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "").setSecure(true)
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", "").setSecure(true)
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
+	setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", "").setSecure(true)
+			.setPath("/account").setHttpOnly(true).setMaxAge(-100L));
+	return setCookie;
+}
+public List<io.vertx.core.http.Cookie> logoutFromAll(Cookie cookie, boolean sessionPassed) {
+	if (cookie.get("I")!=null) {
+		long user_me=Long.parseLong(cookie.get("I"), 16);
+		if (sessionPassed) {
+			try {
+				pstmtDelUserSession1.setLong(1, user_me);
+				pstmtDelUserSession1.executeUpdate();
+				pstmtDelUserRemember.setLong(1, user_me);
+				pstmtDelUserRemember.executeUpdate();
 			}
 			catch (SQLException e) {
 				err(e);

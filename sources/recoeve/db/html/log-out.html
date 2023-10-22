@@ -19,21 +19,25 @@ div {font-size:20px}
 (function (m, $, undefined) {
 let href=`/account/log-in${window.location.search}`;
 $("#a-log-in").attr("href", href);
+$err=$("#err");
 m.logOutDo=function (args, err) {
 	if (err) {
-		$("#err").html(m.escapeHTML(err));
+		$err.html(m.escapeHTML(err));
 	}
 	$.ajax({
-		type:"POST", url:"/account/log-out.do", data:args
+		type:"POST", url:`${window.location.pathname}.do`, data:args
 		, dataType:"text"
-	}).fail(function () {
+	}).fail(function (resp) {
 		let msg="Log-out has failed.";
-		console.log(msg);
-		$("#err").html(msg);
+		console.log(msg, resp);
+		$err.html(m.escapeHTML(msg+" "+resp));
 	}).done(function (resp) {
 		console.log(resp);
-		window.open(args.href);
-		window.close();
+		$err.html(m.escapeHTML(resp));
+		setTimeout(function () {
+			window.open(args.href);
+			window.close();
+		}, 1024);
 	});
 }
 m.rmb_me(m.logOutDo, {href})
