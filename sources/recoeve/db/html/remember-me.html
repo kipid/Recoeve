@@ -8,62 +8,30 @@
 <body>
 <h1>Remembering you...</h1>
 <div id="err"></div>
-<script src="/jquery.js"></script>
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
 <script>
 (function(m, $, undefined){
-//////////////////////////////////////////
-// path.search rendering
-//////////////////////////////////////////
-m.getSearchVars=function (searchStr) {
-	let vars=[];
-	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
-		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
-		let j=searchStr.indexOf("#");
-		if (j!==-1) { searchStr=searchStr.substring(0,j); }
-		let splits=searchStr.replace(/&amp;/ig,"&").split("&");
-		for (let i=0;i<splits.length;i++) {
-			let key=splits[i];
-			let value="";
-			let k=key.indexOf("=");
-			if (k!==-1) {
-				value=decodeURIComponent(key.substring(k+1));
-				key=key.substring(0,k);
-			}
-			key=decodeURIComponent(key);
-			vars[i]=vars[key]={key:key, val:value};
-		}
-	}
-	return vars;
-};
 m.searchVars=m.getSearchVars(window.location.search);
 
-let sW=screen.width;
-let sH=screen.height;
-if (sW<sH) {
-	sW=screen.height;
-	sH=screen.width;
-}
-m.str_rmb_me='log\tsW\tsH\n'
-	+'web\t'+sW+'\t'+sH;
-$.ajax({
-	type:"POST", url:"/account/log-in/remember-me.do", data:m.str_rmb_me
-	, dataType:"text"
-}).done(function (resp) {
+m.rmb_me(function (vars, resp) {
 	console.log(resp);
-	$("#err").html(resp);
+	$("#err").html(m.escapeHTML(resp));
 	// wait until saving session/rmb cookies.
 	setTimeout(function () {
-		if (resp==="Rmbd") {
-			if (m.searchVars?.goto) {
-				window.location.href=m.searchVars.goto.val;
-			} else {
+		if (resp.startsWith("Rmbd")) {
+			if (vars?.goto) {
+				window.location.href=vars.goto.val;
+			}
+			else {
 				window.location.pathname="/";
 			}
-		} else {
+		}
+		else {
 			window.location.pathname="/account/log-in";
 		}
 	}, 1024);
-});
+}, m.searchVars);
 })(window.m=window.m||{}, jQuery);
 </script>
 </body>
