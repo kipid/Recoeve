@@ -14,12 +14,12 @@
 (function(m, $, undefined){
 m.searchVars=m.getSearchVars(window.location.search);
 
-m.rmb_me(function (vars, resp) {
-	console.log(resp);
-	$("#err").html(m.escapeHTML(resp));
+m.rmb_me(function (vars, err) {
+	console.log(err);
+	$("#err").html(m.escapeHTML(err));
 	// wait until saving session/rmb cookies.
 	setTimeout(function () {
-		if (resp.startsWith("Rmbd")) {
+		if (!err) {
 			if (vars?.goto) {
 				window.location.href=vars.goto.val;
 			}
