@@ -520,16 +520,58 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
 		m.logPrint("<br><br>BlogStat timeout. "+resp);
-		// console.log("fail", resp);
 	}).done(function (resp) {
 		m.logPrint("<br><br>BlogStat is logged. "+resp);
-		// console.log("done", resp);
 	});
 
+if (!m.printMode) {
+	m.$log.before(`<div id="floating-key">
+<div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
+<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
+	<span class="bold underline">G</span>o (FS)
+</div>
+<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+	<span class="bold underline">T</span>ofC
+</div>
+<div class="button button-log" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">
+	Docu<span class="bold underline">K</span> Log
+</div>
+<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
+	Backwar<span class="bold underline">d</span>
+</div>
+<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
+	<span class="bold underline">F</span>orward
+</div>
+<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
+	<span class="bold underline">R</span>RA
+</div>
+<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">
+	<span class="bold underline">L</span>ists
+</div>
+<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
+	Cmt<span class="bold underline">Z</span>
+</div>
+<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})">
+	Cmt<span class="bold underline">X</span>
+</div>
+<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})">
+	<span class="bold underline">H</span>andle CmtZ
+</div>
+${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+	Log <span class="bold underline">i</span>n
+</div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+	Log <span class="bold underline">o</span>ut
+</div>`}
+<div id="SNS-floating"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Twitter.png" onclick="m.shareSNS('twitter')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory2.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS('kakao')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
+	$floating_key=$("#floating-key");
+	if (m.docCookies.getItem("hideFK")==="y") {
+		$floating_key.hide();
+	}
 	for (let i=1;i<m.docuK.length;i++) {
 		m.docuK.eq(i).before(m.promoting(`promoting-${i}-0`));
 		m.docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
 	}
+}
 	// Printing codes in <codeprint> with id (which starts with "code-") into <pre id="pre-code-...">.
 	let codeprints=$("codeprint");
 	for (let i=0;i<codeprints.length;i++) {
@@ -585,19 +627,23 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
 	// Disqus js script
-	$disqus_thread=$("#disqus_thread");
-	if (!($disqus_thread.exists())) {
-		($("body")||$("#docuK-script")).append(`<div id="disqus_thread"></div>`);
+	if (!m.printMode) {
 		$disqus_thread=$("#disqus_thread");
+		if (!($disqus_thread.exists())) {
+			($("body")||$("#docuK-script")).append(`<div id="disqus_thread"></div>`);
+			$disqus_thread=$("#disqus_thread");
+		}
+		let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
+		$headOrBody.append($disqus_js);
+		m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 	}
-	let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
-	$headOrBody.append($disqus_js);
-	m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 
-	$page_views_chart=$("#page-views-chart");
-	if (!($page_views_chart.exists())) {
-		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed">Get page views</div>`);
+	if (!m.printMode) {
 		$page_views_chart=$("#page-views-chart");
+		if (!($page_views_chart.exists())) {
+			$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed">Get page views</div>`);
+			$page_views_chart=$("#page-views-chart");
+		}
 	}
 
 	// Kakao js script (from kakao.com CDN) is added.
@@ -684,6 +730,7 @@ window.MathJax={
 		m.mathJaxPreProcess=setTimeout(m.mathJaxPreProcessDo, 2048);
 	}
 
+if (!m.printMode) {
 	m.myIPs=["14.38.247.30", "175.212.158.53"];
 	m.ignoreMe=true;
 	m.weekDays=["일", "월", "화", "수", "목", "금", "토"];
@@ -707,6 +754,7 @@ window.MathJax={
 	}
 	m.blogStatRes=[];
 	m.getBlogStat=function () {
+	return new Promise(function (resolve, reject) {
 		let reqTime=`from\tto`;
 		for (let i=0;i<m.daysToPlotPageViewsChart;i++) {
 			reqTime+=`\n${m.from[i].date} 15:00:00\t${m.to[i].date} 15:00:00`; // until 24:00:00 of today. UTC+09:00.
@@ -715,6 +763,7 @@ window.MathJax={
 			type:"POST", url:"https://recoeve.net/BlogStat/Get", data:reqTime, dataType:"text"
 		}).fail(function (resp) {
 			m.logPrint("<br><br>BlogStat is failed to be got.");
+			reject();
 		}).done(async function (resp) {
 			m.logPrint("<br><br>BlogStat is got.");
 			m.blogStatRes=await m.strToJSON(resp);
@@ -744,16 +793,18 @@ window.MathJax={
 					return Promise.all(m.blogStatRes);
 				});
 			}
+			resolve();
 		});
+	});
 	};
-	m.loadPageViewsStat=function () {
+	m.loadPageViewsStat=async function () {
 		$page_views_chart.removeClass("to-be-executed");
 		$page_views_chart.off("click");
 		$page_views_chart.on("click", function () {
 			$page_views_chart.off("click");
 		});
-		m.getBlogStat();
-		let countChartHTML=`<div class="rC" style="margin:1em 0"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+		await m.getBlogStat();
+		let countChartHTML=`<div class="rC" style="margin:1em 0"><div class="rSC"><div><svg width="100%" height="100%">`;
 		let leftPadding=3.0;
 		let rightPadding=3.0;
 		let topPadding=7.0;
@@ -761,7 +812,6 @@ window.MathJax={
 		let bottomLine=100.0-bottomPadding;
 		let maxHeight=100.0-topPadding-bottomPadding;
 		let dx=(100.0-leftPadding-rightPadding)/m.daysToPlotPageViewsChart/2.0;
-		m.viewCounts=[];
 		m.setIntervalBlogStatN=0;
 		setTimeout(function self() {
 			if (m.blogStatRes?.length<m.daysToPlotPageViewsChart&&m.setIntervalBlogStatN++<=17) {
@@ -798,9 +848,10 @@ window.MathJax={
 			countChartHTML+=`<text class="now-local" x="100%" y="100%"><tspan x="100%" text-anchor="end" y="99%" dominant-baseline="text-bottom">${new Date().toLocaleString()}</tspan></text>`;
 			countChartHTML+=`</svg></div></div></div>`;
 			$page_views_chart.html(countChartHTML);
-		}, 2048);
+		}, 512);
 	};
 	$page_views_chart.on("click", m.loadPageViewsStat);
+}
 
 	// ShortKeys (including default 'processShortcut(event)' of tistory.)
 	m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart"); // Ordered automatically by jQuery.
@@ -981,7 +1032,6 @@ window.MathJax={
 							return Promise.resolve(uriRendered);
 						});
 						promise=promise.then(function (uriRendered) {
-							console.log("uriRendered: ", uriRendered);
 							if (uriRendered?.html) {
 								toBeAdded[k][i]+=uriRendered.html;
 							}
@@ -1010,7 +1060,7 @@ window.MathJax={
 		}
 		promise=promise.then(function (toBeAddedK) {
 			m.reNewAndReOn();
-			return Promise.all(toBeAdded[k]);
+			return Promise.all(toBeAdded);
 		})
 	};
 
