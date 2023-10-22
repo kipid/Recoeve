@@ -159,12 +159,15 @@ public static void main(String... args) {
 		});
 	});
 
-	StaticHandler staticHandler=StaticHandler.create()
+	StaticHandler staticHandler=StaticHandler.create("/CDN/*")
 		.setCachingEnabled(true)
+		.setDirectoryListing(true)
+		.setFilesReadOnly(true)
+		.setDefaultContentEncoding("UTF-8");
+		.setMaxAgeSeconds(60L*60L*24L*365L) // Set value for max age in caching headers in seconds.
 		.setCacheEntryTimeout(1000L*60L*60L*24L*365L) // Cache timeout in ms (1 year)
-		.setFilesReadOnly(true);
 
-	router1.route("/CDN/*").handler(staticHandler);
+	router1.route().handler(staticHandler);
 
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog pl=new PrintLog();
@@ -864,7 +867,7 @@ public static void main(String... args) {
 				.setPassword("o8lx6xxp")
 			)
 	).requestHandler(req -> {
-		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN")?router1:router;
+		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN/")?router1:router;
 		try {
 			routerK.handle(req);
 		}
