@@ -71,7 +71,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	position:fixed; left:0; top:0;
 	z-index:10010;
 	background:black;
-	width:25em; max-width:100%;
+	width:21em; max-width:100%;
 	height:auto;
 	text-align:left
 }
