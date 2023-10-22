@@ -3374,7 +3374,7 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		let $reco=$(elem).parent(".reco");
 		let uri=m.unescapeHTML($reco.find(".textURI").html());
 		let r=m.myRecos[uri];
-		if (!r) {
+		if (!(r&&r.has)) {
 			r=m.userRecos[uri];
 		}
 		$input_uri[0].value=r.uri;
