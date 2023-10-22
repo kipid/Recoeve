@@ -822,12 +822,12 @@ public static void main(String... args) {
 			}
 			if (setCookieRMB.get(0).getName()=="I") {
 				// Success: Session cookie and New token.
-				pl.req.response().end("Rmbd", ENCODING);
+				pl.req.response().end(FileMap.replaceStr("Rmbd: [--Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)--]", pl.lang), ENCODING);
 				System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 			}
 			else { // if (setCookieRMB.startsWith("rmbdI="))
 				// Failed: Delete rmbd cookie.
-				pl.req.response().end("Remembering you failed. We deleted your cookie | session. Please log-in again.", ENCODING);
+				pl.req.response().end(FileMap.replaceStr("[--Remembering you failed.--] [--Refresh the page and try again.--]", pl.lang), ENCODING);
 				System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 			}
 		});

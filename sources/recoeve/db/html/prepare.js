@@ -703,7 +703,7 @@ return new Promise(function (resolve, reject) {
 			console.log("rmb_do : "+resp);
 			setTimeout(function () {
 				console.log(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
-				if (resp==="Rmbd"&&m.docCookies.hasItem('tCreate')) {
+				if (resp.startsWith("Rmbd")&&m.docCookies.hasItem('tCreate')) {
 					m.saveSSN();
 					if (m.saltSSN&&m.session) {
 						SSNencrypt(callback, args);
