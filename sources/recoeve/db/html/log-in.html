@@ -167,11 +167,11 @@ m.byteCount=function (str) {
 };
 
 m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
-m.regExEmail=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+@[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
+m.regExEmail=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+@[a-zA-Zㄱ-ㅎ가-힣0-9-_]+\.[\w]+$/;
 m.minIdLength=1;
-m.maxIdLength=255;
-m.minPwdLength=6;
-m.maxPwdLength=255;
+m.maxIdLength=128;
+m.minPwdLength=4;
+m.maxPwdLength=128;
 
 m.logIn=function (elem) {
 	let $elem=$(elem).eq(0);
