@@ -1357,6 +1357,7 @@ public List<io.vertx.core.http.Cookie> logoutFromAll(Cookie cookie, boolean sess
 		long user_me=Long.parseLong(cookie.get("I"), 16);
 		if (sessionPassed) {
 			try {
+				con.setAutoCommit(true);
 				pstmtDelUserSession1.setLong(1, user_me);
 				pstmtDelUserRemember.setLong(1, user_me);
 				System.out.println("Session deleted: "+pstmtDelUserSession1.executeUpdate());
