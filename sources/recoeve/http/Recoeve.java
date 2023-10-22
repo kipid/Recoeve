@@ -163,9 +163,9 @@ public static void main(String... args) {
 		.setCachingEnabled(true)
 		.setDirectoryListing(true)
 		.setFilesReadOnly(true)
-		.setDefaultContentEncoding("UTF-8");
+		.setDefaultContentEncoding("UTF-8")
 		.setMaxAgeSeconds(60L*60L*24L*365L) // Set value for max age in caching headers in seconds.
-		.setCacheEntryTimeout(1000L*60L*60L*24L*365L) // Cache timeout in ms (1 year)
+		.setCacheEntryTimeout(1000L*60L*60L*24L*365L); // Cache timeout in ms (1 year)
 
 	router1.route().handler(staticHandler);
 
