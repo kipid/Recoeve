@@ -381,6 +381,7 @@ public boolean checkDateDiff(Timestamp tNow, String from, int lessThanInDays) {
 
 public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String referer, String REACTION_GUEST) {
 	try {
+		con.setAutoCommit(true);
 		pstmtPutBlogVisitor.setTimestamp(1, tNow);
 		pstmtPutBlogVisitor.setString(2, ip);
 		pstmtPutBlogVisitor.setString(3, URI);
@@ -419,6 +420,7 @@ public String getBlogVisitor(StrArray fromTo) {
 }
 public boolean delBlogVisitor() {
 	try {
+		con.setAutoCommit(true);
 		Calendar calendar=Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 32 days from the current date
 		pstmtDelBlogVisitor.setTimestamp(1, new Timestamp(calendar.getTimeInMillis()));
@@ -460,21 +462,14 @@ public boolean emailAvailable(String email) {
 public boolean createAuthToken(Timestamp tNow, String ip, byte[] token) {
 	boolean done=false;
 	try {
-		con.setAutoCommit(false);
+		con.setAutoCommit(true);
 		pstmtCreateAuthToken.setTimestamp(1, tNow);
 		pstmtCreateAuthToken.setString(2, ip);
 		pstmtCreateAuthToken.setBytes(3, token);
 		done=(pstmtCreateAuthToken.executeUpdate()>0);
-		con.commit();
 	}
 	catch (SQLException e) {
 		err(e);
-		try {
-			con.rollback();
-		}
-		catch (SQLException e1) {
-			err(e1);
-		}
 	}
 	return done;
 }
@@ -543,7 +538,7 @@ public boolean checkAuthToken(StrArray inputs, String ip, Timestamp tNow) {
 }
 
 public boolean checkChangePwdToken(MultiMap params, Timestamp tNow) {
-	try{
+	try {
 		ResultSet user=findUserById(params.get("id"));
 		if (user.next()) {
 			String from=user.getString("tChangePwd");
@@ -559,7 +554,7 @@ public boolean checkChangePwdToken(MultiMap params, Timestamp tNow) {
 	return false;
 }
 public boolean checkChangePwdToken(String id, String token, Timestamp tNow) {
-	try{
+	try {
 		ResultSet user=findUserById(id);
 		if (user.next()) {
 			String from=user.getString("tChangePwd");
@@ -799,7 +794,6 @@ public String getPwdIteration(String idType, String id) { // idType	"id or email
 	boolean done=false;
 	String result="";
 	try {
-		con.setAutoCommit(false);
 		ResultSet user=null;
 		if (idType.equals("id")) {
 			user=findUserById(id);
@@ -1051,6 +1045,7 @@ public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 		if (tCreate!=null&&session!=null) {
 			if (checkTimeDiff(tNow, tCreate, hoursSSN*60*60)) {
 				try {
+					con.setAutoCommit(true);
 					pstmtSession.setLong(1, user_me);
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
@@ -1162,6 +1157,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 	String sH=inputs.get(1, "sH");
 	if( rmbdT!=null && rmbdAuth!=null && rmbdToken!=null && log!=null && sW!=null && sH!=null ) {
 	try {
+		con.setAutoCommit(false);
 		pstmtCheckUserRemember.setLong(1, user_me);
 		pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 		ResultSet rs=pstmtCheckUserRemember.executeQuery();
@@ -1189,6 +1185,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					System.out.println("Remembered.");
 					logsCommit(user_me, tNow, ip, "rmb", true);
 					rs.updateRow();
+					con.commit();
 					return setCookie;
 				}
 			}
@@ -1225,9 +1222,16 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 		}
 		System.out.println(errMsg);
 		logsCommit(user_me, tNow, ip, "rmb", false, errMsg);
+		con.commit();
 	}
 	catch (SQLException e) {
 		err(e);
+		try {
+			con.rollback();
+		}
+		catch (SQLException e2) {
+			err(e2);
+		}
 	}}}
 	return setCookie;
 }
@@ -1302,6 +1306,7 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie, boolean sessionPass
 		String tCreate=cookie.get("tCreate").replaceAll("_", " ");
 		if (tCreate!=null&&sessionPassed) {
 			try {
+				con.setAutoCommit(true);
 				pstmtSession.setLong(1, user_me);
 				pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 				ResultSet rs=pstmtSession.executeQuery();
@@ -1319,6 +1324,7 @@ public List<io.vertx.core.http.Cookie> logout(Cookie cookie, boolean sessionPass
 		String rmbdT=cookie.get("rmbdT").replaceAll("_", " ");
 		if(rmbdT!=null&&sessionPassed) {
 			try {
+				con.setAutoCommit(true);
 				pstmtCheckUserRemember.setLong(1, user_me);
 				pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
 				ResultSet rs=pstmtCheckUserRemember.executeQuery();
@@ -1405,7 +1411,6 @@ public boolean logs(long user_me, Timestamp tNow, String ip, String log, boolean
 }
 public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success) {
 	try {
-		con.setAutoCommit(false);
 		return logs(user_me, tNow, ip, log, success, null);
 	}
 	catch (SQLException e) {
@@ -1415,7 +1420,6 @@ public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, b
 }
 public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success, String desc) {
 	try {
-		con.setAutoCommit(false);
 		return logs(user_me, tNow, ip, log, success, desc);
 	}
 	catch (SQLException e) {
@@ -1468,6 +1472,7 @@ public static final long DAY_IN_MS=1000L*60L*60L*24L;
 public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp tNow) {
 	String res="";
 	try {
+		con.setAutoCommit(false);
 		ResultSet user=findUserById(user_id_from);
 		if (user.next()) {
 			long user_from=user.getLong("i");
@@ -1553,9 +1558,16 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 			}
 			delNeighborListTo(user_from, cat_from);
 		}
+		con.commit();
 	}
 	catch (SQLException e) {
 		err(e);
+		try {
+			con.rollback();
+		}
+		catch (SQLException e2) {
+			err(e2);
+		}
 	}
 	return res;
 }
@@ -1566,20 +1578,24 @@ public String getRecoms(String user_id_from, String userCatList) {
 		if (user.next()) {
 			long user_from=user.getLong("i");
 			NeighborList neighborList=new NeighborList(userCatList, false, false);
-			res="user\turi\tcats\tval";
+			res="user\tuser_id\turi\tcats\tval\tcmt";
 			int jSize=neighborList.getRowSize();
 			for (int j=1;j<jSize;j++) {
 				String neighborJStr=neighborList.get(j, 0);
 				long neighborJ=Long.parseLong(neighborJStr, 16);
-				UriList uriList=getUriList(neighborJ, neighborList.get(j, 1));
-				String[] uris=uriList.listOfURIs();
-				for (int k=0;k<uris.length;k++) {
-					String uri=uris[k];
-					ResultSet reco=getReco(user_from, uri);
-					if (!reco.next()) {
-						ResultSet neighborReco=getReco(neighborJ, uri);
-						if (neighborReco.next()) {
-							res+="\n"+neighborJStr+"\t"+uri+"\t"+neighborReco.getString("cats")+"\t"+neighborReco.getString("val");
+				ResultSet user_j=findUserByIndex(neighborJ);
+				if (user_j.next()) {
+					String user_id=user_j.getString("id");
+					UriList uriList=getUriList(neighborJ, neighborList.get(j, 1));
+					String[] uris=uriList.listOfURIs();
+					for (int k=0;k<uris.length;k++) {
+						String uri=uris[k];
+						ResultSet reco=getReco(user_from, uri);
+						if (!reco.next()) {
+							ResultSet neighborReco=getReco(neighborJ, uri);
+							if (neighborReco.next()) {
+								res+="\n"+neighborJStr+"\t"+user_id+"\t"+StrArray.enclose(uri)+"\t"+StrArray.enclose(neighborReco.getString("cats"))+"\t"+neighborReco.getString("val")+"\t"+StrArray.enclose(reco.getString("cmt"));
+							}
 						}
 					}
 				}
@@ -1673,6 +1689,7 @@ private static long[] convertByteArrayToLongArray(byte[] byteData) {
 // pstmtPutRecentests=con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`, `N`) VALUES (?, ?, ?, ?, 1);");
 public boolean putRecoRecentests(String uri, long user_me, Timestamp tNow) {
 	try {
+		con.setAutoCommit(true);
 		pstmtPutRecentests.setString(1, uri);
 		pstmtPutRecentests.setBytes(2, longToBytes(user_me));
 		pstmtPutRecentests.setTimestamp(3, tNow);
@@ -1811,7 +1828,6 @@ public void updateRecoStat(long user_me, String uri, Points pts, Timestamp tNow,
 	}
 	recoStat.updateRow();
 }
-public static final int SORT_AND_CUT_PER=8;
 // INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 public boolean putNeighbor(long user_to, String cat_to, long user_from, String cat_from, long sumSim, int nSim, Timestamp tNow, Timestamp tScanAll) throws SQLException {
 	pstmtPutNeighbor.setLong(1, user_to);
