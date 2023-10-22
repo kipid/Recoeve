@@ -1120,7 +1120,7 @@ m.delayedLogOut=function (msg, delayTime=27, $result) {
 	let delay=delayTime&&delayTime.constructor===Number?delayTime:27;
 	clearInterval(m.deleyedLogOutInterval);
 	m.deleyedLogOutInterval=setInterval(function () {
-		$error.html(`${msg}<br>[--You may be not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
 		$result?.html($error.html());
 		delay--;
 	}, 1000);
@@ -4703,7 +4703,7 @@ m.reco_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
 	}).fail(function () {
-		$error.html("[--Reco failed. You may be not logged-in.--]");
+		$error.html("[--Reco failed.--]");
 		args.$result?.html($error.html());
 		$button_reco.removeClass("disabled");
 	}).done(async function (resp) {
