@@ -2914,6 +2914,8 @@ m.reco_pointChange_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		if (args.inRecoms) {
 			args.$result?.html(`[--Reco failed.--]: ${m.escapeHTML(resp)}`);
 		}
@@ -2921,6 +2923,8 @@ m.reco_pointChange_do=function (args, err) {
 			args.$result?.html(`[--Failed change.--]: ${m.escapeHTML(resp)}`);
 		}
 	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		if (result?.substring(0,7)==="changed") {
@@ -4703,10 +4707,13 @@ m.reco_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
 	}).fail(function () {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		$error.html("[--Reco failed.--]");
 		args.$result?.html($error.html());
-		$button_reco.removeClass("disabled");
 	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		if (result.startsWith("recoed")) {
@@ -4806,8 +4813,12 @@ m.reco_change_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		$error.html("[--Failed change.--] "+resp);
 	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result)
 		if (result.startsWith("changed")) {
@@ -4917,10 +4928,17 @@ m.reco_delete_do=function (args, err) {
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
+	}).fail(function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
+		$error.html("[--Failed delete.--]");
+		args.$result?.html($error.html());
 	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
 		let res=await m.strToJSON(resp);
 		if (res[1]?.result.startsWith("deleted")) {
-			$error.html("Deleted");
+			$error.html("[--Deleted.--]");
 			let cats=String(args.r.cats);
 			m.myRecos[args.uri].deleted=true;
 			m.delCats_UriFromLists(cats, args.uri);
