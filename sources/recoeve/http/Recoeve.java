@@ -162,8 +162,12 @@ public static void main(String... args) {
 	StaticHandler staticHandler=StaticHandler.create("/CDN/*")
 		.setCachingEnabled(true)
 		.setDirectoryListing(true)
+		.setDirectoryTemplate("C:/Recoeve/CDN/template.html")
 		.setFilesReadOnly(true)
 		.setDefaultContentEncoding("UTF-8")
+		.setAlwaysAsyncFS(true)
+		.setMaxCacheSize(1024*100)
+		.setSendVaryHeader(true)
 		.setMaxAgeSeconds(60L*60L*24L*365L) // Set value for max age in caching headers in seconds.
 		.setCacheEntryTimeout(1000L*60L*60L*24L*365L); // Cache timeout in ms (1 year)
 
