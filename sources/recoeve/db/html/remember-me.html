@@ -15,8 +15,10 @@
 m.searchVars=m.getSearchVars(window.location.search);
 $err=$("#err");
 m.rmb_me(function (vars, err) {
-	console.log(err);
-	$err.html(m.escapeHTML(err));
+	if (err) {
+		console.log(err);
+		$err.html(m.escapeHTML(err));
+	}
 	// wait until saving session/rmb cookies.
 	setTimeout(function () {
 		if (err) {
