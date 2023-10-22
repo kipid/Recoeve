@@ -20,7 +20,6 @@ m.rmb_me(function (vars, err) {
 	// wait until saving session/rmb cookies.
 	setTimeout(function () {
 		if (err) {
-			$err.html(m.escapeHTML(err));
 			window.location.pathname="/account/log-in";
 		}
 		else {

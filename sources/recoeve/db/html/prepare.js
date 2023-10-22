@@ -679,13 +679,13 @@ return new Promise(function (resolve, reject) {
 				resolve();
 			}
 			else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 1, "/", false, true);
 				callback(args, null); // null means no error.
 				if (args.$result) {
 					args.$result.html(m.escapeHTML(resp));
 				}
 				resolve();
-				m.docCookies.removeItem("SSN", "/", false, true);
+				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
 		});
 	};
