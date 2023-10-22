@@ -1358,9 +1358,9 @@ public List<io.vertx.core.http.Cookie> logoutFromAll(Cookie cookie, boolean sess
 		if (sessionPassed) {
 			try {
 				pstmtDelUserSession1.setLong(1, user_me);
-				pstmtDelUserSession1.executeUpdate();
 				pstmtDelUserRemember.setLong(1, user_me);
-				pstmtDelUserRemember.executeUpdate();
+				System.out.println("Session deleted: "+pstmtDelUserSession1.executeUpdate());
+				System.out.println("Remember deleted: "+pstmtDelUserRemember.executeUpdate());
 			}
 			catch (SQLException e) {
 				err(e);
