@@ -106,7 +106,7 @@ public void printLog(RoutingContext ctx) {
 	////////////////////////////////////
 	cookie=new Cookie(req.headers().get("Cookie"));
 	sessionPassed=db.sessionCheck(cookie, tNow);
-	System.out.println("Cookie: "+cookie);
+	// System.out.println("Cookie: "+cookie);
 	System.out.println("Session passed?: "+sessionPassed);
 	user_i=cookie.get("rmbdI");
 	if (user_i!=null) {
