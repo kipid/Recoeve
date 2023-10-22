@@ -676,12 +676,16 @@ return new Promise(function (resolve, reject) {
 			let iter=Number(resp);
 			if (isNaN(iter)) {
 				callback(args, resp);
+				resolve();
 			}
 			else {
 				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null); // null means no error.
+				if (args.$result) {
+					args.$result.html(m.escapeHTML(resp));
+				}
 				resolve();
-				// m.docCookies.removeItem("SSN", "/", false, true);
+				m.docCookies.removeItem("SSN", "/", false, true);
 			}
 		});
 	};
@@ -691,7 +695,6 @@ return new Promise(function (resolve, reject) {
 		}
 		if (m.saltSSN&&m.session) {
 			SSNencrypt(callback, args);
-			resolve();
 			return;
 		}
 	}
