@@ -1196,6 +1196,7 @@ m.myCatList=m.myPage?m.catList:[];
 m.catUriList=[];
 m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
+m.recoDefs={};
 m.timeout={};
 m.maxShowReco=20;
 
@@ -3374,6 +3375,7 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		let $reco=$(elem).parent(".reco");
 		let uri=m.unescapeHTML($reco.find(".textURI").html());
 		let r=m.myRecos[uri];
+		if (!r) { m.myRecos[uri]={uri}; }
 		if (!(r&&r.has)) {
 			r=m.userRecos[uri];
 		}
@@ -3447,14 +3449,15 @@ return new Promise(async function (resolve, reject) {
 		fs[0].ptnSH=m.splitHangul("$!@#");
 		fs.$fs.trigger("input.fs");
 	}
-	if ((cat===""||cat)&&uris) {
-		for (k=0;k<uris.length;k++) {
-			let uri=uris[k];
+	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
+		let catUris=m.catUriList[cat].uris;
+		for (k=0;k<catUris.length;k++) {
+			let uri=catUris[k];
 			let r=m.userRecos[uri];
-			if (!r) {r={};}
-			r.index=uris.length-1-k;
+			if (!r) { r=m.userRecos[uri]={uri}; }
+			r.index=catUris.length-1-k;
 		}
-		m.lastIndexOfUriList=uris.length;
+		m.lastIndexOfUriList=catUris.length;
 	}
 	return resolve();
 });
@@ -3470,9 +3473,9 @@ m.getRecos=function (uris, recos, cat) {
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=recos[uri];
-		if (!r) { r=recos[uri]={}; }
+		if (!r) { r=recos[uri]={uri}; }
 		if (recos===m.userRecos) {
-			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri:uri, reco:r};
+			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r, reco:r};
 		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
@@ -3489,7 +3492,7 @@ m.getRecos=function (uris, recos, cat) {
 				}).fail(function () {
 					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
 					$contents.html("");
-					resolve();
+					reject();
 				}).done(async function (resp) {
 					m.recoDowned(getRecosStr.substring(4), recos);
 					if (recos===m.userRecos) {
@@ -3779,12 +3782,11 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 							recomsI.avgValStr=avgValStr;
 						}
 						m.recoms[cat]=recoms;
-						let r=m.userRecos;
 						let uris="";
 						for (let i=0;i<recoms.length;i++) {
 							let uri=recoms[i].uri;
 							uris+=uri+"\n";
-							r[uri]={uri:uri, down:true, has:false};
+							m.userRecos[uri]={uri, down:true, has:false};
 						}
 						$.ajax({
 							type:"POST", url:"/reco/multidefs", data:uris.trim()
@@ -3792,11 +3794,13 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						}).done(async function (resp) {
 							let defs=await m.strToJSON(resp.trim());
 							for (let j=1;j<defs.length;j++) {
-								let r=m.userRecos[defs[j].uri];
-								r.defs=true;
-								r.defCats=await m.strToJSON(defs[j]["def-cats"], false);
-								r.defTitles=await m.strToJSON(defs[j]["def-titles"], false);
-								r.defDescs=await m.strToJSON(defs[j]["def-descs"], false);
+								let uri=defs[j].uri;
+								let recoDefs=m.recoDefs[uri];
+								if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
+								recoDefs.defs=true;
+								recoDefs.defCats=await m.strToJSON(defs[j]["def-cats"], false);
+								recoDefs.defTitles=await m.strToJSON(defs[j]["def-titles"], false);
+								recoDefs.defDescs=await m.strToJSON(defs[j]["def-descs"], false);
 							}
 							let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
 							let strHTML="";
@@ -4219,9 +4223,11 @@ m.catsContainsAllAnotCats=function (cats0, cats1) {
 };
 
 m.myRecos[""]=m.userRecos[""]={
-	has:false, down:true, h1:"Empty URI.", defs:true
+	uri:"", has:false, down:true
 	, title:"", cats:"", desc:"", cmt:"", val:m.val("")
-	, defTitles:[[""]], defCats:[[""]], defDescs:[[""]]
+};
+m.recoDefs[""]={
+	uri:"", defTitles:[[""]], defCats:[[""]], defDescs:[[""]], defs:true, h1:"Empty URI."
 };
 $my_reco=$("#my-reco");
 m.showReco=async function (r) {
@@ -4317,13 +4323,15 @@ return new Promise(function (resolve, reject) {
 	});
 });
 }
-m.showDefs=async function (r) {
-	let defTitles=r.defTitles;
+m.showDefs=async function (uri) {
+	let recoDefs=m.recoDefs[uri];
+	if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri, defTitles:[[""]], defCats:[[""]], defDescs:[[""]], defs:false, h1:undefined}; }
+	let defTitles=recoDefs.defTitles;
 	let defTitlesHTML="";
-	if (!r.h1) {
-		r.h1=await m.getH1(r.uri);
+	if (!recoDefs.h1) {
+		recoDefs.h1=await m.getH1(uri);
 	}
-	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeHTML(String(r.h1))}</div>`;
+	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeHTML(String(recoDefs.h1))}</div>`;
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
@@ -4339,7 +4347,7 @@ m.showDefs=async function (r) {
 		$input_title[0].value=m.unescapeHTML($this.html());
 	});
 
-	let defCats=r.defCats;
+	let defCats=m.recoDefs[uri].defCats;
 	let defCatsHTML=`<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
@@ -4401,7 +4409,7 @@ m.showDefs=async function (r) {
 		$input_cats.trigger("keyup.fs");
 	});
 
-	let defDescs=r.defDescs;
+	let defDescs=m.recoDefs[uri].defDescs;
 	let defDescsHTML="";
 	for (let i=0;i<defDescs.length;i++) {
 		let desc=defDescs[i][0].trim();
@@ -4505,23 +4513,26 @@ m.getAndFillRecoInNewReco=function (r, fillDefs) {
 };
 m.getAndFillDefsInNewReco=function (r, fillDefs) {
 	return new Promise(function (resolve, reject) {
-		if (r.defs) {
-			m.showDefs(r, fillDefs);
+		let uri=r.uri;
+		if (m.recoDefs[uri]?.defs) {
+			m.showDefs(uri);
 			resolve();
 		}
 		else {
-			m.showDefs({defTitles:[[""]], defCats:[[""]], defDescs:[[""]]});
+			m.showDefs("");
 			$.ajax({
-				type:"POST", url:"/reco/defs", data:r.uri
+				type:"POST", url:"/reco/defs", data:uri
 				, dataType:"text"
 			}).done(async function (resp) {
 				let defs=await m.strToJSON(resp);
-				r.defs=true;
+				let recoDefs=m.recoDefs[uri];
+				if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
+				recoDefs.defs=true;
 				if (defs[1]) {
-					r.defCats=await m.strToJSON(defs[1]["def-cats"], false);
-					r.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
-					r.defDescs=await m.strToJSON(defs[1]["def-descs"], false);
-					m.showDefs(r);
+					recoDefs.defCats=await m.strToJSON(defs[1]["def-cats"], false);
+					recoDefs.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
+					recoDefs.defDescs=await m.strToJSON(defs[1]["def-descs"], false);
+					m.showDefs(uri);
 				}
 				resolve();
 			});
@@ -4567,6 +4578,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	$show_URI.html(String(uriRendered.html));
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={uri}; }
+	if (!(r&&r.has)) { r=m.userRecos[uri]; }
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
 	m.reNewAndReOn();
@@ -5214,10 +5226,13 @@ m.gotoLi=async function (e, elem, k, fs) {
 		let k=m.userRecos[uri]?.index;
 		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
-		setTimeout(function () {
+		setTimeout(function self() {
 			let $recoElem=$(`#reco-${k}`);
 			if ($recoElem.exists()) {
 				m.showAndScrollTo($recoElem);
+			}
+			else {
+				setTimout(self, 1024);
 			}
 		}, 1024);
 	}
