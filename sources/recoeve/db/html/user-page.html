@@ -1122,7 +1122,7 @@ m.a_log_out_from_all=function (e, elem) {
 	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	let href=`/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
-		$a_log_out.attr("href", href);
+		$a_log_out_from_all.attr("href", href);
 		return true;
 	}
 	else {
@@ -1291,11 +1291,11 @@ $right_top_log_in.append(`${m.myIndex===""?`<div class="button" onclick="$window
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>
 <div class="button">
-	<a class="a-log-out" href="/account/log-out-from-all" onclick="return m.a_log_out_from_all(event,this)">[--Log out from all--]</a>
+	<a class="a-log-out-from-all" href="/account/log-out-from-all" onclick="return m.a_log_out_from_all(event,this)">[--Log out from all--]</a>
 </div>`}`);
 $a_log_in=$(".a-log-in");
 $a_log_out=$(".a-log-out");
-
+$a_log_out_from_all=($".a-log-out-from-all")
 
 
 ////////////////////////////////////////////////////
@@ -1400,6 +1400,7 @@ if (!!m.myIndex) {
 }
 else {
 	$a_log_out.hide();
+	$a_log_out_from_all.hide();
 }
 
 m.hideFK=function () {
