@@ -4279,8 +4279,11 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 			$input_desc[0].value=r.defDescs[0][0];
 		}
 	}
-	if (r.has) {
-		if (r.deleted) {
+	let uri=r.uri;
+	let myR=m.myRecos[uri];
+	if (!myR) { myR=m.myRecos[uri]={uri}; }
+	if (myR.has) {
+		if (myR.deleted) {
 			$button_reco.show();
 			$button_edit.hide();
 			$button_del.hide();
