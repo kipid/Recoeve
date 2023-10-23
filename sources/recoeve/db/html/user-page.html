@@ -3633,52 +3633,58 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 				, dataType:"text"
 			}).done(async function (resp) {
-				let respJSON=await m.strToJSON(resp);
+				let respJSON=await m.strToJSON(resp.trim());
 				let neighbors=[];
 				neighbors.sorted=[];
 				let sorted=neighbors.sorted;
 				let n=0;
-				for (let i=1;i<respJSON.length;i++) {
-					let neighborI=respJSON[i];
-					neighborI.cat_from=cat_from;
-					let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
-					let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
-					neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
-					if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
-						neighborI.i=n;
-						neighbors[n]=neighborI;
-						sorted[n]=n;
-						n++;
-						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+				if (respJSON.length>1) {
+					for (let i=1;i<respJSON.length;i++) {
+						let neighborI=respJSON[i];
+						neighborI.cat_from=cat_from;
+						let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
+						let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
+						neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
+						if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
+							neighborI.i=n;
+							neighbors[n]=neighborI;
+							sorted[n]=n;
+							n++;
+							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+						}
+						else if (neighborI.nSim>neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`].nSim) {
+							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
+						}
 					}
-					else if (neighborI.nSim>neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`].nSim) {
-						neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
-					}
-				}
-				let until=sorted.sortedUntil=m.heapsort(neighbors, "simAvg100", sorted, m.neighborUpto);
-				let strHTML=``;
-				for (let i=neighbors.length-1;i>=until;i--) {
-					let neighborI=neighbors[sorted[i]];
-					strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
-				}
-				$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
-				$contents.html(strHTML);
-				if (scroll) {
-					$window.scrollTop($contents.offset().top);
-				}
-				m.neighbors[cat_from]=neighbors;
-				if (m.myPage&&neighbors.length>1000) {
-					let str=`cat_from\t${cat_from}\n`;
-					let str_user_to=`user_to`;
-					let str_cat_to=`cat_to`;
-					let cut_upto=neighbors.length-m.neighborUpto;
-					for (let i=neighbors.length-1;i>=cut_upto;i--) {
+					let until=sorted.sortedUntil=m.heapsort(neighbors, "simAvg100", sorted, m.neighborUpto);
+					let strHTML=``;
+					for (let i=neighbors.length-1;i>=until;i--) {
 						let neighborI=neighbors[sorted[i]];
-						str_user_to+=`\t${neighborI.user_to}`;
-						str_cat_to+=`\t${neighborI.cat_to}`;
+						strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
 					}
-					str+=str_user_to+"\n"+str_cat_to;
-					m.rmb_me(m.cutNeighbors, str);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
+					$contents.html(strHTML);
+					if (scroll) {
+						$window.scrollTop($contents.offset().top);
+					}
+					m.neighbors[cat_from]=neighbors;
+					if (m.myPage&&neighbors.length>1000) {
+						let str=`cat_from\t${cat_from}\n`;
+						let str_user_to=`user_to`;
+						let str_cat_to=`cat_to`;
+						let cut_upto=neighbors.length-m.neighborUpto;
+						for (let i=neighbors.length-1;i>=cut_upto;i--) {
+							let neighborI=neighbors[sorted[i]];
+							str_user_to+=`\t${neighborI.user_to}`;
+							str_cat_to+=`\t${neighborI.cat_to}`;
+						}
+						str+=str_user_to+"\n"+str_cat_to;
+						m.rmb_me(m.cutNeighbors, str);
+					}
+				}
+				else {
+					$numbers_of_recos.html(`[--You have no neighbors on cat=${m.escapeHTML(cat)}.--]`);
+					$contents.html("");
 				}
 			});
 			break;
@@ -3688,9 +3694,10 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
 					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML="[--You have no recoms yet from your neighbors.--]";
+						strHTML="[--You have no recoms yet from your neighbors.--]<br><br>";
 					}
 					else {
+						strHTML=`[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br>`;
 						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
 							let recomHTML=await m.recomHTML(m.userRecos[uri])
@@ -4055,16 +4062,16 @@ m.openCat=function (cat, e) {
 	if (!m.initialOpen) {
 		setTimeout(function () {
 			if ($button_get_recoms.hasClass("enabled")) {
-				window.location.hash="#button-get-recoms";
 				m.hashURI="button-get-recoms";
+				window.location.hash=`#${m.hashURI}`;
 			}
 			else if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-				window.location.hash="#numbers-of-recos";
 				m.hashURI="numbers-of-recos";
+				window.location.hash=`#${m.hashURI}`;
 			}
 			else {
-				window.location.hash="#headPlay";
 				m.hashURI="headPlay";
+				window.location.hash=`#${m.hashURI}`;
 			}
 			window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
 		}, 2048);
@@ -5662,7 +5669,7 @@ m.processShortKey=function (e) {
 				$button_mode.removeClass("enabled");
 				$button_get_recoms.removeClass("enabled");
 				m.hashURI="headPlay";
-				window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
+				window.location.hash=`#${m.hashURI}`;
 			}
 			else {
 				m.recoMode="recoms";
@@ -5670,7 +5677,7 @@ m.processShortKey=function (e) {
 				$button_get_recoms.addClass("enabled");
 				$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 				m.hashURI="button-get-recoms";
-				window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
+				window.location.hash=`#${m.hashURI}`;
 			}
 			m.openCat(m.currentCat);
 		}
