@@ -211,7 +211,43 @@ public class StrArray {
 			}
 			sb.append("\n");
 		}
-		return sb.toString().trim();
+		return sb.toString();
+	}
+	public String toStringSet() {
+		if (mapArray==null) {
+			return "";
+		}
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		for (int i=0;i<rowSize;i++) {
+			if (mapArray.remove(arrayArray.get(i).get(0))!=null) {
+				int colSize=this.getColSizeAtRow(i);
+				sb.append(enclose(arrayArray.get(i).get(0)));
+				for (int j=1;j<colSize;j++) {
+					sb.append("\t"+enclose(arrayArray.get(i).get(j)));
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
+	public String toStringBeingCut(long[] counts) {
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		if (rowSize!=counts.length||mapArray==null) {
+			return "";
+		}
+		for (int i=0;i<rowSize;i++) {
+			if (counts[i]!=0L&&mapArray.remove(arrayArray.get(i).get(0))!=null) {
+				int colSize=this.getColSizeAtRow(i);
+				sb.append(enclose(arrayArray.get(i).get(0)));
+				for (int j=1;j<colSize;j++) {
+					sb.append("\t"+enclose(arrayArray.get(i).get(j)));
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
 	}
 	public String toStringDecoded() {
 		StringBuilder sb=new StringBuilder();
@@ -224,7 +260,7 @@ public class StrArray {
 			}
 			sb.append("\n");
 		}
-		String res=sb.toString().trim();
+		String res=sb.toString();
 		try {
 			return URLDecoder.decode(res, "UTF-8");
 		}
@@ -247,7 +283,25 @@ public class StrArray {
 			}
 			sb.append("\n");
 		}
-		return sb.toString().trim();
+		return sb.toString();
+	}
+	public String toStringBeingCut(int[] sorted, long[] counts) {
+		StringBuilder sb=new StringBuilder();
+		int rowSize=this.getRowSize();
+		if (sorted.length!=rowSize||counts.length!=rowSize||mapArray==null) {
+			return "";
+		}
+		for (int i=0;i<rowSize;i++) {
+			int colSize=this.getColSizeAtRow(sorted[i]);
+			if (counts[sorted[i]]!=0L&&mapArray.remove(arrayArray.get(i).get(0))!=null) {
+				sb.append(enclose(arrayArray.get(sorted[i]).get(0)));
+				for (int j=1;j<colSize;j++) {
+					sb.append("\t"+enclose(arrayArray.get(sorted[i]).get(j)));
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
 	}
 
 	public String toIndexedString() {

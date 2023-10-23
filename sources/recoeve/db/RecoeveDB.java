@@ -1436,7 +1436,7 @@ public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, b
 	return false;
 }
 
-public String cutNeighbors(String user_id_from, long user_me, String toBeCut) {
+public String cutNeighbors(String user_id_from, long user_me, String toBeCut, Timestamp tNow) {
 	try {
 		con.setAutoCommit(false);
 		ResultSet user=findUserById(user_id_from);
@@ -1457,10 +1457,18 @@ public String cutNeighbors(String user_id_from, long user_me, String toBeCut) {
 				sb.append("\n");
 			}
 			ResultSet rSneighborListFrom=getRSNeighborListFrom(user_me, cat_from);
-			rSneighborListFrom.updateString("userCatList", sb.toString());
-			rSneighborListFrom.updateRow();
+			if (rSneighborListFrom!=null) {
+				rSneighborListFrom.updateString("userCatList", sb.toString());
+				rSneighborListFrom.updateTimestamp("tUpdate", tNow);
+				rSneighborListFrom.updateRow();
+			}
+			else {
+				putNeighborListFrom(user_me, cat_from, new NeighborList(sb.toString()), tNow);
+			}
 			ResultSet rSneighborListTo=getRSNeighborListTo(user_me, cat_from);
-			rSneighborListTo.deleteRow();
+			if (rSneighborListTo!=null) {
+				rSneighborListTo.deleteRow();
+			}
 			con.commit();
 			return "cut";
 		}
@@ -1546,8 +1554,14 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 								ResultSet revRSneighborListFrom=getRSNeighborListFrom(Long.parseLong(aL.get(0), 16), aL.get(1));
 								NeighborList revNeighborListFrom=new NeighborList(revRSneighborListFrom.getString("userCatList"), false, true);
 								if (revNeighborListFrom.mapArray.putIfAbsent(Long.toString(user_from, 16)+"\t"+cat_from, new ArrayList<String>(Arrays.asList(Long.toString(user_from, 16), cat_from)))==null) {
-									revRSneighborListFrom.updateString("userCatList", revNeighborListFrom.toStringRowMap());
-									revRSneighborListFrom.updateRow();
+									if (revRSneighborListFrom!=null) {
+										revRSneighborListFrom.updateString("userCatList", revNeighborListFrom.toStringRowMap());
+										revRSneighborListFrom.updateTimestamp("tUpdate", tNow);
+										revRSneighborListFrom.updateRow();
+									}
+									else {
+										putNeighborListFrom(Long.parseLong(aL.get(0), 16), aL.get(1), revNeighborListFrom, tNow);
+									}
 								}
 							}
 							catch (SQLException e) {
@@ -1562,7 +1576,9 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 				}
 			}
 			else {
-				rSneighborListFrom.deleteRow();
+				if (rSneighborListFrom!=null) {
+					rSneighborListFrom.deleteRow();
+				}
 			}
 			delNeighborListTo(user_from, cat_from);
 		}
@@ -2562,7 +2578,7 @@ public void catsChangedOnUri(long user_me, Categories oldCats, Categories newCat
 	updateDefCat(uri, newCats, 1);
 }
 
-public static final int SORTPER=100;
+public static final int SORTPER=30;
 
 public void updateDefCat(String uri, Categories cats, int increment) throws SQLException {
 if (cats!=null&&!(cats.toString().isEmpty())) {
@@ -2606,7 +2622,7 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 					int nUpdate=catSet.getInt("nUpdate")+1;
 					catSet.updateInt("nUpdate", nUpdate);
 					if (nUpdate%SORTPER==0) {
-						StrArray catSetArray=new StrArray(catSet.getString("catSet"), false, false);
+						StrArray catSetArray=new StrArray(catSet.getString("catSet"), false, true);
 						int n=catSetArray.getRowSize();
 						int[] sorted=new int[n];
 						for (int i=0;i<n;i++) {
@@ -2633,7 +2649,7 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 							}
 							sorted[j]=temp;
 						}
-						catSet.updateString("catSet", catSetArray.toString(sorted));
+						catSet.updateString("catSet", catSetArray.toStringBeingCut(sorted, counts));
 					}
 					catSet.updateRow();
 				}
@@ -2644,8 +2660,11 @@ if (cats!=null&&!(cats.toString().isEmpty())) {
 			pstmtPutRecoStatDefCat.setString(2, cat);
 			pstmtPutRecoStatDefCat.executeUpdate();
 			if (catSet.next()) {
-				catSet.updateString("catSet", catSet.getString("catSet")+"\n"+StrArray.enclose(cat));
-				catSet.updateRow();
+				StrArray sACatSet=new StrArray(catSet.getString("catSet"), false, true);
+				if (sACatSet.mapArray.putIfAbsent(cat, new ArrayList<String>(Arrays.asList(cat)))==null) {
+					catSet.updateString("catSet", sACatSet.toStringSet());
+					catSet.updateRow();
+				}
 			}
 			else {
 				pstmtPutRecoStatDefCatSet.setString(1, uri);
@@ -2696,7 +2715,7 @@ if (title!=null&&!(title.isEmpty())) {
 				int nUpdate=titleSet.getInt("nUpdate")+1;
 				titleSet.updateInt("nUpdate", nUpdate);
 				if (nUpdate%SORTPER==0) {
-					StrArray titleSetArray=new StrArray(titleSet.getString("titleSet"), false, false);
+					StrArray titleSetArray=new StrArray(titleSet.getString("titleSet"), false, true);
 					int n=titleSetArray.getRowSize();
 					int[] sorted=new int[n];
 					for (int i=0;i<n;i++) {
@@ -2723,7 +2742,7 @@ if (title!=null&&!(title.isEmpty())) {
 						}
 						sorted[j]=temp;
 					}
-					titleSet.updateString("titleSet", titleSetArray.toString(sorted));
+					titleSet.updateString("titleSet", titleSetArray.toStringBeingCut(sorted, counts));
 				}
 				titleSet.updateRow();
 			}
@@ -2734,8 +2753,11 @@ if (title!=null&&!(title.isEmpty())) {
 		pstmtPutRecoStatDefTitle.setString(2, title);
 		pstmtPutRecoStatDefTitle.executeUpdate();
 		if (titleSet.next()) {
-			titleSet.updateString("titleSet", titleSet.getString("titleSet")+"\n"+StrArray.enclose(title));
-			titleSet.updateRow();
+			StrArray sATitleSet=new StrArray(titleSet.getString("titleSet"), false, true);
+			if (sATitleSet.mapArray.putIfAbsent(title, new ArrayList<String>(Arrays.asList(title)))==null) {
+				titleSet.updateString("titleSet", sATitleSet.toStringSet());
+				titleSet.updateRow();
+			}
 		}
 		else {
 			pstmtPutRecoStatDefTitleSet.setString(1, uri);
@@ -2793,7 +2815,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 				int nUpdate=descSet.getInt("nUpdate")+1;
 				descSet.updateInt("nUpdate", nUpdate);
 				if (nUpdate%SORTPER==0) {
-					StrArray descSetArray=new StrArray(descSet.getString("descSet"), false, false);
+					StrArray descSetArray=new StrArray(descSet.getString("descSet"), false, true);
 					int n=descSetArray.getRowSize();
 					int[] sorted=new int[n];
 					for (int i=0;i<n;i++) {
@@ -2828,7 +2850,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 						}
 						sorted[j]=temp;
 					}
-					descSet.updateString("descSet", descSetArray.toString(sorted));
+					descSet.updateString("descSet", descSetArray.toStringBeingCut(sorted, counts));
 				}
 				descSet.updateRow();
 			}
@@ -2840,8 +2862,37 @@ if (desc!=null&&!(desc.isEmpty())) {
 		pstmtPutRecoStatDefDesc.setString(3, desc);
 		pstmtPutRecoStatDefDesc.executeUpdate();
 		if (descSet.next()) {
-			descSet.updateString("descSet", descSet.getString("descSet")+"\n"+StrArray.enclose(desc));
-			descSet.updateRow();
+			StrArray sADescSetRaw=new StrArray(descSet.getString("descSet"), false, false);
+			StrArray sADescSet=new StrArray(false, true);
+			int iMax=sADescSetRaw.getRowSize();
+			for (int i=0;i<iMax;i++) {
+				String descIHash=null;
+				try {
+					descIHash=hex(sha512(sADescSetRaw.get(i, 0)));
+				}
+				catch (Exception e) {
+					err(e);
+					return;
+				}
+				ArrayList<String> arrayListI=new ArrayList<String>(Arrays.asList(descIHash, sADescSetRaw.get(i, 0)));
+				sADescSet.arrayArray.add(arrayListI);
+				sADescSet.mapArray.putIfAbsent(descIHash, arrayListI);
+			}
+			String strDescHash=hex(descHash);
+			ArrayList<String> arrayList=new ArrayList<String>(Arrays.asList(strDescHash, desc));
+			if (sADescSet.mapArray.putIfAbsent(strDescHash, arrayList)==null) {
+				sADescSet.arrayArray.add(arrayList);
+				StringBuilder sb=new StringBuilder();
+				int kMax=sADescSet.getRowSize();
+				for (int k=0;k<kMax;k++) {
+					if (sADescSet.mapArray.remove(sADescSet.arrayArray.get(k).get(0))!=null) {
+						sb.append(StrArray.enclose(sADescSet.arrayArray.get(k).get(1)));
+						sb.append("\n");
+					}
+				}
+				descSet.updateString("descSet", sb.toString());
+				descSet.updateRow();
+			}
 		}
 		else {
 			pstmtPutRecoStatDefDescSet.setString(1, uri);

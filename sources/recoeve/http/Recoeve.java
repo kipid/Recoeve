@@ -389,7 +389,7 @@ public static void main(String... args) {
 					case "cut-Neighbors": // e.g. path=/user/kipid/cut-Neighbors
 						if (pl.sessionPassed) {
 							pl.req.bodyHandler((Buffer data) -> {
-								pl.req.response().end(pl.db.cutNeighbors(finalUserId, Long.parseLong(pl.cookie.get("I"), 16), data.toString()), ENCODING);
+								pl.req.response().end(pl.db.cutNeighbors(finalUserId, Long.parseLong(pl.cookie.get("I"), 16), data.toString(), pl.tNow), ENCODING);
 								System.out.println("Sended neighbors.");
 							});
 						}
