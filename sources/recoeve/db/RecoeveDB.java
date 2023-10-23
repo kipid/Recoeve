@@ -1552,7 +1552,13 @@ public String getStrOfNeighbors(String user_id_from, String cat_from, Timestamp 
 						neighborList.mapArray.forEach((k, aL) -> {
 							try {
 								ResultSet revRSneighborListFrom=getRSNeighborListFrom(Long.parseLong(aL.get(0), 16), aL.get(1));
-								NeighborList revNeighborListFrom=new NeighborList(revRSneighborListFrom.getString("userCatList"), false, true);
+								NeighborList revNeighborListFrom=null;
+								if (revRSneighborListFrom!=null) {
+									revNeighborListFrom=new NeighborList(revRSneighborListFrom.getString("userCatList"), false, true);
+								}
+								else {
+									revNeighborListFrom=new NeighborList("", false, true);
+								}
 								if (revNeighborListFrom.mapArray.putIfAbsent(Long.toString(user_from, 16)+"\t"+cat_from, new ArrayList<String>(Arrays.asList(Long.toString(user_from, 16), cat_from)))==null) {
 									if (revRSneighborListFrom!=null) {
 										revRSneighborListFrom.updateString("userCatList", revNeighborListFrom.toStringRowMap());
