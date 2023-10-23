@@ -4919,6 +4919,7 @@ $button_edit.on("click", function (e) {
 		}
 
 		let points=val.str;
+		if (!r.val) { r.val=m.val(""); }
 		if (points!==r.val.str) {
 			changed=true;
 			strHeads+="\t"+"val";
