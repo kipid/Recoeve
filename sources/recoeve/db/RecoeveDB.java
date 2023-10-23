@@ -653,14 +653,15 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	}
 	return done;
 }
-private boolean deleteUser(String userEmail, Timestamp tNow) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
+private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
+	Timestamp tNow=Timestamp.valueOf(this.now());
 	boolean done=false;
 	ResultSet user=null;
 	try {
 		con.setAutoCommit(false);
 		ResultSet rsUser=findUserByEmail(userEmail);
 		if (rsUser.next()) {
-			long user_me=rsUser.getLong("user_i");
+			long user_me=rsUser.getLong("i");
 			updateUserClass(rsUser.getInt("class"), -1);
 			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
 			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
@@ -680,6 +681,13 @@ private boolean deleteUser(String userEmail, Timestamp tNow) { // TODO: DELETE `
 				updateDefDesc(uri, desc, -1);
 				updateRecoStat(user_me, uri, pts, tNow, -1);
 			}
+			pstmtDelUserRemember.setLong(1, user_me);
+			pstmtDelUserRemember.executeUpdate();
+			pstmtDelUserSession1.setLong(1, user_me);
+			pstmtDelUserSession1.executeUpdate();
+			PreparedStatement pstmtDelLogInLogs=con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
+			pstmtDelLogInLogs.setLong(1, user_me);
+			pstmtDelLogInLogs.executeUpdate();
 			pstmtDeleteUser.setString(1, userEmail);
 			done=pstmtDeleteUser.executeUpdate()>0;
 		}
@@ -3159,5 +3167,7 @@ public static void main(String... args) {
 
 	RecoeveDB db=new RecoeveDB();
 	System.out.println(db.delBlogVisitor());
+	// db.deleteUser("jwj0405@nav");
 }
 }// public class RecoeveDB
+// UPDATE `Users` SET `id`="jwj0405" WHERE `email`="jwj0405@naver.com";
