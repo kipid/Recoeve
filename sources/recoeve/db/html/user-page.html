@@ -780,7 +780,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	</div>
 </div><!-- div#headPlay -->
 <div class="side2"><div class="numbers-of-recos"></div></div>
-<div class="side2"><div class="button" onclick="$('#promoting').toggle()">▼ Toggle Recoeve.net Manual</div></div>
+<div class="side2"><div class="button" id="toggle-manual" onclick="m.toggleManual()">▼ [--Hiding Recoeve.net Manual--]</div></div>
 <div class="side2 none" id="promoting">
 	<div class="p">
 		Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a>
@@ -6193,29 +6193,57 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 		}, 1000);
 	}
 };
+
 $toggle_reco_list_play.on("mouseenter", function (e) {
-	$toggle_reco_list_play.html(`[--Toggle reco list play--]`);
+	$toggle_reco_list_play.html(`▼ [--Toggle reco list play--]`);
 });
 $toggle_reco_list_play.on("mouseleave", function (e) {
 	if ($uri_rendered_container.is(":visible")) {
 		$toggle_reco_list_play.addClass("enabled");
-		$toggle_reco_list_play.html(`[--Showing reco list play--]`);
+		$toggle_reco_list_play.html(`▼ [--Showing reco list play--]`);
 	}
 	else {
 		$toggle_reco_list_play.removeClass("enabled");
-		$toggle_reco_list_play.html(`[--Hiding reco list play--]`);
+		$toggle_reco_list_play.html(`▼ [--Hiding reco list play--]`);
 	}
 });
 m.fsToRs.toggleRecoListPlay=function () {
 	if ($uri_rendered_container.is(":visible")) {
 		$uri_rendered_container.hide();
 		$toggle_reco_list_play.removeClass("enabled");
-		$toggle_reco_list_play.html(`[--Hiding reco list play--]`);
+		$toggle_reco_list_play.html(`▼ [--Hiding reco list play--]`);
 	}
 	else {
 		$uri_rendered_container.show();
 		$toggle_reco_list_play.addClass("enabled");
-		$toggle_reco_list_play.html(`[--Showing reco list play--]`);
+		$toggle_reco_list_play.html(`▼ [--Showing reco list play--]`);
+	}
+};
+
+$toggle_manual=$("#toggle-manual");
+$toggle_manual.on("mouseenter", function (e) {
+	$toggle_manual.html(`▼ [--Toggle Recoeve.net Manual--]`);
+});
+$toggle_manual.on("mouseleave", function (e) {
+	if ($uri_rendered_container.is(":visible")) {
+		$toggle_manual.addClass("enabled");
+		$toggle_manual.html(`▼ [--Showing Recoeve.net Manual--]`);
+	}
+	else {
+		$toggle_manual.removeClass("enabled");
+		$toggle_manual.html(`▼ [--Hiding Recoeve.net Manual--]`);
+	}
+});
+m.toggleManual=function () {
+	if ($uri_rendered_container.is(":visible")) {
+		$uri_rendered_container.hide();
+		$toggle_manual.removeClass("enabled");
+		$toggle_manual.html(`▼ [--Hiding Recoeve.net Manual--]`);
+	}
+	else {
+		$uri_rendered_container.show();
+		$toggle_manual.addClass("enabled");
+		$toggle_manual.html(`▼ [--Showing Recoeve.net Manual--]`);
 	}
 };
 })(window.m, jQuery);
