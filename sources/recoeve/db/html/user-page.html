@@ -4593,7 +4593,10 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	$show_URI.html(String(uriRendered.html));
 	let r=m.myRecos[uri];
 	if (!r) { r=m.myRecos[uri]={uri}; }
-	if (!(r&&r.has)) { r=m.userRecos[uri]; }
+	if (!(r&&r.has)) {
+		r=m.userRecos[uri];
+		if (!r) { r=m.userRecos[uri]={uri}; }
+	}
 	await m.getAndFillRecoInNewReco(r, fillDefs);
 	await m.getAndFillDefsInNewReco(r, fillDefs);
 	m.reNewAndReOn();
