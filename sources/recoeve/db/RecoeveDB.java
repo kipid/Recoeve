@@ -2937,7 +2937,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 				case "reco":
 					if (hasReco) {
 						// error.
-						res+="Reco on this uri exists already.";
+						res+="[--Reco on this uri exists already.--]";
 					}
 					else {
 						// put a reco.
@@ -2951,7 +2951,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 					}
 					else {
 						// error.
-						res+="Reco on the uri does not exist.";
+						res+="[--Reco on the uri does not exist.--]";
 					}
 					break;
 				case "overwrite":
@@ -2971,7 +2971,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 					}
 					else {
 						// error.
-						res+="Reco on the uri does not exist.";
+						res+="[--Reco on the uri does not exist.--]";
 					}
 					break;
 				}
