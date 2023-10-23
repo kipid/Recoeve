@@ -4060,13 +4060,14 @@ m.openCat=function (cat, e) {
 	// }
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		setTimeout(function () {
-			if ($button_get_recoms.hasClass("enabled")) {
-				m.hashURI="button-get-recoms";
+		clearTimeout(m.moveHash);
+		m.moveHash=setTimeout(function () {
+			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+				m.hashURI="numbers-of-recos";
 				window.location.hash=`#${m.hashURI}`;
 			}
-			else if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-				m.hashURI="numbers-of-recos";
+			else if ($button_get_recoms.hasClass("enabled")) {
+				m.hashURI="button-get-recoms";
 				window.location.hash=`#${m.hashURI}`;
 			}
 			else {
@@ -5638,8 +5639,8 @@ m.processShortKey=function (e) {
 			$button_mode.removeClass("enabled");
 			$contents.removeClass("multireco");
 			$multireco_cats_container.hide();
-			window.location.hash="#headPlay";
 			m.hashURI="headPlay";
+			window.location.hash=`#${m.hashURI}`;
 		}
 		else {
 			m.recoMode="multireco";
@@ -5649,8 +5650,8 @@ m.processShortKey=function (e) {
 			$multireco_cats_container.show();
 			$multireco_cats_container.css({zIndex:++m.zIndex});
 			$multireco_input_cats[0].value=m.currentCat;
-			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
+			window.location.hash=`#${m.hashURI}`;
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
