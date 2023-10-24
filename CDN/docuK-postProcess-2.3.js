@@ -524,7 +524,6 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 		m.logPrint("<br><br>BlogStat is logged. "+resp);
 	});
 
-if (!m.printMode) {
 	m.$log.before(`<div id="floating-key">
 <div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
 <div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
@@ -567,6 +566,7 @@ ${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.t
 	if (m.docCookies.getItem("hideFK")==="y") {
 		$floating_key.hide();
 	}
+if (!m.printMode) {
 	for (let i=1;i<m.docuK.length;i++) {
 		m.docuK.eq(i).before(m.promoting(`promoting-${i}-0`));
 		m.docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
