@@ -145,7 +145,7 @@ else if (m.docCookies.hasItem("lang")) {
 	.pink #floating-key div.button:first-child {border-top:2px solid rgb(180,0,180)}
 #toggle-floating-key {bottom:.2em; text-align:center; width:2.2em; height:2.3em; margin:0; padding:.1em}
 #SNS-floating {width:100%; text-align:center}
-#SNS-floating .SNS-img {box-sizing:border-box; padding:0; margin:0; width:1.5em; height:1.5em; border:1px gray solid; border-left:0; cursor:pointer}
+#SNS-floating .SNS-img {box-sizing:border-box; padding:0; margin:0; width:1.285714286em; height:1.285714286em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
 #floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em}
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
@@ -1356,7 +1356,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareCurrentPage('tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
+	<div id="SNS-floating"><a onclick="m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
 $a_log_in=$(".a-log-in");
 $a_log_out=$(".a-log-out");
 $a_log_out_from_all=$(".a-log-out-from-all");
@@ -2852,7 +2852,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareSNS(this, 'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -5446,14 +5446,14 @@ m.shareCurrentPage=function (service, elem) {
 				});
 			}
 			return false;
+		case 'recoeve':
+			open=`https://recoeve.net/reco?uri=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}&cats=${encodeURIComponent(m.currentCat)}`;
+			break;
 		case 'X':
-			open="https://X.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
+			open=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
-			break;
-		case 'recoeve':
-			open=`https://recoeve.net/reco?uri=${encodeURIComponent(recoeveURI)}&title=${encodeURIComponent(title)}&cats=${encodeURIComponent(m.currentCat)}`;
+			open=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'whatsapp':
 			open=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
@@ -5488,7 +5488,7 @@ m.shareSNS=function (elem, service) {
 	switch (service) {
 		case 'link':
 			$elem.focus();
-			let written=`${title}\n${recoeveURI}`;
+			let written=`${title}\n${uri}\n${m.escapeOnlyTag(decodeURIComponent(uri))}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`[--The following is copied!--]\n"${written}"`);
 			}
@@ -5498,9 +5498,19 @@ m.shareSNS=function (elem, service) {
 			return false;
 		case 'tag':
 			$elem.focus();
-			let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
+			let written1=`${title}:<br>\n<a target="_blank" href="${uri}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 			navigator.clipboard.writeText(written1).then(function () {
 				alert(`[--The following is copied!--]\n"${written1}"`);
+			}
+			, function (err) {
+				alert(`[--Could not copy text--]: ${err}`);
+			});
+			return false;
+		case 'recoeve':
+			$elem.focus();
+			let written2=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
+			navigator.clipboard.writeText(written2).then(function () {
+				alert(`[--The following is copied!--]\n"${written2}"`);
 			}
 			, function (err) {
 				alert(`[--Could not copy text--]: ${err}`);
