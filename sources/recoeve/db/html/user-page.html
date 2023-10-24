@@ -1094,7 +1094,6 @@ if (cookieItem!==null) {
 	m.ClineHeight(Number(cookieItem)-m.defaultStyles.lineHeight10);
 }
 
-
 m.a_log_in=function (e, elem) {
 	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
@@ -1128,6 +1127,18 @@ m.a_log_out_from_all=function (e, elem) {
 	}
 	else {
 		window.location.href=href;
+		return false;
+	}
+}
+$a_to_my_page=$("#a-to-my-page");
+m.to_my_page=function (e, elem) {
+	let fullPath=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	if (e&&e.which===2) {
+		$a_to_my_page.attr("href", fullPath);
+		return true;
+	}
+	else {
+		window.location.href=fullPath;
 		return false;
 	}
 }
@@ -1311,7 +1322,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	</div>`:`<div class="button${m.myPage?" enabled":""}">Your id: ${m.escapeHTML(m.myId)}</div><div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 		[--Log _o_ut--]
 	</div>`}
-	${(!m.myPage)&&m.myId?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">[--To my p_a_ge--]</div>`:""}
+	${(!m.myPage)&&m.myId?`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})"><a id="a-to-my-page" target="_blank" href="/user/${m.myId}" onclick="return m.to_my_page(event,this)">[--To my p_a_ge--]</a></div>`:""}
 	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
 	</div>
