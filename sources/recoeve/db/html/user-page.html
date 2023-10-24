@@ -5447,7 +5447,7 @@ m.shareCurrentPage=function (service, elem) {
 			}
 			return false;
 		case 'recoeve':
-			open=`https://recoeve.net/reco?uri=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}&cats=${encodeURIComponent(m.currentCat)}`;
+			open=`https://recoeve.net/reco?uri=${encodeURIComponent(recoeveURI)}&title=${encodeURIComponent(title)}&cats=${encodeURIComponent(m.currentCat)}`;
 			break;
 		case 'X':
 			open=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
