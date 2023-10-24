@@ -1135,7 +1135,7 @@ return new Promise(function (resolve, reject) {
 			}
 		}
 	}
-	return resolve(false);
+	return reject(false);
 });
 };
 
@@ -1148,7 +1148,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br>`:"")+m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from:"instagram", imgId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1162,7 +1162,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>`:"")+m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1197,7 +1197,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1211,7 +1211,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br>`:"")+m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1231,7 +1231,7 @@ return new Promise(function (resolve, reject) {
 			return resolve({html:(toA?`<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]});
 		}
 		else {
-			return resolve(false);
+			return reject(false);
 		}
 	}
 });
@@ -1245,7 +1245,7 @@ return new Promise(function (resolve, reject) {
 	if (exec!==null) {
 		return resolve({html:(toA?`<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]});
 	}
-	return resolve(false);
+	return reject(false);
 });
 };
 
@@ -1258,7 +1258,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vimeo", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1272,7 +1272,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"dailymotion", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1297,7 +1297,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1321,7 +1321,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars?.url?.val});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1353,7 +1353,7 @@ return new Promise(function (resolve, reject) {
 			}
 		}
 	}
-	return resolve(false);
+	return reject(false);
 });
 };
 
@@ -1366,7 +1366,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1380,7 +1380,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1392,30 +1392,30 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
 		}
 		else {
-			return resolve(false);
+			return reject(false);
 		}
 	}
 });
 };
 
 ptnURI=m.ptnURI[3]={};
-ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(?:(\/[\s\S]*))?/i;
+ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(\/\S*)?/i;
 ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:"/"}`))}</a>`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, from:'topgirl', src:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -1453,13 +1453,15 @@ return new Promise(async function (resolve, reject) {
 				}
 			}
 			for (let i=0;i<m.ptnURI.length;i++) {
-				let promise=m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
-				let result=await promise;
-				promise.then(function (result) {
-					if (result!==false) {
+				try {
+					let result=await m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
+					if (Boolean(result)!==false) {
 						return resolve(result);
 					}
-				});
+				}
+				catch (error) {
+					// continue.
+				}
 			}
 			if (toA) {
 				return resolve({html:m.uriToA(uri)});
