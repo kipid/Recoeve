@@ -1300,7 +1300,7 @@ m.toggleAMess=function (elem) {
 		let outerHeightBefore=0;
 		$copyright.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
@@ -1308,7 +1308,7 @@ m.toggleAMess=function (elem) {
 		});
 		$shortkey.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
@@ -1316,7 +1316,7 @@ m.toggleAMess=function (elem) {
 		});
 		$promoting.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
@@ -1331,7 +1331,7 @@ m.toggleAMess=function (elem) {
 		let outerHeightBefore=0;
 		$copyright.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
@@ -1339,7 +1339,7 @@ m.toggleAMess=function (elem) {
 		});
 		$shortkey.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
@@ -1347,7 +1347,7 @@ m.toggleAMess=function (elem) {
 		});
 		$promoting.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
+				outerHeightBefore+=$(this).outerHeight();
 			}
 			else {
 				return false;
