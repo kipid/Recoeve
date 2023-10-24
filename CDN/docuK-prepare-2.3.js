@@ -1293,12 +1293,10 @@ m.toggleAMess=function (elem) {
 		e.stopPropagation();
 	});
 	let orderElem=$elem.index(".order");
-	let $copyright=$(".copyright");
-	let $shortkey=$(".shortkey");
-	let $promoting=$(".promoting");
-	if ($copyright.is(":visible")) {
+	let $collection=$(".copyright, .shortkey, .promoting");
+	if ($collection.is(":visible")) {
 		let outerHeightBefore=0;
-		$copyright.each(function () {
+		$collection.each(function () {
 			if ($(this).index(".order")<orderElem) {
 				outerHeightBefore+=$(this).outerHeight();
 			}
@@ -1306,30 +1304,12 @@ m.toggleAMess=function (elem) {
 				return false;
 			}
 		});
-		$shortkey.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
-			}
-			else {
-				return false;
-			}
-		});
-		$promoting.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
-			}
-			else {
-				return false;
-			}
-		});
-		$copyright.hide();
-		$shortkey.hide();
-		$promoting.hide();
+		$collection.hide();
 		$window.scrollTop(wSTBefore-outerHeightBefore);
 	}
 	else {
 		let outerHeightBefore=0;
-		$copyright.each(function () {
+		$collection.each(function () {
 			if ($(this).index(".order")<orderElem) {
 				outerHeightBefore+=$(this).outerHeight();
 			}
@@ -1337,28 +1317,12 @@ m.toggleAMess=function (elem) {
 				return false;
 			}
 		});
-		$shortkey.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
-			}
-			else {
-				return false;
-			}
-		});
-		$promoting.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
-			}
-			else {
-				return false;
-			}
-		});
-		$copyright.show();
-		$shortkey.show();
-		$promoting.show();
+		$collection.show();
 		$window.scrollTop(wSTBefore+outerHeightBefore);
 	}
-	$window.off("scroll.stopDF");
+	setTimeout(function () {
+		$window.off("scroll.stopDF");
+	}, 512);
 };
 
 // docuK Process
