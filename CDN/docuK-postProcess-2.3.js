@@ -524,6 +524,8 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 		m.logPrint("<br><br>BlogStat is logged. "+resp);
 	});
 
+	$title.html($title.html()+` at ${window.location.host}`);
+
 	m.$log.before(`<div id="floating-key">
 <div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
 <div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
