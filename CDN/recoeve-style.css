@@ -181,6 +181,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco.deleted {border:.5em solid rgb(168 50 0)}
 .multireco .reco {width:49%}
 .edit.fRight {float:right; padding:.1em .5em; background:gray; text-align:center; font-weight:bold}
+.SNS-img {background:white}
 .reco .SNS-img {margin:0; float:left; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
 .reco .SNS-img:first-child {border-left:2px gray solid}
 .reco>.textURI, .reco>.YTVideoId {display:none}
