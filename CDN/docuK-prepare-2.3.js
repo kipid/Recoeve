@@ -489,9 +489,9 @@ m.toggleFK=function () {
 };
 
 m.promoting=function (id) {
-	return `<div class="promoting order"${id?` id="${id}"`:""}>
-<div class="button fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+	return `<div class="button fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
 <div class="cBoth"></div>
+<div class="promoting order"${id?` id="${id}"`:""}>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
 <div class="bcf">
 <a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop&lang=ko#headPlay">유튜브 음악 MV 들을 광고없이 목록재생</a> 해보세요.<br>
