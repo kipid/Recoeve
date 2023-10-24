@@ -131,7 +131,7 @@ codeprint.SEE {display:none}
 .docuK .SNS-bottom {margin:36px 0; text-align:center}
 .docuK .SNS-img {display:inline-block; vertical-align:middle; position:relative; box-sizing:border-box; margin:0; width:36px; height:36px; background:white; border:2px gray solid; border-left:0; cursor:pointer}
 	.docuK .SNS-img:first-child {border-left:2px gray solid}
-.docuK .SNS-img .icon-X {background:#a92323; position:absolute; left:5%; top:5%; width:90%; height:90%}
+.docuK .SNS-img .icon-X {background:#a92323; position:absolute; left:6.5%; top:6.5%; width:87%; height:87%}
 .docuK>.sec {position:relative; background:black; color:white; border-bottom:2px rgb(25,60,25) solid; border-top:5px rgb(25,60,25) solid; padding:.5em; margin:.3em 0; font-size:1.8em} .docuK.bright>.sec {background:white; color:black}
 .docuK>.sec .head-text {color:white} .docuK.bright>.sec .head-text {color:black}
 .docuK .ShowHide {float:right; padding:.3em 0; cursor:pointer}
