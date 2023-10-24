@@ -630,7 +630,7 @@ ${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.t
 	if (!m.printMode) {
 		$disqus_thread=$("#disqus_thread");
 		if (!($disqus_thread.exists())) {
-			($("body")||$("#docuK-script")).append(`<div id="disqus_thread"></div>`);
+			($("#docuK-script")||$("body")).append(`<div id="disqus_thread"></div>`);
 			$disqus_thread=$("#disqus_thread");
 		}
 		let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
