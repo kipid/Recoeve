@@ -185,14 +185,14 @@ m.highlightStrFromIndices=function(strSplitted, indices) {
 		if (strSplitted[i].matched) {
 			res+='<span class="bold">';
 			while (i<strSplitted.length&&strSplitted[i].matched) {
-				res+=m.escapeHTML(strSplitted[i].char);
+				res+=m.escapeOnlyTag(strSplitted[i].char);
 				i++;
 			}
 			res+='</span>';
 		}
 		else {
 			while (i<strSplitted.length&&!strSplitted[i].matched) {
-				res+=m.escapeHTML(strSplitted[i].char);
+				res+=m.escapeOnlyTag(strSplitted[i].char);
 				i++;
 			}
 		}

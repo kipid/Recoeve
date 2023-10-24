@@ -376,6 +376,10 @@ m.escapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 };
+m.escapeOnlyTag=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+};
 m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
@@ -842,14 +846,14 @@ m.highlightStrFromIndices=function (strSplitted, indices) {
 		if (strSplitted[i].matched) {
 			res+='<span class="bold">';
 			while (i<strSplitted.length&&strSplitted[i].matched) {
-				res+=m.escapeHTML(strSplitted[i].char);
+				res+=m.escapeOnlyTag(strSplitted[i].char);
 				i++;
 			}
 			res+='</span>';
 		}
 		else {
 			while (i<strSplitted.length&&!strSplitted[i].matched) {
-				res+=m.escapeHTML(strSplitted[i].char);
+				res+=m.escapeOnlyTag(strSplitted[i].char);
 				i++;
 			}
 		}
@@ -1038,10 +1042,10 @@ m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	let exec=m.ptnURL.exec(uri);
 	if (exec!==null) {
-		return `<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a>`;
+		return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 	}
 	else {
-		return m.escapeHTML(uri);
+		return m.escapeOnlyTag(uri);
 	}
 };
 m.videoZIndex=10000;
@@ -1340,7 +1344,7 @@ return new Promise(function (resolve, reject) {
 			return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br>`:"")+m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":"")), from:"dcinside", videoId:v});
 		}
 		else {
-			return resolve({html:`<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeHTML(decodeURIComponent(uriRest))}</a>`});
+			return resolve({html:`<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>`});
 		}
 	}
 	else {
@@ -1363,7 +1367,7 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
 	}
 	else {
 		return reject(false);
@@ -1377,7 +1381,7 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
 	}
 	else {
 		return reject(false);
@@ -1392,12 +1396,12 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
+			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
 		}
 		else {
 			return reject(false);
@@ -1412,7 +1416,7 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeHTML(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, from:'topgirl', src:exec[1]});
 	}
 	else {
 		return reject(false);
@@ -1470,7 +1474,7 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 		else {
-			return resolve({html:m.escapeHTML(uri)});
+			return resolve({html:m.escapeOnlyTag(uri)});
 		}
 	}
 	return resolve({html:""});

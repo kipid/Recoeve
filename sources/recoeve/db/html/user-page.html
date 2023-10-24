@@ -1316,7 +1316,7 @@ $toggle_floating_key=$("#toggle-floating-key");
 $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hid_e_--]</div>
 	${m.myIndex===""?`<div class="button">
 		<a class="a-log-in" href="/account/log-in">[--Log _i_n--]</a>
-	</div>`:`<div class="button${m.myPage?" enabled":""}">Your id: ${m.escapeHTML(m.myId)}</div><div class="button">
+	</div>`:`<div class="button${m.myPage?" enabled":""}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button">
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
 	${(!m.myPage)&&m.myId?`<div class="button"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>`:""}
@@ -1700,7 +1700,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		let beforeDepth=cL[i-1].depth;
@@ -1713,7 +1713,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeHTML(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1742,7 +1742,7 @@ m.catsToA=function (cats) {
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeHTML(cat)}</a>`);
+		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -1873,7 +1873,7 @@ $change_catList_order.on("click", function (e) {
 m.change_catList_order_do=function (args, err) {
 	if (err) {
 		console.log(err);
-		$data_myCatList.html(m.escapeHTML(args.catListChanged));
+		$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 		m.updateCatFS();
 		$change_catList_order.show();
 	}
@@ -1886,14 +1886,14 @@ m.change_catList_order_do=function (args, err) {
 			args.$result?.html("Changing CatList order has failed.");
 		}).done(function (resp) {
 			if (args.$result) {
-				args.$result.html(m.escapeHTML(resp));
+				args.$result.html(m.escapeOnlyTag(resp));
 				setTimeout(function () {
 					args.$result.html("");
 				}, 5000);
 			}
 			console.log(resp);
 		}).always(function () {
-			$data_myCatList.html(m.escapeHTML(args.catListChanged));
+			$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 			m.updateCatFS();
 			$change_catList_order.show();
 		});
@@ -1906,7 +1906,7 @@ $change_catList_order_ok.on("click", function (e) {
 			m.rmb_me(m.change_catList_order_do, {catListChanged, $result:$catList_result});
 		}
 		else {
-			$data_CatList.html(m.escapeHTML(catListChanged));
+			$data_CatList.html(m.escapeOnlyTag(catListChanged));
 			$change_catList_order.show();
 		}
 	}
@@ -1940,7 +1940,7 @@ $change_catList_order_cancel.on("click", function (e) {
 $timezone_trs=$("table.timezone").find("tr");
 for (let i=$timezone_trs.length-1;i>=1;i--) {
 	let timezoneTxt=$timezone_trs.eq(i).text().replace(/[\s\r\n\t]+/g," ").trim();
-	m.fsTimezone.fullList.push({i:$timezone_trs.length-1-i, txt:m.splitHangul(timezoneTxt), html:m.escapeHTML(timezoneTxt), timezone:timezoneTxt.substring(0,9)});
+	m.fsTimezone.fullList.push({i:$timezone_trs.length-1-i, txt:m.splitHangul(timezoneTxt), html:m.escapeOnlyTag(timezoneTxt), timezone:timezoneTxt.substring(0,9)});
 }
 m.timezoneAddMs=0;
 m.setTimezone=function (elem, timezone) {
@@ -1981,14 +1981,14 @@ m.putCatToFSFullList=function (i, cat) {
 		m.fsCat.fullList[i]=m.fsCat.fullList[cat];
 	}
 	else {
-		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 	}
 	if (m.fsMRCat.fullList[cat]) {
 		m.fsMRCat.fullList[cat].i=i;
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
 	}
 	else {
-		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 	}
 	if (m.myPage) {
 		if (m.fsGotoCats.fullList[cat]) {
@@ -1996,7 +1996,7 @@ m.putCatToFSFullList=function (i, cat) {
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
 		}
 		else {
-			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
 };
@@ -2272,13 +2272,13 @@ $search_timezone.on("keydown.fs", function (e) {
 let l=m.myCatList.length;
 for (let i=l-1;i>=0;i--) {
 	let cat=m.myCatList[i].cat;
-	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
-	m.fsMRCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	m.fsCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
+	m.fsMRCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 }
 l=m.catList.length;
 for (let i=l-1;i>=0;i--) {
 	let cat=m.catList[i].cat;
-	m.fsGotoCats.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeHTML(cat)};
+	m.fsGotoCats.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 }
 $input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function () {
@@ -2328,7 +2328,7 @@ m.putCat=function (cat) {
 		}
 	}
 	if (res) {
-		$data_myCatList.html(m.escapeHTML(fullCats));
+		$data_myCatList.html(m.escapeOnlyTag(fullCats));
 		m.updateCatFS();
 	}
 	return res;
@@ -2369,7 +2369,7 @@ m.deleteCat=function (cat) {
 		fullCats=fullCats.substring(0,start0+1)+fullCats.substring(end); // delete a cat if there is no subCat.
 		res=true;
 	}
-	if (res) { $data_myCatList.html(m.escapeHTML(fullCats)); }
+	if (res) { $data_myCatList.html(m.escapeOnlyTag(fullCats)); }
 	return res;
 };
 m.putCats_UriToLists=async function (cats, uri) {
@@ -2383,7 +2383,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				m.catUriList[cat].uris.splice(0, 0, uri);
 			}
 			else if (m.catUriList[cat]) {
-				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeHTML(cat)}.`);
+				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				await m.recoToEve("", m.myRecos, cat, m.catUriList[cat].uris);
 			}
@@ -2775,12 +2775,12 @@ m.recomHTML=async function (r) {
 	}
 	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
-	<div class="textURI">${m.escapeHTML(r.uri)}</div>
+	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>`;
 	if (r.defTitles[0]&&r.defTitles[0][0]) {
-		res+=`<div class="title">${m.escapeHTML(r.defTitles[0][0])}</div>`;
+		res+=`<div class="title">${m.escapeOnlyTag(r.defTitles[0][0])}</div>`;
 	}
-	res+=`<div class="cats">${m.escapeHTML(m.currentCat)}</div>`;
+	res+=`<div class="cats">${m.escapeOnlyTag(m.currentCat)}</div>`;
 	let uriRendered=await uriRendering(r.uri, false, false);
 	res+=String(uriRendered.html);
 	let recomsI=m.recoms[m.currentCat][r.uri];
@@ -2814,8 +2814,8 @@ m.recomHTML=async function (r) {
 		let descR=m.renderStrDescCmt(r.defDescs[0][0]);
 		res+=`<div class="desc">`;
 		for (let l=0;l<descR.length;l++) {
-			let key=m.escapeHTML( descR[l] );
-			let value=m.escapeHTML( descR[descR[l]] );
+			let key=m.escapeOnlyTag( descR[l] );
+			let value=m.escapeOnlyTag( descR[descR[l]] );
 			switch (key.toLowerCase()) {
 			case "#": case "":
 				res+=`<div class="value">${value.replace(/\n/g,"<br>")}</div>`;
@@ -2854,9 +2854,9 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
-	<div class="textURI">${m.escapeHTML(r.uri)}</div>
+	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
-	<div class="title">${m.escapeHTML(r.title)}</div>
+	<div class="title">${m.escapeOnlyTag(r.title)}</div>
 	<div class="cats">${m.catsToA(r.cats)}</div>`
 	if (!inListPlay) {
 		let uriRendered=await uriRendering(r.uri, false, inListPlay);
@@ -2864,7 +2864,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	}
 	res+=`<div class="cBoth"></div>`;
 		if (r.val?.str) {
-			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
 		}
 		else {
 			res+=`<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
@@ -2872,7 +2872,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 		res+=`<div class="cBoth"></div>`;
 		if (m.myPage) {
 			if (r.val?.str) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(r.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
 			}
 			else {
 				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
@@ -2881,7 +2881,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 		else if (m.myRecos[r.uri]) {
 			let mR=m.myRecos[r.uri];
 			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeHTML(mR.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
 			}
 			else {
 				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
@@ -2895,8 +2895,8 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
 			for (let l=0;l<descR.length;l++) {
-				let key=m.escapeHTML( descR[l] );
-				let value=m.escapeHTML( descR[descR[l]] );
+				let key=m.escapeOnlyTag( descR[l] );
+				let value=m.escapeOnlyTag( descR[descR[l]] );
 				switch (key.toLowerCase()) {
 				case "#": case "":
 					res+=`<div class="value">${value.replace(/\n/g,"<br>")}</div>`;
@@ -2927,7 +2927,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			}
 			res+=`</div>`;
 		}
-		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeHTML(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
+		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeOnlyTag(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
 		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
@@ -2953,10 +2953,10 @@ m.reco_pointChange_do=function (args, err) {
 		clearInterval(m.deleyedLogOutInterval);
 		clearTimeout(m.deleyedLogOutTimeout);
 		if (args.inRecoms) {
-			args.$result?.html(`[--Reco failed.--]: ${m.escapeHTML(resp)}`);
+			args.$result?.html(`[--Reco failed.--]: ${m.escapeOnlyTag(resp)}`);
 		}
 		else {
-			args.$result?.html(`[--Failed change.--]: ${m.escapeHTML(resp)}`);
+			args.$result?.html(`[--Failed change.--]: ${m.escapeOnlyTag(resp)}`);
 		}
 	}).done(async function (resp) {
 		clearInterval(m.deleyedLogOutInterval);
@@ -2966,7 +2966,7 @@ m.reco_pointChange_do=function (args, err) {
 		if (result?.substring(0,7)==="changed") {
 			m.myRecos[uri].val=m.val(args.valStr);
 			m.myRecos[uri].cats=args.cats;
-			args.$result?.html(m.escapeHTML(res[1].result));
+			args.$result?.html(m.escapeOnlyTag(res[1].result));
 			m.refresh(args.cats, "changed", uri);
 		}
 		else if (result.startsWith("recoed")) {
@@ -3024,7 +3024,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				cats=m.formatCats(m.currentCat);
 			}
 			strContents+=`\t${m.encloseStr(cats)}`;
-			$result?.html(`Recoing... The cats on this URI is ${m.escapeHTML(cats)}.`);
+			$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			m.putCats_UriToLists(cats, uri);
 		}
@@ -3054,7 +3054,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				strHeads+="\tcats";
 				strContents+=`\t${m.encloseStr(cats)}`;
 			}
-			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
+			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeOnlyTag(cats)}.`:""}`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		}
 	}
@@ -3083,7 +3083,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 					strHeads+="\tcats";
 					strContents+=`\t${m.encloseStr(cats)}`;
 				}
-				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeHTML(cats)}.`:""}`);
+				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeOnlyTag(cats)}.`:""}`);
 				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			}
 		}
@@ -3146,7 +3146,7 @@ m.starsOnClick=function (e) {
 			w=0;
 		}
 		else {
-			$str.html(m.escapeHTML((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+			$str.html(m.escapeOnlyTag((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
 		}
 		$bar.css({width:w});
 	}
@@ -3301,7 +3301,7 @@ m.showRecosOnCat=async function (elem, from) {
 	let l=fs.fullList.length;
 	let strHTML="";
 	if (l<=0) {
-		$numbers_of_recos.html(`No reco in cat=${m.escapeHTML(m.currentCat)}.`);
+		$numbers_of_recos.html(`No reco in cat=${m.escapeOnlyTag(m.currentCat)}.`);
 		$contents.html(strHTML);
 		m.fsToRs.pauseVideo();
 		$reco_playing.html('');
@@ -3320,7 +3320,7 @@ m.showRecosOnCat=async function (elem, from) {
 				let r=fsFLk.reco;
 				let val=r.val?.val;
 				fsFLk.txt=m.splitHangul(r.title);
-				fsFLk.html=m.escapeHTML(r.title);
+				fsFLk.html=m.escapeOnlyTag(r.title);
 				if (val===undefined||val===-1) {
 					if (m.showRWOP) {
 						fsFLk.inRange=true;
@@ -3355,7 +3355,7 @@ m.showRecosOnCat=async function (elem, from) {
 					}
 				}
 			}
-			let nOfRecos=`You have ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeHTML(m.currentCat)}.`;
+			let nOfRecos=`You have ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
 			$numbers_of_recos.html(nOfRecos);
 			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
@@ -3460,7 +3460,7 @@ return new Promise(async function (resolve, reject) {
 			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, reco:r, r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
-			fsFLk.html=m.escapeHTML(String(r.title));
+			fsFLk.html=m.escapeOnlyTag(String(r.title));
 		}
 		fs[1]=null;
 		fs[0].ptnSH=m.splitHangul("$!@#");
@@ -3507,7 +3507,7 @@ m.getRecos=function (uris, recos, cat) {
 					type:"POST", url:postURL, data:getRecosStr
 					, dataType:"text"
 				}).fail(function () {
-					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeHTML(cat)} has failed.`);
+					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(cat)} has failed.`);
 					$contents.html("");
 					reject();
 				}).done(async function (resp) {
@@ -3554,7 +3554,7 @@ m.getUriList=function (catStrArray) {
 			type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
 			, dataType:"text"
 		}).fail(function () {
-			$numbers_of_recos.html(`get-UriList on cat=${m.escapeHTML(cat)} has failed.`);
+			$numbers_of_recos.html(`get-UriList on cat=${m.escapeOnlyTag(cat)} has failed.`);
 			$contents.html("");
 			resolve();
 		}).done(async function (resp) { // resp=cat\tUriList\tcutP\terr
@@ -3621,7 +3621,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	}
 	switch (m.recoMode) {
 		case "multireco": case "": default:
-			$numbers_of_recos.html(`Loading recos in cat=${m.escapeHTML(cat)}.`);
+			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
 			let catI=m.catList[cat];
 			if (catI) {
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
@@ -3629,13 +3629,13 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					m.getAndShowRecosOnCat(cat);
 				}
 				else {
-					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeHTML(cat)}.`);
+					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeOnlyTag(cat)}.`);
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					m.getAndShowRecosOnCat(cat);
 				}
 			}
 			else {
-				$numbers_of_recos.html(`Category "${m.escapeHTML(cat)}" does not exist.`);
+				$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
 				$contents.html("");
 			}
 			if (scroll) {
@@ -3644,7 +3644,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 			m.recosShown=true;
 			break;
 		case "neighbors":
-			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}, and plotting charts.`);
+			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}, and plotting charts.`);
 			let cat_from=m.currentCat=cat;
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -3677,9 +3677,9 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let strHTML=``;
 					for (let i=neighbors.length-1;i>=until;i--) {
 						let neighborI=neighbors[sorted[i]];
-						strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeHTML(neighborI.cat_to)} of ${m.escapeHTML(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
+						strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeOnlyTag(neighborI.cat_to)} of ${m.escapeOnlyTag(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
 					}
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
 					$contents.html(strHTML);
 					if (scroll) {
 						$window.scrollTop($contents.offset().top);
@@ -3700,7 +3700,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					}
 				}
 				else {
-					$numbers_of_recos.html(`[--You have no neighbors on cat=${m.escapeHTML(cat)}.--]`);
+					$numbers_of_recos.html(`[--You have no neighbors on cat=${m.escapeOnlyTag(cat)}.--]`);
 					$contents.html("");
 				}
 			});
@@ -3843,7 +3843,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				}
 			}
 			else {
-				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeHTML(cat)}.`);
+				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}.`);
 				let cat_from=m.currentCat=cat;
 				$.ajax({
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -3868,7 +3868,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						}
 					}
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeHTML(cat)}.`);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
 					m.neighbors[cat_from]=neighbors;
 					m.getUriListAndShowRecosOnCat(cat, true);
 				});
@@ -3923,7 +3923,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.$fs.trigger("input.fs");
 
 			fs=m.fsToRs;
-			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeHTML(r.title), inRange:true};
+			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
 				fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
@@ -3973,7 +3973,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 					let fs=m.fsGo;
 					let fsFLk=fs.fullList[uri];
 					fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
-					fsFLk.html=m.escapeHTML(r.title);
+					fsFLk.html=m.escapeOnlyTag(r.title);
 					fs[1]=null;
 					fs[0].ptnSH=m.splitHangul("$!@#");
 					fs.$fs.trigger("input.fs");
@@ -3981,7 +3981,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
 					fsFLk.txt=m.splitHangul(r.title);
-					fsFLk.html=m.escapeHTML(r.title);
+					fsFLk.html=m.escapeOnlyTag(r.title);
 					fsFLk.inRange=true;
 					fs[1]=null;
 					fs[0].ptnSH=m.splitHangul("$!@#");
@@ -4098,7 +4098,7 @@ m.openCat=function (cat, e) {
 			window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
 		}, 2048);
 	}
-	$title.html(`${cat?`${m.escapeHTML(cat)} of `:""}${m.userId}'s recoeve.net`);
+	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
 
@@ -4363,11 +4363,11 @@ m.showDefs=async function (uri) {
 	if (!recoDefs.h1) {
 		recoDefs.h1=await m.getH1(uri);
 	}
-	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeHTML(String(recoDefs.h1))}</div>`;
+	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDefs.h1))}</div>`;
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
 		if (title.length!==0) {
-			defTitlesHTML+=`<div class="def-title">${m.escapeHTML(title)}</div>`;
+			defTitlesHTML+=`<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
 		}
 	}
 	$def_titles.html(defTitlesHTML);
@@ -4384,7 +4384,7 @@ m.showDefs=async function (uri) {
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
-			defCatsHTML+=`<div class="def-cat replace-cat">${m.escapeHTML(cat)}</div> `;
+			defCatsHTML+=`<div class="def-cat replace-cat">${m.escapeOnlyTag(cat)}</div> `;
 		}
 	}
 	$def_cats.html(defCatsHTML);
@@ -4446,11 +4446,11 @@ m.showDefs=async function (uri) {
 	for (let i=0;i<defDescs.length;i++) {
 		let desc=defDescs[i][0].trim();
 		if (desc.length!==0) {
-			if (desc.length<30) {
-				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc)}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+			if (desc.length<=100) {
+				defDescsHTML+=`<div class="def-desc">${m.escapeOnlyTag(desc)}<data class="none">${m.escapeOnlyTag(desc)}</data></div>`;
 			}
 			else {
-				defDescsHTML+=`<div class="def-desc">${m.escapeHTML(desc.substring(0,15))} ... ${m.escapeHTML(desc.substring(desc.length-15))}<data class="none">${m.escapeHTML(desc)}</data></div>`;
+				defDescsHTML+=`<div class="def-desc">${m.escapeOnlyTag(desc.substring(0,50))} ... ${m.escapeOnlyTag(desc.substring(desc.length-50))}<data class="none">${m.escapeOnlyTag(desc)}</data></div>`;
 			}
 		}
 	}
@@ -4887,7 +4887,7 @@ m.reco_change_do=function (args, err) {
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result)
 		if (result.startsWith("changed")) {
-			$error.html(m.escapeHTML(res[1].result));
+			$error.html(m.escapeOnlyTag(res[1].result));
 			if (args.cats!==args.r.cats) {
 				m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
 				args.r.cats=args.cats;
@@ -5421,7 +5421,7 @@ m.shareCurrentPage=function (service) {
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, args);
 	switch (service) {
 		case 'link':
-			let written=`${title}\n${recoeveURI}\n${m.escapeHTML(decodeURIComponent(recoeveURI))}`;
+			let written=`${title}\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`The following is copied!\n"${written}"`);
 			}
@@ -5445,8 +5445,8 @@ m.shareCurrentPage=function (service) {
 			Kakao.Share.sendDefault({
 				objectType: 'feed',
 				content: {
-					title: m.escapeHTML(title),
-					description: desc?m.escapeHTML(desc):'',
+					title: m.escapeOnlyTag(title),
+					description: desc?m.escapeOnlyTag(desc):'',
 					imageUrl: '', // No image.
 					link: {
 						mobileWebUrl: recoeveURI,
@@ -5490,8 +5490,8 @@ m.shareSNS=function (elem, service) {
 			Kakao.Share.sendDefault({
 				objectType: 'feed',
 				content: {
-					title: m.escapeHTML(title),
-					description: desc?m.escapeHTML(desc):'',
+					title: m.escapeOnlyTag(title),
+					description: desc?m.escapeOnlyTag(desc):'',
 					imageUrl: '', // No image.
 					link: {
 						mobileWebUrl: recoeveURI,

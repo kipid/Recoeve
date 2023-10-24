@@ -44,10 +44,10 @@ m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
 	let exec=m.ptnURL.exec(uri);
 	if (exec!==null) {
-		return `<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a>`;
+		return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 	}
 	else {
-		return m.escapeHTML(uri);
+		return m.escapeOnlyTag(uri);
 	}
 };
 m.videoZIndex=10000;
@@ -328,7 +328,7 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
 	}
 	else {
 		return resolve(false);
@@ -342,7 +342,7 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeHTML(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
 	}
 	else {
 		return resolve(false);
@@ -357,12 +357,12 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
 		}
 		else {
 			return resolve(false);
@@ -377,7 +377,7 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:"/"}">${m.escapeHTML(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:"/"}`))}</a>`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:"/"}`))}</a>`, from:'topgirl', src:exec[1]});
 	}
 	else {
 		return resolve(false);
@@ -431,7 +431,7 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 		else {
-			return resolve({html:m.escapeHTML(uri)});
+			return resolve({html:m.escapeOnlyTag(uri)});
 		}
 	}
 	return resolve({html:""});
@@ -717,7 +717,7 @@ m.arrayToTableHTML=function (txtArray) {
 	for (let row=0;row<txtArray.length;row++) {
 		tableStr+="<tr>";
 		for (let col=0;col<txtArray[row].length;col++) {
-			tableStr+=`<td>${m.escapeHTML(txtArray[row][col]).replace(/\n/g,'<br>')}</td>`;
+			tableStr+=`<td>${m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g,'<br>')}</td>`;
 		}
 		tableStr+="</tr>";
 	}
@@ -974,6 +974,10 @@ m.escapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 };
+m.escapeOnlyTag=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+};
 m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
@@ -984,7 +988,7 @@ m.printCode=function (codeId) {
 	if ($pre.exists()) {
 		let html=m.indentsRemove($code.html()).trim();
 		if (!$code.is(".noEscapeHTML")) {
-			html=m.escapeHTML(html);
+			html=m.escapeOnlyTag(html);
 		}
 		$pre.html(html);
 	}
@@ -1065,7 +1069,7 @@ m.defaultStyles={mode:m.mode, fontFamily:m.fontFamily, fontSize:m.fontSize, line
 m.printDeviceInfo=function () {
 	if (m.$deviceInfo) {
 		let referrer=document.referrer;
-		let referrerHTML=(referrer?`<a target="_blank" href="${referrer}">${m.escapeHTML(decodeURIComponent(referrer))}</a>`:`Empty`);
+		let referrerHTML=(referrer?`<a target="_blank" href="${referrer}">${m.escapeOnlyTag(decodeURIComponent(referrer))}</a>`:`Empty`);
 		m.$deviceInfo.html(
 			`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize*1.8).toFixed(1)}px (${m.fontSize.toFixed(1)}); line-height: ${(m.lineHeight10/10).toFixed(1)};<br>
 width: ${m.browserWidth}, height: ${window.innerHeight}<br>
