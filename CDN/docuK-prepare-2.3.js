@@ -489,8 +489,8 @@ m.toggleFK=function () {
 };
 
 m.promoting=function (id) {
-	return `<div class="promoting"${id?` id="${id}"`:""}>
-<div class="button fRight cBoth" onclick="m.toggleAMess()" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+	return `<div class="promoting order"${id?` id="${id}"`:""}>
+<div class="button fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
 <div class="cBoth"></div>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
 <div class="bcf">
@@ -1285,16 +1285,74 @@ m.delayedLoadByScroll=function () {
 };
 $window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
-m.toggleAMess=function () {
-	if ($(".copyright").is(":visible")) {
-		$(".copyright").hide();
-		$(".shortkey").hide();
-		$(".promoting").hide();
+m.toggleAMess=function (elem) {
+	let $elem=$(elem);
+	let wSTBefore=$window.scrollTop();
+	let orderElem=$elem.index(".order");
+	let $copyright=$(".copyright");
+	let $shortkey=$(".shortkey");
+	let $promoting=$(".promoting");
+	if ($copyright.is(":visible")) {
+		let outerHeightBefore=0;
+		$copyright.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$shortkey.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$promoting.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$copyright.hide();
+		$shortkey.hide();
+		$promoting.hide();
+		$window.scrollTop(wSTBefore-outerHeightBefore);
 	}
 	else {
-		$(".copyright").show();
-		$(".shortkey").show();
-		$(".promoting").show();
+		let outerHeightBefore=0;
+		$copyright.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$shortkey.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$promoting.each(function () {
+			if ($(this).index(".order")<orderElem) {
+				outerHeightBefore+=$(this).outerHeight(true);
+			}
+			else {
+				return false;
+			}
+		});
+		$copyright.show();
+		$shortkey.show();
+		$promoting.show();
+		$window.scrollTop(wSTBefore+outerHeightBefore);
 	}
 };
 
@@ -1323,15 +1381,15 @@ m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 
 if (!m.printMode) {
 	// Copyright and Short Keys announcement.
-	docuK.before(`<div class="button fRight cBoth" onclick="m.toggleAMess()" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+	docuK.before(`<div class="button fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
 <div class="cBoth"></div>
-<div class="copyright"><ul>
+<div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
 	<li class="license by"><span class="bold">저작자표시</span> - 적절한 출처와, 해당 라이센스 링크를 표시하고, 변경이 있는 경우 공지해야 합니다. 합리적인 방식으로 이렇게 하면 되지만, 이용 허락권자가 귀하에게 권리를 부여한다거나 귀하의 사용을 허가한다는 내용을 나타내서는 안 됩니다.</li>
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div id="shortkey" class="shortkey bcf">
+<div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
@@ -1352,13 +1410,13 @@ if (!m.printMode) {
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
-	docuK.after(`<div class="copyright"><ul>
+	docuK.after(`<div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
 	<li class="license by"><span class="bold">저작자표시</span> - 적절한 출처와, 해당 라이센스 링크를 표시하고, 변경이 있는 경우 공지해야 합니다. 합리적인 방식으로 이렇게 하면 되지만, 이용 허락권자가 귀하에게 권리를 부여한다거나 귀하의 사용을 허가한다는 내용을 나타내서는 안 됩니다.</li>
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div class="button fRight cBoth" onclick="m.toggleAMess()" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+<div class="button fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
 <div class="cBoth"></div>`);
 }
 
