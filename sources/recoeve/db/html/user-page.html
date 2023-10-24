@@ -5973,7 +5973,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
-	$("head").append(`<link rel="canonical" href="${m.pathOfCat(m.currentCat)}" />`);
+	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(m.currentCat)}" />`);
 	m.saveSSN();
 
 	if (m.recoMode==="") {
