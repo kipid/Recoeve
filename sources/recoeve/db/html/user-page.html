@@ -5918,6 +5918,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	else if (!!cats&&cats!=='null') {
 		$input_cats[0].value=cats;
 	}
+	if (!!cats&&cats!=='null') {
+		m.currentCat=cats.split(";")[0].trim();
+	}
 	let desc=m.localStorage.getItem("desc");
 	if (!!desc&&desc!=='null') {
 		$input_desc[0].value=desc;
