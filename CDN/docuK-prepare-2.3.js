@@ -1185,8 +1185,8 @@ m.shareSNS=async function (service, elem) {
 				$elem.focus();
 			}
 			let written=`${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
-			navigator.clipboard.writeText(written).then(function (copied) {
-				alert(`The following is copied!\n"${copied}"`);
+			navigator.clipboard.writeText(written).then(function () {
+				alert(`The following is copied!\n"${written}"`);
 			}
 			, function (err) {
 				alert(`Could not copy text: ${err}`);
@@ -1197,8 +1197,8 @@ m.shareSNS=async function (service, elem) {
 				$elem.focus();
 			}
 			let written1=`${title}:<br>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
-			navigator.clipboard.writeText(written1).then(function (copied) {
-				alert(`The following is copied!\n"${copied}"`);
+			navigator.clipboard.writeText(written1).then(function () {
+				alert(`The following is copied!\n"${written1}"`);
 			}
 			, function (err) {
 				alert(`Could not copy text: ${err}`);
