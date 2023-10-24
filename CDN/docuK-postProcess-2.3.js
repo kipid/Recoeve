@@ -861,7 +861,7 @@ if (!m.printMode) {
 }
 
 	// ShortKeys (including default 'processShortcut(event)' of tistory.)
-	m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart"); // Ordered automatically by jQuery.
+	m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer"); // Ordered automatically by jQuery.
 	m.tocs=$(".docuK>.sec").has(".toc");
 	m.rras=$(".docuK>.sec").has("ol.refs");
 	m.goOn=false;
@@ -1080,7 +1080,7 @@ if (!m.printMode) {
 		$window.off("scroll.delayedLoad");
 		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 		$window.trigger("scroll.delayedLoad");
-		m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart");
+		m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer");
 	};
 	m.handleAhrefInComment();
 
