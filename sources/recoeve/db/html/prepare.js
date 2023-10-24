@@ -60,7 +60,7 @@ m.pathOfRecoStat=function (uri, lang, hashURI, args) {
 	return `/recostat?uri=${encodeURIComponent(uri)}${lang?`&lang=${lang}`:""}${argsSearch}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`
 }
 
-/*	:: cookies.js :: Slightly edited by kipid at 2023-06-06.
+/*	:: cookies.js :: Slightly edited by kipid at 2023-10-25.
 |*|
 |*|	A complete cookies reader/writer framework with full unicode support.
 |*|
@@ -76,19 +76,20 @@ m.pathOfRecoStat=function (uri, lang, hashURI, args) {
 |*|	* docCookies.hasItem(name)
 |*|	* docCookies.keys()
  */
+m.expire=365*24*60*60; // max-age in seconds.
 m.docCookies={
-	hasItem:function(sKey) {
+	hasItem:function (sKey) {
 		return (new RegExp("(?:^|;\\s*)"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=")).test(document.cookie);
 	}
-	, getItem:function(sKey) {
+	, getItem:function (sKey) {
 		return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(sKey).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null;
 	}
-	, removeItem:function(sKey, sPath, sDomain, bSecure) {
+	, removeItem:function (sKey, sPath, sDomain, bSecure) {
 		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
 		document.cookie=encodeURIComponent(sKey)+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
 		return true;
 	}
-	, setItem:function(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+	, setItem:function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
 		if (!sKey||/^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
 		let sExpires="";
 		if (vEnd) { switch (vEnd.constructor) {
@@ -105,7 +106,7 @@ m.docCookies={
 		document.cookie=encodeURIComponent(sKey)+"="+encodeURIComponent(sValue)+sExpires+(sDomain?"; domain="+sDomain:"")+(sPath?"; path="+sPath:"")+(bSecure?"; secure":"");
 		return true;
 	}
-	, keys:function() {
+	, keys:function () {
 		let aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
 		// for (let nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
 		return aKeys;
@@ -122,8 +123,6 @@ m.saveSSN=function () {
 		m.docCookies.removeItem("session", "/", false, true);
 	}
 };
-
-
 
 ////////////////////////////////////////////////////
 // Local storage
@@ -149,11 +148,11 @@ m.localStorage={
 ////////////////////////////////////////////////////
 // hash encrypt
 ////////////////////////////////////////////////////
-m.pad=function(str, max) {
+m.pad=function (str, max) {
 	str=str.toString();
 	return (str.length<max)?m.pad("0"+str,max):str;
 };
-m.hash1=function(str) {
+m.hash1=function (str) {
 	let h=-17-str.length;
 	for (let i=0;i<str.length;i++) {
 		h+=str.charCodeAt(i);
@@ -167,7 +166,7 @@ m.hash1=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash2=function(str) {
+m.hash2=function (str) {
 	let h=str.length+1;
 	let tmp;
 	for (let i=0;i<str.length;i++) {
@@ -187,7 +186,7 @@ m.hash2=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash3=function(str) {
+m.hash3=function (str) {
 	let h=-1023+str.length;
 	for (let i=0;i<str.length;i++) {
 		h^=(h<<5)+(h>>>2)+str.charCodeAt(i);
@@ -198,7 +197,7 @@ m.hash3=function(str) {
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash4=function(str) {/* RS Hash Function */
+m.hash4=function (str) {/* RS Hash Function */
 	let b=378551;
 	let a=63689;
 	let h=0;
@@ -221,7 +220,7 @@ m.hash4=function(str) {/* RS Hash Function */
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash5=function(str) {/* JS Hash Function */
+m.hash5=function (str) {/* JS Hash Function */
 	let h=1315423911;
 	for (let i=0;i<str.length;i++) {
 		h^=((h<<5)+str.charCodeAt(i)+(h>>2))>>>0;
@@ -229,7 +228,7 @@ m.hash5=function(str) {/* JS Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash6=function(str) {/* ELF Hash Function */
+m.hash6=function (str) {/* ELF Hash Function */
 	let h=0;
 	let x=0;
 	for (let i=0;i<str.length;i++) {
@@ -242,7 +241,7 @@ m.hash6=function(str) {/* ELF Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash7=function(str) {/* BKDR Hash Function */
+m.hash7=function (str) {/* BKDR Hash Function */
 	let a=131; // 31 131 1313 13131 131313 etc..
 	let h=0;
 	for (let i=0;i<str.length;i++) {
@@ -257,21 +256,21 @@ m.hash7=function(str) {/* BKDR Hash Function */
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash8=function(str) {/* SDBM Hash Function */
+m.hash8=function (str) {/* SDBM Hash Function */
 	let h=0;
 	for (let i=0;i<str.length;i++) {
 		h=(str.charCodeAt(i)+(h<<6)+(h<<16)-h)>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash9=function(str) {/* DJB Hash Function */
+m.hash9=function (str) {/* DJB Hash Function */
 	let h=5381;
 	for (let i=0;i<str.length;i++) {
 		h=(((h<<5)+h)+str.charCodeAt(i))>>>0;
 	}
 	return m.pad(h.toString(16), 8);
 };
-m.hash10=function(str) {/* DEK Hash Function */
+m.hash10=function (str) {/* DEK Hash Function */
 	let h=str.length;
 	for (let i=0;i<str.length;i++) {
 		h=((h<<5)^(h>>27))^str.charCodeAt(i);
@@ -279,7 +278,7 @@ m.hash10=function(str) {/* DEK Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash11=function(str) {/* BP Hash Function */
+m.hash11=function (str) {/* BP Hash Function */
 	let h=0;
 	for (let i=0;i<str.length;i++) {
 		h=h<<7^str.charCodeAt(i);
@@ -287,7 +286,7 @@ m.hash11=function(str) {/* BP Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash12=function(str) {/* FNV Hash Function */
+m.hash12=function (str) {/* FNV Hash Function */
 	let a=0x811C9DC5;
 	let h=0;
 	for (let i=0;i<str.length;i++) {
@@ -304,7 +303,7 @@ m.hash12=function(str) {/* FNV Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.hash13=function(str) {/* AP Hash Function */
+m.hash13=function (str) {/* AP Hash Function */
 	let h=0xAAAAAAAA;
 	for(let i=0;i<str.length;i++) {
 		if ((i&1)==0) {
@@ -317,7 +316,7 @@ m.hash13=function(str) {/* AP Hash Function */
 	h=h>>>0;
 	return m.pad(h.toString(16), 8);
 };
-m.encrypt=function(salt, pwd, iter) {
+m.encrypt=function (salt, pwd, iter) {
 	iter=pwd.length+131+((iter&&iter.constructor==Number&&iter>=0)?iter:0);;
 	pwd=salt+pwd;
 	let h1=m.hash1(pwd);
@@ -384,11 +383,11 @@ m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
-m.escapeAMP=function(str) {
+m.escapeAMP=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
 };
-m.unescapeAMP=function(str) {
+m.unescapeAMP=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };

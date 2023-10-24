@@ -439,9 +439,22 @@ return new Promise(async function (resolve, reject) {
 });
 };
 
-
-
-// cookies.js (copied from cookie-test.html)
+/*	:: cookies.js :: Slightly edited by kipid at 2023-10-25.
+|*|
+|*|	A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|	https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|	This framework is released under the GNU Public License, version 3 or later.
+|*|	http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|	Syntaxes:
+|*|	* docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]) // end :: Number: max-age in seconds
+|*|	* docCookies.getItem(name)
+|*|	* docCookies.removeItem(name[, path], domain)
+|*|	* docCookies.hasItem(name)
+|*|	* docCookies.keys()
+ */
 m.expire=365*24*60*60; // max-age in seconds.
 m.docCookies={
 	hasItem:function (sKey) {
@@ -474,8 +487,29 @@ m.docCookies={
 	}
 	, keys:function () {
 		let aKeys=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/);
-		for (let nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
+		// for (let nIdx=0;nIdx<aKeys.length;nIdx++) { aKeys[nIdx]=decodeURIComponent(aKeys[nIdx]); }
 		return aKeys;
+	}
+};
+
+////////////////////////////////////////////////////
+// Local storage
+////////////////////////////////////////////////////
+m.localStorage={
+	setItem:function (key, val) {
+		localStorage.setItem(encodeURIComponent(key), encodeURIComponent(val));
+		return true;
+	}
+	, getItem:function (key) {
+		return decodeURIComponent(localStorage.getItem(encodeURIComponent(key)));
+	}
+	, removeItem:function (key) {
+		localStorage.removeItem(encodeURIComponent(key));
+		return true;
+	}
+	, clear:function () {
+		localStorage.clear();
+		return true;
 	}
 };
 
