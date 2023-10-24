@@ -1288,6 +1288,10 @@ $window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 m.toggleAMess=function (elem) {
 	let $elem=$(elem);
 	let wSTBefore=$window.scrollTop();
+	$window.on("scroll.stopDF", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	});
 	let orderElem=$elem.index(".order");
 	let $copyright=$(".copyright");
 	let $shortkey=$(".shortkey");
@@ -1354,6 +1358,7 @@ m.toggleAMess=function (elem) {
 		$promoting.show();
 		$window.scrollTop(wSTBefore+outerHeightBefore);
 	}
+	$window.off("scroll.stopDF");
 };
 
 // docuK Process
