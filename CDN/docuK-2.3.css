@@ -135,7 +135,7 @@ codeprint.SEE {display:none}
 .docuK figure {display:block; margin:1em 0 2em; padding:0; text-indent:0}
 .docuK figure img:not([width]) {width:auto}
 .docuK .fig {margin:1em 0; padding:1em; border:1px solid gray; text-align:center; text-indent:0; box-shadow:inset 0 0 20px white} .docuK.bright .fig {box-shadow:inset 0 0 20px black}
-.docuK img, .docuK div {max-width:100%; border:none; width:auto; height:auto; vertical-align:middle}
+.docuK img {max-width:100%; border:none; width:auto; height:auto; vertical-align:middle}
 .docuK .fig>.image {}
 .docuK .fig>.image img {display:block; margin:0 auto}
 .docuK .fig>.caption {display:inline-block; padding:0 .5em; text-align:justify; margin:0 auto; text-indent:0}
@@ -145,7 +145,7 @@ codeprint.SEE {display:none}
 .docuK button {cursor:pointer}
 .docuK .SNS-top {margin-top:-31px; padding-top:36px; margin-bottom:-6px}
 .docuK .SNS-bottom {margin:36px 0; text-align:center}
-.docuK .SNS-img {display:inline-block; position:relative; box-sizing:border-box; margin:0; width:36px; height:36px; background:white; border:2px gray solid; border-left:0; cursor:pointer}
+.docuK .SNS-img {display:inline-block; vertical-align:middle; position:relative; box-sizing:border-box; margin:0; width:36px; height:36px; background:white; border:2px gray solid; border-left:0; cursor:pointer}
 	.docuK .SNS-img:first-child {border-left:2px gray solid}
 .docuK .SNS-img .icon-X {background:#a92323; position:absolute; left:5%; top:5%; width:90%; height:90%}
 .docuK>.sec {position:relative; background:black; color:white; border-bottom:2px rgb(25,60,25) solid; border-top:5px rgb(25,60,25) solid; padding:.5em; margin:.3em 0; font-size:1.8em} .docuK.bright>.sec {background:white; color:black}
