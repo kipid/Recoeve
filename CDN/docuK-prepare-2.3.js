@@ -1186,8 +1186,8 @@ m.shareSNS=function (service) {
 				alert(`Could not copy text: ${err}`);
 			});
 			return;
-		case 'twitter':
-			open="https://twitter.com/intent/tweet?via=kipacti&text="+encodeURIComponent(title)+"&url="+encodeURIComponent(url);
+		case 'X':
+			open="https://X.com/intent/tweet?via=kipacti&text="+encodeURIComponent(title)+"&url="+encodeURIComponent(url);
 			break;
 		case 'facebook':
 			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
@@ -1419,9 +1419,9 @@ if (!m.printMode) {
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
 	</div>
-<div class="SNS-top"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Twitter.png" onclick="m.shareSNS('twitter')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
+<div class="SNS-top"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
 	);
-	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Twitter.png" onclick="m.shareSNS('twitter')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
+	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
 
 	// Scrollable switching of 'pre.prettyprint'.
 	docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
