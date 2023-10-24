@@ -145,8 +145,9 @@ else if (m.docCookies.hasItem("lang")) {
 	.pink #floating-key div.button:first-child {border-top:2px solid rgb(180,0,180)}
 #toggle-floating-key {bottom:.2em; text-align:center; width:2.2em; height:2.3em; margin:0; padding:.1em}
 #SNS-floating {width:100%; text-align:center}
-#SNS-floating .SNS-img {display:inline-block; box-sizing:border-box; padding:0; margin:0; width:1.285714286em; height:1.285714286em; border:1px gray solid; border-left:0; cursor:pointer}
+#SNS-floating .SNS-img {display:inline-block; position:relative; box-sizing:border-box; padding:0; margin:0; width:1.285714286em; height:1.285714286em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
+#SNS-floating .SNS-img .icon-X {background:#a92323; position:absolute; left:6%; width:88%; top:6%; height:88%}
 #SNS-floating .icon-X {background:red; border:0.12em solid white}
 #floating-key, #toggle-floating-key {font-size:1.1em; color:wheat; z-index:20000; position:fixed; right:.2em}
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
@@ -1357,7 +1358,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><a onclick="m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><div class="SNS-img"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
+	<div id="SNS-floating"><a onclick="m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
 $a_log_in=$(".a-log-in");
 $a_log_out=$(".a-log-out");
 $a_log_out_from_all=$(".a-log-out-from-all");
@@ -2853,7 +2854,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareSNS(this, 'recoeve')"><div class="SNS-img"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareSNS(this, 'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>

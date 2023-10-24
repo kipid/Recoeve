@@ -182,9 +182,9 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .multireco .reco {width:49%}
 .edit.fRight {float:right; padding:.1em .5em; background:gray; text-align:center; font-weight:bold}
 .SNS-img {background:white}
-.reco .SNS-img {margin:0; float:left; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
+.reco .SNS-img {position:relative; box-sizing: border-box; margin:0; float:left; width:27px; height:27px; border:2px gray solid; border-left:0; cursor:pointer}
 	.reco .SNS-img:first-child {border-left:2px gray solid}
-.reco .icon-X {background:red; border:0.12em solid white}
+.reco .SNS-img .icon-X {background:#a92323; position:absolute; left:5%; top:5%; width:90%; height:90%}
 .reco>.textURI, .reco>.YTVideoId {display:none}
 .reco>.uri {font-size:.7em; border:2px solid rgb(100,100,150); border-bottom:0; padding:.2em .5em}
 .multireco .reco>.uri {font-size:.7em}
