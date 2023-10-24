@@ -4367,7 +4367,7 @@ m.showDefs=async function (uri) {
 	defTitlesHTML+=`<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDefs.h1))}</div>`;
 	for (let i=0;i<defTitles.length;i++) {
 		let title=defTitles[i][0].trim();
-		if (title.length!==0&&title!==recoDefs.h1) {
+		if (title.length!==0&&title!==String(recoDefs.h1).trim()) {
 			defTitlesHTML+=`<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
 		}
 	}
