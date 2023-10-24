@@ -1293,36 +1293,53 @@ m.toggleAMess=function (elem) {
 		e.stopPropagation();
 	});
 	let orderElem=$elem.index(".order");
+	let orderLastElem=$(".order").last().index(".order");
 	let $collection=$(".copyright, .shortkey, .promoting");
 	if ($collection.is(":visible")) {
-		let outerHeightBefore=0;
-		$collection.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
-			}
-			else {
-				return false;
-			}
-		});
-		$collection.hide();
-		$window.scrollTop(wSTBefore-outerHeightBefore);
+		if (orderElem===orderLastElem) {
+			let sHBefore=document.documentElement.scrollHeight;
+			$collection.hide();
+			let sHAfter=document.documentElement.scrollHeight;
+			$window.scrollTop(wSTBefore-sHBefore+sHAfter);
+		}
+		else {
+			let outerHeightBefore=0;
+			$collection.each(function () {
+				if ($(this).index(".order")<orderElem) {
+					outerHeightBefore+=$(this).outerHeight(true);
+				}
+				else {
+					return false;
+				}
+			});
+			$collection.hide();
+			$window.scrollTop(wSTBefore-outerHeightBefore);
+		}
 	}
 	else {
-		let outerHeightBefore=0;
-		$collection.each(function () {
-			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight(true);
-			}
-			else {
-				return false;
-			}
-		});
-		$collection.show();
-		$window.scrollTop(wSTBefore+outerHeightBefore);
+		if (orderElem===orderLastElem) {
+			let sHBefore=document.documentElement.scrollHeight;
+			$collection.show();
+			let sHAfter=document.documentElement.scrollHeight;
+			$window.scrollTop(wSTBefore-sHBefore+sHAfter);
+		}
+		else {
+			let outerHeightBefore=0;
+			$collection.each(function () {
+				if ($(this).index(".order")<orderElem) {
+					outerHeightBefore+=$(this).outerHeight(true);
+				}
+				else {
+					return false;
+				}
+			});
+			$collection.show();
+			$window.scrollTop(wSTBefore+outerHeightBefore);
+		}
 	}
 	setTimeout(function () {
 		$window.off("scroll.stopDF");
-	}, 512);
+	}, 32);
 };
 
 // docuK Process
