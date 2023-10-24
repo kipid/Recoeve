@@ -627,6 +627,11 @@ ${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.t
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
 	// Disqus js script
+	m.disqusVars={page:{}};
+	window.disqus_config.apply(m.disqusVars);
+	$('link[rel="canonical"]').remove();
+	($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${m.disqusVars.page.url}" />`);
+	m.disqusVars.page.url;
 	if (!m.printMode) {
 		$disqus_thread=$("#disqus_thread");
 		if (!($disqus_thread.exists())) {
