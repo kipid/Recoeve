@@ -188,7 +188,7 @@ public static void main(String... args) {
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
 				pl.req.response().putHeader("Cache-Control", "public, max-age=31536000, immutable"); // 1 Year.
-				pl.req.response().putHeader("ETag", "1.1.0");
+				pl.req.response().putHeader("ETag", "1.1.1");
 				String[] fileNameSplit=fileName.split("\\.");
 				switch (fileNameSplit[fileNameSplit.length-1]) {
 					case "ico":
