@@ -1298,7 +1298,7 @@ m.toggleAMess=function (elem) {
 		let outerHeightBefore=0;
 		$collection.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
+				outerHeightBefore+=$(this).outerHeight(true);
 			}
 			else {
 				return false;
@@ -1311,7 +1311,7 @@ m.toggleAMess=function (elem) {
 		let outerHeightBefore=0;
 		$collection.each(function () {
 			if ($(this).index(".order")<orderElem) {
-				outerHeightBefore+=$(this).outerHeight();
+				outerHeightBefore+=$(this).outerHeight(true);
 			}
 			else {
 				return false;
