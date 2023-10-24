@@ -1442,13 +1442,15 @@ return new Promise(async function (resolve, reject) {
 						uriRest=uri.substring(l+1);
 					}
 					if (m.ptnURI[uriHost]) {
-						let promise=m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
-						let result=await promise;
-						promise.then(function (result) {
-							if (result!==false&&(!result.list)) {
+						try {
+							let result=await m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
+							if (Boolean(result)!==false&&(!result.list)) {
 								return resolve(result);
 							}
-						});
+						}
+						catch (error) {
+							// continue.
+						}
 					}
 				}
 			}
