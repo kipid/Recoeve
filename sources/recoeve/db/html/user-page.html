@@ -1133,8 +1133,8 @@ m.a_log_out_from_all=function (e, elem) {
 $a_to_my_page=$("#a-to-my-page");
 m.to_my_page=function (e, elem) {
 	let fullPath=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+	$a_to_my_page.attr("href", fullPath);
 	if (e&&e.which===2) {
-		$a_to_my_page.attr("href", fullPath);
 		return true;
 	}
 	else {
