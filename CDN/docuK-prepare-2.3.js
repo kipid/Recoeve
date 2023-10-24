@@ -1172,14 +1172,14 @@ $window.on("resize.deviceInfo", function () {
 });
 
 // Share a link through SNS
-m.shareSNS=function (service) {
+m.shareSNS=async function (service) {
 	let title=$("title").eq(0).html()+` at ${window.location.host}`;
 	let url=window.location.href;
 	let open="";
 	switch (service) {
 		case 'link':
 			let written=`${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
-			navigator.clipboard.writeText(written).then(function () {
+			navigator.clipboard.writeText(written).then(function (copied) {
 				alert(`The following is copied!\n"${written}"`);
 			}
 			, function (err) {
@@ -1188,7 +1188,7 @@ m.shareSNS=function (service) {
 			return;
 		case 'tag':
 			let written1=`${title}:<br>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
-			navigator.clipboard.writeText(written1).then(function () {
+			navigator.clipboard.writeText(written1).then(function (copied) {
 				alert(`The following is copied!\n"${written1}"`);
 			}
 			, function (err) {
