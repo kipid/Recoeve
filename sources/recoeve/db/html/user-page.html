@@ -1130,7 +1130,6 @@ m.a_log_out_from_all=function (e, elem) {
 		return false;
 	}
 }
-$a_to_my_page=$("#a-to-my-page");
 m.to_my_page=function (e, elem) {
 	let fullPath=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	$a_to_my_page.attr("href", fullPath);
@@ -1359,7 +1358,8 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`)
+	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
+$a_to_my_page=$("#a-to-my-page");
 $button_hideFK=$("#button-hideFK");
 $button_auto_skip=$(".button-auto-skip");
 $button_loop=$(".button-loop");
