@@ -1356,7 +1356,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><img class="SNS-img" src="/CDN/link.png" onclick="m.shareCurrentPage('link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareCurrentPage('twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
+	<div id="SNS-floating"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareCurrentPage('tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
 $a_log_in=$(".a-log-in");
 $a_log_out=$(".a-log-out");
 $a_log_out_from_all=$(".a-log-out-from-all");
@@ -2852,7 +2852,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Twitter.png" onclick="m.shareSNS(this, 'twitter')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -5402,7 +5402,9 @@ $table_of_recos.on("keydown", function (e) {
 ////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
-m.shareCurrentPage=function (service) {
+m.shareCurrentPage=function (service, elem) {
+	let $elem=null;
+	if (elem) { $elem=$(elem); }
 	let title=`${m.currentCat} of ${m.userId}'s Recoeve.net`;
 	let open="";
 	let desc=title;
@@ -5421,16 +5423,31 @@ m.shareCurrentPage=function (service) {
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, args);
 	switch (service) {
 		case 'link':
-			let written=`${title}\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
-			navigator.clipboard.writeText(written).then(function () {
-				alert(`The following is copied!\n"${written}"`);
+			if ($elem) {
+				$elem.focus();
+				let written=`${title}\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
+				navigator.clipboard.writeText(written).then(function () {
+					alert(`The following is copied!\n"${written}"`);
+				}
+				, function (err) {
+					alert(`Could not copy text: ${err}`);
+				});
 			}
-			, function (err) {
-				alert(`Could not copy text: ${err}`);
-			});
-			return;
-		case 'twitter':
-			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
+			return false;
+		case 'tag':
+			if ($elem) {
+				$elem.focus();
+				let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
+				navigator.clipboard.writeText(written1).then(function () {
+					alert(`[--The following is copied!--]\n"${written1}"`);
+				}
+				, function (err) {
+					alert(`[--Could not copy text--]: ${err}`);
+				});
+			}
+			return false;
+		case 'X':
+			open="https://X.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
 			break;
 		case 'facebook':
 			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
@@ -5459,7 +5476,8 @@ m.shareCurrentPage=function (service) {
 	window.open(open);
 };
 m.shareSNS=function (elem, service) {
-	let $reco=$(elem).parent(".reco");
+	let $elem=$(elem);
+	let $reco=$elem.parent(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
 	let r=m.userRecos[uri];
 	let title=r.title;
@@ -5469,16 +5487,27 @@ m.shareSNS=function (elem, service) {
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, uri);
 	switch (service) {
 		case 'link':
+			$elem.focus();
 			let written=`${title}\n${recoeveURI}`;
 			navigator.clipboard.writeText(written).then(function () {
-				alert(`The following is copied!\n"${written}"`);
+				alert(`[--The following is copied!--]\n"${written}"`);
 			}
 			, function (err) {
-				alert(`Could not copy text: ${err}`);
+				alert(`[--Could not copy text--]: ${err}`);
 			});
-			return;
-		case 'twitter':
-			open="https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
+			return false;
+		case 'tag':
+			$elem.focus();
+			let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
+			navigator.clipboard.writeText(written1).then(function () {
+				alert(`[--The following is copied!--]\n"${written1}"`);
+			}
+			, function (err) {
+				alert(`[--Could not copy text--]: ${err}`);
+			});
+			return false;
+		case 'X':
+			open="https://X.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
 			break;
 		case 'facebook':
 			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
