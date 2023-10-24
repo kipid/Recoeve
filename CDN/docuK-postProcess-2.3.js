@@ -563,7 +563,7 @@ ${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.t
 </div>`:`<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 	Log <span class="bold underline">o</span>ut
 </div>`}
-<div id="SNS-floating"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png" onclick="m.shareSNS('tag')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
+<div id="SNS-floating"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png" onclick="m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
 	$floating_key=$("#floating-key");
 	if (m.docCookies.getItem("hideFK")==="y") {
 		$floating_key.hide();

@@ -1181,20 +1181,24 @@ m.shareSNS=async function (service, elem) {
 	if (elem) { $elem=$(elem); }
 	switch (service) {
 		case 'link':
-			$elem.focus();
+			if ($elem) {
+				$elem.focus();
+			}
 			let written=`${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
 			navigator.clipboard.writeText(written).then(function (copied) {
-				alert(`The following is copied!\n"${written}"`);
+				alert(`The following is copied!\n"${copied}"`);
 			}
 			, function (err) {
 				alert(`Could not copy text: ${err}`);
 			});
 			return;
 		case 'tag':
-			$elem.focus();
+			if ($elem) {
+				$elem.focus();
+			}
 			let written1=`${title}:<br>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
 			navigator.clipboard.writeText(written1).then(function (copied) {
-				alert(`The following is copied!\n"${written1}"`);
+				alert(`The following is copied!\n"${copied}"`);
 			}
 			, function (err) {
 				alert(`Could not copy text: ${err}`);
@@ -1433,9 +1437,9 @@ if (!m.printMode) {
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
 	</div>
-<div class="SNS-top"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png" onclick="m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
+<div class="SNS-top"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link',this)"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
 	);
-	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png" onclick="m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
+	docuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://recoeve.net/CDN/link.png" onclick="m.shareSNS('link',this)"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
 
 	// Scrollable switching of 'pre.prettyprint'.
 	docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
