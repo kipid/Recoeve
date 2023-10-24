@@ -4097,6 +4097,7 @@ m.openCat=function (cat, e) {
 				window.location.hash=`#${m.hashURI}`;
 			}
 			window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
+			$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
 		}, 2048);
 	}
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
@@ -5913,7 +5914,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}
 	let cats=m.localStorage.getItem("cats");
 	if (vars.cats!==undefined) {
-		$input_cats[0].value=vars.cats.val;
+		cats=$input_cats[0].value=vars.cats.val;
 	}
 	else if (!!cats&&cats!=='null') {
 		$input_cats[0].value=cats;
@@ -6006,7 +6007,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$table_of_recos[0].value=vars.ToR.val;
 	}
 	if (window.location.pathname==="/reco") {
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}#${encodeURIComponent(m.hashURI)}`);
+		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${m.hashURI?`#${encodeURIComponent(m.hashURI)}`:""}`);
 	}
 	else {
 		if (vars.ToR?.val&&m.browserWidth>701) {
