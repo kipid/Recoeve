@@ -5411,7 +5411,7 @@ m.shareCurrentPage=function (service, elem) {
 	let $elem=null;
 	if (elem) { $elem=$(elem); }
 	let title=`${m.currentCat} of ${m.userId}'s Recoeve.net`;
-	let open="";
+	let href="";
 	let desc=title;
 	let args={};
 	let argName="PRL"
@@ -5452,16 +5452,16 @@ m.shareCurrentPage=function (service, elem) {
 			}
 			return false;
 		case 'recoeve':
-			open=`https://recoeve.net/reco?uri=${encodeURIComponent(recoeveURI)}&title=${encodeURIComponent(title)}&cats=${encodeURIComponent(m.currentCat)}`;
+			href=`https://recoeve.net/reco?uri=${encodeURIComponent(recoeveURI)}&title=${encodeURIComponent(title)}&cats=${encodeURIComponent(m.currentCat)}`;
 			break;
 		case 'X':
-			open=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
+			href=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'facebook':
-			open=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
+			href=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'whatsapp':
-			open=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
+			href=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'kakao':
 			Kakao.Share.sendDefault({
@@ -5478,17 +5478,17 @@ m.shareCurrentPage=function (service, elem) {
 			});
 			return false;
 	}
-	window.open(open);
+	window.open(href);
 	return false;
 };
 m.shareSNS=function (elem, service) {
 	let $elem=$(elem);
-	let $reco=$elem.parent(".reco");
+	let $reco=$elem.parents(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
 	let r=m.userRecos[uri];
 	let title=r.title;
 	let desc=r.desc;
-	let open="";
+	let href="";
 	let lang=m.lang;
 	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, lang, uri);
 	switch (service) {
@@ -5523,13 +5523,13 @@ m.shareSNS=function (elem, service) {
 			});
 			return false;
 		case 'X':
-			open=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
+			href=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'facebook':
-			open=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
+			href=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'whatsapp':
-			open=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
+			href=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'kakao':
 			Kakao.Share.sendDefault({
@@ -5546,7 +5546,7 @@ m.shareSNS=function (elem, service) {
 			});
 			return;
 	}
-	window.open(open);
+	window.open(href);
 	return false;
 };
 
