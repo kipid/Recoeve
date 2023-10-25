@@ -1,5 +1,6 @@
 window.m={};
 (function (m, $, undefined) {
+m.version0="2.0";
 $window=$(window);
 $document=$(document);
 $html=$("html");
@@ -1005,6 +1006,10 @@ m.indentsRemove=function (str) {
 	}
 	return str.replace(indentRegExp,'\n');
 };
+
+////////////////////////////////////////////////////
+// Escape and Unescape HTML string.
+////////////////////////////////////////////////////
 m.escapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1017,6 +1022,15 @@ m.unescapeHTML=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
 };
+m.escapeAMP=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/%/g,'%25').replace(/&/g,'%26').replace(/#/g,'%23');
+};
+m.unescapeAMP=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
+};
+
 m.printCode=function (codeId) {
 	const $pre=$("pre#pre-"+codeId);
 	const $code=$("#"+codeId);
@@ -1107,7 +1121,7 @@ m.printDeviceInfo=function () {
 		let referrerHTML=(referrer?`<a target="_blank" href="${referrer}">${m.escapeOnlyTag(decodeURIComponent(referrer))}</a>`:`Empty`);
 		m.$deviceInfo.html(
 			`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize*1.8).toFixed(1)}px (${m.fontSize.toFixed(1)}); line-height: ${(m.lineHeight10/10).toFixed(1)};<br>
-width: ${m.browserWidth}, height: ${window.innerHeight}<br>
+width: ${m.browserWidth}, height: ${window.innerHeight}, version: ${m.version0}${m.version1}<br>
 document.referrer: ${referrerHTML}`
 		);
 	}

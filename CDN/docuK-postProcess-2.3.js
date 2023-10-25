@@ -1,4 +1,5 @@
 (function(m, $, undefined) {
+m.version1=".0";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
