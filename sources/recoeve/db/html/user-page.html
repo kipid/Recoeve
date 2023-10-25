@@ -1360,7 +1360,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><a onclick="m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareCurrentPage('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareCurrentPage('whatsapp')"></div>`);
+	<div id="SNS-floating"><a onclick="return m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="return m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareCurrentPage('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareCurrentPage('whatsapp')"></div>`);
 $a_log_in=$(".a-log-in");
 $a_log_out=$(".a-log-out");
 $a_log_out_from_all=$(".a-log-out-from-all");
@@ -2856,7 +2856,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="m.shareSNS(this, 'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="m.shareSNS(this, 'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="m.shareSNS(this, 'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="m.shareSNS(this, 'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="m.shareSNS(this, 'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="m.shareSNS(this, 'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="m.shareSNS(this, 'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -4101,7 +4101,7 @@ m.openCat=function (cat, e) {
 			}
 			window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
 			$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
-		}, 2048);
+		}, 512);
 	}
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
@@ -5476,9 +5476,10 @@ m.shareCurrentPage=function (service, elem) {
 					},
 				},
 			});
-			return;
+			return false;
 	}
 	window.open(open);
+	return false;
 };
 m.shareSNS=function (elem, service) {
 	let $elem=$(elem);
@@ -5522,10 +5523,10 @@ m.shareSNS=function (elem, service) {
 			});
 			return false;
 		case 'X':
-			open="https://X.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(recoeveURI);
+			open=`https://X.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'facebook':
-			open="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(recoeveURI);
+			open=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recoeveURI)}`;
 			break;
 		case 'whatsapp':
 			open=`https://wa.me/?text=${encodeURIComponent(title)}%0A${encodeURIComponent(recoeveURI)}`;
@@ -5546,6 +5547,7 @@ m.shareSNS=function (elem, service) {
 			return;
 	}
 	window.open(open);
+	return false;
 };
 
 
