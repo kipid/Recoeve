@@ -723,7 +723,7 @@ public static void main(String... args) {
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie1) {
 						pl.req.response().addCookie(singleCookie);
 					}
-					pl.req.response().end("Log-out : All log-in | session in server are deleted.", ENCODING);
+					pl.req.response().end(FileMap.replaceStr("[--Log-out : All log-in | session in server are deleted.--]", pl.lang), ENCODING);
 					System.out.println("Sended log-out msg.");
 					break;
 				case "log-out-from-all.do": // path=/account/log-out-from-all.do
@@ -732,7 +732,7 @@ public static void main(String... args) {
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie2) {
 						pl.req.response().addCookie(singleCookie);
 					}
-					pl.req.response().end("Log-out : All log-in | session in server from all devices are deleted.", ENCODING);
+					pl.req.response().end(FileMap.replaceStr("[--Log-out : All log-in | session in server from all devices are deleted.--]", pl.lang), ENCODING);
 					System.out.println("Sended log-out-from-all msg.");
 					break;
 				case "check": // path=/account/check

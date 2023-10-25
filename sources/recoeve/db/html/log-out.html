@@ -10,7 +10,7 @@ div {font-size:20px}
 </style>
 </head>
 <body>
-<h1>Log-out : All log-in | session cookies are deleted.</h1>
+<h1>[--Log-out : All log-in | session cookies are deleted.--]</h1>
 <div id="log-in">To <a id="a-log-in" href="/account/log-in">log-in page</a>.</div>
 <div id="err"></div>
 <script src="/CDN/jquery.js"></script>
@@ -28,7 +28,7 @@ m.logOutDo=function (args, err) {
 		type:"POST", url:`${window.location.pathname}.do`, data:args
 		, dataType:"text"
 	}).fail(function (resp) {
-		let msg="Log-out has failed.";
+		let msg="[--Log-out has failed.--]";
 		console.log(msg, resp);
 		$err.html(m.escapeHTML(msg+" "+resp));
 	}).done(function (resp) {
@@ -37,7 +37,7 @@ m.logOutDo=function (args, err) {
 		setTimeout(function () {
 			window.open(args.href);
 			window.close();
-		}, 4096);
+		}, 1024);
 	});
 }
 m.rmb_me(m.logOutDo, {href})
