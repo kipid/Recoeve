@@ -5439,7 +5439,7 @@ m.shareCurrentPage=function (service, elem) {
 		case 'link':
 			if ($elem) {
 				$elem.focus();
-				let written=`${title}\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
+				let written=`${title}\n${recoeveURI}\n\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
 				navigator.clipboard.writeText(written).then(function () {
 					alert(`The following is copied!\n"${written}"`);
 				}
@@ -5503,7 +5503,7 @@ m.shareSNS=function (elem, service) {
 	switch (service) {
 		case 'link':
 			$elem.focus();
-			let written=`${title}\n${uri}\n${m.escapeOnlyTag(decodeURIComponent(uri))}`;
+			let written=`${title}\n${recoeveURI}\n\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}\n\n${uri}`;
 			navigator.clipboard.writeText(written).then(function () {
 				alert(`[--The following is copied!--]\n"${written}"`);
 			}
@@ -5513,7 +5513,7 @@ m.shareSNS=function (elem, service) {
 			return false;
 		case 'tag':
 			$elem.focus();
-			let written1=`${title}:<br>\n<a target="_blank" href="${uri}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
+			let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a><br>\n<br>\n<a target="_blank" href="${uri}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 			navigator.clipboard.writeText(written1).then(function () {
 				alert(`[--The following is copied!--]\n"${written1}"`);
 			}
@@ -5523,7 +5523,7 @@ m.shareSNS=function (elem, service) {
 			return false;
 		case 'recoeve':
 			$elem.focus();
-			let written2=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
+			let written2=`${title}:\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}\n\n${m.escapeOnlyTag(uri)}<br>\n<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
 			navigator.clipboard.writeText(written2).then(function () {
 				alert(`[--The following is copied!--]\n"${written2}"`);
 			}
