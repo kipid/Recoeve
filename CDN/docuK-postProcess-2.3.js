@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".1";
+m.version1=".2";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -630,11 +630,16 @@ if (!m.printMode) {
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
 	// Disqus js script
-	m.disqusVars={page:{}};
-	window.disqus_config.apply(m.disqusVars);
-	$('link[rel="canonical"]').remove();
-	($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${m.disqusVars.page.url}" />`);
-	m.disqusVars.page.url;
+	if (window.disqus_config) {
+		m.disqusVars={page:{}};
+		window.disqus_config.apply(m.disqusVars);
+		let url=m.disqusVars.page.url;
+		$('link[rel="canonical"]').remove();
+		if (m.getUTF8Length(url)>255) {
+			url=$('meta[property="dg:plink"]').attr('content');
+		}
+		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
+	}
 	if (!m.printMode) {
 		$disqus_thread=$("#disqus_thread");
 		if (!($disqus_thread.exists())) {

@@ -1,6 +1,6 @@
 window.m={};
 (function (m, $, undefined) {
-m.version0="2.1";
+m.version0="2.2";
 $window=$(window);
 $document=$(document);
 $html=$("html");
@@ -10,6 +10,31 @@ $.fn.exists=function () { return this.length!==0; };
 m.browserWidth=window.innerWidth;
 const docuK=$(".docuK");
 m.docuK=docuK;
+
+m.getUTF8Length=function (s) {
+	let len=0;
+	for (let i=0;i<s.length;i++) {
+		let code=s.charCodeAt(i);
+		if (code<=0x7f) {
+			len+=1;
+		}
+		else if (code<=0x7ff) {
+			len+=2;
+		}
+		else if (code>=0xd800&&code<=0xdfff) {
+			// Surrogate pair: These take 4 bytes in UTF-8 and 2 chars in UCS-2
+			// (Assume next char is the other [valid] half and just skip it)
+			len+=4; i++;
+		}
+		else if (code<0xffff) {
+			len+=3;
+		}
+		else {
+			len+=4;
+		}
+	}
+	return len;
+};
 
 m.getSearchVars=function (searchStr) {
 	let vars=[];
