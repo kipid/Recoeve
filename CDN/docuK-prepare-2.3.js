@@ -1,6 +1,6 @@
 window.m={};
 (function (m, $, undefined) {
-m.version0="2.3";
+m.version0="2.4";
 $window=$(window);
 $document=$(document);
 $html=$("html");
@@ -1147,6 +1147,7 @@ m.printDeviceInfo=function () {
 		m.$deviceInfo.html(
 			`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize*1.8).toFixed(1)}px (${m.fontSize.toFixed(1)}); line-height: ${(m.lineHeight10/10).toFixed(1)};<br>
 width: ${m.browserWidth}, height: ${window.innerHeight}, version: ${m.version0}${m.version1}<br>
+${m.canonicalURI?`Canonical URI: <a target="_blank" href="${m.canonicalURI}">${m.escapeOnlyTag(decodeURIComponent(m.canonicalURI))}</a><br>`:""}
 ${m.plink?`dg:plink (Document Global Permanent Link): <a target="_blank" href="${m.plink}">${m.plink}</a><br>`:""}
 document.referrer: ${referrerHTML}`
 		);

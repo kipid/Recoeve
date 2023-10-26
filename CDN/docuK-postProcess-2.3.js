@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".5";
+m.version1=".6";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -626,15 +626,11 @@ if (!m.printMode) {
 		m.logPrint(`<br>Line-height ${(Number(cookieItem)/10).toFixed(1)} is set from cookie.`);
 	}
 
-	m.plink=$('meta[property="dg:plink"]').attr('content');
-	m.printDeviceInfo();
-	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
-
 	// Disqus js script
 	if (window.disqus_config) {
 		m.disqusVars={page:{}};
 		window.disqus_config.apply(m.disqusVars);
-		let url=m.disqusVars.page.url;
+		let url=m.canonicalURI=m.disqusVars.page.url;
 		$('link[rel="canonical"]').remove();
 		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
 	}
@@ -649,6 +645,10 @@ if (!m.printMode) {
 		$headOrBody.append($disqus_js);
 		m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 	}
+
+	m.plink=$('meta[property="dg:plink"]').attr('content');
+	m.printDeviceInfo();
+	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
 	if (!m.printMode) {
 		$page_views_chart=$("#page-views-chart");
