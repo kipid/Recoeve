@@ -5922,7 +5922,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$input_uri[0].value=vars.uri.val;
 		$input_uri.trigger("input");
 	}
-	else if (!!uri&&uri!=='null') {
+	else if (uri&&uri!=='null') {
 		$input_uri[0].value=uri;
 	}
 	let title=m.localStorage.getItem("title");
