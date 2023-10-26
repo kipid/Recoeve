@@ -35,7 +35,12 @@ m.myPage=(m.myId===m.userId);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
 if (window.location.hash.length>1) {
-	m.hashURI=m.initialHashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
+	m.initialHashURI=window.location.hash.substring(1);
+	let ampIndex=m.initialHashURI.indexOf("&");
+	if (ampIndex>=0) {
+		m.initialHashURI=m.initialHashURI.substring(0,ampIndex);
+	}
+	m.hashURI=m.initialHashURI=decodeURIComponent(.replace(/\+/g,"%20"));
 }
 else {
 	m.hashURI=m.initialHashURI="";
