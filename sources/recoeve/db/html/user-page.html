@@ -5910,7 +5910,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$window.trigger("resize.sb");
 
 	m.initialOpen=true;
-	m.hashURI=window.location.hash;
 	if (!m.hashURI) {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})
 	}
