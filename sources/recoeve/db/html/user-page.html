@@ -35,10 +35,10 @@ m.myPage=(m.myId===m.userId);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathNameSplit[3]==="mode"&&m.pathNameSplit[4]?m.pathNameSplit[4]:"";
 if (window.location.hash.length>1) {
-	m.hashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
+	m.hashURI=m.initialHashURI=decodeURIComponent(window.location.hash.substring(1).replace(/\+/g,"%20"));
 }
 else {
-	m.hashURI="";
+	m.hashURI=m.initialHashURI="";
 }
 
 m.searchVars=m.getSearchVars(window.location.search);
@@ -5910,9 +5910,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$window.trigger("resize.sb");
 
 	m.initialOpen=true;
-	if (!m.hashURI) {
-		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})
-	}
 	let vars=m.searchVars;
 	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
@@ -6098,6 +6095,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}, 1024);
 	}
 	$goto_cats_container.hide();
+	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
+		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})
+	}
 	m.initialOpen=false;
 });
 
