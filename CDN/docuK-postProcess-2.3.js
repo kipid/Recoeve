@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".2";
+m.version1=".3";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -636,7 +636,9 @@ if (!m.printMode) {
 		let url=m.disqusVars.page.url;
 		$('link[rel="canonical"]').remove();
 		if (m.getUTF8Length(url)>255) {
+			let oldURI=url;
 			url=$('meta[property="dg:plink"]').attr('content');
+			window.history.replaceState({orgURI, url}, "", url);
 		}
 		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
 	}
