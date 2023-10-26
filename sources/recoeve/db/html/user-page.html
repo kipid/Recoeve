@@ -40,7 +40,7 @@ if (window.location.hash.length>1) {
 	if (ampIndex>=0) {
 		m.initialHashURI=m.initialHashURI.substring(0,ampIndex);
 	}
-	m.hashURI=m.initialHashURI=decodeURIComponent(.replace(/\+/g,"%20"));
+	m.hashURI=m.initialHashURI=decodeURIComponent(m.initialHashURI.replace(/\+/g,"%20"));
 }
 else {
 	m.hashURI=m.initialHashURI="";
