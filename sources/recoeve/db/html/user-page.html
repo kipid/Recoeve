@@ -5573,6 +5573,7 @@ m.processShortKey=function (e) {
 	case 90: // Z=90 To List Play
 		m.hashURI="headPlay";
 		window.location.hash=`#${m.hashURI}`;
+		$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
 		break;
 	case 81: // Q=81 Preceding
 		m.fsToRs.playNext(1);
