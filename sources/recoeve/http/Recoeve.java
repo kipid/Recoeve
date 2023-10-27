@@ -251,7 +251,7 @@ public static void main(String... args) {
 	router.get("/admin/:query").handler(ctx -> { // path=/admin/...
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
-		if (pl.cookie.get("I")=="5f5e100") {
+		if (pl.cookie.get("I").equals("5f5e100")) {
 			String query=ctx.pathParam("query");
 			switch (query) {
 			case "logs":
