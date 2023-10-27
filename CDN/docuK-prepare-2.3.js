@@ -1471,7 +1471,7 @@ if (!m.printMode) {
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</spanpan> mess</span></li>
+		<li><span onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</span> mess</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
