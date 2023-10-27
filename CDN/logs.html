@@ -80,7 +80,7 @@ m.printLogs=function (args, err) {
 		let iMax=txtArray.length;
 		for (let i=1;i<iMax;i++) {
 			txtArray[i].splice(1, 0, ""+parseInt(txtArray[i].user_i, 16));
-			txtArray[i].splice(2, 1, `<a target="_blank" href="https://recoeve.net/user/${txtArray[i].id}">${txtArray[i].id}</a>`);
+			txtArray[i].splice(2, 1, `<a target="_blank" href="https://recoeve.net/user/${txtArray[i].user_id}">${txtArray[i].user_id}</a>`);
 		}
 		$print_logs.html(m.arrayToTableHTML(txtArray));
 	});
