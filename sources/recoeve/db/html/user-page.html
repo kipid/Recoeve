@@ -6030,7 +6030,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${m.hashURI?`#${encodeURIComponent(m.hashURI)}`:""}`);
 	}
 	else {
-		if (vars.ToR?.val&&m.browserWidth>701) {
+		if (vars.ToR?.val===""||vars.ToR?.val) {
 			if (!$table_of_recos_container.is(":visible")) {
 				$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 			}
