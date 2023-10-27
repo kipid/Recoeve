@@ -1298,7 +1298,7 @@ ptnURI.toIframe=function (uriRest, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI["namu.wiki"].regEx.exec(uriRest);
 	if (exec!==null) {
-		let pathname=exec[1].replace(/%2B/gi,"%20");
+		let pathname=exec[1].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
 		return resolve({html:`<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from:"namu.wiki", pathname});
 	}
 	else {
