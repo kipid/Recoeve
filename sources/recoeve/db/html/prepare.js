@@ -1292,6 +1292,21 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["namu.wiki"]={};
+ptnURI.regEx=/w\/(.*)/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["namu.wiki"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let pathname=exec[1].replace(/%2B/gi,"%20");
+		return resolve({html:`<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from:"namu.wiki", pathname});
+	}
+	else {
+		return reject(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI["www.ted.com"]=m.ptnURI["embed.ted.com"]={};
 ptnURI.regEx=/^talks\/(\S+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
@@ -1364,7 +1379,7 @@ return new Promise(function (resolve, reject) {
 			let vars=m.getSearchVars(exec[1]);
 			let no=vars.no?.val;
 			if (no) {
-				return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>`:"")+m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`)})
+				return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>`:"")+m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`), from:"dcinside", voteId:no})
 			}
 		}
 	}
