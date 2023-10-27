@@ -3191,6 +3191,57 @@ public void updateDefsAll(Timestamp tNow) {
 		err(e);
 	}
 }
+/*
+CREATE TABLE `LogInLogs` (
+	`user_i` bigint NOT NULL
+	, `t` datetime NOT NULL
+	, `ip` varchar(32) NOT NULL
+	, `log` char(3) NOT NULL
+	, `success` boolean NOT NULL
+	, `desc` varchar(255)
+	, PRIMARY KEY (`user_i`, `t`)
+	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
+);
+*/
+public String printLogs() {
+	StringBuilder sb=new StringBuilder();
+	sb.append("user_i\tuser_id\tt\tip\tlog\tsuccess\tdesc");
+	try {
+		PreparedStatement pstmtGetLogs=con.prepareStatement("SELECT * FROM `LogInLogs` WHERE `log`='snu' LIMIT 100;");
+		ResultSet rs=pstmtGetLogs.executeQuery();
+		while (rs.next()) {
+			long user_me=rs.getLong("user_i");
+			ResultSet user=findUserByIndex(user_me);
+			String user_id="";
+			if (user.next()) {
+				user_id=user.getString("id");
+			}
+			Timestamp t=rs.getTimestamp("t");
+			String ip=rs.getString("ip");
+			String log=rs.getString("log");
+			boolean success=rs.getBoolean("success");
+			String desc=rs.getString("desc");
+			sb.append("\n");
+			sb.append(Long.toString(user_me, 16));
+			sb.append("\t");
+			sb.append(user_id);
+			sb.append("\t");
+			sb.append(t.toString());
+			sb.append("\t");
+			sb.append(ip);
+			sb.append("\t");
+			sb.append(log);
+			sb.append("\t");
+			sb.append(success);
+			sb.append("\t");
+			sb.append(desc);
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return sb.toString();
+}
 public void sendEmailAll() {
 	try {
 		PreparedStatement pstmtGetAllUsers=con.prepareStatement("SELECT * FROM `Users`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);

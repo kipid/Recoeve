@@ -248,6 +248,37 @@ public static void main(String... args) {
 		}
 	});
 
+	router.get("/admin/:query").handler(ctx -> { // path=/admin/...
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		if (pl.cookie.get("I")=="5f5e100"&&pl.cookie.get("rmbdI")=="5f5e100") {
+			String query=ctx.pathParam("query");
+			switch (query) {
+			case "logs":
+				pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
+					.sendFile(FileMap.getCDNFile("logs.html"));
+				break;
+			case "printLogs":
+				if (pl.sessionPassed) {
+					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+						.end(pl.db.printLogs());
+					System.out.println("Sended printLogs.");
+				}
+				else {
+					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+					System.out.println(INVALID_ACCESS+" (You are not admin kipid. Invalid session.)");
+				}
+				break;
+			}
+		}
+		else {
+			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+			System.out.println(INVALID_ACCESS+" (You are not admin kipid.)");
+		}
+	});
+
 	router.get("/:fileName").handler(ctx -> {
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);

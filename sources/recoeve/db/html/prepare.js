@@ -513,6 +513,18 @@ m.csvToJSON=function (str, colMap=true, rowMap=false) {
 	}
 	return Promise.resolve(rows);
 };
+m.arrayToTableHTML=function (txtArray) {
+	let tableStr="<table>";
+	for (let row=0;row<txtArray.length;row++) {
+		tableStr+="<tr>";
+		for (let col=0;col<txtArray[row].length;col++) {
+			tableStr+=`<td>${m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g,'<br>')}</td>`;
+		}
+		tableStr+="</tr>";
+	}
+	tableStr+="</table>";
+	return tableStr;
+};
 
 
 

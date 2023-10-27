@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+<title>Logs of Recoeve.net</title>
+<link rel="stylesheet" href="/CDN/recoeve-style.css">
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
+<script>
+(function (m, $, undefined) {
+m.myIndex="5f5e100";
+m.myId="kipid";
+})(window.m, jQuery);
+</script>
+<style>
+#print-logs {width:1000px; max-width:100%; margin:auto; padding:.5em}
+#print-logs tbody td {padding:0.3em 0.3em}
+#print-logs tbody tr td:first-child {
+	width:3em;
+	min-width:3em;
+	max-width:5em;
+	word-break:break-all;
+}
+#print-logs tbody tr td:nth-child(2) {
+	width:11.5em;
+	min-width:3em;
+	max-width:11.5em;
+	word-break:break-all;
+}
+</style>
+</head>
+<body>
+<div id="print-logs"></div>
+</body>
+<script>
+(function (m, $, undefined) {
+$print_logs=$("#print-logs");
+m.printLogs=function (args, err) {
+	$.ajax({
+		type:"GET", url:"/admin/printLogs", dataType:"text"
+	}).fail(function (resp) {
+		console.log(resp);
+		$print_logs.html(resp);
+	}).done(async function (resp) {
+		let txtArray=await m.strToJSON(resp);
+		$print_logs.html(m.arrayToTableHTML(txtArray));
+	});
+};
+m.rmb_me(m.printLogs, {});
+})(window.m, jQuery);
+</script>
+</html>
