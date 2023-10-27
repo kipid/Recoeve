@@ -6023,7 +6023,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
-	if (vars.ToR?.val) {
+	if (vars.ToR?.val===""||vars.ToR?.val) {
 		$table_of_recos[0].value=vars.ToR.val;
 	}
 	if (window.location.pathname==="/reco") {
