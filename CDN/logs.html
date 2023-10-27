@@ -15,19 +15,43 @@ m.myId="kipid";
 })(window.m, jQuery);
 </script>
 <style>
-#print-logs {width:1000px; max-width:100%; margin:auto; padding:.5em}
+#print-logs {width:1000px; max-width:100%; margin:auto; padding:.5em; background:black; color:white; font-size:12px}
+#print-logs * {word-break:break-all}
 #print-logs tbody td {padding:0.3em 0.3em}
-#print-logs tbody tr td:first-child {
+#print-logs tbody tr td:first-child { // user_i
+	width:5em;
+	min-width:5em;
+	max-width:7em;
+}
+#print-logs tbody tr td:nth-child(2) { // user_id
+	width:9em;
+	min-width:9em;
+	max-width:12em;
+}
+#print-logs tbody tr td:nth-child(3) { // t
+	width:9em;
+	min-width:9em;
+	max-width:12em;
+}
+#print-logs tbody tr td:nth-child(4) { // ip
+	width:9em;
+	min-width:9em;
+	max-width:12em;
+}
+#print-logs tbody tr td:nth-child(5) { // log
 	width:3em;
 	min-width:3em;
-	max-width:5em;
-	word-break:break-all;
+	max-width:3em;
 }
-#print-logs tbody tr td:nth-child(2) {
-	width:11.5em;
-	min-width:3em;
-	max-width:11.5em;
-	word-break:break-all;
+#print-logs tbody tr td:nth-child(6) { // success
+	width:5em;
+	min-width:5em;
+	max-width:5em;
+}
+#print-logs tbody tr td:nth-child(7) { // desc
+	width:15em;
+	min-width:15em;
+	max-width:20em;
 }
 </style>
 </head>
