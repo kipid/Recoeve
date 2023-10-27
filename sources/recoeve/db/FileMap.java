@@ -33,6 +33,7 @@ public class FileMap {
 			, "link.png", "icon-Tag.png", "icon-Twitter.png", "icon-X.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png", "icon-Whatsapp.png"
 			, "cc.png", "by.png", "nc.png", "nd.png"
 			, "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js"
+			, "logs.html"
 			, "right-to-commit-suicide.html"
 		};
 		
