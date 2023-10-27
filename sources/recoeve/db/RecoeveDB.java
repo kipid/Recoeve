@@ -3205,7 +3205,7 @@ CREATE TABLE `LogInLogs` (
 */
 public String printLogs() {
 	StringBuilder sb=new StringBuilder();
-	sb.append("user_i\tuser_id\tt\tip\tlog\tsuccess\tdesc");
+	sb.append("user_i\tuser_id\temail\tt\tip\tlog\tsuccess\tdesc");
 	try {
 		PreparedStatement pstmtGetLogs=con.prepareStatement("SELECT * FROM `LogInLogs` WHERE `log`='snu' LIMIT 100;");
 		ResultSet rs=pstmtGetLogs.executeQuery();
@@ -3213,8 +3213,10 @@ public String printLogs() {
 			long user_me=rs.getLong("user_i");
 			ResultSet user=findUserByIndex(user_me);
 			String user_id="";
+			String email="";
 			if (user.next()) {
 				user_id=user.getString("id");
+				email=user.getString("email");
 			}
 			Timestamp t=rs.getTimestamp("t");
 			String ip=rs.getString("ip");
@@ -3225,6 +3227,8 @@ public String printLogs() {
 			sb.append(Long.toString(user_me, 16));
 			sb.append("\t");
 			sb.append(user_id);
+			sb.append("\t");
+			sb.append(email);
 			sb.append("\t");
 			sb.append(t.toString());
 			sb.append("\t");
