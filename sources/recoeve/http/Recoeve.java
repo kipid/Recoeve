@@ -187,7 +187,7 @@ public static void main(String... args) {
 				fileName=ctx.pathParam("fileName");
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
-				pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Year.
+				pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
 				pl.req.response().putHeader("ETag", "1.1.7");
 				String[] fileNameSplit=fileName.split("\\.");
 				switch (fileNameSplit[fileNameSplit.length-1]) {
