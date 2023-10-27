@@ -16,6 +16,7 @@ m.myId="kipid";
 </script>
 <style>
 #print-logs {width:1000px; max-width:100%; margin:auto; padding:.5em; background:black; color:white; font-size:12px}
+table, th, td {border:1px solid white; border-collapse:collapse}
 #print-logs * {word-break:break-all}
 #print-logs tbody td {padding:0.3em 0.3em}
 #print-logs tbody tr td:first-child { // user_i
@@ -23,32 +24,37 @@ m.myId="kipid";
 	min-width:5em;
 	max-width:7em;
 }
-#print-logs tbody tr td:nth-child(2) { // user_id
+#print-logs tbody tr td:nth-child(2) { // index
 	width:9em;
 	min-width:9em;
 	max-width:12em;
 }
-#print-logs tbody tr td:nth-child(3) { // t
+#print-logs tbody tr td:nth-child(3) { // user_id
 	width:9em;
 	min-width:9em;
 	max-width:12em;
 }
-#print-logs tbody tr td:nth-child(4) { // ip
+#print-logs tbody tr td:nth-child(4) { // t
 	width:9em;
 	min-width:9em;
 	max-width:12em;
 }
-#print-logs tbody tr td:nth-child(5) { // log
+#print-logs tbody tr td:nth-child(5) { // ip
+	width:9em;
+	min-width:9em;
+	max-width:12em;
+}
+#print-logs tbody tr td:nth-child(6) { // log
 	width:3em;
 	min-width:3em;
 	max-width:3em;
 }
-#print-logs tbody tr td:nth-child(6) { // success
+#print-logs tbody tr td:nth-child(7) { // success
 	width:5em;
 	min-width:5em;
 	max-width:5em;
 }
-#print-logs tbody tr td:nth-child(7) { // desc
+#print-logs tbody tr td:last-child { // desc
 	width:15em;
 	min-width:15em;
 	max-width:20em;
@@ -69,6 +75,11 @@ m.printLogs=function (args, err) {
 		$print_logs.html(resp);
 	}).done(async function (resp) {
 		let txtArray=await m.strToJSON(resp);
+		txtArray[0].splice(1, 0, "index");
+		let iMax=txtArray.length;
+		for (let i=1;i<iMax;i++) {
+			txtArray[i].splice(1, 0, parseInt(txtArray[i][0], 16));
+		}
 		$print_logs.html(m.arrayToTableHTML(txtArray));
 	});
 };
