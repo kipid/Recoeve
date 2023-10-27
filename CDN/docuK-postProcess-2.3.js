@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".6";
+m.version1=".7";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -879,6 +879,9 @@ if (!m.printMode) {
 		let scrollTop=null;
 		let i, k;
 		switch (event.keyCode) {
+			case 65: // A=65 Toggle a mess
+				$(".toggle-a-mess").eq(0).trigger("click");
+				break;
 			case 69: // E=69 Expand/Hide floating keys
 				m.toggleFK();
 				break;

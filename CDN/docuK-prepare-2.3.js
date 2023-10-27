@@ -1,6 +1,6 @@
 window.m={};
 (function (m, $, undefined) {
-m.version0="2.4";
+m.version0="2.5";
 $window=$(window);
 $document=$(document);
 $html=$("html");
@@ -550,7 +550,7 @@ m.toggleFK=function () {
 };
 
 m.promoting=function (id) {
-	return `<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+	return `<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</a> mess</div>
 <div class="cBoth"></div>
 <div class="promoting order"${id?` id="${id}"`:""}>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
@@ -1460,7 +1460,7 @@ m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 
 if (!m.printMode) {
 	// Copyright and Short Keys announcement.
-	docuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+	docuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</a> mess</div>
 <div class="cBoth"></div>
 <div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
@@ -1471,6 +1471,7 @@ if (!m.printMode) {
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
+		<li><span onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</span> mess</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
@@ -1495,7 +1496,7 @@ if (!m.printMode) {
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle a mess</div>
+<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</a> mess</div>
 <div class="cBoth"></div>`);
 }
 
