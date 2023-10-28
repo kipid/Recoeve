@@ -177,15 +177,12 @@ m.changePwd=function(elem) {
 					dataToPut+=`&${$inputs.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
 				}
 				$.ajax({
-					type:"POST", url:"/account/changePwd.do", data:dataToPut, dataType:"text"
+					type:"POST", url:`/account/changePwd.do${window.location.search}`, data:dataToPut, dataType:"text"
 				}).fail(function (resp) {
 					$elem.before(m.encloseErr(resp));
 				}).done(function (resp) {
 					$elem.before(m.encloseErr(resp));
 					$elem.before(m.encloseErr(`To <a href="/account/log-in">Log-in page</a>.`));
-					setTimeout(function () {
-						window.location.href="/account/log-in";
-					}, 2048)
 				})
 			}, 1024);
 		});
