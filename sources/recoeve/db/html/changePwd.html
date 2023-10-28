@@ -196,17 +196,17 @@ m.changePwd=function(elem) {
 	}
 };
 
-$("#sign-up-userPwdCfm").on("keyup", function(e) {
-	e.preventDefault();
-	e.stopPropagation();
+$("#sign-up-userPwdCfm").on("keyup keydown input", function(e) {
 	if (e.keyCode===13) { // Enter
+		e.preventDefault();
+		e.stopPropagation();
 		$("#button-changePwd").trigger("click");
 	}
 });
-$("input.go-next").on("keyup", function(e) {
-	e.preventDefault();
-	e.stopPropagation();
+$("input.go-next").on("keyup keydown input", function(e) {
 	if (e.keyCode===13) { // Enter
+		e.preventDefault();
+		e.stopPropagation();
 		$(e.target).next("input").focus();
 	}
 });
