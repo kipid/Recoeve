@@ -424,16 +424,22 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 
 // TODO: Press <code>Enter</code> to go to the next input.
 $("#input-userPwd").on("keyup", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	if (e.keyCode===13) { // Enter
 		$("#button-log-in").trigger("click");
 	}
 });
 $("#input-su-userPwdCfm").on("keyup", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	if (e.keyCode===13) { // Enter
 		$("#button-sign-up").trigger("click");
 	}
 });
 $("input.go-next").on("keyup", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	if (e.keyCode===13) { // Enter
 		$(this).next("input").focus();
 	}
