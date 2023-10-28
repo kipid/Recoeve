@@ -20,7 +20,7 @@ div {font-size:20px}
 let href=`/account/log-in${window.location.search}`;
 $("#a-log-in").attr("href", href);
 $err=$("#err");
-m.logOutDo=function (args, err) {
+m.log_out_do=function (args, err) {
 	if (err) {
 		$err.html(m.escapeHTML(err));
 	}
@@ -40,7 +40,7 @@ m.logOutDo=function (args, err) {
 		}, 1024);
 	});
 }
-m.rmb_me(m.logOutDo, {href})
+m.rmb_me(m.log_out_do, {href})
 })(window.m, jQuery);
 </script>
 </body>
