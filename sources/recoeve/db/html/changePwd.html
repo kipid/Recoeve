@@ -172,9 +172,10 @@ m.changePwd=function(elem) {
 				// $form.submit();
 				let $inputs=$("#form-change-pwd").find("input");
 				let $inputI=$inputs.eq(0);
-				let dataToPut=`${$inputs.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
+				let dataToPut=`${$inputI.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
 				for (let i=1;i<$inputs.length;i++) {
-					dataToPut+=`&${$inputs.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
+					$inputI=$inputs.eq(i);
+					dataToPut+=`&${$inputI.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
 				}
 				$.ajax({
 					type:"POST", url:`/account/changePwd.do${window.location.search}`, data:dataToPut, dataType:"text"
