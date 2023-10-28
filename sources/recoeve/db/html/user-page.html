@@ -1129,13 +1129,13 @@ m.log_out_do=function (args, err) {
 	}).fail(function (resp) {
 		let msg="[--Log-out has failed.--]";
 		console.log(msg, resp);
-		$err.html(m.escapeOnlyTag(msg+" "+resp));
+		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`));
 	}).done(function (resp) {
 		console.log(resp);
 		$err.html(m.escapeOnlyTag(resp));
 		setTimeout(function () {
 			window.location.href=args.href;
-		}, 512);
+		}, 1024);
 	});
 };
 m.a_log_out=function (e) {
@@ -1148,9 +1148,9 @@ m.a_log_out=function (e) {
 		window.open(href_log_out);
 	}
 	else {
-		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Logging-out from Recoeve.net--]</div></div>`);
+		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out from Recoeve.net--]</div></div>`);
 		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
-		m.rmb_me(m.log_out_do, {href:href_log_in});
+		m.rmb_me(m.log_out_do, {href:href_log_in, goto:fullPath});
 	}
 	return false;
 };
