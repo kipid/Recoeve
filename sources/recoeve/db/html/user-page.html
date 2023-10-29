@@ -1739,7 +1739,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 };
 m.catListToHTML=function () {
 	let cL=m.catList;
-	let catListHTML=`<div class="cat" id="cat-0" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat('${m.catList[0].cat}', event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat('${m.catList[0].cat}', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		let beforeDepth=cL[i-1].depth;
@@ -1753,7 +1753,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i]?.depth}em">`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(m.catList[i].cat)}" style="margin-left:${cL[i]?.depth}em">`;
 		if (currentDepth<afterDepth) {
 			catListHTML+=`<span class="EC" onclick="m.ExpCol(this,m.catList[${i}])">▶</span>`;
 		}
@@ -1773,7 +1773,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${i}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(m.catList[i].cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${m.catList[i].cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1809,7 +1809,7 @@ m.catsToA=function (cats) {
 m.getCatListChanged=function () {
 	$change_catList_order_ok.hide();
 	$change_catList_order_cancel.hide();
-	let $cats=$("#catList .cat").not("#cat-0");
+	let $cats=$("#catList .cat").not(`#cat-${encodeURIComponent("[--Uncategorized--]")}`);
 	$cats.removeClass("edit");
 	$cats.find('.edit-bar').remove();
 	let catListChanged="\n";
@@ -1834,13 +1834,13 @@ $change_catList_order.on("click", function (e) {
 	$change_catList_order.hide();
 	$change_catList_order_ok.show();
 	$change_catList_order_cancel.show();
-	let $cats=$("#catList .cat").not("#cat-0");
+	let $cats=$("#catList .cat").not(`#cat-${encodeURIComponent("[--Uncategorized--]")}`);
 	$cats.addClass("edit");
 	$cats.prepend('<div class="edit-bar"></div>');
 	$cats.append('<div class="edit-bar"></div>');
 	$("#catList .edit-bar").on("mousedown touchstart", function (e) {
 		let $catM=$(this).parent(); // cat-moving
-		let $catSiblings=$catM.siblings(".cat").not("#cat-0");
+		let $catSiblings=$catM.siblings(".cat").not(`#cat-${encodeURIComponent("[--Uncategorized--]")}`);
 		if ($catSiblings.exists()) {
 			let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 			let relativeX=touch0.clientX-Math.round($catM.offset().left)+$window.scrollLeft();
@@ -1986,11 +1986,11 @@ $change_catList_order_cancel.on("click", function (e) {
 		m.strCatListToJSON(catList);
 		m.catListToHTML();
 		for (let i=0;i<selected.length;i++) {
-			$("#cat-"+m.catList[selected[i]].i).addClass("selected");
+			$(`#cat-${encodeURICommponent(m.catList[selected[i]].cat)}`).addClass("selected");
 		}
 		for (let i=m.catList.length-1;i>=0;i--) {
 			if (m.catList[i].subCatExpanded) {
-				$("#cat-"+i+">.EC").trigger("click");
+				$(`#cat-${encodeURIComponent(m.catList[i].cat)}>.EC`).trigger("click");
 			}
 		}
 	}
@@ -3670,7 +3670,7 @@ m.recosShown=false;
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
-		let $cat=$("#cat-"+m.catList[cat].i);
+		let $cat=$(`#cat-${encodeURIComponent(m.catList[cat].cat)}`);
 		$cat.addClass("selected");
 		let $parents=$cat.parents(".subCat");
 		for (let i=$parents.length-1;i>=0;i--) {
