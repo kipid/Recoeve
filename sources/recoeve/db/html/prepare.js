@@ -391,6 +391,14 @@ m.unescapeAMP=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };
+m.escapeSpaceAndPctg=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/\s/g, "%20").replace(/\%/g, "\\%");
+};
+m.unescapeSpaceAndPctg=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/\\\%/, "%20").replace(/\%20/g, " ");
+};
 
 
 
