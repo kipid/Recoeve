@@ -1999,6 +1999,7 @@ public void putNeighborWithScanAll(long user_to, String cat_to, long user_from, 
 	ResultSet neighbor=getNeighbor(user_to, cat_to, user_from, cat_from);
 	if (neighbor.next()) {
 		delNeighbor(user_to, cat_to, user_from, cat_from);
+		delNeighbor(user_from, cat_from, user_to, cat_to);
 	}
 
 	UriList uriList_from=getUriList(user_from, cat_from);

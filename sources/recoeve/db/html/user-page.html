@@ -1154,20 +1154,45 @@ m.a_log_out=function (e) {
 	}
 	return false;
 };
+m.log_out_from_all_do=function (args, err) {
+	let $err=$("#log-out-do-container").find(".center");
+	if (err) {
+		$err.html(m.escapeOnlyTag(err));
+		$err.zIndex(31100);
+	}
+	$.ajax({
+		type:"POST", url:`/account/log-out-from-all.do`, data:args
+		, dataType:"text"
+	}).fail(function (resp) {
+		let msg="[--Log-out has failed.--]";
+		console.log(msg, resp);
+		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`));
+		$err.zIndex(31200);
+	}).done(function (resp) {
+		console.log(resp);
+		$err.html(resp);
+		$err.zIndex(31200);
+		setTimeout(function () {
+			window.location.href=args.href;
+		}, 1024);
+	});
+};
 m.a_log_out_from_all=function (e) {
 	e.stopPropagation();
 	e.preventDefault();
 	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
-	let href=`/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
-	$a_log_out_from_all.attr("href", href);
+	let href_log_out_from_all=`/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
+	$a_log_out_from_all.attr("href", href_log_out_from_all);
 	if (e?.which===2) {
-		window.open(href);
+		window.open(href_log_out_from_all);
 	}
 	else {
-		window.location.href=href;
+		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out at all devices from Recoeve.net--]</div></div>`);
+		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+		m.rmb_me(m.log_out_do_from_all, {href:href_log_in, goto:fullPath});
 	}
 	return false;
-}
+};
 m.a_to_my_page=function (e) {
 	e.stopPropagation();
 	e.preventDefault();
@@ -1180,7 +1205,7 @@ m.a_to_my_page=function (e) {
 		window.location.href=fullPath;
 	}
 	return false;
-}
+};
 m.delayedLogOut=function (msg, delayTime=27, $result) {
 	let delay=delayTime&&delayTime.constructor===Number?delayTime:27;
 	clearInterval(m.deleyedLogOutInterval);
