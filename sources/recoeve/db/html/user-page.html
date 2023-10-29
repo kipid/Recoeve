@@ -5974,7 +5974,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.getAndShowDefsAndRecoInNewReco(false);
 		m.reNewAndReOn();
 		resolve();
-	} // m.myRecos[uri] 가 있다면 이 정보로부터 채우고, 그래도 바로 이전에 수정한 작업이 저장된게 있다면 바꿔쳐주기. 이것도 await 가 먹히나?
+	} // If there is m.myRecos[uri], fill #new-reco inputs with it. But if there is saved revision, fill revised versions to #new-reco inputs.
 	m.initialFillFromLocalStorageN=0;
 	m.initialFillFromLocalStorage=setInterval(function () {
 		let title=m.localStorage.getItem("title");
