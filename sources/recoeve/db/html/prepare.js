@@ -391,13 +391,9 @@ m.unescapeAMP=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };
-m.escapeSpaceAndPctg=function (str) {
+m.escapeEncodePctg=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/\s/g, "%20").replace(/\%/g, "\\%");
-};
-m.unescapeSpaceAndPctg=function (str) {
-	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/\\\%/, "%").replace(/\%20/g, " ");
+	return str.replace(/\%([0-9A-F]{2})/g, "\\\%$1").replace(/([\!\*\(\)\_\.\~])/g, "\\$1");
 };
 
 

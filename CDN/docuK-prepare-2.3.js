@@ -1055,6 +1055,10 @@ m.unescapeAMP=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/%23/g,'#').replace(/%26/g,'&').replace(/%25/g,'%');
 };
+m.escapeEncodePctg=function (str) {
+	if (!str||str.constructor!==String) { return ""; }
+	return str.replace(/\%([0-9A-F]{2})/g, "\\\%$1").replace(/([\!\*\(\)\_\.\~])/g, "\\$1");
+};
 
 m.printCode=function (codeId) {
 	const $pre=$("pre#pre-"+codeId);
