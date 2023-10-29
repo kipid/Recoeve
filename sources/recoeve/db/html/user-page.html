@@ -4699,7 +4699,7 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
 			m.reNewAndReOn();
-		}, 1024);
+		}, 512);
 	}
 });
 
@@ -5935,7 +5935,7 @@ $choose_timezone.on("click", function (e) {
 ////////////////////////////////////////////////
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
-$document.ready(function () {
+$document.ready(async function () {
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
@@ -5964,41 +5964,63 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
 		$input_uri[0].value=vars.uri.val;
-		$input_uri.trigger("input");
 	}
 	else if (uri&&uri!=='null') {
 		$input_uri[0].value=uri;
 	}
-	let title=m.localStorage.getItem("title");
-	if (vars.title!==undefined) {
-		$input_title[0].value=vars.title.val;
-	}
-	else if (!!title&&title!=='null') {
-		$input_title[0].value=title;
-	}
-	let cats=m.localStorage.getItem("cats");
-	if (vars.cats!==undefined) {
-		cats=$input_cats[0].value=vars.cats.val;
-	}
-	else if (!!cats&&cats!=='null') {
-		$input_cats[0].value=cats;
-	}
-	if (!!cats&&cats!=='null') {
-		m.currentCat=cats.split(";")[0].trim();
-	}
-	let desc=m.localStorage.getItem("desc");
-	if (!!desc&&desc!=='null') {
-		$input_desc[0].value=desc;
-	}
-	let cmt=m.localStorage.getItem("cmt");
-	if (!!cmt&&cmt!=='null') {
-		$input_cmt[0].value=cmt;
-	}
-	let points=m.localStorage.getItem("points");
-	if (!!points&&points!=='null') {
-		$input_val[0].value=points;
-		$input_val.trigger("keyup");
-	}
+	uri=$input_uri[0].value;
+	if (uri!==m.lastURI) {
+		m.lastURI=uri;
+		m.getAndShowDefsAndRecoInNewReco(false);
+		m.reNewAndReOn();
+		resolve();
+	} // m.myRecos[uri] 가 있다면 이 정보로부터 채우고, 그래도 바로 이전에 수정한 작업이 저장된게 있다면 바꿔쳐주기. 이것도 await 가 먹히나?
+	m.initialFillFromLocalStorageN=0;
+	m.initialFillFromLocalStorage=setInterval(function () {
+		let title=m.localStorage.getItem("title");
+		let changed=false;
+		if (vars.title!==undefined) {
+			changed=changed||$input_title[0].value!==vars.title.val;
+			$input_title[0].value=vars.title.val;
+		}
+		else if (!!title&&title!=='null') {
+			changed=changed||$input_title[0].value!==title;
+			$input_title[0].value=title;
+		}
+		let cats=m.localStorage.getItem("cats");
+		if (vars.cats!==undefined) {
+			changed=changed||$input_cats[0].value!==vars.cats.val;
+			cats=$input_cats[0].value=vars.cats.val;
+		}
+		else if (!!cats&&cats!=='null') {
+			changed=changed||$input_cats[0].value!==cats;
+			$input_cats[0].value=cats;
+		}
+		if (!!cats&&cats!=='null') {
+			changed=changed||m.currentCat!==cats.split(";")[0].trim();
+			m.currentCat=cats.split(";")[0].trim();
+		}
+		let desc=m.localStorage.getItem("desc");
+		if (!!desc&&desc!=='null') {
+			changed=changed||$input_desc[0].value!==desc;
+			$input_desc[0].value=desc;
+		}
+		let cmt=m.localStorage.getItem("cmt");
+		if (!!cmt&&cmt!=='null') {
+			changed=changed||$input_cmt[0].value!==cmt;
+			$input_cmt[0].value=cmt;
+		}
+		let points=m.localStorage.getItem("points");
+		if (!!points&&points!=='null') {
+			changed=changed||$input_val[0].value!==points;
+			$input_val[0].value=points;
+			$input_val.trigger("keyup");
+		}
+		if (!changed&&m.initialFillFromLocalStorageN>3) {
+			m.initialFillFromLocalStorageN++;
+			clearInterval(m.initialFillFromLocalStorage);
+		}
+	}, 512);
 
 	m.args={};
 	if (vars.timezone) {
