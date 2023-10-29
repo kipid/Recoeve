@@ -6038,12 +6038,14 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}
 		else {
 			m.ptsRangeFrom=0;
+			m.docCookies.setItem("PRL", "0", Infinity, "/", false, true);
 		}
 		if (m.docCookies.hasItem("PRR")) {
 			m.ptsRangeTo=Number(m.docCookies.getItem("PRR"));
 		}
 		else {
 			m.ptsRangeTo=1;
+			m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
 		}
 	}
 	m.PRw=$point_range.width();
