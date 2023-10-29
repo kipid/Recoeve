@@ -147,7 +147,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 textarea.single-line {min-height:2.2em; height:3.8em}
 textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco input#input-val {float:left; display:inline-block; width:6.2em}
-.upDown {float:left; border:solid 1px white; padding:1px; margin:0 .3em}
+.upDown {float:right; border:solid 1px white; padding:1px; margin:0 .3em}
 .up, .down {vertical-align:top}
 #input-val-stars {float:left; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
@@ -201,12 +201,12 @@ div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em
 .multireco .reco>.desc, .multireco .reco>.cmt {font-size:.6em; margin:.5em 0; padding:.5em 0}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
 	.pink .reco>.cmt {background:rgb(75,47,47)}
-.stars-container {float:left; position:relative; display:inline-block; cursor:text}
+.stars-container {float:right; position:relative; display:inline-block; cursor:text}
 .stars-container>div.bar {position:absolute; top:1px; bottom:1px; background:rgb(232,242,80)}
 .stars-container>svg.out-stars {position:absolute; left:0; top:0; width:100%; height:100%}
 .stars-container>svg.out-stars>polygon {fill:rgb(50,50,50);stroke-width:0;fill-rule:evenodd}
 .reco>.val {margin:.5em 0 .3em}
-.reco>.val>.str, .reco>.my-point>.str {float:left; font-size:.7em; border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
+.reco>.val>.str, .reco>.my-point>.str {float:right; font-size:.7em; border:.15em solid white; padding:.1em .5em; margin:0 .2em; vertical-align:top}
 	.bright .reco>.val>.str, .bright .reco>.my-point>.str {border-color:black}
 .reco .tFirst, .reco .tLast {display:inline-block; float:right; margin:.2em 1em; font-size:.8em}
 .multireco .reco .tFirst, .multireco .reco .tLast {font-size:.5em}

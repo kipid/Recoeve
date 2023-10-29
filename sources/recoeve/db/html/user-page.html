@@ -282,8 +282,8 @@ else if (m.docCookies.hasItem("lang")) {
 	<div style="margin:.5em 0">
 		<label for="input-val" style="margin:.1em .5em">[--Points--]</label>
 		<div id="input-val-stars"></div>
-		<span class="upDown" id="input-val-down">&lt;</span>
 		<span class="upDown" id="input-val-up">&gt;</span>
+		<span class="upDown" id="input-val-down">&lt;</span>
 		<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4"/>
 	</div>
 	<div id="error-msg" class="cBoth"></div>
@@ -2867,7 +2867,7 @@ m.recomHTML=async function (r) {
 		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" x="${x_expected-4}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 	}
 	if (m.myPage) {
-		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 	}
 	res+=`<div class="cBoth"></div><div class="result"></div>`;
 	if (r.defDescs[0]&&r.defDescs[0][0]) {
@@ -2932,23 +2932,23 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 		res+=`<div class="cBoth"></div>`;
 		if (m.myPage) {
 			if (r.val?.str) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
 			}
 			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 			}
 		}
 		else if (m.myRecos[r.uri]) {
 			let mR=m.myRecos[r.uri];
 			if (mR.has) {
-				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
 			}
 			else {
-				res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 			}
 		}
 		else {
-			res+=`<div class="my-point">${m.stars(0)} <span class="upDown down">&lt;</span> <span class="upDown up">&gt;</span> <span class="str"> </span></div>`;
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 		}
 		res+=`<div class="cBoth"></div><div class="result"></div>`;
 		if (r.desc) {
