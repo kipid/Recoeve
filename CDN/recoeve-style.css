@@ -25,7 +25,7 @@ code {overflow-wrap:break-word; word-wrap:break-word; white-space:pre-wrap; word
 .button.to-be-executed {display:block; width:100%; text-align:center; margin:512px auto}
 .button.disabled {pointer-events:none; background:rgb(25,25,25); color:rgb(120,120,120)}
 	.bright .button.disabled {background:rgb(100,100,100); color:rgb(25,25,25)}
-.button.left {float:left; margin-right:.5em}
+.button.fLeft {margin-right:.5em}
 .button:active {background:rgb(0,80,80)}
 	.bright .button:active {background:rgb(100,180,180)}
 .button.enabled {background:rgb(50,140,80)}
@@ -146,10 +146,11 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 #new-reco input, #new-reco textarea {display:block; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:.2em .3em; background:white; color:rgb(50,50,50)}
 textarea.single-line {min-height:2.2em; height:3.8em}
 textarea.multi-line {font-size:.9em; min-height:10em}
-#new-reco input#input-val {float:left; display:inline-block; width:6.2em}
+#new-reco input#input-val {float:right; display:inline-block; width:6.2em}
 .upDown {float:right; border:solid 1px white; padding:1px; margin:0 .3em}
 .up, .down {vertical-align:top}
-#input-val-stars {float:left; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
+#label-input-val {float:right; margin:.1em .5em}
+#input-val-stars {float:right; display:inline-block; vertical-align:text-bottom; margin:0 0 -.5em -.5em}
 #new-reco .def-title {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-title.selected {border-color:rgb(255,180,180)}
 #new-reco .def-desc {margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
