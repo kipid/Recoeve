@@ -219,9 +219,11 @@ div.borderByBackground {display:inline-block; padding:10px; background:white}
 
 /* r(S)C:Ratio (Sub)Container */
 .rC {margin:.5em 0}
+.rC.recoeve {border:1px solid white; border-right:1em solid rgb(30,30,60)}
 .rC.fixed {position:fixed; z-index:10000; top:0; left:0; width:100%; max-width:100%; margin:0; padding:1px; background:black; border-bottom:.15em solid white}
 	.bright .rC.fixed {background:white; border-color:black}
 .rC>.rSC {position:relative; height:0; padding-bottom:63%}
+.rC.recoeve>.rSC {padding-bottom:150%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
 .rC.instagram>.rSC {padding-bottom:165%; overflow:auto}
 .rC.tiktok>.rSC {height:895px; padding-bottom:0; overflow-x:hidden; overflow-y:scroll}
