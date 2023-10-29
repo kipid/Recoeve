@@ -397,7 +397,7 @@ m.escapeSpaceAndPctg=function (str) {
 };
 m.unescapeSpaceAndPctg=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/\\\%/, "%20").replace(/\%20/g, " ");
+	return str.replace(/\\\%/, "%").replace(/\%20/g, " ");
 };
 
 
