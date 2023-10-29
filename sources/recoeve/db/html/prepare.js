@@ -1154,6 +1154,20 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["docs.google.com"]={};
+ptnURI.regEx=/^spreadsheets\/d\/e\/([\w-]+)\/pubhtml/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["docs.google.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br>`:"")+m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false" frameborder="0" scrolling="auto"></iframe>`), from:"docs-google", docId:exec[1]});
+	}
+	else {
+		return reject(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI["instagram.com"]=m.ptnURI["www.instagram.com"]={};
 ptnURI.regEx=/^(?:p|tv|reel)\/([\w-]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
