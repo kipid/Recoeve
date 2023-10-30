@@ -5175,7 +5175,9 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	} // Picking cat index k of the current selectionEnd.
 	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=cat;
-	fs.$fs[0].value=fs.listOfCats.join(";");
+	if ($elem.hasClass("selected")) {
+		fs.$fs[0].value=fs.listOfCats.join(";");
+	}
 	let sStart=0;
 	for (let i=0;i<k;i++) {
 		sStart+=fs.listOfCats[i].length+1;
