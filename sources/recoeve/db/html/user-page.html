@@ -1744,7 +1744,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}',this)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1766,7 +1766,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a class="baseCat" onclick="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1780,7 +1780,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1803,13 +1803,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a onclick="return m.triggerOpenCat('${m.catList[0].cat}',this)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a onmouseup="return m.triggerOpenCat('${m.catList[0].cat}',this)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a onclick="return m.triggerOpenCat('${m.catList[m.catList[cat].i].cat}',this)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat('${m.catList[m.catList[cat].i].cat}',this)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -6130,7 +6130,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 	m.saveSSN();
 
-	m.fsGotoCats.fullList[cat].selected=true;
 	m.fsGotoCats.fullList[cat].down=true;
 	if (m.recoMode==="") {
 		m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
