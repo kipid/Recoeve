@@ -3959,8 +3959,10 @@ m.refresh=async function (cats, option, uri, openCat) {
 		}
 	}
 	let r=m.myRecos[uri];
+	let cat=m.currentCat;
 	if (c[k]!==m.currentCat&&openCat) {
-		m.openCat(c[k]);
+		cat=c[k];
+		m.openCat(cat);
 	}
 	else {
 		let $recoms_recos=null;
@@ -4011,6 +4013,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 					m.reNewAndReOn();
 				}
 				else if (option==="deleted") {
+					m.fsToRs.pauseVideo();
 					$reco_playing.html('');
 					$eveElse.html('');
 					$youtube.html('');
@@ -4063,7 +4066,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 					let r=m.myRecos[uri];
 					r.deleted=true;
 					r.has=false;
-					m.lastURI="x*L2$zp-|,O";
+					m.lastURI="";
 					$recoms_recos=$contents_recoms.find(".reco");
 					for (let k=0;k<$recoms_recos.length;k++) {
 						let $reco=$recoms_recos.eq(k);
@@ -4093,6 +4096,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
+					if (!fsFLk) { fs.fullList[uri]={uri, deleted:true, has:false}; }
 					fsFLk.inRange=false;
 					fs[1]=null;
 					fs[0].ptnSH=m.splitHangul("$!@#");
@@ -4100,8 +4104,8 @@ m.refresh=async function (cats, option, uri, openCat) {
 				}
 			}
 			break;
-		default :
-			m.openCat(c[k]);
+		default:
+			m.openCat(cat);
 		}
 	}
 };
