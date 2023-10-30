@@ -5154,6 +5154,7 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	let fsFLj=fs.fullList[j];
 	let cat=fsFLj.cat;
 	fsFLj.down=true;
+	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let beInCurrentCat=false;
@@ -5175,7 +5176,7 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	} // Picking cat index k of the current selectionEnd.
 	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=cat;
-	if ($elem.hasClass("selected")) {
+	if (isSelected) {
 		fs.$fs[0].value=fs.listOfCats.join(";");
 	}
 	let sStart=0;
