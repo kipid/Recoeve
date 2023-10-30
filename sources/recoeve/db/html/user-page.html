@@ -71,6 +71,11 @@ else if (m.docCookies.hasItem("lang")) {
 #catList .cat {border:1px solid transparent; margin-bottom:2px}
 #catList .cat.down {color:rgb(100,150,100)}
 #catList .cat.deleted {color:rgb(150,100,100)}
+#catList .cat.selected {color:rgb(255,210,210)}
+	.bright #catList .cat {color:black}
+	.pink #catList .cat {color:wheat}
+	.bright #catList .cat.selected {color:rgb(50,0,0)}
+	.pink #catList .cat.selected {color:white}
 #cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
 #catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
 #catList .cat.edit.move {position:fixed; z-index:101}
@@ -80,12 +85,8 @@ else if (m.docCookies.hasItem("lang")) {
 #catList .cat.selected {border:1px solid white}
 	.bright #catList .cat.selected {border-color:black}
 	.pink #catList .cat.selected {border-color:wheat}
-#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer; color:white}
-	.bright #catList .cat>.baseCat, .bright #catList .cat>.EC {color:black}
-	.pink #catList .cat>.baseCat, .pink #catList .cat>.EC {color:wheat}
-#catList .cat.selected>.baseCat {pointer-events:none; color:rgb(255,210,210)}
-	.bright #catList .cat.selected>.baseCat {color:rgb(50,0,0)}
-	.pink #catList .cat.selected>.baseCat {color:white}
+#catList .cat>.baseCat, #catList .cat>.EC {cursor:pointer}
+#catList .cat.selected>.baseCat {pointer-events:none}
 #catList .cat>.noEC, #catList .cat>.EC {display:inline-block; font-size:.5em; margin-top:-.5em; width:2em; text-align:center; vertical-align:middle}
 
 .timezone {
@@ -3455,7 +3456,7 @@ m.showRecosOnCat=async function (elem, from) {
 				$elem.replaceWith(strHTML);
 				let afterLoadSH=document.documentElement.scrollHeight;
 				setTimeout(function () {
-					$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST+128);
+					$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST);
 				}, 256);
 			}
 			else { // Scroll from upside to downside.
@@ -4163,8 +4164,8 @@ m.openCat=async function (cat, e) {
 	// for (let l=0;l<m.fsGo.fullList.length;l++) {
 	// 	m.fsGo.fullList[l].$recoElem=null;
 	// }
-	m.getUriListAndShowRecosOnCat(cat);
 	m.fsGotoCats.fullList[cat].down=true;
+	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		clearTimeout(m.moveHash);
 		m.moveHash=setTimeout(function () {
