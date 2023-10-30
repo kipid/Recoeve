@@ -45,5 +45,6 @@ public class Test {
 		System.out.println(numAndCount(10));
 		System.out.println(numAndCount(11));
 		System.out.println(numAndCount(12));
+		System.out.println(Long.toString(Long.MAX_VALUE, 16));
 	}
 }
