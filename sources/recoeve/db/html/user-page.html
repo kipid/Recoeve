@@ -1744,7 +1744,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}', event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1816,7 +1816,7 @@ m.catsToA=function (cats) {
 m.getCatListChanged=function () {
 	$change_catList_order_ok.hide();
 	$change_catList_order_cancel.hide();
-	let $cats=$("#catList .cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent("[--Uncategorized--]"))}`);
+	let $cats=$("#catList .cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent(""))}`);
 	$cats.removeClass("edit");
 	$cats.find('.edit-bar').remove();
 	let catListChanged="\n";
@@ -1841,13 +1841,13 @@ $change_catList_order.on("click", function (e) {
 	$change_catList_order.hide();
 	$change_catList_order_ok.show();
 	$change_catList_order_cancel.show();
-	let $cats=$("#catList .cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent("[--Uncategorized--]"))}`);
+	let $cats=$("#catList .cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent(""))}`);
 	$cats.addClass("edit");
 	$cats.prepend('<div class="edit-bar"></div>');
 	$cats.append('<div class="edit-bar"></div>');
 	$("#catList .edit-bar").on("mousedown touchstart", function (e) {
 		let $catM=$(this).parent(); // cat-moving
-		let $catSiblings=$catM.siblings(".cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent("[--Uncategorized--]"))}`);
+		let $catSiblings=$catM.siblings(".cat").not(`#cat-${m.escapeEncodePctg(encodeURIComponent(""))}`);
 		if ($catSiblings.exists()) {
 			let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 			let relativeX=touch0.clientX-Math.round($catM.offset().left)+$window.scrollLeft();
