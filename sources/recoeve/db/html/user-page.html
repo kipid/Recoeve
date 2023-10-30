@@ -1744,7 +1744,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.openCat('${cat}', event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1766,7 +1766,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat" onclick="return m.triggerOpenCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1780,7 +1780,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onclick="return m.triggerOpenCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1803,13 +1803,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a onclick="return m.openCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a onclick="return m.triggerOpenCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onclick="return m.triggerOpenCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -2133,7 +2133,7 @@ m.doFSCat=function (fs) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			let fsFLk=fs.fullList[fsSortedI.i];
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 			if (fsFLk?.down) {
 				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
 			}
@@ -5148,7 +5148,24 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
-m.completeCatAndOpenCat=async function (e, elem, j, fs) {
+m.triggerOpenCat=function (cat, event) {
+	let fs=m.fsGotoCats;
+	let $fsLis=fs.$fsl.find(".list-item");
+	for (let i=0;i<$fsLis.length;i++) {
+		let $fslI=$fsLis.eq(i);
+		let index=Number($fslI.find(".list-index").html());
+		if (cat===fs.fullList[index].cat) {
+			m.completeCatAndOpenCat($fslI[0], index, fs);
+			return false;
+		}
+	}
+	let fsFLk=fs.fullList[cat];
+	let k=fsFLk.i;
+	fs.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${k},m.fsGotoCats)"><div class="list-index">${k}</div>${fs.fullList[k].html}</div>`);
+	m.completeCatAndOpenCat(fs.$fsl.find(".list-item").eq(0)[0], k, fs);
+	return false;
+};
+m.completeCatAndOpenCat=async function (elem, j, fs) {
 	// fs.$fs.off("keyup.fs cut.fs paste.fs click.fs");
 	let $elem=$(elem);
 	let fsFLj=fs.fullList[j];
@@ -6280,11 +6297,12 @@ m.fsToRs.pauseVideo=function () {
 m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
 	let fs=m.fsToRs;
+	fs.$fsLis=fs.$fsl.find(".list-item");
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
 	if (first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()) {
-			fs.currentIndex=Number($li.attr("id").match(/toR-(\d+)/)[1]);
+			fs.currentIndex=Number($li.attr("id").substring(4));
 			fs.$fsl.viewAndScroll($li);
 			fs.getAndPlayVideo(cue);
 			return;
