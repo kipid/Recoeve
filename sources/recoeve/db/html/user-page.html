@@ -5174,6 +5174,7 @@ m.completeCatAndOpenCat=async function (elem, j, fs) {
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
+	$elem.addClass("down");
 	let beInCurrentCat=false;
 	if (cat===m.currentCat) {
 		beInCurrentCat=true;
