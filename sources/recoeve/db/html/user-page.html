@@ -2111,7 +2111,6 @@ m.completeMRCat=function (elem, cat) {
 };
 m.doFSCat=function (fs) {
 	let catsTxt=fs.$fs[0].value;
-	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
@@ -2255,7 +2254,6 @@ m.onKeydownInFS=function (e, fs) {
 	let $fs_container=fs.$fs_container;
 	let $target=$(e.target);
 	let catsTxt=$target[0].value;
-	$target.focus();
 	let sEnd=$target[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
@@ -5035,24 +5033,24 @@ $button_edit.on("click", function (e) {
 		}
 
 		if (changed) {
-			$error.html("Being changed.");
+			$error.html("[--Being changed.--]");
 			m.rmb_me(m.reco_change_do, {strHeads, strContents, cats, r, uri, title, desc, cmt, val}, true);
 		}
 		else {
-			$error.html("You have made no change.");
+			$error.html("[--You have made no change.--]");
 			$button_edit.removeClass("disabled");
 		}
 	}
 	else {
 		let errorMsg="";
 		if (uri.length===0) {
-			errorMsg="URI is required.";
+			errorMsg="[--URI is Empty.--]";
 		}
 		else if (!val.valid) {
-			errorMsg="Points is of invalid form.";
+			errorMsg="[--Points is of invalid form.--]";
 		}
 		else {
-			errorMsg="You have no reco on this URI.";
+			errorMsg="[--You have no reco on this URI.--]";
 		}
 		$error.html(errorMsg);
 		$button_edit.removeClass("disabled");
@@ -6153,7 +6151,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$window.on("scroll.stop", function (e) {
 			$window.scrollTop(m.wST);
 		});
-		$input_uri.focus();
+		$input_title.focus();
 		if (m.docCookies.hasItem("rmbdI")&&(!!m.docCookies.getItem("rmbdI"))) {
 			$input_uri.trigger("keyup");
 		}
