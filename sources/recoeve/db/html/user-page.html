@@ -68,7 +68,9 @@ else if (m.docCookies.hasItem("lang")) {
 	.bright #user-noti {color:rgb(50,50,190)}
 
 #catList {margin-bottom:1em}
-#catList .cat {border:1px solid transparent; margin-bottom:.15em}
+#catList .cat {border:1px solid transparent; margin-bottom:2px}
+#catList .cat.down {color:rgb(100,150,100)}
+#catList .cat.deleted {color:rgb(150,100,100)}
 #cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
 #catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
 #catList .cat.edit.move {position:fixed; z-index:101}
@@ -4156,6 +4158,7 @@ m.openCat=async function (cat, e) {
 	// 	m.fsGo.fullList[l].$recoElem=null;
 	// }
 	m.getUriListAndShowRecosOnCat(cat);
+	m.fsGotoCats.fullList[cat].down=true;
 	if (!m.initialOpen) {
 		clearTimeout(m.moveHash);
 		m.moveHash=setTimeout(function () {
@@ -5167,7 +5170,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 };
 m.doGotoCatsFSGo=function (fs) {
 	let catsTxt=fs.$fs[0].value;
-	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
@@ -5189,7 +5191,13 @@ m.doGotoCatsFSGo=function (fs) {
 			let k=res[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div id="goto-cats-${k}" class="list-item${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${k},m.fsGotoCats)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div id="goto-cats-${k}" class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${k},m.fsGotoCats)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+				if (fsFLk?.down) {
+					$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
+				}
+				if (fsFLk?.deleted) {
+					$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("deleted");
+				}
 			}
 		}
 		fs.$fsl.html(str);
