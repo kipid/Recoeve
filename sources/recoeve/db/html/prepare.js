@@ -19,14 +19,14 @@ m.getSearchVars=function (searchStr) {
 		let splits=searchStr.replace(/&amp;/ig,"&").replace(/\+/g,"%20").split("&");
 		for (let i=0;i<splits.length;i++) {
 			let key=splits[i];
-			let value="";
+			let val="";
 			let k=key.indexOf("=");
 			if (k!==-1) {
-				value=decodeURIComponent(key.substring(k+1));
+				val=decodeURIComponent(key.substring(k+1));
 				key=key.substring(0,k);
 			}
 			key=decodeURIComponent(key);
-			vars[i]=vars[key]={key:key, val:value};
+			vars[i]=vars[key]={key, val};
 		}
 	}
 	return vars;
@@ -671,8 +671,28 @@ if (m.sW<m.sH) {
 	m.sW=screen.height;
 	m.sH=screen.width;
 }
-m.str_rmb_me='log\tsW\tsH\n'
-	+'web\t'+m.sW+'\t'+m.sH;
+m.str_rmb_me=`log	sW	sH
+web	${m.sW}	${m.sH}`;
+m.SSNencrypt=function (callback, args) {
+	$.ajax({
+		type:"GET", url:"/sessionIter"
+		, dataType:"text"
+	}).done(function (resp) {
+		console.log(resp);
+		let iter=Number(resp);
+		if (isNaN(iter)) {
+			callback(args, resp);
+			resolve();
+		}
+		else {
+			m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
+			callback(args, null); // null means no error.
+			m.localStorage.clear();
+			resolve();
+			// m.docCookies.removeItem("SSN", "/", false, true);
+		}
+	});
+};
 m.rmb_me=function (callback, args, saveNewRecoInputs) {
 return new Promise(function (resolve, reject) {
 	if (saveNewRecoInputs) {
@@ -681,36 +701,14 @@ return new Promise(function (resolve, reject) {
 		m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
 		m.localStorage.setItem("desc", $input_desc[0].value.trim());
 		m.localStorage.setItem("cmt", $input_cmt[0].value.trim());
-		let val=m.val($input_val[0].value.trim());
-		if (val.valid) {
-			m.localStorage.setItem("points", val.str);
-		}
+		m.localStorage.setItem("points", $input_val[0].value.trim());
 	}
-	let SSNencrypt=function (callback, args) {
-		$.ajax({
-			type:"GET", url:"/sessionIter"
-			, dataType:"text"
-		}).done(function (resp) {
-			console.log(resp);
-			let iter=Number(resp);
-			if (isNaN(iter)) {
-				callback(args, resp);
-				resolve();
-			}
-			else {
-				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
-				callback(args, null); // null means no error.
-				resolve();
-				// m.docCookies.removeItem("SSN", "/", false, true);
-			}
-		});
-	};
 	if (m.docCookies.hasItem('tCreate')) {
 		if (m.docCookies.hasItem("salt")||m.docCookies.hasItem("session")) {
 			m.saveSSN();
 		}
 		if (m.saltSSN&&m.session) {
-			SSNencrypt(callback, args);
+			m.SSNencrypt(callback, args);
 			return;
 		}
 	}
@@ -725,7 +723,7 @@ return new Promise(function (resolve, reject) {
 				if (resp.startsWith("Rmbd")&&m.docCookies.hasItem('tCreate')) {
 					m.saveSSN();
 					if (m.saltSSN&&m.session) {
-						SSNencrypt(callback, args);
+						m.SSNencrypt(callback, args);
 					}
 					else {
 						callback(args, resp);
@@ -735,7 +733,7 @@ return new Promise(function (resolve, reject) {
 					callback(args, resp);
 				}
 				resolve();
-			}, 1000);
+			}, 1024);
 		});
 	}
 	else {
@@ -744,8 +742,6 @@ return new Promise(function (resolve, reject) {
 	}
 });
 };
-
-
 
 ////////////////////////////////////////////////////
 // Hangul (Korean) split and map to English
@@ -1043,8 +1039,6 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}
 	return fs[0];
 };
-
-
 
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.
@@ -1526,8 +1520,6 @@ return new Promise(async function (resolve, reject) {
 });
 };
 
-
-
 ////////////////////////////////////////////////////
 // slide element.
 ////////////////////////////////////////////////////
@@ -1542,7 +1534,7 @@ m.slideToggle=function (elem) {
 m.slideUp=function (elem) {
 	let $elem=$(elem).parent().parent();
 	$elem.slideUp(1000);
-	window.scrollBy(0,-$elem.outerHeight());
-	// $body.animate({scrollTop:'-='+$elem.height()}, 1000);
+	// window.scrollBy(0,-$elem.outerHeight());
+	window.scrollBy({left:0, top:-$elem.outerHeight(), behavior:"smooth"});
 };
 })(window.m, jQuery);
