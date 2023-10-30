@@ -2246,9 +2246,9 @@ m.fsTimezoneOn=function () {
 m.reTriggerFS=function (fs) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.trigger("input.fs");
+	fs.$fs.trigger("keyup.fs");
 };
-m.fsCatsOnTimeout=function () {
+m.reNewfsCatsOn=function () {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
@@ -2269,7 +2269,6 @@ m.fsCatsOnTimeout=function () {
 	m.reTriggerFS(m.fsMRCat);
 	m.reTriggerFS(m.fsGotoCats);
 };
-m.fsCatsOnTimeout();
 m.onKeydownInFS=function (e, fs) {
 	clearTimeout(m.setTimeoutTargetOn);
 	e.stopPropagation();
@@ -2339,7 +2338,7 @@ m.onKeydownInFS=function (e, fs) {
 			break;
 	}
 	m.setTimeoutTargetOn=setTimeout(function () {
-		m.fsCatsOnTimeout();
+		m.reNewfsCatsOn();
 	}, m.wait);
 };
 $input_cats.on("keydown.fs", function (e) {
@@ -3367,7 +3366,7 @@ m.reNewAndReOn=function () {
 	$downs.off("click.ud");
 	$ups.on("click.ud", m.starsOnUps);
 	$downs.on("click.ud", m.starsOnDowns);
-	m.fsCatsOnTimeout();
+	m.reNewfsCatsOn();
 };
 m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
@@ -5270,7 +5269,7 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		break;
 	}
 	m.setTimeoutTargetOn0=setTimeout(function () {
-		m.fsCatsOnTimeout();
+		m.reNewfsCatsOn();
 	}, m.wait);
 };
 $fuzzy_search.on("keydown.fs", function (e) {
@@ -6188,6 +6187,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
+	m.reNewfsCatsOn();
 	m.initialOpen=false;
 });
 
