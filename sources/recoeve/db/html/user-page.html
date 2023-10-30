@@ -1470,14 +1470,14 @@ m.fullPts=10.0;
 // from <= pts <= to
 
 $user_noti.html(m.userId+"'s recos");
-if (!!m.myIndex) {
+if (m.myIndex) {
 	$my_id.html(m.myId+" ▾");
 }
 else {
 	$my_id.hide();
 	$button_new_reco.remove();
 }
-if (!!m.myIndex) {
+if (m.myIndex) {
 	$a_log_in.hide();
 }
 else {
@@ -1720,7 +1720,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 	}
 	list.unshift(""); // cat=uncategorized : empty cat.
 	if (catList===undefined||catList===null) {
-		if (!!m.catList) {
+		if (m.catList) {
 			catList=m.catList;
 		}
 		else {
@@ -2240,6 +2240,11 @@ m.fsTimezoneOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
+m.reTriggerFS=function (fs) {
+	fs[1]=null;
+	fs[0].ptnSH=m.splitHangul("$!@#");
+	fs.$fs.trigger("input.fs");
+};
 m.fsCatsOnTimeout=function () {
 	$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs click.fs");
 	$table_of_recos.off("input.fs keyup.fs cut.fs paste.fs click.fs");
@@ -2254,6 +2259,12 @@ m.fsCatsOnTimeout=function () {
 	$multireco_input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 	$search_timezone.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+
+	m.reTriggerFS(m.fsGo);
+	m.reTriggerFS(m.fsToRs);
+	m.reTriggerFS(m.fsCat);
+	m.reTriggerFS(m.fsMRCat);
+	m.reTriggerFS(m.fsGotoCats);
 };
 m.fsCatsOnTimeout();
 m.onKeydownInFS=function (e, fs) {
@@ -3353,6 +3364,7 @@ m.reNewAndReOn=function () {
 	$downs.off("click.ud");
 	$ups.on("click.ud", m.starsOnUps);
 	$downs.on("click.ud", m.starsOnDowns);
+	m.fsCatsOnTimeout();
 };
 m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
@@ -3581,7 +3593,7 @@ m.getRecos=function (uris, recos, cat) {
 	}
 	return new Promise(function (resolve, reject) {
 		if (getRecosN>0) {
-			let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(!!m.myId?`/user/${m.myId}/get-Recos`:null));
+			let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(m.myId?`/user/${m.myId}/get-Recos`:null));
 			if (postURL) {
 				$.ajax({
 					type:"POST", url:postURL, data:getRecosStr
@@ -3613,7 +3625,7 @@ m.getRecos=function (uris, recos, cat) {
 m.getAndShowRecosOnCat=async function (cat) {
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
-	if (!m.myPage&&!!m.myIndex) {
+	if (!m.myPage&&m.myIndex) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
 	m.showRecosOnCat();
@@ -4164,6 +4176,7 @@ m.openCat=async function (cat, e) {
 	// for (let l=0;l<m.fsGo.fullList.length;l++) {
 	// 	m.fsGo.fullList[l].$recoElem=null;
 	// }
+	m.fsGotoCats.fullList[cat].selected=true;
 	m.fsGotoCats.fullList[cat].down=true;
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
@@ -4195,7 +4208,7 @@ for (let i=0;i<m.catList.length;i++) {
 }
 
 window.onpopstate=function (e) {
-	if (!!e.state) {
+	if (e.state) {
 		if (e.state.gotoCats!==m.gotoCats) {
 			$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)});
 		}
@@ -4258,7 +4271,7 @@ m.getUTF8Length=function (s) {
 	return len;
 };
 m.formatURI=function (uri) {
-	if (!!uri&&uri.constructor===String) {
+	if (uri&&uri.constructor===String) {
 		uri=uri.trim().replace(/[\t\n]/g," ");
 		let exec=m.ptnTag.exec(uri);
 		if (exec!==null) {
@@ -5112,7 +5125,7 @@ $button_del.on("click", function (e) {
 	$button_del.addClass("disabled");
 	let uri=$input_uri[0].value;
 	let r=m.myRecos[uri];
-	if (uri.length!==0&&!!r) {
+	if (uri.length!==0&&r) {
 		let strHeads="do"+"\t"+"uri";
 		let strContents="delete"+"\t"+m.encloseStr(uri);
 		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri}, true);
@@ -5937,6 +5950,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	m.initialOpen=true;
 	let vars=m.searchVars;
+	let cat=m.currentCat;
 	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
 		$input_uri[0].value=vars.uri.val;
@@ -5958,7 +5972,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			changed=changed||$input_title[0].value!==vars.title.val;
 			$input_title[0].value=vars.title.val;
 		}
-		else if (!!title&&title!=='null') {
+		else if (title&&title!=='null') {
 			changed=changed||$input_title[0].value!==title;
 			$input_title[0].value=title;
 		}
@@ -5967,26 +5981,26 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			changed=changed||$input_cats[0].value!==vars.cats.val;
 			cats=$input_cats[0].value=vars.cats.val;
 		}
-		else if (!!cats&&cats!=='null') {
+		else if (cats&&cats!=='null') {
 			changed=changed||$input_cats[0].value!==cats;
 			$input_cats[0].value=cats;
 		}
-		if (!!cats&&cats!=='null') {
+		if (cats&&cats!=='null') {
 			changed=changed||m.currentCat!==cats.split(";")[0].trim();
 			m.currentCat=cats.split(";")[0].trim();
 		}
 		let desc=m.localStorage.getItem("desc");
-		if (!!desc&&desc!=='null') {
+		if (desc&&desc!=='null') {
 			changed=changed||$input_desc[0].value!==desc;
 			$input_desc[0].value=desc;
 		}
 		let cmt=m.localStorage.getItem("cmt");
-		if (!!cmt&&cmt!=='null') {
+		if (cmt&&cmt!=='null') {
 			changed=changed||$input_cmt[0].value!==cmt;
 			$input_cmt[0].value=cmt;
 		}
 		let points=m.localStorage.getItem("points");
-		if (!!points&&points!=='null') {
+		if (points&&points!=='null') {
 			changed=changed||$input_val[0].value!==points;
 			$input_val[0].value=points;
 			$input_val.trigger("keyup");
@@ -6073,7 +6087,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$table_of_recos[0].value=vars.ToR.val;
 	}
 	if (window.location.pathname==="/reco") {
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${m.hashURI?`#${encodeURIComponent(m.hashURI)}`:""}`);
+		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${window.location.search}${m.hashURI?`#${encodeURIComponent(m.hashURI)}`:""}`);
 	}
 	else {
 		if (vars.ToR?.val===""||vars.ToR?.val) {
@@ -6081,13 +6095,15 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 			}
 		}
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
-	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(m.currentCat)}" />`);
+	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 	m.saveSSN();
 
+	m.fsGotoCats.fullList[cat].selected=true;
+	m.fsGotoCats.fullList[cat].down=true;
 	if (m.recoMode==="") {
-		m.openCat(m.currentCat);
+		m.openCat(cat);
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
@@ -6105,7 +6121,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if (!$new_reco.is(":visible")) {
 			m.toggleNewReco();
 		}
-		let cat=m.currentCat;
 		if (cat&&($input_cats[0].value===""||$input_uri[0].value==="")) {
 			$input_cats[0].value=cat;
 		}
@@ -6114,7 +6129,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			$window.scrollTop(m.wST);
 		});
 		$input_title.focus();
-		if (m.docCookies.hasItem("rmbdI")&&(!!m.docCookies.getItem("rmbdI"))) {
+		if (m.docCookies.hasItem("rmbdI")&&m.docCookies.getItem("rmbdI")) {
 			$input_uri.trigger("keyup");
 		}
 		else {
@@ -6133,10 +6148,10 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
 	let hashURI=m.hashURI;
-	if (!!hashURI) {
+	if (hashURI) {
 		m.fsGo.tryN=1;
 		m.setIntervalFsGo=setInterval(function () {
-			if (!!m.fsGo.fullList[hashURI]||++m.fsGo.tryN>17) {
+			if (m.fsGo.fullList[hashURI]||++m.fsGo.tryN>17) {
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
