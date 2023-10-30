@@ -2131,7 +2131,13 @@ m.doFSCat=function (fs) {
 	if (fs===m.fsGotoCats) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			if (fsFLk?.down) {
+				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
+			}
+			if (fsFLk?.deleted) {
+				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("deleted");
+			}
 		}
 	}
 	else if (fs===m.fsCat) {
@@ -5168,62 +5174,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	}
 	return;
 };
-m.doGotoCatsFSGo=function (fs) {
-	let catsTxt=fs.$fs[0].value;
-	let sEnd=fs.$fs[0].selectionEnd;
-	fs.listOfCats=catsTxt.split(";");
-	let l=catsTxt.length;
-	let lastK=fs.k;
-	fs.k=0;
-	for (let i=fs.listOfCats.length-1;i>=0;i--) {
-		l-=fs.listOfCats[i].length+1;
-		if (l<sEnd) {
-			fs.k=i;
-			break;
-		}
-	} // Picking cat index k of the current selectionEnd.
-	let fsPtnSH=m.splitHangul(fs.listOfCats[fs.k]);
-	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		let res=m.fuzzySearch(fsPtnSH, fs);
-		let sorted=res.sorted;
-		let str="";
-		for (let i=0;i<sorted.length;i++) {
-			let k=res[sorted[i]].i;
-			let fsFLk=fs.fullList[k];
-			if (fsFLk) {
-				str+=`<div id="goto-cats-${k}" class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${k},m.fsGotoCats)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
-				if (fsFLk?.down) {
-					$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
-				}
-				if (fsFLk?.deleted) {
-					$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("deleted");
-				}
-			}
-		}
-		fs.$fsl.html(str);
-		fs.$fsLis=fs.$fsl.find(".list-item");
-	}
-};
-m.fsGotoCatsOn=function () {
-	let now=Date.now();
-	let passed=now-m.previous;
-	if (passed>m.wait) {
-		m.previous=now;
-		m.doGotoCatsFSGo(m.fsGotoCats);
-	}
-	else {
-		$goto_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-		setTimeout(function () {
-			$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
-			m.previous=Date.now();
-			m.doGotoCatsFSGo(m.fsGotoCats);
-		}, m.wait*1.1-passed);
-	}
-};
-$goto_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
-$goto_cats.trigger("input.fs");
-
-
 
 ///////////////////////////////////////////
 // Fuzzy search on Titles (Go)
