@@ -2131,12 +2131,12 @@ m.doFSCat=function (fs) {
 	if (fs===m.fsGotoCats) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
-			if (fsFLk?.down) {
-				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
+			str+=`<div class="list-item${fsSortedI?.cat===m.currentCat?" selected":""}${fsSortedI?.down?" down":""}${fsSortedI?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			if (fsSortedI?.down) {
+				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsSortedI?.cat))}`).addClass("down");
 			}
-			if (fsFLk?.deleted) {
-				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("deleted");
+			if (fsSortedI?.deleted) {
+				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsSortedI?.cat))}`).addClass("deleted");
 			}
 		}
 	}
