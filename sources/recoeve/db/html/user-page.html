@@ -5953,11 +5953,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
 		type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
-		console.log("Failed to post blogStat", resp);
-		console.log(blogStat);
+		// console.log("Failed to post blogStat", resp);
+		// console.log(blogStat);
 	}).done(function (resp) {
-		console.log("Posted blogStat", resp);
-		console.log(blogStat);
+		// console.log("Posted blogStat", resp);
+		// console.log(blogStat);
 	});
 
 	m.browserWidth=window.innerWidth;
