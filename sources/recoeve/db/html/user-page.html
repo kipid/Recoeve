@@ -6306,7 +6306,9 @@ m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
 		$video[0]?.pause();
 	}
-	m.YtPlayer?.pauseVideo();
+	if (m.YtPlayer) {
+		m.YtPlayer.pauseVideo();
+	}
 };
 m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
