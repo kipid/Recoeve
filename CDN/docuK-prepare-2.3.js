@@ -656,6 +656,409 @@ $("#fuzzy-search-container>.reset").on("click.reset", function (e) {
 	$fuzzy_search.trigger("input.fs");
 });
 
+// Fuzzy Search
+////////////////////////////////////////////////////
+// Hangul (Korean) split and map to English
+// KE : Korean Expanded
+////////////////////////////////////////////////////
+m.jamoKE=["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
+m.jamo=["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+
+m.mapKE={"q":"ㅂ", "Q":"ㅃ", "w":"ㅈ", "W":"ㅉ", "e":"ㄷ", "E":"ㄸ", "r":"ㄱ", "R":"ㄲ", "t":"ㅅ", "T":"ㅆ", "y":"ㅛ", "Y":"ㅛ", "u":"ㅕ", "U":"ㅕ", "i":"ㅑ", "I":"ㅑ", "o":"ㅐ", "O":"ㅒ", "p":"ㅔ", "P":"ㅖ", "a":"ㅁ", "A":"ㅁ", "s":"ㄴ", "S":"ㄴ", "d":"ㅇ", "D":"ㅇ", "f":"ㄹ", "F":"ㄹ", "g":"ㅎ", "G":"ㅎ", "h":"ㅗ", "H":"ㅗ", "j":"ㅓ", "J":"ㅓ", "k":"ㅏ", "K":"ㅏ", "l":"ㅣ", "L":"ㅣ", "z":"ㅋ", "Z":"ㅋ", "x":"ㅌ", "X":"ㅌ", "c":"ㅊ", "C":"ㅊ", "v":"ㅍ", "V":"ㅍ", "b":"ㅠ", "B":"ㅠ", "n":"ㅜ", "N":"ㅜ", "m":"ㅡ", "M":"ㅡ"};
+for (let p in m.mapKE) {
+	m.mapKE[m.mapKE[p]]=p; // Add reversed mapping.
+}
+
+m.rChoKE=["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rCho=["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+
+m.rJungKE=["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
+m.rJung=["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+
+m.rJongKE=["", "ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+m.rJong=["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+
+m.splitHangul=function(str) {
+	let res=[];
+	res.originalStr=str;
+	res.splitted3="";
+	res.splitted="";
+	res.pCho=[]; // position of word-start or 초성
+	let p=0;
+	res.pCho[p]=true;
+	let cho, jung, jong;
+	for (let i=0;i<str.length;i++) {
+		let c=str.charAt(i)
+		let n=str.charCodeAt(i);
+		if (n>=0x3131&&n<=0x3163) {
+			n-=0x3131;
+			res[i]={"char":c, "splitted3":c, "splitted":m.jamoKE[n]};
+			res.pCho[p]=true;
+		}
+		else if (n>=0xAC00&&n<=0xD7A3) {
+			n-=0xAC00;
+			jong=n%28;
+			jung=( (n-jong)/28 )%21;
+			cho=( ((n-jong)/28)-jung )/21;
+			res[i]={"char":c
+				, "splitted3":m.rCho[cho]+m.rJung[jung]+m.rJong[jong]
+				, "splitted":m.rChoKE[cho]+m.rJungKE[jung]+m.rJongKE[jong]};
+			res.pCho[p]=true;
+		}
+		else {
+			res[i]={"char":c, "splitted3":c, "splitted":c};
+			if (i>0&&/[^a-zA-Z0-9]$/.test(res[i-1].splitted)&&/[a-zA-Z0-9]/.test(c)) {
+				res.pCho[p]=true;
+			}
+		}
+		p+=res[i].splitted.length;
+		res.splitted3+=res[i].splitted3;
+		res.splitted+=res[i].splitted;
+	}
+	return res;
+};
+
+////////////////////////////////////////////////////
+// Fuzzy search prepare
+////////////////////////////////////////////////////
+m.fsLength=m.fsLength||512;
+m.fsGo=[];
+m.fsGo[0]=m.fsGo[1]=[];
+m.fsGo[0].ptnSH=m.fsGo[1].ptnSH=m.splitHangul("$!@#");
+m.fsGo.fullList=[];
+m.fsGo.$fs=$fuzzy_search;
+m.fsGo.$fsl=$fuzzy_search_list;
+m.fsGo.$fsLis=$fuzzy_search_list.find(".list-item");
+RegExp.quote=function(str) {
+	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
+};
+m.arrayRegExs=function(ptnSH) {
+	let str=ptnSH.splitted;
+	let res=[];
+	for (let i=0;i<str.length;i++) {
+		let c=str.charAt(i);
+		let mapKE=m.mapKE[c];
+		if (mapKE) {
+			res.push( new RegExp("["+c+mapKE+"]", "ig") );
+		}
+		else {
+			res.push( new RegExp(RegExp.quote(c), "ig") );
+		}
+	}
+	return res;
+};
+m.highlightStrFromIndices=function(strSplitted, indices) {
+	let res="";
+	for (let i=0, j=1, k=0, p1=0, p2=0;j<=indices.length;i=j,j++) {
+		while (j<indices.length&&indices[j-1].end===indices[j].start) {
+			j++;
+		}
+		for (;k<strSplitted.length;k++) {
+			p1=p2;
+			p2=p1+strSplitted[k].splitted.length;
+			if (p2<=indices[i].start) {
+				strSplitted[k].matched=false;
+			}
+			else if (p1<indices[j-1].end) {
+				strSplitted[k].matched=true;
+			}
+			else {
+				if (j===indices.length) {
+					for (;k<strSplitted.length;k++) {
+						strSplitted[k].matched=false;
+					}
+				}
+				p2=p1;
+				break;
+			}
+		}
+	}
+	for (let i=0;i<strSplitted.length;) {
+		if (strSplitted[i].matched) {
+			res+='<span class="bold">';
+			while (i<strSplitted.length&&strSplitted[i].matched) {
+				res+=m.escapeOnlyTag(strSplitted[i].char);
+				i++;
+			}
+			res+='</span>';
+		}
+		else {
+			while (i<strSplitted.length&&!strSplitted[i].matched) {
+				res+=m.escapeOnlyTag(strSplitted[i].char);
+				i++;
+			}
+		}
+	}
+	return res;
+};
+m.matchScoreFromIndices=function(strSH, ptnSH, indices) {
+	let res=0;
+	for (let i=0;i<indices.length;i++) {
+		if (strSH.pCho[indices[i].start])
+			res+=10;
+	}
+	for (let i=1;i<indices.length;i++) {
+		let diff=indices[i].start-indices[i-1].start;
+		if (diff<5) res+=8*(5-diff);
+	}
+	return res;
+};
+m.fuzzySearch=function(ptnSH, fs) {
+	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
+		return fs[0];
+	}
+	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)!==-1) {
+		fs[1]=fs[0];
+	}
+	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)!==-1) {
+		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
+			return fs[1];
+		}
+	}
+	else {
+		fs[1]=null;
+	}
+	let list=[];
+	if (fs[1]&&fs[1].sorted) {
+		let sorted=fs[1].sorted;
+		for (let i=0;i<sorted.length;i++) {
+			list.push(fs.fullList[fs[1][sorted[i]].i]);
+		}
+	}
+	else {
+		if (fs.shuffled) {
+			let shuffled=fs.shuffled;
+			for (let i=0;i<shuffled.length;i++) {
+				list.push(fs.fullList[shuffled[i].i]);
+			}
+		}
+		else {
+			let l=fs.fullList.length;
+			for (let i=0;i<l;i++) {
+				list.push(fs.fullList[l-1-i]);
+			}
+		}
+	}
+	fs[0]=[];
+	fs[0].ptnSH=ptnSH;
+	let regExs=m.arrayRegExs(ptnSH);
+	let regExsReversed=[];
+	for (let i=0;i<regExs.length;i++) {
+		regExsReversed[i]=regExs[regExs.length-1-i];
+	}
+	for (let i=0;i<list.length;i++) {
+	 let listI=list[i];
+	if (regExs.length>0) {
+		let txt=listI.txt;
+		let txtS=txt.splitted;
+		let txtSReversed=txtS.split("").reverse().join("");
+		regExs[0].lastIndex=0;
+		let exec=regExs[0].exec(txtS);
+		let matched=(exec!==null);
+		let indices=[];
+		if (matched) {
+			indices[0]={start:exec.index, end:regExs[0].lastIndex};
+		}
+		for (let j=1;matched&&(j<regExs.length);j++) {
+			regExs[j].lastIndex=regExs[j-1].lastIndex;
+			exec=regExs[j].exec(txtS);
+			matched=(exec!==null);
+			if (matched) {
+				indices[j]={start:exec.index, end:regExs[j].lastIndex};
+			}
+		}
+		let maxMatchScore=0;
+		if (matched) {
+			maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+			let indicesMMS=[]; // indices of max match score
+			for (let p=0;p<indices.length;p++) {
+				indicesMMS[p]=indices[p]; // hard copy of indices
+			}
+			if (txt.length<m.fsLength) {
+				for (let k=indices.length-2;k>=0;) {
+					regExs[k].lastIndex=indices[k].start+1;
+					exec=regExs[k].exec(txtS);
+					matched=(exec!==null);
+					if (matched) {
+						indices[k]={start:exec.index, end:regExs[k].lastIndex};
+					}
+					for (let j=k+1;matched&&(j<regExs.length);j++) {
+						regExs[j].lastIndex=regExs[j-1].lastIndex;
+						exec=regExs[j].exec(txtS);
+						matched=(exec!==null);
+						if (matched) {
+							indices[j]={start:exec.index, end:regExs[j].lastIndex};
+						}
+					}
+					if (matched) {
+						let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+						if (matchScore>maxMatchScore) {
+							maxMatchScore=matchScore;
+							indicesMMS=[];
+							for (let p=0;p<indices.length;p++) {
+								indicesMMS[p]=indices[p]; // hard copy of indices
+							}
+						}
+						k=indices.length-2;
+					}
+					else {
+						k--;
+					}
+				}
+			}
+			else {
+				// Reverse match and compare only two results.
+				regExsReversed[0].lastIndex=0;
+				exec=regExsReversed[0].exec(txtSReversed);
+				matched=(exec!==null);
+				let indicesReversed=[];
+				if (matched) {
+					indicesReversed[0]={start:exec.index, end:regExsReversed[0].lastIndex};
+				}
+				for (let j=1;matched&&(j<regExsReversed.length);j++) {
+					regExsReversed[j].lastIndex=regExsReversed[j-1].lastIndex;
+					exec=regExsReversed[j].exec(txtSReversed);
+					matched=(exec!==null);
+					if (matched) {
+						indicesReversed[j]={start:exec.index, end:regExsReversed[j].lastIndex};
+					}
+				}
+				if (matched) {
+					indices=[];
+					for (let j=0;j<indicesReversed.length;j++) {
+						let iR=indicesReversed[indicesReversed.length-1-j];
+						indices[j]={start:(txtSReversed.length-iR.end), end:(txtSReversed.length-iR.start)};
+					}
+					let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+					if (matchScore>maxMatchScore) {
+						maxMatchScore=matchScore;
+						indicesMMS=indices;
+					}
+				}
+			}
+			fs[0].push({i:listI.i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
+		}
+	}
+	else {
+		fs[0].push({i:listI.i, maxMatchScore:0});
+	}}
+	let sorted=fs[0].sorted=[];
+	for (let i=0;i<fs[0].length;i++) {
+		// sorted[i]=fs[0].length-1-i;
+		// sorted[i]=i;
+		sorted.push(i);
+	}
+	for (let i=1;i<sorted.length;i++) {
+		let temp=sorted[i];
+		let j=i;
+		for (;(j>0)&&(fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--) {
+			sorted[j]=sorted[j-1];
+		}
+		sorted[j]=temp;
+	}
+	return fs[0];
+};
+
+$fuzzy_search.on("keydown", function(e) {
+	e.stopPropagation();
+	switch (e.keyCode) {
+	case 27: // ESC=27
+		e.preventDefault();
+		$window.trigger({type:"keydown", keyCode:71}); // G=71
+		break;
+	case 38: // up=38
+	case 40: // down=40
+		e.preventDefault();
+		let $fsl=$fuzzy_search_list;
+		let $lis=$fsl.find(".list-item");
+		let $liSelected=$fsl.find(".list-item.selected").eq(0);
+		let $liTo=null;
+		if ($liSelected.exists()) {
+			if (e.keyCode===38) {
+				$liTo=$liSelected.prev();
+			}
+			else {
+				$liTo=$liSelected.next();
+			}
+			if ($liTo.exists()) {
+				$liTo.eq(0).trigger("click");
+				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+				}
+				else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
+					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+				}
+			}
+		}
+		else {
+			if ($lis.exists()) {
+				if (e.keyCode===38) {
+					$liTo=$lis.last();
+					$fsl.scrollTop($fsl[0].scrollHeight);
+				}
+				else {
+					$liTo=$lis.first();
+					$fsl.scrollTop(0);
+				}
+				$liTo.eq(0).trigger("click");
+			}
+		}
+		break;
+	}
+});
+m.gotoLi=function(e, elem, k, fs) {
+if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+}
+else {
+	let $elem=$(elem);
+	if ($elem.hasClass("selected")) {
+		$fuzzy_search.trigger({type:"keydown", keyCode:27}); // keyCode:27=ESC
+	}
+	else {
+		fs.$fsLis.removeClass("selected");
+		$elem.addClass("selected");
+	}
+	let $listI=fs.fullList[k].$listI;
+	if ($listI) {
+		if (!$listI.is(":visible")) {
+			$listI.parents("*").show();
+		}
+		$window.scrollTop($listI.offset().top);
+	}
+}};
+m.doFSGo=function(fs) {
+	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
+		let res=m.fuzzySearch(fsPtnSH, fs);
+		let sorted=res.sorted;
+		let str="";
+		for (let i=0;i<sorted.length;i++) {
+			let k=res[sorted[i]].i;
+			let fsFLk=fs.fullList[k];
+			str+=`<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>`:''}</div>`;
+		}
+		fs.$fsl.html(str);
+		fs.$fsLis=fs.$fsl.find(".list-item");
+	}
+};
+m.fsGoOn=function() {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSGo(m.fsGo);
+	}
+	else {
+		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
+		setTimeout(function() {
+			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+			m.previous=Date.now();
+			m.doFSGo(m.fsGo);
+		}, m.wait*1.1-passed);
+	}
+};
+$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+
 // String to Array
 m.encloseStr=function (str) {
 	if (!str||str.constructor!==String) { return ''; }
