@@ -4177,7 +4177,6 @@ m.openCat=async function (cat, e) {
 	// for (let l=0;l<m.fsGo.fullList.length;l++) {
 	// 	m.fsGo.fullList[l].$recoElem=null;
 	// }
-	m.fsGotoCats.fullList[cat].selected=true;
 	m.fsGotoCats.fullList[cat].down=true;
 	m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
@@ -5153,6 +5152,7 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 	let $elem=$(elem);
 	let fsFLj=fs.fullList[j];
 	let cat=fsFLj.cat;
+	fsFLj.down=true;
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let beInCurrentCat=false;
@@ -5160,7 +5160,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 		beInCurrentCat=true;
 	}
 	let catsTxt=fs.$fs[0].value;
-	fs.$fs.focus();
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
 	let l=catsTxt.length;
@@ -5187,7 +5186,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 		m.currentCat=cat;
 		await m.openCat(cat);
 	}
-	return;
 };
 
 ///////////////////////////////////////////
