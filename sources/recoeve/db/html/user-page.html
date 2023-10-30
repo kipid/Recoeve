@@ -2083,6 +2083,7 @@ m.updateCatFS();
 m.completeCat=function (elem, cat) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
+	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
@@ -2099,6 +2100,7 @@ m.completeCat=function (elem, cat) {
 m.completeMRCat=function (elem, cat) {
 	let $elem=$(elem);
 	let fs=m.fsMRCat;
+	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
@@ -5173,6 +5175,7 @@ m.completeCatAndOpenCat=async function (elem, j, fs) {
 	let cat=fsFLj.cat;
 	fsFLj.down=true;
 	let isSelected=$elem.hasClass("selected");
+	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	$elem.addClass("down");
@@ -5306,6 +5309,7 @@ m.gotoLi=async function (e, elem, k, fs) {
 		}
 	}
 	else {
+		fs.$fsLis=fs.$fsl.find(".list-item");
 		fs.$fsLis.removeClass("selected");
 		fs.$fsLis.removeClass("clicked-once");
 		$elem.addClass("selected");
@@ -6199,6 +6203,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	fs.pauseVideo();
 	let i=fs.currentIndex;
 	if (0<=i&&i<fs.fullList.length) {
+		fs.$fsLis=fs.$fsl.find(".list-item");
 		fs.$fsLis.removeClass("selected");
 		$(`#toR-${i}`).addClass("selected");
 		let r=fs.fullList[i].reco;
