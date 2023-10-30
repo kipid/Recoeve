@@ -195,7 +195,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats {font-size:.8em; border:2px solid rgb(100,150,100); border-top:0; padding:.2em .5em}
 .multireco .reco>.cats {font-size:.7em}
 .reco>.cats>a {color:rgb(130,170,130)}
-.reco>.cats>a.currentCat {color:rgb(140,180,140); font-weight:bold; text-decoration:none}
+.reco>.cats>a.currentCat {pointer-events:none; color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.desc .value {padding-bottom:1em}
 .reco>.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
