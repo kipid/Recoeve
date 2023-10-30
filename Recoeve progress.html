@@ -252,6 +252,12 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+Shuffle 이후에 reco 는 ToR 에서 제일 위에 올라가지 않음. (해결한듯? 테스트는 해봐야 됨.)
+
+cats input 한 다음 몇 초 뒤 다시 cats 로 focus 가 호출되는듯???
+
+원래대로 키가 제대로 동작 안함. (뭐 때문인지 모르겠네. localStorage 나 location.search 에 있는게 영향을 주는거 같긴한데... 이건 초반에만 이루어 지는거 아닌가? setInterval 걸려있나 계속?) 이건 에러 확인하기도 짱나네;;; (N count++ 하는게 이상한 if 안에 있었음.)
+
 Multireco mode 에서 아래서부터 위로 갈때, scroll auto 가 잘 안먹히는듯? (수정 해보긴 했는데, 이게 더 잘 동작할래나? $elem.replaceWith() 에서 $elem 이 one parent 를 가지는게 아니라면 $elem.outerHeight() 가 계산이 안되는건가?)
 
 Unrecoed count 해서 알려주기.
