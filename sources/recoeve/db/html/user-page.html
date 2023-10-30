@@ -4702,6 +4702,9 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 $input_cats.off("keydown.common");
 $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 	let uri=this.value;
+	if (uri==="") {
+		m.myRecos[""].cats=m.currentCat;
+	}
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
@@ -4821,6 +4824,7 @@ $input_val_up.on("click", function (e) {
 	$input_val.trigger("keyup");
 });
 $button_back.on("click", function (e) {
+	m.myRecos[""].cats=m.currentCat;
 	m.fillRecoInNewReco(m.myRecos[$input_uri[0].value]);
 });
 
@@ -4887,20 +4891,21 @@ m.reco_do=function (args, err) {
 $button_reco.on("click", function (e) {
 	$button_reco.addClass("disabled");
 	let uri=m.formatURI($input_uri[0].value);
+	$input_uri[0].value=uri;
 	let val=m.val($input_val[0].value.trim());
 	let errorMsg="";
 	let valid=true;
 	if (uri.length===0) {
 		valid=false;
-		errorMsg="URI is required.";
+		errorMsg="[--URI is Empty.--]";
 	}
 	else if (m.getUTF8Length(uri)>255) {
 		valid=false;
-		errorMsg="URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.";
+		errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
 	}
 	else if (!val.valid) {
 		valid=false;
-		errorMsg="Points is of invalid form.";
+		errorMsg="[--Points is of invalid form.--]";
 	}
 	if (valid) {
 		let strHeads="do\turi";
@@ -6024,6 +6029,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			$input_val[0].value=points;
 			$input_val.trigger("keyup");
 		}
+		console.log("changed, N", changed, m.initialFillFromLocalStorageN);
 		if (!changed&&m.initialFillFromLocalStorageN>3) {
 			m.initialFillFromLocalStorageN++;
 			clearInterval(m.initialFillFromLocalStorage);
