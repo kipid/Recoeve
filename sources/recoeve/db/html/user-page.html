@@ -2135,7 +2135,7 @@ m.doFSCat=function (fs) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			let fsFLk=fs.fullList[fsSortedI.i];
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${fsSortedI.i},m.fsGotoCats)"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${fsSortedI.i})"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 			if (fsFLk?.down) {
 				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
 			}
@@ -3708,7 +3708,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
 		$cat.addClass("selected");
 		let $parents=$cat.parents(".subCat");
-		for (let i=$parents.length-1;i>=0;i--) {
+		for (let i=0;i<$parents.length;i++) {
 			if (!$parents.eq(i).is(":visible")) {
 				$parents.eq(i).prev().find(">.EC").trigger("click");
 			}
@@ -3985,8 +3985,8 @@ m.refresh=async function (cats, option, uri, openCat) {
 	let r=m.myRecos[uri];
 	let cat=m.currentCat;
 	if (c[k]!==m.currentCat&&openCat) {
-		cat=c[k];
-		m.openCat(cat);
+		cat=m.currentCat=c[k];
+		m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 	}
 	else {
 		let $recoms_recos=null;
@@ -5145,8 +5145,6 @@ $button_del.on("click", function (e) {
 	}
 });
 
-
-
 ///////////////////////////////////////////
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
@@ -5155,21 +5153,21 @@ m.triggerOpenCat=function (cat, elem) {
 	let fs=m.fsGotoCats;
 	let $fsLis=fs.$fsl.find(".list-item");
 	for (let i=0;i<$fsLis.length;i++) {
-		let $fslI=$fsLis.eq(i);
-		let index=Number($fslI.find(".list-index").html());
+		let $fsLisI=$fsLis.eq(i);
+		let index=Number($fsLisI.find(".list-index").html());
 		if (cat===fs.fullList[index].cat) {
-			m.completeCatAndOpenCat($fslI[0], index, fs);
+			m.completeCatAndOpenCat($fsLisI[0], index);
 			return false;
 		}
 	}
 	let fsFLk=fs.fullList[cat];
 	let k=fsFLk.i;
-	fs.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${k},m.fsGotoCats)"><div class="list-index">${k}</div>${fs.fullList[k].html}</div>`);
-	m.completeCatAndOpenCat(fs.$fsl.find(".list-item").eq(0)[0], k, fs);
+	fs.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" onclick="m.completeCatAndOpenCat(this,${k})"><div class="list-index">${k}</div>${fs.fullList[k].html}</div>`);
+	m.completeCatAndOpenCat(fs.$fsl.find(".list-item").eq(0)[0], k);
 	return false;
 };
-m.completeCatAndOpenCat=async function (elem, j, fs) {
-	// fs.$fs.off("keyup.fs cut.fs paste.fs click.fs");
+m.completeCatAndOpenCat=async function (elem, j) {
+	let fs=m.fsGotoCats;
 	let $elem=$(elem);
 	let fsFLj=fs.fullList[j];
 	let cat=fsFLj.cat;

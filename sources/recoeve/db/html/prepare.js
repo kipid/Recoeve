@@ -903,7 +903,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		fs[1]=null;
 	}
 	let list=[];
-	if (fs[1]?.sorted?.length>0) {
+	if (fs[1]?.sorted?.length>=0) {
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[fs[1][sorted[i]].i]);
