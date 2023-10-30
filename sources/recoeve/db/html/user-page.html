@@ -5149,7 +5149,7 @@ $button_del.on("click", function (e) {
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
 m.triggerOpenCat=function (cat, event) {
-	$(event.target).parent("cat").addClass("down");
+	$(event.target).parent(".cat").addClass("down");
 	let fs=m.fsGotoCats;
 	let $fsLis=fs.$fsl.find(".list-item");
 	for (let i=0;i<$fsLis.length;i++) {
