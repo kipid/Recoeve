@@ -1441,12 +1441,12 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr56.sogirl.so${exec[1]?exec[1]:""}`, from:'sogirl', src:exec[1]});
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, from:'sogirl', src:exec[1]});
+			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr56.sogirl.so${exec[1]?exec[1]:""}`, from:'sogirl', src:exec[1]});
 		}
 		else {
 			return reject(false);
@@ -1461,7 +1461,7 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr25.topgirl.co${exec[1]?exec[1]:""}`, from:'topgirl', src:exec[1]});
 	}
 	else {
 		return reject(false);
