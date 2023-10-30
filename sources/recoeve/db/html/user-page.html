@@ -1318,6 +1318,7 @@ m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fixed=false;
 m.fsToRs.fullList=[];
+m.fsToRs.shuffled=[];
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fsl.viewAndScroll=function ($next) {
@@ -3987,9 +3988,8 @@ m.refresh=async function (cats, option, uri, openCat) {
 			m.reNewAndReOn();
 
 			let fs=m.fsGo;
-			if (fs.shuffled) {
-				fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
-			}
+			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
+			fs.fullList.push(fs.fullList[uri]);
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("input.fs");
@@ -3998,7 +3998,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
-				fs.shuffled.push({i:fs.fullList.length, randomN:Math.random()});
+				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, randomN:Math.random()};
 			}
 			fs[1]=null;
 			fs[0].ptnSH=m.splitHangul("$!@#");
@@ -4044,6 +4044,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 					let fs=m.fsGo;
 					let fsFLk=fs.fullList[uri];
+					if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
 					fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
 					fsFLk.html=m.escapeOnlyTag(r.title);
 					fs[1]=null;
@@ -4052,6 +4053,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
+					if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
 					fsFLk.txt=m.splitHangul(r.title);
 					fsFLk.html=m.escapeOnlyTag(r.title);
 					fsFLk.inRange=true;
@@ -4127,7 +4129,7 @@ m.ExpCol=function (elem, catEC) {
 // Open Cat
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
-m.openCat=function (cat, e) {
+m.openCat=async function (cat, e) {
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
 		m.recosShown=false;
 	}
