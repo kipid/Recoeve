@@ -6030,8 +6030,10 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			$input_val.trigger("keyup");
 		}
 		console.log("changed, N", changed, m.initialFillFromLocalStorageN);
-		if (!changed&&m.initialFillFromLocalStorageN>3) {
+		if (!changed) {
 			m.initialFillFromLocalStorageN++;
+		}
+		if (!changed&&m.initialFillFromLocalStorageN>3) {
 			clearInterval(m.initialFillFromLocalStorage);
 		}
 	}, 512);
