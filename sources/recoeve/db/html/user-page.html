@@ -4362,7 +4362,6 @@ m.showReco=async function (r) {
 	}
 };
 m.fillRecoInNewReco=function (r, fillDefs) {
-	m.localStorage.clear();
 	if (r.has) {
 		$input_title[0].value=r.title;
 		$input_cats[0].value=r.cats;
@@ -6034,6 +6033,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			m.initialFillFromLocalStorageN++;
 		}
 		if (!changed&&m.initialFillFromLocalStorageN>3) {
+			m.localStorage.clear();
 			clearInterval(m.initialFillFromLocalStorage);
 		}
 	}, 512);
