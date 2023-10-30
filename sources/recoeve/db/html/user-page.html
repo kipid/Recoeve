@@ -1743,7 +1743,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a href="${m.pathOfCat('')}" class="baseCat" onclick="return m.openCat('${cat}', event)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-${encodeURIComponent("[--Uncategorized--]")}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onclick="return m.openCat('${cat}', event)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1765,7 +1765,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1779,7 +1779,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a href="${m.pathOfCat(cL[i].cat)}" class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onclick="return m.openCat('${cat}', event)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1802,13 +1802,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a href="${m.pathOfCat("")}" onclick="return m.openCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a onclick="return m.openCat('${m.catList[0].cat}', event)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a href="${m.pathOfCat(cat)}" onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onclick="return m.openCat('${m.catList[m.catList[cat].i].cat}', event)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
