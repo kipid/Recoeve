@@ -5180,7 +5180,6 @@ m.completeCatAndOpenCat=async function (e, elem, j, fs) {
 		sStart+=fs.listOfCats[i].length+1;
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
-	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	if (!beInCurrentCat) {
 		m.currentCat=cat;
