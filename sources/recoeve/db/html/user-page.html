@@ -3405,20 +3405,27 @@ m.showRecosOnCat=async function (elem, from) {
 					}
 				}
 			}
-			if ((!m.myPage)&&m.showOnlyUnrecoed) {
+			let nUnrecoed=0;
+			if ((!m.myPage)) {
 				for (let k=0;k<l;k++) {
 					let fsFLk=fs.fullList[k];
 					let uri=fsFLk.uri;
-					if (m.myRecos[uri].has) {
+					if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
 						if (fsFLk.inRange) {
 							nShown--;
 							nHiden++;
 						}
 						fsFLk.inRange=false;
 					}
+					else {
+						nUnrecoed++;
+					}
 				}
 			}
 			let nOfRecos=`You have ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
+			if (!m.myPage) {
+				nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of this user's on cat=${m.escapeOnlyTag(m.currentCat)}`;
+			}
 			$numbers_of_recos.html(nOfRecos);
 			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
@@ -3439,12 +3446,14 @@ m.showRecosOnCat=async function (elem, from) {
 			let beforeST=$window.scrollTop();
 			if ($elem.offset().top-beforeST<=window.innerHeight/2.0) { // Scroll from downside to upside.
 				$elem.replaceWith(strHTML);
-				$window.scrollTop(beforeST+$elem.outerHeight()+128);
+				let afterLoadSH=document.documentElement.scrollHeight;
+				setTimeout(function () {
+					$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST+128);
+				}, 256);
 			}
 			else { // Scroll from upside to downside.
 				$elem.replaceWith(strHTML);
 			}
-			let afterLoadSH=document.documentElement.scrollHeight;
 		}
 	}
 	m.reNewAndReOn();
