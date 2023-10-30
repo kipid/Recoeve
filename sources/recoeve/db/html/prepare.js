@@ -119,7 +119,7 @@ m.saveSSN=function () {
 		m.docCookies.removeItem("salt", "/", false, true);
 	}
 	if (m.docCookies.hasItem("session")) {
-		// m.session=m.docCookies.getItem("session");
+		m.session=m.docCookies.getItem("session");
 		m.docCookies.removeItem("session", "/", false, true);
 	}
 };
