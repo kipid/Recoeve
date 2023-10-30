@@ -4673,32 +4673,37 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	let from=String(uriRendered.from);
 	if (!noFormatURI) {
 		m.lastURI=uri;
-		if (from==="youtube") {
+		switch (from) {
+		case "youtube":
 			uri=elem.value=`https://www.youtube.com/watch?v=${uriRendered.videoId}`;
-		}
-		else if (from==="instagram") {
+			break;
+		case "instagram":
 			uri=elem.value=`https://www.instagram.com/p/${uriRendered.imgId}/`;
-		}
-		else if (from==="tiktok") {
+			break;
+		case "tiktok":
 			uri=elem.value=`https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
-		}
-		else if (from==="weverse") {
+			break;
+		case "weverse":
 			uri=elem.value=`https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
-		}
-		else if (from==="naver") {
+			break;
+		case "naver":
 			uri=elem.value=`https://tv.naver.com/v/${uriRendered.videoId}`;
-		}
-		else if (from==="vlive") {
+			break;
+		case "vlive":
 			uri=elem.value=`https://www.vlive.tv/video/${uriRendered.videoId}`;
-		}
-		else if (from==="kakao") {
+			break;
+		case "kakao":
 			uri=elem.value=`https://tv.kakao.com/v/${uriRendered.videoId}`;
-		}
-		else if (from==="ted") {
+			break;
+		case "ted":
 			uri=elem.value=`https://www.ted.com/talks/${uriRendered.videoId}`;
-		}
-		else if (from==="dailymotion") {
+			break;
+		case "dailymotion":
 			uri=elem.value=`https://www.dailymotion.com/video/${uriRendered.videoId}`;
+			break;
+		case "sogirl": case "topgirl":
+			uri.elem.value=uriRendered.newURI;
+			break;
 		}
 	}
 	$show_URI.html(String(uriRendered.html));
@@ -5947,6 +5952,7 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
+	m.initialOpen=true;
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
@@ -5970,9 +5976,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}
 	$window.trigger("resize.sb");
 
-	m.initialOpen=true;
-	let vars=m.searchVars;
-	let cat=m.currentCat;
+	let vars=m.searchVars; // At the first script.
+	let cat=m.currentCat; // At the first script.
 	let uri=m.localStorage.getItem("uri");
 	if (vars.uri!==undefined) {
 		$input_uri[0].value=vars.uri.val;
