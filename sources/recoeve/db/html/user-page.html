@@ -5180,7 +5180,7 @@ m.triggerOpenCat=async function (event, cat, elem) {
 		let $fsLisI=$fsLis.eq(i);
 		let index=Number($fsLisI.find(".list-index").html());
 		if (cat===fs.fullList[index].cat) {
-			m.completeCatAndOpenCat($fsLisI[0], index);
+			$fsLisI.trigger("click");
 			return false;
 		}
 	}
