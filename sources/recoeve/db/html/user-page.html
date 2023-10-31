@@ -1744,7 +1744,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 		}
 	}
 };
-m.catListToHTML=function () {
+m.catListToHTML=async function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
 	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">[--Uncategorized--]</a></div>`;
@@ -5167,7 +5167,7 @@ m.triggerOpenCat=function (event, cat, elem) {
 		return;
 	}
 	if (event===null) {
-		$(elem).trigger({type:'mouseup', which:1});
+		$(elem).trigger({type:'mouseup', which:1}, [cat, elem]);
 		return;
 	}
 	$(elem).parent(".cat").addClass("down");
