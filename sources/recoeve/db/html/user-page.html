@@ -10,10 +10,12 @@
 <link rel="stylesheet" href="/CDN/recoeve-style.css">
 <script>
 window.m={
-	initialPathname:window.location,pathname
+	initialPathname:window.location.pathname
 	, initialSearch:window.location.search
 	, initialHashURI:(window.location.hash?window.location.hash.substring(1):"")
 	, doNotPushHistory:false
+	, valsStatN:20
+	, recosShown:false
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -3723,8 +3725,6 @@ m.cutNeighbors=function (str) {
 		}
 	});
 };
-m.valsStatN=21;
-m.recosShown=false;
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	if (m.catList[cat]) {
 		$catList.find(".cat").removeClass("selected");
@@ -4167,12 +4167,6 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
 m.openCat=async function (cat) {
-	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
-		m.recosShown=false;
-	}
-	m.currentCat=cat;
-	let path=m.pathOfCat(cat, m.recoMode, null, m.hashURI);
-	m.fsToRs.shuffled=null;
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
 		for (let k=0;k<uris.length;k++) {
@@ -4186,26 +4180,26 @@ m.openCat=async function (cat) {
 	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
 	m.fsGotoCats.fullList[m.currentCat].down=true;
 	m.getUriListAndShowRecosOnCat(cat);
-	clearTimeout(m.moveHash);
-	m.moveHash=setTimeout(function () {
-		if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-			m.hashURI="numbers-of-recos";
-			window.location.hash=`#${m.hashURI}`;
-		}
-		else if ($button_get_recoms.hasClass("enabled")) {
-			m.hashURI="button-get-recoms";
-			window.location.hash=`#${m.hashURI}`;
-		}
-		else {
-			m.hashURI="headPlay";
-			window.location.hash=`#${m.hashURI}`;
-		}
-		if (!m.doNotPushHistory) {
-			window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
-		}
-		m.doNotPushHistory=false;
-		$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
-	}, 512);
+	if (!m.initialOpen) {
+		clearTimeout(m.moveHash);
+		m.moveHash=setTimeout(function () {
+			if (!m.doNotPushHistory) {
+				if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+					m.hashURI="numbers-of-recos";
+					window.location.hash=`#${m.hashURI}`;
+				}
+				else if ($button_get_recoms.hasClass("enabled")) {
+					m.hashURI="button-get-recoms";
+					window.location.hash=`#${m.hashURI}`;
+				}
+				else {
+					m.hashURI="headPlay";
+					window.location.hash=`#${m.hashURI}`;
+				}
+			}
+		}, 512);
+	}
+	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -5168,11 +5162,18 @@ m.triggerOpenCat=async function (event, cat, elem) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
 		return;
 	}
-	if (event===null&&m.recoMode==="") {
+	if (event===null&&(m.recoMode===""||m.recoMode==="multireco")) {
 		$(elem).trigger({type:'mouseup', which:1}, cat, elem);
 		return;
 	}
-	$(elem).parent(".cat").addClass("down");
+	if (m.recoMode===""||m.recoMode==="multireco") {
+		$(elem).parent(".cat").addClass("down");
+	}
+	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
+		m.recosShown=false;
+	}
+	m.currentCat=cat;
+	m.fsToRs.shuffled=null;
 	let fs=m.fsGotoCats;
 	let $fsLis=fs.$fsl.find(".list-item");
 	for (let i=0;i<$fsLis.length;i++) {
@@ -5194,12 +5195,14 @@ m.completeCatAndOpenCat=async function (elem, j) {
 	let $elem=$(elem);
 	let fsFLj=fs.fullList[j];
 	let cat=fsFLj.cat;
-	fsFLj.down=true;
+	if (m.recoMode===""||m.recoMode==="multireco") {
+		fsFLj.down=true;
+		$elem.addClass("down");
+	}
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	$elem.addClass("down");
 	let beInCurrentCat=false;
 	if (cat===m.currentCat) {
 		beInCurrentCat=true;
