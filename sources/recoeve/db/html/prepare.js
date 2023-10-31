@@ -673,26 +673,6 @@ if (m.sW<m.sH) {
 }
 m.str_rmb_me=`log	sW	sH
 web	${m.sW}	${m.sH}`;
-m.SSNencrypt=function (callback, args) {
-	$.ajax({
-		type:"GET", url:"/sessionIter"
-		, dataType:"text"
-	}).done(function (resp) {
-		console.log(resp);
-		let iter=Number(resp);
-		if (isNaN(iter)) {
-			callback(args, resp);
-			resolve();
-		}
-		else {
-			m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
-			callback(args, null); // null means no error.
-			m.localStorage.clear();
-			resolve();
-			// m.docCookies.removeItem("SSN", "/", false, true);
-		}
-	});
-};
 m.rmb_me=function (callback, args, saveNewRecoInputs) {
 return new Promise(function (resolve, reject) {
 	if (saveNewRecoInputs) {
@@ -703,12 +683,32 @@ return new Promise(function (resolve, reject) {
 		m.localStorage.setItem("cmt", $input_cmt[0].value.trim());
 		m.localStorage.setItem("points", $input_val[0].value.trim());
 	}
+	let SSNencrypt=function (callback, args) {
+		$.ajax({
+			type:"GET", url:"/sessionIter"
+			, dataType:"text"
+		}).done(function (resp) {
+			console.log(resp);
+			let iter=Number(resp);
+			if (isNaN(iter)) {
+				callback(args, resp);
+				resolve();
+			}
+			else {
+				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
+				callback(args, null); // null means no error.
+				m.localStorage.clear();
+				resolve();
+				// m.docCookies.removeItem("SSN", "/", false, true);
+			}
+		});
+	};
 	if (m.docCookies.hasItem('tCreate')) {
 		if (m.docCookies.hasItem("salt")||m.docCookies.hasItem("session")) {
 			m.saveSSN();
 		}
 		if (m.saltSSN&&m.session) {
-			m.SSNencrypt(callback, args);
+			SSNencrypt(callback, args);
 			return;
 		}
 	}
@@ -723,7 +723,7 @@ return new Promise(function (resolve, reject) {
 				if (resp.startsWith("Rmbd")&&m.docCookies.hasItem('tCreate')) {
 					m.saveSSN();
 					if (m.saltSSN&&m.session) {
-						m.SSNencrypt(callback, args);
+						SSNencrypt(callback, args);
 					}
 					else {
 						callback(args, resp);
