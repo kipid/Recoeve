@@ -13,6 +13,7 @@
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script>
 (function (m, $, undefined) {
+m.initialOpen=true;
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
 
@@ -1744,7 +1745,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1766,7 +1767,7 @@ m.catListToHTML=function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1780,7 +1781,7 @@ m.catListToHTML=function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat('${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1803,13 +1804,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a onmouseup="return m.triggerOpenCat('${m.catList[0].cat}',this)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a onmouseup="return m.triggerOpenCat(event,'${m.catList[0].cat}',this)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat('${m.catList[m.catList[cat].i].cat}',this)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat(event,'${m.catList[m.catList[cat].i].cat}',this)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -2057,7 +2058,7 @@ m.putCatToFSFullList=function (i, cat) {
 	else {
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i:i, txt:m.splitHangul(cat), cat:cat, html:m.escapeOnlyTag(cat)};
 	}
-	if (m.myPage) {
+	if (m.myPage||m.initialOpen) {
 		if (m.fsGotoCats.fullList[cat]) {
 			m.fsGotoCats.fullList[cat].i=i;
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
@@ -2070,7 +2071,7 @@ m.putCatToFSFullList=function (i, cat) {
 m.updateCatFS=function () {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
 	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
-	if (m.myPage) {
+	if (m.myPage||m.initialOpen) {
 		m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	}
 	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
@@ -3985,7 +3986,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 	let cat=m.currentCat;
 	if (c[k]!==m.currentCat&&openCat) {
 		cat=m.currentCat=c[k];
-		m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
+		m.triggerOpenCat(null, m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 	}
 	else {
 		let $recoms_recos=null;
@@ -4154,16 +4155,12 @@ m.ExpCol=function (elem, catEC) {
 // Open Cat
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
-m.openCat=async function (cat, e) {
+m.openCat=async function (cat) {
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
 		m.recosShown=false;
 	}
 	m.currentCat=cat;
 	let path=m.pathOfCat(cat, m.recoMode, null, m.hashURI);
-	if (e?.which===2) { // wheel click.
-		window.open(path, "_blank");
-		return true;
-	}
 	m.fsToRs.shuffled=null;
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
@@ -4175,30 +4172,26 @@ m.openCat=async function (cat, e) {
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
-	// for (let l=0;l<m.fsGo.fullList.length;l++) {
-	// 	m.fsGo.fullList[l].$recoElem=null;
-	// }
-	m.fsGotoCats.fullList[cat].down=true;
+	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
+	m.fsGotoCats.fullList[m.currentCat].down=true;
 	m.getUriListAndShowRecosOnCat(cat);
-	if (!m.initialOpen) {
-		clearTimeout(m.moveHash);
-		m.moveHash=setTimeout(function () {
-			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-				m.hashURI="numbers-of-recos";
-				window.location.hash=`#${m.hashURI}`;
-			}
-			else if ($button_get_recoms.hasClass("enabled")) {
-				m.hashURI="button-get-recoms";
-				window.location.hash=`#${m.hashURI}`;
-			}
-			else {
-				m.hashURI="headPlay";
-				window.location.hash=`#${m.hashURI}`;
-			}
-			window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
-			$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
-		}, 512);
-	}
+	clearTimeout(m.moveHash);
+	m.moveHash=setTimeout(function () {
+		if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+			m.hashURI="numbers-of-recos";
+			window.location.hash=`#${m.hashURI}`;
+		}
+		else if ($button_get_recoms.hasClass("enabled")) {
+			m.hashURI="button-get-recoms";
+			window.location.hash=`#${m.hashURI}`;
+		}
+		else {
+			m.hashURI="headPlay";
+			window.location.hash=`#${m.hashURI}`;
+		}
+		window.history.pushState({cat:cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, null, m.hashURI));
+		$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
+	}, 512);
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	return false;
 };
@@ -5152,7 +5145,13 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
-m.triggerOpenCat=function (cat, elem) {
+m.triggerOpenCat=function (event, cat, elem) {
+	if (event?.which===2) {
+		e.preventDefault();
+		e.stopPropagation();
+		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
+		return;
+	}
 	$(elem).parent(".cat").addClass("down");
 	let fs=m.fsGotoCats;
 	let $fsLis=fs.$fsl.find(".list-item");
@@ -5774,7 +5773,7 @@ m.processShortKey=function (e) {
 			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
 		}
-		m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
+		m.triggerOpenCat(null, m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 		break;
 	case 77: // M=77
 		e.preventDefault();
@@ -5799,7 +5798,7 @@ m.processShortKey=function (e) {
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
+			m.triggerOpenCat(null, m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 		}
 		else {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
@@ -5824,7 +5823,7 @@ m.processShortKey=function (e) {
 				m.hashURI="button-get-recoms";
 				window.location.hash=`#${m.hashURI}`;
 			}
-			m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
+			m.triggerOpenCat(null, m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 		}
 		break;
 	case 78: // N=78
@@ -5952,7 +5951,6 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
-	m.initialOpen=true;
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
@@ -6130,9 +6128,10 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 	m.saveSSN();
 
-	m.fsGotoCats.fullList[cat].down=true;
+	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
+	m.fsGotoCats.fullList[m.currentCat].down=true;
 	if (m.recoMode==="") {
-		m.triggerOpenCat(m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
+		m.triggerOpenCat(null, m.currentCat, $(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.currentCat))}`)[0]);
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
