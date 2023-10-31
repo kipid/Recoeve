@@ -1,4 +1,4 @@
-window.m={};
+window.m=window.m||{};
 (function (m, $, undefined) {
 // user-page.html, log-in.html, changePwd.html
 $window=$(window);
