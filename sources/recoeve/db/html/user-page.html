@@ -12,7 +12,7 @@
 window.m={
 	initialPathname:window.location.pathname
 	, initialSearch:window.location.search
-	, initialHashURI:(window.location.hash?window.location.hash.substring(1):"")
+	, initialHashURI:(window.location.hash?decodeURIComponent(window.location.hash.substring(1)):"")
 	, doNotPushHistory:false
 	, valsStatN:20
 	, recosShown:false
@@ -1229,7 +1229,7 @@ m.delayedLogOut=function (msg, delayTime=27, $result) {
 	}, 1000);
 	clearTimeout(m.deleyedLogOutTimeout);
 	m.deleyedLogOutTimeout=setTimeout(function () {
-		window.location.href=`/account/log-out?goto=${encodeURIComponent(window.location.pathname+window.location.search+`#${encodeURIComponent(m.hashURI)}`)}`;
+		window.location.href=`/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
 	}, delay*1000);
 };
 
@@ -1761,7 +1761,7 @@ m.strCatListToJSON=function (strCatList, catList) {
 m.catListToHTML=async function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1783,7 +1783,7 @@ m.catListToHTML=async function () {
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1797,7 +1797,7 @@ m.catListToHTML=async function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event,'${cat}',this)">${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1820,13 +1820,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a onmouseup="return m.triggerOpenCat(event,'${m.catList[0].cat}',this)"${m.currentCat===""?` class="currentCat"`:''}>[--Uncategorized--]</a>`;
+		return `<a onmouseup="return m.triggerOpenCat(event)"${m.currentCat===""?` class="currentCat"`:''}><span class="list-index-id"></span>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat(event,'${m.catList[m.catList[cat].i].cat}',this)"${m.currentCat===cat?` class="currentCat"`:''}>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat(event)"${m.currentCat===cat?` class="currentCat"`:''}><span class="list-index-id">${m.escapeOnlyTag(m.catList[m.catList[cat].i].cat)}</span>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
@@ -2037,7 +2037,8 @@ for (let i=$timezone_trs.length-1;i>=1;i--) {
 m.timezoneAddMs=0;
 m.setTimezone=function (elem, timezone) {
 	let fs=m.fsTimezone;
-	fs.$fsLis?.removeClass("selected");
+	fs.$fsLis=fs.$fsl.find(".list-item");
+	fs.$fsLis.removeClass("selected");
 	if (elem) {
 		let $elem=$(elem);
 		$elem.addClass("selected");
@@ -2162,14 +2163,15 @@ m.updateGotoCatsFS=function () {
 	}
 };
 m.updateGotoCatsFS();
-m.completeCat=function (elem, cat) {
-	let $elem=$(elem);
+m.completeCat=function (event) {
+	let $elem=$(event.currentTarget);
+	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fs=m.fsCat;
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
-	fs.listOfCats[k]=fs.fullList[cat].cat;
+	fs.listOfCats[k]=cat;
 	fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -2179,14 +2181,15 @@ m.completeCat=function (elem, cat) {
 	fs.$fs.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
-m.completeMRCat=function (elem, cat) {
-	let $elem=$(elem);
+m.completeMRCat=function (event) {
+	let $elem=$(event.currenttarget);
+	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fs=m.fsMRCat;
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let k=fs.k; // index of cat on sEnd.
-	fs.listOfCats[k]=fs.fullList[cat].cat;
+	fs.listOfCats[k]=cat;
 	$multireco_input_cats[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -2217,38 +2220,32 @@ m.doFSCat=function (fs) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			let fsFLk=fs.fullList[fsSortedI.i];
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsSortedI.i}"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
-			// let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
-			// if ($catI.exists()) {
-			// 	if (fsFLk?.down) {
-			// 		$catI.addClass("down");
-			// 	}
-			// 	if (fsFLk?.deleted) {
-			// 		$catI.addClass("deleted");
-			// 	}
-			// }
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsFLk.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
+			if ($catI.exists()) {
+				if (fsFLk?.down) {
+					$catI.find(".baseCat").addClass("down");
+				}
+				if (fsFLk?.deleted) {
+					$catI.find(".baseCat").addClass("deleted");
+				}
+			}
 		}
 	}
 	else if (fs===m.fsCat) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeCat(this,'${fs.fullList[fsSortedI.i].cat}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fs.fullList[fsSortedI.i].cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	else if (fs===m.fsMRCat) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
-			str+=`<div class="list-item" onclick="m.completeMRCat(this,'${fs.fullList[fsSortedI.i].cat}')"><div class="list-index">${i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			str+=`<div class="list-item" onclick="m.completeMRCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fs.fullList[fsSortedI.i].cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 		}
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
-	if (fs===m.fsGotoCats) {
-		fs.$fsLis.on("click", function (event) {
-			let $elem=$(event.currentTarget);
-			m.completeCatAndOpenCat(event, event.currentTarget, Number($elem.find(".list-index").html()))
-		});
-	}
 };
 m.doMRFSCat=function () {
 	m.doFSCat(m.fsMRCat);
@@ -5224,27 +5221,13 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
-m.triggerOpenCat=async function (event, cat, elem) {
+m.triggerOpenCat=async function (event) {
 	event.preventDefault();
 	event.stopPropagation();
+	let $elem=$(event.currentTarget);
+	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
-		return;
-	}
-	let $elem=null;
-	if (elem) {
-		$elem=$(elem);
-	}
-	else if (event?.currentTarget) {
-		elem=event.currentTarget;
-		$elem=$(elem);
-	}
-	else {
-		$elem=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-		elem=$elem[0];
-	}
-	if (event===null&&(m.recoMode===""||m.recoMode==="multireco")) {
-		$elem.trigger({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, cat, elem);
 		return;
 	}
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
@@ -5270,30 +5253,25 @@ m.triggerOpenCat=async function (event, cat, elem) {
 		$gotoCatsK.trigger("click");
 		return false;
 	}
-	fs.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event,this,${k})"><div class="list-index">${k}</div>${fs.fullList[k].html}</div>`);
+	fs.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${fs.fullList[k].html}</div>`);
 	$(`#gotoCats-${k}`).trigger("click");
 	return false;
 };
-m.completeCatAndOpenCat=async function (event, elem, j) {
+m.completeCatAndOpenCat=async function (event) {
+	let $elem=$(event.currentTarget);
+	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	let fs=m.fsGotoCats;
-	let $elem=null;
-	if (elem) {
-		$elem=$(elem);
-	}
-	else if (event?.currentTarget) {
-		$elem=$(event.currentTarget);
-	}
-	let fsFLj=fs.fullList[j];
-	let cat=fsFLj.cat;
+	let fsFLCat=fs.fullList[cat];
 	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
+	console.log("cat: ", cat);
+	console.log("$catI.exists(): ", $catI);
 	if ($catI.exists()) {
-		// $catI.trigger({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1});
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
-	}
-	if (m.recoMode===""||m.recoMode==="multireco") {
-		fsFLj.down=true;
-		$elem.addClass("down");
+		if (m.recoMode===""||m.recoMode==="multireco") {
+			fsFLCat.down=true;
+			$catI.addClass("down");
+		}
 	}
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -5908,7 +5886,8 @@ m.processShortKey=function (e) {
 			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
 		}
-		m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
+		let $elem=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
+		$elem.trigger("click");
 		break;
 	case 77: // M=77
 		e.preventDefault();
@@ -5945,10 +5924,9 @@ m.processShortKey=function (e) {
 					fsFLk=fs.fullList[i]=fs.fullList[m.currentCat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 				}
 				let k=fsFLk.i;
-				m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event,this,${k})"><div class="list-index">${k}</div>${m.fsGotoCats.fullList[k].html}</div>`);
+				m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${m.fsGotoCats.fullList[k].html}</div>`);
 				$(`#gotoCats-${k}`).trigger("click");
 			}
-			// m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, [0]);
 		}
 		else {
 			if (!m.doNotPushHistory) {
@@ -6284,12 +6262,12 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if (m.fsGotoCats.fullList[m.currentCat].i||m.fsGotoCats.fullList[m.currentCat].i===0) {
 			let $gotoCatsI=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
 			if ($gotoCatsI.exists()) {
-				$gotoCatsI.trigger("click");
+				$gotoCatsI.trigger({type:'mouseup', currentTarget:$gotoCatsI[0], preventDefault:function(){}, stopPropagation:function(){}, which:1});
 			}
 			else {
 				let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
 				if ($catI.exists()) {
-					m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, $catI[0]);
+					$catI.trigger("click");
 				}
 			}
 		}
