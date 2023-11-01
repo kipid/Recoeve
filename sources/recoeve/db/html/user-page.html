@@ -2164,7 +2164,7 @@ m.updateGotoCatsFS=function () {
 };
 m.updateGotoCatsFS();
 m.completeCat=function (event) {
-	let $elem=$(event.currentTarget);
+	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fs=m.fsCat;
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -5222,7 +5222,7 @@ $button_del.on("click", function (e) {
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
-	let $elem=$(event.currentTarget);
+	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
@@ -5258,11 +5258,13 @@ m.triggerOpenCat=async function (event) {
 	return false;
 };
 m.completeCatAndOpenCat=async function (event) {
-	let $elem=$(event.currentTarget);
+	console.log("event.target: ", event.target);
+	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	console.log("cat: ", cat);
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
+	console.log("fsFLCat: ", fsFLCat);
 	if (!fsFLCat) {
 		let i=fs.fullList.length;
 		fsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)}
@@ -5281,13 +5283,14 @@ m.completeCatAndOpenCat=async function (event) {
 		fsFLCat.down=true;
 		$elem.addClass("down");
 	}
+	console.log("fsFLCat: ", fsFLCat);
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	let beInCurrentCat=false;
-	if (cat===m.currentCat&&!m.initialOpen) {
-		beInCurrentCat=true;
+	beInCurrentCat=true;
+	if (cat!==m.currentCat||m.initialOpen) {
+		let beInCurrentCat=false;
 	}
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -6271,12 +6274,12 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if (m.fsGotoCats.fullList[m.currentCat].i||m.fsGotoCats.fullList[m.currentCat].i===0) {
 			let $gotoCatsI=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
 			if ($gotoCatsI.exists()) {
-				$gotoCatsI.trigger({type:'mouseup', currentTarget:$gotoCatsI[0], preventDefault:function(){}, stopPropagation:function(){}, which:1});
+				$gotoCatsI.trigger("click");
 			}
 			else {
 				let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
 				if ($catI.exists()) {
-					$catI.trigger("click");
+					$catI.trigger("mouseup");
 				}
 			}
 		}
