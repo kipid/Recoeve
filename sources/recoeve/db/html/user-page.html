@@ -16,6 +16,7 @@ window.m={
 	, doNotPushHistory:false
 	, valsStatN:20
 	, recosShown:false
+	, previous:0
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -2103,7 +2104,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 		}
 	}
 };
-m.updateCatFS=function () {
+m.updateCatFS=async function () {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
 	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
 	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
@@ -2137,7 +2138,7 @@ m.updateCatFS=function () {
 	}
 };
 m.updateCatFS();
-m.updateGotoCatsFS=function () {
+m.updateGotoCatsFS=async function () {
 	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 	let l=m.myCatList.length;
@@ -2195,7 +2196,8 @@ m.completeMRCat=function (event) {
 	$multireco_input_cats.focus();
 	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 };
-m.doFSCat=function (fs) {
+m.doFSCat=async function (fs) {
+return new Promise(function (resolve, reject) {
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
@@ -2242,12 +2244,15 @@ m.doFSCat=function (fs) {
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
+	resolve(str);
+});
 };
 m.doMRFSCat=function () {
 	m.doFSCat(m.fsMRCat);
 };
-m.doFSGotoCats=function () {
-	m.doFSCat(m.fsGotoCats);
+m.doFSGotoCats=async function () {
+	let str=await m.doFSCat(m.fsGotoCats);
+	return Promise.resolve(str);
 };
 m.doFSTimezone=function () {
 	let fs=m.fsTimezone;
@@ -2262,7 +2267,7 @@ m.doFSTimezone=function () {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 
-m.fsCatOn=function () {
+m.fsCatOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
@@ -2279,7 +2284,7 @@ m.fsCatOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
-m.fsMRCatOn=function () {
+m.fsMRCatOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
@@ -2295,23 +2300,23 @@ m.fsMRCatOn=function () {
 		}, m.wait*1.1-passed);
 	}
 };
-m.fsGotoCatsOn=function () {
+m.fsGotoCatsOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doFSGotoCats();
+		await m.doFSGotoCats();
 	}
 	else {
 		$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
-			m.doFSGotoCats();
+			await m.doFSGotoCats();
 		}, m.wait*1.1-passed);
 	}
 };
-m.fsTimezoneOn=function () {
+m.fsTimezoneOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
@@ -2332,7 +2337,7 @@ m.reTriggerFS=function (fs) {
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	fs.$fs.trigger("keyup.fs");
 };
-m.reNewfsCatsOn=function () {
+m.reNewfsCatsOn=async function () {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
@@ -3431,7 +3436,7 @@ m.starsOnDowns=function (e) {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
-m.reNewAndReOn=function () {
+m.reNewAndReOn=async function () {
 	m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -5476,7 +5481,7 @@ m.doFSGo=function (fs) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 	}
 };
-m.fsGoOn=function () {
+m.fsGoOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
@@ -5560,7 +5565,7 @@ m.doFSToRs=function (fs, shuffle) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
 };
-m.fsToRsOn=function () {
+m.fsToRsOn=async function () {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
@@ -6100,6 +6105,7 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
+	m.reNewfsCatsOn();
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
@@ -6356,7 +6362,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
-	m.reNewfsCatsOn();
 	m.initialOpen=false;
 });
 
