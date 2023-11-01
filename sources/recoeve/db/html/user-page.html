@@ -79,13 +79,13 @@ else if (m.docCookies.hasItem("lang")) {
 
 #catList {margin-bottom:1em}
 #catList .cat {border:1px solid transparent; margin-bottom:2px}
-#catList .cat.down {color:rgb(100,150,100)}
-#catList .cat.deleted {color:rgb(150,100,100)}
-#catList .cat.selected {color:rgb(255,210,210)}
 	.bright #catList .cat {color:black}
 	.pink #catList .cat {color:wheat}
-	.bright #catList .cat.selected {color:rgb(50,0,0)}
-	.pink #catList .cat.selected {color:white}
+#catList .cat .baseCat.down {color:rgb(100,150,100)}
+#catList .cat.deleted {color:rgb(150,100,100)}
+#catList .cat.selected, #catList .cat.selected .baseCat.down {color:rgb(255,210,210)}
+	.bright #catList .cat.selected, .bright #catList .cat.selected .baseCat.down {color:rgb(50,0,0)}
+	.pink #catList .cat.selected, .pink #catList .cat.selected .baseCat.down {color:white}
 #cat-to-here {border:1px solid rgb(130,130,130); margin:.5em}
 #catList .cat.edit {position:relative; border:1px solid rgb(150,150,225); padding:0 1.3em}
 #catList .cat.edit.move {position:fixed; z-index:101}
@@ -861,7 +861,7 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 $block_touch=$("#block-touch");
 $block_touch_exit=$("#block-touch-exit");
 $data_myCatList=$("#data-myCatList");
-$data_CatList=m.myPage?$data_myCatList:$("#data-CatList");
+$data_catList=m.myPage?$data_myCatList:$("#data-CatList");
 $choose_lang=$("#choose-lang");
 $choose_lang_list=$("#choose-lang-list");
 $data_lang=$("#data-lang");
@@ -1808,7 +1808,7 @@ if (m.myIndex) {
 	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 }
 if (!m.myPage) {
-	m.strCatListToJSON(m.unescapeHTML($data_CatList.html()), m.catList);
+	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 }
 else if (m.myIndex==="") {
 	m.strCatListToJSON("", m.catList);
@@ -1960,6 +1960,10 @@ m.change_catList_order_do=function (args, err) {
 		$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 		m.updateCatFS();
 		$change_catList_order.show();
+		if (m.myPage) {
+			$data_catList.html(m.escapeOnlyTag(args.catListChanged));
+			m.updateGotoCatsFS();
+		}
 	}
 	else {
 		$.ajax({
@@ -1980,17 +1984,21 @@ m.change_catList_order_do=function (args, err) {
 			$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 			m.updateCatFS();
 			$change_catList_order.show();
+			if (m.myPage) {
+				$data_catList.html(m.escapeOnlyTag(args.catListChanged));
+				m.updateGotoCatsFS();
+			}
 		});
 	}
 };
 $change_catList_order_ok.on("click", function (e) {
 	let catListChanged=m.getCatListChanged();
-	if (catListChanged!==m.unescapeHTML($data_CatList.html())) {
+	if (catListChanged!==m.unescapeHTML($data_catList.html())) {
 		if (m.myPage) {
 			m.rmb_me(m.change_catList_order_do, {catListChanged, $result:$catList_result});
 		}
 		else {
-			$data_CatList.html(m.escapeOnlyTag(catListChanged));
+			$data_catList.html(m.escapeOnlyTag(catListChanged));
 			$change_catList_order.show();
 		}
 	}
@@ -2000,7 +2008,7 @@ $change_catList_order_ok.on("click", function (e) {
 });
 $change_catList_order_cancel.on("click", function (e) {
 	let catListChanged=m.getCatListChanged();
-	let catList=m.unescapeHTML($data_CatList.html());
+	let catList=m.unescapeHTML($data_catList.html());
 	if (catListChanged!==catList) {
 		let $catSelected=$catList.find(".cat.selected");
 		let selected=[];
@@ -2059,53 +2067,54 @@ m.toLocalTime=function (UTCDateTime) {
 //////////////////////////////////////
 // Fuzzy search on Cat
 //////////////////////////////////////
-m.putCatToFSFullList=function (i, cat) {
-	if (m.fsCat.fullList[cat]) {
-		let fsFLk=m.fsCat.fullList[cat];
-		fsFLk.i=i;
-		fsFLk.txt=m.splitHangul(cat);
-		fsFLk.cat=cat;
-		fsFLk.html=m.escapeOnlyTag(cat);
-		m.fsCat.fullList[i]=fsFLk;
+m.putCatToFSFullList=function (i, cat, catList) {
+	if (catList===m.myCatList) {
+		if (m.fsCat.fullList[cat]) {
+			let fsFLk=m.fsCat.fullList[cat];
+			fsFLk.i=i;
+			fsFLk.txt=m.splitHangul(cat);
+			fsFLk.cat=cat;
+			fsFLk.html=m.escapeOnlyTag(cat);
+			m.fsCat.fullList[i]=fsFLk;
+		}
+		else {
+			m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+		}
+		if (m.fsMRCat.fullList[cat]) {
+			let fsFLk=m.fsMRCat.fullList[cat];
+			fsFLk.i=i;
+			fsFLk.txt=m.splitHangul(cat);
+			fsFLk.cat=cat;
+			fsFLk.html=m.escapeOnlyTag(cat);
+			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
+		}
+		else {
+			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+		}
 	}
-	else {
-		m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
-	}
-	if (m.fsMRCat.fullList[cat]) {
-		let fsFLk=m.fsMRCat.fullList[cat];
-		fsFLk.i=i;
-		fsFLk.txt=m.splitHangul(cat);
-		fsFLk.cat=cat;
-		fsFLk.html=m.escapeOnlyTag(cat);
-		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
-	}
-	else {
-		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
-	}
-	if (m.fsGotoCats.fullList[cat]) {
-		let fsFLk=m.fsGotoCats.fullList[cat];
-		fsFLk.i=i;
-		fsFLk.txt=m.splitHangul(cat);
-		fsFLk.cat=cat;
-		fsFLk.html=m.escapeOnlyTag(cat);
-		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
-	}
-	else {
-		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+	if (m.myPage||m.initialOpen||catList===m.catList) {
+		if (m.fsGotoCats.fullList[cat]) {
+			let fsFLk=m.fsGotoCats.fullList[cat];
+			fsFLk.i=i;
+			fsFLk.txt=m.splitHangul(cat);
+			fsFLk.cat=cat;
+			fsFLk.html=m.escapeOnlyTag(cat);
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat];
+		}
+		else {
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+		}
 	}
 };
 m.updateCatFS=function () {
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
 	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
-	if (m.myPage||m.initialOpen) {
-		m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
-	}
 	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	let l=m.myCatList.length;
-	let i=l-1
-	for (;i>0;i--) {
-		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat);
+	for (let i=l-1;i>0;i--) {
+		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat, m.myCatList);
 	}
+	let i=l-1;
 	let cat="";
 	if (m.fsCat.fullList[cat]) {
 		let fsFLk=m.fsCat.fullList[cat];
@@ -2129,6 +2138,17 @@ m.updateCatFS=function () {
 	else {
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
 	}
+};
+m.updateCatFS();
+m.updateGotoCatsFS=function () {
+	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
+	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
+	let l=m.myCatList.length;
+	for (let i=l-1;i>0;i--) {
+		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat, m.catList);
+	}
+	let i=l-1;
+	let cat="";
 	if (m.fsGotoCats.fullList[cat]) {
 		let fsFLk=m.fsGotoCats.fullList[cat];
 		fsFLk.i=i;
@@ -2141,7 +2161,7 @@ m.updateCatFS=function () {
 		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
 	}
 };
-m.updateCatFS();
+m.updateGotoCatsFS();
 m.completeCat=function (elem, cat) {
 	let $elem=$(elem);
 	let fs=m.fsCat;
@@ -2197,13 +2217,16 @@ m.doFSCat=function (fs) {
 		for (let i=0;i<res.length;i++) {
 			let fsSortedI=res[res.sorted[i]];
 			let fsFLk=fs.fullList[fsSortedI.i];
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsSortedI.i}" onclick="m.completeCatAndOpenCat(event,this,${fsSortedI.i})"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
-			if (fsFLk?.down) {
-				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("down");
-			}
-			if (fsFLk?.deleted) {
-				$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`).addClass("deleted");
-			}
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsSortedI.i}"><div class="list-index">${fsSortedI.i}</div>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			// let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
+			// if ($catI.exists()) {
+			// 	if (fsFLk?.down) {
+			// 		$catI.addClass("down");
+			// 	}
+			// 	if (fsFLk?.deleted) {
+			// 		$catI.addClass("deleted");
+			// 	}
+			// }
 		}
 	}
 	else if (fs===m.fsCat) {
@@ -2220,6 +2243,12 @@ m.doFSCat=function (fs) {
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
+	if (fs===m.fsGotoCats) {
+		fs.$fsLis.on("click", function (event) {
+			let $elem=$(event.currentTarget);
+			m.completeCatAndOpenCat(event, event.currentTarget, Number($elem.find(".list-index").html()))
+		});
+	}
 };
 m.doMRFSCat=function () {
 	m.doFSCat(m.fsMRCat);
@@ -2350,13 +2379,13 @@ m.onKeydownInFS=function (e, fs) {
 			break;
 		}
 	} // Picking cat index k of the current selectionEnd.
-	let $lis=$fsl.find(".list-item");
+	let $fsLis=$fsl.find(".list-item");
 	let $liSelected=$fsl.find(".list-item.selected").eq(0);
 	switch (e.keyCode) {
 		case 9: // Tab=9
 			e.preventDefault();
 			$target.off("keyup.fs cut.fs paste.fs click.fs");
-			$lis.eq(0)?.trigger("click");
+			$fsLis.eq(0)?.trigger("click");
 			break;
 		case 27: // ESC=27
 			e.preventDefault();
@@ -2385,13 +2414,13 @@ m.onKeydownInFS=function (e, fs) {
 				}
 			}
 			else {
-				if ($lis.exists()) {
+				if ($fsLis.exists()) {
 					if (e.keyCode===38) {
-						$liTo=$lis.last();
+						$liTo=$fsLis.last();
 						$fsl.scrollTop($fsl[0].scrollHeight);
 					}
 					else {
-						$liTo=$lis.first();
+						$liTo=$fsLis.first();
 						$fsl.scrollTop(0);
 					}
 					$liTo.eq(0).trigger("click");
@@ -2422,10 +2451,11 @@ for (let i=l-1;i>=0;i--) {
 	m.fsMRCat.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 }
 l=m.catList.length;
-for (let i=l-1;i>=0;i--) {
+for (let i=l-1;i>0;i--) {
 	let cat=m.catList[i].cat;
 	m.fsGotoCats.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 }
+m.fsGotoCats.fullList[l-1]={i:l-1, txt:m.splitHangul("[--Uncategorized--]"), cat:"", html:m.escapeOnlyTag("[--Uncategorized--]")};
 $input_cats.trigger("keyup.fs");
 $input_cats.on("focus", function () {
 	$cat_fs_container.show();
@@ -2476,6 +2506,9 @@ m.putCat=function (cat) {
 	if (res) {
 		$data_myCatList.html(m.escapeOnlyTag(fullCats));
 		m.updateCatFS();
+		if (m.myPage) {
+			m.updateGotoCatsFS()
+		}
 	}
 	return res;
 };
@@ -2543,7 +2576,10 @@ m.putCats_UriToLists=async function (cats, uri) {
 		}
 	}
 	if (catIsPut) {
-		if (m.myPage) { $change_catList_order_cancel.trigger("click"); }
+		if (m.myPage) {
+			$change_catList_order_cancel.trigger("click");
+			m.updateGotoCatsFS();
+		}
 		m.updateCatFS();
 	}
 };
@@ -2576,7 +2612,7 @@ if (m.myPage) {
 	}
 	if (subcatIsDeleted) {
 		$change_catList_order_cancel.trigger("click");
-		// Intentionally no m.updateCatFS();
+		// Intentionally no m.updateCatFS(); and m.updateGotoCatsFS();
 	}
 }};
 m.catsChangedOnUri=function (oldCats, newCats, uri) {
@@ -3760,7 +3796,7 @@ m.cutNeighbors=function (str) {
 };
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 	if (m.catList[cat]) {
-		$catList.find(".cat").removeClass("selected");
+		$("#catList").find(".cat").removeClass("selected");
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
 		$cat.addClass("selected");
 		let $parents=$cat.parents(".subCat");
@@ -5189,9 +5225,9 @@ $button_del.on("click", function (e) {
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event, cat, elem) {
+	event.preventDefault();
+	event.stopPropagation();
 	if (event?.which===2) {
-		event.preventDefault();
-		event.stopPropagation();
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
 		return;
 	}
@@ -5199,8 +5235,8 @@ m.triggerOpenCat=async function (event, cat, elem) {
 	if (elem) {
 		$elem=$(elem);
 	}
-	else if (event?.target) {
-		elem=event.target;
+	else if (event?.currentTarget) {
+		elem=event.currentTarget;
 		$elem=$(elem);
 	}
 	else {
@@ -5208,7 +5244,7 @@ m.triggerOpenCat=async function (event, cat, elem) {
 		elem=$elem[0];
 	}
 	if (event===null&&(m.recoMode===""||m.recoMode==="multireco")) {
-		$elem.trigger({type:'mouseup', which:1}, cat, elem);
+		$elem.trigger({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, cat, elem);
 		return;
 	}
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
@@ -5223,7 +5259,9 @@ m.triggerOpenCat=async function (event, cat, elem) {
 		fsFLk=fs.fullList[i]=fs.fullList[m.currentCat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 	}
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		$elem.parent(".cat").addClass("down");
+		$("#catList").find(".cat").removeClass("selected");
+		$elem.parent(".cat").addClass("selected");
+		$elem.addClass("down");
 		fsFLk.down=true;
 	}
 	let k=fsFLk.i;
@@ -5242,11 +5280,17 @@ m.completeCatAndOpenCat=async function (event, elem, j) {
 	if (elem) {
 		$elem=$(elem);
 	}
-	else {
-		$elem=$(event.target);
+	else if (event?.currentTarget) {
+		$elem=$(event.currentTarget);
 	}
 	let fsFLj=fs.fullList[j];
 	let cat=fsFLj.cat;
+	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
+	if ($catI.exists()) {
+		// $catI.trigger({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1});
+		$("#catList").find(".cat").removeClass("selected");
+		$catI.addClass("selected");
+	}
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		fsFLj.down=true;
 		$elem.addClass("down");
@@ -5297,12 +5341,12 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 	e.stopPropagation();
 	let $target=$(e.target);
 	let $fsl=fs.$fsl;
-	let $lis=$fsl.find(".list-item");
+	let $fsLis=$fsl.find(".list-item");
 	switch (e.keyCode) {
 	case 9: // Tab=9
 		e.preventDefault();
 		$target.off("keyup.fs cut.fs paste.fs click.fs");
-		$lis.eq(0)?.trigger("click");
+		$fsLis.eq(0)?.trigger("click");
 		break;
 	case 27: // ESC=27
 		e.preventDefault();
@@ -5333,13 +5377,13 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 			}
 		}
 		else {
-			if ($lis.exists()) {
+			if ($fsLis.exists()) {
 				if (e.keyCode===38) {
-					$liTo=$lis.last();
+					$liTo=$fsLis.last();
 					$fsl.scrollTop($fsl[0].scrollHeight);
 				}
 				else {
-					$liTo=$lis.first();
+					$liTo=$fsLis.first();
 					$fsl.scrollTop(0);
 				}
 				$liTo.eq(0).trigger("click");
@@ -5864,7 +5908,7 @@ m.processShortKey=function (e) {
 			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
 		}
-		m.triggerOpenCat(null, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
+		m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
 		break;
 	case 77: // M=77
 		e.preventDefault();
@@ -5889,7 +5933,22 @@ m.processShortKey=function (e) {
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			m.triggerOpenCat(null, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
+			let $gotoCatsI=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
+			if ($gotoCatsI.exists()) {
+				$gotoCatsI.trigger("click");
+			}
+			else {
+				let fsFLk=m.fsGotoCats.fullList[m.currentCat];
+				if (!fsFLk) {
+					let cat=m.currentCat;
+					let i=fs.fullList.length;
+					fsFLk=fs.fullList[i]=fs.fullList[m.currentCat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+				}
+				let k=fsFLk.i;
+				m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event,this,${k})"><div class="list-index">${k}</div>${m.fsGotoCats.fullList[k].html}</div>`);
+				$(`#gotoCats-${k}`).trigger("click");
+			}
+			// m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, [0]);
 		}
 		else {
 			if (!m.doNotPushHistory) {
@@ -5917,7 +5976,7 @@ m.processShortKey=function (e) {
 				m.hashURI="button-get-recoms";
 				window.location.hash=`#${m.hashURI}`;
 			}
-			m.triggerOpenCat(null, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
+			m.openCat(m.currentCat);
 		}
 		break;
 	case 78: // N=78
@@ -6222,10 +6281,18 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
 	m.fsGotoCats.fullList[m.currentCat].down=true;
 	if (m.recoMode==="") {
-		if (m.fsGotoCats.fullList[m.currentCat].i&&m.fsGotoCats.fullList[m.currentCat].i===0) {
-			$(`#gotoCats`)
+		if (m.fsGotoCats.fullList[m.currentCat].i||m.fsGotoCats.fullList[m.currentCat].i===0) {
+			let $gotoCatsI=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
+			if ($gotoCatsI.exists()) {
+				$gotoCatsI.trigger("click");
+			}
+			else {
+				let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
+				if ($catI.exists()) {
+					m.triggerOpenCat({type:'mouseup', preventDefault:function(){}, stopPropagation:function(){}, which:1}, m.currentCat, $catI[0]);
+				}
+			}
 		}
-		m.triggerOpenCat(null, m.currentCat, $(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`)[0]);
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
