@@ -253,7 +253,7 @@ else if (m.docCookies.hasItem("lang")) {
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
-<div id="goto-cats-container" class="fs-container">
+<div id="goto-cats-container" class="fs-container" style="display:none">
 	<div class="fs-name">Go to Cats</div>
 	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
@@ -2301,20 +2301,24 @@ m.fsMRCatOn=async function () {
 	}
 };
 m.fsGotoCatsOn=async function () {
+return new Promise(async function (resolve, reject) {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
 		await m.doFSGotoCats();
+		resolve();
 	}
 	else {
 		$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
-		setTimeout(function () {
+		setTimeout(async function () {
 			$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
 			await m.doFSGotoCats();
+			resolve();
 		}, m.wait*1.1-passed);
 	}
+});
 };
 m.fsTimezoneOn=async function () {
 	let now=Date.now();
@@ -2338,6 +2342,7 @@ m.reTriggerFS=function (fs) {
 	fs.$fs.trigger("keyup.fs");
 };
 m.reNewfsCatsOn=async function () {
+return new Promise(function (resolve, reject) {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
@@ -2349,7 +2354,10 @@ m.reNewfsCatsOn=async function () {
 	$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
+	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
+		await m.fsGotoCatsOn(event);
+		resolve();
+	});
 	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 
 	m.reTriggerFS(m.fsGo);
@@ -2357,6 +2365,7 @@ m.reNewfsCatsOn=async function () {
 	m.reTriggerFS(m.fsCat);
 	m.reTriggerFS(m.fsMRCat);
 	m.reTriggerFS(m.fsGotoCats);
+});
 };
 m.onKeydownInFS=function (e, fs) {
 	clearTimeout(m.setTimeoutTargetOn);
@@ -2426,8 +2435,8 @@ m.onKeydownInFS=function (e, fs) {
 			}
 			break;
 	}
-	m.setTimeoutTargetOn=setTimeout(function () {
-		m.reNewfsCatsOn();
+	m.setTimeoutTargetOn=setTimeout(async function () {
+		await m.reNewfsCatsOn();
 	}, m.wait);
 };
 $input_cats.on("keydown.fs", function (e) {
@@ -3462,7 +3471,7 @@ m.reNewAndReOn=async function () {
 	$downs.off("click.ud");
 	$ups.on("click.ud", m.starsOnUps);
 	$downs.on("click.ud", m.starsOnDowns);
-	m.reNewfsCatsOn();
+	await m.reNewfsCatsOn();
 };
 m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
@@ -4292,11 +4301,11 @@ window.onpopstate=function (e) {
 		}
 		if (e.state.recoMode!==m.recoMode) {
 			if (e.state.recoMode==="multireco"&&(!$button_multireco_mode.hasClass("enabled"))) {
-				m.doNotPushHistory=true;
+				m.doNotPushHistory=false;
 				$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
 			}
 			else if (e.state.recoMode==="neighbors"&&(!$button_neighbors_mode.hasClass("enabled"))) {
-				m.doNotPushHistory=true;
+				m.doNotPushHistory=false;
 				$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
 			}
 		}
@@ -5231,8 +5240,8 @@ m.triggerOpenCat=async function (event) {
 	}
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
 		m.recosShown=false;
+		m.doNotPushHistory=false;
 	}
-	console.log("m.recosShown: ", m.recosShown);
 	// m.currentCat=cat;
 	m.fsToRs.shuffled=null;
 	let fs=m.fsGotoCats;
@@ -5249,7 +5258,6 @@ m.triggerOpenCat=async function (event) {
 	}
 	let k=fsFLk.i;
 	let $gotoCatsK=$(`#gotoCats-${k}`);
-	console.log("$gotoCatsK: ", $gotoCatsK);
 	if ($gotoCatsK.exists()) {
 		$gotoCatsK.trigger("click");
 		return false;
@@ -5262,17 +5270,13 @@ m.completeCatAndOpenCat=async function (event) {
 	console.log("event.target: ", event.target);
 	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
-	console.log("cat: ", cat);
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
-	console.log("fsFLCat: ", fsFLCat);
 	if (!fsFLCat) {
 		let i=fs.fullList.length;
 		fsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)}
 	}
-	console.log("fsFLCat: ", fsFLCat);
 	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-	console.log("$catI: ", $catI);
 	if ($catI.exists()) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
@@ -5284,7 +5288,6 @@ m.completeCatAndOpenCat=async function (event) {
 		fsFLCat.down=true;
 		$elem.addClass("down");
 	}
-	console.log("fsFLCat: ", fsFLCat);
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
@@ -5292,6 +5295,7 @@ m.completeCatAndOpenCat=async function (event) {
 	m.beInCurrentCat=true;
 	if (cat!==m.currentCat||m.initialOpen) {
 		m.beInCurrentCat=false;
+		m.doNotPushHistory=false;
 	}
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -5382,8 +5386,8 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		}
 		break;
 	}
-	m.setTimeoutTargetOn0=setTimeout(function () {
-		m.reNewfsCatsOn();
+	m.setTimeoutTargetOn0=setTimeout(async function () {
+		await m.reNewfsCatsOn();
 	}, m.wait);
 };
 $fuzzy_search.on("keydown.fs", function (e) {
@@ -6105,7 +6109,7 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
-	m.reNewfsCatsOn();
+	await m.reNewfsCatsOn();
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
@@ -6272,14 +6276,13 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 		}
 	}
-	if (!m.doNotPushHistory) {
+	if (!m.doNotPushHistory&&m.initialPathname!=="/reco") {
 		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
 	m.doNotPushHistory=false;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
 	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
-	m.fsGotoCats.fullList[m.currentCat].down=true;
 	console.log("m.recoMode: ", m.recoMode);
 	if (m.recoMode==="") {
 		if (m.fsGotoCats.fullList[m.currentCat].i||m.fsGotoCats.fullList[m.currentCat].i===0) {
