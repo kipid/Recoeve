@@ -1460,7 +1460,7 @@ m.unescapeAMP=function (str) {
 };
 m.escapeEncodePctg=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
-	return str.replace(/\%([0-9A-F]{2})/g, "\\\%$1").replace(/([\!\*\(\)\_\.\~])/g, "\\$1");
+	return str.replace(/([\!\@\#\$\%\^\&\*\(\)\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
 };
 
 m.printCode=function (codeId) {
