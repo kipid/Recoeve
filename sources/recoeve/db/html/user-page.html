@@ -5222,8 +5222,6 @@ $button_del.on("click", function (e) {
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
-	event.preventDefault();
-	event.stopPropagation();
 	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
@@ -5270,7 +5268,7 @@ m.completeCatAndOpenCat=async function (event) {
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco") {
 			fsFLCat.down=true;
-			$catI.addClass("down");
+			$catI.find(".baseCat").addClass("down");
 		}
 	}
 	let isSelected=$elem.hasClass("selected");
