@@ -4045,8 +4045,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				}).done(async function (resp) {
 					let respJSON=await m.strToJSON(resp);
 					let neighbors=[];
-					neighbors.sorted=[];
-					let sorted=neighbors.sorted;
+					let sorted=neighbors.sorted=[];
 					let n=0;
 					for (let i=1;i<respJSON.length;i++) {
 						let neighborI=respJSON[i];
@@ -4055,10 +4054,10 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 						let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
 						neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
 						if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
-							neighbors[n]=neighborI;
+							neighbors[n]=[...neighborI, i:n];
 							sorted[n]=n;
+							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighbors[n];
 							n++;
-							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighborI;
 						}
 					}
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
@@ -4243,6 +4242,8 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
 m.openCat=async function (cat) {
+	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
+	$title.html(`${cat||cat===""?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
 		for (let k=0;k<uris.length;k++) {
@@ -4253,34 +4254,30 @@ m.openCat=async function (cat) {
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
-	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-	if (!fsGotoCatsCat) {
-		let i=m.fsGotoCats.fullList.length;
-		fsGotoCatsCat=m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
-	}
-	fsGotoCatsCat.down=true;
-	m.getUriListAndShowRecosOnCat(cat);
-	if (!m.initialOpen) {
-		clearTimeout(m.moveHash);
-		m.moveHash=setTimeout(function () {
-			if (!m.doNotPushHistory) {
-				if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-					m.hashURI="numbers-of-recos";
-					window.location.hash=`#${m.hashURI}`;
+	m.initialFsGotoCatsN=0;
+	m.initialFsGotoCats=setInterval(function () {
+		let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
+		m.getUriListAndShowRecosOnCat(cat);
+		if (!m.initialOpen) {
+			clearTimeout(m.moveHash);
+			m.moveHash=setTimeout(function () {
+				if (!m.doNotPushHistory) {
+					if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+						m.hashURI="numbers-of-recos";
+						window.location.hash=`#${m.hashURI}`;
+					}
+					else if ($button_get_recoms.hasClass("enabled")) {
+						m.hashURI="button-get-recoms";
+						window.location.hash=`#${m.hashURI}`;
+					}
+					else {
+						m.hashURI="headPlay";
+						window.location.hash=`#${m.hashURI}`;
+					}
 				}
-				else if ($button_get_recoms.hasClass("enabled")) {
-					m.hashURI="button-get-recoms";
-					window.location.hash=`#${m.hashURI}`;
-				}
-				else {
-					m.hashURI="headPlay";
-					window.location.hash=`#${m.hashURI}`;
-				}
-			}
-		}, 512);
-	}
-	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(m.currentCat)}`);
-	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
+			}, 512);
+		}
+	});
 	return false;
 };
 
@@ -5915,7 +5912,31 @@ m.processShortKey=function (e) {
 			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
 		}
-		$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`).trigger("click");
+		m.initialFsGotoCatsN=0;
+		m.initialFsGotoCats=setInterval(function () {
+			let fsGotoCatsCat=m.fsGotoCats.fullList[m.currentCat];
+			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
+				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
+				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+					$gotoCatsI.trigger("click");
+					console.log(`$gotoCatsI.trigger("click");`);
+					clearInterval(m.initialFsGotoCats);
+					if (!m.doNotPushHistory) {
+						if (m.initialOpen) {
+							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+						}
+						else {
+							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+						}
+					}
+					m.doNotPushHistory=false;
+					if (m.initialFsGotoCatsN>7) {
+						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
+					}
+				}
+			}
+
+		}, 512);
 		break;
 	case 77: // M=77
 		e.preventDefault();
@@ -5940,27 +5961,28 @@ m.processShortKey=function (e) {
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			let fsFLCat=m.fsGotoCats.fullList[m.currentCat];
-			let $gotoCatsI=$(`#gotoCats-${fsFLCat.i}`);
-			if ($gotoCatsI.exists()) {
-				$gotoCatsI.trigger("click");
-			}
-			else {
-				if (!fsFLCat) {
-					let cat=m.currentCat;
-					let i=fs.fullList.length;
-					fsFLCat=fs.fullList[i]=fs.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+			m.initialFsGotoCatsN=0;
+			m.initialFsGotoCats=setInterval(function () {
+				let fsFLCat=m.fsGotoCats.fullList[m.currentCat];
+				let $gotoCatsI=$(`#gotoCats-${fsFLCat?.i}`);
+				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+					$gotoCatsI.trigger("click");
+					console.log(`Multireco: $gotoCatsI.trigger("click");`);
+					clearInterval(m.initialFsGotoCats);
+					if (!m.doNotPushHistory) {
+						if (m.initialOpen) {
+							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+						}
+						else {
+							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+						}
+					}
+					m.doNotPushHistory=false;
+					if (m.initialFsGotoCatsN>7) {
+						$numbers_of_recos.html(`cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.`);
+					}
 				}
-				let k=fsFLCat.i;
-				m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsFLCat.down?" down":""}${fsFLCat.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLCat.cat)}</span>${fsFLCat.html}</div>`);
-				$(`#gotoCats-${k}`).trigger("click");
-			}
-		}
-		else {
-			if (!m.doNotPushHistory) {
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-			}
-			m.doNotPushHistory=false;
+			}, 512);
 		}
 		break;
 	case 82: // R=82
@@ -6285,26 +6307,22 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	m.doNotPushHistory=false;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
-	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-	if (!fsGotoCatsCat) {
-		let i=m.fsGotoCats.fullList.length;
-		fsGotoCatsCat=m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
-	}
-	if (m.recoMode==="") {
-		if (fsGotoCatsCat.i||fsGotoCatsCat.i===0) {
-			let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
-			if ($gotoCatsI.exists()) {
-				$gotoCatsI.trigger("click");
-				console.log(`$gotoCatsI.trigger("click");`);
-			}
-			else {
-				let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-				if ($catI.exists()) {
-					$catI.trigger("mouseup");
-					console.log(`$catI.trigger("mouseup");`);
+	if (m.recoMode===""||m.recoMode==="multireco") {
+		m.initialFsGotoCatsN=0;
+		m.initialFsGotoCats=setInterval(function () {
+			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
+			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
+				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
+				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+					$gotoCatsI.trigger("click");
+					console.log(`$gotoCatsI.trigger("click");`);
+					clearInterval(m.initialFsGotoCats);
+					if (m.initialFsGotoCatsN>7) {
+						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
+					}
 				}
 			}
-		}
+		}, 512);
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
