@@ -26,3 +26,8 @@ $elem.trigger({type:'mouseup', which:1}, cat, elem);
 m.fsCat.fullList[0];
 m.fsToRs.fullList[0];
 m.fsGotoCats.fullList[0];
+
+
+
+
+$("#gotoCats-230").trigger("click");
