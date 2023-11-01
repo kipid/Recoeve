@@ -1141,10 +1141,8 @@ m.log_out_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function (resp) {
 		let msg="[--Log-out has failed.--]";
-		console.log(msg, resp);
 		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`));
 	}).done(function (resp) {
-		console.log(resp);
 		$err.html(m.escapeOnlyTag(resp));
 		setTimeout(function () {
 			window.location.href=args.href;
@@ -1178,11 +1176,9 @@ m.log_out_from_all_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function (resp) {
 		let msg="[--Log-out has failed.--]";
-		console.log(msg, resp);
 		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`));
 		$err.zIndex(31200);
 	}).done(function (resp) {
-		console.log(resp);
 		$err.html(resp);
 		$err.zIndex(31200);
 		setTimeout(function () {
@@ -6278,14 +6274,17 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	if (!m.fsGotoCats.fullList[m.currentCat]) { m.fsGotoCats.fullList[m.currentCat]={cat:m.currentCat}; }
 	m.fsGotoCats.fullList[m.currentCat].down=true;
+	console.log("m.recoMode: ", m.recoMode);
 	if (m.recoMode==="") {
 		if (m.fsGotoCats.fullList[m.currentCat].i||m.fsGotoCats.fullList[m.currentCat].i===0) {
 			let $gotoCatsI=$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`);
+			console.log("$gotoCatsI: ", $gotoCatsI);
 			if ($gotoCatsI.exists()) {
 				$gotoCatsI.trigger("click");
 			}
 			else {
 				let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
+				console.log("$catI: ", $catI);
 				if ($catI.exists()) {
 					$catI.trigger("mouseup");
 				}
