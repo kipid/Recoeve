@@ -5402,13 +5402,22 @@ m.showAndScrollTo=function ($recoElem) {
 	}
 	window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 };
-m.gotoLi=async function (e, elem, k, fs) {
-	if (e&&e.srcElement&&e.srcElement.nodeName=="A") {
+m.gotoLi=async function (event) {
+	if (event?.srcElement?.nodeName=="A") {
 		return;
 	}
-	let $elem=$(elem);
+	let fs=m.fsGo;
+	let $elem=$(event.target);
+	let k=Number($elem.find(".list-index").html());
+	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[k];
-	let uri=fsFLk.uri;
+	if (!fsFLk) {
+		fsFLk=fs.fullList[k]
+	}
+	if (uri!==fsFLk.uri) {
+		console.log("Error: uri!==fsFLk.uri");
+		return;
+	}
 	if ($elem.hasClass("selected")) {
 		if ($elem.hasClass("clicked-once")) {
 			$elem.removeClass("clicked-once");
@@ -5440,19 +5449,18 @@ m.gotoLi=async function (e, elem, k, fs) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
-		// let k=fsFLk.kOfUriList[m.currentCat];
 		let k=m.userRecos[uri]?.index;
 		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
-		setTimeout(function self() {
+		setTimeout(function selfGotoLi() {
 			let $recoElem=$(`#reco-${k}`);
 			if ($recoElem.exists()) {
 				m.showAndScrollTo($recoElem);
 			}
 			else {
-				setTimout(self, 1024);
+				setTimout(selfGotoLi, 512);
 			}
-		}, 1024);
+		}, 512);
 	}
 };
 m.doFSGo=function (fs) {
@@ -5465,7 +5473,7 @@ m.doFSGo=function (fs) {
 			let k=fsRes[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div id="li-${k}" class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div id="li-${k}" class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
