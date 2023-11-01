@@ -5288,9 +5288,9 @@ m.completeCatAndOpenCat=async function (event) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	beInCurrentCat=true;
+	m.beInCurrentCat=true;
 	if (cat!==m.currentCat||m.initialOpen) {
-		let beInCurrentCat=false;
+		m.beInCurrentCat=false;
 	}
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
@@ -5316,8 +5316,8 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
-	console.log("beInCurrentCat: ", beInCurrentCat);
-	if (!beInCurrentCat) {
+	console.log("m.beInCurrentCat: ", m.beInCurrentCat);
+	if (!m.beInCurrentCat) {
 		m.currentCat=cat;
 		await m.openCat(cat);
 	}
@@ -5424,15 +5424,15 @@ m.gotoLi=async function (e, elem, k, fs) {
 		fs.$fsLis.removeClass("clicked-once");
 		$elem.addClass("selected");
 	}
-	let beInCurrentCat=false;
+	m.beInCurrentCat=false;
 	let catSplit=fsFLk.catSplit;
 	for (let i=0;i<catSplit.length;i++) {
 		if (m.currentCat==catSplit[i]) {
-			beInCurrentCat=true;
+			m.beInCurrentCat=true;
 			break;
 		}
 	}
-	if (!beInCurrentCat) {
+	if (!m.beInCurrentCat) {
 		await m.openCat(catSplit[0]);
 	}
 	let $recoElem=$(`#reco-${m.userRecos[uri]?.index}`);
