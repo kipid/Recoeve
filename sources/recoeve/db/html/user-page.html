@@ -5231,13 +5231,14 @@ m.triggerOpenCat=async function (event) {
 	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
 		m.recosShown=false;
 	}
-	m.currentCat=cat;
+	console.log("m.recosShown: ", m.recosShown);
+	// m.currentCat=cat;
 	m.fsToRs.shuffled=null;
 	let fs=m.fsGotoCats;
-	let fsFLk=fs.fullList[m.currentCat];
+	let fsFLk=fs.fullList[cat];
 	if (!fsFLk) {
 		let i=fs.fullList.length;
-		fsFLk=fs.fullList[i]=fs.fullList[m.currentCat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+		fsFLk=fs.fullList[i]=fs.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 	}
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		$("#catList").find(".cat").removeClass("selected");
@@ -5247,6 +5248,7 @@ m.triggerOpenCat=async function (event) {
 	}
 	let k=fsFLk.i;
 	let $gotoCatsK=$(`#gotoCats-${k}`);
+	console.log("$gotoCatsK: ", $gotoCatsK);
 	if ($gotoCatsK.exists()) {
 		$gotoCatsK.trigger("click");
 		return false;
@@ -5258,25 +5260,33 @@ m.triggerOpenCat=async function (event) {
 m.completeCatAndOpenCat=async function (event) {
 	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
+	console.log("cat: ", cat);
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
+	if (!fsFLCat) {
+		let i=fs.fullList.length;
+		fsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)}
+	}
+	console.log("fsFLCat: ", fsFLCat);
 	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-	console.log("cat: ", cat);
-	console.log("$catI.exists(): ", $catI);
+	console.log("$catI: ", $catI);
 	if ($catI.exists()) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco") {
-			fsFLCat.down=true;
 			$catI.find(".baseCat").addClass("down");
 		}
+	}
+	if (m.recoMode===""||m.recoMode==="multireco") {
+		fsFLCat.down=true;
+		$elem.addClass("down");
 	}
 	let isSelected=$elem.hasClass("selected");
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
 	let beInCurrentCat=false;
-	if (cat===m.currentCat) {
+	if (cat===m.currentCat&&!m.initialOpen) {
 		beInCurrentCat=true;
 	}
 	let catsTxt=fs.$fs[0].value;
@@ -5303,6 +5313,7 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	console.log("beInCurrentCat: ", beInCurrentCat);
 	if (!beInCurrentCat) {
 		m.currentCat=cat;
 		await m.openCat(cat);
