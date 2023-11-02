@@ -2161,7 +2161,7 @@ m.updateGotoCatsFS=async function () {
 };
 m.updateGotoCatsFS();
 m.completeCat=function (event) {
-	let $elem=$(event.target);
+	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fs=m.fsCat;
 	fs.$fsLis=fs.$fsl.find(".list-item");
@@ -5251,7 +5251,7 @@ $button_del.on("click", function (e) {
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
-	let $elem=$(event.target);
+	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
@@ -5286,8 +5286,8 @@ m.triggerOpenCat=async function (event) {
 	return false;
 };
 m.completeCatAndOpenCat=async function (event) {
-	console.log("event.target: ", event.target);
-	let $elem=$(event.target);
+	console.log("event.currentTarget: ", event.currentTarget);
+	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
@@ -5432,7 +5432,7 @@ m.gotoLi=async function (event) {
 		return;
 	}
 	let fs=m.fsGo;
-	let $elem=$(event.target);
+	let $elem=$(event.currentTarget);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[k];
