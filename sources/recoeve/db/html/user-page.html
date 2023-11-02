@@ -5286,9 +5286,14 @@ m.triggerOpenCat=async function (event) {
 	return false;
 };
 m.completeCatAndOpenCat=async function (event) {
+	m.beInCurrentCat=false;
 	console.log("event.currentTarget: ", event.currentTarget);
 	let $elem=$(event.currentTarget);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
+	if (cat===m.currentCat&&!m.initialOpen) {
+		m.beInCurrentCat=true;
+	}
+	console.log("m.beInCurrentCat: ", m.beInCurrentCat);
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
 	if (!fsFLCat) {
@@ -5304,6 +5309,7 @@ m.completeCatAndOpenCat=async function (event) {
 			$catI.find(".baseCat").addClass("down");
 		}
 	}
+	console.log("fsFLCat: ", fsFLCat);
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		fsFLCat.down=true;
 		$elem.addClass("down");
@@ -5336,12 +5342,6 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
-	m.beInCurrentCat=true;
-	if (cat!==m.currentCat||m.initialOpen) {
-		m.beInCurrentCat=false;
-		m.doNotPushHistory=false;
-	}
-	console.log("m.beInCurrentCat: ", m.beInCurrentCat);
 	if (!m.beInCurrentCat) {
 		m.currentCat=cat;
 		await m.openCat(cat);
