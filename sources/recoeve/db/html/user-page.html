@@ -4255,30 +4255,27 @@ m.openCat=async function (cat) {
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
-	m.initialFsGotoCatsN=0;
-	m.initialFsGotoCats=setInterval(function () {
-		let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-		m.getUriListAndShowRecosOnCat(cat);
-		if (!m.initialOpen) {
-			clearTimeout(m.moveHash);
-			m.moveHash=setTimeout(function () {
-				if (!m.doNotPushHistory) {
-					if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-						m.hashURI="numbers-of-recos";
-						window.location.hash=`#${m.hashURI}`;
-					}
-					else if ($button_get_recoms.hasClass("enabled")) {
-						m.hashURI="button-get-recoms";
-						window.location.hash=`#${m.hashURI}`;
-					}
-					else {
-						m.hashURI="headPlay";
-						window.location.hash=`#${m.hashURI}`;
-					}
+	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
+	m.getUriListAndShowRecosOnCat(cat);
+	if (!m.initialOpen) {
+		clearTimeout(m.moveHash);
+		m.moveHash=setTimeout(function () {
+			if (!m.doNotPushHistory) {
+				if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+					m.hashURI="numbers-of-recos";
+					window.location.hash=`#${m.hashURI}`;
 				}
-			}, 512);
-		}
-	});
+				else if ($button_get_recoms.hasClass("enabled")) {
+					m.hashURI="button-get-recoms";
+					window.location.hash=`#${m.hashURI}`;
+				}
+				else {
+					m.hashURI="headPlay";
+					window.location.hash=`#${m.hashURI}`;
+				}
+			}
+		}, 512);
+	}
 	return false;
 };
 
@@ -5913,15 +5910,16 @@ m.processShortKey=function (e) {
 			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
 		}
-		m.initialFsGotoCatsN=0;
-		m.initialFsGotoCats=setInterval(function () {
+		m.initialFsGotoCats1N=0;
+		clearInterval(m.initialFsGotoCats1);
+		m.initialFsGotoCats1=setInterval(function () {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[m.currentCat];
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
-				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+				if ($gotoCatsI.exists()||m.initialFsGotoCats1N++>7) {
 					$gotoCatsI.trigger("click");
 					console.log(`$gotoCatsI.trigger("click");`);
-					clearInterval(m.initialFsGotoCats);
+					clearInterval(m.initialFsGotoCats1);
 					if (!m.doNotPushHistory) {
 						if (m.initialOpen) {
 							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
@@ -5931,7 +5929,7 @@ m.processShortKey=function (e) {
 						}
 					}
 					m.doNotPushHistory=false;
-					if (m.initialFsGotoCatsN>7) {
+					if (m.initialFsGotoCats1N>7) {
 						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 					}
 				}
@@ -5962,14 +5960,15 @@ m.processShortKey=function (e) {
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			m.initialFsGotoCatsN=0;
-			m.initialFsGotoCats=setInterval(function () {
+			m.initialFsGotoCats2N=0;
+			clearInterval(m.initialFsGotoCats2);
+			m.initialFsGotoCats2=setInterval(function () {
 				let fsFLCat=m.fsGotoCats.fullList[m.currentCat];
 				let $gotoCatsI=$(`#gotoCats-${fsFLCat?.i}`);
-				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+				if ($gotoCatsI.exists()||m.initialFsGotoCats2N++>7) {
 					$gotoCatsI.trigger("click");
 					console.log(`Multireco: $gotoCatsI.trigger("click");`);
-					clearInterval(m.initialFsGotoCats);
+					clearInterval(m.initialFsGotoCats2);
 					if (!m.doNotPushHistory) {
 						if (m.initialOpen) {
 							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
@@ -5979,7 +5978,7 @@ m.processShortKey=function (e) {
 						}
 					}
 					m.doNotPushHistory=false;
-					if (m.initialFsGotoCatsN>7) {
+					if (m.initialFsGotoCats2N>7) {
 						$numbers_of_recos.html(`cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.`);
 					}
 				}
@@ -6309,17 +6308,18 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		m.initialFsGotoCatsN=0;
-		m.initialFsGotoCats=setInterval(function () {
+		m.initialFsGotoCats0N=0;
+		clearInterval(m.initialFsGotoCats0);
+		m.initialFsGotoCats0=setInterval(function () {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
 			console.log("fsGotoCatsCat", fsGotoCatsCat);
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
-				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
+				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
 					$gotoCatsI.trigger("click");
 					console.log(`$gotoCatsI.trigger("click");`);
-					clearInterval(m.initialFsGotoCats);
-					if (m.initialFsGotoCatsN>7) {
+					clearInterval(m.initialFsGotoCats0);
+					if (m.initialFsGotoCats0N>7) {
 						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 					}
 				}
