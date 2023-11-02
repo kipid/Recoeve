@@ -4276,6 +4276,14 @@ m.openCat=async function (cat) {
 			}
 		}, 512);
 	}
+	if (!m.doNotPushHistory) {
+		if (m.initialOpen) {
+			window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+		}
+		else {
+			window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+		}
+	}
 	return false;
 };
 
