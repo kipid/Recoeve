@@ -1477,21 +1477,22 @@ ptnURI.regEx2=/^file:\/\/\/\S+\.(?:pdf|html|htm)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[4].regEx.exec(uri);
+	let href=null;
 	if (exec!==null) {
-		exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
-		return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
+		href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+		return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`+m.rC(`<div class="center"><img delayed-src="${href}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:href});
 	}
 	else {
 		exec=m.ptnURI[4].regEx1.exec(uri);
 		if (exec!==null) {
-			exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
-			return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:exec[0]});
+			href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+			return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<video controls preload="auto" delayed-src="${href}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:href});
 		}
 		else {
 			exec=m.ptnURI[4].regEx2.exec(uri);
 			if (exec!==null) {
-				exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
-				return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<iframe delayed-src="${exec[0]}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:exec[0]});
+				href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+				return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:href});
 			}
 		}
 		return reject(false);
