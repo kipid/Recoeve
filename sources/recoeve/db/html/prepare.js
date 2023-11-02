@@ -1479,19 +1479,22 @@ return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[4].regEx.exec(uri);
 	let href=null;
 	if (exec!==null) {
-		href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+		href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+		uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
 		return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`+m.rC(`<div class="center"><img delayed-src="${href}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:href});
 	}
 	else {
 		exec=m.ptnURI[4].regEx1.exec(uri);
 		if (exec!==null) {
-			href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+			href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+			uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
 			return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<video controls preload="auto" delayed-src="${href}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:href});
 		}
 		else {
 			exec=m.ptnURI[4].regEx2.exec(uri);
 			if (exec!==null) {
-				href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20").replace(/\+/g, " ");
+				href=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+				uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
 				return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:href});
 			}
 		}
