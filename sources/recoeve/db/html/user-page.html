@@ -2753,7 +2753,7 @@ $show_recos_without_points.on("click", function (e) {
 		m.showRWOP=true;
 	}
 	clearTimeout(m.timeOutRange);
-	m.timeOutRange=setTimeout(function () {
+	m.timeOutRange=setTimeout(async function () {
 		await m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 1024);
 });
