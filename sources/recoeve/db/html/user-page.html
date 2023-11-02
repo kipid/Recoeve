@@ -6312,6 +6312,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.initialFsGotoCatsN=0;
 		m.initialFsGotoCats=setInterval(function () {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
+			console.log("fsGotoCatsCat", fsGotoCatsCat);
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCatsN++>7) {
