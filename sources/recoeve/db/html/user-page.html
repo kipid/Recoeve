@@ -5257,7 +5257,7 @@ m.triggerOpenCat=async function (event) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
 		return;
 	}
-	if (cat!==m.currentCat||m.recoMode!==""||m.recoMode!=="multireco") {
+	if (cat!==m.currentCat||m.recoMode!==""&&m.recoMode!=="multireco") {
 		m.recosShown=false;
 		m.doNotPushHistory=false;
 	}
@@ -5269,9 +5269,9 @@ m.triggerOpenCat=async function (event) {
 		let i=fs.fullList.length;
 		fsFLCat=fs.fullList[i]=fs.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 	}
+	$("#catList").find(".cat").removeClass("selected");
+	$elem.parent(".cat").addClass("selected");
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		$("#catList").find(".cat").removeClass("selected");
-		$elem.parent(".cat").addClass("selected");
 		fsFLCat.down=true;
 		$elem.addClass("down");
 	}
