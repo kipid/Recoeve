@@ -1466,7 +1466,7 @@ return new Promise(function (resolve, reject) {
 ptnURI=m.ptnURI[4]={};
 ptnURI.regEx=/^file:\/\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
 ptnURI.regEx1=/^file:\/\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
-ptnURI.regEx2=/^file:\/\/\/\S+\.(?:pdf)(?=$|\?|\s)/i;
+ptnURI.regEx2=/^file:\/\/\/\S+\.(?:pdf|html|htm)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[4].regEx.exec(uri);
