@@ -1620,11 +1620,11 @@ public String getRecoms(String user_id_from, String userCatList) {
 					String[] uris=uriList.listOfURIs();
 					for (int k=0;k<uris.length;k++) {
 						String uri=uris[k];
-						ResultSet reco=getReco(user_from, uri);
-						if (!reco.next()) {
+						ResultSet reco_from=getReco(user_from, uri);
+						if (!reco_from.next()) {
 							ResultSet neighborReco=getReco(neighborJ, uri);
 							if (neighborReco.next()) {
-								res+="\n"+neighborJStr+"\t"+user_id+"\t"+StrArray.enclose(uri)+"\t"+StrArray.enclose(neighborReco.getString("cats"))+"\t"+neighborReco.getString("val")+"\t"+StrArray.enclose(reco.getString("cmt"));
+								res+="\n"+neighborJStr+"\t"+user_id+"\t"+StrArray.enclose(uri)+"\t"+StrArray.enclose(neighborReco.getString("cats"))+"\t"+neighborReco.getString("val")+"\t"+StrArray.enclose(neighborReco.getString("cmt"));
 							}
 						}
 					}
