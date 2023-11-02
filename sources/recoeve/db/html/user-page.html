@@ -171,6 +171,8 @@ else if (m.docCookies.hasItem("lang")) {
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
 	.pink #floating-key, .pink #toggle-floating-key {color:wheat}
 
+#contents-recoms .mgs {text-align:center; display:block; width:100%; padding:1em; margin:auto}
+
 @media all and (min-width:701px) {
 	#container {margin-left:15em}
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
@@ -3920,10 +3922,10 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
 					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML="[--You have no recoms yet from your neighbors.--]<br><br>";
+						strHTML=`<div class="msg">[--You have no recoms yet from your neighbors.--]<br><br>`;
 					}
 					else {
-						strHTML=`[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br>`;
+						strHTML=`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`;
 						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
 							let recomHTML=await m.recomHTML(m.userRecos[uri])
@@ -3974,7 +3976,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 								recoms[uri].valsStat["max"]=0;
 								recoms.push(recoms[uri]);
 							}
-							let val={user:respJSONi.user, val:respJSONi.val};
+							let val={user:respJSONi.user, val:m.val(respJSONi.val).val};
 							let catList=respJSONi.cats.split(";");
 							let simAvg100=0;
 							for (let j=0;j<catList.length;j++) {
@@ -3985,10 +3987,10 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 							}
 							val.simAvg100=simAvg100;
 							recoms[uri].vals.push(val);
-							recoms[uri].valsStat[Math.round(val.val*20.0)]+=simAvg100;
+							recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
 						}
 						for (let i=0;i<recoms.length;i++) {
-							for (let k=0;k<m.valsStatN;k++) {
+							for (let k=0;k<=m.valsStatN;k++) {
 								if (recoms[i].valsStat[k]>recoms[i].valsStat.max) {
 									recoms[i].valsStat.max=recoms[i].valsStat[k];
 								}
