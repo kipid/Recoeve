@@ -2994,21 +2994,21 @@ m.recomHTML=async function (r) {
 		res+=`<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
 		for (let k=0;k<=m.valsStatN;k++) {
 			let h=79.0*valsStat[k]/valsStat.max;
-			res+=`<rect class="column" x="${dx*(k+1)}%" y="${80-h}%" width="${dx}%" height="${h}%"></rect>`;
+			res+=`<rect class="column" x="${dx*k}%" y="${80-h}%" width="${dx}%" height="${h}%"></rect>`;
 		}
 		res+=`<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
 		for (let k=0;k<=m.valsStatN;k++) {
 			let x=dx*(k+1);
 			res+=`<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
 		}
-		res+=`<text class="tick" x="${dx-2}%" y="90%">0`
+		res+=`<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`
 		for (let k=2;k<=m.valsStatN;k+=2) {
-			res+=`<tspan x="${dx*(k+1)-2}%" y="90%">${k/2}</tspan>`;
+			res+=`<tspan text-anchor="middle" x="${dx*(k+1)}%" y="90%">${k/2}</tspan>`;
 		}
 		res+=`</text>`;
 		res+=`<text class="max-simSum" x="0%" y="10%">${(valsStat.max/10000.0).toFixed(2)}</text>`;
-		let x_expected=dx+(100.0-dx*3)*recomsI.avgVal/10.0;
-		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" x="${x_expected-4}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
+		let x_expected=(2.0*recomsI.avgVal+1.0)*dx;
+		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 	}
 	if (m.myPage) {
 		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
