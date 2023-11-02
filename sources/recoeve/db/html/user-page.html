@@ -3819,7 +3819,7 @@ m.cutNeighbors=function (str) {
 	});
 };
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	if (m.catList[cat]) {
 		$("#catList").find(".cat").removeClass("selected");
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
