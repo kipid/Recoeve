@@ -2090,7 +2090,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
-	if (m.myPage||m.initialOpen||catList===m.catList) {
+	if (catList===m.catList||m.myPage||m.initialOpen) {
 		let fsFLCat=m.fsGotoCats.fullList[cat];
 		if (fsFLCat) {
 			fsFLCat.i=i;
@@ -2141,9 +2141,9 @@ m.updateCatFS();
 m.updateGotoCatsFS=async function () {
 	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
-	let l=m.myCatList.length;
+	let l=m.catList.length;
 	for (let i=l-1;i>0;i--) {
-		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat, m.catList);
+		m.putCatToFSFullList(l-1-i, m.catList[i].cat, m.catList);
 	}
 	let i=l-1;
 	let cat="";
@@ -6320,7 +6320,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-			console.log("fsGotoCatsCat", fsGotoCatsCat);
+			console.log("fsGotoCatsCat: ", fsGotoCatsCat);
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
