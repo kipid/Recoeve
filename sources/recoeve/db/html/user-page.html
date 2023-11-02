@@ -2754,7 +2754,7 @@ $show_recos_without_points.on("click", function (e) {
 	}
 	clearTimeout(m.timeOutRange);
 	m.timeOutRange=setTimeout(function () {
-		m.getUriListAndShowRecosOnCat(m.currentCat);
+		await m.getUriListAndShowRecosOnCat(m.currentCat);
 	}, 1024);
 });
 m.PRtoFixed=function (w) { // 0.0 ~ 10.0
@@ -2827,7 +2827,7 @@ m.mmInPR=function (e) {
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 		clearTimeout(m.timeOutRange);
 		m.timeOutRange=setTimeout(async function () {
-			m.getUriListAndShowRecosOnCat(m.currentCat);
+			await m.getUriListAndShowRecosOnCat(m.currentCat);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
@@ -2898,7 +2898,7 @@ m.mmInPR1=function (e) {
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 		clearTimeout(m.timeOutRange);
 		m.timeOutRange=setTimeout(async function () {
-			m.getUriListAndShowRecosOnCat(m.currentCat);
+			await m.getUriListAndShowRecosOnCat(m.currentCat);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
@@ -3819,6 +3819,7 @@ m.cutNeighbors=function (str) {
 	});
 };
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
+return new Promise(function (resolve, reject) {
 	if (m.catList[cat]) {
 		$("#catList").find(".cat").removeClass("selected");
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
@@ -3853,6 +3854,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 				$window.scrollTop($contents.offset().top);
 			}
 			m.recosShown=true;
+			resolve();
 			break;
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}, and plotting charts.`);
@@ -3914,6 +3916,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					$numbers_of_recos.html(`[--You have no neighbors on cat=${m.escapeOnlyTag(cat)}.--]`);
 					$contents.html("");
 				}
+				resolve();
 			});
 			break;
 		case "recoms":
@@ -3937,6 +3940,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					}
 					$contents_recoms.html(strHTML);
 					m.reNewAndReOn();
+					resolve();
 				}
 				else {
 					let req=`user\tcat`;
@@ -3976,7 +3980,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 								recoms[uri].valsStat["max"]=0;
 								recoms.push(recoms[uri]);
 							}
-							let val={user:respJSONi.user, val:m.val(respJSONi.val).val};
+							let val={user:respJSONi.user, val:respJSONi.val};
 							let catList=respJSONi.cats.split(";");
 							let simAvg100=0;
 							for (let j=0;j<catList.length;j++) {
@@ -4049,6 +4053,7 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 							}
 							$contents_recoms.html(strHTML);
 							m.reNewAndReOn();
+							resolve();
 						});
 					});
 				}
@@ -4081,11 +4086,13 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
 					m.neighbors[cat_from]=neighbors;
-					m.getUriListAndShowRecosOnCat(cat, true);
+					await m.getUriListAndShowRecosOnCat(cat, true);
+					resolve();
 				});
 			}
 			break;
 	}
+});
 };
 m.refresh=async function (cats, option, uri, openCat) {
 	cats=String(cats);
@@ -4273,7 +4280,7 @@ m.openCat=async function (cat) {
 		m.lastIndexOfUriList=uris.length;
 	}
 	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-	m.getUriListAndShowRecosOnCat(cat);
+	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		clearTimeout(m.moveHash);
 		m.moveHash=setTimeout(function () {
