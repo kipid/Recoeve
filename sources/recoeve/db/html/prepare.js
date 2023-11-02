@@ -1471,7 +1471,7 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[4].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`), (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
 	}
 	else {
 		exec=m.ptnURI[4].regEx1.exec(uri);
