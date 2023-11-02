@@ -3925,10 +3925,10 @@ return new Promise(async function (resolve, reject) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
 					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML=`<div class="msg">[--You have no recoms yet from your neighbors.--]<br><br>`;
+						strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]<br><br>`);
 					}
 					else {
-						strHTML=`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`;
+						strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`);
 						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
 							let recomHTML=await m.recomHTML(m.userRecos[uri])
