@@ -5294,11 +5294,6 @@ m.completeCatAndOpenCat=async function (event) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	m.beInCurrentCat=true;
-	if (cat!==m.currentCat||m.initialOpen) {
-		m.beInCurrentCat=false;
-		m.doNotPushHistory=false;
-	}
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
@@ -5323,6 +5318,11 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	m.beInCurrentCat=true;
+	if (cat!==m.currentCat||m.initialOpen) {
+		m.beInCurrentCat=false;
+		m.doNotPushHistory=false;
+	}
 	console.log("m.beInCurrentCat: ", m.beInCurrentCat);
 	if (!m.beInCurrentCat) {
 		m.currentCat=cat;
@@ -6391,7 +6391,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
-	m.initialOpen=false;
+	setTimeout(function () {
+		m.initialOpen=false;
+	}, 4096);
 });
 
 
