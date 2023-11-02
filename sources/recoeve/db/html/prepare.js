@@ -1415,7 +1415,7 @@ return new Promise(function (resolve, reject) {
 };
 
 ptnURI=m.ptnURI[1]={};
-ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
+ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
@@ -1458,6 +1458,32 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr25.topgirl.co${exec[1]?exec[1]:""}`, from:'topgirl', src:exec[1]});
 	}
 	else {
+		return reject(false);
+	}
+});
+};
+
+ptnURI=m.ptnURI[4]={};
+ptnURI.regEx=/^file:\/\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
+ptnURI.regEx1=/^file:\/\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
+ptnURI.regEx2=/^file:\/\/\/\S+\.(?:pdf)(?=$|\?|\s)/i;
+ptnURI.toIframe=function (uri, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI[4].regEx.exec(uri);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`), (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
+	}
+	else {
+		exec=m.ptnURI[4].regEx1.exec(uri);
+		if (exec!==null) {
+			return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:exec[0]});
+		}
+		else {
+			exec=m.ptnURI[4].regEx2.exec(uri);
+			if (exec!==null) {
+				return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<iframe delayed-src="${exec[0]}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:exec[0]});
+			}
+		}
 		return reject(false);
 	}
 });
