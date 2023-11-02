@@ -2244,6 +2244,18 @@ return new Promise(function (resolve, reject) {
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
+	if (fs===m.fsGotoCats) {
+		for (let i=0;i<fsRes.length;i++) {
+			let fsSortedI=fsRes[fsRes.sorted[i]];
+			let fsFLk=fs.fullList[fsSortedI.i];
+			let $gotoCatI=$(`#gotoCats-${fsFLk.i}`);
+			if ($gotoCatI.exists()) {
+				if (fsFLk?.down) {
+					$gotoCatI.addClass("down");
+				}
+			}
+		}
+	}
 	resolve(str);
 });
 };
@@ -5260,8 +5272,8 @@ m.triggerOpenCat=async function (event) {
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		$("#catList").find(".cat").removeClass("selected");
 		$elem.parent(".cat").addClass("selected");
-		$elem.addClass("down");
 		fsFLCat.down=true;
+		$elem.addClass("down");
 	}
 	let k=fsFLCat.i;
 	let $gotoCatsK=$(`#gotoCats-${k}`);
@@ -5288,6 +5300,7 @@ m.completeCatAndOpenCat=async function (event) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco") {
+			fsFLCat.down=true;
 			$catI.find(".baseCat").addClass("down");
 		}
 	}
