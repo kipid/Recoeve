@@ -1045,6 +1045,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 ////////////////////////////////////////////////////
 m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
+m.ptnFILE=/^file:\/\/\/\S+/i;
 m.ptnTag=/^<\w+[\s\S]+>$/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
@@ -1055,7 +1056,13 @@ m.uriToA=function (uri) {
 		return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 	}
 	else {
-		return m.escapeOnlyTag(uri);
+		exec=m.ptnFILE.exec(uri);
+		if (exec!==null) {
+			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
+		}
+		else {
+			return m.escapeOnlyTag(uri);
+		}
 	}
 };
 m.videoZIndex=10000;
@@ -1471,17 +1478,20 @@ ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[4].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
+		exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+		return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:exec[0]});
 	}
 	else {
 		exec=m.ptnURI[4].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:exec[0]});
+			exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+			return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:exec[0]});
 		}
 		else {
 			exec=m.ptnURI[4].regEx2.exec(uri);
 			if (exec!==null) {
-				return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<iframe delayed-src="${exec[0]}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:exec[0]});
+				exec[0]=exec[0].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+				return resolve({html:`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<iframe delayed-src="${exec[0]}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:exec[0]});
 			}
 		}
 		return reject(false);
