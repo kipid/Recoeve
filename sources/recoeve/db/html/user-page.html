@@ -3705,7 +3705,7 @@ m.getRecos=function (uris, recos, cat) {
 					type:"POST", url:postURL, data:getRecosStr
 					, dataType:"text"
 				}).fail(function () {
-					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(cat)} has failed.`);
+					$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(m.currentCat)} has failed.`);
 					$contents.html("");
 					reject();
 				}).done(async function (resp) {
@@ -3750,7 +3750,7 @@ m.getUriList=function (catStrArray) {
 			type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
 			, dataType:"text"
 		}).fail(function () {
-			$numbers_of_recos.html(`get-UriList on cat=${m.escapeOnlyTag(cat)} has failed.`);
+			$numbers_of_recos.html(`get-UriList on cat=${m.escapeOnlyTag(m.currentCat)} has failed.`);
 			$contents.html("");
 			resolve();
 		}).done(async function (resp) { // resp=cat\tUriList\tcutP\terr
@@ -5980,7 +5980,7 @@ m.processShortKey=function (e) {
 					}
 					m.doNotPushHistory=false;
 					if (m.initialFsGotoCatsN>7) {
-						$numbers_of_recos.html(`cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.`);
+						$numbers_of_recos.html(`cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.`);
 					}
 				}
 			}, 512);
