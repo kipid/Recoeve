@@ -2974,12 +2974,13 @@ m.recomHTML=async function (r) {
 		let recoHTML=await m.recoHTML(r, false, true, true);
 		return String(recoHTML);
 	}
+	let recoDef=m.recoDefs[r.uri];
 	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>`;
-	if (r.defTitles[0]&&r.defTitles[0][0]) {
-		res+=`<div class="title">${m.escapeOnlyTag(r.defTitles[0][0])}</div>`;
+	if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+		res+=`<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
 	}
 	res+=`<div class="cats">${m.escapeOnlyTag(m.currentCat)}</div>`;
 	let uriRendered=await uriRendering(r.uri, false, false);
@@ -3011,8 +3012,8 @@ m.recomHTML=async function (r) {
 		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 	}
 	res+=`<div class="cBoth"></div><div class="result"></div>`;
-	if (r.defDescs[0]&&r.defDescs[0][0]) {
-		let descR=m.renderStrDescCmt(r.defDescs[0][0]);
+	if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+		let descR=m.renderStrDescCmt(recoDef.defDescs[0][0]);
 		res+=`<div class="desc">`;
 		for (let l=0;l<descR.length;l++) {
 			let key=m.escapeOnlyTag( descR[l] );
@@ -3172,18 +3173,19 @@ m.reco_pointChange_do=function (args, err) {
 		}
 		else if (result.startsWith("recoed")) {
 			let r=m.myRecos[uri];
+			let recoDef=m.recoDefs[uri];
 			if (!r) {r=m.myRecos[uri]={};}
 			r.has=true;
 			r.val=m.val(args.valStr);
-			if (r.defTitles&&r.defTitles[0]&&r.defTitles[0][0]) {
-				r.title=r.defTitles[0][0];
+			if (recoDef.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+				r.title=recoDef.defTitles[0][0];
 			}
 			else {
 				r.title="";
 			}
 			r.cats=args.cats;
-			if (r.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
-				r.desc=r.defDescs[0][0];
+			if (recoDef.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+				r.desc=recoDef.defDescs[0][0];
 			}
 			else {
 				r.desc="";
@@ -3208,13 +3210,14 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			let strHeads="do\turi\tval";
 			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
 			let r=m.myRecos[uri];
-			if (r?.defTitles&&r.defTitles[0]&&r.defTitles[0][0]) {
+			let recoDef=m.recoDefs[uri];
+			if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 				strHeads+="\ttitle";
-				strContents+=`\t${m.encloseStr(r.defTitles[0][0])}`;
+				strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
 			}
-			if (r?.defDescs&&r.defDescs[0]&&r.defDescs[0][0]) {
+			if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
 				strHeads+="\tdesc";
-				strContents+=`\t${m.encloseStr(r.defDescs[0][0])}`;
+				strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
 			}
 			strHeads+="\tcats";
 			let cats="";
@@ -4028,9 +4031,9 @@ m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 								let recoDefs=m.recoDefs[uri];
 								if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
 								recoDefs.defs=true;
-								recoDefs.defCats=await m.strToJSON(defs[j]["def-cats"], false);
-								recoDefs.defTitles=await m.strToJSON(defs[j]["def-titles"], false);
-								recoDefs.defDescs=await m.strToJSON(defs[j]["def-descs"], false);
+								recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
+								recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
+								recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
 							}
 							let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
 							let strHTML="";
@@ -4497,12 +4500,13 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 		$input_val.trigger("keyup");
 	}
 	else if (fillDefs) {
-		if (r.defTitles[0]&&r.defTitles[0][0]) {
-			$input_title[0].value=r.defTitles[0][0];
+		let recoDef=m.recoDefs[r.uri];
+		if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+			$input_title[0].value=recoDef.defTitles[0][0];
 		}
 		$input_cats[0].value=m.currentCat;
-		if (r.defDescs[0]&&r.defDescs[0][0]) {
-			$input_desc[0].value=r.defDescs[0][0];
+		if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+			$input_desc[0].value=recoDef.defDescs[0][0];
 		}
 	}
 	let uri=r.uri;
