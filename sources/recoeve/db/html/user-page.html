@@ -17,6 +17,7 @@ window.m={
 	, valsStatN:20
 	, recosShown:false
 	, previous:0
+	, lastRecoMode:"nothing"
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -3494,14 +3495,18 @@ m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
 	m.modeToggle=false;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
-		$contents.addClass("multireco");
 		m.lastRecoMode="multireco";
 		m.modeToggle=true;
+		$contents.addClass("multireco");
+		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+		return;
 	}
 	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
-		$contents.removeClass("multireco");
 		m.lastRecoMode="";
 		m.modeToggle=true;
+		$contents.removeClass("multireco");
+		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+		return;
 	}
 	let $elem=$(elem);
 	let fs=m.fsToRs;
@@ -4336,15 +4341,13 @@ window.onpopstate=function (e) {
 		if (e.state.newRecoOn!==m.newRecoOn) {
 			$new_reco.toggle();
 		}
-		if (e.state.recoMode!==m.recoMode) {
-			if (e.state.recoMode==="multireco"&&(!$button_multireco_mode.hasClass("enabled"))) {
-				m.doNotPushHistory=false;
-				$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
-			}
-			else if (e.state.recoMode==="neighbors"&&(!$button_neighbors_mode.hasClass("enabled"))) {
-				m.doNotPushHistory=false;
-				$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
-			}
+		if (e.state.recoMode==="multireco"&&(!$button_multireco_mode.hasClass("enabled"))) {
+			m.doNotPushHistory=true;
+			$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
+		}
+		else if (e.state.recoMode==="neighbors"&&(!$button_neighbors_mode.hasClass("enabled"))) {
+			m.doNotPushHistory=true;
+			$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
 		}
 		if (e.state.cat!==undefined&&e.state.cat.constructor===String) {
 			let cat=e.state.cat;
@@ -5958,22 +5961,19 @@ m.processShortKey=function (e) {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[m.currentCat];
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
-				if ($gotoCatsI.exists()||m.initialFsGotoCats1N++>7) {
-					$gotoCatsI.trigger("click");
-					console.log(`$gotoCatsI.trigger("click");`);
+				m.initialFsGotoCats1N++;
+				if (m.initialFsGotoCats1N>10) {
+					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
+					console.log(`$("#gotoCats-${fsGotoCatsCat.i}").trigger("click") failed.`);
 					clearInterval(m.initialFsGotoCats1);
-					if (!m.doNotPushHistory) {
-						if (m.initialOpen) {
-							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-						else {
-							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-					}
-					m.doNotPushHistory=false;
-					if (m.initialFsGotoCats1N>7) {
-						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-					}
+				}
+				if ($gotoCatsI.exists()) {
+					$gotoCatsI.trigger("click");
+					console.log(`$("#gotoCats-${fsGotoCatsCat.i}").trigger("click"); in m.recoMode: `, m.recoMode);
+					console.log(`m.currentCat: `, m.currentCat);
+					console.log(`fsGotoCatsCat.cat: `, fsGotoCatsCat.cat);
+					clearInterval(m.initialFsGotoCats1);
+					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 				}
 			}
 
