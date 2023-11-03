@@ -58,6 +58,22 @@ m.getSearchVars=function (searchStr) {
 	return vars;
 };
 
+m.analysisURL=function (url) {
+	let parser=document.createElement('a');
+	parser.href=url;
+	let res={};
+	res.href=parser.href;
+	res.origin=parser.origin;
+	res.protocol=parser.protocol;
+	res.host=parser.host;
+	res.hostname=parser.hostname;
+	res.port=parser.port;
+	res.pathname=parser.pathname;
+	res.search=parser.search;
+	res.hash=parser.hash;
+	return res;
+};
+
 m.fsToRs=[];
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.

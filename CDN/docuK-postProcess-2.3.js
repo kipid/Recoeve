@@ -230,8 +230,10 @@ if (!m.printMode) {
 		let url=m.canonicalURI=m.disqusVars.page.url;
 		$('link[rel="canonical"]').remove();
 		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
-		if (decodeURIComponent(window.location.href)!==decodeURIComponent(url)) {
-			window.location.href=url;
+		let hrefAnalyzed=m.analysisURL(window.location.href);
+		let urlAnalyzed=m.analysisURL(url);
+		if (decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
+			window.location.pathname=urlAnalyzed.pathname;
 		}
 	}
 
