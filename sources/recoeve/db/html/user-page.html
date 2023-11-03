@@ -4293,23 +4293,18 @@ m.openCat=async function (cat) {
 	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
 	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
-		clearTimeout(m.moveHash);
-		m.moveHash=setTimeout(function () {
-			if (!m.doNotPushHistory) {
-				if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-					m.hashURI="numbers-of-recos";
-					window.location.hash=`#${m.hashURI}`;
-				}
-				else if ($button_get_recoms.hasClass("enabled")) {
-					m.hashURI="button-get-recoms";
-					window.location.hash=`#${m.hashURI}`;
-				}
-				else {
-					m.hashURI="headPlay";
-					window.location.hash=`#${m.hashURI}`;
-				}
+		if (!m.doNotPushHistory) {
+			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+				m.hashURI="numbers-of-recos";
 			}
-		}, 512);
+			else if ($button_get_recoms.hasClass("enabled")) {
+				m.hashURI="button-get-recoms";
+			}
+			else {
+				m.hashURI="headPlay";
+			}
+			window.location.hash=`#${m.hashURI}`;
+		}
 	}
 	if (!m.doNotPushHistory) {
 		if (m.initialOpen) {
