@@ -766,7 +766,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div><!-- div#head -->
 <div class="side2">
 	<div class="numbers-of-recos"></div>
-	<div id="button-get-recoms" class="none"></div>
+	<div id="button-get-recoms" class="button-mode none"></div>
 </div>
 <div class="side2 multireco" id="contents-recoms"></div>
 <div class="side2" id="subCats">
@@ -5954,8 +5954,8 @@ m.processShortKey=function (e) {
 			m.recoMode="neighbors";
 			$button_mode.removeClass("enabled");
 			$button_neighbors_mode.addClass("enabled");
-			window.location.hash="#numbers-of-recos";
 			m.hashURI="numbers-of-recos";
+			window.location.hash=`#${m.hashURI}`;
 		}
 		m.initialFsGotoCats1N=0;
 		clearInterval(m.initialFsGotoCats1);
