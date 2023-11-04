@@ -3495,19 +3495,20 @@ m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
 	m.modeToggle=false;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
-		m.lastRecoMode="multireco";
+		m.lastRecoMode=m.recoMode;
 		m.modeToggle=true;
 		$contents.addClass("multireco");
 		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 		return;
 	}
 	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
-		m.lastRecoMode="";
+		m.lastRecoMode=m.recoMode;
 		m.modeToggle=true;
 		$contents.removeClass("multireco");
 		window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 		return;
 	}
+	m.lastRecoMode=m.recoMode;
 	let $elem=$(elem);
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
@@ -5366,7 +5367,7 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
-	if (!m.beInCurrentCat) {
+	if (!m.beInCurrentCat||!((m.lastRecoMode===""&&m.recoMode==="multireco")||(m.lastRecoMode==="multireco"&&m.recoMode===""))) {
 		m.currentCat=cat;
 		await m.openCat(cat);
 	}
