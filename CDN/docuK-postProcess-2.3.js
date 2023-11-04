@@ -232,7 +232,8 @@ if (!m.printMode) {
 		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
 		let hrefAnalyzed=m.analysisURL(window.location.href);
 		let urlAnalyzed=m.analysisURL(url);
-		if (decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
+		console.log(hrefAnalyzed.protocol);
+		if (hrefAnalyzed.protocol==="https:"&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
 			window.location.pathname=urlAnalyzed.pathname;
 		}
 	}
@@ -295,7 +296,7 @@ if (!m.printMode) {
 		});
 	};
 
-	// google code prettify js script (from kipid.tistory CDN) is added.
+	// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
 	if (docuK.find('.prettyprint').exists()) {
 		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
 		$headOrBody.append($gcp);
