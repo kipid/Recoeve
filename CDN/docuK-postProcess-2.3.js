@@ -233,7 +233,7 @@ if (!m.printMode) {
 		let hrefAnalyzed=m.analysisURL(window.location.href);
 		let urlAnalyzed=m.analysisURL(url);
 		console.log(hrefAnalyzed.protocol);
-		if (hrefAnalyzed.protocol==="https:"&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
+		if (hrefAnalyzed.protocol.toLowerCase()===urlAnalyzed.protocol.toLowerCase()&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
 			window.location.pathname=urlAnalyzed.pathname;
 		}
 	}
