@@ -5318,13 +5318,11 @@ m.triggerOpenCat=async function (event) {
 };
 m.completeCatAndOpenCat=async function (event) {
 	m.beInCurrentCat=false;
-	console.log("event.target: ", event.target);
 	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	if (!m.initialOpen&&cat===m.currentCat) {
 		m.beInCurrentCat=true;
 	}
-	console.log("m.beInCurrentCat: ", m.beInCurrentCat);
 	let fs=m.fsGotoCats;
 	let fsFLCat=fs.fullList[cat];
 	if (!fsFLCat) {
