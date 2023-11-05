@@ -192,7 +192,7 @@ else if (m.docCookies.hasItem("lang")) {
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
 <div class="block-touch" id="block-touch" style="display:none"></div>
-<div class="block-touch-exit exit" id="block-touch-exit" style="display:none; z-index:31000; position:fixed" onclick="$('#block-touch, #block-touch-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+<div class="block-touch-exit exit" id="block-touch-exit" style="display:none; z-index:31000; position:fixed"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
 <div id="sidebar-dragger">
 	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
@@ -1400,7 +1400,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
 	${(!m.myPage)&&m.myId?`<div class="button"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>`:""}
-	<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
+	<div class="button button-block-touch" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
 	</div>
 	<span class="point-range-result">0~10/10</span>
@@ -1449,6 +1449,7 @@ $a_log_out_from_all.on("click mousedown mouseup", m.a_log_out_from_all);
 $a_to_my_page=$("#a-to-my-page");
 $a_to_my_page.on("click mousedown mouseup", m.a_to_my_page);
 $button_hideFK=$("#button-hideFK");
+$button_block_touch=$(".button-block-touch");
 $button_auto_skip=$(".button-auto-skip");
 $button_loop=$(".button-loop");
 $button_one_loop=$(".button-one-loop");
@@ -5791,6 +5792,12 @@ m.shareSNS=function (elem, service) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
+$block_touch_exit.on("click", function (event) {
+	$block_touch.hide();
+	$block_touch_exit.hide();
+	$floating_key.show();
+	$block_touch.removeClass("enabled");
+});
 $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove mouseup touchend scroll keydown keypress keyup input select", function (e) {
 	e.stopPropagation();
 	e.preventDefault();
@@ -5857,8 +5864,18 @@ m.processShortKey=function (e) {
 		}
 		break;
 	case 85: // U=85 Block touch
-		$block_touch.show();
-		$block_touch_exit.show();
+		if ($button_block_touch.hasClass("enabled")) {
+			$block_touch.hide();
+			$block_touch_exit.hide();
+			$floating_key.show();
+			$button_block_touch.removeClass("enabled");
+		}
+		else {
+			$block_touch.show();
+			$block_touch_exit.show();
+			$floating_key.hide();
+			$button_block_touch.addClass("enabled");
+		}
 		break;
 	case 67: // C=67 Go to Cat or Cats?
 		e.preventDefault();
