@@ -3845,9 +3845,11 @@ return new Promise(async function (resolve, reject) {
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
 			if (m.recoMode==="multireco") {
 				$contents.addClass("multireco");
+				$button_multireco_mode.addClass("enabled");
 			}
 			else {
 				$contents.removeClass("multireco");
+				$button_multireco_mode.removeClass("enabled");
 			}
 			let catI=m.catList[cat];
 			if (catI) {
