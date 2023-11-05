@@ -4037,7 +4037,7 @@ return new Promise(async function (resolve, reject) {
 							}
 							let avgVal=0;
 							if (simSum!==0) {
-								simSum=simSum<10000?10000:simSum;
+								simSum=simSum<30000?30000:simSum;
 								avgVal=10.0*valSimSum/simSum;
 							}
 							let avgValStr=avgVal.toFixed(2);
