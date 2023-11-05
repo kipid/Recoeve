@@ -960,6 +960,7 @@ m.showRWOP=true; // RWOP : Reco WithOut Point
 $show_only_unrecoed=$("#show-only-unrecoed");
 
 $numbers_of_recos=$(".numbers-of-recos");
+$numbers_of_recos0=$("#numbers-of-recos");
 
 $subCats=$("#subCats");
 $contents_recoms=$("#contents-recoms")
@@ -5816,6 +5817,11 @@ m.processShortKey=function (e) {
 		m.hashURI="headPlay";
 		window.location.hash=`#${m.hashURI}`;
 		$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+		break;
+	case 88: // X=88 To contents
+		m.hashURI="numbers-of-recos";
+		window.location.hash=`#${m.hashURI}`;
+		$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
 		break;
 	case 81: // Q=81 Preceding
 		m.fsToRs.playNext(1);
