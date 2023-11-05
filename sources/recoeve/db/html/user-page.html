@@ -6031,20 +6031,16 @@ m.processShortKey=function (e) {
 					$gotoCatsI.trigger("click");
 					console.log(`Multireco: $gotoCatsI.trigger("click");`);
 					clearInterval(m.initialFsGotoCats2);
-					if (!m.doNotPushHistory) {
-						if (m.initialOpen) {
-							window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-						else {
-							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-					}
+					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 					m.doNotPushHistory=false;
 					if (m.initialFsGotoCats2N>7) {
 						$numbers_of_recos.html(`cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.`);
 					}
 				}
 			}, 512);
+		}
+		else {
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
 	case 82: // R=82
