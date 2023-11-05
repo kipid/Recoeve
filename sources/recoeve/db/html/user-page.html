@@ -2074,36 +2074,39 @@ m.toLocalTime=function (UTCDateTime) {
 m.putCatToFSFullList=function (i, cat, catList) {
 	if (catList===m.myCatList) {
 		if (m.fsCat.fullList[cat]) {
-			let fsFLCat=m.fsCat.fullList[cat];
-			fsFLCat.i=i;
-			fsFLCat.txt=m.splitHangul(cat);
-			fsFLCat.cat=cat;
-			fsFLCat.html=m.escapeOnlyTag(cat);
-			m.fsCat.fullList[i]=fsFLCat;
+			let fsCatFLCat=m.fsCat.fullList[cat];
+			fsCatFLCat.i=i;
+			fsCatFLCat.txt=m.splitHangul(cat);
+			fsCatFLCat.cat=cat;
+			fsCatFLCat.html=m.escapeOnlyTag(cat);
+			m.fsCat.fullList[i]=m.fsCat.fullList[cat]=fsCatFLCat;
 		}
 		else {
 			m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 		if (m.fsMRCat.fullList[cat]) {
-			let fsFLCat=m.fsMRCat.fullList[cat];
-			fsFLCat.i=i;
-			fsFLCat.txt=m.splitHangul(cat);
-			fsFLCat.cat=cat;
-			fsFLCat.html=m.escapeOnlyTag(cat);
-			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
+			let fsMRCatFLCat=m.fsMRCat.fullList[cat];
+			fsMRCatFLCat.i=i;
+			fsMRCatFLCat.txt=m.splitHangul(cat);
+			fsMRCatFLCat.cat=cat;
+			fsMRCatFLCat.html=m.escapeOnlyTag(cat);
+			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]=fsMRCatFLCat;
 		}
 		else {
 			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
 	if (catList===m.catList||m.myPage||m.initialOpen) {
-		let fsFLCat=m.fsGotoCats.fullList[cat];
-		if (fsFLCat) {
-			fsFLCat.i=i;
-			fsFLCat.txt=m.splitHangul(cat);
-			fsFLCat.cat=cat;
-			fsFLCat.html=m.escapeOnlyTag(cat);
-			m.fsGotoCats.fullList[i]=fsFLCat;
+		let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
+		if (fsGotoCatsFLCat) {
+			if (fsGotoCatsFLCat.down) {
+				console.log("fsGotoCatsFLCat: ", fsGotoCatsFLCat);
+			}
+			fsGotoCatsFLCat.i=i;
+			fsGotoCatsFLCat.txt=m.splitHangul(cat);
+			fsGotoCatsFLCat.cat=cat;
+			fsGotoCatsFLCat.html=m.escapeOnlyTag(cat);
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]=fsGotoCatsFLCat;
 		}
 		else {
 			fsFLCat=m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
@@ -5283,7 +5286,6 @@ $button_del.on("click", function (e) {
 m.triggerOpenCat=async function (event) {
 	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
-	console.log("cat: ", cat);
 	if (event?.which===2) {
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
 		return;
@@ -6370,12 +6372,10 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-			console.log("fsGotoCatsCat: ", fsGotoCatsCat);
 			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
 					$gotoCatsI.trigger("click");
-					console.log(`$gotoCatsI.trigger("click");`);
 					clearInterval(m.initialFsGotoCats0);
 					if (m.initialFsGotoCats0N>7) {
 						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
