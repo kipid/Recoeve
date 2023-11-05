@@ -3843,6 +3843,12 @@ return new Promise(async function (resolve, reject) {
 	switch (m.recoMode) {
 		case "multireco": case "": default:
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
+			if (m.recoMode==="multireco") {
+				$contents.addClass("multireco");
+			}
+			else {
+				$contents.removeClass("multireco");
+			}
 			let catI=m.catList[cat];
 			if (catI) {
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
