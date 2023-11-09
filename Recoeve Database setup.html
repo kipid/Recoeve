@@ -1261,23 +1261,20 @@ Reco 에 up/down vote 가능하게? Reply 도 가능하게???
 <div id="table-Recos"><div class="number none">Recos</div>
 
 ```[.linenums.lang-sql]
-CREATE TABLE `Recos` (
+CREATE TABLE `Recos1` (
 	`user_i` bigint NOT NULL
-	, `uri` varchar(2048) NOT NULL
+	, `uri` varchar(1023) NOT NULL
 	, `tFirst` datetime NOT NULL
 	, `tLast` datetime NOT NULL
 	, `cats` varchar(255) NOT NULL
 	, `title` varchar(255)
-	, `desc` text # 65,535 bytes
-	, `cmt` text # 65,535 bytes
+	, `desc` text
+	, `cmt` text
 	, `val` varchar(10)
-	, `vUp` int DEFAULT 0
-	, `vDw` int DEFAULT 0
-	, `nViews` int DEFAULT 0
-	#, `open` tinyint DEFAULT 0
-	, PRIMARY KEY (`user_i`, `uri`(512))
-	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 );
+
+#, PRIMARY KEY (`user_i`, `uri`(255))
+#, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 
 SELECT
 	CONSTRAINT_NAME
@@ -1299,6 +1296,10 @@ ALTER TABLE `Recos`
 	MODIFY COLUMN `uri` varchar(2048) NOT NULL
 	, ADD PRIMARY KEY (`user_i`, `uri`(512));
 ALTER TABLE `Recos` ADD CONSTRAINT `recos_ibfk_1` FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`);
+
+ALTER TABLE `Recos1` ADD PRIMARY KEY (`user_i`, `uri`(511));
+ALTER TABLE `Recos1` DROP FOREIGN KEY `recos_ibfk_1`;
+ALTER TABLE `Recos1` ADD CONSTRAINT `recos_ibfk_2` FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`);
 
 SELECT * FROM `Recos` WHERE `user_i`=? and `uri`=?;
 
