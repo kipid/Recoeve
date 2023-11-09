@@ -223,9 +223,9 @@ public RecoeveDB() {
 		pstmtUpdateUserClass=con.prepareStatement("UPDATE `UserClass` SET `count`=`count`+? WHERE `class`=?;");
 		pstmtLog=con.prepareStatement("INSERT INTO `LogInLogs` (`user_i`, `t`, `ip`, `log`, `success`, `desc`) VALUES (?, ?, ?, ?, ?, ?);");
 		
-		pstmtGetWholeRecos=con.prepareStatement("SELECT * FROM `Recos` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtGetReco=con.prepareStatement("SELECT * FROM `Recos` WHERE `user_i`=? and `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		pstmtPutReco=con.prepareStatement("INSERT INTO `Recos` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+		pstmtGetWholeRecos=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtGetReco=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=? and `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		pstmtPutReco=con.prepareStatement("INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 		
 		pstmtGetCatList=con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtPutCatList=con.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
@@ -666,7 +666,7 @@ private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELE
 			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
 			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
 			pstmtDeleteUserCatList.executeUpdate();
-			PreparedStatement pstmtGetAllRecosUser=con.prepareStatement("SELECT * FROM `Recos` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			PreparedStatement pstmtGetAllRecosUser=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			pstmtGetAllRecosUser.setLong(1, user_me);
 			ResultSet rs=pstmtGetAllRecosUser.executeQuery();
 			while (rs.next()) {
@@ -3172,7 +3172,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 }
 public void updateDefsAll(Timestamp tNow) {
 	try {
-		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos1`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs=pstmtGetAllRecos.executeQuery();
 		while (rs.next()) {
 			long user_me=rs.getLong("user_i");
@@ -3186,6 +3186,33 @@ public void updateDefsAll(Timestamp tNow) {
 			updateDefTitle(uri, title, 1);
 			updateDefDesc(uri, desc, 1);
 			updateRecoStat(user_me, uri, pts, tNow, 1);
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+}
+public void moveRecosToRecos1() {
+	try {
+		PreparedStatement pstmtGetAllRecos=con.prepareStatement("SELECT * FROM `Recos`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs=pstmtGetAllRecos.executeQuery();
+		// pstmtPutReco=con.prepareStatement("INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+		while (rs.next()) {
+			long user_me=rs.getLong("user_i");
+			pstmtPutReco.setLong(1, user_me);
+			String uri=rs.getString("uri");
+			pstmtPutReco.setString(2, uri);
+			pstmtPutReco.setTimestamp(3, rs.getTimestamp("tFirst"));
+			pstmtPutReco.setTimestamp(4, rs.getTimestamp("tLast"));
+			String catsStr=rs.getString("cats");
+			pstmtPutReco.setString(5, catsStr);
+			String title=rs.getString("title");
+			pstmtPutReco.setString(6, title);
+			String desc=rs.getString("desc");
+			pstmtPutReco.setString(7, desc);
+			pstmtPutReco.setString(8, rs.getString("cmt"));
+			pstmtPutReco.setString(9, rs.getString("val"));
+			pstmtPutReco.executeUpdate();
 		}
 	}
 	catch (SQLException e) {
@@ -3280,6 +3307,7 @@ public static void main(String... args) {
 
 	RecoeveDB db=new RecoeveDB();
 	System.out.println(db.delBlogVisitor());
+	db.moveRecosToRecos1();
 	// db.deleteUser("jwj0405@nav");
 }
 }// public class RecoeveDB
