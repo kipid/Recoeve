@@ -3060,7 +3060,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 				System.out.println("done: "+done);
 				if (done) {
 					uri="https://recoeve.net/redirect/"+longToHexString(longHashpath);
-					desc="#originalURI\n"+originalURI+"\n\n"+desc.trim();
+					desc=("#originalURI\n"+originalURI+"\n\n"+(desc!=null?desc.trim():"")).trim();
 					System.out.println("uri: "+uri);
 					System.out.println("originalURI: "+originalURI);
 				}

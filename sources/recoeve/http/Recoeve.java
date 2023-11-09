@@ -182,6 +182,9 @@ public static void main(String... args) {
 			.end();
 	});
 
+PrintLog pl0=new PrintLog();
+System.out.println(pl0.db.getRedirectURI(pl0.db.hexStringToLong("734dcbb1989cf9e8")));
+
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
