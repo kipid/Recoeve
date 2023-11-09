@@ -173,18 +173,6 @@ public static void main(String... args) {
 
 	router1.route().handler(staticHandler);
 
-	router1.get("/redirect/:hashpath").handler(ctx -> {
-		PrintLog pl=new PrintLog();
-		pl.printLog(ctx);
-		String hashpath=ctx.pathParam("hashpath");
-		ctx.response().setStatusCode(302) // Set the HTTP status code for redirection
-			.putHeader("Location", pl.db.getRedirectURI(pl.db.hexStringToLong(hashpath))) // Set the new location
-			.end();
-	});
-
-PrintLog pl0=new PrintLog();
-System.out.println(pl0.db.getRedirectURI(pl0.db.hexStringToLong("734dcbb1989cf9e8")));
-
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
@@ -259,6 +247,20 @@ System.out.println(pl0.db.getRedirectURI(pl0.db.hexStringToLong("734dcbb1989cf9e
 			System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 		}
 	});
+
+	router.get("/redirect/:hashpath").handler(ctx -> {
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		String hashpath=ctx.pathParam("hashpath");
+		String originalURI=pl.db.getRedirectURI(pl.db.hexStringToLong(hashpath));
+		System.out.println("originalURI: "+originalURI);
+		ctx.response().setStatusCode(302) // Set the HTTP status code for redirection
+			.putHeader("Location", originalURI) // Set the new location
+			.end();
+	});
+
+PrintLog pl0=new PrintLog();
+System.out.println(pl0.db.getRedirectURI(pl0.db.hexStringToLong("734dcbb1989cf9e8")));
 
 	router.get("/admin/:query").handler(ctx -> { // path=/admin/...
 		PrintLog pl=new PrintLog();
