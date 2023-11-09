@@ -1520,11 +1520,6 @@ m.toggleFK=function () {
 	}
 	$floating_key.toggle();
 };
-if (m.docCookies.getItem("hideFK")==="y") {
-	$floating_key.hide();
-}
-
-
 
 ////////////////////////////////////////////////////
 // Sidebar dragger and exit
@@ -5813,8 +5808,6 @@ m.shareSNS=function (elem, service) {
 	return false;
 };
 
-
-
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
@@ -6477,6 +6470,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	// $goto_cats_container.hide();
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+	}
+	if (m.docCookies.getItem("hideFK")==="y") {
+		$floating_key.hide();
 	}
 	setTimeout(function () {
 		m.initialOpen=false;
