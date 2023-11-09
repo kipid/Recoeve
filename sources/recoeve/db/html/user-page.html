@@ -5086,10 +5086,10 @@ $button_reco.on("click", function (e) {
 		valid=false;
 		errorMsg="[--URI is Empty.--]";
 	}
-	else if (m.getUTF8Length(uri)>255) {
-		valid=false;
-		errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
-	}
+	// else if (m.getUTF8Length(uri)>255) {
+	// 	valid=false;
+	// 	errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
+	// }
 	else if (!val.valid) {
 		valid=false;
 		errorMsg="[--Points is of invalid form.--]";

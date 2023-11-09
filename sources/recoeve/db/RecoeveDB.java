@@ -3021,15 +3021,15 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 		CatList catL=getCatList(user_me);
 		for (int i=1;i<sa.getRowSize();i++) {
 			res+="\n";
-			String doStr=sa.get(i, "do").trim();
-			String uri=sa.get(i, "uri").trim();
+			String doStr=sa.get(i, "do");
+			String uri=sa.get(i, "uri");
 			String originalURI=uri;
-			String catsStr=sa.get(i, "cats").trim();
+			String catsStr=sa.get(i, "cats");
 			Categories cats=new Categories(catsStr);
-			String title=sa.get(i, "title").trim();
-			String desc=sa.get(i, "desc").trim();
-			String cmt=sa.get(i, "cmt").trim();
-			Points pts=new Points(sa.get(i, "val").trim());
+			String title=sa.get(i, "title");
+			String desc=sa.get(i, "desc");
+			String cmt=sa.get(i, "cmt");
+			Points pts=new Points(sa.get(i, "val"));
 			String previousCatListStr=catL.fullCats;
 			System.out.println("originalURI: "+originalURI);
 			if (getutf8mb4Length(originalURI)>255) {
