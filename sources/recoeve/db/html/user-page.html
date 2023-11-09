@@ -5086,9 +5086,9 @@ $button_reco.on("click", function (e) {
 		valid=false;
 		errorMsg="[--URI is Empty.--]";
 	}
-	else if (m.getUTF8Length(uri)>255) {
+	else if (m.getUTF8Length(uri)>2048) {
 		valid=false;
-		errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
+		errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 2048) is too long.--]";
 	}
 	else if (!val.valid) {
 		valid=false;
