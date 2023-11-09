@@ -315,7 +315,7 @@ else if (m.docCookies.hasItem("lang")) {
 		<div class="cBoth"></div>
 	</div>
 	<label for="input-desc">[--Description--]</label>
-		<div id="def-cmds"><div class="def-cmd">#related</div> <div class="def-cmd">#lyrics</div></div>
+		<div id="def-cmds"><div class="def-cmd">#related</div> <div class="def-cmd">#lyrics</div> <div id="formatting-lyrics">[--Formatting the lyrics--] (mainly from genius.com)</div></div>
 		<div id="def-descs"></div>
 		<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
 	<label for="input-cmt">[--Comment--]</label>
@@ -911,6 +911,7 @@ $input_title=$("#input-title");
 $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
 $input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
+$formatting_lyrics=$("#formatting-lyrics");
 $def_descs=$("#def-descs");
 $input_desc=$("#input-desc");
 $input_cmt=$("#input-cmt");
@@ -2965,6 +2966,28 @@ $point_range_right1.on("mousedown.mdPRR1 touchstart.mdPRR1", function (e0) {
 // Show recos
 ////////////////////////////////////////////////////
 m.ptnDescCmt=/^#(\S+)/mg; // \w=[A-Za-z0-9_]
+$formatting_lyrics.on("click", function (e) {
+	let lyrics=$input_desc[0].value;
+	let lyricsSplitted=lyrics.split("\n");
+	for (let i=0;i<lyricsSplitted.length;i++) {
+		lyricsSplitted[i]=lyricsSplitted[i].replace(/\s+/g, " ").trim();
+			// replacing all unicode whitespace.
+			// https://stackoverflow.com/questions/61300904/removing-narrow-no-break-space-unicode-characters-u00a0-in-python-nlp
+			// lyrics=lyrics.replace(/ /g, " ").replace(/ /, " ")...;
+	}
+	let trimedLyrics=lyricsSplitted.join("\n").trim();
+	if (!trimedLyrics.startsWith("#")) {
+		trimedLyrics="#lyrics\n\n"+trimedLyrics.split(/\n\n+/g).join("\n\n").trim();
+	}
+	let trimedLyricsSplitted=trimedLyrics.split("\n\n");
+	for (let i=0;i<trimedLyricsSplitted.length;i++) {
+		if (trimedLyricsSplitted[i].startsWith("You might also like")) {
+			trimedLyricsSplitted.splice(i,1);
+			i--;
+		}
+	}
+	$input_desc[0].value=trimedLyricsSplitted.join("\n\n");
+});
 m.renderStrDescCmt=function (str) {
 	let res=[];
 	str=str.trim();
