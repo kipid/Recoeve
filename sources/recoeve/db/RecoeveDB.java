@@ -19,7 +19,11 @@ import java.sql.*;
 	// java.sql.PreparedStatement
 import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.html
 
+import java.math.BigInteger;
+
 // import java.net.URLDecoder;
+
+import java.text.Normalizer;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -68,7 +72,7 @@ public static byte[] randomBytes(int length) {
 
 // The below is from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
 final protected static char[] hexArray="0123456789abcdef".toCharArray();
-public static String hex(byte[] bytes) {
+public static String bytesToHexString(byte[] bytes) {
 	char[] hexChars=new char[bytes.length*2];
 	for (int j=0; j<bytes.length; j++) {
 		int v=bytes[j]&0xFF;
@@ -78,7 +82,7 @@ public static String hex(byte[] bytes) {
 	return new String(hexChars);
 }
 
-public static byte[] unhex(String s) {
+public static byte[] hexStrToBytes(String s) {
 	int len=s.length();
 	byte[] data=new byte[len/2];
 	for (int i=0; i<len; i+=2) {
@@ -89,7 +93,17 @@ public static byte[] unhex(String s) {
 }
 
 public static String longToHexString(long user_me) {
-	return String.format("%016X", user_me);
+	return String.format("%016X", user_me).toLowerCase();
+}
+public static long hexStringToLong(String hexStr) {
+	return (new BigInteger(hexStr, 16)).longValue();
+}
+
+public static int getutf8mb4Length(String uri) {
+	String normalizedString=Normalizer.normalize(uri, Normalizer.Form.NFKC);
+	int utf8mb4Length=normalizedString.codePointCount(0, normalizedString.length());
+	System.out.println("Length of string in utf8mb4 encoding: "+utf8mb4Length);
+	return utf8mb4Length;
 }
 
 private static final MysqlConnectionPoolDataSource ds;
@@ -114,6 +128,9 @@ private PreparedStatement pstmtCheckDateDiff;
 	// java.util.Date dt=new java.util.Date();
 	// java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	// String currentTime=sdf.format(dt);
+
+private PreparedStatement pstmtGetRedirect;
+private PreparedStatement pstmtPutRedirect;
 
 private PreparedStatement pstmtPutBlogVisitor;
 private PreparedStatement pstmtGetBlogVisitor;
@@ -194,6 +211,9 @@ public RecoeveDB() {
 		pstmtCheckTimeDiff=con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
 		pstmtCheckDayDiffLessThan1=con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
+
+		pstmtGetRedirect=con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
+		pstmtPutRedirect=con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
 		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
@@ -379,6 +399,20 @@ public boolean checkDateDiff(Timestamp tNow, String from, int lessThanInDays) {
 	return false;
 }
 
+public String getRedirectURI(long hashpath) {
+	try {
+		pstmtGetRedirect.setLong(1, hashpath);
+		ResultSet rs=pstmtGetRedirect.executeQuery();
+		if (rs.next()) {
+			return rs.getString("originalURI");
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return null;
+}
+
 public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String referer, String REACTION_GUEST) {
 	try {
 		con.setAutoCommit(true);
@@ -491,7 +525,7 @@ public boolean checkAuthToken(StrArray inputs, String ip, Timestamp tNow) {
 		String errMsg="Sign-up error: ";
 		if (rs.next()) {
 			boolean newC=rs.getBoolean("new");
-			boolean tokenC=Arrays.equals(rs.getBytes("token"), unhex(token));
+			boolean tokenC=Arrays.equals(rs.getBytes("token"), hexStrToBytes(token));
 			boolean timeC=checkTimeDiff(tNow, tToken, 30);
 			System.out.println("newC:"+newC+", tokenC:"+tokenC+", timeC:"+timeC);
 			if (newC&&tokenC&&timeC) {
@@ -545,7 +579,7 @@ public boolean checkChangePwdToken(MultiMap params, Timestamp tNow) {
 			System.out.println(tNow+"\t"+from);
 			return from!=null
 				&& checkTimeDiff(tNow, from, 10*60)
-				&& Arrays.equals(unhex(params.get("token")), user.getBytes("tokenChangePwd"));
+				&& Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
 		}
 	}
 	catch (SQLException e) {
@@ -561,7 +595,7 @@ public boolean checkChangePwdToken(String id, String token, Timestamp tNow) {
 			System.out.println(tNow+"\t"+from);
 			return from!=null
 				&& checkTimeDiff(tNow, from, 10*60)
-				&& Arrays.equals(unhex(token), user.getBytes("tokenChangePwd"));
+				&& Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
 		}
 	}
 	catch (SQLException e) {
@@ -605,10 +639,10 @@ public void updateEmailStat(String emailHost, int increment)
 public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	boolean done=false;
 	String id=inputs.get(1, "userId");
-	byte[] pwd_salt=unhex( inputs.get(1, "authToken") );
+	byte[] pwd_salt=hexStrToBytes( inputs.get(1, "authToken") );
 	String pwd=inputs.get(1, "userPwd");
 	String email=inputs.get(1, "userEmail");
-	String veriKey=hex(randomBytes(32));
+	String veriKey=bytesToHexString(randomBytes(32));
 	ResultSet user=null;
 	try {
 		con.setAutoCommit(false);
@@ -811,7 +845,7 @@ public String getPwdIteration(String idType, String id) { // idType	"id or email
 		}
 		if ( user!=null&&user.next() ) {
 			result=Integer.toString( user.getInt("pwd_iteration") )
-				+"\t"+hex( user.getBytes("pwd_salt") );
+				+"\t"+bytesToHexString( user.getBytes("pwd_salt") );
 			done=true;
 			return result;
 		}
@@ -842,9 +876,9 @@ public String getNewPwdSalt(String idType, String id) { // idType	"id or email"
 			user.updateInt("pwd_iteration", Encrypt.iterFull-1);
 			byte[] new_salt=randomBytes(128);
 			user.updateBytes("pwd_salt", new_salt);
-			System.out.println("pwd_salt is renewed. :: "+hex(new_salt));
+			System.out.println("pwd_salt is renewed. :: "+bytesToHexString(new_salt));
 			user.updateRow();
-			result=hex(new_salt);
+			result=bytesToHexString(new_salt);
 			con.commit();
 			done=true;
 			return result;
@@ -915,7 +949,7 @@ public String forgotPwd(StrArray inputs, String lang, Timestamp tNow) {
 			user.updateTimestamp("tChangePwd", tNow);
 			byte[] token=randomBytes(32);
 			user.updateBytes("tokenChangePwd", token);
-			Gmail.sendChangePwd(id, email, hex(token), lang);
+			Gmail.sendChangePwd(id, email, bytesToHexString(token), lang);
 			user.updateRow();
 			return FileMap.replaceStr("[--pre sended email to--] "+encryptEmail(email)+"[--post sended email to--]", lang);
 		}
@@ -1058,7 +1092,7 @@ public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
 					ResultSet rs=pstmtSession.executeQuery();
 					if ( rs.next()
-						&&Arrays.equals(rs.getBytes("encryptedSSN"), pwdEncrypt(rs.getBytes("salt"), Encrypt.encryptSSNRest(hex(rs.getBytes("salt")), session, rs.getInt("iter")))) ) {
+						&&Arrays.equals(rs.getBytes("encryptedSSN"), pwdEncrypt(rs.getBytes("salt"), Encrypt.encryptSSNRest(bytesToHexString(rs.getBytes("salt")), session, rs.getInt("iter")))) ) {
 						rs.updateInt("iter", rs.getInt("iter")-1);
 						rs.updateRow();
 						return true;
@@ -1093,7 +1127,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 			byte[] salt=user.getBytes("pwd_salt");
 			int iter=user.getInt("pwd_iteration");
 			if ( Arrays.equals(
-					pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))
+					pwdEncrypt(salt, Encrypt.encryptRest(bytesToHexString(salt), inputs.get(1, "userPwd"), iter))
 					, user.getBytes("pwd")
 				) ) {
 				user.updateInt("pwd_iteration", iter-1);
@@ -1116,8 +1150,8 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 				logsCommit(user_me, tNow, ip, "lgi", true, logDesc); // log-in success
 			}
 			else {
-				System.out.println(hex(pwdEncrypt(salt, Encrypt.encryptRest(hex(salt), inputs.get(1, "userPwd"), iter))));
-				System.out.println(hex(user.getBytes("pwd")));
+				System.out.println(bytesToHexString(pwdEncrypt(salt, Encrypt.encryptRest(bytesToHexString(salt), inputs.get(1, "userPwd"), iter))));
+				System.out.println(bytesToHexString(user.getBytes("pwd")));
 				logsCommit(user_me, tNow, ip, "lgi", false); // log-in fail
 			}
 		}
@@ -1174,8 +1208,8 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 			// TODO: ip check.
 			if ( /*ip.startsWith(rs.getString("ip").split(":")[0])
 				&&*/checkDateDiff(tNow, rmbdT, daysRMB)
-				&&Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))
-				&&Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))
+				&&Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))
+				&&Arrays.equals(rs.getBytes("token"), hexStrToBytes(rmbdToken))
 				&&rs.getString("log").equals(log)
 				&&rs.getInt("sW")==Integer.parseInt(sW)
 				&&rs.getInt("sH")==Integer.parseInt(sH)
@@ -1188,7 +1222,7 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 					byte[] newToken=randomBytes(32);
 					rs.updateTimestamp("tLast", tNow);
 					rs.updateBytes("token", newToken);
-					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(newToken)).setSecure(true)
+					setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", bytesToHexString(newToken)).setSecure(true)
 							.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 					System.out.println("Remembered.");
 					logsCommit(user_me, tNow, ip, "rmb", true);
@@ -1205,10 +1239,10 @@ public List<io.vertx.core.http.Cookie> authUserFromRmbd(Cookie cookie, StrArray 
 				if (!checkDateDiff(tNow, rmbdT, daysRMB)) {
 					errMsg+="expired. ";
 				}
-				if (!Arrays.equals(rs.getBytes("auth"), unhex(rmbdAuth))) {
+				if (!Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))) {
 					errMsg+="auth. ";
 				}
-				if (!Arrays.equals(rs.getBytes("token"), unhex(rmbdToken))) {
+				if (!Arrays.equals(rs.getBytes("token"), hexStrToBytes(rmbdToken))) {
 					errMsg+="token. ";
 				}
 				if (!rs.getString("log").equals(log)) {
@@ -1249,7 +1283,7 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_me, Timestamp
 	try {
 		pstmtCreateUserSession.setLong(1, user_me);
 		pstmtCreateUserSession.setTimestamp(2, tNow);
-		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(hex(salt), hex(session).substring(3, 11), Encrypt.iterSSNFull)));
+		pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(bytesToHexString(salt), bytesToHexString(session).substring(3, 11), Encrypt.iterSSNFull)));
 		pstmtCreateUserSession.setBytes(4, salt);
 		pstmtCreateUserSession.setString(5, ip);
 		pstmtCreateUserSession.setString(6, userAgent);
@@ -1261,9 +1295,9 @@ public List<io.vertx.core.http.Cookie> createUserSession(long user_me, Timestamp
 					.setPath("/").setMaxAge(secondsSSN-30));
 			// setCookie.add(io.vertx.core.http.Cookie.cookie("tCjs", now_).setSecure(true)
 			// 		.setPath("/").setMaxAge(secondsSSN));
-			setCookie.add(io.vertx.core.http.Cookie.cookie("session", hex(session)).setSecure(true)
+			setCookie.add(io.vertx.core.http.Cookie.cookie("session", bytesToHexString(session)).setSecure(true)
 					.setPath("/").setMaxAge(secondsSSN));
-			setCookie.add(io.vertx.core.http.Cookie.cookie("salt", hex(salt)).setSecure(true)
+			setCookie.add(io.vertx.core.http.Cookie.cookie("salt", bytesToHexString(salt)).setSecure(true)
 					.setPath("/").setMaxAge(secondsSSN));
 		}
 	}
@@ -1291,9 +1325,9 @@ public List<io.vertx.core.http.Cookie> createUserRemember(long user_me, Timestam
 				.setPath("/").setMaxAge(secondsRMB));
 		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_).setSecure(true)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", hex(rmbdAuth)).setSecure(true)
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", bytesToHexString(rmbdAuth)).setSecure(true)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
-		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", hex(rmbdToken)).setSecure(true)
+		setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", bytesToHexString(rmbdToken)).setSecure(true)
 				.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
 	}
 	else {
@@ -2875,7 +2909,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 			for (int i=0;i<iMax;i++) {
 				String descIHash=null;
 				try {
-					descIHash=hex(sha512(sADescSetRaw.get(i, 0)));
+					descIHash=bytesToHexString(sha512(sADescSetRaw.get(i, 0)));
 				}
 				catch (Exception e) {
 					err(e);
@@ -2885,7 +2919,7 @@ if (desc!=null&&!(desc.isEmpty())) {
 				sADescSet.arrayArray.add(arrayListI);
 				sADescSet.mapArray.putIfAbsent(descIHash, arrayListI);
 			}
-			String strDescHash=hex(descHash);
+			String strDescHash=bytesToHexString(descHash);
 			ArrayList<String> arrayList=new ArrayList<String>(Arrays.asList(strDescHash, desc));
 			if (sADescSet.mapArray.putIfAbsent(strDescHash, arrayList)==null) {
 				sADescSet.arrayArray.add(arrayList);
@@ -2979,22 +3013,58 @@ public String recoDefs(StrArray uris) {
 	return res;
 }
 public String recoDo(long user_me, String recoStr, Timestamp tNow) {
-	String res="result\ttLast";
-	StrArray sa=new StrArray(recoStr.trim());
+	System.out.println(recoStr);
+	String res="result\ttLast\toriginalURI\turi";
+	StrArray sa=new StrArray(recoStr);
 	try {
 		con.setAutoCommit(false);
 		CatList catL=getCatList(user_me);
 		for (int i=1;i<sa.getRowSize();i++) {
 			res+="\n";
-			String doStr=sa.get(i, "do");
-			String uri=sa.get(i, "uri");
-			String catsStr=sa.get(i, "cats");
+			String doStr=sa.get(i, "do").trim();
+			String uri=sa.get(i, "uri").trim();
+			String originalURI=uri;
+			String catsStr=sa.get(i, "cats").trim();
 			Categories cats=new Categories(catsStr);
-			String title=sa.get(i, "title");
-			String desc=sa.get(i, "desc");
-			String cmt=sa.get(i, "cmt");
-			Points pts=new Points(sa.get(i, "val"));
+			String title=sa.get(i, "title").trim();
+			String desc=sa.get(i, "desc").trim();
+			String cmt=sa.get(i, "cmt").trim();
+			Points pts=new Points(sa.get(i, "val").trim());
 			String previousCatListStr=catL.fullCats;
+			System.out.println("originalURI: "+originalURI);
+			if (getutf8mb4Length(originalURI)>255) {
+				String hashpath=Encrypt.encrypt0("", originalURI, 1).substring(0, 16);
+				System.out.println("hashpath: "+hashpath);
+				long longHashpath=hexStringToLong(hashpath);
+				boolean done=false;
+				while (!done) {
+					pstmtGetRedirect.setLong(1, longHashpath);
+					ResultSet rs=pstmtGetRedirect.executeQuery();
+					if (rs.next()) {
+						if (rs.getString("originalURI").equals(originalURI)) {
+							done=true;
+							break;
+						}
+						else {
+							longHashpath++;
+							continue;
+						}
+					}
+					else {
+						pstmtPutRedirect.setLong(1, longHashpath);
+						pstmtPutRedirect.setString(2, originalURI);
+						done=(pstmtPutRedirect.executeUpdate()==1);
+						break;
+					}
+				}
+				System.out.println("done: "+done);
+				if (done) {
+					uri="https://recoeve.net/redirect/"+longToHexString(longHashpath);
+					desc="#originalURI\n"+originalURI+"\n\n"+desc.trim();
+					System.out.println("uri: "+uri);
+					System.out.println("originalURI: "+originalURI);
+				}
+			}
 			try {
 				ResultSet reco=getReco(user_me, uri);
 				boolean hasReco=reco.next();
@@ -3041,7 +3111,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 					}
 					break;
 				}
-				System.out.println("toDo:"+toDo);
+				System.out.println("toDo: "+toDo);
 				switch (toDo) {
 				case "put":
 					pstmtPutReco.setLong(1, user_me);
@@ -3162,7 +3232,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 					err(e2);
 				}
 			}
-			res+="\t"+tNow;
+			res+="\t"+tNow+"\t"+originalURI+"\t"+uri;
 		}
 	}
 	catch (SQLException e) {
@@ -3309,6 +3379,14 @@ public static void main(String... args) {
 	System.out.println(db.delBlogVisitor());
 	// db.moveRecosToRecos1();
 	// db.deleteUser("jwj0405@nav");
+	// System.out.println(longToHexString(0L));
+	// System.out.println(hexStringToLong(longToHexString(0L)));
+	// System.out.println(longToHexString(100000000000000L));
+	// System.out.println(hexStringToLong(longToHexString(100000000000000L)));
+	// System.out.println(longToHexString(-1L));
+	// System.out.println(hexStringToLong(longToHexString(-1L)));
+
+	getutf8mb4Length("F".repeat(1024));
 }
 }// public class RecoeveDB
 // UPDATE `Users` SET `id`="jwj0405" WHERE `email`="jwj0405@naver.com";

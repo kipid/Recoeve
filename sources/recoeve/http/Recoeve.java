@@ -30,7 +30,7 @@ import java.lang.StringBuilder;
 
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
-import recoeve.db.RecoeveDB;
+// import recoeve.db.RecoeveDB;
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
 import recoeve.db.StrArray;
@@ -172,6 +172,15 @@ public static void main(String... args) {
 		.setCacheEntryTimeout(1000L*60L*60L*24L*365L); // Cache timeout in ms (1 year)
 
 	router1.route().handler(staticHandler);
+
+	router1.get("/redirect/:hashpath").handler(ctx -> {
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		String hashpath=ctx.pathParam("hashpath");
+		ctx.response().setStatusCode(302) // Set the HTTP status code for redirection
+			.putHeader("Location", pl.db.getRedirectURI(pl.db.hexStringToLong(hashpath))) // Set the new location
+			.end();
+	});
 
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
 		PrintLog pl=new PrintLog();
@@ -781,10 +790,10 @@ public static void main(String... args) {
 							if (idAvailable&&emailAvailable) {
 								byte[] token=pl.db.randomBytes(128);
 								pl.req.response().end(
-									idAvailable+"\t"+emailAvailable+"\t"+(pl.db.createAuthToken(pl.tNow, pl.ip, token)?pl.tNow+"\t"+pl.db.hex(token):"Token is not created.")
+									idAvailable+"\t"+emailAvailable+"\t"+(pl.db.createAuthToken(pl.tNow, pl.ip, token)?pl.tNow+"\t"+pl.db.bytesToHexString(token):"Token is not created.")
 								, ENCODING);
 								System.out.println("Both ID: "+id+" and email: "+email+" are available. So a token is created.");
-								System.out.println("tNow: "+pl.tNow+"\n"+"token: "+pl.db.hex(token));
+								System.out.println("tNow: "+pl.tNow+"\n"+"token: "+pl.db.bytesToHexString(token));
 							}
 							else {
 								pl.db.logsCommit(1 // `user_i`=1 for anonymous.
@@ -912,7 +921,7 @@ public static void main(String... args) {
 			System.out.println(e);
 		}
 		catch (IllegalStateException e) {
-			RecoeveDB.err(e);
+			// RecoeveDB.err(e);
 		}
 	}).listen(443);
 	// UnderConstruction.HOST
