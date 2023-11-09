@@ -101,6 +101,10 @@ USE `Recoeve0.1`;
 
 CREATE USER 'eve'@'localhost' IDENTIFIED BY '{--password--}';
 GRANT ALL ON `Recoeve0.1`.* TO 'eve'@'localhost';
+FLUSH PRIVILEGES;
+
+# To change root password.
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 ```/
 
 
