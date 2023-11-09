@@ -3307,7 +3307,7 @@ public static void main(String... args) {
 
 	RecoeveDB db=new RecoeveDB();
 	System.out.println(db.delBlogVisitor());
-	db.moveRecosToRecos1();
+	// db.moveRecosToRecos1();
 	// db.deleteUser("jwj0405@nav");
 }
 }// public class RecoeveDB
