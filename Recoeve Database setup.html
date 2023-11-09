@@ -103,7 +103,9 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 ### Tables
 
-우선 DATABASE 를 만든 후, TABLE <refer class="table-UserClass"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
+우선 DATABASE 를 만든 후, TABLE <refer class="table-redirect"></refer> 를 만듬.
+
+TABLE <refer class="table-UserClass"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
 
 E-mail stat 좀 확인하고 싶어서 <refer class="table-EmailStat"></refer>.
 
@@ -397,8 +399,9 @@ req.remoteAddress(): /0:0:0:0:0:0:0:1:5454
 ```[.linenums.lang-sql]
 CREATE TABLE `redirect` (
 	`hashpath` bigint NOT NULL
-	, `originalURI` varchar(65535) NOT NULL UNIQUE
+	, `originalURI` varchar(2048) NOT NULL
 	, PRIMARY KEY (`hashpath`)
+	, UNIQUE KEY (`originalURI`(512))
 );
 ```/
 
@@ -1260,7 +1263,7 @@ Reco 에 up/down vote 가능하게? Reply 도 가능하게???
 ```[.linenums.lang-sql]
 CREATE TABLE `Recos` (
 	`user_i` bigint NOT NULL
-	, `uri` varchar(255) NOT NULL
+	, `uri` varchar(2048) NOT NULL
 	, `tFirst` datetime NOT NULL
 	, `tLast` datetime NOT NULL
 	, `cats` varchar(255) NOT NULL
@@ -1272,9 +1275,30 @@ CREATE TABLE `Recos` (
 	, `vDw` int DEFAULT 0
 	, `nViews` int DEFAULT 0
 	#, `open` tinyint DEFAULT 0
-	, PRIMARY KEY (`user_i`, `uri`)
+	, PRIMARY KEY (`user_i`, `uri`(512))
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 );
+
+SELECT
+	CONSTRAINT_NAME
+FROM
+	INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE
+	REFERENCED_TABLE_NAME = 'Users'
+	AND TABLE_NAME = 'Recos';
+
++-----------------+
+| CONSTRAINT_NAME |
++-----------------+
+| recos_ibfk_1    |
++-----------------+
+
+ALTER TABLE `Recos` DROP FOREIGN KEY `recos_ibfk_1`;
+ALTER TABLE `Recos` DROP PRIMARY KEY;
+ALTER TABLE `Recos`
+	MODIFY COLUMN `uri` varchar(2048) NOT NULL
+	, ADD PRIMARY KEY (`user_i`, `uri`(512));
+ALTER TABLE `Recos` ADD CONSTRAINT `recos_ibfk_1` FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`);
 
 SELECT * FROM `Recos` WHERE `user_i`=? and `uri`=?;
 
