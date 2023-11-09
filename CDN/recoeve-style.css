@@ -125,7 +125,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 #new-reco .def-cat, #multireco-cats-container .def-cat {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 #new-reco .def-cat.selected, #multireco-cats-container .def-cat.selected {border-color:rgb(255,180,180)}
 #delete-cat, #multireco-delete-cat {background:#ff7600}
-#new-reco .def-cmd {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
+#new-reco .def-cmd, #formatting-lyrics {display:inline-block; margin:.2em 0; border:1px solid rgb(130,130,130); padding:1px .5em; font-size:.9em}
 
 #javascript-disable {font-size:3em}
 
