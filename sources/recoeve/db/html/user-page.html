@@ -3141,8 +3141,8 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
 			for (let l=0;l<descR.length;l++) {
-				let key=m.escapeOnlyTag( descR[l] );
-				let value=m.escapeOnlyTag( descR[descR[l]] );
+				let key=m.escapeOnlyTag( descR[l].key );
+				let value=m.escapeOnlyTag( descR[l].value );
 				switch (key.toLowerCase()) {
 				case "#": case "":
 					res+=`<div class="value">${key} ${value.replace(/\n/g,"<br>")}</div>`;
