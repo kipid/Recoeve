@@ -235,6 +235,7 @@ public static void main(String... args) {
 
 	CorsHandler corsHandler=CorsHandler.create()
 		.addOrigin("https://www.youtube.com")
+		.addOrigin("https://googleads.g.doubleclick.net")
 		.addOrigin("https://localhost")
 		.addOrigin("https://recoeve.net")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
