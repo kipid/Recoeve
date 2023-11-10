@@ -55,7 +55,7 @@ public void start() {
 } // public void start()
 
 public static void main(String... args) {
-	CorsHandler corsHandler=CorsHandler.create()
+	CorsHandler corsHandler0=CorsHandler.create()
 		.addOrigin("https://kipid.tistory.com")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://localhost")
@@ -66,7 +66,7 @@ public static void main(String... args) {
 		// .allowedMethod(HttpMethod.DELETE)
 		.allowedHeader("Content-Type");
 
-	router0.route().handler(corsHandler);
+	router0.route().handler(corsHandler0);
 
 	router0.post("/BlogStat").handler(ctx -> { // e.g. path=/BlogStat
 		PrintLog pl=new PrintLog();
@@ -232,6 +232,19 @@ public static void main(String... args) {
 			System.out.println(INVALID_ACCESS+" (Referer not allowed.)");
 		}
 	});
+
+	CorsHandler corsHandler=CorsHandler.create()
+		.addOrigin("https://www.youtube.com")
+		.addOrigin("https://localhost")
+		.addOrigin("https://recoeve.net")
+		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
+		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
+		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
+		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
+		.allowedHeader("Content-Type")
+		.allowedHeader("Access-Control-Allow-Origin");
+
+	router.route().handler(corsHandler);
 
 	// String[] pathSplit=path.split("/");
 	router.get("/").handler(ctx -> { // path=/
