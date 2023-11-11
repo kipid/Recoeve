@@ -238,6 +238,7 @@ public static void main(String... args) {
 		.addOrigin("https://googleads.g.doubleclick.net")
 		.addOrigin("https://localhost")
 		.addOrigin("https://recoeve.net")
+		.addOrigin("https://www.recoeve.net")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
