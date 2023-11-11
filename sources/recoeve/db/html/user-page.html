@@ -115,6 +115,8 @@ else if (m.docCookies.hasItem("lang")) {
 
 .tip {color:rgb(250,150,100)}
 
+#sort-list .button {display:table; margin:0}
+
 #new-reco {z-index:21000; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.8); overflow:auto; color:white}
 .button.button-recostat {margin:0 .5em 0 0; padding:0 2px; color:#ffe3af; background:#808000}
 	.bright .button.button-recostat {color:#fff2da; background:#bebe84}
@@ -796,7 +798,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		</div>
 		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'Q'.charCodeAt(0)})">[--Preceding(_Q_)--]</div>
 		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'W'.charCodeAt(0)})">[--Follo_w_ing--]</div>
-		<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'S'.charCodeAt(0)})">[--_S_huffle--]</div>
+		<div style="display:inline-block">
+			<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'S'.charCodeAt(0)})">▼ [--_S_ort--]</div>
+			<div id="sort-list" style="display:none">
+				<div class="button" onclick="m.doFSToRs('shuffle'); m.fsToRs.playNext(-1, true, true)">[--Shuffle--]</div>
+				<div class="button" onclick="m.doFSToRs('tFirst-desc'); m.fsToRs.playNext(-1, true, true)">Sort by tFirst, desc</div>
+				<div class="button" onclick="m.doFSToRs('tFirst-asc'); m.fsToRs.playNext(-1, true, true)">Sort by tFirst, asc</div>
+				<div class="button" onclick="m.doFSToRs('tLast-desc'); m.fsToRs.playNext(-1, true, true)">Sort by tLast, desc</div>
+				<div class="button" onclick="m.doFSToRs('tLast-asc'); m.fsToRs.playNext(-1, true, true)">Sort by tLast, asc</div>
+				<div class="button" onclick="m.doFSToRs('point-desc'); m.fsToRs.playNext(-1, true, true)">Sort by point, desc</div>
+				<div class="button" onclick="m.doFSToRs('point-asc'); m.fsToRs.playNext(-1, true, true)">Sort by point, asc</div>
+			</div>
+		</div>
 		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
 		<div class="button button-loop" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">[--_L_oop--]</div>
 		<div class="button button-one-loop" onclick="$window.trigger({type:'keydown', keyCode:'P'.charCodeAt(0)})">[--One-loo_p_--]</div>
@@ -1460,6 +1473,7 @@ $button_ToR=$(".button-ToR");
 $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
+$sort_list=$("#sort-list");
 if (m.myPage) {
 	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
@@ -4209,7 +4223,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
-				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, randomN:Math.random()};
+				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, sortN:Math.random()};
 			}
 			m.reTriggerFS(fs);
 			break;
@@ -5050,13 +5064,17 @@ m.reco_do=function (args, err) {
 		if (result.startsWith("recoed")) {
 			$error.html(result);
 			args.$result?.html(result);
-			m.recoDowned(args.uri, m.myRecos);
+			let uri=res[1]?.uri;
+			m.recoDowned(uri, m.myRecos);
 			await m.recoToEve(args.strRecoDo, m.myRecos);
-			m.myRecos[args.uri].tFirst=m.myRecos[args.uri].tLast=res[1]?.tLast;
-			let cats=String(m.myRecos[args.uri].cats);
-			console.log("cats: ", cats, args.uri);
-			m.putCats_UriToLists(cats, args.uri);
-			m.refresh(cats, "recoed", args.uri, true);
+			m.myRecos[uri].tFirst=m.myRecos[uri].tLast=res[1]?.tLast;
+			let desc=String(m.myRecos[uri].desc);
+			if (uri!=res[1]?.originalURI) {
+				m.myRecos[uri].desc=(`#originalURI\n${res[1]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
+			}
+			let cats=String(m.myRecos[uri].cats);
+			m.putCats_UriToLists(cats, uri);
+			m.refresh(cats, "recoed", uri, true);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
@@ -5614,20 +5632,58 @@ m.playLi=function (e, elem, k, fs) {
 		}
 	}
 };
-m.doFSToRs=function (fs, shuffle) {
+m.datetimeToms=function (datetime) {
+	return (new Date(datetime.replace(/\s/, "T"))).getTime();
+};
+m.doFSToRs=function (shuffle) {
+	let fs=m.fsToRs;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (shuffle) {
-		let shuffled=(fs.shuffled?fs.shuffled:fs.shuffled=[]);
+		let shuffled=fs.shuffled=[];
 		let l=fs.fullList.length;
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, randomN:Math.random()};
+		switch (shuffle) {
+		case "shuffle":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:Math.random()};
+			}
+			break;
+		case "tFirst-desc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tFirst)};
+			}
+			break;
+		case "tFirst-asc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tFirst)};
+			}
+			break;
+		case "tLast-desc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tLast)};
+			}
+			break;
+		case "tLast-asc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tLast)};
+			}
+			break;
+		case "point-desc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
+			}
+			break;
+		case "point-asc":
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
+			}
+			break;
 		}
 		for (let i=1;i<l;i++) {
 			let temp=shuffled[i];
 			let j=i;
-			for (;(j>0)&&(shuffled[j-1].randomN<temp.randomN);j--) {
+			for (;(j>0)&&(shuffled[j-1].sortN<temp.sortN);j--) {
 				shuffled[j]=shuffled[j-1];
-			}
+			} // desc sorting.
 			shuffled[j]=temp;
 		}
 		m.reTriggerFS(fs);
@@ -5656,14 +5712,14 @@ m.fsToRsOn=async function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doFSToRs(m.fsToRs);
+		m.doFSToRs();
 	}
 	else {
 		$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 			m.previous=Date.now();
-			m.doFSToRs(m.fsToRs);
+			m.doFSToRs();
 		}, m.wait*1.1-passed);
 	}
 };
@@ -5859,8 +5915,7 @@ m.processShortKey=function (e) {
 		m.fsToRs.playNext();
 		break;
 	case 83: // S=83 Shuffle
-		m.doFSToRs(m.fsToRs, true);
-		m.fsToRs.playNext(-1, true, true);
+		$sort_list.toggle();
 		break;
 	case 75: // K=75 Auto skip
 		if ($button_auto_skip.hasClass("enabled")) {
@@ -6658,7 +6713,7 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 		}
 	}
 	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
-		m.doFSToRs(fs);
+		m.doFSToRs();
 		fs.playNext(-1, true, true);
 	}
 	else {
