@@ -130,6 +130,7 @@ private PreparedStatement pstmtCheckDateDiff;
 	// String currentTime=sdf.format(dt);
 
 private PreparedStatement pstmtGetRedirect;
+private PreparedStatement pstmtGetRedirectHashpath;
 private PreparedStatement pstmtPutRedirect;
 
 private PreparedStatement pstmtPutBlogVisitor;
@@ -213,6 +214,7 @@ public RecoeveDB() {
 		pstmtCheckDateDiff=con.prepareStatement("SELECT datediff(?, ?)<?;");
 
 		pstmtGetRedirect=con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
+		pstmtGetRedirectHashpath=con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
 		pstmtPutRedirect=con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
 		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
@@ -405,6 +407,19 @@ public String getRedirectURI(long hashpath) {
 		ResultSet rs=pstmtGetRedirect.executeQuery();
 		if (rs.next()) {
 			return rs.getString("originalURI");
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return null;
+}
+public String getRedirectHashpath(String uri) {
+	try {
+		pstmtGetRedirectHashpath.setString(1, uri);
+		ResultSet rs=pstmtGetRedirectHashpath.executeQuery();
+		if (rs.next()) {
+			return longToHexString(rs.getLong("hashpath"));
 		}
 	}
 	catch (SQLException e) {
