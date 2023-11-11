@@ -1070,7 +1070,7 @@ m.fsGoOn=function() {
 			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 $fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
@@ -1795,8 +1795,8 @@ m.delayedLoadByScroll=function () {
 	else {
 		setTimeout(function () {
 			m.delayedLoadAll();
-		}, m.wait*1.1-passed);
-		m.logPrint(`<br>wait ${(m.wait*1.1-passed).toFixed(0)}ms.`);
+		}, m.wait*1.5-passed);
+		m.logPrint(`<br>wait ${(m.wait*1.5-passed).toFixed(0)}ms.`);
 	}
 };
 $window.on("scroll.delayedLoad", m.delayedLoadByScroll);

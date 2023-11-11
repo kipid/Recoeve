@@ -808,6 +808,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="button" onclick="m.doFSToRs('tLast-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by tLast, asc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-desc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, desc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, asc--]</div>
+				<div class="button" style="margin-top:.3em" onclick="m.rmb_me(m.saveThisOrder, null)">[--Save this order.--]</div>
 			</div>
 		</div>
 		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
@@ -2316,7 +2317,7 @@ m.fsCatOn=async function () {
 			$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 			m.previous=Date.now();
 			m.doFSCat(m.fsCat);
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 m.fsMRCatOn=async function () {
@@ -2332,7 +2333,7 @@ m.fsMRCatOn=async function () {
 			$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 			m.previous=Date.now();
 			m.doMRFSCat();
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 m.fsGotoCatsOn=async function () {
@@ -2351,7 +2352,7 @@ return new Promise(async function (resolve, reject) {
 			m.previous=Date.now();
 			await m.doFSGotoCats();
 			resolve();
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 });
 };
@@ -2368,7 +2369,7 @@ m.fsTimezoneOn=async function () {
 			$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 			m.previous=Date.now();
 			m.doFSTimezone();
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 m.reTriggerFS=function (fs) {
@@ -5096,6 +5097,11 @@ m.reco_do=function (args, err) {
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
+			let uri=res[1]?.uri;
+			if (uri!=res[1]?.originalURI) {
+				$input_uri[0].value=uri;
+				$input_uri.trigger("keyup");
+			}
 		}
 	}).always(function () {
 		$button_reco.removeClass("disabled");
@@ -5598,7 +5604,7 @@ m.fsGoOn=async function () {
 			$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 $fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
@@ -5720,7 +5726,7 @@ m.fsToRsOn=async function () {
 			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 			m.previous=Date.now();
 			m.doFSToRs();
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 $table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);

@@ -673,7 +673,7 @@ m.delayedLoadByScroll=function () {
 	else {
 		m.delayedLoadSetTimeout=setTimeout(function () {
 			m.delayedLoadAll();
-		}, m.wait*1.1-passed);
+		}, m.wait*1.5-passed);
 	}
 };
 $window.on("scroll.delayedLoad", m.delayedLoadByScroll);
