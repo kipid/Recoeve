@@ -126,6 +126,8 @@ desc, cmt SEE (Super Easy Edit) 처럼 처리되도록 만들자. 그리고 subl
 
 
 
+Daily points 30점 정도, max 100점까지 이일되고, 하루 UTC 0시마다 30점씩 플러스. (이건 근데 좀 나중으로 미루자. 재미 요소를 위해 도입하고 싶기도 한데 꼭 필요한 기능은 아닌거 같아서...)
+
 최근 reco 들 (전세계적으로 current issue check) 보여주는 사이트도 만들자. URI 를 user_i\sURI 로 저장하고 cats 는 user.cats 쓰면서 cat 에 UriList 를 string.length&gt;MAXUriList 넘기는 부분 다음 "\n" 에서 짤라주는 식으로 최근 1000~10000 개 정도의 recos 만 보여주기? Reco revision history 도 같이 보이도록... path=/statistics[/mode/multireco]?cat=...#encodeURIComponent(UserIndex-recoURI) 정도의 path 로...
 
 cat=RSS-- 하위 cat 들에서는 feedly 처럼 새로운 글 알려주는 식으로 짜볼까나? (이건 좀 미뤄도 될듯? 합병을 생각해도 되는거고 feedly 랑.)
@@ -251,6 +253,18 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ### 정리하기 전
 
 
+
+Table of Recos 정렬하기. sort by points desc/asc, sort by title asc/desc. sort by tFirst asc/desc.
+
+URI&gt;255 일때 처리를 깔끔하게 해주자. 사용자한테 알아서 하라고 맡기는건 좀 아닌듯. 기본 URI 는 substring(0, 255) 짜리로 cut 하고.
+desc 의 첫번째
+"#originalURI
+https://.................................엄청긴-URI\n\n\n\n"
+추가하거나 해서 해결하면 될듯?
+아니다. 이것보단 redirect https://recoeve.net/redirect/[0-9a-f]{16}
+Long.toString(Long.MAX, 16) 이 몇글자지? 16글자 "7fffffffffffffff" 음수까지 되니까 "fff..."까지.
+
+가사 포멧화하기 (genius.com), Formatting the lyrics (from genius.com)
 
 User 의 reco on the URI 가 존재하든 안하든 overwrite, put 은 reco on the URI 가 없을때만 동작, change 는 reco on the URI 가 이미 있을때만 동작.
 
