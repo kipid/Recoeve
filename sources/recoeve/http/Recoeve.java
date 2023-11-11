@@ -272,6 +272,14 @@ public static void main(String... args) {
 			.putHeader("Location", originalURI) // Set the new location
 			.end();
 	});
+	router.post("/get-redirect-hashpath").handler(ctx -> {
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		pl.req.bodyHandler((Buffer data) -> {
+			pl.req.response().end("https://"+HOST+"/redirect/"+pl.db.getRedirectHashpath(data.toString()), ENCODING);
+			System.out.println("Sended recos.");
+		});
+	});
 
 	router.get("/admin/:query").handler(ctx -> { // path=/admin/...
 		PrintLog pl=new PrintLog();
