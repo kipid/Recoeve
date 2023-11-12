@@ -5738,7 +5738,7 @@ $button_save_this_order=$("#button-save-this-order");
 if (m.myPage) {
 	$button_save_this_order.show();
 	$button_save_this_order.on("click", function (e) {
-		rmb_me(function (args) {
+		m.rmb_me(function (args) {
 			let uris="\n";
 			let fs=m.fsToRs;
 			if (fs.shuffled) {
