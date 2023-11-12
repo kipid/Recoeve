@@ -451,8 +451,9 @@ public static void main(String... args) {
 							final String cat=Encoder.decodeURIComponent(pl.req.getParam("cat"));
 							System.out.println("cat: "+cat);
 							pl.req.bodyHandler((Buffer data) -> {
-								pl.req.response().end(""+pl.db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n")), ENCODING);
-								System.out.println("Sended result of change-order-of-UriList.");
+								boolean result=pl.db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n"));
+								pl.req.response().end(""+result, ENCODING);
+								System.out.println("Sended result: "+result+" of change-order-of-UriList.");
 							});
 						}
 						else {

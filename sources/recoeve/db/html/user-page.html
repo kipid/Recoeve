@@ -809,7 +809,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="button" onclick="m.doFSToRs('point-desc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, desc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, asc--]</div>
 				<div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
-				<div class="numbers-of-recos" style="display:table; font-size:.7em; max-width:20em"></div>
+				<div id="result-of-change-order" style="display:table; font-size:.7em; max-width:20em"></div>
 			</div>
 		</div>
 		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
@@ -5737,46 +5737,52 @@ $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
 });
 $button_save_this_order=$("#button-save-this-order");
+$result_of_change_order=$("#result-of-change-order")
 if (m.myPage) {
 	$button_save_this_order.show();
 	$button_save_this_order.on("click", function (e) {
-		m.rmb_me(function (args) {
-			let uris="\n";
-			let fs=m.fsToRs;
-			if (fs.shuffled) {
-				for (let i=0;i<fs.shuffled.length;i++) {
-					uris=uris+fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
-				}
-				uris=uris.trim();
-				if (m.catUriList[m.currentCat].UriList.trim()===uris) {
-					$numbers_of_recos.html("UriList order is NOT changed.");
-					return;
-				}
-				$.ajax({
-					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
-				}).fail(function (resp) {
-					$numbers_of_recos.html(resp);
-				}).done(async function (resp) {
-					if (resp==="true") {
-						$numbers_of_recos.html("UriList order is changed.");
-						m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
-						m.catUriList[m.currentCat].uris=uris.trim().split("\n");
-						fs.shuffled=null;
-						await m.openCat(m.currentCat);
-						m.reTriggerFS(fs);
-					}
-					else if (resp==="false") {
-						$numbers_of_recos.html("UriList order is NOT changed. Some error may occur.")
-					}
-					else {
-						$numbers_of_recos.html("Server error.")
-					}
-				});
+		$result_of_change_order.html("Changing the order of UriList.");
+		let uris="\n";
+		let fs=m.fsToRs;
+		if (fs.shuffled) {
+			for (let i=0;i<fs.shuffled.length;i++) {
+				uris=uris+fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
-		}, null);
+			uris=uris.trim();
+			if (m.catUriList[m.currentCat].UriList.trim()===uris) {
+				$result_of_change_order.html("UriList order is the same as before.");
+			}
+			else {
+				m.rmb_me(function (args) {
+					$.ajax({
+						type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
+					}).fail(function (resp) {
+						$result_of_change_order.html(resp);
+					}).done(async function (resp) {
+						if (resp==="true") {
+							$result_of_change_order.html("UriList order is changed.");
+							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
+							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
+							fs.shuffled=null;
+							await m.recoToEve("", m.myRecos, m.currentCat, m.catUriList[m.currentCat].uris);
+							await m.openCat(m.currentCat);
+							m.reTriggerFS(fs);
+						}
+						else if (resp==="false") {
+							$result_of_change_order.html("UriList order is NOT changed. Some error may occur.")
+						}
+						else {
+							$result_of_change_order.html("Server error.")
+						}
+					});
+				}, null);
+			}
+		}
+		else {
+			$result_of_change_order.html("UriList order is the same as before.");
+		}
 	});
 }
-
 
 ////////////////////////////////////////////////////
 // SNS Sharing
