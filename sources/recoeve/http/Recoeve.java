@@ -449,9 +449,10 @@ public static void main(String... args) {
 					case "change-order-of-UriList": // e.g. path=/user/kipid/change-order-of-UriList?cat=......
 						if (pl.sessionPassed) {
 							final String cat=Encoder.decodeURIComponent(pl.req.getParam("cat"));
+							System.out.println("cat: "+cat);
 							pl.req.bodyHandler((Buffer data) -> {
 								pl.req.response().end(""+pl.db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n")), ENCODING);
-								System.out.println("Sended uriLists.");
+								System.out.println("Sended result of change-order-of-UriList.");
 							});
 						}
 						else {

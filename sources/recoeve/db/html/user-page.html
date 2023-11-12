@@ -809,6 +809,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="button" onclick="m.doFSToRs('point-desc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, desc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, asc--]</div>
 				<div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
+				<div class="numbers-of-recos" style="display:table; font-size:.7em; max-width:20em"></div>
 			</div>
 		</div>
 		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
@@ -5742,11 +5743,12 @@ if (m.myPage) {
 			let uris="\n";
 			let fs=m.fsToRs;
 			if (fs.shuffled) {
-				for (let i=0;i<fs.fullList;i++) {
-					uris+=fs.fullList[fs.shuffled[i].i].r.uri+"\n";
+				for (let i=0;i<fs.shuffled.length;i++) {
+					uris=uris+fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 				}
+				console.log(uris);
 				$.ajax({
-					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
+					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris.trim(), dataType:"text"
 				}).fail(function (resp) {
 					$numbers_of_recos.html(resp);
 				}).done(function (resp) {

@@ -433,9 +433,14 @@ public boolean changeOrderOfUriList(String cookieI, String user_id, String cat, 
 		long user_me=Long.parseLong(cookieI, 16);
 		ResultSet user=findUserByIndex(user_me);
 		if (user.next()&&user.getString("id").equals(user_id)) {
-			UriList uriList=getUriList(user_me, cat);
-			if (uriList.changeOrders(changedUriList)) {
-				return putUriList(user_me, cat, uriList);
+			ResultSet rSUriList=getRSUriList(user_me, cat);
+			if (rSUriList!=null) {
+				UriList uriList=new UriList(rSUriList.getString("uriList"));
+				if (uriList.changeOrders(changedUriList)) {
+					rSUriList.updateString("uriList", uriList.toString());
+					rSUriList.updateRow();
+					return true;
+				}
 			}
 		}
 	}
@@ -2580,6 +2585,15 @@ public String getStringCatUriList(long user_me, StrArray catList) {
 		err(e);
 	}
 	return res;
+}
+public ResultSet getRSUriList(long user_me, String cat) throws SQLException {
+	pstmtGetUriList.setLong(1, user_me);
+	pstmtGetUriList.setString(2, cat);
+	ResultSet rs=pstmtGetUriList.executeQuery();
+	if (rs.next()) {
+		return rs;
+	}
+	return null;
 }
 public UriList getUriList(long user_me, String cat) throws SQLException {
 	pstmtGetUriList.setLong(1, user_me);

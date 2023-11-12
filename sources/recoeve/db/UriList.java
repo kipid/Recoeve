@@ -72,9 +72,16 @@ public class UriList {
 				set1.add(uriList1[i]);
 			}
 			if (set0.equals(set1)) {
+				System.out.println("Set is equal to each other.");
 				fullURIs="\n"+newFullURIs.trim()+"\n";
 				return true;
 			}
+			else {
+				System.out.println("Set is not equal to each other.");
+			}
+		}
+		else {
+			System.out.println("UriList.length is different.");
 		}
 		return false;
 	}
