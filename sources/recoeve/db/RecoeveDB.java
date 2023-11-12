@@ -428,6 +428,23 @@ public String getRedirectHashpath(String uri) {
 	return null;
 }
 
+public boolean changeOrderOfUriList(String cookieI, String user_id, String cat, String changedUriList) {
+	try {
+		long user_me=Long.parseLong(cookieI, 16);
+		ResultSet user=findUserByIndex(user_me);
+		if (user.next()&&user.getString("id").equals(user_id)) {
+			UriList uriList=getUriList(user_me, cat);
+			if (uriList.changeOrders(changedUriList)) {
+				return putUriList(user_me, cat, uriList);
+			}
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
+}
+
 public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String referer, String REACTION_GUEST) {
 	try {
 		con.setAutoCommit(true);
