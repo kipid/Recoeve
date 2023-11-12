@@ -1740,7 +1740,7 @@ m.getDepthOfTabs=function (str) {
 m.getSuperCat=function (cat) {
 	if (cat&&cat.constructor===String) {
 		let i=cat.lastIndexOf("--");
-		if (i!=-1) {
+		if (i!==-1) {
 			return cat.substring(0,i);
 		}
 	}
@@ -2527,7 +2527,7 @@ m.putCat=function (cat) {
 		let subStr=fullCats.substring(start,end);
 		let toFind=pre+levels[j]+"\n";
 		let i=subStr.indexOf(toFind);
-		if (i!=-1) {
+		if (i!==-1) {
 			let ptnEnd=new RegExp(pre.replace(/\n/g,"\\n").replace(/\t/g,"\\t")+"[^\\t\\n]", "g");
 			ptnEnd.lastIndex=i+toFind.length-1;
 			let matchEnd=ptnEnd.exec(subStr);
@@ -2745,7 +2745,7 @@ m.val=function (val) {
 	for (let k=0;k<5;k++,xc+=2*r+pad) {
 		str+=`${xc},0 `;
 		for (let i=0;i<10;i++) {
-			let rp=(i%2==0)?r:r0;
+			let rp=(i%2===0)?r:r0;
 			str+=`${(xc+rp*coss[i]).toFixed(1)},${(yc+rp*sins[i]).toFixed(1)} `;
 		}
 		str+=`${xc},${pad} ${xc},0 `;
@@ -2790,7 +2790,7 @@ m.mmInPR=function (e) {
 	window.getSelection().removeAllRanges();
 	e.preventDefault();
 	e.stopPropagation();
-	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w=x-$point_range.offset().left+$window.scrollLeft();
 	w=(w<0)?0:w;
 	w=(w>m.PRw)?m.PRw:w;
@@ -2861,7 +2861,7 @@ m.mmInPR1=function (e) {
 	window.getSelection().removeAllRanges();
 	e.preventDefault();
 	e.stopPropagation();
-	let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w1=x-$point_range1.offset().left+$window.scrollLeft();
 	w1=(w1<0)?0:w1;
 	w1=(w1>m.PRw1)?m.PRw1:w1;
@@ -3191,7 +3191,7 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 		}
 		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeOnlyTag(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
 		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
-		if (r.tFirst!=r.tLast) {
+		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 		}
 		res+=`</div>`;
@@ -3435,7 +3435,7 @@ m.starsOnTouchMove=function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		e.stopPropagation();
-		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 		let w=x-$bar.offset().left+$window.scrollLeft();
 		if (w<-15) {
 			w=-1;
@@ -4362,6 +4362,7 @@ m.openCat=async function (cat) {
 		m.lastIndexOfUriList=uris.length;
 	}
 	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
+	fsGotoCatsCat.down=true;
 	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		if (!m.doNotPushHistory) {
@@ -4937,7 +4938,7 @@ $input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 		window.getSelection().removeAllRanges();
 		e.preventDefault();
 		e.stopPropagation();
-		let x=(e.type=='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 		let w=x-$bar.offset().left+$window.scrollLeft();
 		if (w<-15) {
 			w=-1;
@@ -5071,7 +5072,7 @@ m.reco_do=function (args, err) {
 			await m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[uri].tFirst=m.myRecos[uri].tLast=res[1]?.tLast;
 			let desc=String(m.myRecos[uri].desc);
-			if (uri!=res[1]?.originalURI) {
+			if (uri!==res[1]?.originalURI) {
 				m.myRecos[uri].desc=(`#originalURI\n${res[1]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
 			}
 			let cats=String(m.myRecos[uri].cats);
@@ -5099,7 +5100,7 @@ m.reco_do=function (args, err) {
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
 			let uri=res[1]?.uri;
-			if (uri!=res[1]?.originalURI) {
+			if (uri!==res[1]?.originalURI) {
 				$input_uri[0].value=uri;
 				$input_uri.trigger("keyup");
 			}
@@ -5326,7 +5327,7 @@ $button_del.on("click", function (e) {
 	}
 	else {
 		let errorMsg="";
-		if (uri.length==0) {
+		if (uri.length===0) {
 			errorMsg="[--URI is required.--]";
 		}
 		else {
@@ -5515,7 +5516,7 @@ m.showAndScrollTo=function ($recoElem) {
 	window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 };
 m.gotoLi=async function (event) {
-	if (event?.srcElement?.nodeName=="A") {
+	if (event?.srcElement?.nodeName==="A") {
 		return;
 	}
 	let fs=m.fsGo;
@@ -5548,7 +5549,7 @@ m.gotoLi=async function (event) {
 	m.beInCurrentCat=false;
 	let catSplit=fsFLk.catSplit;
 	for (let i=0;i<catSplit.length;i++) {
-		if (m.currentCat==catSplit[i]) {
+		if (m.currentCat===catSplit[i]) {
 			m.beInCurrentCat=true;
 			break;
 		}
@@ -5617,7 +5618,7 @@ $fuzzy_search.trigger("keyup.fs");
 // Fuzzy search on Table of Recos (TofR)
 ///////////////////////////////////////////
 m.playLi=function (e, elem, k, fs) {
-	if (!(e&&e.srcElement&&e.srcElement.nodeName=="A")) {
+	if (!(e&&e.srcElement&&e.srcElement.nodeName==="A")) {
 		let $elem=$(elem);
 		// let uri=fs.fullList[k].uri;
 		if ($elem.hasClass("selected")) {
@@ -5746,14 +5747,23 @@ if (m.myPage) {
 				for (let i=0;i<fs.shuffled.length;i++) {
 					uris=uris+fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 				}
-				console.log(uris);
+				uris=uris.trim();
+				if (m.catUriList[m.currentCat].UriList.trim()===uris) {
+					$numbers_of_recos.html("UriList order is NOT changed.");
+					return;
+				}
 				$.ajax({
-					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris.trim(), dataType:"text"
+					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
 				}).fail(function (resp) {
 					$numbers_of_recos.html(resp);
-				}).done(function (resp) {
+				}).done(async function (resp) {
 					if (resp==="true") {
 						$numbers_of_recos.html("UriList order is changed.");
+						m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
+						m.catUriList[m.currentCat].uris=uris.trim().split("\n");
+						fs.shuffled=null;
+						await m.openCat(m.currentCat);
+						m.reTriggerFS(fs);
 					}
 					else if (resp==="false") {
 						$numbers_of_recos.html("UriList order is NOT changed. Some error may occur.")
@@ -6685,7 +6695,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	m.reNewAndReOn();
 };
 m.fsToRs.pauseVideo=function () {
-	if ($video&&$video[0]&&$video[0].tagName=="VIDEO") {
+	if ($video&&$video[0]&&$video[0].tagName==="VIDEO") {
 		$video[0]?.pause();
 	}
 	if (m.YtPlayer) {
