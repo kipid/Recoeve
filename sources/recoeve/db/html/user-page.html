@@ -808,7 +808,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="button" onclick="m.doFSToRs('tLast-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by tLast, asc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-desc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, desc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-asc'); m.fsToRs.playNext(-1, true, true)">[--Sort by point, asc--]</div>
-				<div class="button" style="margin-top:.3em" onclick="m.rmb_me(m.saveThisOrder, null)">[--Save this order.--]</div>
+				<div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
 			</div>
 		</div>
 		<div class="button enabled button-auto-skip" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">[--Auto s_k_ip--]</div>
@@ -5734,7 +5734,36 @@ $table_of_recos.trigger("keyup.fs");
 $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
 });
-
+$button_save_this_order=$("#button-save-this-order");
+if (m.myPage) {
+	$button_save_this_order.show();
+	$button_save_this_order.on("click", function (e) {
+		rmb_me(function (args) {
+			let uris="\n";
+			let fs=m.fsToRs;
+			if (fs.shuffled) {
+				for (let i=0;i<fs.fullList;i++) {
+					uris+=fs.fullList[fs.shuffled[i].i].r.uri+"\n";
+				}
+				$.ajax({
+					type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
+				}).fail(function (resp) {
+					$numbers_of_recos.html(resp);
+				}).done(function (resp) {
+					if (resp==="true") {
+						$numbers_of_recos.html("UriList order is changed.");
+					}
+					else if (resp==="false") {
+						$numbers_of_recos.html("UriList order is NOT changed. Some error may occur.")
+					}
+					eles {
+						$numbers_of_recos.html("Server error.")
+					}
+				});
+			}
+		}, null);
+	});
+}
 
 
 ////////////////////////////////////////////////////
