@@ -446,6 +446,19 @@ public static void main(String... args) {
 							System.out.println("Sended uriLists.");
 						});
 						break;
+					case "change-order-of-UriList": // e.g. path=/user/kipid/change-order-of-UriList?cat=......
+						if (pl.sessionPassed) {
+							final String cat=Encoder.decodeURIComponent(pl.req.getParam("cat"));
+							pl.req.bodyHandler((Buffer data) -> {
+								pl.req.response().end(""+pl.db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n")), ENCODING);
+								System.out.println("Sended uriLists.");
+							});
+						}
+						else {
+							pl.req.response().end(INVALID_ACCESS, ENCODING);
+							System.out.println("Session is not passed.");
+						}
+						break;
 					case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
 						pl.req.bodyHandler((Buffer data) -> {
 							pl.req.response().end(pl.db.getStrOfNeighbors(finalUserId, data.toString(), pl.tNow), ENCODING);
