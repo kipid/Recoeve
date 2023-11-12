@@ -50,7 +50,7 @@ public class UriList {
 		}
 		return set;
 	}
-	public void putURI(String uri) {
+	public void putURI(String uri) { // Newest uri to the top.
 		fullURIs="\n"+uri+fullURIs;
 	}
 	public boolean deleteURI(String uri) {
