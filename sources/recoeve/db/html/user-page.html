@@ -2201,7 +2201,7 @@ m.completeCat=function (event) {
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 };
 m.completeMRCat=function (event) {
-	let $elem=$(event.currenttarget);
+	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fs=m.fsMRCat;
 	fs.$fsLis=fs.$fsl.find(".list-item");
