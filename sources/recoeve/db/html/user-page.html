@@ -5768,6 +5768,7 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
 							fs.shuffled=null;
 							await m.recoToEve("", m.myRecos, m.currentCat, m.catUriList[m.currentCat].uris);
+							m.lastRecoMode="nothing";
 							await m.openCat(m.currentCat);
 							m.reTriggerFS(fs);
 						}
