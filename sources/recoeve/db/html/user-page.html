@@ -3552,6 +3552,7 @@ m.reNewAndReOn=async function () {
 m.lastRecoMode="nothing";
 m.showRecosOnCat=async function (elem, from) {
 	m.modeToggle=false;
+	let cat=m.currentCat;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		m.lastRecoMode=m.recoMode;
 		m.modeToggle=true;
