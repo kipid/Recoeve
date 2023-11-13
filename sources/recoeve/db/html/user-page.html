@@ -3228,6 +3228,7 @@ m.reco_pointChange_do=function (args, err) {
 		if (result?.substring(0,7)==="changed") {
 			m.myRecos[uri].val=m.val(args.valStr);
 			m.myRecos[uri].cats=args.cats;
+			m.myRecos[uri].tLast=res[1]?.tLast;
 			args.$result?.html(m.escapeOnlyTag(res[1].result));
 			m.refresh(args.cats, "changed", uri);
 		}
@@ -5195,6 +5196,7 @@ m.reco_change_do=function (args, err) {
 				args.r.cmtR=m.renderStrDescCmt(args.cmt);
 			}
 			if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
+			args.r.tLast=res[1]?.tLast;
 			m.refresh(args.cats, "changed", args.uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
