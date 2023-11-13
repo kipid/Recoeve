@@ -5691,7 +5691,7 @@ m.doFSToRs=function (shuffle) {
 		for (let i=1;i<l;i++) {
 			let temp=shuffled[i];
 			let j=i;
-			for (;(j>0)&&(shuffled[j-1].sortN<temp.sortN);j--) {
+			for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
 				shuffled[j]=shuffled[j-1];
 			} // desc sorting.
 			shuffled[j]=temp;
