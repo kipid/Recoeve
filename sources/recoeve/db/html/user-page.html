@@ -6582,7 +6582,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (hashURI) {
 		m.fsGo.tryN=0;
 		m.setIntervalFsGo=setInterval(function () {
-			console.log(hashURI, m.fsGo.fullList[hashURI]);
 			if (m.fsGo.fullList[hashURI]||m.fsGo.tryN++>7) {
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
