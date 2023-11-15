@@ -6584,11 +6584,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.setIntervalFsGo=setInterval(function () {
 			console.log(hashURI, m.fsGo.fullList[hashURI]);
 			if (m.fsGo.fullList[hashURI]||m.fsGo.tryN++>7) {
-				clearInterval(m.setIntervalFsGo);
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
 					$(`#li-${k}`).trigger("click");
+					clearInterval(m.setIntervalFsGo);
 				}
 			}
 		}, 512);
