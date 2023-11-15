@@ -3078,7 +3078,7 @@ public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 			Points pts=new Points(sa.get(i, "val"));
 			String previousCatListStr=catL.fullCats;
 			System.out.println("originalURI: "+originalURI);
-			if (getutf8mb4Length(originalURI)>255) {
+			if (getutf8mb4Length(originalURI)>4096) {
 				String hashpath=Encrypt.encrypt0("", originalURI, 1).substring(0, 16);
 				System.out.println("hashpath: "+hashpath);
 				long longHashpath=hexStringToLong(hashpath);
