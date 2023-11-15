@@ -3024,7 +3024,7 @@ m.renderStrDescCmt=function (str) {
 			key=match[0]
 			listOfValues=[];
 			let value0=trimedStrSplitted[i].substring(match[0].length).trim();
-			if (!value0.isEmpty()) {
+			if (value0) {
 				listOfValues[0]=value0;
 			}
 		}
