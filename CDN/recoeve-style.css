@@ -209,7 +209,7 @@ div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em
 .rC>.rSC {position:relative; height:0; padding-bottom:63%}
 .rC.soundcloud>.rSC {padding-bottom:20%}
 .rC.instagram>.rSC {padding-bottom:165%; overflow:auto}
-.rC.imgur>.rSC {padding-bottom:150%; overflow:auto}
+.rC.imgur>.rSC {padding-bottom:180%; overflow:auto}
 .rC.tiktok>.rSC {height:895px; padding-bottom:0; overflow-x:hidden; overflow-y:scroll}
 .rC.eveElse>.rSC {padding-bottom:80%}
 .rC>.rSC>* {position:absolute; width:100%; height:100%; max-width:100%; max-height:100%; left:0; top:0; overflow-x:hidden; overflow-y:hidden}
@@ -223,6 +223,7 @@ div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em
 @media all and (min-width:600px) {
 	#container {font-size:13px}
 	.multireco .reco {width:33%}
+	.rC.imgur>.rSC {padding-bottom:125%}
 }
 @media all and (min-width:701px) {
 	#container {font-size:14px}
@@ -230,6 +231,7 @@ div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em
 	#change-style {margin-top:0}
 	#my-id {margin-left:0}
 	.rC.fixed {width:50%; border-right:.15em solid white}
+	.rC.imgur>.rSC {padding-bottom:180%}
 	.rC.instagram.fixed, .rC.eveElse.fixed, .rC.tiktok.fixed {width:360px}
 	.rC.tiktok>.rSC {width:100%; height:895px; padding-bottom:0}
 	.lyrics {text-align:right}
@@ -239,10 +241,12 @@ div.cmt {margin:.5em 0; padding:.5em; background:rgb(30,30,30); border-left:.3em
 	#container {font-size:15px}
 	.multireco .reco {width:33%}
 	.rC.fixed {width:55%}
+	.rC.imgur>.rSC {padding-bottom:130%}
 }
 @media all and (min-width:1210px) {
 	#container {font-size:17px}
 	.multireco .reco {width:24%}
+	.rC.imgur>.rSC {padding-bottom:80%}
 }
 
 @media all and (min-height:500px) {
