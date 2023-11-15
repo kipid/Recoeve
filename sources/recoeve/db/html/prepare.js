@@ -1204,6 +1204,20 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["imgur.com"]=m.ptnURI["www.imgur.com"]={};
+ptnURI.regEx=/^a\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["imgur.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br>`:"")+m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "imgur", null, true), from:"imgur", imgId:exec[1]});
+	}
+	else {
+		return reject(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI["www.tiktok.com"]={};
 ptnURI.regEx=/^@(\S+)\/video\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
