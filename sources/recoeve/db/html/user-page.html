@@ -3023,7 +3023,10 @@ m.renderStrDescCmt=function (str) {
 			k++;
 			key=match[0]
 			listOfValues=[];
-			listOfValues[0]=trimedStrSplitted[i].substring(match[0].length).trim();
+			let value0=trimedStrSplitted[i].substring(match[0].length).trim();
+			if (!value0.isEmpty()) {
+				listOfValues[0]=value0;
+			}
 		}
 	}
 	res[k]=res[key]={i:k, key, value:listOfValues.join("\n\n")};
