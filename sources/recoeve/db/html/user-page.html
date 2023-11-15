@@ -4005,7 +4005,7 @@ return new Promise(async function (resolve, reject) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
 					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]<br><br>`);
+						strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]<br><br></div>`);
 					}
 					else {
 						strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`);
@@ -4358,7 +4358,7 @@ m.openCat=async function (cat) {
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) {
-				m.userRecos[uri].index=uris.length-1-k;
+				m.userRecos[uri].i=m.userRecos[uri].index=uris.length-1-k;
 			}
 		}
 		m.lastIndexOfUriList=uris.length;
