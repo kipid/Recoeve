@@ -2109,7 +2109,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
-	if (catList===m.catList||m.myPage||m.initialOpen) {
+	if (catList===m.catList) {
 		let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 		if (fsGotoCatsFLCat) {
 			if (fsGotoCatsFLCat.down) {
@@ -2122,7 +2122,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]=fsGotoCatsFLCat;
 		}
 		else {
-			fsFLCat=m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]=fsGotoCatsFLCat={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
 };
@@ -4366,8 +4366,8 @@ m.openCat=async function (cat) {
 		}
 		m.lastIndexOfUriList=uris.length;
 	}
-	let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-	fsGotoCatsCat.down=true;
+	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
+	fsGotoCatsFLCat.down=true;
 	await m.getUriListAndShowRecosOnCat(cat);
 	if (!m.initialOpen) {
 		if (!m.doNotPushHistory) {
@@ -4383,7 +4383,7 @@ m.openCat=async function (cat) {
 			window.location.hash=`#${m.hashURI}`;
 		}
 	}
-	window.history.replaceState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+	window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 	return false;
 };
 
@@ -5383,58 +5383,47 @@ m.triggerOpenCat=async function (event) {
 	return false;
 };
 m.completeCatAndOpenCat=async function (event) {
-	m.beInCurrentCat=false;
 	let $elem=$(event.target);
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
+	m.beInCurrentCat=false;
 	if (!m.initialOpen&&cat===m.currentCat) {
 		m.beInCurrentCat=true;
 	}
 	let fs=m.fsGotoCats;
-	let fsFLCat=fs.fullList[cat];
-	if (!fsFLCat) {
+	let fsGotoCatsFLCat=fs.fullList[cat];
+	if (!fsGotoCatsFLCat) {
 		let i=fs.fullList.length;
-		fsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
+		fsGotoCatsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 	}
 	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
 	if ($catI.exists()) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco") {
-			fsFLCat.down=true;
+			fsGotoCatsFLCat.down=true;
 			$catI.find(".baseCat").addClass("down");
 		}
 	}
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		fsFLCat.down=true;
+		fsGotoCatsFLCat.down=true;
 		$elem.addClass("down");
 	}
-	let isSelected=$elem.hasClass("selected");
+	for (let i=0;i<fs.fullList.length;i++) {
+		fs.fullList[i].selected=false;
+	}
+	fsGotoCatsFLCat.selected=true;
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	let catsTxt=fs.$fs[0].value;
-	let sEnd=fs.$fs[0].selectionEnd;
-	fs.listOfCats=catsTxt.split(";");
-	let l=catsTxt.length;
-	let lastK=fs.k;
-	fs.k=0;
-	for (let i=fs.listOfCats.length-1;i>=0;i--) {
-		l-=fs.listOfCats[i].length+1;
-		if (l<sEnd) {
-			fs.k=i;
-			break;
-		}
-	} // Picking cat index k of the current selectionEnd.
 	let k=fs.k; // index of cat on sEnd.
 	fs.listOfCats[k]=cat;
-	if (isSelected) {
-		fs.$fs[0].value=fs.listOfCats.join(";");
-	}
+	fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
 		sStart+=fs.listOfCats[i].length+1;
 	}
 	sEnd=sStart+fs.listOfCats[k].length;
+	$goto_cats.focus();
 	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	if (!m.beInCurrentCat||!((m.lastRecoMode===""&&m.recoMode==="multireco")||(m.lastRecoMode==="multireco"&&m.recoMode===""))) {
 		m.currentCat=cat;
@@ -6130,20 +6119,20 @@ m.processShortKey=function (e) {
 		m.initialFsGotoCats1N=0;
 		clearInterval(m.initialFsGotoCats1);
 		m.initialFsGotoCats1=setInterval(function () {
-			let fsGotoCatsCat=m.fsGotoCats.fullList[m.currentCat];
-			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
-				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
+			let fsGotoCatsFLCat=m.fsGotoCats.fullList[m.currentCat];
+			if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
+				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
 				m.initialFsGotoCats1N++;
 				if (m.initialFsGotoCats1N>10) {
 					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-					console.log(`$("#gotoCats-${fsGotoCatsCat.i}").trigger("click") failed.`);
+					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
 					clearInterval(m.initialFsGotoCats1);
 				}
 				if ($gotoCatsI.exists()) {
 					$gotoCatsI.trigger("click");
-					console.log(`$("#gotoCats-${fsGotoCatsCat.i}").trigger("click"); in m.recoMode: `, m.recoMode);
+					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
 					console.log(`m.currentCat: `, m.currentCat);
-					console.log(`fsGotoCatsCat.cat: `, fsGotoCatsCat.cat);
+					console.log(`fsGotoCatsFLCat.cat: `, fsGotoCatsFLCat.cat);
 					clearInterval(m.initialFsGotoCats1);
 					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 				}
@@ -6177,8 +6166,8 @@ m.processShortKey=function (e) {
 			m.initialFsGotoCats2N=0;
 			clearInterval(m.initialFsGotoCats2);
 			m.initialFsGotoCats2=setInterval(function () {
-				let fsFLCat=m.fsGotoCats.fullList[m.currentCat];
-				let $gotoCatsI=$(`#gotoCats-${fsFLCat?.i}`);
+				let fsGotoCatsFLCat=m.fsGotoCats.fullList[m.currentCat];
+				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat?.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats2N++>7) {
 					$gotoCatsI.trigger("click");
 					console.log(`Multireco: $gotoCatsI.trigger("click");`);
@@ -6521,9 +6510,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.initialFsGotoCats0N=0;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
-			let fsGotoCatsCat=m.fsGotoCats.fullList[cat];
-			if (fsGotoCatsCat?.i||fsGotoCatsCat?.i===0) {
-				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsCat.i}`);
+			let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
+			if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
+				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
 					$gotoCatsI.trigger("click");
 					clearInterval(m.initialFsGotoCats0);
