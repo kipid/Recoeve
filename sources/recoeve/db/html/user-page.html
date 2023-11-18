@@ -6328,6 +6328,11 @@ $choose_timezone.on("click", function (e) {
 ////////////////////////////////////////////////
 $document.ready(async function () {
 	await m.reNewfsCatsOn();
+	m.reTriggerFS(m.fsGo);
+	m.reTriggerFS(m.fsToRs);
+	m.reTriggerFS(m.fsCat);
+	m.reTriggerFS(m.fsMRCat);
+	m.reTriggerFS(m.fsGotoCats);
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
