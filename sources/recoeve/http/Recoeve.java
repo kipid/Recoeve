@@ -237,6 +237,7 @@ public static void main(String... args) {
 	CorsHandler corsHandler=CorsHandler.create()
 		.addOrigin("https://www.youtube.com")
 		.addOrigin("https://g.doubleclick.net")
+		.addOrigin("https://tpc.googlesyndication.com")
 		.addOrigin("https://localhost")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://www.recoeve.net")
