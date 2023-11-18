@@ -2239,10 +2239,7 @@ return new Promise(function (resolve, reject) {
 	if (fs===m.fsGotoCats) {
 		for (let i=0;i<fsRes.length;i++) {
 			let fsSortedI=fsRes[fsRes.sorted[i]];
-			let fsFLk=fs.fullList[fsSortedI.i];
-			if (fsFLk?.down) {
-				console.log("fsFLk in doFSCat: ", fsFLk);
-			}
+			let fsFLk=fs.fullList[fsSortedI.i]; // fs.fullList[i] 랑 fs.fullList[cat] 이랑 다르게 저장되어 있네? 뭐지?
 			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsFLk.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 			let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
 			if ($catI.exists()) {
