@@ -5402,6 +5402,7 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		fsGotoCatsFLCat.down=true;
+		m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=true;
 		$elem.addClass("down");
 	}
 	for (let i=0;i<fs.fullList.length;i++) {
