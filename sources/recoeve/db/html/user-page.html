@@ -1317,6 +1317,7 @@ m.maxShowReco=20;
 
 m.fsTimezone=[];
 m.fsTimezone[0]=m.fsTimezone[1]=[];
+m.fsTimezone.listOfCats=[];
 m.fsTimezone[0].k=m.fsTimezone[1].k=-1;
 m.fsTimezone.fullList=[];
 m.fsTimezone.$fs=$search_timezone;
@@ -1325,6 +1326,7 @@ m.fsTimezone.$fs_container=$search_timezone_container;
 
 m.fsGotoCats=[];
 m.fsGotoCats[0]=m.fsGotoCats[1]=[];
+m.fsGotoCats.listOfCats=[];
 m.fsGotoCats[0].k=m.fsGotoCats[1].k=-1;
 m.fsGotoCats.fullList=[];
 m.fsGotoCats.$fs=$goto_cats;
@@ -1333,6 +1335,7 @@ m.fsGotoCats.$fs_container=$goto_cats_container;
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
+m.fsCat.listOfCats=[];
 m.fsCat[0].k=m.fsCat[1].k=-1;
 m.fsCat.fullList=[];
 m.fsCat.$fs=$input_cats;
@@ -1341,6 +1344,7 @@ m.fsCat.$fs_container=$cat_fs_container;
 
 m.fsMRCat=[];
 m.fsMRCat[0]=m.fsMRCat[1]=[];
+m.fsMRCat.listOfCats=[];
 m.fsMRCat[0].k=m.fsMRCat[1].k=-1;
 m.fsMRCat.fullList=[];
 m.fsMRCat.$fs=$multireco_input_cats;
@@ -6509,6 +6513,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
 					$gotoCatsI.trigger("click");
+					m.reTriggerFS(m.fsGo);
+					m.reTriggerFS(m.fsToRs);
+					m.reTriggerFS(m.fsCat);
+					m.reTriggerFS(m.fsMRCat);
+					m.reTriggerFS(m.fsGotoCats);
 					clearInterval(m.initialFsGotoCats0);
 					if (m.initialFsGotoCats0N>7) {
 						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
@@ -6573,6 +6582,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
 					$(`#li-${k}`).trigger("click");
+					m.reTriggerFS(m.fsGo);
+					m.reTriggerFS(m.fsToRs);
+					m.reTriggerFS(m.fsCat);
+					m.reTriggerFS(m.fsMRCat);
+					m.reTriggerFS(m.fsGotoCats);
 					clearInterval(m.setIntervalFsGo);
 				}
 			}
