@@ -1304,6 +1304,10 @@ ALTER TABLE `Recos1` ADD CONSTRAINT `recos_ibfk_2` FOREIGN KEY (`user_i`) REFERE
 ALTER TABLE `Recos1` MODIFY COLUMN `uri` TEXT NOT NULL;
 ALTER TABLE `Recos1` MODIFY COLUMN `title` TEXT;
 
+ALTER TABLE `Recos` MODIFY COLUMN `uri` TEXT NOT NULL;
+ALTER TABLE `Recos` MODIFY COLUMN `title` TEXT;
+
+
 SELECT * FROM `Recos` WHERE `user_i`=? and `uri`=?;
 
 INSERT INTO `Recos` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
