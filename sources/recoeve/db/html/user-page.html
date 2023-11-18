@@ -2288,7 +2288,7 @@ m.doMRFSCat=function () {
 	m.doFSCat(m.fsMRCat);
 };
 m.doFSGotoCats=async function () {
-return Promise(function (resolve, reject) {
+return Promise(async function (resolve, reject) {
 	let str=await m.doFSCat(m.fsGotoCats);
 	resolve(str);
 });
