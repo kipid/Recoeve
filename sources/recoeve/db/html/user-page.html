@@ -2399,6 +2399,15 @@ return new Promise(function (resolve, reject) {
 		resolve();
 	});
 	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+
+	if (m.initialOpen) {
+		m.reTriggerFS(m.fsGo);
+		m.reTriggerFS(m.fsToRs);
+		m.reTriggerFS(m.fsCat);
+		m.reTriggerFS(m.fsMRCat);
+		m.reTriggerFS(m.fsGotoCats);
+		m.reTriggerFS(m.fsTimezone);
+	}
 });
 };
 m.onKeydownInFS=function (e, fs) {
@@ -6332,11 +6341,6 @@ $choose_timezone.on("click", function (e) {
 ////////////////////////////////////////////////
 $document.ready(async function () {
 	await m.reNewfsCatsOn();
-	m.reTriggerFS(m.fsGo);
-	m.reTriggerFS(m.fsToRs);
-	m.reTriggerFS(m.fsCat);
-	m.reTriggerFS(m.fsMRCat);
-	m.reTriggerFS(m.fsGotoCats);
 
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
@@ -6519,11 +6523,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
 				if ($gotoCatsI.exists()||m.initialFsGotoCats0N++>7) {
 					$gotoCatsI.trigger("click");
-					m.reTriggerFS(m.fsGo);
-					m.reTriggerFS(m.fsToRs);
-					m.reTriggerFS(m.fsCat);
-					m.reTriggerFS(m.fsMRCat);
-					m.reTriggerFS(m.fsGotoCats);
 					clearInterval(m.initialFsGotoCats0);
 					if (m.initialFsGotoCats0N>7) {
 						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(cat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
@@ -6588,11 +6587,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
 					$(`#li-${k}`).trigger("click");
-					m.reTriggerFS(m.fsGo);
-					m.reTriggerFS(m.fsToRs);
-					m.reTriggerFS(m.fsCat);
-					m.reTriggerFS(m.fsMRCat);
-					m.reTriggerFS(m.fsGotoCats);
 					clearInterval(m.setIntervalFsGo);
 				}
 			}
@@ -6611,6 +6605,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.reTriggerFS(m.fsCat);
 		m.reTriggerFS(m.fsMRCat);
 		m.reTriggerFS(m.fsGotoCats);
+		m.reTriggerFS(m.fsTimezone);
 		m.initialOpen=false;
 	}, 4096);
 });
