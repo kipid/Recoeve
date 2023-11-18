@@ -2288,8 +2288,10 @@ m.doMRFSCat=function () {
 	m.doFSCat(m.fsMRCat);
 };
 m.doFSGotoCats=async function () {
+return Promise(function (resolve, reject) {
 	let str=await m.doFSCat(m.fsGotoCats);
-	return Promise.resolve(str);
+	resolve(str);
+});
 };
 m.doFSTimezone=function () {
 	let fs=m.fsTimezone;
@@ -2349,10 +2351,10 @@ return new Promise(async function (resolve, reject) {
 	else {
 		$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(async function () {
-			$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 			m.previous=Date.now();
 			await m.doFSGotoCats();
 			resolve();
+			$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsGotoCatsOn);
 		}, m.wait*1.5-passed);
 	}
 });
