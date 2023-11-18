@@ -6470,12 +6470,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			m.docCookies.setItem("PRR", "1", Infinity, "/", false, true);
 		}
 	}
-	m.reTriggerFS(m.fsGo);
-	m.reTriggerFS(m.fsToRs);
-	m.reTriggerFS(m.fsCat);
-	m.reTriggerFS(m.fsMRCat);
-	m.reTriggerFS(m.fsGotoCats);
-
 	m.PRw=$point_range.width();
 	m.PRLw=m.ptsRangeFrom*m.PRw;
 	$point_range_left.css({left:m.PRLw-23});
@@ -6592,6 +6586,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$floating_key.hide();
 	}
 	setTimeout(function () {
+		m.reTriggerFS(m.fsGo);
+		m.reTriggerFS(m.fsToRs);
+		m.reTriggerFS(m.fsCat);
+		m.reTriggerFS(m.fsMRCat);
+		m.reTriggerFS(m.fsGotoCats);
 		m.initialOpen=false;
 	}, 4096);
 });
