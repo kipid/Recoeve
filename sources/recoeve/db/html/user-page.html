@@ -2403,7 +2403,7 @@ return new Promise(function (resolve, reject) {
 	m.reTriggerFS(m.fsToRs);
 	m.reTriggerFS(m.fsCat);
 	m.reTriggerFS(m.fsMRCat);
-	m.reTriggerFS(m.fsGotoCats);
+	// m.reTriggerFS(m.fsGotoCats);
 });
 };
 m.onKeydownInFS=function (e, fs) {
@@ -2476,7 +2476,7 @@ m.onKeydownInFS=function (e, fs) {
 	}
 	m.setTimeoutTargetOn=setTimeout(async function () {
 		await m.reNewfsCatsOn();
-	}, m.wait);
+	}, 4096);
 };
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, m.fsCat);
@@ -5493,7 +5493,7 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 	}
 	m.setTimeoutTargetOn0=setTimeout(async function () {
 		await m.reNewfsCatsOn();
-	}, m.wait);
+	}, 4096);
 };
 $fuzzy_search.on("keydown.fs", function (e) {
 	m.onKeydownInFS0(e, 'G', m.fsGo);
