@@ -1481,7 +1481,7 @@ $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $sort_list=$("#sort-list");
 if (m.myPage) {
-	$("#button-get-recoms")?.replaceWith(`<div style="position:relative; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
+	$("#button-get-recoms").replaceWith(`<div style="position:relative; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
 <div id="time-limit-range" style="position:absolute; left:204px; right:0; height:100%; background:rgb(100,200,100)"></div>
 <div id="time-limit-scroll" style="position:absolute; width:36px; left:185px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:0.15em solid rgb(50,50,50)"></div>
 <svg width="100%" height="100%" style="overflow:visible">
@@ -1506,7 +1506,7 @@ if (m.myPage) {
 <div class="cBoth"></div>`);
 }
 else {
-	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
+	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
 $button_get_recoms=$(".button-get-recoms");
 $button0_get_recoms=$("#button-get-recoms");
