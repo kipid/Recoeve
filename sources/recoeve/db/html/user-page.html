@@ -1481,7 +1481,28 @@ $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $sort_list=$("#sort-list");
 if (m.myPage) {
-	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
+	$("#button-get-recoms")?.replaceWith(`<div style="position:relative; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
+<div id="time-limit-range" style="position:absolute; left:204px; right:0; height:100%; background:rgb(100,200,100)"></div>
+<div id="time-limit-scroll" style="position:absolute; width:36px; left:185px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:0.15em solid rgb(50,50,50)"></div>
+<svg width="100%" height="100%" style="overflow:visible">
+	<line class="bar" x1="0%" y1="70%" x2="0%" y2="110%"/>
+	<line class="bar" x1="16.66666667%" y1="70%" x2="16.66666667%" y2="110%"/>
+	<line class="bar" x1="33.33333333%" y1="70%" x2="33.33333333%" y2="110%"/>
+	<line class="bar" x1="50%" y1="70%" x2="50%" y2="110%"/>
+	<line class="bar" x1="66.66666667%" y1="70%" x2="66.66666667%" y2="110%"/>
+	<line class="bar" x1="83.33333333%" y1="70%" x2="83.33333333%" y2="110%"/>
+	<line class="bar" x1="100%" y1="70%" x2="100%" y2="110%"/>
+	<text class="tick" text-anchor="middle" x="0%" y="150%">No limit
+		<tspan text-anchor="middle" x="16.66666667%" y="150%">10 years</tspan>
+		<tspan text-anchor="middle" x="33.33333333%" y="150%">1 year</tspan>
+		<tspan text-anchor="middle" x="50%" y="150%">1 month</tspan>
+		<tspan text-anchor="middle" x="66.66666667%" y="150%">1 week</tspan>
+		<tspan text-anchor="middle" x="83.33333333%" y="150%">1 day</tspan>
+		<tspan text-anchor="middle" x="100%" y="150%">Now</tspan>
+	</text>
+</svg>
+</div></div>
+<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
 else {
 	$("#button-get-recoms")?.replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
@@ -1490,6 +1511,47 @@ $button_get_recoms=$(".button-get-recoms");
 $button0_get_recoms=$("#button-get-recoms");
 $button_new_reco=$(".button-new-reco");
 $button_goto_cats=$(".button-goto-cats");
+$time_limit=$("#time-limit");
+$time_limit_range=$("#time-limit-range");
+$time_limit_scroll=$("#time-limit-scroll");
+m.TL=0;
+m.lastTLIndex=0;
+m.TLIndex=0;
+m.TLw=$time_limit.width();
+m.TLwStep=m.TLw/6.0;
+m.TLwMax=m.TLwStep*5.0;
+m.mmInTL=function (e) {
+	window.getSelection().removeAllRanges();
+	e.preventDefault();
+	e.stopPropagation();
+	let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+	let w=x-$time_limit.offset().left+$window.scrollLeft();
+	w=(w<0)?0:w;
+	w=(w>m.TLwMax)?m.TLwMax:w;
+	let changed=false;
+	if (m.TL!==w) {
+		m.TL=w;
+		$time_limit_range.css({left:m.TL});
+		$time_limit_scroll.css({left:m.TL-18});
+	}
+};
+m.muInTL=function (e) {
+	m.TLIndex=Math.round(m.TL/m.TLwStep);
+	$time_limit_ragne.css({left:m.TLIndex*m.TLwStep});
+	$time_limit_scroll.css({left:m.TLIndex*m.TLwStep-18});
+	if (m.lastTLIndex!==m.TLIndex) {
+		m.lastTLIndex=m.TLIndex;
+	}
+};
+$point_range_left.on("mousedown.mdPRL touchstart.mdPRL", function (e0) {
+	$html.on("mousemove.mdInPRL touchmove.mdInPRL", function (e1) {
+		m.mmInTL(e1);
+	});
+	$html.on("mouseup.mdInPRL touchend.mdInPRL", function (e2) {
+		m.muInTL(e2);
+		$html.off("mouseup.mdInPRL touchend.mdInPRL mousemove.mdInPRL touchmove.mdInPRL");
+	});
+});
 
 $point_range=$(".point-range").eq(0);
 $point_range_bar=$(".point-range-bar").eq(0);
@@ -2837,6 +2899,7 @@ m.mmInPR=function (e) {
 		}
 	}
 	if (changed) {
+		clearTimeout(m.timeOutRange0);
 		let PRL=m.PRtoFixed(m.PRLw);
 		let PRR=m.PRtoFixed(m.PRRw);
 		if (m.mdInPRL) {
@@ -2854,8 +2917,7 @@ m.mmInPR=function (e) {
 			}
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
-		clearTimeout(m.timeOutRange);
-		m.timeOutRange=setTimeout(async function () {
+		m.timeOutRange0=setTimeout(async function () {
 			await m.getUriListAndShowRecosOnCat(m.currentCat);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
@@ -2908,6 +2970,7 @@ m.mmInPR1=function (e) {
 		}
 	}
 	if (changed) {
+		clearTimeout(m.timeOutRange1);
 		let PRL=m.PRtoFixed1(m.PRLw1);
 		let PRR=m.PRtoFixed1(m.PRRw1);
 		if (m.mdInPRL1) {
@@ -2925,8 +2988,7 @@ m.mmInPR1=function (e) {
 			}
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
-		clearTimeout(m.timeOutRange);
-		m.timeOutRange=setTimeout(async function () {
+		m.timeOutRange1=setTimeout(async function () {
 			await m.getUriListAndShowRecosOnCat(m.currentCat);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
