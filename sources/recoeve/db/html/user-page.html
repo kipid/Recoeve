@@ -18,6 +18,7 @@ window.m={
 	, recosShown:false
 	, previous:0
 	, lastRecoMode:"nothing"
+	, tNow:new Date()
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -143,6 +144,9 @@ else if (m.docCookies.hasItem("lang")) {
 	.bright #floating-key .point-range-result {background:white; color:black; border-color:black}
 	.pink #floating-key .point-range-result {background:pink; color:white; border-color:pink}
 
+#time-limit line.bar {stroke:darkgray; stroke-width:3}
+#time-limit text.tick {fill:gray; font-size:.7em}
+
 .vals-stat rect.column {fill:rgb(255,255,0); stroke-width:1; stroke:rgb(0,150,150)}
 .vals-stat line.bar {stroke:darkgray; stroke-width:3}
 .vals-stat line.expected {stroke:green; stroke-width:2}
@@ -183,10 +187,12 @@ else if (m.docCookies.hasItem("lang")) {
 	#sidebar {margin:0; position:fixed; left:0; top:0; bottom:0; width:15em}
 	#sidebar-dragger {display:none}
 	.side2 {padding:.5em}
+	#time-limit text.tick {fill:gray; font-size:.9em}
 }
 @media all and (min-width:901px) {
 	#container {margin-left:20em}
 	#sidebar {width:20em}
+	#time-limit text.tick {fill:gray; font-size:1em}
 }
 </style>
 </head>
@@ -1481,9 +1487,9 @@ $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $sort_list=$("#sort-list");
 if (m.myPage) {
-	$("#button-get-recoms").before(`<div style="position:relative; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
-<div id="time-limit-range" style="position:absolute; left:204px; right:0; height:100%; background:rgb(100,200,100)"></div>
-<div id="time-limit-scroll" style="position:absolute; width:36px; left:185px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:0.15em solid rgb(50,50,50)"></div>
+	$("#button-get-recoms").before(`<div style="position:relative; margin:0 1.5em 2em; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
+<div id="time-limit-range" style="position:absolute; left:0px; right:0; height:100%; background:rgb(100,200,100)"></div>
+<div id="time-limit-scroll" style="position:absolute; width:36px; left:-18px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:0.15em solid rgb(50,50,50)"></div>
 <svg width="100%" height="100%" style="overflow:visible">
 	<line class="bar" x1="0%" y1="70%" x2="0%" y2="110%"/>
 	<line class="bar" x1="16.66666667%" y1="70%" x2="16.66666667%" y2="110%"/>
@@ -1518,6 +1524,7 @@ $time_limit_scroll=$("#time-limit-scroll");
 m.TL=0;
 m.lastTLIndex=0;
 m.TLIndex=0;
+m.TLinSec={i0:Infinity, i1:10*365*24*60*60, i2:365*24*60*60, i3:31*24*60*60, i4:7*24*60*60, i5:24*60*60};
 m.TLw=$time_limit.width();
 m.TLwStep=m.TLw/6.0;
 m.TLwMax=m.TLwStep*5.0;
@@ -1525,6 +1532,7 @@ m.mmInTL=function (e) {
 	window.getSelection().removeAllRanges();
 	e.preventDefault();
 	e.stopPropagation();
+	clearTimeout(m.timeoutTL);
 	let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
 	let w=x-$time_limit.offset().left+$window.scrollLeft();
 	w=(w<0)?0:w;
@@ -1538,13 +1546,16 @@ m.mmInTL=function (e) {
 };
 m.muInTL=function (e) {
 	m.TLIndex=Math.round(m.TL/m.TLwStep);
-	$time_limit_ragne.css({left:m.TLIndex*m.TLwStep});
+	$time_limit_range.css({left:m.TLIndex*m.TLwStep});
 	$time_limit_scroll.css({left:m.TLIndex*m.TLwStep-18});
 	if (m.lastTLIndex!==m.TLIndex) {
-		m.lastTLIndex=m.TLIndex;
+		m.timeoutTL=setTimeout(function () {
+			$button_get_recoms.removeClass("enabled");
+			$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)});
+		}, 2048);
 	}
 };
-$point_range_left.on("mousedown.mdPRL touchstart.mdPRL", function (e0) {
+$time_limit_scroll.on("mousedown.mdPRL touchstart.mdPRL", function (e0) {
 	$html.on("mousemove.mdInPRL touchmove.mdInPRL", function (e1) {
 		m.mmInTL(e1);
 	});
@@ -3930,17 +3941,40 @@ m.getUriList=function (catStrArray) {
 m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 	let cat=m.currentCat;
 	let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsortRest(m.recoms[cat], "avgVal", m.recomsSorted[cat], sortN, sortedUntil);
-	let strHTML="";
+	let uris="";
 	for (let i=sortedUntil-1;i>=recomsUntil;i--) {
 		let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-		let recomHTML=await m.recomHTML(m.userRecos[uri]);
-		strHTML+=String(recomHTML);
+		if (!m.recoDefs[uri]) {
+			uris+=uri+"\n";
+		}
+		m.myRecos[uri]={uri, down:true, has:false};
 	}
-	if (recomsUntil>0) {
-		strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-	}
-	$(elem)?.replaceWith(strHTML);
-	m.reNewAndReOn();
+	$.ajax({
+		type:"POST", url:"/reco/multidefs", data:uris.trim()
+		, dataType:"text"
+	}).done(async function (resp) {
+		let defs=await m.strToJSON(resp.trim());
+		for (let j=1;j<defs.length;j++) {
+			let uri=defs[j].uri;
+			let recoDefs=m.recoDefs[uri];
+			if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
+			recoDefs.defs=true;
+			recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
+			recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
+			recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
+		}
+		let strHTML="";
+		for (let i=sortedUntil-1;i>=recomsUntil;i--) {
+			let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
+			let recomHTML=await m.recomHTML(m.userRecos[uri]);
+			strHTML+=String(recomHTML);
+		}
+		if (recomsUntil>0) {
+			strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+		}
+		$(elem).replaceWith(strHTML);
+		m.reNewAndReOn();
+	});
 };
 m.cutNeighbors=function (str) {
 	$.ajax({
@@ -3954,6 +3988,105 @@ m.cutNeighbors=function (str) {
 			$numbers_of_recos.html("Neighbors are not cut. There must be a problem.")
 		}
 	});
+};
+m.withInTimeLimit=function (respJSONi) {
+	let tLast=new Date(respJSONi.tLast.replace(/\s/,"T"));
+	return (m.tNow-tLast)/1000<=m.TLinSec[`i${m.TLIndex}`];
+};
+m.showRecoms=async function (respJSON, cat) {
+return new Promise(function (resolve, reject) {
+	let recoms=[];
+	for (let i=respJSON.length-1;i>=0;i--) {
+		let respJSONi=respJSON[i];
+		let uri=respJSONi.uri;
+		if (m.withInTimeLimit(respJSONi)) {
+			if (!recoms[uri]) {
+				recoms[uri]={uri:uri, vals:[], valsStat:[], i:recoms.length, index:recoms.length};
+				for (let k=0;k<=m.valsStatN;k++) {
+					recoms[uri].valsStat[k]=0;
+				}
+				recoms[uri].valsStat["max"]=0;
+				recoms.push(recoms[uri]);
+			}
+			let val={user:respJSONi.user, val:respJSONi.val};
+			let catSplit=respJSONi.cats.split(";");
+			let simAvg100=0;
+			for (let j=0;j<catSplit.length;j++) {
+				let sim=m.neighbors[cat][`${val.user}\t${catSplit[j]}`];
+				if (sim?.simAvg100>simAvg100) {
+					simAvg100=sim.simAvg100; // Get the largest sim of user cats.
+				}
+			}
+			val.simAvg100=simAvg100;
+			recoms[uri].vals.push(val);
+			recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
+		}
+	}
+	for (let i=0;i<recoms.length;i++) {
+		for (let k=0;k<=m.valsStatN;k++) {
+			if (recoms[i].valsStat[k]>recoms[i].valsStat.max) {
+				recoms[i].valsStat.max=recoms[i].valsStat[k];
+			}
+		}
+	}
+	m.recomsSorted[cat]=[];
+	for (let i=0;i<recoms.length;i++) {
+		m.recomsSorted[cat].push(i);
+		let recomsI=recoms[i];
+		let valSimSum=0;
+		let simSum=0;
+		for (let j=0;j<recomsI.vals.length;j++) {
+			let valJ=recomsI.vals[j];
+			valSimSum+=valJ.val*valJ.simAvg100;
+			simSum+=valJ.simAvg100;
+		}
+		let avgVal=0;
+		if (simSum!==0) {
+			simSum=simSum<30000?30000:simSum;
+			avgVal=10.0*valSimSum/simSum;
+		}
+		let avgValStr=avgVal.toFixed(2);
+		recomsI.avgVal=avgVal;
+		recomsI.avgValStr=avgValStr;
+	}
+	m.recoms[cat]=recoms;
+	let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
+	let uris="";
+	for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+		let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
+		if (!m.recoDefs[uri]) {
+			uris+=uri+"\n";
+		}
+		m.myRecos[uri]={uri, down:true, has:false};
+	}
+	$.ajax({
+		type:"POST", url:"/reco/multidefs", data:uris.trim()
+		, dataType:"text"
+	}).done(async function (resp) {
+		let defs=await m.strToJSON(resp.trim());
+		for (let j=1;j<defs.length;j++) {
+			let uri=defs[j].uri;
+			let recoDefs=m.recoDefs[uri];
+			if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
+			recoDefs.defs=true;
+			recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
+			recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
+			recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
+		}
+		let strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`);
+		for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+			let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
+			let recomHTML=await m.recomHTML(m.userRecos[uri]);
+			strHTML+=String(recomHTML);
+		}
+		if (recomsUntil>0) {
+			strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+		}
+		$contents_recoms.html(strHTML);
+		m.reNewAndReOn();
+		resolve();
+	});
+});
 };
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 return new Promise(async function (resolve, reject) {
@@ -4073,7 +4206,7 @@ return new Promise(async function (resolve, reject) {
 			break;
 		case "recoms":
 			if (m.neighbors[cat]) {
-				if (m.neighborsRecos[cat]&&m.recomsSorted[cat]) {
+				if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) {
 					let recomsUntil=m.recomsSorted[cat].sortedUntil;
 					let strHTML="";
 					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
@@ -4095,119 +4228,41 @@ return new Promise(async function (resolve, reject) {
 					resolve();
 				}
 				else {
-					let req=`user\tcat`;
-					let n=m.neighbors[cat].length;
-					let until=m.neighborUpto>n?0:n-m.neighborUpto;
-					let sorted=m.neighbors[cat].sorted;
-					for (let i=n-1;i>=until;i--) {
-						let neighborI=m.neighbors[cat][sorted[i]];
-						req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
-					}
-					$.ajax({
-						type:"POST", url:m.userPath+"/get-Recoms", data:req
-						, dataType:"text"
-					}).done(async function (resp) {
-						let respJSON=await m.strToJSON(resp);
-						for (let i=1;i<respJSON.length;i++) {
-							let val=m.val(respJSON[i].val);
-							if (val.valid) {
-								respJSON[i].val=val.val;
-							}
-							else {
-								respJSON.splice(i, 1);
-								i--;
-							}
-						}
-						respJSON.splice(0, 1);
-						m.neighborsRecos[cat]=respJSON;
-						let recoms=[];
-						for (let i=respJSON.length-1;i>=0;i--) {
-							let respJSONi=respJSON[i];
-							let uri=respJSONi.uri;
-							if (!recoms[uri]) {
-								recoms[uri]={uri:uri, vals:[], valsStat:[], index:recoms.length};
-								for (let k=0;k<=m.valsStatN;k++) {
-									recoms[uri].valsStat[k]=0;
-								}
-								recoms[uri].valsStat["max"]=0;
-								recoms.push(recoms[uri]);
-							}
-							let val={user:respJSONi.user, val:respJSONi.val};
-							let catList=respJSONi.cats.split(";");
-							let simAvg100=0;
-							for (let j=0;j<catList.length;j++) {
-								let sim=m.neighbors[cat][`${val.user}\t${catList[j]}`];
-								if (sim?.simAvg100>simAvg100) {
-									simAvg100=sim.simAvg100; // Get the largest sim of user cats.
-								}
-							}
-							val.simAvg100=simAvg100;
-							recoms[uri].vals.push(val);
-							recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
-						}
-						for (let i=0;i<recoms.length;i++) {
-							for (let k=0;k<=m.valsStatN;k++) {
-								if (recoms[i].valsStat[k]>recoms[i].valsStat.max) {
-									recoms[i].valsStat.max=recoms[i].valsStat[k];
-								}
-							}
-						}
-						m.recomsSorted[cat]=[];
-						for (let i=0;i<recoms.length;i++) {
-							m.recomsSorted[cat].push(i);
-							let recomsI=recoms[i];
-							let valSimSum=0;
-							let simSum=0;
-							for (let j=0;j<recomsI.vals.length;j++) {
-								let valJ=recomsI.vals[j];
-								valSimSum+=valJ.val*valJ.simAvg100;
-								simSum+=valJ.simAvg100;
-							}
-							let avgVal=0;
-							if (simSum!==0) {
-								simSum=simSum<30000?30000:simSum;
-								avgVal=10.0*valSimSum/simSum;
-							}
-							let avgValStr=avgVal.toFixed(2);
-							recomsI.avgVal=avgVal;
-							recomsI.avgValStr=avgValStr;
-						}
-						m.recoms[cat]=recoms;
-						let uris="";
-						for (let i=0;i<recoms.length;i++) {
-							let uri=recoms[i].uri;
-							uris+=uri+"\n";
-							m.userRecos[uri]={uri, down:true, has:false};
+					if (!(m.neighborsRecos[cat]&&m.recomsSorted[cat])) {
+						let req=`user\tcat`;
+						let n=m.neighbors[cat].length;
+						let until=m.neighborUpto>n?0:n-m.neighborUpto;
+						let sorted=m.neighbors[cat].sorted;
+						for (let i=n-1;i>=until;i--) {
+							let neighborI=m.neighbors[cat][sorted[i]];
+							req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
 						}
 						$.ajax({
-							type:"POST", url:"/reco/multidefs", data:uris.trim()
+							type:"POST", url:m.userPath+"/get-Recoms", data:req
 							, dataType:"text"
 						}).done(async function (resp) {
-							let defs=await m.strToJSON(resp.trim());
-							for (let j=1;j<defs.length;j++) {
-								let uri=defs[j].uri;
-								let recoDefs=m.recoDefs[uri];
-								if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
-								recoDefs.defs=true;
-								recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
-								recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
-								recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
+							let respJSON=await m.strToJSON(resp);
+							for (let i=1;i<respJSON.length;i++) {
+								let val=m.val(respJSON[i].val);
+								if (val.valid) {
+									respJSON[i].val=val.val;
+								}
+								else {
+									respJSON.splice(i, 1);
+									i--;
+								}
 							}
-							let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
-							let strHTML="";
-							for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
-								let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-								let recomHTML=await m.recomHTML(m.userRecos[uri]);
-								strHTML+=String(recomHTML);
-							}
-							if (recomsUntil>0) {
-								strHTML+=`<div class="button" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-							}
-							$contents_recoms.html(strHTML);
-							m.reNewAndReOn();
+							respJSON.splice(0, 1);
+							m.neighborsRecos[cat]=respJSON;
+							await m.showRecoms(m.neighborsRecos[cat], cat);
 							resolve();
 						});
-					});
+					}
+					else if (m.lastTLIndex!==m.TLIndex) {
+						await m.showRecoms(m.neighborsRecos[cat], cat);
+						m.lastTLIndex=m.TLIndex;
+						resolve();
+					}
 				}
 			}
 			else {
@@ -4450,9 +4505,9 @@ m.openCat=async function (cat) {
 				m.hashURI="headPlay";
 			}
 			window.location.hash=`#${m.hashURI}`;
+			window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 		}
 	}
-	window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 	return false;
 };
 
@@ -6261,7 +6316,6 @@ m.processShortKey=function (e) {
 				m.recoMode="";
 				$contents_recoms.html("");
 				$button_mode.removeClass("enabled");
-				$button_get_recoms.removeClass("enabled");
 				m.hashURI="headPlay";
 				window.location.hash=`#${m.hashURI}`;
 			}

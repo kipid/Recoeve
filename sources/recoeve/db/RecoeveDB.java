@@ -1679,7 +1679,7 @@ public String getRecoms(String user_id_from, String userCatList) {
 		if (user.next()) {
 			long user_from=user.getLong("i");
 			NeighborList neighborList=new NeighborList(userCatList, false, false);
-			res="user\tuser_id\turi\tcats\tval\tcmt";
+			res="user\tuser_id\turi\tcats\tval\tcmt\ttLast";
 			int jSize=neighborList.getRowSize();
 			for (int j=1;j<jSize;j++) {
 				String neighborJStr=neighborList.get(j, 0);
@@ -1695,7 +1695,7 @@ public String getRecoms(String user_id_from, String userCatList) {
 						if (!reco_from.next()) {
 							ResultSet neighborReco=getReco(neighborJ, uri);
 							if (neighborReco.next()) {
-								res+="\n"+neighborJStr+"\t"+user_id+"\t"+StrArray.enclose(uri)+"\t"+StrArray.enclose(neighborReco.getString("cats"))+"\t"+neighborReco.getString("val")+"\t"+StrArray.enclose(neighborReco.getString("cmt"));
+								res+="\n"+neighborJStr+"\t"+user_id+"\t"+StrArray.enclose(uri)+"\t"+StrArray.enclose(neighborReco.getString("cats"))+"\t"+neighborReco.getString("val")+"\t"+StrArray.enclose(neighborReco.getString("cmt"))+"\t"+neighborReco.getTimestamp("tLast").toString();
 							}
 						}
 					}
