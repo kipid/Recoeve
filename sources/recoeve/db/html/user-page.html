@@ -6780,6 +6780,15 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.reTriggerFS(m.fsTimezone);
 		m.initialOpen=false;
 	}, 4096);
+	setTimeout(function () {
+		m.reTriggerFS(m.fsGo);
+		m.reTriggerFS(m.fsToRs);
+		m.reTriggerFS(m.fsCat);
+		m.reTriggerFS(m.fsMRCat);
+		m.reTriggerFS(m.fsGotoCats);
+		m.reTriggerFS(m.fsTimezone);
+		m.initialOpen=false;
+	}, 10000);
 });
 
 
