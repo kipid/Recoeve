@@ -4459,7 +4459,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
-					if (!fsFLk) { fs.fullList[uri]={uri, deleted:true, has:false}; }
+					if (!fsFLk) {
+						fs.fullList[uri]={uri, deleted:true, has:false};
+					}
 					fsFLk.inRange=false;
 					m.reTriggerFS(fs);
 				}
