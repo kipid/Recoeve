@@ -1467,25 +1467,6 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 		[--_N_ew reco--]
 	</div>
 	<div id="SNS-floating"><a onclick="return m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="return m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareCurrentPage('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareCurrentPage('whatsapp')"></div>`);
-$a_log_in=$(".a-log-in");
-$a_log_out=$(".a-log-out");
-$a_log_out_from_all=$(".a-log-out-from-all");
-$a_log_in.on("click mousedown mouseup", m.a_log_in);
-$a_log_out.on("click mousedown mouseup", m.a_log_out);
-$a_log_out_from_all.on("click mousedown mouseup", m.a_log_out_from_all);
-$a_to_my_page=$("#a-to-my-page");
-$a_to_my_page.on("click mousedown mouseup", m.a_to_my_page);
-$button_hideFK=$("#button-hideFK");
-$button_block_touch=$(".button-block-touch");
-$button_auto_skip=$(".button-auto-skip");
-$button_loop=$(".button-loop");
-$button_one_loop=$(".button-one-loop");
-$button_Go=$(".button-Go");
-$button_ToR=$(".button-ToR");
-$button_mode=$(".button-mode");
-$button_neighbors_mode=$(".button-neighbors-mode");
-$button_multireco_mode=$(".button-multireco-mode");
-$sort_list=$("#sort-list");
 if (m.myPage) {
 	$("#button-get-recoms").before(`<div style="position:relative; margin:0 1.5em 2em; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
 <div id="time-limit-range" style="position:absolute; left:0px; right:0; height:100%; background:rgb(100,200,100)"></div>
@@ -1514,6 +1495,26 @@ if (m.myPage) {
 else {
 	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
 }
+$a_log_in=$(".a-log-in");
+$a_log_out=$(".a-log-out");
+$a_log_out_from_all=$(".a-log-out-from-all");
+$a_log_in.on("click mousedown mouseup", m.a_log_in);
+$a_log_out.on("click mousedown mouseup", m.a_log_out);
+$a_log_out_from_all.on("click mousedown mouseup", m.a_log_out_from_all);
+$a_to_my_page=$("#a-to-my-page");
+$a_to_my_page.on("click mousedown mouseup", m.a_to_my_page);
+$button_hideFK=$("#button-hideFK");
+$button_block_touch=$(".button-block-touch");
+$button_auto_skip=$(".button-auto-skip");
+$button_loop=$(".button-loop");
+$button_one_loop=$(".button-one-loop");
+$button_Go=$(".button-Go");
+$button_ToR=$(".button-ToR");
+$button_mode=$(".button-mode");
+$button_neighbors_mode=$(".button-neighbors-mode");
+$button_multireco_mode=$(".button-multireco-mode");
+$sort_list=$("#sort-list");
+
 $button_get_recoms=$(".button-get-recoms");
 $button0_get_recoms=$("#button-get-recoms");
 $button_new_reco=$(".button-new-reco");
@@ -3198,16 +3199,16 @@ m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
 		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
-	${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
-	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
-	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
-	<div class="title">${m.escapeOnlyTag(r.title)}</div>
-	<div class="cats">${m.catsToA(r.cats)}</div>`
-	if (!inListPlay) {
-		let uriRendered=await uriRendering(r.uri, false, inListPlay);
-		res+=String(uriRendered.html);
-	}
-	res+=`<div class="cBoth"></div>`;
+${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
+<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
+<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
+<div class="title">${m.escapeOnlyTag(r.title)}</div>
+<div class="cats">${m.catsToA(r.cats)}</div>`
+		if (!inListPlay) {
+			let uriRendered=await uriRendering(r.uri, false, inListPlay);
+			res+=String(uriRendered.html);
+		}
+		res+=`<div class="cBoth"></div>`;
 		if (r.val?.str) {
 			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
 		}
@@ -3318,8 +3319,12 @@ m.reco_pointChange_do=function (args, err) {
 		else if (result.startsWith("recoed")) {
 			let r=m.myRecos[uri];
 			let recoDef=m.recoDefs[uri];
-			if (!r) {r=m.myRecos[uri]={};}
+			if (!r) {
+				r=m.myRecos[uri]={uri:uri, has:true, down:true, val:m.val(args.valStr)};
+			}
+			r.uri=uri;
 			r.has=true;
+			r.down=true;
 			r.val=m.val(args.valStr);
 			if (recoDef.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 				r.title=recoDef.defTitles[0][0];
@@ -3337,6 +3342,7 @@ m.reco_pointChange_do=function (args, err) {
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
 			m.refresh(r.cats, "recoed", uri, true);
+			console.log("recoed: ", r, m.myRecos[uri]);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -3736,12 +3742,12 @@ m.showRecosOnCat=async function (elem, from) {
 			}
 			let beforeLoadSH=document.documentElement.scrollHeight;
 			let beforeST=$window.scrollTop();
-			if ($elem.offset().top-beforeST<=window.innerHeight/2.0) { // Scroll from downside to upside.
+			if ($elem.offset().top-beforeST<=window.innerHeight/3.0) { // Scroll from downside to upside.
 				$elem.replaceWith(strHTML);
 				let afterLoadSH=document.documentElement.scrollHeight;
 				setTimeout(function () {
 					$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST);
-				}, 256);
+				}, 128);
 			}
 			else { // Scroll from upside to downside.
 				$elem.replaceWith(strHTML);
@@ -6836,7 +6842,7 @@ m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName==="VIDEO") {
 		$video[0]?.pause();
 	}
-	if (m.YtPlayer) {
+	if (m.YtPlayer?.pauseVideo) {
 		m.YtPlayer.pauseVideo();
 	}
 };
