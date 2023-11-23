@@ -6696,7 +6696,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			}
 		}, 512);
 	}
-	else if (m.recoMode==="multireco") {
+
+	if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
 	}
 	else if (m.recoMode==="neighbors") {
