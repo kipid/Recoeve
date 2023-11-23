@@ -3725,7 +3725,7 @@ m.showRecosOnCat=async function (elem, from) {
 						}
 						fsFLk.inRange=false;
 					}
-					else {
+					if (!m.myRecos[uri].has) {
 						nUnrecoed++;
 					}
 				}
