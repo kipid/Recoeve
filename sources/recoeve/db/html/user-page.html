@@ -4076,7 +4076,12 @@ return new Promise(function (resolve, reject) {
 		let strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]<br><br></div>`);
 		for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
 			let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-			let recomHTML=await m.recomHTML(m.userRecos[uri]);
+			let recomHTML="";
+			if (m.myRecos[uri]?.has) {
+				recomHTML=await m.recoHTML(m.myRecos[uri]);
+			} else {
+				recomHTML=await m.recomHTML(m.myRecos[uri]);
+			}
 			strHTML+=String(recomHTML);
 		}
 		if (recomsUntil>0) {
