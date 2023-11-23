@@ -3511,6 +3511,8 @@ m.starsOnClick=function (e) {
 	}, 2048);
 };
 m.starsOnTouchMove=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	let $target=$(e.target);
 	if (!$target.hasClass("stars-container")) {
 		$target=$target.parents(".stars-container");
@@ -3552,7 +3554,9 @@ m.starsOnTouchMove=function (e) {
 	});
 	return {$str, uri, $result, $reco};
 };
-m.starsOnUps=function (e) {
+m.starsOnUpClick=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	let $target=$(e.target);
 	let $reco=$target.parents(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
@@ -3582,7 +3586,9 @@ m.starsOnUps=function (e) {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
 	}, 2048);
 };
-m.starsOnDowns=function (e) {
+m.starsOnDownClick=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
 	let $target=$(e.target);
 	let $reco=$target.parents(".reco");
 	let uri=m.unescapeHTML($reco.find(".textURI").html());
@@ -3626,6 +3632,8 @@ m.reNewAndReOn=async function () {
 	$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 		let {$str, uri, $result, $reco}=m.starsOnTouchMove(e);
 		$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 			m.timeout[uri]=setTimeout(function () {
 				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
@@ -3636,8 +3644,8 @@ m.reNewAndReOn=async function () {
 	let $downs=$(".my-point>.down");
 	$ups.off("click.ud");
 	$downs.off("click.ud");
-	$ups.on("click.ud", m.starsOnUps);
-	$downs.on("click.ud", m.starsOnDowns);
+	$ups.on("click.ud", m.starsOnUpClick);
+	$downs.on("click.ud", m.starsOnDownClick);
 	await m.reNewfsCatsOn();
 };
 m.lastRecoMode="nothing";
