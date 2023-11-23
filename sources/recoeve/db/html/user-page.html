@@ -4002,7 +4002,7 @@ m.withInTimeLimit=function (respJSONi) {
 	return (m.tNow-tLast)/1000<=m.TLinSec[`i${m.TLIndex}`];
 };
 m.showRecoms=async function (respJSON, cat) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let recoms=[];
 	for (let i=respJSON.length-1;i>=0;i--) {
 		let respJSONi=respJSON[i];
