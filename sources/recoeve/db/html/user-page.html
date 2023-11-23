@@ -4542,8 +4542,8 @@ m.openCat=async function (cat) {
 			else {
 				m.hashURI="headPlay";
 			}
-			window.location.hash=`#${m.hashURI}`;
 			window.history.pushState({cat, mode:m.recoMode, gotoCats:m.gotoCats, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+			window.location.hash=`#${m.hashURI}`;
 		}
 	}
 	return false;
