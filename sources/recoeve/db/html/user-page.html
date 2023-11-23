@@ -3953,7 +3953,9 @@ m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 		if (!m.recoDefs[uri]) {
 			uris+=uri+"\n";
 		}
-		m.myRecos[uri]={uri, down:true, has:false};
+		if (!m.myRecos[uri]) {
+			m.myRecos[uri]={uri, down:true, has:false};
+		}
 	}
 	$.ajax({
 		type:"POST", url:"/reco/multidefs", data:uris.trim()
@@ -4063,7 +4065,9 @@ return new Promise(function (resolve, reject) {
 		if (!m.recoDefs[uri]) {
 			uris+=uri+"\n";
 		}
-		m.myRecos[uri]={uri, down:true, has:false};
+		if (!m.myRecos[uri]) {
+			m.myRecos[uri]={uri, down:true, has:false};
+		}
 	}
 	$.ajax({
 		type:"POST", url:"/reco/multidefs", data:uris.trim()
