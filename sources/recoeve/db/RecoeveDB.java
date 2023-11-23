@@ -1033,8 +1033,8 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 		try {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
-				varMap.put("{--myId--}", HTMLString.escapeHTML(user.getString("id")));
-				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
+				varMap.put("{--myId--}", HTMLString.escapeOnlyTag(user.getString("id")));
+				varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 			}
 		}
 		catch (SQLException e) {
@@ -1046,7 +1046,7 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 		if (user.next()) {
 			long user_me=user.getLong("i");
 			if ((cookie.get("I")==null&&cookie.get("rmbdI")==null)||user_me!=my_i) {
-				varMap.put("{--CatList--}", HTMLString.escapeHTML(getCatList(user_me).toString()));
+				varMap.put("{--CatList--}", HTMLString.escapeOnlyTag(getCatList(user_me).toString()));
 			}
 		}
 	}
@@ -1075,7 +1075,7 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
 				varMap.put("{--myId--}", user.getString("id"));
-				varMap.put("{--myCatList--}", HTMLString.escapeHTML(getCatList(my_i).toString()));
+				varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 			}
 		}
 		catch (SQLException e) {
