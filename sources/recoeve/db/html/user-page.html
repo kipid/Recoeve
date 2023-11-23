@@ -3316,26 +3316,27 @@ m.reco_pointChange_do=function (args, err) {
 			m.refresh(args.cats, "changed", uri);
 		}
 		else if (result.startsWith("recoed")) {
+			let r=m.myRecos[uri];
 			let recoDef=m.recoDefs[uri];
-			if (!m.myRecos[uri]) {m.myRecos[uri]={};}
-			m.myRecos[uri].has=true;
-			m.myRecos[uri].val=m.val(args.valStr);
+			if (!r) {r=m.myRecos[uri]={};}
+			r.has=true;
+			r.val=m.val(args.valStr);
 			if (recoDef.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
-				m.myRecos[uri].title=recoDef.defTitles[0][0];
+				r.title=recoDef.defTitles[0][0];
 			}
 			else {
-				m.myRecos[uri].title="";
+				r.title="";
 			}
-			m.myRecos[uri].cats=args.cats;
+			r.cats=args.cats;
 			if (recoDef.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
-				m.myRecos[uri].desc=recoDef.defDescs[0][0];
+				r.desc=recoDef.defDescs[0][0];
 			}
 			else {
-				m.myRecos[uri].desc="";
+				r.desc="";
 			}
-			m.myRecos[uri].descR=m.renderStrDescCmt(m.myRecos[uri].desc);
-			m.putCats_UriToLists(m.myRecos[uri].cats, uri);
-			m.refresh(m.myRecos[uri].cats, "recoed", uri, true);
+			r.descR=m.renderStrDescCmt(r.desc);
+			m.putCats_UriToLists(r.cats, uri);
+			m.refresh(r.cats, "recoed", uri, true);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -4077,7 +4078,7 @@ return new Promise(function (resolve, reject) {
 			let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
 			let recomHTML="";
 			if (m.myRecos[uri]?.has) {
-				recomHTML=await m.recoHTML(m.myRecos[uri], false, true, true);
+				recomHTML=await m.recoHTML(m.myRecos[uri]);
 			} else {
 				recomHTML=await m.recomHTML(m.myRecos[uri]);
 			}
