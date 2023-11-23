@@ -1492,7 +1492,7 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr25.topgirl.co${exec[1]?exec[1]:""}`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr26.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr26.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr26.topgirl.co${exec[1]?exec[1]:""}`, from:'topgirl', src:exec[1]});
 	}
 	else {
 		return reject(false);
