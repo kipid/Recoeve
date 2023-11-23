@@ -6725,6 +6725,13 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				}
 			}
 		}, 512);
+		let $elem=$(`#${m.initialHashURI}`);
+		if ($elem.exists()) {
+			m.hashURI=m.initialHashURI;
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($elem.offset().top);
+			clearInterval(m.setIntervalFsGo);
+		}
 	}
 	// $goto_cats_container.hide();
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
