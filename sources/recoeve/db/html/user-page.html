@@ -3326,6 +3326,8 @@ m.reco_pointChange_do=function (args, err) {
 			r.has=true;
 			r.down=true;
 			r.val=m.val(args.valStr);
+			r.tFirst=res[1]?.tLast;
+			r.tLast=res[1]?.tLast;
 			if (recoDef.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 				r.title=recoDef.defTitles[0][0];
 			}
