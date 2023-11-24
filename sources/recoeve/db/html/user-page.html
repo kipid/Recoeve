@@ -5634,6 +5634,7 @@ m.gotoLi=async function (event) {
 	let fs=m.fsGo;
 	let fs1=m.fsToRs;
 	let $elem=$(event.target);
+	console.log($elem);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[uri];
