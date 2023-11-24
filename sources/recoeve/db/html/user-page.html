@@ -3687,7 +3687,7 @@ m.showRecosOnCat=async function (elem, from) {
 			for (let k=0;k<l;k++) {
 				let fsFLk=fs.fullList[k];
 				let uri=fsFLk.uri;
-				let r=fsFLk.reco;
+				let r=fsFLk.r;
 				let val=r.val?.val;
 				fsFLk.txt=m.splitHangul(r.title);
 				fsFLk.html=m.escapeOnlyTag(r.title);
@@ -3744,7 +3744,7 @@ m.showRecosOnCat=async function (elem, from) {
 			if (from!==undefined&&from!==null&&from.constructor===Number) {
 				for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
 					let fsFLi=fs.fullList[i];
-					let r=fsFLi.reco;
+					let r=fsFLi.r;
 					let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
 					strHTML+=String(recoHTML);
 				}
@@ -3837,7 +3837,7 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, reco:r, r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
@@ -3876,7 +3876,7 @@ m.getRecos=function (uris, recos, cat) {
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={uri}; }
 		if (recos===m.userRecos) {
-			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r, reco:r};
+			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r,;
 		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
@@ -4402,12 +4402,12 @@ m.refresh=async function (cats, option, uri, openCat) {
 			m.reNewAndReOn();
 
 			let fs=m.fsGo;
-			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
+			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			m.reTriggerFS(fs);
 
 			fs=m.fsToRs;
-			fs.fullList[uri]={i:fs.fullList.length, reco:r, r:r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
+			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
 				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, sortN:Math.random()};
@@ -5420,7 +5420,7 @@ $button_del.on("click", function (e) {
 	if (uri.length!==0&&r) {
 		let strHeads="do"+"\t"+"uri";
 		let strContents="delete"+"\t"+m.encloseStr(uri);
-		m.rmb_me(m.reco_delete_do, {strHeads:strHeads, strContents:strContents, r:r, uri:uri}, true);
+		m.rmb_me(m.reco_delete_do, {strHeads, strContents, r, uri}, true);
 	}
 	else {
 		let errorMsg="";
@@ -5715,7 +5715,7 @@ m.doFSGo=function (fs) {
 			let k=fsRes[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div id="li-${k}" class="list-item${fsFLk.reco?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div id="li-${k}" class="list-item${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
@@ -5837,7 +5837,7 @@ return new Promise(async function (resolve, reject) {
 	for (let i=0;i<sorted.length;i++) {
 		let k=fsRes[sorted[i]].i;
 		let fsFLk=fs.fullList[k];
-		if (fsFLk?.inRange&&!fsFLk.reco.deleted) {
+		if (fsFLk?.inRange&&!fsFLk.r.deleted) {
 			let uri=fsFLk.uri;
 			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
 					+fs.fullList[k].html
@@ -6865,7 +6865,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 		fs.$fsLis.removeClass("selected");
 		$(`#toR-${i}`).addClass("selected");
-		let r=fs.fullList[i].reco;
+		let r=fs.fullList[i].r;
 		let recoHTML=await m.recoHTML(r, inListPlay, true);
 		$reco_playing.html(String(recoHTML));
 		let uriRendered=await uriRendering(r.uri, false, inListPlay);
@@ -6979,7 +6979,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
 	if (first) {
 		let $li=fs.$fsLis.eq(0);
-		if ($li.exists()) {
+		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			console.log(`$li: `, $li);
 			console.log(`fs.currentIndex: ${fs.currentIndex}`);
