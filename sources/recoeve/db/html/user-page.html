@@ -5639,7 +5639,7 @@ m.gotoLi=async function (event) {
 		let r=m.userRecos[uri];
 		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		fsFLk.catAndI={};
-		fsFLk.catAndI[cat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
+		fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
 	if ($elem.hasClass("selected")) {
 		fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
