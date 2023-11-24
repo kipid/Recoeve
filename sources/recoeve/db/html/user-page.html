@@ -6421,6 +6421,10 @@ m.processShortKey=function (e) {
 			scrollTop+=10;
 			for (i=0;i<k;i++) {
 				$hI=m.$fdList.eq(i);
+				let hIID=$hI[0].id;
+				if (hIID.startsWith("load-recos-")) {
+					scrollTop+=$window.height();
+				}
 				if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 			}
 			if (i===k) {
@@ -6446,10 +6450,10 @@ m.processShortKey=function (e) {
 		}
 		else if (hIID) {
 			m.hashURI=hIID;
-			if (e.keyCode===70) { // F=70
+			if (e.keyCode===70&&hIID.startsWith("load-recos-")) { // F=70
 				$window.scrollTop($hI.offset().top-$window.height());
 			}
-			else { // D=68
+			else { // F=70 (normal) and D=68
 				$window.scrollTop($hI.offset().top);
 			}
 			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
