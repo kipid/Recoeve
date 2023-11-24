@@ -3119,7 +3119,7 @@ m.recomHTML=async function (r) {
 		return String(recoHTML);
 	}
 	let recoDef=m.recoDefs[r.uri];
-	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.index}">
+	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.i}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>`;
@@ -3198,7 +3198,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.index}"`:`-${r.index}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${r.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 <div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -3851,7 +3851,7 @@ return new Promise(async function (resolve, reject) {
 			if (!r) {
 				r=recos[uri]={uri, down:true, has:false};
 			}
-			r.index=catUris.length-1-k;
+			r.i=catUris.length-1-k;
 		}
 		m.lastIndexOfUriList=catUris.length;
 	}
@@ -4378,7 +4378,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
-				r.index=m.lastIndexOfUriList;
+				r.i=m.lastIndexOfUriList;
 				m.lastIndexOfUriList++;
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
@@ -5624,9 +5624,9 @@ m.gotoLi=async function (event) {
 	let $elem=$(event.target);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let fsFLk=fs.fullList[k];
+	let fsFLk=fs.fullList[k]=fs.fullList[uri];
 	if (!fsFLk) {
-		fsFLk=fs.fullList[k]
+		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r:m.userRecos[uri], i:k, txt:m.splitHangul(`${m.userRecos[uri].cats} :: ${m.userRecos[uri].title}`), html.m.escapeOnlyTag(m.userRecos[uri].title)}
 	}
 	if (uri!==fsFLk.uri) {
 		console.log("Error: uri!==fsFLk.uri");
@@ -5658,12 +5658,12 @@ m.gotoLi=async function (event) {
 	if (!m.beInCurrentCat) {
 		await m.openCat(catSplit[0]);
 	}
-	let $recoElem=$(`#reco-${m.userRecos[uri]?.index}`);
+	let $recoElem=$(`#reco-${m.userRecos[uri]?.i}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
-		let k=m.userRecos[uri]?.index;
+		let k=m.userRecos[uri]?.i;
 		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function selfGotoLi() {
