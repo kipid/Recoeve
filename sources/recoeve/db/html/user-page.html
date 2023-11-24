@@ -5626,6 +5626,7 @@ if ($recoElem?.exists()) {
 	}
 }};
 m.gotoLi=async function (event) {
+	clearTimeout(m.setTimeoutGotoLi);
 	if (event?.srcElement?.nodeName==="A") {
 		return;
 	}
@@ -5635,14 +5636,24 @@ m.gotoLi=async function (event) {
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[k]=fs.fullList[uri];
+	console.log("fsFLk: ", fsFLk);
 	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
-		let r=m.userRecos[uri];
-		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-		fsFLk.catAndI={};
-		fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
+		m.setTimeoutGotoLi=setTimeout(function () {
+			m.gotoLi(event);
+		}, 512);
+		// let r=m.userRecos[uri];
+		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+		// fsFLk.catAndI={};
+		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
 	if ($elem.hasClass("selected")) {
-		fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+		if ($elem.hasClass("clicked-twice")) {
+			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+			fs.$fsl.find(".list-item").removeClass("clicked-twice");
+		}
+		else {
+			$elem.addClass("clicked-twice");
+		}
 	}
 	else {
 		fs.$fsLis=fs.$fsl.find(".list-item");
