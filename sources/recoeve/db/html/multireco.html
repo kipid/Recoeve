@@ -41,6 +41,8 @@ else if (m.docCookies.hasItem("lang")) {
 <div class="button" id="choose-lang">▼ Language/언어/語言</div>
 <data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
 English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
+<div class="cBoth"></div>
 <div class="rC"><div class="rSC">
 	<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRu3-Kj-HVJZluru8i1KGJ56rng0nQ2IK9s3PlxUzz45uaFUxGdgvon_MAr6lFxlJmuL5dPBJ1E7pNC/pubhtml?widget=true&amp;headers=false" frameborder="0"></iframe>
 </div></div>
@@ -57,7 +59,10 @@ $window=$(window);
 $html=$("html");
 $body=$("body");
 
+$container=$("#container");
 $my_id=$("#my-id");
+$choose_lang=$("#choose-lang");
+$choose_lang_list=$("#choose-lang-list");
 
 m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 
@@ -95,6 +100,10 @@ $choose_lang.on("click", function (e) {
 	}
 });
 })();
+
+if (!(m.docCookies.hasItem("rmbdI")&&m.docCookies.getItem("rmbdI"))) {
+	$container.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in-container, #should-do-log-in-exit').hide()"></div>`);
+}
 })(window.m, jQuery);
 </script>
 </html>
