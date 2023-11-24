@@ -3465,7 +3465,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			strContents+=`\t${m.encloseStr(cats)}`;
 			let strRecoDo=strHeads+"\n"+strContents;
 			$result.html("[--Recoing to your recoeve.net.--]");
-			m.rmb_me(m.reco_do, {strRecoDo, uri, $result}, true);
+			m.rmb_me(m.reco_do, {strRecoDo, $result}, true);
 		}
 	}
 };
@@ -5224,7 +5224,7 @@ $button_reco.on("click", function (e) {
 
 		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
-		m.rmb_me(m.reco_do, {strRecoDo, uri}, true);
+		m.rmb_me(m.reco_do, {strRecoDo}, true);
 	}
 	else {
 		$error.html(errorMsg);

@@ -52,8 +52,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="rC"><div class="rSC" style="padding-bottom:40%">
 	<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRu3-Kj-HVJZluru8i1KGJ56rng0nQ2IK9s3PlxUzz45uaFUxGdgvon_MAr6lFxlJmuL5dPBJ1E7pNC/pubhtml?widget=true&amp;headers=false" frameborder="0"></iframe>
 </div></div>
-<textarea id="textarea-recos" style="background:white; color:black; width:100%; height:50em; font-size:.8em"></textarea>
-<div class="button fRight">Multireco</div>
+<textarea id="textarea-recos" style="background:white; color:black; width:100%; height:37em; font-size:.8em"></textarea>
+<div class="fLeft" id="error"></div>
+<div class="button fRight" id="button-multireco">Multireco</div>
 <div class="cBoth"></div>
 </div>
 </body>
@@ -74,6 +75,8 @@ $choose_lang=$("#choose-lang");
 $choose_lang_list=$("#choose-lang-list");
 
 $textarea_recos=$("#textarea-recos");
+$button_multireco=$("#button-multireco");
+$error=$("#error");
 
 m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 
@@ -229,6 +232,61 @@ else {
 if (!(m.docCookies.hasItem("rmbdI")&&m.docCookies.getItem("rmbdI"))) {
 	$container.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in-container, #should-do-log-in-exit').hide()"></div>`);
 }
+
+m.delayedLogOut=function (msg, delayTime=27, $result) {
+	let delay=delayTime&&delayTime.constructor===Number?delayTime:27;
+	clearInterval(m.deleyedLogOutInterval);
+	m.deleyedLogOutInterval=setInterval(function () {
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
+		$result?.html($error.html());
+		delay--;
+	}, 1000);
+	clearTimeout(m.deleyedLogOutTimeout);
+	m.deleyedLogOutTimeout=setTimeout(function () {
+		window.location.href=`/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
+	}, delay*1000);
+};
+
+m.reco_do=function (args, err) {
+	if (err) {
+		m.delayedLogOut(`[--Reco failed.--] ${err}`, 60*60*24);
+		$button_multireco.removeClass("disabled");
+		return;
+	}
+	$.ajax({
+		type:"POST", url:"/reco/do", data:args.strRecoDo
+		, dataType:"text"
+	}).fail(function () {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
+		$error.html("[--Reco failed.--]");
+		args.$result?.html($error.html());
+	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
+		let res=await m.strToJSON(resp);
+		$error.html(m.arrayToTableHTML(res));
+	}).always(function () {
+		$button_multireco.removeClass("disabled");
+	});
+};
+$button_multireco.on("click", async function (e) {
+	let recosJSON=await m.strToJSON($textarea_recos[0].value);
+	for (let i=1;i<recosJSON.length;i++) {
+		let recosJSONi=recosJSON[i];
+		if (recosJSONi.uri) {
+			recosJSONi.uri=m.formatURI(recosJSONi.uri);
+		}
+		if (recosJSONi.title) {
+			recosJSONi.title=m.formatTitle(recosJSONi.title);
+		}
+		if (recosJSONi.cats) {
+			recosJSONi.cats=m.formatCats(recosJSONi.cats);
+		}
+	}
+	let strRecoDo=await m.JSONtoStr(recosJSON);
+	rmb_me(m.reco_do, {strRecoDo:String(strRecoDo)});
+});
 })(window.m, jQuery);
 </script>
 </html>
