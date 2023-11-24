@@ -5439,6 +5439,9 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
 	let $elem=$(event.target);
+	if (!$elem.hasClass("list-item")) {
+		$elem=$elem.parents(".list-item");
+	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
 		event.preventDefault();
@@ -5479,6 +5482,9 @@ m.triggerOpenCat=async function (event) {
 };
 m.completeCatAndOpenCat=async function (event) {
 	let $elem=$(event.target);
+	if (!$elem.hasClass("list-item")) {
+		$elem=$elem.parents(".list-item");
+	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	m.beInCurrentCat=false;
 	if (!m.initialOpen&&cat===m.currentCat) {
