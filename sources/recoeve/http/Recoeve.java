@@ -332,7 +332,7 @@ public static void main(String... args) {
 				switch (fileName) {
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(FileMap.get("multireco.html", pl.lang), ENCODING);
+							.end(FileMapWithVar.get("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
