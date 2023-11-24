@@ -23,6 +23,7 @@ window.m={
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
+	, currentCat:"$!@#"
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -5776,6 +5777,11 @@ m.doFSToRs=function (shuffle) {
 				shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
 			}
 			break;
+		default:
+			for (let i=0;i<l;i++) {
+				shuffled[i]={i, sortN:i};
+			}
+			break;
 		}
 		for (let i=1;i<l;i++) {
 			let temp=shuffled[i];
@@ -6967,7 +6973,7 @@ m.fsToRs.prepareRecoListPlay=function (YtAPINeeded) {
 	else {
 		setTimeout(function () {
 			fs.prepareRecoListPlay(YtAPINeeded);
-		}, 1000);
+		}, 1024);
 	}
 };
 
