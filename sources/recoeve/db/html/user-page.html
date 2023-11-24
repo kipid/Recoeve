@@ -6690,7 +6690,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	if (m.recoMode==="") {
 		$button_mode.removeClass("enabled");
-		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+		// $window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
@@ -6752,7 +6752,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				}
 			}
 		}, 512);
-		let $elem=$(`#${encodeURIComponent(m.initialHashURI)}`);
+		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 		if ($elem.exists()) {
 			m.hashURI=m.initialHashURI;
 			window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
