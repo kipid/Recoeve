@@ -382,8 +382,6 @@ m.encrypt=function (salt, pwd, iter) {
 m.iterFull=10000;
 m.iterSessionFull=1000;
 
-
-
 ////////////////////////////////////////////////////
 // Escape and Unescape HTML string.
 ////////////////////////////////////////////////////
@@ -411,8 +409,6 @@ m.escapeEncodePctg=function (str) {
 	if (!str||str.constructor!==String) { return ""; }
 	return str.replace(/([\!\@\#\$\%\^\&\*\(\)\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
 };
-
-
 
 ////////////////////////////
 // String to Array
@@ -545,8 +541,20 @@ m.arrayToTableHTML=function (txtArray) {
 	tableStr+="</table>";
 	return tableStr;
 };
-
-
+m.JSONtoStr=function (JSON) {
+	let res=JSON[0][0];
+	for (let j=1;j<JSON[0].length;j++) {
+		res+="\t"+JSON[0][j];
+	}
+	for (let i=1;i<JSON.length;i++) {
+		res+="\n"+JSON[i][JSON[0][0]];
+		let jMax=JSON[0].length<JSON[i].length?JSON[0].length:JSON[i].length;
+		for (let j=1;j<jMax;j++) {
+			res+="\t"+JSON[i][JSON[0][j]];
+		}
+	}
+	return Promise.resolve(res);
+};
 
 ////////////////////////////////////////////////////
 // Heap sort.
@@ -599,8 +607,6 @@ m.heapsortRest=function (arr, key, sorted, upto, n) {
 	}
 	return until;
 };
-
-
 
 ////////////////////////////////////////////////////
 // Delayed Loading.
@@ -678,8 +684,6 @@ m.delayedLoadByScroll=function () {
 };
 $window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
-
-
 /* Remember user */
 m.sW=screen.width;
 m.sH=screen.height;
@@ -743,12 +747,13 @@ return new Promise(function (resolve, reject) {
 					}
 					else {
 						callback(args, resp);
+						resolve();
 					}
 				}
 				else {
 					callback(args, resp);
+					resolve();
 				}
-				resolve();
 			}, 1024);
 		});
 	}
@@ -822,8 +827,6 @@ m.splitHangul=function (str) {
 	}
 	return res;
 };
-
-
 
 RegExp.quote=function (str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
@@ -1062,8 +1065,116 @@ m.fuzzySearch=function (ptnSH, fs) {
 m.ptnURI=[];
 m.ptnURL=/^https?:\/\/\S+/i;
 m.ptnFILE=/^file:\/\/\/\S+/i;
-m.ptnTag=/^<\w+[\s\S]+>$/i;
+m.ptnTag=/^<\w+[\s\S]+>/i;
 m.ptnVal=/^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+
+////////////////////////////////////////////////////
+// New Reco or Edit
+////////////////////////////////////////////////////
+m.getUTF8Length=function (s) {
+	let len=0;
+	for (let i=0;i<s.length;i++) {
+		let code=s.charCodeAt(i);
+		if (code<=0x7f) {
+			len+=1;
+		}
+		else if (code<=0x7ff) {
+			len+=2;
+		}
+		else if (code>=0xd800&&code<=0xdfff) {
+			// Surrogate pair: These take 4 bytes in UTF-8 and 2 chars in UCS-2
+			// (Assume next char is the other [valid] half and just skip it)
+			len+=4; i++;
+		}
+		else if (code<0xffff) {
+			len+=3;
+		}
+		else {
+			len+=4;
+		}
+	}
+	return len;
+};
+m.formatURI=function (uri) {
+	if (uri&&uri.constructor===String) {
+		uri=uri.trim().replace(/[\t\n]/g," ");
+		let exec=m.ptnTag.exec(uri);
+		if (exec!==null) {
+			try {
+				let $uri=$(uri);
+				let src=$uri.attr("src");
+				if (src) {
+					uri=src;
+				}
+				else {
+					src=$uri.find("[src]").attr("src");
+					if (src) { uri=src; }
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		return m.unescapeHTML(uri).trim();
+	}
+	return "";
+};
+m.formatTitle=function (title) {
+	return title.trim().replace(/[\t\r\n]/g," ");
+};
+m.formatCats=function (cats) {
+	if (!cats||cats.constructor!==String||cats.trim().length===0) {
+		return "";
+	}
+	cats=cats.trim().replace(/[\t\r\n]/g," ");
+	let list=cats.split(";");
+	for (let i=0;i<list.length;i++) {
+		let levels=list[i].split("--");
+		for (let j=0;j<levels.length;j++) {
+			levels[j]=levels[j].replace(/^[\s-]+/,"").replace(/[\s-]+$/,"");
+		}
+		list[i]="";
+		let k=0;
+		for (;k<levels.length;k++) {
+			if (levels[k].length!==0) {
+				list[i]=levels[k];
+				break;
+			}
+		}
+		for (k++;k<levels.length;k++) {
+			if (levels[k].length!==0) {
+				list[i]+="--"+levels[k];
+			}
+		}
+	}
+	let catsMap={};
+	catsMap[list[0]]=true;
+	cats=list[0];
+	for (let i=1;i<list.length;i++) {
+		if (catsMap[list[i]]) {
+		}
+		else {
+			catsMap[list[i]]=true;
+			cats+=";"+list[i];
+		}
+	}
+	return cats;
+};
+m.catsContainsAllAnotCats=function (cats0, cats1) {
+	let cats0Split=m.formatCats(cats0).split(";");
+	let cats1Split=m.formatCats(cats1).split(";");
+	let setOfCats0=[];
+	for (let i=0;i<cats0Split.length;i++) {
+		setOfCats0[cats0Split[i]]=true;
+	}
+	let contains=true;
+	for (let i=0;i<cats1Split.length;i++) {
+		contains=contains&&setOfCats0[cats1Split[i]];
+		if (!contains) {
+			break;
+		}
+	}
+	return contains;
+};
 
 m.uriToA=function (uri) {
 	if (!uri||uri.constructor!==String) { return ""; }
