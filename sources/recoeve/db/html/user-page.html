@@ -6888,7 +6888,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 					clearTimeout(m.setTimeoutGetAndPlayVideo);
 					m.setTimeoutGetAndPlayVideo=setTimeout(function () {
 						fs.getAndPlayVideo(cue, inListPlay);
-					}, 1024);
+					}, 5000);
 					return;
 				}
 			}
