@@ -2474,12 +2474,12 @@ return new Promise(function (resolve, reject) {
 	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 
 	if (m.initialOpen) {
-		m.reTriggerFS(m.fsGo);
 		m.reTriggerFS(m.fsToRs);
 		m.reTriggerFS(m.fsCat);
 		m.reTriggerFS(m.fsMRCat);
 		m.reTriggerFS(m.fsGotoCats);
 		m.reTriggerFS(m.fsTimezone);
+		m.reTriggerFS(m.fsGo);
 	}
 	else {
 		resolve();
@@ -3840,6 +3840,10 @@ return new Promise(async function (resolve, reject) {
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
+			if (!fsFLk.catAndI) {
+				fsFLk.catAndI={};
+			}
+			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i};
 		}
 		m.reTriggerFS(fs);
 	}
@@ -5626,36 +5630,27 @@ m.gotoLi=async function (event) {
 		return;
 	}
 	let fs=m.fsGo;
+	let fs1=m.fsToRs;
 	let $elem=$(event.target);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let l=fs.fullList[uri]?.i;
-	let fsFLl=fs.fullList[l]=fs.fullList[uri];
-	if (!fsFLl) {
+	let fsFLk=fs.fullList[k]=fs.fullList[uri];
+	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
 		let r=m.userRecos[uri];
-		fsFLl=fs.fullList[l]=fs.fullList[uri]={uri, r, i:l, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-	}
-	if (uri!==fsFLl.uri) {
-		console.log("Error: uri!==fsFLl.uri");
-		return;
+		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+		fsFLk.catAndI={};
+		fsFLk.catAndI[cat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
 	if ($elem.hasClass("selected")) {
-		if ($elem.hasClass("clicked-once")) {
-			$elem.removeClass("clicked-once");
-			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
-		}
-		else {
-			$elem.addClass("clicked-once");
-		}
+		fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
 	}
 	else {
 		fs.$fsLis=fs.$fsl.find(".list-item");
 		fs.$fsLis.removeClass("selected");
-		fs.$fsLis.removeClass("clicked-once");
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catSplit=fsFLl.catSplit;
+	let catSplit=fsFLk.catSplit;
 	for (let i=0;i<catSplit.length;i++) {
 		if (m.currentCat===catSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5665,27 +5660,18 @@ m.gotoLi=async function (event) {
 	if (!m.beInCurrentCat) {
 		await m.openCat(catSplit[0]);
 	}
-	l=fs.fullList[uri]?.i;
-	fsFLl=fs.fullList[l]=fs.fullList[uri];
-	if (!fsFLl) {
-		let r=m.userRecos[uri];
-		fsFLl=fs.fullList[l]=fs.fullList[uri]={uri, r, i:l, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-	}
+	let l=fsFLk.catAndI[m.currentCat].i;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
 		setTimeout(function selfGotoLi() {
-			let k=fs.fullList[uri]?.i;
-			console.log(`fs.fullList.length: ${fs.fullList.length}, m.catUriList[m.currentCat].uris.length: ${m.catUriList[m.currentCat].uris.length}`);
-			if (fs.fullList.length===m.catUriList[m.currentCat].uris.length) {
-				let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
-				$(`#load-recos-${i}`).trigger("click");
-				let $recoElem=$(`#reco-${k}`);
-				if ($recoElem.exists()) {
-					m.showAndScrollTo($recoElem);
-				}
+			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
+			$(`#load-recos-${i}`).trigger("click");
+			let $recoElem=$(`#reco-${l}`);
+			if ($recoElem.exists()) {
+				m.showAndScrollTo($recoElem);
 			}
 			else {
 				setTimeout(selfGotoLi, 256);
@@ -6812,21 +6798,21 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		$floating_key.hide();
 	}
 	setTimeout(function () {
-		m.reTriggerFS(m.fsGo);
 		m.reTriggerFS(m.fsToRs);
 		m.reTriggerFS(m.fsCat);
 		m.reTriggerFS(m.fsMRCat);
 		m.reTriggerFS(m.fsGotoCats);
 		m.reTriggerFS(m.fsTimezone);
+		m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
 	}, 4096);
 	setTimeout(function () {
-		m.reTriggerFS(m.fsGo);
 		m.reTriggerFS(m.fsToRs);
 		m.reTriggerFS(m.fsCat);
 		m.reTriggerFS(m.fsMRCat);
 		m.reTriggerFS(m.fsGotoCats);
 		m.reTriggerFS(m.fsTimezone);
+		m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
 	}, 10000);
 });
