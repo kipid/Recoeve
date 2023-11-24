@@ -2,75 +2,99 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+<meta name="google-adsense-account" content="ca-pub-9843810906985249">
 <title>Recoeve.net</title>
+<link rel="stylesheet" href="/CDN/recoeve-style.css">
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
 <script>
-window.m={};
 (function(m, undefined) {
-	m.myIndex="{--myIndex--}";
-	m.myId="{--myId--}";
-	m.pathName=window.location.pathname;
-	m.searchMap={};
-	var searchSplit=window.location.search.split("&");
-	for (var i in searchSplit) {
-		var keyValue=searchSplit[i].split("=", 2);
-		if (keyValue.length>1) {
-			m.searchMap[keyValue[0]]=decodeURIComponent(keyValue[1]);
-		} else {
-			m.searchMap[keyValue[0]]="";
-		}
-	}
-	m.userId=m.searchMap["user"];
-	m.myPage=(m.myId===m.userId);
+m.saveSSN();
+m.myIndex="{--myIndex--}";
+m.myId="{--myId--}";
+
+m.searchVars=m.getSearchVars(m.initialSearch);
+m.lang=null;
+if (m.searchVars?.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
 })(window.m);
 </script>
 <style>
-body {margin:0; padding:0; overflow-wrap:break-word; word-wrap:break-word; word-break:break-word; background:rgb(150,150,150)}
-
-div, form, input, textarea {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; max-width:100%}
-data {display:none}
-.none {display:none}
-.center {text-align:center}
-.right {text-align:right}
-.fLeft {float:left}
-.fRight {float:right}
-.cBoth {clear:both}
-img {min-width:1em; min-height:1em; max-width:100%}
+.block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
+.block-touch-exit {z-index:31000}
 </style>
 </head>
 <body>
-<data id="data-myCatList">{--myCatList--}</data>
 <div id="container" class="dark">
-	<div>Language/언어/語言
-		<data id="data-lang">en	ko	ja	zh
-English/영어/en	Korean/한국어/ko	Japanese/일본어/ja	Chinese/중국어(번체)/zh</data></div>
+<div id="javascript-disable">
+	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
+</div><!-- div#javascript-disable -->
+<div class="button" id="my-id"></div>
+<div class="button" id="choose-lang">▼ Language/언어/語言</div>
+<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+<div class="rC"><div class="rSC">
+	<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRu3-Kj-HVJZluru8i1KGJ56rng0nQ2IK9s3PlxUzz45uaFUxGdgvon_MAr6lFxlJmuL5dPBJ1E7pNC/pubhtml?widget=true&amp;headers=false" frameborder="0"></iframe>
+</div></div>
 </div>
 </body>
 <div id="scripts"></div>
-<script src="/jquery.js"></script>
 <script>
 (function(m, $, undefined) {
-$data_myCatList=$("#data-myCatList");
+$("#javascript-disable").hide();
+
 $data_lang=$("#data-lang");
 
 $window=$(window);
 $html=$("html");
 $body=$("body");
 
-m.delayPad=m.delayPad||256;
-m.wait=m.wait||512;
+$my_id=$("#my-id");
+
 m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-m.previous=Date.now();
 
-m.catList=[];
-m.myCatList=m.myPage?m.catList:[];
-m.currentCat=null;
-m.catUriList=[];
-m.userRecos={};
-m.myRecos=m.myPage?m.userRecos:{};
-m.maxShowReco=10;
-
-
+////////////////////////////////////////////////////
+// Language/언어/語言
+////////////////////////////////////////////////////
+m.changeLang=function (lang, e, elem) {
+	let search=window.location.search;
+	let vars=m.getSearchVars(search);
+	let href=`${window.location.pathname}${vars.cat?`?cat=${encodeURIComponent(vars.cat.val)}`:"?cat="}${lang?`&lang=${lang}`:""}#${encodeURIComponent(m.hashURI)}`;
+	if (e?.which===2) { // wheel click.
+		$(elem).attr({"href":href});
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+(async function () {
+let dataLang=await m.strToJSON($data_lang.html().trim());
+let htmlLangs="";
+for (let i=0;i<dataLang[0].length;i++) {
+	htmlLangs+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+}
+$choose_lang_list.html(htmlLangs);
+$choose_lang.on("click", function (e) {
+	if ($choose_lang.hasClass("enabled")) {
+		$choose_lang.removeClass("enabled");
+		$choose_lang_list.hide();
+	}
+	else {
+		$choose_lang.addClass("enabled");
+		$choose_lang_list.show();
+	}
+});
+})();
 })(window.m, jQuery);
 </script>
 </html>
