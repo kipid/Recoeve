@@ -1253,6 +1253,20 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["serviceapi.rmcnmv.naver.com"]={};
+ptnURI.regEx=/^\S+/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[0]});
+	}
+	else {
+		return reject(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI["tv.naver.com"]={};
 ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
