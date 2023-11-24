@@ -5755,7 +5755,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(); // cue or not? not!
+			fs.getAndPlayVideo(true); // cue or not? cue!
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -6872,7 +6872,8 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
 			if (m.YtPlayer) {
-				console.log("m.YtPlayer.cueVideoById: ", m.YtPlayer.cueVideoById);
+				console.log(`cue: ${cue}, m.YtPlayer.cueVideoById: `, m.YtPlayer.cueVideoById);
+				console.log(`m.YtPlayer.loadVideoById: `, m.YtPlayer.loadVideoById);
 				if (cue&&m.YtPlayer.cueVideoById) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
 				}
