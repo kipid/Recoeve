@@ -42,7 +42,7 @@ public class FileMap {
 			"jquery.js", "prepare.js"
 			, "robots.txt", "ads.txt"
 			, "log-in.html", "verify.html", "changePwd.html", "log-out.html"
-			, "user-page.html", "remember-me.html", "multireco.html"
+			, "user-page.html", "remember-me.html"
 		};
 	private static final int txtFileMapSize=100;
 	private static final int fileLangMapSize=100; // # of languages translated to support.
