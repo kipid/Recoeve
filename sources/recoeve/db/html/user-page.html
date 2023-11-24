@@ -54,7 +54,7 @@ m.hashURI=m.initialHashURI;
 if (m.initialHashURI>0) {
 	let ampIndex=m.initialHashURI.indexOf("&");
 	if (ampIndex>=0) {
-		m.hashURI=m.initialHashURI.substring(0,ampIndex);
+		m.hashURI=m.initialHashURI=m.initialHashURI.substring(0,ampIndex);
 	}
 	m.hashURI=decodeURIComponent(m.initialHashURI.replace(/\+/g,"%20"));
 }
