@@ -5439,8 +5439,8 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
 	let $elem=$(event.target);
-	if (!$elem.hasClass("list-item")) {
-		$elem=$elem.parents(".list-item");
+	if (!$elem.hasClass("baseCat")) {
+		$elem=$elem.parents(".baseCat");
 	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
 	if (event?.which===2) {
@@ -5639,8 +5639,10 @@ m.gotoLi=async function (event) {
 	}
 	let fs=m.fsGo;
 	let fs1=m.fsToRs;
-	let $elem=$(event.currentTarget);
-	console.log($elem);
+	let $elem=$(event.target);
+	if (!$elem.hasClass("list-item")) {
+		$elem=$elem.parents(".list-item");
+	}
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[uri];
