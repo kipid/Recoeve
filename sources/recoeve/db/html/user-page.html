@@ -5676,13 +5676,16 @@ m.gotoLi=async function (event) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
-		let k=fs.fullList[uri]?.i;
-		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
-		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function selfGotoLi() {
-			let $recoElem=$(`#reco-${k}`);
-			if ($recoElem.exists()) {
-				m.showAndScrollTo($recoElem);
+			let k=fs.fullList[uri]?.i;
+			console.log(`fs.fullList.length: ${fs.fullList.length}, m.catUriList[m.currentCat].uris.length: ${m.catUriList[m.currentCat].uris.length}`);
+			if (fs.fullList.length===m.catUriList[m.currentCat].uris.length) {
+				let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
+				$(`#load-recos-${i}`).trigger("click");
+				let $recoElem=$(`#reco-${k}`);
+				if ($recoElem.exists()) {
+					m.showAndScrollTo($recoElem);
+				}
 			}
 			else {
 				setTimeout(selfGotoLi, 256);
