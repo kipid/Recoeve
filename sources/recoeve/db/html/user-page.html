@@ -5633,7 +5633,7 @@ m.gotoLi=async function (event) {
 	}
 	let fs=m.fsGo;
 	let fs1=m.fsToRs;
-	let $elem=$(event.target);
+	let $elem=$(event.currentTarget);
 	console.log($elem);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
@@ -6962,7 +6962,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	if (first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()) {
-			fs.currentIndex=Number($li.attr("id").substring(4));fs.currentIndex
+			fs.currentIndex=Number($li.attr("id").substring(4));
 			console.log(`$li: `, $li);
 			console.log(`fs.currentIndex: ${fs.currentIndex}`);
 			fs.$fsl.viewAndScroll($li);
