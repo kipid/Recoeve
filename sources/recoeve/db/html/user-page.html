@@ -6076,6 +6076,47 @@ m.shareSNS=function (elem, service) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
+m.intervalOpenCat=function (intervalId, count) {
+	console.log(`intervalId: ${intervalId}, count: ${count}`);
+	let fs=m.fsGotoCats;
+	let fsGotoCatsFLCat=fs.fullList[m.currentCat];
+	if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
+		let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
+		if (count>15) {
+			clearInterval(intervalId);
+			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
+			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
+			if (!m.doNotPushHistory) {
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			}
+			m.doNotPushHistory=false;
+		}
+		if ($gotoCatsI.exists()) {
+			clearInterval(intervalId);
+			$gotoCatsI.trigger("click");
+			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
+			console.log(`m.currentCat: `, m.currentCat);
+			console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+			if (!m.doNotPushHistory) {
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			}
+			m.doNotPushHistory=false;
+		}
+		else if (count>5) {
+			clearInterval(intervalId);
+			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
+			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
+			$gotoCatsI.trigger("click");
+			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
+			console.log(`m.currentCat: `, m.currentCat);
+			console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+			if (!m.doNotPushHistory) {
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			}
+			m.doNotPushHistory=false;
+		}
+	}
+};
 $block_touch_exit.on("click", function (event) {
 	$block_touch.hide();
 	$block_touch_exit.hide();
@@ -6267,35 +6308,7 @@ m.processShortKey=function (e) {
 		m.initialFsGotoCats1N=0;
 		clearInterval(m.initialFsGotoCats1);
 		m.initialFsGotoCats1=setInterval(function () {
-			let fs=m.fsGotoCats;
-			let fsGotoCatsFLCat=fs.fullList[m.currentCat];
-			if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
-				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-				m.initialFsGotoCats1N++;
-				if (m.initialFsGotoCats1N>10) {
-					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
-					clearInterval(m.initialFsGotoCats1);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-				if ($gotoCatsI.exists()) {
-					$gotoCatsI.trigger("click");
-					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-					console.log(`m.currentCat: `, m.currentCat);
-					console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
-					clearInterval(m.initialFsGotoCats1);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-				else if (m.initialFsGotoCats1N>3) {
-					fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
-				}
-			}
+			m.intervalOpenCat(m.initialFsGotoCats1, m.initialFsGotoCats1N++);
 		}, 256);
 		break;
 	case 77: // M=77
@@ -6324,31 +6337,7 @@ m.processShortKey=function (e) {
 			m.initialFsGotoCats2N=0;
 			clearInterval(m.initialFsGotoCats2);
 			m.initialFsGotoCats2=setInterval(function () {
-				let fs=m.fsGotoCats;
-				let fsGotoCatsFLCat=fs.fullList[m.currentCat];
-				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat?.i}`);
-				m.initialFsGotoCats2N++;
-				if (m.initialFsGotoCats2N>10) {
-					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
-					clearInterval(m.initialFsGotoCats2);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-				if ($gotoCatsI.exists()) {
-					$gotoCatsI.trigger("click");
-					console.log(`Multireco: $gotoCatsI.trigger("click");`);
-					clearInterval(m.initialFsGotoCats2);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-				else if (m.initialFsGotoCats2N>3) {
-					fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
-				}
+				m.intervalOpenCat(m.initialFsGotoCats2, m.initialFsGotoCats2N++);
 			}, 256);
 		}
 		else {
@@ -6376,35 +6365,7 @@ m.processShortKey=function (e) {
 			m.initialFsGotoCats3N=0;
 			clearInterval(m.initialFsGotoCats3);
 			m.initialFsGotoCats3=setInterval(function () {
-				let fs=m.fsGotoCats;
-				let fsGotoCatsFLCat=fs.fullList[m.currentCat];
-				if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
-					let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-					m.initialFsGotoCats3N++;
-					if (m.initialFsGotoCats3N>10) {
-						$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-						console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
-						clearInterval(m.initialFsGotoCats3);
-						if (!m.doNotPushHistory) {
-							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-						m.doNotPushHistory=false;
-					}
-					if ($gotoCatsI.exists()) {
-						$gotoCatsI.trigger("click");
-						console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-						console.log(`m.currentCat: `, m.currentCat);
-						console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
-						clearInterval(m.initialFsGotoCats3);
-						if (!m.doNotPushHistory) {
-							window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-						}
-						m.doNotPushHistory=false;
-					}
-					else if (m.initialFsGotoCats3N>3) {
-						fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
-					}
-				}
+				m.intervalOpenCat(m.initialFsGotoCats3, m.initialFsGotoCats3N++);
 			}, 256);
 		}
 		break;
@@ -6723,28 +6684,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.initialFsGotoCats0N=0;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
-			let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
-			if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
-				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-				m.initialFsGotoCats0N++;
-				if (m.initialFsGotoCats0N>10) {
-					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
-					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
-					clearInterval(m.initialFsGotoCats0);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-				if ($gotoCatsI.exists()) {
-					$gotoCatsI.trigger("click");
-					clearInterval(m.initialFsGotoCats0);
-					if (!m.doNotPushHistory) {
-						window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-					}
-					m.doNotPushHistory=false;
-				}
-			}
+			m.intervalOpenCat(m.initialFsGotoCats0, m.initialFsGotoCats0N++);
 		}, 512);
 	}
 
