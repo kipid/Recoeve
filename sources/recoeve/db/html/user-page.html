@@ -6791,7 +6791,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 ////////////////////////////////////////////////////
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	let fs=m.fsToRs;
-	fs.pauseVideo();
+	if (fs.pauseVideo) {
+		fs.pauseVideo();
+	}
 	let i=fs.currentIndex;
 	if (0<=i&&i<fs.fullList.length) {
 		fs.$fsLis=fs.$fsl.find(".list-item");
@@ -6901,7 +6903,9 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	if (first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()) {
-			fs.currentIndex=Number($li.attr("id").substring(4));
+			fs.currentIndex=Number($li.attr("id").substring(4));fs.currentIndex
+			console.log(`$li: `, $li);
+			console.log(`fs.currentIndex: ${fs.currentIndex}`);
 			fs.$fsl.viewAndScroll($li);
 			fs.getAndPlayVideo(cue);
 			return;
