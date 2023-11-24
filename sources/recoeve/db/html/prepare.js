@@ -611,7 +611,7 @@ m.heapsortRest=function (arr, key, sorted, upto, n) {
 ////////////////////////////////////////////////////
 // Delayed Loading.
 ////////////////////////////////////////////////////
-m.delayPad=1024;
+m.delayPad=512;
 m.wait=1024;
 m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 m.previous=Date.now();

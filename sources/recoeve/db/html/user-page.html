@@ -6404,13 +6404,20 @@ m.processShortKey=function (e) {
 		let hIID=$hI[0].id;
 		if ($hI.hasClass("reco")) {
 			m.hashURI=m.unescapeHTML($hI.find(".textURI").html());
+			window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
+			$window.scrollTop($hI.offset().top);
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		else if (hIID) {
 			m.hashURI=hIID;
+			if (e.keyCode===70) { // F=70
+				$window.scrollTop($hI.offset().top-$window.height());
+			}
+			else { // D=68
+				$window.scrollTop($hI.offset().top);
+			}
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
-		window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
-		$window.scrollTop($hI.offset().top);
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		break;
 	case 73: // I=73
 		$a_log_in.trigger("click");
