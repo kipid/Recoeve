@@ -5626,7 +5626,7 @@ m.gotoLi=async function (event) {
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[k]=fs.fullList[uri];
 	if (!fsFLk) {
-		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r:m.userRecos[uri], i:k, txt:m.splitHangul(`${m.userRecos[uri].cats} :: ${m.userRecos[uri].title}`), html.m.escapeOnlyTag(m.userRecos[uri].title)}
+		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r:m.userRecos[uri], i:k, txt:m.splitHangul(`${m.userRecos[uri].cats} :: ${m.userRecos[uri].title}`), html:m.escapeOnlyTag(m.userRecos[uri].title)};
 	}
 	if (uri!==fsFLk.uri) {
 		console.log("Error: uri!==fsFLk.uri");
