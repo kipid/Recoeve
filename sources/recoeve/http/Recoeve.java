@@ -330,6 +330,10 @@ public static void main(String... args) {
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
 				switch (fileName) {
+					case "multireco": // e.g. path=/multireco
+						pl.req.response().putHeader("Content-Type","text/html")
+							.end(FileMap.get("multireco.html", pl.lang), ENCODING);
+						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
 							.end(FileMap.get("jquery.js", pl.lang), ENCODING);
