@@ -15,6 +15,7 @@
 m.saveSSN();
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
+m.userPath=`/user/${m.myId}`;
 
 m.searchVars=m.getSearchVars(m.initialSearch);
 m.lang=null;
@@ -96,9 +97,7 @@ m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 // Language/언어/語言
 ////////////////////////////////////////////////////
 m.changeLang=function (lang, e, elem) {
-	let search=window.location.search;
-	let vars=m.getSearchVars(search);
-	let href=`${window.location.pathname}${vars.cat?`?cat=${encodeURIComponent(vars.cat.val)}`:"?cat="}${lang?`&lang=${lang}`:""}#${encodeURIComponent(m.hashURI)}`;
+	let href=`${window.location.pathname}${lang?`?lang=${lang}`:""}`;
 	if (e?.which===2) { // wheel click.
 		$(elem).attr({"href":href});
 		return true;
@@ -130,8 +129,7 @@ $choose_lang.on("click", function (e) {
 m.a_log_in=function (e) {
 	e.stopPropagation();
 	e.preventDefault();
-	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
-	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+	let href=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
 	$a_log_in.attr("href", href);
 	if (e?.which===2) {
 		window.open(href);
@@ -142,18 +140,18 @@ m.a_log_in=function (e) {
 	return false;
 };
 m.log_out_do=function (args, err) {
-	let $err=$("#log-out-do-container").find(".center");
+	let $err=$("#log-out-do-container>.center");
 	if (err) {
-		$err.html(m.escapeOnlyTag(err));
+		$err.html(err);
 	}
 	$.ajax({
 		type:"POST", url:`/account/log-out.do`, data:args
 		, dataType:"text"
 	}).fail(function (resp) {
 		let msg="[--Log-out has failed.--]";
-		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`));
+		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
 	}).done(function (resp) {
-		$err.html(m.escapeOnlyTag(resp));
+		$err.html(resp);
 		setTimeout(function () {
 			window.location.href=args.href;
 		}, 1024);
@@ -162,23 +160,22 @@ m.log_out_do=function (args, err) {
 m.a_log_out=function (e) {
 	e.stopPropagation();
 	e.preventDefault();
-	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
-	let href_log_out=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
+	let href_log_out=`/account/log-out?goto=${encodeURIComponent("/multireco")}`;
 	$a_log_out.attr("href", href_log_out);
 	if (e?.which===2) {
 		window.open(href_log_out);
 	}
 	else {
 		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out from Recoeve.net--]</div></div>`);
-		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
-		m.rmb_me(m.log_out_do, {href:href_log_in, goto:fullPath});
+		let href_log_in=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
+		m.rmb_me(m.log_out_do, {href:href_log_in, goto:"/multireco"});
 	}
 	return false;
 };
 m.log_out_from_all_do=function (args, err) {
-	let $err=$("#log-out-do-container").find(".center");
+	let $err=$("#log-out-do-container>.center");
 	if (err) {
-		$err.html(m.escapeOnlyTag(err));
+		$err.html(err);
 		$err.zIndex(31100);
 	}
 	$.ajax({
@@ -186,7 +183,7 @@ m.log_out_from_all_do=function (args, err) {
 		, dataType:"text"
 	}).fail(function (resp) {
 		let msg="[--Log-out has failed.--]";
-		$err.html(m.escapeOnlyTag(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`));
+		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
 		$err.zIndex(31200);
 	}).done(function (resp) {
 		$err.html(resp);
@@ -199,16 +196,15 @@ m.log_out_from_all_do=function (args, err) {
 m.a_log_out_from_all=function (e) {
 	e.stopPropagation();
 	e.preventDefault();
-	let fullPath=m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
-	let href_log_out_from_all=`/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
+	let href_log_out_from_all=`/account/log-out-from-all?goto=${encodeURIComponent("/multireco")}`;
 	$a_log_out_from_all.attr("href", href_log_out_from_all);
 	if (e?.which===2) {
 		window.open(href_log_out_from_all);
 	}
 	else {
 		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out at all devices from Recoeve.net--]</div></div>`);
-		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
-		m.rmb_me(m.log_out_do_from_all, {href:href_log_in, goto:fullPath});
+		let href_log_in=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
+		m.rmb_me(m.log_out_do_from_all, {href:href_log_in, goto:"/multireco"});
 	}
 	return false;
 };
@@ -255,7 +251,7 @@ m.delayedLogOut=function (msg, delayTime=27, $result) {
 	}, 1000);
 	clearTimeout(m.deleyedLogOutTimeout);
 	m.deleyedLogOutTimeout=setTimeout(function () {
-		window.location.href=`/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
+		window.location.href=`/account/log-out?goto=${encodeURIComponent("/multireco")}`;
 	}, delay*1000);
 };
 
