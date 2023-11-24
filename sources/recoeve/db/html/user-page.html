@@ -6813,6 +6813,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
+	clearTimeout(m.setTimeoutGetAndPlayVideo);
 	let fs=m.fsToRs;
 	if (fs.pauseVideo) {
 		fs.pauseVideo();
@@ -6833,11 +6834,16 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
 			if (m.YtPlayer) {
-				if (cue) {
+				if (cue&&m.YtPlayer.cueVideoById) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
 				}
-				else {
+				else if (m.YtPlayer.loadVideoById) {
 					m.YtPlayer.loadVideoById(uriRendered.videoId);
+				}
+				else {
+					m.setTimeoutGetAndPlayVideo=setTimeout(function () {
+						fs.getAndPlayVideo(cue, inListPlay);
+					}, 1024);
 				}
 			}
 			else if (YT!==undefined&&YT.Player) {
