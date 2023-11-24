@@ -253,6 +253,12 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+각 reco on a uri 에서 max sim "user cat" 을 골라내야 함. cats 가 multi 일때. (애초에 이렇게 구현 한듯.)
+
+m.fsGotoCats.fullList[cat].down 이 제대로 동작 안하는듯? (m.fsGotoCats.fullList[i] 랑 [cat] 이랑 다른걸 가리키고 있는듯?)
+
+RecoStat 에 tInitial 저장해 놓고, 최근에 reco 된 것들 위주로만 추천해 주는 기능도 추가. tFirst 가 1년 내의 reco 인지, 일주일 내의 reco 인지, infinite 인지, 1시간 내의 reco 인지 판단해서 골라서 추천해 줄 수 있도록 만들자. (tLast 로 check.)
+
 별 드래그 reco/edit 할 때, list play 쪽에 $(".reco") 도 해당되는 uri 라면 update 해주기. (해줘도 그만 안해줘도 그만인듯한...)
 
 mode/multireco 로 접속해도 그냥 mode="" 일때랑 똑같이 load 됨. mode/neighbors 일땐 get-Neighbors 가 잘 동작하는데, 일단 페이지 로딩 된 다음 B 키 누르면 neighbors 가 안보임. (해결 됐나?)
