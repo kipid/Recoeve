@@ -2481,6 +2481,9 @@ return new Promise(function (resolve, reject) {
 		m.reTriggerFS(m.fsGotoCats);
 		m.reTriggerFS(m.fsTimezone);
 	}
+	else {
+		resolve();
+	}
 });
 };
 m.onKeydownInFS=function (e, fs) {
@@ -2552,7 +2555,7 @@ m.onKeydownInFS=function (e, fs) {
 			break;
 	}
 	m.setTimeoutTargetOn=setTimeout(async function () {
-		await m.reNewfsCatsOn();
+		m.reNewfsCatsOn();
 	}, 4096);
 };
 $input_cats.on("keydown.fs", function (e) {
@@ -3645,7 +3648,7 @@ m.reNewAndReOn=async function () {
 	$downs.off("click.ud");
 	$ups.on("click.ud", m.starsOnUpClick);
 	$downs.on("click.ud", m.starsOnDownClick);
-	await m.reNewfsCatsOn();
+	m.reNewfsCatsOn();
 };
 m.showRecosOnCat=async function (elem, from) {
 	let cat=m.currentCat;
@@ -5593,7 +5596,7 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		break;
 	}
 	m.setTimeoutTargetOn0=setTimeout(async function () {
-		await m.reNewfsCatsOn();
+		m.reNewfsCatsOn();
 	}, 4096);
 };
 $fuzzy_search.on("keydown.fs", function (e) {
@@ -5818,7 +5821,12 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
-	fs.playNext(-1, true, true);
+	if (m.initialOpen) {
+		fs.playNext(-1, true, true);
+	}
+	else {
+		fs.getAndPlayVideo(true);
+	}
 	resolve();
 });
 };
@@ -6813,6 +6821,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
+	clearTimeout(m.playListSetTimeout);
+	clearTimeout(m.setTimeoutPlayNext);
 	clearTimeout(m.setTimeoutGetAndPlayVideo);
 	let fs=m.fsToRs;
 	if (fs.pauseVideo) {
@@ -6926,6 +6936,7 @@ m.fsToRs.pauseVideo=function () {
 m.fsToRs.playNext=function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeout);
 	clearTimeout(m.setTimeoutPlayNext);
+	clearTimeout(m.setTimeoutGetAndPlayVideo);
 	let fs=m.fsToRs;
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
