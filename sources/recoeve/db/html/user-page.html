@@ -6844,6 +6844,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
 			if (m.YtPlayer) {
+				console.log("m.YtPlayer.cueVideoById: ", m.YtPlayer.cueVideoById);
 				if (cue&&m.YtPlayer.cueVideoById) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
 				}
@@ -6962,7 +6963,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			$rC_youtube_uri_rendered.hide();
 			m.setTimeoutPlayNext=setTimeout(function () {
 				fs.playNext(increment, cue, first);
-			}, 4096);
+			}, 1024);
 			return;
 		}
 	}
