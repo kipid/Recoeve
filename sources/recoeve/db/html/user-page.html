@@ -4566,6 +4566,7 @@ m.openCat=async function (cat) {
 		}
 		m.doNotPushHistory=false;
 	}
+	m.currentCat=cat;
 	return false;
 };
 
@@ -5670,6 +5671,7 @@ m.gotoLi=async function (event) {
 	}
 	if (!m.beInCurrentCat) {
 		await m.openCat(catSplit[0]);
+		// m.currentCat=catSplit[0];
 	}
 	let l=fsFLk.catAndI[m.currentCat].i;
 	let $recoElem=$(`#reco-${l}`);
