@@ -3874,9 +3874,9 @@ m.getRecos=function (uris, recos, cat) {
 	for (let i=uris.length-1;i>=0;i--) {
 		let uri=uris[i];
 		let r=recos[uri];
-		if (!r) { r=recos[uri]={uri}; }
+		if (!r) { r=recos[uri]={uri, down:false}; }
 		if (recos===m.userRecos) {
-			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r,;
+			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r};
 		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
