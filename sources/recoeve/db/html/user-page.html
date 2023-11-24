@@ -5603,19 +5603,24 @@ $fuzzy_search.on("keydown.fs", function (e) {
 	m.onKeydownInFS0(e, 'G', m.fsGo);
 });
 m.showAndScrollTo=function ($recoElem) {
+if ($recoElem?.exists()) {
 	if (!$recoElem?.is(":visible")) {
 		$recoElem?.removeClass("none");
 		$recoElem?.show();
 	}
 	$window.scrollTop($recoElem?.offset()?.top);
+	let hIID=$recoElem[0].id;
 	if ($recoElem.hasClass("reco")) {
 		m.hashURI=m.unescapeHTML($recoElem.find(".textURI").html());
 	}
 	else if (hIID) {
 		m.hashURI=hIID;
 	}
-	window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
-};
+	if (m.hashURI) {
+		window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
+		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+	}
+}};
 m.gotoLi=async function (event) {
 	if (event?.srcElement?.nodeName==="A") {
 		return;
@@ -5624,12 +5629,14 @@ m.gotoLi=async function (event) {
 	let $elem=$(event.target);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let fsFLk=fs.fullList[k]=fs.fullList[uri];
-	if (!fsFLk) {
-		fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r:m.userRecos[uri], i:k, txt:m.splitHangul(`${m.userRecos[uri].cats} :: ${m.userRecos[uri].title}`), html:m.escapeOnlyTag(m.userRecos[uri].title)};
+	let l=fs.fullList[uri]?.i;
+	let fsFLl=fs.fullList[l]=fs.fullList[uri];
+	if (!fsFLl) {
+		let r=m.userRecos[uri];
+		fsFLl=fs.fullList[l]=fs.fullList[uri]={uri, r, i:l, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 	}
-	if (uri!==fsFLk.uri) {
-		console.log("Error: uri!==fsFLk.uri");
+	if (uri!==fsFLl.uri) {
+		console.log("Error: uri!==fsFLl.uri");
 		return;
 	}
 	if ($elem.hasClass("selected")) {
@@ -5648,7 +5655,7 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catSplit=fsFLk.catSplit;
+	let catSplit=fsFLl.catSplit;
 	for (let i=0;i<catSplit.length;i++) {
 		if (m.currentCat===catSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5658,12 +5665,18 @@ m.gotoLi=async function (event) {
 	if (!m.beInCurrentCat) {
 		await m.openCat(catSplit[0]);
 	}
-	let $recoElem=$(`#reco-${m.userRecos[uri]?.i}`);
+	l=fs.fullList[uri]?.i;
+	fsFLl=fs.fullList[l]=fs.fullList[uri];
+	if (!fsFLl) {
+		let r=m.userRecos[uri];
+		fsFLl=fs.fullList[l]=fs.fullList[uri]={uri, r, i:l, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+	}
+	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
 	}
 	else {
-		let k=m.userRecos[uri]?.i;
+		let k=fs.fullList[uri]?.i;
 		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-k)/m.maxShowReco);
 		$(`#load-recos-${i}`).trigger("click");
 		setTimeout(function selfGotoLi() {
@@ -5672,9 +5685,9 @@ m.gotoLi=async function (event) {
 				m.showAndScrollTo($recoElem);
 			}
 			else {
-				setTimeout(selfGotoLi, 512);
+				setTimeout(selfGotoLi, 256);
 			}
-		}, 512);
+		}, 256);
 	}
 };
 m.doFSGo=function (fs) {
