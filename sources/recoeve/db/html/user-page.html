@@ -5636,14 +5636,16 @@ m.gotoLi=async function (event) {
 	let $elem=$(event.target);
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let fsFLk=fs.fullList[k]=fs.fullList[uri];
+	let fsFLk=fs.fullList[uri];
+	fs.fullList[k]=fs.fullList[uri];
 	console.log("fsFLk: ", fsFLk);
 	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
 		}, 512);
+		return;
 		// let r=m.userRecos[uri];
-		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		// fsFLk.catAndI={};
 		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
