@@ -1367,6 +1367,8 @@ m.fsGo.$fsl=$fuzzy_search_list;
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fixed=false;
+m.fsToRs.lastIndex=-1;
+m.fsToRs.currentIndex=-1;
 m.fsToRs.fullList=[];
 m.fsToRs.shuffled=[];
 m.fsToRs.$fs=$table_of_recos;
@@ -3298,10 +3300,10 @@ m.reco_pointChange_do=function (args, err) {
 		clearInterval(m.deleyedLogOutInterval);
 		clearTimeout(m.deleyedLogOutTimeout);
 		if (args.inRecoms) {
-			args.$result?.html(`[--Reco failed.--]: ${m.escapeOnlyTag(resp)}`);
+			args.$result?.html(`[--Reco failed.--]: ${resp}`);
 		}
 		else {
-			args.$result?.html(`[--Failed change.--]: ${m.escapeOnlyTag(resp)}`);
+			args.$result?.html(`[--Failed change.--]: ${resp}`);
 		}
 	}).done(async function (resp) {
 		clearInterval(m.deleyedLogOutInterval);
@@ -3309,7 +3311,7 @@ m.reco_pointChange_do=function (args, err) {
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		let uri=res[1]?.uri;
-		if (result?.startsWith("changed")) {
+		if (result.startsWith("changed")) {
 			m.myRecos[uri].val=m.val(args.valStr);
 			if (m.myRecos[uri].cats!==args.cats) {
 				m.catsChangedOnUri(m.myRecos[uri].cats, args.cats, uri);
@@ -3356,7 +3358,7 @@ m.reco_pointChange_do=function (args, err) {
 };
 m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	if (!m.myIndex) {
-		m.delayedLogOut("Maybe not logged-in.", 60*60*24, $result);
+		m.delayedLogOut("You are not logged-in.", 60*60*24, $result);
 		return;
 	}
 	let valStr=$str.html();
@@ -3399,7 +3401,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 					catsChanged=false;
 				}
 			}
-			else if (m.myRecos[uri].cats) {
+			else if (m.myRecos[uri].cats||m.myRecos[uri].cats==="") {
 				cats=m.formatCats(m.myRecos[uri].cats);
 				catsChanged=false;
 			}
@@ -3409,9 +3411,8 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			if (catsChanged) {
 				strHeads+="\tcats";
 				strContents+=`\t${m.encloseStr(cats)}`;
-				m.catsChangedOnUri(m.myRecos[uri].cats, cats, uri);
 			}
-			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeOnlyTag(cats)}.`:""}`);
+			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is "${m.escapeOnlyTag(cats)}".`:""}`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		}
 	}
@@ -4408,7 +4409,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
-				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, sortN:Math.random()};
+				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, sortN:fs.fullList.length-1};
 			}
 			m.reTriggerFS(fs);
 			break;
@@ -5824,7 +5825,7 @@ return new Promise(async function (resolve, reject) {
 			let j=i;
 			for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
 				shuffled[j]=shuffled[j-1];
-			} // desc sorting.
+			} // desc sorting. The same reversed.
 			shuffled[j]=temp;
 		}
 		m.reTriggerFS(fs);
@@ -6791,11 +6792,12 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
+	clearTimeout(m.playListSetTimeoutYT);
 	clearTimeout(m.playListSetTimeout);
 	clearTimeout(m.setTimeoutPlayNext);
 	clearTimeout(m.setTimeoutGetAndPlayVideo);
 	let fs=m.fsToRs;
-	if (fs.pauseVideo) {
+	if (cue&&!inListPlay&&fs.pauseVideo) {
 		fs.pauseVideo();
 	}
 	let i=fs.currentIndex;
@@ -6813,56 +6815,66 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
-			if (m.YtPlayer) {
-				if (cue&&m.YtPlayer.cueVideoById) {
-					m.YtPlayer.cueVideoById(uriRendered.videoId);
+			if (fs.lastIndex!==fs.currentIndex) {
+				if (inListPlay) {
+					if (m.YtPlayer) {
+						if (cue&&m.YtPlayer.cueVideoById) {
+							m.YtPlayer.cueVideoById(uriRendered.videoId);
+							fs.lastIndex=fs.currentIndex;
+						}
+						else if (m.YtPlayer.loadVideoById) {
+							m.YtPlayer.loadVideoById(uriRendered.videoId);
+							fs.lastIndex=fs.currentIndex;
+						}
+						else {
+							clearTimeout(m.setTimeoutGetAndPlayVideo);
+							m.setTimeoutGetAndPlayVideo=setTimeout(function () {
+								fs.getAndPlayVideo(cue, inListPlay);
+							}, 2048);
+							return;
+						}
+					}
 				}
-				else if (m.YtPlayer.loadVideoById) {
-					m.YtPlayer.loadVideoById(uriRendered.videoId);
+				else if (YT?.Player) {
+					m.YtPlayer=new YT.Player('youtube',
+						{videoId:uriRendered.videoId, events:{
+							'onError':function (e) {
+								if (fs.skip) {
+									clearTimeout(m.playListSetTimeoutYT);
+									m.playListSetTimeoutYT=setTimeout(function () {
+										if (fs.skip) { fs.playNext(); }
+									}, 10000);
+								}
+							}, 'onStateChange':function (e) {
+								if (e.data===YT.PlayerState.ENDED) {
+									if (fs.oneLoop) {
+										m.YtPlayer.seekTo(0,true);
+									}
+									else {
+										fs.playNext();
+									}
+								}
+							}
+						}}
+					);
+					fs.lastIndex=fs.currentIndex;
 				}
 				else {
-					clearTimeout(m.setTimeoutGetAndPlayVideo);
-					m.setTimeoutGetAndPlayVideo=setTimeout(function () {
-						fs.getAndPlayVideo(cue, inListPlay);
-					}, 5000);
-					return;
+					fs.prepareRecoListPlay(true);
 				}
-			}
-			else if (YT!==undefined&&YT.Player) {
-				m.YtPlayer=new YT.Player('youtube', {videoId:uriRendered.videoId
-					, events:{
-						'onError':function (e) {
-							if (fs.skip) {
-								clearTimeout(m.playListSetTimeout);
-								m.playListSetTimeout=setTimeout(function () {
-									if (fs.skip) { fs.playNext(); }
-								}, 12000);
-							}
-						}, 'onStateChange':function (e) {
-							if (e.data===YT.PlayerState.ENDED) {
-								if (fs.oneLoop) {
-									m.YtPlayer.seekTo(0,true);
-								}
-								else {
-									fs.playNext();
-								}
-							}
-						}
-					}}
-				);
-			}
-			else {
-				fs.prepareRecoListPlay(true);
 			}
 		}
 		else if (from==="video") {
-			$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse"), "eveElse"));
-			$eveElse=$("#eveElse");
-			$video=$("#video");
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered;
+			if (fs.lastIndex!==fs.currentIndex) {
+				$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse"), "eveElse"));
+				fs.lastIndex=fs.currentIndex;
+			}
+			$eveElse=$("#eveElse");
+			$video=$("#video");
 			$video.on("ended", function () {
 				if (fs.oneLoop) {
 					$video[0].play();
@@ -6876,11 +6888,14 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			}
 		}
 		else {
-			$eveElse.html(uriRendered.html);
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered;
+			if (fs.lastIndex!==fs.currentIndex) {
+				$eveElse.html(uriRendered.html);
+				fs.lastIndex=fs.currentIndex;
+			}
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
@@ -6895,6 +6910,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 		$youtube.html('');
 		$eveElse_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
+		fs.lastIndex=fs.currentIndex;
 	}
 	m.reNewAndReOn();
 };
@@ -6907,6 +6923,7 @@ m.fsToRs.pauseVideo=function () {
 	}
 };
 m.fsToRs.playNext=function (increment, cue, first) {
+	clearTimeout(m.playListSetTimeoutYT);
 	clearTimeout(m.playListSetTimeout);
 	clearTimeout(m.setTimeoutPlayNext);
 	clearTimeout(m.setTimeoutGetAndPlayVideo);
@@ -6918,11 +6935,13 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			fs.$fsl.viewAndScroll($li);
-			fs.getAndPlayVideo(cue);
+			if (fs.lastIndex!==fs.currentIndex) {
+				fs.getAndPlayVideo(cue);
+			}
 			return;
 		}
 		else {
-			fs.currentIndex=0;
+			fs.currentIndex=-1;
 			$reco_playing.html('');
 			$eveElse.html('');
 			$youtube.html('');
