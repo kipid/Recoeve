@@ -2439,9 +2439,9 @@ m.fsTimezoneOn=async function () {
 		m.doFSTimezone();
 	}
 	else {
-		$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
+		$search_timezone.off("keyup.fs cut.fs paste.fs");
 		setTimeout(function () {
-			$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+			$search_timezone.on("keyup.fs cut.fs paste.fs", m.fsTimezoneOn);
 			m.previous=Date.now();
 			m.doFSTimezone();
 		}, m.wait*1.5-passed);
@@ -2454,22 +2454,22 @@ m.reTriggerFS=function (fs) {
 };
 m.reNewfsCatsOn=async function () {
 return new Promise(function (resolve, reject) {
-	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
-	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
+	$fuzzy_search.off("keyup.fs cut.fs paste.fs");
+	$table_of_recos.off("keyup.fs cut.fs paste.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$multireco_input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
-	$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
+	$search_timezone.off("keyup.fs cut.fs paste.fs");
 
-	$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
-	$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
+	$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
+	$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
 		await m.fsGotoCatsOn(event);
 		resolve();
 	});
-	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+	$search_timezone.on("keyup.fs cut.fs paste.fs", m.fsTimezoneOn);
 
 	if (m.initialOpen) {
 		m.reTriggerFS(m.fsToRs);
@@ -5728,15 +5728,15 @@ m.fsGoOn=async function () {
 		m.doFSGo(m.fsGo);
 	}
 	else {
-		$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
+		$fuzzy_search.off("keyup.fs cut.fs paste.fs");
 		setTimeout(function () {
-			$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+			$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
 		}, m.wait*1.5-passed);
 	}
 };
-$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 $fuzzy_search.trigger("keyup.fs");
 
 
@@ -5864,15 +5864,15 @@ m.fsToRsOn=async function () {
 		await m.doFSToRs();
 	}
 	else {
-		$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
+		$table_of_recos.off("keyup.fs cut.fs paste.fs");
 		setTimeout(async function () {
-			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
+			$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 			m.previous=Date.now();
 			await m.doFSToRs();
 		}, m.wait*1.5-passed);
 	}
 };
-$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
+$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 $table_of_recos.trigger("keyup.fs");
 $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
