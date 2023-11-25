@@ -555,6 +555,20 @@ m.JSONtoStr=function (JSON) {
 	}
 	return Promise.resolve(res);
 };
+m.JSONtoStrRev=function (JSON) {
+	let res=JSON[0][0];
+	for (let j=1;j<JSON[0].length;j++) {
+		res+="\t"+JSON[0][j];
+	}
+	for (let i=JSON.length-1;i>0;i--) {
+		res+="\n"+JSON[i][JSON[0][0]];
+		let jMax=JSON[0].length<JSON[i].length?JSON[0].length:JSON[i].length;
+		for (let j=1;j<jMax;j++) {
+			res+="\t"+JSON[i][JSON[0][j]];
+		}
+	}
+	return Promise.resolve(res);
+};
 
 ////////////////////////////////////////////////////
 // Heap sort.

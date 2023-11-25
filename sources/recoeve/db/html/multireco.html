@@ -292,7 +292,7 @@ $button_multireco.on("click", async function (e) {
 			recosJSONi.cats=m.formatCats(recosJSONi.cats);
 		}
 	}
-	let strRecoDo=await m.JSONtoStr(recosJSON);
+	let strRecoDo=await m.JSONtoStrRev(recosJSON);
 	m.rmb_me(m.reco_do, {strRecoDo:String(strRecoDo)});
 });
 })(window.m, jQuery);
