@@ -2189,9 +2189,6 @@ m.putCatToFSFullList=function (i, cat, catList) {
 	if (catList===m.catList) {
 		let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 		if (fsGotoCatsFLCat) {
-			if (fsGotoCatsFLCat.down) {
-				console.log("fsGotoCatsFLCat: ", fsGotoCatsFLCat);
-			}
 			fsGotoCatsFLCat.i=i;
 			fsGotoCatsFLCat.txt=m.splitHangul(cat);
 			fsGotoCatsFLCat.cat=cat;
@@ -5186,7 +5183,6 @@ m.reco_do=function (args, err) {
 			await m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[args.uri].tLast=res[1]?.tLast;
 			let cats=String(m.myRecos[args.uri].cats);
-			console.log("cats: ", cats, args.uri);
 			m.refresh(cats, "changed", args.uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
@@ -5649,7 +5645,6 @@ m.gotoLi=async function (event) {
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[uri];
 	fs.fullList[k]=fs.fullList[uri];
-	console.log("fsFLk: ", fsFLk);
 	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
@@ -5755,7 +5750,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(true); // cue or not? cue!
+			fs.getAndPlayVideo(false); // cue or not? not!
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -5853,7 +5848,7 @@ return new Promise(async function (resolve, reject) {
 		fs.playNext(-1, true, true);
 	}
 	else {
-		fs.getAndPlayVideo(true);
+		fs.getAndPlayVideo(false);
 	}
 	resolve();
 });
@@ -6816,8 +6811,6 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
 			if (m.YtPlayer) {
-				console.log(`cue: ${cue}, m.YtPlayer.cueVideoById: `, m.YtPlayer.cueVideoById);
-				console.log(`m.YtPlayer.loadVideoById: `, m.YtPlayer.loadVideoById);
 				if (cue&&m.YtPlayer.cueVideoById) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
 				}
@@ -6921,8 +6914,6 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
-			console.log(`$li: `, $li);
-			console.log(`fs.currentIndex: ${fs.currentIndex}`);
 			fs.$fsl.viewAndScroll($li);
 			fs.getAndPlayVideo(cue);
 			return;
