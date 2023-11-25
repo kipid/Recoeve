@@ -5605,9 +5605,11 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		break;
 	}
 	fs.$fs.focus();
-	m.setTimeoutTargetOn0=setTimeout(async function () {
-		m.reNewfsCatsOn();
-	}, 4096);
+	if (fs!==m.fsToRs) {
+		m.setTimeoutTargetOn0=setTimeout(async function () {
+			m.reNewfsCatsOn();
+		}, 4096);
+	}
 };
 $fuzzy_search.on("keydown.fs", function (e) {
 	m.onKeydownInFS0(e, 'G', m.fsGo);
