@@ -6816,23 +6816,21 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
 			if (fs.lastIndex!==fs.currentIndex) {
-				if (inListPlay) {
-					if (m.YtPlayer) {
-						if (cue&&m.YtPlayer.cueVideoById) {
-							m.YtPlayer.cueVideoById(uriRendered.videoId);
-							fs.lastIndex=fs.currentIndex;
-						}
-						else if (m.YtPlayer.loadVideoById) {
-							m.YtPlayer.loadVideoById(uriRendered.videoId);
-							fs.lastIndex=fs.currentIndex;
-						}
-						else {
-							clearTimeout(m.setTimeoutGetAndPlayVideo);
-							m.setTimeoutGetAndPlayVideo=setTimeout(function () {
-								fs.getAndPlayVideo(cue, inListPlay);
-							}, 2048);
-							return;
-						}
+				if (inListPlay&&m.YtPlayer) {
+					if (cue&&m.YtPlayer.cueVideoById) {
+						m.YtPlayer.cueVideoById(uriRendered.videoId);
+						fs.lastIndex=fs.currentIndex;
+					}
+					else if (m.YtPlayer.loadVideoById) {
+						m.YtPlayer.loadVideoById(uriRendered.videoId);
+						fs.lastIndex=fs.currentIndex;
+					}
+					else {
+						clearTimeout(m.setTimeoutGetAndPlayVideo);
+						m.setTimeoutGetAndPlayVideo=setTimeout(function () {
+							fs.getAndPlayVideo(cue, inListPlay);
+						}, 2048);
+						return;
 					}
 				}
 				else if (YT?.Player) {
@@ -6991,7 +6989,7 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 			m.YtAPILoaded=true;
 		}
 	}
-	if (!YtAPINeeded||(YT!==undefined&&YT.Player)) {
+	if (!YtAPINeeded||YT?.Player) {
 		await m.doFSToRs();
 		fs.playNext(-1, true, true);
 	}
