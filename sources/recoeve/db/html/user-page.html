@@ -3935,7 +3935,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	m.reTriggerFS(fs);
 	if (m.lastCat!==m.currentCat) {
 		setTimeout(function () {
-			fs.playNext(-1, true, true);
+			fs.playNext(-1, null, true);
 			m.lastCat=m.currentCat;
 		}, 512);
 	}
@@ -5784,7 +5784,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(true); // cue or not?
+			fs.getAndPlayVideo(($elem===fs.$fsl.find(".list-item").eq(0)?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -5805,61 +5805,59 @@ m.doFSToRs=async function (shuffle) {
 return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
-	if (shuffle) {
-		let shuffled=fs.shuffled=[];
-		let l=fs.fullList.length;
-		switch (shuffle) {
-		case "shuffle":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:Math.random()};
-			}
-			break;
-		case "tFirst-desc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tFirst)};
-			}
-			break;
-		case "tFirst-asc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tFirst)};
-			}
-			break;
-		case "tLast-desc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tLast)};
-			}
-			break;
-		case "tLast-asc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tLast)};
-			}
-			break;
-		case "point-desc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
-			}
-			break;
-		case "point-asc":
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
-			}
-			break;
-		default:
-			for (let i=0;i<l;i++) {
-				shuffled[i]={i, sortN:i};
-			}
-			break;
+	let shuffled=fs.shuffled=[];
+	let l=fs.fullList.length;
+	switch (shuffle) {
+	case "shuffle":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:Math.random()};
 		}
-		for (let i=1;i<l;i++) {
-			let temp=shuffled[i];
-			let j=i;
-			for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
-				shuffled[j]=shuffled[j-1];
-			} // desc sorting. The same reversed.
-			shuffled[j]=temp;
+		break;
+	case "tFirst-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tFirst)};
 		}
-		m.reTriggerFS(fs);
+		break;
+	case "tFirst-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tFirst)};
+		}
+		break;
+	case "tLast-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tLast)};
+		}
+		break;
+	case "tLast-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tLast)};
+		}
+		break;
+	case "point-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
+		}
+		break;
+	case "point-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
+		}
+		break;
+	default:
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:i};
+		}
+		break;
 	}
+	for (let i=1;i<l;i++) {
+		let temp=shuffled[i];
+		let j=i;
+		for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
+			shuffled[j]=shuffled[j-1];
+		} // desc sorting. The same reversed.
+		shuffled[j]=temp;
+	}
+	m.reTriggerFS(fs);
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
@@ -5868,21 +5866,15 @@ return new Promise(async function (resolve, reject) {
 		let fsFLk=fs.fullList[k];
 		if (fsFLk?.inRange&&!fsFLk.r.deleted) {
 			let uri=fsFLk.uri;
-			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">`
-					+fs.fullList[k].html
-					+((fsRes[sorted[i]].highlight!==undefined)?
-					'<div class="highlighted">'+'<span class="maxMatchScore">'+fsRes[sorted[i]].maxMatchScore+'</span> :: '+fsRes[sorted[i]].highlight+'</div>':'')
-				+'</div>';
+			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">${fs.fullList[k].html}${((fsRes[sorted[i]].highlight!==undefined)?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:"")}</div>`;
 		}
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	m.fsViewAndScroll(fs, $("#toR-"+fs.currentIndex));
-	if (m.initialOpen) {
-		fs.playNext(-1, true, true);
-	}
-	else {
-		fs.getAndPlayVideo(false);
+	if (m.lastCat!==m.currentCat||shuffle) {
+		fs.playNext(-1, null, true);
+		m.lastCat=m.currentCat;
 	}
 	resolve();
 });
@@ -6969,7 +6961,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li);
 			if (fs.lastIndex!==fs.currentIndex) {
-				fs.getAndPlayVideo(cue);
+				fs.getAndPlayVideo(true);
 			}
 			return;
 		}
@@ -7026,7 +7018,7 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	}
 	if (!YtAPINeeded||YT?.Player) {
 		await m.doFSToRs();
-		fs.playNext(-1, true, true);
+		fs.playNext(-1, null, true);
 	}
 	else {
 		setTimeout(function () {
