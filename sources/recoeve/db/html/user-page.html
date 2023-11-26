@@ -3668,7 +3668,7 @@ m.reNewAndReOn=async function () {
 	m.reNewfsCatsOn();
 };
 m.showRecosOnCat=async function (elem, from) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let cat=m.currentCat;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		m.lastRecoMode=m.recoMode;
