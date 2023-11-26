@@ -3929,7 +3929,7 @@ m.getRecos=function (uris, recos, cat) {
 	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
-	let lastCat=cat;
+	m.lastCat=cat;
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
 	if (!m.myIndex) {
@@ -3947,9 +3947,10 @@ m.getAndShowRecosOnCat=async function (cat) {
 	let fs=m.fsToRs;
 	fs.currentIndex=fs.fullList.length-1;
 	m.reTriggerFS(fs);
-	if (lastCat!==m.currentCat) {
+	if (m.lastCat!==m.currentCat) {
 		setTimeout(function () {
 			fs.playNext(-1, true, true);
+			m.lastCat=m.currentCat;
 		}, 512);
 	}
 };
@@ -5531,7 +5532,7 @@ m.completeCatAndOpenCat=async function (event) {
 		fs.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 		$elem.addClass("down");
 	}
-	if ($elem.hasClass("selected")) {
+	if ($elem.hasClass("selected")&&!m.initialOpen) {
 		let k=fs.k; // index of cat on sEnd.
 		fs.listOfCats[k]=cat;
 		fs.$fs[0].value=fs.listOfCats.join(";");
@@ -5777,7 +5778,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(false); // cue or not? not!
+			fs.getAndPlayVideo(($elem===m.fsToRs.$fsl.first(".list-item")?true:false)); // cue or not? not!
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
