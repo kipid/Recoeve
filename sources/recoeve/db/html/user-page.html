@@ -5792,7 +5792,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(($elem===m.fsToRs.$fsl.first(".list-item")?true:false)); // cue or not? not!
+			fs.getAndPlayVideo(($elem===m.fsToRs.$fsl.find(".list-item").eq(0)?true:false)); // cue or not? not!
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
