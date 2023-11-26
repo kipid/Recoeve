@@ -6122,13 +6122,15 @@ m.shareSNS=function (elem, service) {
 ////////////////////////////////////////////////////
 // ShortKeys
 ////////////////////////////////////////////////////
-m.intervalOpenCat=function (intervalId, count) {
-	console.log(`intervalId: ${intervalId}, count: ${count}`);
+m.intervalCount={};
+m.intervalOpenCat=function (intervalId) {
+onsole.log(`intervalId: ${intervalId}, m.intervalCount[intervalId]: ${m.intervalCount[intervalId]}`);
 	let fs=m.fsGotoCats;
 	let fsGotoCatsFLCat=fs.fullList[m.currentCat];
 	if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
 		let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-		if (count>15) {
+		m.intervalCount[intervalId]++;
+		if (m.intervalCount[intervalId]>15) {
 			clearInterval(intervalId);
 			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
@@ -6138,9 +6140,9 @@ m.intervalOpenCat=function (intervalId, count) {
 			m.doNotPushHistory=false;
 		}
 		if ($gotoCatsI.exists()) {
-			// if (count>5) {
+			if (m.intervalCount[intervalId]>4) {
 				clearInterval(intervalId);
-			// }
+			}
 			$gotoCatsI.trigger("click");
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
 			console.log(`m.currentCat: `, m.currentCat);
@@ -6150,7 +6152,7 @@ m.intervalOpenCat=function (intervalId, count) {
 			}
 			m.doNotPushHistory=false;
 		}
-		else if (count>5) {
+		else if (m.intervalCount[intervalId]>4) {
 			clearInterval(intervalId);
 			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
 			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
@@ -6353,10 +6355,9 @@ m.processShortKey=function (e) {
 			m.hashURI="numbers-of-recos";
 			window.location.hash=`#${m.hashURI}`;
 		}
-		m.initialFsGotoCats1N=0;
 		clearInterval(m.initialFsGotoCats1);
 		m.initialFsGotoCats1=setInterval(function () {
-			m.intervalOpenCat(m.initialFsGotoCats1, m.initialFsGotoCats1N++);
+			m.intervalOpenCat(m.initialFsGotoCats1);
 		}, 256);
 		break;
 	case 77: // M=77
@@ -6382,10 +6383,9 @@ m.processShortKey=function (e) {
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-			m.initialFsGotoCats2N=0;
 			clearInterval(m.initialFsGotoCats2);
 			m.initialFsGotoCats2=setInterval(function () {
-				m.intervalOpenCat(m.initialFsGotoCats2, m.initialFsGotoCats2N++);
+				m.intervalOpenCat(m.initialFsGotoCats2);
 			}, 256);
 		}
 		else {
@@ -6410,10 +6410,9 @@ m.processShortKey=function (e) {
 				m.hashURI="button-get-recoms";
 				window.location.hash=`#${m.hashURI}`;
 			}
-			m.initialFsGotoCats3N=0;
 			clearInterval(m.initialFsGotoCats3);
 			m.initialFsGotoCats3=setInterval(function () {
-				m.intervalOpenCat(m.initialFsGotoCats3, m.initialFsGotoCats3N++);
+				m.intervalOpenCat(m.initialFsGotoCats3);
 			}, 256);
 		}
 		break;
@@ -6729,10 +6728,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		m.getAndShowRecosOnCat(m.currentCat);
-		m.initialFsGotoCats0N=0;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
-			m.intervalOpenCat(m.initialFsGotoCats0, m.initialFsGotoCats0N++);
+			m.intervalOpenCat(m.initialFsGotoCats0);
 		}, 512);
 	}
 
