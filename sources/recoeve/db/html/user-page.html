@@ -1345,7 +1345,14 @@ m.fsGotoCats.$fs_container=$goto_cats_container;
 m.fsGotoCats.$fsl.viewAndScroll=function ($next) {
 	let $fsl=m.fsToRs.$fsl;
 	if ($next.exists()) {
-		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		if ($goto_cats_container.is(":visible")) {
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		}
+		else {
+			$goto_cats_container.show();
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+			$goto_cats_container.hide();
+		}
 	}
 };
 
