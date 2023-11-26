@@ -5529,10 +5529,6 @@ m.completeCatAndOpenCat=async function (event) {
 		$elem=$elem.parents(".list-item");
 	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
-	m.beInCurrentCat=false;
-	if (!m.initialOpen&&cat===m.currentCat) {
-		m.beInCurrentCat=true;
-	}
 	let fs=m.fsGotoCats;
 	let fsGotoCatsFLCat=fs.fullList[cat];
 	if (!fsGotoCatsFLCat) {
@@ -5552,18 +5548,16 @@ m.completeCatAndOpenCat=async function (event) {
 		fs.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 		$elem.addClass("down");
 	}
-	if ($elem.hasClass("selected")&&!m.initialOpen) {
-		let k=fs.k; // index of cat on sEnd.
-		fs.listOfCats[k]=cat;
-		fs.$fs[0].value=fs.listOfCats.join(";");
-		let sStart=0;
-		for (let i=0;i<k;i++) {
-			sStart+=fs.listOfCats[i].length+1;
-		}
-		sEnd=sStart+fs.listOfCats[k].length;
-		$goto_cats.focus();
-		fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	let k=fs.k; // index of cat on sEnd.
+	// fs.listOfCats[k]=cat;
+	// fs.$fs[0].value=fs.listOfCats.join(";");
+	let sStart=0;
+	for (let i=0;i<k;i++) {
+		sStart+=fs.listOfCats[i].length+1;
 	}
+	sEnd=sStart+fs.listOfCats[k].length;
+	$goto_cats.focus();
+	fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	for (let i=0;i<fs.fullList.length;i++) {
 		fs.fullList[i].selected=false;
 	}
@@ -5585,7 +5579,7 @@ m.completeCatAndOpenCat=async function (event) {
 		}
 		m.doNotPushHistory=false;
 	}
-	else if (!m.beInCurrentCat) {
+	else {
 		await m.openCat(cat);
 	}
 	m.currentCat=cat;
