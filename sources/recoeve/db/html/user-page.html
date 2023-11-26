@@ -5874,6 +5874,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	m.fsViewAndScroll(fs, $("#toR-"+fs.currentIndex));
 	if (m.lastCat!==m.currentCat||shuffle) {
+		m.reTriggerFS(fs);
 		fs.playNext(-1, null, true);
 		m.lastCat=m.currentCat;
 	}
