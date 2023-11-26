@@ -1334,13 +1334,15 @@ m.fsViewAndScroll=function (fs, $next) {
 			$next=$fsl.find(".list-item").eq(0);
 		}
 	}
-	if ($fs_container.is(":visible")) {
-		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-	}
-	else {
-		$fs_container.show();
-		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-		$fs_container.hide();
+	if ($next.exists()) {
+		if ($fs_container.is(":visible")) {
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		}
+		else {
+			$fs_container.show();
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+			$fs_container.hide();
+		}
 	}
 };
 
