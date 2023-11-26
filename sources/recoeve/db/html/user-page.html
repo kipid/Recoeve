@@ -5786,6 +5786,9 @@ $fuzzy_search.trigger("keyup.fs");
 m.playLi=function (e, elem, k, fs) {
 	if (!(e&&e.srcElement&&e.srcElement.nodeName==="A")) {
 		let $elem=$(elem);
+		if (!$elem.hasClass("list-item")) {
+			$elem=$elem.parents(".list-item");
+		}
 		// let uri=fs.fullList[k].uri;
 		if ($elem.hasClass("selected")) {
 			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
