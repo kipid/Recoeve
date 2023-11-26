@@ -5539,7 +5539,7 @@ m.completeCatAndOpenCat=async function (event) {
 		$elem.addClass("down");
 	}
 	let k=fs.k; // index of cat on sEnd.
-	// fs.listOfCats[k]=cat;
+	// fs.listOfCats[k]=cat; // Do not fill the m.fsToRs.$fs
 	// fs.$fs[0].value=fs.listOfCats.join(";");
 	let sStart=0;
 	for (let i=0;i<k;i++) {
@@ -5571,6 +5571,8 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
+		m.reTriggerFS(m.fsToRs);
+		m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
 	}
 	m.currentCat=cat;
 	m.fsViewAndScroll(fs, $elem);
