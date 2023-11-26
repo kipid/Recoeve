@@ -24,7 +24,7 @@ window.m={
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
-	, currentCat:"$!@#"
+	, lastCat:"i8@ㅏ%자DKW2!"
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -3913,7 +3913,7 @@ m.getRecos=function (uris, recos, cat) {
 	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
-	m.lastCat=cat;
+	m.currentCat=cat;
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
 	if (!m.myIndex) {
