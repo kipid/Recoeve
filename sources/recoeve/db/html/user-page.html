@@ -4173,6 +4173,12 @@ return new Promise(async function (resolve, reject) {
 			}
 		}
 	}
+	else {
+		setTimeout(async function () {
+			await m.getUriListAndShowRecosOnCat(cat, scroll);
+		}, 512);
+		return reject();
+	}
 	switch (m.recoMode) {
 		case "multireco": case "": default:
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
@@ -4596,7 +4602,7 @@ m.openCat=async function (cat) {
 				m.hashURI="headPlay";
 			}
 			window.location.hash=`#${m.hashURI}`;
-			window.history.pushState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+			window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 		}
 		m.doNotPushHistory=false;
 	}
