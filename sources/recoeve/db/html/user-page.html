@@ -6129,6 +6129,9 @@ m.intervalOpenCat=function (intervalId) {
 	let fsGotoCatsFLCat=fs.fullList[m.currentCat];
 	if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
 		let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
+		if (m.intervalCount[intervalId]===undefined) {
+			m.intervalCount[intervalId]=0;
+		}
 		m.intervalCount[intervalId]++;
 		if (m.intervalCount[intervalId]>15) {
 			clearInterval(intervalId);
