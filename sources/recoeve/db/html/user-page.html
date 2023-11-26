@@ -5784,6 +5784,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
+			console.log(`$elem===fs.$fsl.find(".list-item").eq(0): ${$elem===fs.$fsl.find(".list-item").eq(0)}`);
 			fs.getAndPlayVideo(($elem===fs.$fsl.find(".list-item").eq(0)?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
@@ -6822,7 +6823,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 	clearTimeout(m.setTimeoutPlayNext);
 	clearTimeout(m.setTimeoutGetAndPlayVideo);
 	let fs=m.fsToRs;
-	if (cue&&!inListPlay&&fs.pauseVideo) {
+	if (cue&&fs.pauseVideo) {
 		fs.pauseVideo();
 	}
 	let i=fs.currentIndex;
@@ -6854,7 +6855,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 						clearTimeout(m.setTimeoutGetAndPlayVideo);
 						m.setTimeoutGetAndPlayVideo=setTimeout(function () {
 							fs.getAndPlayVideo(cue, inListPlay);
-						}, 2048);
+						}, 1024);
 						return;
 					}
 				}
@@ -6924,7 +6925,9 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
 				m.playListSetTimeout=setTimeout(function () {
-					if (fs.skip) { fs.playNext(-1, cue); }
+					if (fs.skip) {
+						fs.playNext(-1, false);
+					}
 				}, 17000);
 			}
 		}
@@ -6962,6 +6965,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			m.fsViewAndScroll(fs, $li);
 			if (fs.lastIndex!==fs.currentIndex) {
 				fs.getAndPlayVideo(true);
+				fs.lastIndex=fs.currentIndex;
 			}
 			return;
 		}
