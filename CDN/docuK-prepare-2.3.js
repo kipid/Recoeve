@@ -737,7 +737,7 @@ m.splitHangul=function(str) {
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
-m.fsLength=m.fsLength||512;
+m.fsLength=300;
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo[0].ptnSH=m.fsGo[1].ptnSH=m.splitHangul("$!@#");
@@ -748,6 +748,7 @@ m.fsGo.$fsLis=$fuzzy_search_list.find(".list-item");
 RegExp.quote=function(str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
+m.spaceRegExpStr=(new RegExp(RegExp.quote(" "), "ig")).toString();
 m.arrayRegExs=function(ptnSH) {
 	let str=ptnSH.splitted;
 	let res=[];
@@ -811,7 +812,7 @@ m.matchScoreFromIndices=function(strSH, ptnSH, indices) {
 	let res=0;
 	for (let i=0;i<indices.length;i++) {
 		if (strSH.pCho[indices[i].start])
-			res+=10;
+			res+=15;
 	}
 	for (let i=1;i<indices.length;i++) {
 		let diff=indices[i].start-indices[i-1].start;
@@ -823,10 +824,10 @@ m.fuzzySearch=function(ptnSH, fs) {
 	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
 		return fs[0];
 	}
-	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)!==-1) {
+	if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)>=0) {
 		fs[1]=fs[0];
 	}
-	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)!==-1) {
+	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)>=0) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
 			return fs[1];
 		}
@@ -863,101 +864,106 @@ m.fuzzySearch=function(ptnSH, fs) {
 		regExsReversed[i]=regExs[regExs.length-1-i];
 	}
 	for (let i=0;i<list.length;i++) {
-	 let listI=list[i];
-	if (regExs.length>0) {
-		let txt=listI.txt;
-		let txtS=txt.splitted;
-		let txtSReversed=txtS.split("").reverse().join("");
-		regExs[0].lastIndex=0;
-		let exec=regExs[0].exec(txtS);
-		let matched=(exec!==null);
-		let indices=[];
-		if (matched) {
-			indices[0]={start:exec.index, end:regExs[0].lastIndex};
-		}
-		for (let j=1;matched&&(j<regExs.length);j++) {
-			regExs[j].lastIndex=regExs[j-1].lastIndex;
-			exec=regExs[j].exec(txtS);
-			matched=(exec!==null);
+		let listI=list[i];
+		if (regExs.length>0) {
+			let txt=listI.txt;
+			let txtS=txt.splitted;
+			let txtSReversed=txtS.split("").reverse().join("");
+			regExs[0].lastIndex=0;
+			let exec=regExs[0].exec(txtS);
+			let matched=(exec!==null);
+			let indices=[];
 			if (matched) {
-				indices[j]={start:exec.index, end:regExs[j].lastIndex};
+				indices[0]={start:exec.index, end:regExs[0].lastIndex};
 			}
-		}
-		let maxMatchScore=0;
-		if (matched) {
-			maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
-			let indicesMMS=[]; // indices of max match score
-			for (let p=0;p<indices.length;p++) {
-				indicesMMS[p]=indices[p]; // hard copy of indices
+			for (let j=1;matched&&(j<regExs.length);j++) {
+				regExs[j].lastIndex=regExs[j-1].lastIndex;
+				exec=regExs[j].exec(txtS);
+				matched=(exec!==null);
+				if (matched) {
+					indices[j]={start:exec.index, end:regExs[j].lastIndex};
+				}
 			}
-			if (txt.length<m.fsLength) {
-				for (let k=indices.length-2;k>=0;) {
-					regExs[k].lastIndex=indices[k].start+1;
-					exec=regExs[k].exec(txtS);
-					matched=(exec!==null);
-					if (matched) {
-						indices[k]={start:exec.index, end:regExs[k].lastIndex};
-					}
-					for (let j=k+1;matched&&(j<regExs.length);j++) {
-						regExs[j].lastIndex=regExs[j-1].lastIndex;
-						exec=regExs[j].exec(txtS);
+			let maxMatchScore=0;
+			if (matched) {
+				maxMatchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+				let indicesMMS=[]; // indices of max match score
+				for (let p=0;p<indices.length;p++) {
+					indicesMMS[p]=indices[p]; // hard copy of indices
+				}
+				if (txt.length<m.fsLength) {
+					for (let k=indices.length-1;k>=0;) {
+						if (regExs[k].toString()===m.spaceRegExpStr) {
+							k--;
+							continue;
+						}
+						regExs[k].lastIndex=indices[k].start+1;
+						exec=regExs[k].exec(txtS);
 						matched=(exec!==null);
 						if (matched) {
-							indices[j]={start:exec.index, end:regExs[j].lastIndex};
+							indices[k]={start:exec.index, end:regExs[k].lastIndex};
+						}
+						for (let j=k+1;matched&&(j<regExs.length);j++) {
+							regExs[j].lastIndex=regExs[j-1].lastIndex;
+							exec=regExs[j].exec(txtS);
+							matched=(exec!==null);
+							if (matched) {
+								indices[j]={start:exec.index, end:regExs[j].lastIndex};
+							}
+						}
+						if (matched) {
+							let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
+							if (matchScore>maxMatchScore) {
+								maxMatchScore=matchScore;
+								indicesMMS=[];
+								for (let p=0;p<indices.length;p++) {
+									indicesMMS[p]=indices[p]; // hard copy of indices
+								}
+							}
+							k=indices.length-2;
+						}
+						else {
+							k--;
+						}
+					}
+				}
+				else {
+					// Reverse match and compare only two results.
+					regExsReversed[0].lastIndex=0;
+					exec=regExsReversed[0].exec(txtSReversed);
+					matched=(exec!==null);
+					let indicesReversed=[];
+					if (matched) {
+						indicesReversed[0]={start:exec.index, end:regExsReversed[0].lastIndex};
+					}
+					for (let j=1;matched&&(j<regExsReversed.length);j++) {
+						regExsReversed[j].lastIndex=regExsReversed[j-1].lastIndex;
+						exec=regExsReversed[j].exec(txtSReversed);
+						matched=(exec!==null);
+						if (matched) {
+							indicesReversed[j]={start:exec.index, end:regExsReversed[j].lastIndex};
 						}
 					}
 					if (matched) {
+						indices=[];
+						for (let j=0;j<indicesReversed.length;j++) {
+							let iR=indicesReversed[indicesReversed.length-1-j];
+							indices[j]={start:(txtSReversed.length-iR.end), end:(txtSReversed.length-iR.start)};
+						}
 						let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
 						if (matchScore>maxMatchScore) {
 							maxMatchScore=matchScore;
-							indicesMMS=[];
-							for (let p=0;p<indices.length;p++) {
-								indicesMMS[p]=indices[p]; // hard copy of indices
-							}
+							indicesMMS=indices;
 						}
-						k=indices.length-2;
-					}
-					else {
-						k--;
 					}
 				}
+				fs[0].push({i:listI.i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
 			}
-			else {
-				// Reverse match and compare only two results.
-				regExsReversed[0].lastIndex=0;
-				exec=regExsReversed[0].exec(txtSReversed);
-				matched=(exec!==null);
-				let indicesReversed=[];
-				if (matched) {
-					indicesReversed[0]={start:exec.index, end:regExsReversed[0].lastIndex};
-				}
-				for (let j=1;matched&&(j<regExsReversed.length);j++) {
-					regExsReversed[j].lastIndex=regExsReversed[j-1].lastIndex;
-					exec=regExsReversed[j].exec(txtSReversed);
-					matched=(exec!==null);
-					if (matched) {
-						indicesReversed[j]={start:exec.index, end:regExsReversed[j].lastIndex};
-					}
-				}
-				if (matched) {
-					indices=[];
-					for (let j=0;j<indicesReversed.length;j++) {
-						let iR=indicesReversed[indicesReversed.length-1-j];
-						indices[j]={start:(txtSReversed.length-iR.end), end:(txtSReversed.length-iR.start)};
-					}
-					let matchScore=m.matchScoreFromIndices(txt, ptnSH, indices);
-					if (matchScore>maxMatchScore) {
-						maxMatchScore=matchScore;
-						indicesMMS=indices;
-					}
-				}
-			}
-			fs[0].push({i:listI.i, maxMatchScore:maxMatchScore, highlight:m.highlightStrFromIndices(txt, indicesMMS)});
+		}
+		else {
+			fs[0].push({i:listI.i, maxMatchScore:0});
 		}
 	}
-	else {
-		fs[0].push({i:listI.i, maxMatchScore:0});
-	}}
 	let sorted=fs[0].sorted=[];
 	for (let i=0;i<fs[0].length;i++) {
 		// sorted[i]=fs[0].length-1-i;
@@ -1065,15 +1071,15 @@ m.fsGoOn=function() {
 		m.doFSGo(m.fsGo);
 	}
 	else {
-		$fuzzy_search.off("input.fs keyup.fs cut.fs paste.fs");
+		$fuzzy_search.off("keyup.fs cut.fs paste.fs");
 		setTimeout(function() {
-			$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+			$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
 		}, m.wait*1.5-passed);
 	}
 };
-$fuzzy_search.on("input.fs keyup.fs cut.fs paste.fs", m.fsGoOn);
+$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 
 // String to Array
 m.encloseStr=function (str) {

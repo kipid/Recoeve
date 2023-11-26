@@ -814,12 +814,12 @@ m.splitHangul=function (str) {
 	for (let i=0;i<str.length;i++) {
 		let c=str.charAt(i)
 		let n=str.charCodeAt(i);
-		if (n>=0x3131&&n<=0x3163) {
+		if (n>=0x3131&&n<=0x3163) { // 자음, 모음 형태의 한글 : "ㄱ", "ㄲ", "ㅏ", "ㅢ", and so on.
 			n-=0x3131;
 			res[i]={"char":c, "splitted3":c, "splitted":m.jamoKE[n]};
 			res.pCho[p]=true;
 		}
-		else if (n>=0xAC00&&n<=0xD7A3) {
+		else if (n>=0xAC00&&n<=0xD7A3) { // 완성형 한글 : "가", "각", and so on.
 			n-=0xAC00;
 			jong=n%28;
 			jung=( (n-jong)/28 )%21;
@@ -845,6 +845,7 @@ m.splitHangul=function (str) {
 RegExp.quote=function (str) {
 	return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
 };
+m.spaceRegExpStr=(new RegExp(RegExp.quote(" "), "ig")).toString();
 m.arrayRegExs=function (ptnSH) {
 	let str=ptnSH.splitted;
 	let res=[];
@@ -908,7 +909,7 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 	let res=0;
 	for (let i=0;i<indices.length;i++) {
 		if (strSH.pCho[indices[i].start])
-			res+=10;
+			res+=15;
 	}
 	for (let i=1;i<indices.length;i++) {
 		let diff=indices[i].start-indices[i-1].start;
@@ -920,10 +921,10 @@ m.fuzzySearch=function (ptnSH, fs) {
 	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
 		return fs[0];
 	}
-	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)!==-1) {
+	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)>=0) {
 		fs[1]=fs[0];
 	}
-	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)!==-1) {
+	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)>=0) {
 		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
 			return fs[1];
 		}
@@ -987,8 +988,12 @@ m.fuzzySearch=function (ptnSH, fs) {
 				for (let p=0;p<indices.length;p++) {
 					indicesMMS[p]=indices[p]; // hard copy of indices
 				}
-				if (txt.length<512) {
-					for (let k=indices.length-2;k>=0;) {
+				if (txt.length<m.fsLength) {
+					for (let k=indices.length-1;k>=0;) {
+						if (regExs[k].toString()===m.spaceRegExpStr) {
+							k--;
+							continue;
+						}
 						regExs[k].lastIndex=indices[k].start+1;
 						exec=regExs[k].exec(txtS);
 						matched=(exec!==null);
