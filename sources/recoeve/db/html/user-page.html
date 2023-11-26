@@ -1343,7 +1343,7 @@ m.fsGotoCats.$fs=$goto_cats;
 m.fsGotoCats.$fsl=$goto_cats_list;
 m.fsGotoCats.$fs_container=$goto_cats_container;
 m.fsGotoCats.$fsl.viewAndScroll=function ($next) {
-	let $fsl=m.fsToRs.$fsl;
+	let $fsl=m.fsGotoCats.$fsl;
 	if ($next.exists()) {
 		if ($goto_cats_container.is(":visible")) {
 			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
@@ -3668,18 +3668,19 @@ m.reNewAndReOn=async function () {
 	m.reNewfsCatsOn();
 };
 m.showRecosOnCat=async function (elem, from) {
+return new Promise(function (resolve, reject) {
 	let cat=m.currentCat;
 	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		m.lastRecoMode=m.recoMode;
 		$contents.addClass("multireco");
 		window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
-		return;
+		return resolve();
 	}
 	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
 		m.lastRecoMode=m.recoMode;
 		$contents.removeClass("multireco");
 		window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
-		return;
+		return resolve();
 	}
 	m.lastRecoMode=m.recoMode;
 	let $elem=$(elem);
@@ -3780,6 +3781,8 @@ m.showRecosOnCat=async function (elem, from) {
 		}
 	}
 	m.reNewAndReOn();
+	resolve();
+});
 };
 m.editOrRecoToMine=function (elem, fillDefs) {
 	if (!$new_reco.is(":visible")) {
@@ -3940,7 +3943,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	else if (!m.myPage) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
-	m.showRecosOnCat();
+	await m.showRecosOnCat();
 	let fs=m.fsToRs;
 	fs.currentIndex=fs.fullList.length-1;
 	m.reTriggerFS(fs);
