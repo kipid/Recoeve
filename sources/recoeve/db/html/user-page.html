@@ -5801,7 +5801,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(($elem===m.fsToRs.$fsl.find(".list-item").eq(0)?true:false)); // cue or not? not!
+			fs.getAndPlayVideo(true); // cue or not? not!
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -6795,8 +6795,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
-					$(`#li-${k}`).trigger("click");
 					clearInterval(m.setIntervalFsGo);
+					$(`#li-${k}`).trigger("click");
 				}
 			}
 		}, 512);
@@ -6823,7 +6823,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.reTriggerFS(m.fsTimezone);
 		m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 4096);
+	}, 2048);
 	setTimeout(function () {
 		m.reTriggerFS(m.fsToRs);
 		m.reTriggerFS(m.fsCat);
@@ -6832,7 +6832,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.reTriggerFS(m.fsTimezone);
 		m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 10000);
+	}, 4096);
 });
 
 
