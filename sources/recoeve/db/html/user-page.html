@@ -2104,6 +2104,7 @@ $change_catList_order_ok.on("click", function (e) {
 	else {
 		$change_catList_order.show();
 	}
+	m.reTriggerFS(m.fsGotoCats);
 });
 $change_catList_order_cancel.on("click", function (e) {
 	let catListChanged=m.getCatListChanged();
@@ -6866,6 +6867,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			}
 		}
 		else if (from==="video") {
+			fs.pauseVideo();
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
