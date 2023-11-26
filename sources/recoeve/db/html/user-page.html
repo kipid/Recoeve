@@ -2876,7 +2876,7 @@ $show_recos_without_points.on("click", function (e) {
 	}
 	clearTimeout(m.timeOutRange);
 	m.timeOutRange=setTimeout(async function () {
-		await m.getUriListAndShowRecosOnCat(m.currentCat);
+		await m.getUriListAndShowRecosOnCat(m.currentCat, true);
 	}, 1024);
 });
 m.PRtoFixed=function (w) { // 0.0 ~ 10.0
@@ -2949,7 +2949,7 @@ m.mmInPR=function (e) {
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 		m.timeOutRange0=setTimeout(async function () {
-			await m.getUriListAndShowRecosOnCat(m.currentCat);
+			await m.getUriListAndShowRecosOnCat(m.currentCat, false);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
@@ -3020,7 +3020,7 @@ m.mmInPR1=function (e) {
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 		m.timeOutRange1=setTimeout(async function () {
-			await m.getUriListAndShowRecosOnCat(m.currentCat);
+			await m.getUriListAndShowRecosOnCat(m.currentCat, false);
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
@@ -3691,93 +3691,90 @@ return new Promise(async function (resolve, reject) {
 		$numbers_of_recos.html(`No reco in cat=${m.escapeOnlyTag(m.currentCat)}.`);
 		$contents.html(strHTML);
 		m.fsToRs.pauseVideo();
-		$reco_playing.html('');
-		$eveElse.html('');
 		$youtube.html('');
+		$eveElse.html('');
+		$reco_playing.html('');
 		$eveElse_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
 	}
-	else {
-		if (elem===undefined||elem===null) {
-			from=l-1;
-			let nHiden=0, nShown=0;
+	else if (elem===undefined||elem===null) {
+		from=l-1;
+		let nHiden=0, nShown=0;
+		for (let k=0;k<l;k++) {
+			let fsFLk=fs.fullList[k];
+			let uri=fsFLk.uri;
+			let r=fsFLk.r;
+			let val=r.val?.val;
+			fsFLk.txt=m.splitHangul(r.title);
+			fsFLk.html=m.escapeOnlyTag(r.title);
+			if (val===undefined||val===-1) {
+				if (m.showRWOP) {
+					fsFLk.inRange=true;
+					nShown++;
+				}
+				else {
+					fsFLk.inRange=false;
+					nHiden++
+				}
+			}
+			else {
+				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
+					fsFLk.inRange=true;
+					nShown++;
+				}
+				else {
+					fsFLk.inRange=false;
+					nHiden++;
+				}
+			}
+		}
+		let nUnrecoed=0;
+		if ((!m.myPage)) {
 			for (let k=0;k<l;k++) {
 				let fsFLk=fs.fullList[k];
 				let uri=fsFLk.uri;
-				let r=fsFLk.r;
-				let val=r.val?.val;
-				fsFLk.txt=m.splitHangul(r.title);
-				fsFLk.html=m.escapeOnlyTag(r.title);
-				if (val===undefined||val===-1) {
-					if (m.showRWOP) {
-						fsFLk.inRange=true;
-						nShown++;
-					}
-					else {
-						fsFLk.inRange=false;
-						nHiden++
-					}
-				}
-				else {
-					if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
-						fsFLk.inRange=true;
-						nShown++;
-					}
-					else {
-						fsFLk.inRange=false;
+				if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
+					if (fsFLk.inRange) {
+						nShown--;
 						nHiden++;
 					}
+					fsFLk.inRange=false;
+				}
+				if (!m.myRecos[uri].has) {
+					nUnrecoed++;
 				}
 			}
-			let nUnrecoed=0;
-			if ((!m.myPage)) {
-				for (let k=0;k<l;k++) {
-					let fsFLk=fs.fullList[k];
-					let uri=fsFLk.uri;
-					if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
-						if (fsFLk.inRange) {
-							nShown--;
-							nHiden++;
-						}
-						fsFLk.inRange=false;
-					}
-					if (!m.myRecos[uri].has) {
-						nUnrecoed++;
-					}
-				}
-			}
-			let nOfRecos=`${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
-			if (!m.myPage) {
-				nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
-			}
-			$numbers_of_recos.html(nOfRecos);
-			for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
-				strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
-			}
-			$contents.html(strHTML);
-			$(".to-be-executed").eq(0).trigger("click");
 		}
-		else {
-			if (from!==undefined&&from!==null&&from.constructor===Number) {
-				for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
-					let fsFLi=fs.fullList[i];
-					let r=fsFLi.r;
-					let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
-					strHTML+=String(recoHTML);
-				}
-			}
-			let beforeLoadSH=document.documentElement.scrollHeight;
-			let beforeST=$window.scrollTop();
-			if ($elem.offset().top-beforeST<=window.innerHeight/3.0) { // Scroll from downside to upside.
-				$elem.replaceWith(strHTML);
-				let afterLoadSH=document.documentElement.scrollHeight;
-				setTimeout(function () {
-					$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST);
-				}, 128);
-			}
-			else { // Scroll from upside to downside.
-				$elem.replaceWith(strHTML);
-			}
+		m.reTriggerFS(fs);
+		let nOfRecos=`${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
+		if (!m.myPage) {
+			nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
+		}
+		$numbers_of_recos.html(nOfRecos);
+		for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
+			strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
+		}
+		$contents.html(strHTML);
+		$(".to-be-executed").eq(0).trigger("click");
+	}
+	else if (from!==undefined&&from!==null&&from.constructor===Number) {
+		for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
+			let fsFLi=fs.fullList[i];
+			let r=fsFLi.r;
+			let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
+			strHTML+=String(recoHTML);
+		}
+		let beforeLoadSH=document.documentElement.scrollHeight;
+		let beforeST=$window.scrollTop();
+		if ($elem.offset().top-beforeST<=window.innerHeight/3.0) { // Scroll from downside to upside.
+			$elem.replaceWith(strHTML);
+			let afterLoadSH=document.documentElement.scrollHeight;
+			setTimeout(function () {
+				$window.scrollTop(afterLoadSH-beforeLoadSH+beforeST);
+			}, 128);
+		}
+		else { // Scroll from upside to downside.
+			$elem.replaceWith(strHTML);
 		}
 	}
 	m.reNewAndReOn();
@@ -3868,16 +3865,16 @@ return new Promise(async function (resolve, reject) {
 		m.reTriggerFS(fs);
 	}
 	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
-		let catUris=m.catUriList[cat].uris;
-		for (k=0;k<catUris.length;k++) {
-			let uri=catUris[k];
+		let uris=m.catUriList[cat].uris;
+		for (k=0;k<uris.length;k++) {
+			let uri=uris[k];
 			let r=recos[uri];
 			if (!r) {
 				r=recos[uri]={uri, down:true, has:false};
 			}
-			r.i=catUris.length-1-k;
+			r.i=uris.length-1-k;
 		}
-		m.lastIndexOfUriList=catUris.length;
+		m.lastIndexOfUriList=uris.length-1;
 	}
 	return resolve();
 });
@@ -4187,6 +4184,7 @@ return new Promise(async function (resolve, reject) {
 			else {
 				$button_mode.removeClass("enabled");
 				$contents.removeClass("multireco");
+				m.recoMode="";
 			}
 			let catListCat=m.catList[cat];
 			if (catListCat) {
@@ -4203,6 +4201,7 @@ return new Promise(async function (resolve, reject) {
 			else {
 				$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
 				$contents.html("");
+				m.lastRecoMode=m.recoMode;
 			}
 			if (scroll) {
 				$window.scrollTop($contents.offset().top);
@@ -4301,6 +4300,9 @@ return new Promise(async function (resolve, reject) {
 					}
 					$contents_recoms.html(strHTML);
 					m.reNewAndReOn();
+					if (scroll) {
+						$window.scrollTop($contents_recoms.offset().top);
+					}
 					resolve();
 				}
 				else {
@@ -4331,12 +4333,18 @@ return new Promise(async function (resolve, reject) {
 							respJSON.splice(0, 1);
 							m.neighborsRecos[cat]=respJSON;
 							await m.showRecoms(m.neighborsRecos[cat], cat);
+							if (scroll) {
+								$window.scrollTop($contents_recoms.offset().top);
+							}
 							resolve();
 						});
 					}
 					else if (m.lastTLIndex!==m.TLIndex) {
 						await m.showRecoms(m.neighborsRecos[cat], cat);
 						m.lastTLIndex=m.TLIndex;
+						if (scroll) {
+							$window.scrollTop($contents_recoms.offset().top);
+						}
 						resolve();
 					}
 				}
@@ -4373,7 +4381,7 @@ return new Promise(async function (resolve, reject) {
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
 					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
 					m.neighbors[cat_from]=neighbors;
-					await m.getUriListAndShowRecosOnCat(cat, true);
+					await m.getUriListAndShowRecosOnCat(cat, scroll);
 					resolve();
 				});
 			}
@@ -4403,8 +4411,8 @@ m.refresh=async function (cats, option, uri, openCat) {
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
-				r.i=m.lastIndexOfUriList;
 				m.lastIndexOfUriList++;
+				r.i=m.lastIndexOfUriList;
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
@@ -4563,14 +4571,14 @@ m.openCat=async function (cat) {
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) {
-				m.userRecos[uri].i=m.userRecos[uri].index=uris.length-1-k;
+				m.userRecos[uri].i=uris.length-1-k;
 			}
 		}
-		m.lastIndexOfUriList=uris.length;
+		m.lastIndexOfUriList=uris.length-1;
 	}
 	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 	m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
-	await m.getUriListAndShowRecosOnCat(cat);
+	await m.getUriListAndShowRecosOnCat(cat, true);
 	if (!m.initialOpen) {
 		if (!m.doNotPushHistory) {
 			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
@@ -5483,12 +5491,13 @@ m.triggerOpenCat=async function (event) {
 			let i=fs.fullList.length;
 			fsFLCat=fs.fullList[i]=fs.fullList[cat]={i, cat, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 		}
-		$("#catList").find(".cat").removeClass("selected");
-		$elem.parent(".cat").addClass("selected");
-		if (m.recoMode===""||m.recoMode==="multireco") {
-			fsFLCat.down=true;
-			$elem.addClass("down");
-		}
+		// Duplicate operations.
+		// $("#catList").find(".cat").removeClass("selected");
+		// $elem.parent(".cat").addClass("selected");
+		// if (m.recoMode===""||m.recoMode==="multireco") {
+		// 	fsFLCat.down=true;
+		// 	$elem.addClass("down");
+		// }
 		let k=fsFLCat.i;
 		let $gotoCatsK=$(`#gotoCats-${k}`);
 		if ($gotoCatsK.exists()) {
@@ -5510,7 +5519,7 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	m.beInCurrentCat=false;
-	if (!m.initialOpen&&cat===m.currentCat) {
+	if (cat===m.currentCat) {
 		m.beInCurrentCat=true;
 	}
 	let fs=m.fsGotoCats;
@@ -5551,10 +5560,7 @@ m.completeCatAndOpenCat=async function (event) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	fs.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
-	if (!m.beInCurrentCat||!((m.lastRecoMode===""&&m.recoMode==="multireco")||(m.lastRecoMode==="multireco"&&m.recoMode===""))) {
-		await m.openCat(cat);
-	}
-	else if (m.lastRecoMode===""&&m.recoMode==="multireco") {
+	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
 		$contents.addClass("multireco");
 		if (!m.doNotPushHistory) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
@@ -5567,6 +5573,9 @@ m.completeCatAndOpenCat=async function (event) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
+	}
+	else if (!m.initialOpen&&!m.beInCurrentCat) {
+		await m.openCat(cat);
 	}
 	m.currentCat=cat;
 };
