@@ -5781,8 +5781,8 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			console.log(`$elem===fs.$fsl.find(".list-item").eq(0): ${$elem===fs.$fsl.find(".list-item").eq(0)}`);
-			fs.getAndPlayVideo(($elem===fs.$fsl.find(".list-item").eq(0)?true:false)); // cue or not?
+			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
+			fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
