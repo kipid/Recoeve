@@ -267,7 +267,7 @@ else if (m.docCookies.hasItem("lang")) {
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#table-of-recos-container -->
-<div id="goto-cats-container" class="fs-container" style="display:none">
+<div id="goto-cats-container" class="fs-container">
 	<div class="fs-name">Go to Cats</div>
 	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
@@ -5801,7 +5801,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			fs.getAndPlayVideo(true); // cue or not? not!
+			fs.getAndPlayVideo(true); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
@@ -6802,13 +6802,13 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}, 512);
 		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 		if ($elem.exists()) {
+			clearInterval(m.setIntervalFsGo);
 			m.hashURI=m.initialHashURI;
 			window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 			$window.scrollTop($elem.offset().top);
-			clearInterval(m.setIntervalFsGo);
 		}
 	}
-	// $goto_cats_container.hide();
+	$goto_cats_container.hide();
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
