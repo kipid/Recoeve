@@ -6125,27 +6125,31 @@ m.intervalOpenCat=function (intervalId, count) {
 		}
 		if ($gotoCatsI.exists()) {
 			clearInterval(intervalId);
-			$gotoCatsI.trigger("click");
-			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-			console.log(`m.currentCat: `, m.currentCat);
-			console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
-			if (!m.doNotPushHistory) {
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			if ($gotoCatsI[0].onclick) {
+				$gotoCatsI.trigger("click");
+				console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
+				console.log(`m.currentCat: `, m.currentCat);
+				console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+				if (!m.doNotPushHistory) {
+					window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+				}
+				m.doNotPushHistory=false;
 			}
-			m.doNotPushHistory=false;
 		}
 		else if (count>5) {
 			clearInterval(intervalId);
 			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
 			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-			$gotoCatsI.trigger("click");
-			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-			console.log(`m.currentCat: `, m.currentCat);
-			console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
-			if (!m.doNotPushHistory) {
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			if ($gotoCatsI[0].onclick) {
+				$gotoCatsI.trigger("click");
+				console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
+				console.log(`m.currentCat: `, m.currentCat);
+				console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+				if (!m.doNotPushHistory) {
+					window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+				}
+				m.doNotPushHistory=false;
 			}
-			m.doNotPushHistory=false;
 		}
 	}
 };
