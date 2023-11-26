@@ -1325,6 +1325,31 @@ m.recoDefs={};
 m.timeout={};
 m.maxShowReco=20;
 
+m.fsViewAndScroll=function (fs, $next) {
+	let $fsl=fs.$fsl;
+	let $fs=fs.$fs;
+	if ($next.exists()) {
+		if ($fs.is(":visible")) {
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+		}
+		else {
+			$fs.show();
+			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+			$fs.hide();
+		}
+	}
+	else {
+		if ($fs.is(":visible")) {
+			$fsl.scrollTop(0);
+		}
+		else {
+			$fs.show();
+			$fsl.scrollTop(0);
+			$fs.hide();
+		}
+	}
+};
+
 m.fsTimezone=[];
 m.fsTimezone[0]=m.fsTimezone[1]=[];
 m.fsTimezone.listOfCats=[];
@@ -1342,19 +1367,6 @@ m.fsGotoCats.fullList=[];
 m.fsGotoCats.$fs=$goto_cats;
 m.fsGotoCats.$fsl=$goto_cats_list;
 m.fsGotoCats.$fs_container=$goto_cats_container;
-m.fsGotoCats.$fsl.viewAndScroll=function ($next) {
-	let $fsl=m.fsGotoCats.$fsl;
-	if ($next.exists()) {
-		if ($goto_cats_container.is(":visible")) {
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-		}
-		else {
-			$goto_cats_container.show();
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-			$goto_cats_container.hide();
-		}
-	}
-};
 
 m.fsCat=[];
 m.fsCat[0]=m.fsCat[1]=[];
@@ -1389,29 +1401,6 @@ m.fsToRs.fullList=[];
 m.fsToRs.shuffled=[];
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
-m.fsToRs.$fsl.viewAndScroll=function ($next) {
-	let $fsl=m.fsToRs.$fsl;
-	if ($next.exists()) {
-		if ($table_of_recos_container.is(":visible")) {
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-		}
-		else {
-			$table_of_recos_container.show();
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-			$table_of_recos_container.hide();
-		}
-	}
-	else {
-		if ($table_of_recos_container.is(":visible")) {
-			$fsl.scrollTop(0);
-		}
-		else {
-			$table_of_recos_container.show();
-			$fsl.scrollTop(0);
-			$table_of_recos_container.hide();
-		}
-	}
-};
 m.fsToRs.skip=true;
 m.fsToRs.oneLoop=false;
 m.fsToRs.loop=false;
@@ -5513,13 +5502,13 @@ m.triggerOpenCat=async function (event) {
 		let $gotoCatsK=$(`#gotoCats-${k}`);
 		if ($gotoCatsK.exists()) {
 			$gotoCatsK.trigger("click");
-			fs.$fsl.viewAndScroll($gotoCatsK);
+			m.fsViewAndScroll(fs, $gotoCatsK);
 			return false;
 		}
 		fs.$fsl.prepend(`<div class="list-item${fsFLCat?.down?" down":""}${fsFLCat?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${k}</span>${fs.fullList[k].html}</div>`);
 		$gotoCatsK=$(`#gotoCats-${k}`);
 		$gotoCatsK.trigger("click");
-		fs.$fsl.viewAndScroll($gotoCatsK);
+		m.fsViewAndScroll(fs, $gotoCatsK);
 		return false;
 	}
 };
@@ -5888,7 +5877,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
-	fs.$fsl.viewAndScroll($("#toR-"+fs.currentIndex));
+	m.fsViewAndScroll(fs, $("#toR-"+fs.currentIndex));
 	if (m.initialOpen) {
 		fs.playNext(-1, true, true);
 	}
@@ -6978,7 +6967,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
-			fs.$fsl.viewAndScroll($li);
+			m.fsViewAndScroll(fs, $li);
 			if (fs.lastIndex!==fs.currentIndex) {
 				fs.getAndPlayVideo(cue);
 			}
@@ -7022,7 +7011,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	}
 	if ($next&&$next.exists()) {
 		$next.trigger("click");
-		fs.$fsl.viewAndScroll($next);
+		m.fsViewAndScroll(fs, $next);
 	}
 	return;
 };
