@@ -6889,6 +6889,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			}
 		}
 		else {
+			fs.pauseVideo();
 			$youtube.html('');
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
