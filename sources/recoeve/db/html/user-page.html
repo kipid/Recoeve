@@ -5500,13 +5500,11 @@ m.triggerOpenCat=async function (event) {
 		let $gotoCatsK=$(`#gotoCats-${k}`);
 		if ($gotoCatsK.exists()) {
 			$gotoCatsK.trigger("click");
-			m.fsViewAndScroll(fs, $gotoCatsK);
 			return false;
 		}
 		fs.$fsl.prepend(`<div class="list-item${fsFLCat?.down?" down":""}${fsFLCat?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${k}</span>${fs.fullList[k].html}</div>`);
 		$gotoCatsK=$(`#gotoCats-${k}`);
 		$gotoCatsK.trigger("click");
-		m.fsViewAndScroll(fs, $gotoCatsK);
 		return false;
 	}
 };
@@ -5570,6 +5568,7 @@ m.completeCatAndOpenCat=async function (event) {
 		await m.openCat(cat);
 	}
 	m.currentCat=cat;
+	m.fsViewAndScroll(fs, $elem);
 };
 
 ///////////////////////////////////////////
@@ -7003,7 +7002,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	else {
 		$next=fs.$fsLis.eq(0);
 	}
-	if ($next&&$next.exists()) {
+	if ($next?.exists()) {
 		$next.trigger("click");
 		m.fsViewAndScroll(fs, $next);
 	}
