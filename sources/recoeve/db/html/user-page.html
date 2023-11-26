@@ -2478,12 +2478,12 @@ return new Promise(function (resolve, reject) {
 	$search_timezone.on("keyup.fs cut.fs paste.fs", m.fsTimezoneOn);
 
 	if (m.initialOpen) {
+		m.reTriggerFS(m.fsGo);
 		m.reTriggerFS(m.fsToRs);
 		m.reTriggerFS(m.fsCat);
 		m.reTriggerFS(m.fsMRCat);
-		m.reTriggerFS(m.fsGotoCats);
 		m.reTriggerFS(m.fsTimezone);
-		m.reTriggerFS(m.fsGo);
+		m.reTriggerFS(m.fsGotoCats);
 	}
 	else {
 		resolve();
@@ -4522,13 +4522,18 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 					let fs=m.fsGo;
 					let fsFLk=fs.fullList[uri];
+					if (!fsFLk) {
+						fsFLk=fs.fullList[uri]={uri, has:false, down:true};
+					}
+					fsFLk.deleted=true;
 					m.reTriggerFS(fs);
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
 					if (!fsFLk) {
-						fs.fullList[uri]={uri, deleted:true, has:false};
+						fs.fullList[uri]={uri, has:false, down:true};
 					}
+					fsFLk.deleted=true;
 					fsFLk.inRange=false;
 					m.reTriggerFS(fs);
 				}
@@ -5784,7 +5789,6 @@ m.playLi=function (e, elem, k, fs) {
 			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
 			fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
-				let scrollTop=$window.scrollTop();
 				let pHeight=$playlist_container.height();
 				if (fs.fixed) {
 					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
@@ -5855,7 +5859,6 @@ return new Promise(async function (resolve, reject) {
 		} // desc sorting. The same reversed.
 		shuffled[j]=temp;
 	}
-	m.reTriggerFS(fs);
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
