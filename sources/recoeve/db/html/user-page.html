@@ -883,8 +883,6 @@ m.kakaoInitDo=function () {
 };
 m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
 
-
-
 /* Prerequisite */
 //////////////////
 // Variables
@@ -1683,8 +1681,6 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
 	})
 });
 
-
-
 /* Fuzzy search */
 // Fuzzy search, Table of Recos move and reset
 $goto_cats_container_move.on("mousedown.move touchstart.move", function (e) {
@@ -1797,8 +1793,6 @@ $("#search-timezone-container>.reset").on("click.reset", function (e) {
 	$search_timezone.trigger("keyup.fs");
 });
 
-
-
 ////////////////////////////////////////////////////
 // Fuzzy search prepare
 ////////////////////////////////////////////////////
@@ -1808,8 +1802,6 @@ m.fsTimezone[0].ptnSH=m.fsTimezone[1].ptnSH
 =m.fsMRCat[0].ptnSH=m.fsMRCat[1].ptnSH
 =m.fsGo[0].ptnSH=m.fsGo[1].ptnSH
 =m.fsToRs[0].ptnSH=m.fsToRs[1].ptnSH=m.splitHangul("$!@#");
-
-
 
 /* CatList */
 ////////////////////////////////////////////////////
@@ -1945,8 +1937,6 @@ m.getCatListChanged=function () {
 	}
 	return catListChanged;
 };
-
-
 
 //////////////////////////////////////
 // CatList order
@@ -2162,8 +2152,6 @@ m.toLocalTime=function (UTCDateTime) {
 	}
 	return "";
 };
-
-
 
 //////////////////////////////////////
 // Fuzzy search on Cat
@@ -2445,9 +2433,9 @@ m.fsTimezoneOn=async function () {
 		m.doFSTimezone();
 	}
 	else {
-		$search_timezone.off("keyup.fs cut.fs paste.fs");
+		$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$search_timezone.on("keyup.fs cut.fs paste.fs", m.fsTimezoneOn);
+			$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 			m.previous=Date.now();
 			m.doFSTimezone();
 		}, m.wait*1.5-passed);
@@ -2460,22 +2448,22 @@ m.reTriggerFS=function (fs) {
 };
 m.reNewfsCatsOn=async function () {
 return new Promise(function (resolve, reject) {
-	$fuzzy_search.off("keyup.fs cut.fs paste.fs");
-	$table_of_recos.off("keyup.fs cut.fs paste.fs");
+	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
+	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$multireco_input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
-	$search_timezone.off("keyup.fs cut.fs paste.fs");
+	$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
 
-	$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
-	$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+	$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+	$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
 		await m.fsGotoCatsOn(event);
 		resolve();
 	});
-	$search_timezone.on("keyup.fs cut.fs paste.fs", m.fsTimezoneOn);
+	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 
 	if (m.initialOpen) {
 		m.reTriggerFS(m.fsGo);
@@ -2596,8 +2584,6 @@ $multireco_input_cats.on("focus", function () {
 	$multireco_cat_fs_container.show();
 });
 $goto_cats.trigger("keyup.fs");
-
-
 
 //////////////////////////////////////
 // Put/Delete/Change Cats
@@ -2777,8 +2763,6 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 	}
 }};
 
-
-
 /* Points */
 ////////////////////////////////////////////////////
 // val, points, stars
@@ -2846,8 +2830,6 @@ m.val=function (val) {
 		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${(m.starsWidth*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
 	}
 }
-
-
 
 ////////////////////////////////////////////////////
 // Point range
@@ -3056,8 +3038,6 @@ $point_range_right1.on("mousedown.mdPRR1 touchstart.mdPRR1", function (e0) {
 		$html.off("mouseup.mdInPRR1 touchend.mdInPRR1 mousemove.mdInPRR1 touchmove.mdInPRR1");
 	});
 });
-
-
 
 ////////////////////////////////////////////////////
 // Show recos
@@ -4560,8 +4540,6 @@ m.ExpCol=function (elem, catEC) {
 	}
 };
 
-
-
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
@@ -5760,18 +5738,16 @@ m.fsGoOn=async function () {
 		m.doFSGo(m.fsGo);
 	}
 	else {
-		$fuzzy_search.off("keyup.fs cut.fs paste.fs");
+		$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
+			$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 			m.previous=Date.now();
 			m.doFSGo(m.fsGo);
 		}, m.wait*1.5-passed);
 	}
 };
-$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
+$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 $fuzzy_search.trigger("keyup.fs");
-
-
 
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos (TofR)
@@ -5890,15 +5866,15 @@ m.fsToRsOn=async function () {
 		await m.doFSToRs();
 	}
 	else {
-		$table_of_recos.off("keyup.fs cut.fs paste.fs");
+		$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(async function () {
-			$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 			m.previous=Date.now();
 			await m.doFSToRs();
 		}, m.wait*1.5-passed);
 	}
 };
-$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 $table_of_recos.trigger("keyup.fs");
 $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
@@ -6813,8 +6789,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.initialOpen=false;
 	}, 4096);
 });
-
-
 
 ////////////////////////////////////////////////////
 // YouTube API
