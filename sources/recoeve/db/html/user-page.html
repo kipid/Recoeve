@@ -7013,6 +7013,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 };
 m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	let fs=m.fsToRs;
+	console.log("m.fsToRs.prepareRecoListPlay, YtAPINeeded: ", YtAPINeeded);
 	if (!m.YtAPILoaded) {
 		if (YtAPINeeded) {
 			let ytAPI=`<script id="YouTube-API" src="https://www.youtube.com/player_api"></`+`script>`; // Avoid closing script
@@ -7020,6 +7021,7 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 			m.YtAPILoaded=true;
 		}
 	}
+	console.log("YT?.Player: ", YT?.Player);
 	if (!YtAPINeeded||YT?.Player) {
 		await m.doFSToRs();
 		fs.playNext(-1, null, true);
