@@ -3921,10 +3921,10 @@ m.getAndShowRecosOnCat=async function (cat) {
 	else if (!m.myPage) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
-	await m.showRecosOnCat();
 	let fs=m.fsToRs;
-	fs.currentIndex=fs.fullList.length-1;
 	await m.reTriggerFS(fs);
+	await m.showRecosOnCat();
+	fs.currentIndex=fs.fullList.length-1;
 	if (m.lastCat!==m.currentCat) {
 		setTimeout(function () {
 			fs.playNext(-1, null, true);
@@ -5563,7 +5563,6 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
-		await m.reTriggerFS(m.fsToRs);
 		m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
 	}
 	m.currentCat=cat;
