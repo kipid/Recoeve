@@ -6454,8 +6454,7 @@ m.processShortKey=function (e) {
 }
 $window.on("keydown.sk", m.processShortKey);
 
-No printing shorkey description.
-let $shortkeyDesc=$("ul#shortkeys");
+$shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
 	$shortkeyDesc.html(
 `<li><span onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
