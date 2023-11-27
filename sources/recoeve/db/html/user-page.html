@@ -3623,7 +3623,7 @@ m.reNewAndReOn=async function () {
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed");
 	let $stars=$(".my-point>.stars-container");
 	$stars.off("click.mdInStars");
 	$stars.on("click.mdInStars", m.starsOnClick);
@@ -4562,8 +4562,11 @@ m.openCat=async function (cat) {
 		let uris=m.catUriList[cat].uris;
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
-			if (m.userRecos[uri]) {
+			if (m.userRecos[uri]) { // Must have recos on these uris.
 				m.userRecos[uri].i=uris.length-1-k;
+			}
+			else {
+				m.userRecos[uri]={uri, i:uris.length-1-k};
 			}
 		}
 		m.lastIndexOfUriList=uris.length-1;
@@ -4574,16 +4577,18 @@ m.openCat=async function (cat) {
 	if (!m.initialOpen) {
 		if (!m.doNotPushHistory) {
 			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-				m.hashURI="numbers-of-recos";
-			}
-			else if ($button_get_recoms.hasClass("enabled")) {
-				m.hashURI="button-get-recoms";
+				$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 			}
 			else {
-				m.hashURI="headPlay";
+				if ($button_get_recoms.hasClass("enabled")) {
+					m.hashURI="button-get-recoms";
+					window.location.hash=`#${m.hashURI}`;
+					window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
+				}
+				else {
+					$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+				}
 			}
-			window.location.hash=`#${m.hashURI}`;
-			window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 		}
 		m.doNotPushHistory=false;
 	}
@@ -5530,15 +5535,16 @@ m.completeCatAndOpenCat=async function (event) {
 		$elem.addClass("down");
 	}
 	let k=fs.k; // index of cat on sEnd.
+	// TODO: remain the below for later use.
 	// fs.listOfCats[k]=cat; // Do not fill the m.fsToRs.$fs
 	// fs.$fs[0].value=fs.listOfCats.join(";");
-	let sStart=0;
-	for (let i=0;i<k;i++) {
-		sStart+=fs.listOfCats[i].length+1;
-	}
-	sEnd=sStart+fs.listOfCats[k].length;
+	// let sStart=0;
+	// for (let i=0;i<k;i++) {
+	// 	sStart+=fs.listOfCats[i].length+1;
+	// }
+	// sEnd=sStart+fs.listOfCats[k].length;
 	$goto_cats.focus();
-	fs.$fs[0].setSelectionRange(sEnd,sEnd);
+	// fs.$fs[0].setSelectionRange(sEnd,sEnd);
 	for (let i=0;i<fs.fullList.length;i++) {
 		fs.fullList[i].selected=false;
 	}
@@ -6114,9 +6120,7 @@ m.intervalOpenCat=function (intervalId) {
 			m.doNotPushHistory=false;
 		}
 		if ($gotoCatsI.exists()) {
-			// if (m.intervalCount[intervalId]>4) {
-				clearInterval(intervalId);
-			// }
+			clearInterval(intervalId);
 			$gotoCatsI.trigger("click");
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
 			console.log(`m.currentCat: `, m.currentCat);
@@ -6126,7 +6130,7 @@ m.intervalOpenCat=function (intervalId) {
 			}
 			m.doNotPushHistory=false;
 		}
-		else if (m.intervalCount[intervalId]>4) {
+		else if (m.intervalCount[intervalId]>7) {
 			clearInterval(intervalId);
 			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
 			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
@@ -6151,7 +6155,7 @@ $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove m
 	e.stopPropagation();
 	e.preventDefault();
 });
-m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
@@ -6320,14 +6324,14 @@ m.processShortKey=function (e) {
 			}
 			m.recoMode="";
 			$button_mode.removeClass("enabled");
+			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 		}
 		else {
 			$window.scrollTop($contents.offset().top);
 			m.recoMode="neighbors";
 			$button_mode.removeClass("enabled");
 			$button_neighbors_mode.addClass("enabled");
-			m.hashURI="numbers-of-recos";
-			window.location.hash=`#${m.hashURI}`;
+			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 		}
 		clearInterval(m.initialFsGotoCats1);
 		m.initialFsGotoCats1=setInterval(function () {
@@ -6341,8 +6345,7 @@ m.processShortKey=function (e) {
 			$button_mode.removeClass("enabled");
 			$contents.removeClass("multireco");
 			$multireco_cats_container.hide();
-			m.hashURI="headPlay";
-			window.location.hash=`#${m.hashURI}`;
+			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 		}
 		else {
 			m.recoMode="multireco";
@@ -6352,8 +6355,7 @@ m.processShortKey=function (e) {
 			$multireco_cats_container.show();
 			$multireco_cats_container.css({zIndex:++m.zIndex});
 			$multireco_input_cats[0].value=m.currentCat;
-			m.hashURI="numbers-of-recos";
-			window.location.hash=`#${m.hashURI}`;
+			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 		}
 		if (!m.recosShown) {
 			$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
@@ -6373,8 +6375,7 @@ m.processShortKey=function (e) {
 				m.recoMode="";
 				$contents_recoms.html("");
 				$button_mode.removeClass("enabled");
-				m.hashURI="headPlay";
-				window.location.hash=`#${m.hashURI}`;
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 			}
 			else {
 				m.recoMode="recoms";
