@@ -245,8 +245,7 @@ public static void main(String... args) {
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
 		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
-		.allowedHeader("Content-Type")
-		.allowedHeader("Access-Control-Allow-Origin");
+		.allowedHeader("Content-Type");
 
 	router.route().handler(corsHandler);
 
