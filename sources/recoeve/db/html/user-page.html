@@ -6838,7 +6838,6 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			console.log(`m.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}`);
 			if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
 				if (inListPlay&&m.YtPlayer) {
-					console.log("inListPlay&&m.YtPlayer");
 					if (cue&&m.YtPlayer.cueVideoById) {
 						m.YtPlayer.cueVideoById(uriRendered.videoId);
 						fs.lastIndex=fs.currentIndex;
@@ -6881,9 +6880,9 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 						}
 					});
 					fs.lastIndex=fs.currentIndex;
+					m.lastCat=m.currentCat;
 				}
 				else {
-					console.log("fs.prepareRecoListPlay(true);");
 					fs.prepareRecoListPlay(true);
 				}
 			}
@@ -6967,13 +6966,11 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li);
 				fs.getAndPlayVideo(true);
-				console.log(`fs.currentIndex: ${fs.currentIndex} and fs.getAndPlayVideo(true);`);
 			}
 			else {
 				m.setTimeoutPlayNext=setTimeout(function () {
 					fs.playNext(increment, cue, first);
-				}, 1024);
-				console.log(`fs.currentIndex: ${fs.currentIndex}. And re playNext();`);
+				}, 512);
 			}
 			return;
 		}
@@ -6989,9 +6986,8 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			$rC_youtube_uri_rendered.hide();
 			clearTimeout(m.setTimeoutPlayNext);
 			m.setTimeoutPlayNext=setTimeout(function () {
-				// await m.reTriggerFS(fs);
 				fs.playNext(increment, cue, first);
-			}, 1024);
+			}, 512);
 			return;
 		}
 	}
@@ -7022,7 +7018,6 @@ m.fsToRs.playNext=function (increment, cue, first) {
 };
 m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	let fs=m.fsToRs;
-	console.log("m.fsToRs.prepareRecoListPlay, YtAPINeeded: ", YtAPINeeded);
 	if (!m.YtAPILoaded) {
 		if (YtAPINeeded) {
 			let ytAPI=`<script id="YouTube-API" src="https://www.youtube.com/player_api"></`+`script>`; // Avoid closing script
@@ -7030,7 +7025,6 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 			m.YtAPILoaded=true;
 		}
 	}
-	console.log("YT?.Player: ", YT?.Player);
 	if (!YtAPINeeded||YT?.Player) {
 		await m.doFSToRs();
 		fs.playNext(-1, null, true);
