@@ -2453,6 +2453,23 @@ m.fsTimezoneOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
+m.fsGo.fsOn=m.fsGoOn;
+m.fsToRs.fsOn=m.fsToRsOn;
+m.fsCat.fsOn=m.fsCatOn;
+m.fsMRCat.fsOn=m.fsMRCatOn;
+m.fsTimezone.fsOn=m.fsTimezoneOn;
+m.reTriggerFS=async function (fs) {
+return new Promise(function (resolve, reject) {
+	fs[1]=null;
+	fs[0].ptnSH=m.splitHangul("$!@#");
+	fs.$fs.off("keyup.fs");
+	fs.$fs.on("keyup.fs", function (e) {
+		fs.fsOn(e);
+		resolve();
+	});
+	fs.$fs.trigger("keyup.fs");
+});
+};
 m.reNewfsCatsOn=async function () {
 return new Promise(function (resolve, reject) {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs");
@@ -5765,24 +5782,6 @@ m.fsGoOn=async function () {
 };
 $fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 $fuzzy_search.trigger("keyup.fs");
-
-m.fsGo.fsOn=m.fsGoOn;
-m.fsToRs.fsOn=m.fsToRsOn;
-m.fsCat.fsOn=m.fsCatOn;
-m.fsMRCat.fsOn=m.fsMRCatOn;
-m.fsTimezone.fsOn=m.fsTimezoneOn;
-m.reTriggerFS=async function (fs) {
-return new Promise(function (resolve, reject) {
-	fs[1]=null;
-	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.off("keyup.fs");
-	fs.$fs.on("keyup.fs", function (e) {
-		fs.fsOn(e);
-		resolve();
-	});
-	fs.$fs.trigger("keyup.fs");
-});
-};
 
 
 
