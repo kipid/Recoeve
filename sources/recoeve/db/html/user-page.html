@@ -6414,7 +6414,7 @@ m.processShortKey=function (e) {
 		let i, k=m.$fdList.length;
 		let $hI;
 		if (e.keyCode===70) { // F=70
-			scrollTop+=10;
+			scrollTop+=25;
 			for (i=0;i<k;i++) {
 				$hI=m.$fdList.eq(i);
 				let hIID=$hI[0].id;
@@ -6428,7 +6428,7 @@ m.processShortKey=function (e) {
 			}
 		}
 		else{ // D=68
-			scrollTop-=10;
+			scrollTop-=25;
 			for (i=k-1;i>=0;i--) {
 				$hI=m.$fdList.eq(i);
 				if ($hI.is(":visible")&&scrollTop>$hI.offset().top) { break; }
@@ -6447,7 +6447,7 @@ m.processShortKey=function (e) {
 		else if (hIID) {
 			m.hashURI=hIID;
 			if (e.keyCode===70&&hIID.startsWith("load-recos-")) { // F=70
-				$window.scrollTop($hI.offset().top-$window.height());
+				$window.scrollTop($hI.offset().top-$window.height()+25);
 			}
 			else { // F=70 (normal) and D=68
 				$window.scrollTop($hI.offset().top);
