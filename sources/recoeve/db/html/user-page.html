@@ -5875,10 +5875,13 @@ return new Promise(async function (resolve, reject) {
 	}
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
+	let $li=fs.$fsLis.eq(0);
 	if (m.lastCat!==m.currentCat||shuffle) {
-		fs.currentIndex=Number(fs.$fsLis.eq(0).attr("id").substring(4));
-		m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
-		fs.playNext(-1, null, true);
+		if ($li.exists()) {
+			fs.currentIndex=Number($li.attr("id").substring(4));
+			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
+			fs.playNext(-1, null, true);
+		}
 	}
 	resolve();
 });
