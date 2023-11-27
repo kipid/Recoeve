@@ -243,7 +243,7 @@ else if (m.docCookies.hasItem("lang")) {
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div><!-- div#fuzzy-search-container -->
-<div id="table-of-recos-container" class="fs-container" style="display:none">
+<div id="table-of-recos-container" class="fs-container none" style="display:none">
 	<div class="fs-name">Table of Recos</div>
 	<div class="move" style="position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
@@ -1326,9 +1326,6 @@ m.fsViewAndScroll=function (fs, $next) {
 	let $fs_container=fs.$fs_container;
 	if (!$next.exists()) {
 		$next=$fsl.find(".selected");
-		if (!$next.exists()) {
-			$next=$fsl.find(".list-item").eq(0);
-		}
 	}
 	if ($next.exists()) {
 		if ($fs_container.is(":visible")) {
@@ -6710,6 +6707,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	if (vars.ToR?.val===""||vars.ToR?.val) {
 		$table_of_recos[0].value=vars.ToR.val;
+		$table_of_recos.trigger("keyup.fs");
 		if (!$table_of_recos_container.is(":visible")) {
 			$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
 		}
