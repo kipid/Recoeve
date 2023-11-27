@@ -2453,6 +2453,11 @@ m.fsTimezoneOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
+m.fsGo.fsOn=m.fsGoOn;
+m.fsToRs.fsOn=m.fsToRsOn;
+m.fsCat.fsOn=m.fsCatOn;
+m.fsMRCat.fsOn=m.fsMRCatOn;
+m.fsTimezone.fsOn=m.fsTimezoneOn;
 m.reTriggerFS=async function (fs) {
 return new Promise(function (resolve, reject) {
 	fs[1]=null;
@@ -2474,11 +2479,6 @@ return new Promise(function (resolve, reject) {
 	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$search_timezone.off("keyup.fs cut.fs paste.fs");
 
-	m.fsGo.fsOn=m.fsGoOn;
-	m.fsToRs.fsOn=m.fsToRsOn;
-	m.fsCat.fsOn=m.fsCatOn;
-	m.fsMRCat.fsOn=m.fsMRCatOn;
-	m.fsTimezone.fsOn=m.fsTimezoneOn;
 	$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 	$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
