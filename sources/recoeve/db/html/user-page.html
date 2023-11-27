@@ -6837,8 +6837,9 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
-			if (fs.lastIndex!==fs.currentIndex) {
+			if (m.lastIndex!==m.currentIndex||m.lastCat!==m.currentCat) {
 				if (inListPlay&&m.YtPlayer) {
+					console.log("inListPlay&&m.YtPlayer");
 					if (cue&&m.YtPlayer.cueVideoById) {
 						m.YtPlayer.cueVideoById(uriRendered.videoId);
 						fs.lastIndex=fs.currentIndex;
@@ -6856,6 +6857,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 					}
 				}
 				else if (YT?.Player) {
+					console.log("YT?.Player: ", YT?.Player);
 					m.YtPlayer=new YT.Player('youtube', {
 						videoId:uriRendered.videoId, events:{
 							'onError':function (e) {
