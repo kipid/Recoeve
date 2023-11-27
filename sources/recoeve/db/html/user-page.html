@@ -2466,18 +2466,18 @@ return new Promise(async function (resolve, reject) {
 	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$multireco_input_cats.off("keyup.fs cut.fs paste.fs click.fs");
-	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
+	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 
 	$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 	$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 	$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
 		await m.fsGotoCatsOn(event);
-		resolve();
+		return resolve();
 	});
-	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 
 	if (m.initialOpen) {
 		await m.reTriggerFS(m.fsGo);
