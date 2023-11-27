@@ -2688,8 +2688,8 @@ return new Promise(async function (resolve, reject) {
 	}
 });
 };
-$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
-$table_of_recos.trigger("keyup.fs");
+// $table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+// $table_of_recos.trigger("keyup.fs");
 $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
 });
