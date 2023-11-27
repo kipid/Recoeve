@@ -115,6 +115,7 @@ else if (m.docCookies.hasItem("lang")) {
 	padding:0.2em 0.4em !important
 }
 
+#shortkeys {border:3px solid wheat}
 .tip {color:rgb(250,150,100)}
 
 #sort-list .button {display:table; margin:0}
@@ -761,10 +762,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div><!-- div#change-style -->
 <div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 </div><!-- div#foot -->
-<!-- <div class="side2">
-	[--Short Keys--]
-	<ul id="shortkeys"></ul>
-</div> -->
+<div class="side2"><ul id="shortkeys"></ul></div>
 <div class="side2" id="google-search">
 	<div class="gcse-search"></div>
 </div>
@@ -6456,10 +6454,10 @@ m.processShortKey=function (e) {
 }
 $window.on("keydown.sk", m.processShortKey);
 
-/* No printing shorkey description.
+No printing shorkey description.
 let $shortkeyDesc=$("ul#shortkeys");
 if ($shortkeyDesc.exists()) {
-	$shortkeyDesc.prepend(
+	$shortkeyDesc.html(
 `<li><span onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
@@ -6475,7 +6473,9 @@ if ($shortkeyDesc.exists()) {
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold">I</span>: [--Log _i_n--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold">O</span>: [--Log _o_ut--]</span></li>`
 	);
-} */
+}
+$shortkeyDesc.hide();
+$shortkeyDesc.before(`<div class="button" onclick="$shortkeyDesc.toggle()">[--Toggle ShortKey Description--]</div>`)
 
 ////////////////////////////////////////////////////
 // Language/언어/語言
