@@ -57,8 +57,6 @@
 
 
 
-cloud 서비스로 수익구조 만들어도 좋을듯? 아니면 연예인 영상이나 사진 구매해야만 reco 되도록, 그리고 링크에 대한 auth 도 구매해야만 제대로된 response 를 받도록 만들어서 수익구조 내도 될듯.
-
 수정 눌렀을때 (cats 하나 뺌) new-reco 가 안닫힘. Reco to mine 할때 창이 그냥 닫힘. 이미 있는 reco on the URI 일 경우에만 그러는거 같기도 하고...
 
 각 cat 마다 comment 달 수 있는 widget 넣을까? 다른 서버 돌려서 iframe 으로 가져오기? DISQUS 좀 베껴야 할듯? 이건 유료 구독 판매할수도 있을듯?
@@ -69,32 +67,11 @@ Remember 할 때, cookie 이용하는데 ip 주소도 저장해놓고, ip 가 �
 
 Introducing recoeve.net 한글로도 작성하기.
 
-언어별로 한국어는 카카오톡, 일본은 라인, 중국은 WeChat? 등으로 바꿔줘야 할듯도? 미국은 뭐 쓰지? 인스타 다이렉트 메세지 보내는것도 추가.
-
-아래에 있는 레코 올릴때, 삭제 후 리레코 하면 되는데... 이게 순조롭게 안됨. Edit Del 버튼으로 남아있고 ToR 에서도 위치 안바뀌고 등등.
-
 Recoeve.net 소개하는 포스팅에서 gif 들 활용하기. 사용/활용 설명서 개념으로...
 
 list play 에서(만) 유튜브 URI 일때, description 이나 comment 에 00:00 같은거 있으면 그 시간대로 jump 되도록 만들자. iframe 은 seekTo 안통하니까...
 
-ads.txt 는 뭐 쏴줘야 하는거지? 어디에 쓰이는거야? 요청이 들어왔었음.
-
-이웃들 보다 당신의 점수가 박하네요. 이웃들 보다 당신의 점수가 후하네요. 같은 것도 알려주자. Reco 추천만 주는게 아니라. Slow/Sincere/Sexy communication 이 되도록.
-
-IP statics 이용해서 DDOS 공격 막아놓기.
-
-/recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id 등 나열. 말 그대로 statistics of reco on uri=...
-
 Description 이나 Comment 에 https?-URI 있을 경우 rendering or a href 로 만들어 주기. (현재는 #related 아래 있을때만 이렇게 처리함.)
-
-검색 google 에서 "site:recoeve.net/user/kipid 검색어" 식으로 검색 대신 해주는거 input 만들어 주기.
-
-Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
-
-여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까? 이게 mode/multireco 일듯.<br>
-여러 URI 한꺼번에 stat 볼 수 있도록, path=/recostat?uri=... 에서 uri 에 /user/kipid?cat=SomeCat 들어오면 이 SomeCat 에 있는 URI 들 모두의 stat 을 정리해서 보여주면 좋을듯? 너무 많은 URI 를 한꺼번에 통계내면 서버 부하가 클테니 첫 100개 정도의 stat 만?
-
-Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. 첫 recoer 에게 reco 할거 같은 URI 받으면 그때 crawler 가 동작해서 title, desc 등 긁어오면 될듯? (Crawling 하는 법을 아직 몰라서... 배우는데 좀 걸릴듯?)
 
 
 
@@ -105,6 +82,10 @@ Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. �
 #### 오래 걸리는 작업이라 미뤄둔 것들.
 
 
+
+IP statics 이용해서 DDOS 공격 막아놓기.
+
+cloud 서비스로 수익구조 만들어도 좋을듯? 아니면 연예인 영상이나 사진 구매해야만 reco 되도록, 그리고 링크에 대한 auth 도 구매해야만 제대로된 response 를 받도록 만들어서 수익구조 내도 될듯.
 
 def-cats 는 Machine Learning 으로 자동으로 추천해 주도록도 만들자. 남들이 많이 넣은 cats 도 당근 보여주는 거고, 초창기 recoer 들은 이 stat 이 없을테니 URI 의 내용 가지고 cats 유추하는 Deep Learning 코드를 만들어야 할듯? 기존에 나와있는 chatGPT 같은걸 섞어쓸까? 따로 만들어야 할래나? (ChatGPT 에서 GPT_FILL(A1:B10, A11:A20) 같은 명령어로 할 수 있는거 같은데, ChatGPT 유료 결제도 해야하고 좀 나중으로 미룹시다.)
 
@@ -121,6 +102,10 @@ desc, cmt SEE (Super Easy Edit) 처럼 처리되도록 만들자. 그리고 subl
 #### 정말 필요한지 안한지 헷갈려서 보류한 것들.
 
 
+
+이웃들 보다 당신의 점수가 박하네요. 이웃들 보다 당신의 점수가 후하네요. 같은 것도 알려주자. Reco 추천만 주는게 아니라. Slow/Sincere/Sexy communication 이 되도록.
+
+Reco 나 Edit 이후 해당 reco 위치로 scrollTo.
 
 나무위키나 위키피디아처럼 공동으로 편집할수 있는 계정도 만들어 볼까? 이건 abusing 도 막아야해서 history 도 남겨야 함.
 
@@ -248,6 +233,21 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ### 정리하기 전
 
 
+
+검색 google 에서 "site:recoeve.net/user/kipid 검색어" 식으로 검색 대신 해주는거 input 만들어 주기.
+
+여러개 uri 놓고서 투표하는거 (예를 들면 카라 엔딩 사진들 모아놓고 어떤 의상이 가장 예뻤는지 점수 메기는식?) 만들어서 홍보에 활용할까? 이게 mode/multireco 일듯.<br>
+여러 URI 한꺼번에 stat 볼 수 있도록, path=/recostat?uri=... 에서 uri 에 /user/kipid?cat=SomeCat 들어오면 이 SomeCat 에 있는 URI 들 모두의 stat 을 정리해서 보여주면 좋을듯? 너무 많은 URI 를 한꺼번에 통계내면 서버 부하가 클테니 첫 100개 정도의 stat 만?
+
+/recostat?uri=... 형태로 접속하면, 해당 uri 에 대한 reco list 들 보여주기. Recentest 순서대로. URI, title, cats, uri rendered, desc, cmts with points/id 등 나열. 말 그대로 statistics of reco on uri=...
+
+ads.txt 는 뭐 쏴줘야 하는거지? 어디에 쓰이는거야? 요청이 들어왔었음.
+
+Crawling 해서 각 URI 의 title, desc, cats 같은것들 defaults 쏴주기. 첫 recoer 에게 reco 할거 같은 URI 받으면 그때 crawler 가 동작해서 title, desc 등 긁어오면 될듯? (Crawling 하는 법을 아직 몰라서... 배우는데 좀 걸릴듯?)
+
+아래에 있는 레코 올릴때, 삭제 후 리레코 하면 되는데... 이게 순조롭게 안됨. Edit Del 버튼으로 남아있고 ToR 에서도 위치 안바뀌고 등등.
+
+언어별로 한국어는 카카오톡, 일본은 라인, 중국은 WeChat? 등으로 바꿔줘야 할듯도? 미국은 뭐 쓰지? 인스타 다이렉트 메세지 보내는것도 추가.
 
 hide recoed ones. Show only unrecoed on mine. (아직 multireco 에서만 동작.)
 
