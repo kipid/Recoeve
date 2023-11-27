@@ -2453,6 +2453,130 @@ m.fsTimezoneOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
+m.gotoLi=async function (event) {
+	clearTimeout(m.setTimeoutGotoLi);
+	if (event?.srcElement?.nodeName==="A") {
+		return;
+	}
+	let fs=m.fsGo;
+	let fs1=m.fsToRs;
+	let $elem=$(event.target);
+	if (!$elem.hasClass("list-item")) {
+		$elem=$elem.parents(".list-item");
+	}
+	let k=Number($elem.find(".list-index").html());
+	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
+	let fsFLk=fs.fullList[uri];
+	fs.fullList[k]=fs.fullList[uri];
+	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
+		m.setTimeoutGotoLi=setTimeout(function () {
+			m.gotoLi(event);
+		}, 512);
+		return;
+		// let r=m.userRecos[uri];
+		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+		// fsFLk.catAndI={};
+		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
+	}
+	if ($elem.hasClass("selected")) {
+		if ($elem.hasClass("clicked-twice")) {
+			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+			fs.$fsl.find(".list-item").removeClass("clicked-twice");
+		}
+		else {
+			$elem.addClass("clicked-twice");
+		}
+	}
+	else {
+		fs.$fsLis=fs.$fsl.find(".list-item");
+		fs.$fsLis.removeClass("selected");
+		$elem.addClass("selected");
+	}
+	m.beInCurrentCat=false;
+	let catSplit=fsFLk.catSplit;
+	for (let i=0;i<catSplit.length;i++) {
+		if (m.currentCat===catSplit[i]) {
+			m.beInCurrentCat=true;
+			break;
+		}
+	}
+	if (!m.beInCurrentCat) {
+		await m.openCat(catSplit[0]);
+		// m.currentCat=catSplit[0];
+	}
+	let l=fsFLk.catAndI[m.currentCat].i;
+	let $recoElem=$(`#reco-${l}`);
+	if ($recoElem.exists()) {
+		m.showAndScrollTo($recoElem);
+	}
+	else {
+		setTimeout(function selfGotoLi() {
+			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
+			$(`#load-recos-${i}`).trigger("click");
+			let $recoElem=$(`#reco-${l}`);
+			if ($recoElem.exists()) {
+				m.showAndScrollTo($recoElem);
+			}
+			else {
+				setTimeout(selfGotoLi, 256);
+			}
+		}, 256);
+	}
+};
+m.doFSGo=function (fs) {
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
+	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
+		let fsRes=m.fuzzySearch(fsPtnSH, fs);
+		let sorted=fsRes.sorted;
+		let str="";
+		for (let i=0;i<sorted.length;i++) {
+			let k=fsRes[sorted[i]].i;
+			let fsFLk=fs.fullList[k];
+			if (fsFLk) {
+				str+=`<div id="li-${k}" class="list-item${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
+			}
+		}
+		fs.$fsl.html(str);
+		fs.$fsLis=fs.$fsl.find(".list-item");
+	}
+};
+m.fsGoOn=async function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		m.doFSGo(m.fsGo);
+	}
+	else {
+		$fuzzy_search.off("keyup.fs cut.fs paste.fs");
+		setTimeout(function () {
+			$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
+			m.previous=Date.now();
+			m.doFSGo(m.fsGo);
+		}, m.wait*1.5-passed);
+	}
+};
+$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
+$fuzzy_search.trigger("keyup.fs");
+
+m.fsGo.fsOn=m.fsGoOn;
+m.fsToRs.fsOn=m.fsToRsOn;
+m.fsCat.fsOn=m.fsCatOn;
+m.fsMRCat.fsOn=m.fsMRCatOn;
+m.fsTimezone.fsOn=m.fsTimezoneOn;
+m.reTriggerFS=async function (fs) {
+return new Promise(function (resolve, reject) {
+	fs[1]=null;
+	fs[0].ptnSH=m.splitHangul("$!@#");
+	fs.$fs.off("keyup.fs");
+	fs.$fs.on("keyup.fs", function (e) {
+		fs.fsOn(e);
+		resolve();
+	});
+	fs.$fs.trigger("keyup.fs");
+});
+};
+
 m.reNewfsCatsOn=async function () {
 return new Promise(function (resolve, reject) {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs");
@@ -5660,131 +5784,6 @@ if ($recoElem?.exists()) {
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 	}
 }};
-m.gotoLi=async function (event) {
-	clearTimeout(m.setTimeoutGotoLi);
-	if (event?.srcElement?.nodeName==="A") {
-		return;
-	}
-	let fs=m.fsGo;
-	let fs1=m.fsToRs;
-	let $elem=$(event.target);
-	if (!$elem.hasClass("list-item")) {
-		$elem=$elem.parents(".list-item");
-	}
-	let k=Number($elem.find(".list-index").html());
-	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let fsFLk=fs.fullList[uri];
-	fs.fullList[k]=fs.fullList[uri];
-	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
-		m.setTimeoutGotoLi=setTimeout(function () {
-			m.gotoLi(event);
-		}, 512);
-		return;
-		// let r=m.userRecos[uri];
-		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-		// fsFLk.catAndI={};
-		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
-	}
-	if ($elem.hasClass("selected")) {
-		if ($elem.hasClass("clicked-twice")) {
-			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
-			fs.$fsl.find(".list-item").removeClass("clicked-twice");
-		}
-		else {
-			$elem.addClass("clicked-twice");
-		}
-	}
-	else {
-		fs.$fsLis=fs.$fsl.find(".list-item");
-		fs.$fsLis.removeClass("selected");
-		$elem.addClass("selected");
-	}
-	m.beInCurrentCat=false;
-	let catSplit=fsFLk.catSplit;
-	for (let i=0;i<catSplit.length;i++) {
-		if (m.currentCat===catSplit[i]) {
-			m.beInCurrentCat=true;
-			break;
-		}
-	}
-	if (!m.beInCurrentCat) {
-		await m.openCat(catSplit[0]);
-		// m.currentCat=catSplit[0];
-	}
-	let l=fsFLk.catAndI[m.currentCat].i;
-	let $recoElem=$(`#reco-${l}`);
-	if ($recoElem.exists()) {
-		m.showAndScrollTo($recoElem);
-	}
-	else {
-		setTimeout(function selfGotoLi() {
-			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
-			$(`#load-recos-${i}`).trigger("click");
-			let $recoElem=$(`#reco-${l}`);
-			if ($recoElem.exists()) {
-				m.showAndScrollTo($recoElem);
-			}
-			else {
-				setTimeout(selfGotoLi, 256);
-			}
-		}, 256);
-	}
-};
-m.doFSGo=function (fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
-	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		let fsRes=m.fuzzySearch(fsPtnSH, fs);
-		let sorted=fsRes.sorted;
-		let str="";
-		for (let i=0;i<sorted.length;i++) {
-			let k=fsRes[sorted[i]].i;
-			let fsFLk=fs.fullList[k];
-			if (fsFLk) {
-				str+=`<div id="li-${k}" class="list-item${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
-			}
-		}
-		fs.$fsl.html(str);
-		fs.$fsLis=fs.$fsl.find(".list-item");
-	}
-};
-m.fsGoOn=async function () {
-	let now=Date.now();
-	let passed=now-m.previous;
-	if (passed>m.wait) {
-		m.previous=now;
-		m.doFSGo(m.fsGo);
-	}
-	else {
-		$fuzzy_search.off("keyup.fs cut.fs paste.fs");
-		setTimeout(function () {
-			$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
-			m.previous=Date.now();
-			m.doFSGo(m.fsGo);
-		}, m.wait*1.5-passed);
-	}
-};
-$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
-$fuzzy_search.trigger("keyup.fs");
-
-m.fsGo.fsOn=m.fsGoOn;
-m.fsToRs.fsOn=m.fsToRsOn;
-m.fsCat.fsOn=m.fsCatOn;
-m.fsMRCat.fsOn=m.fsMRCatOn;
-m.fsTimezone.fsOn=m.fsTimezoneOn;
-m.reTriggerFS=async function (fs) {
-return new Promise(function (resolve, reject) {
-	fs[1]=null;
-	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.off("keyup.fs");
-	fs.$fs.on("keyup.fs", function (e) {
-		fs.fsOn(e);
-		resolve();
-	});
-	fs.$fs.trigger("keyup.fs");
-});
-};
-
-
 
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos (TofR)
