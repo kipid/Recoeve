@@ -2453,17 +2453,10 @@ m.fsTimezoneOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
-m.reTriggerFS=async function (fs) {
-return new Promise(function (resolve, reject) {
+m.reTriggerFS=function (fs) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.off("keyup.fs");
-	fs.$fs.on("keyup.fs", function (e) {
-		fs.fsOn(e);
-		resolve();
-	});
 	fs.$fs.trigger("keyup.fs");
-});
 };
 m.reNewfsCatsOn=async function () {
 return new Promise(function (resolve, reject) {
@@ -2474,11 +2467,6 @@ return new Promise(function (resolve, reject) {
 	$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
 	$search_timezone.off("keyup.fs cut.fs paste.fs");
 
-	m.fsGo.fsOn=m.fsGoOn;
-	m.fsToRs.fsOn=m.fsToRsOn;
-	m.fsCat.fsOn=m.fsCatOn;
-	m.fsMRCat.fsOn=m.fsMRCatOn;
-	m.fsTimezone.fsOn=m.fsTimezoneOn;
 	$fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 	$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 	$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
@@ -3942,7 +3930,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	await m.showRecosOnCat();
 	let fs=m.fsToRs;
 	fs.currentIndex=fs.fullList.length-1;
-	await m.reTriggerFS(fs);
+	m.reTriggerFS(fs);
 	if (m.lastCat!==m.currentCat) {
 		setTimeout(function () {
 			fs.playNext(-1, null, true);
@@ -5583,7 +5571,7 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
-		await m.reTriggerFS(m.fsToRs);
+		m.reTriggerFS(m.fsToRs);
 		m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
 	}
 	m.currentCat=cat;
