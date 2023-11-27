@@ -6862,14 +6862,14 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 					}
 				}
 				else if (YT?.Player) {
-					m.YtPlayer=new YT.Player('youtube',
-						{videoId:uriRendered.videoId, events:{
+					m.YtPlayer=new YT.Player('youtube', {
+						videoId:uriRendered.videoId, events:{
 							'onError':function (e) {
 								if (fs.skip) {
 									clearTimeout(m.playListSetTimeoutYT);
 									m.playListSetTimeoutYT=setTimeout(function () {
 										if (fs.skip) { fs.playNext(); }
-									}, 10000);
+									}, 4096);
 								}
 							}, 'onStateChange':function (e) {
 								if (e.data===YT.PlayerState.ENDED) {
@@ -6881,8 +6881,8 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 									}
 								}
 							}
-						}}
-					);
+						}
+					});
 					fs.lastIndex=fs.currentIndex;
 				}
 				else {
