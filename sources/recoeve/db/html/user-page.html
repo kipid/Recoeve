@@ -3909,6 +3909,7 @@ m.getRecos=function (uris, recos, cat) {
 m.getAndShowRecosOnCat=async function (cat) {
 	m.currentCat=cat;
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
+	console.log("await m.getRecos(uris, m.userRecos, cat);");
 	await m.getRecos(uris, m.userRecos, cat);
 	if (!m.myIndex) {
 		for (let i=0;i<uris.length;i++) {
@@ -3929,7 +3930,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 		setTimeout(function () {
 			fs.playNext(-1, null, true);
 			m.lastCat=m.currentCat;
-		}, 512);
+		}, 2048);
 	}
 };
 m.getUriList=function (catStrArray) {
