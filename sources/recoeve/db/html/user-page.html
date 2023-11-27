@@ -3623,7 +3623,7 @@ m.reNewAndReOn=async function () {
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
 	let $stars=$(".my-point>.stars-container");
 	$stars.off("click.mdInStars");
 	$stars.on("click.mdInStars", m.starsOnClick);
@@ -6165,7 +6165,7 @@ $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove m
 	e.stopPropagation();
 	e.preventDefault();
 });
-m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
