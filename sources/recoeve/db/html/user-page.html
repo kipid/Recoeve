@@ -6419,7 +6419,7 @@ m.processShortKey=function (e) {
 				$hI=m.$fdList.eq(i);
 				let hIID=$hI[0].id;
 				if (hIID.startsWith("load-recos-")) {
-					scrollTop+=$window.height();
+					if ($hI.is(":visible")&&scrollTop+$window.height()<$hI.offset().top) { break; }
 				}
 				if ($hI.is(":visible")&&scrollTop<$hI.offset().top) { break; }
 			}
