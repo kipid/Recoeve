@@ -6447,7 +6447,7 @@ m.processShortKey=function (e) {
 		else if (hIID) {
 			m.hashURI=hIID;
 			if (e.keyCode===70&&hIID.startsWith("load-recos-")) { // F=70
-				$window.scrollTop($hI.offset().top-$window.height()+25);
+				$window.scrollTop($hI.offset().top-$window.height()/2);
 			}
 			else { // F=70 (normal) and D=68
 				$window.scrollTop($hI.offset().top);
