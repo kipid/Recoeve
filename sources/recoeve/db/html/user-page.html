@@ -6703,8 +6703,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		m.getAndShowRecosOnCat(m.currentCat);
-		console.log("m.getAndShowRecosOnCat(m.currentCat);");
+		// m.getAndShowRecosOnCat(m.currentCat);
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats0);
@@ -6958,10 +6957,18 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		let $li=fs.$fsLis.eq(0);
 		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
-			m.fsViewAndScroll(fs, $li);
-			fs.getAndPlayVideo(true);
-			fs.lastIndex=fs.currentIndex;
-			console.log(`fs.currentIndex: ${fs.currentIndex} and fs.getAndPlayVideo(true);`);
+			if (fs.fullList[fs.currentIndex]?.r?.has) {
+				m.fsViewAndScroll(fs, $li);
+				fs.getAndPlayVideo(true);
+				fs.lastIndex=fs.currentIndex;
+				console.log(`fs.currentIndex: ${fs.currentIndex} and fs.getAndPlayVideo(true);`);
+			}
+			else {
+				m.setTimeoutPlayNext=setTimeout(function () {
+					fs.playNext(increment, cue, first);
+				}, 1024);
+				console.log(`fs.currentIndex: ${fs.currentIndex}. And re playNext();`);
+			}
 			return;
 		}
 		else {
