@@ -2669,7 +2669,7 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.fsToRsOn=async function () {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
