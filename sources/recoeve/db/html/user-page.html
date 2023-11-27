@@ -3927,7 +3927,6 @@ m.getAndShowRecosOnCat=async function (cat) {
 	fs.currentIndex=fs.fullList.length-1;
 	if (m.lastCat!==m.currentCat) {
 		fs.playNext(-1, null, true);
-		m.lastCat=m.currentCat;
 	}
 };
 m.getUriList=function (catStrArray) {
@@ -5867,7 +5866,6 @@ return new Promise(async function (resolve, reject) {
 	m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
 	if (m.lastCat!==m.currentCat||shuffle) {
 		fs.playNext(-1, null, true);
-		m.lastCat=m.currentCat;
 	}
 	resolve();
 });
@@ -6844,16 +6842,18 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 					if (cue&&m.YtPlayer.cueVideoById) {
 						m.YtPlayer.cueVideoById(uriRendered.videoId);
 						fs.lastIndex=fs.currentIndex;
+						m.lastCat=m.currentCat;
 					}
 					else if (m.YtPlayer.loadVideoById) {
 						m.YtPlayer.loadVideoById(uriRendered.videoId);
 						fs.lastIndex=fs.currentIndex;
+						m.lastCat=m.currentCat;
 					}
 					else {
 						clearTimeout(m.setTimeoutGetAndPlayVideo);
 						m.setTimeoutGetAndPlayVideo=setTimeout(function () {
 							fs.getAndPlayVideo(cue, inListPlay);
-						}, 1024);
+						}, 512);
 						return;
 					}
 				}
@@ -6894,9 +6894,10 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered;
-			if (fs.lastIndex!==fs.currentIndex) {
+			if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
 				$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse"), "eveElse"));
 				fs.lastIndex=fs.currentIndex;
+				m.lastCat=m.currentCat;
 			}
 			$eveElse=$("#eveElse");
 			$video=$("#video");
@@ -6918,9 +6919,10 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 			$eveElse_uri_rendered.show();
 			$rC_youtube_uri_rendered.hide();
 			fs.$playing=$eveElse_uri_rendered;
-			if (fs.lastIndex!==fs.currentIndex) {
+			if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
 				$eveElse.html(uriRendered.html);
 				fs.lastIndex=fs.currentIndex;
+				m.lastCat=m.currentCat;
 			}
 			if ((!cue)&&fs.skip) {
 				clearTimeout(m.playListSetTimeout);
@@ -6965,7 +6967,6 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li);
 				fs.getAndPlayVideo(true);
-				fs.lastIndex=fs.currentIndex;
 				console.log(`fs.currentIndex: ${fs.currentIndex} and fs.getAndPlayVideo(true);`);
 			}
 			else {
