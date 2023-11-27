@@ -3909,7 +3909,6 @@ m.getRecos=function (uris, recos, cat) {
 m.getAndShowRecosOnCat=async function (cat) {
 	m.currentCat=cat;
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
-	console.log("await m.getRecos(uris, m.userRecos, cat);");
 	await m.getRecos(uris, m.userRecos, cat);
 	if (!m.myIndex) {
 		for (let i=0;i<uris.length;i++) {
@@ -3927,10 +3926,8 @@ m.getAndShowRecosOnCat=async function (cat) {
 	await m.showRecosOnCat();
 	fs.currentIndex=fs.fullList.length-1;
 	if (m.lastCat!==m.currentCat) {
-		setTimeout(function () {
-			fs.playNext(-1, null, true);
-			m.lastCat=m.currentCat;
-		}, 2048);
+		fs.playNext(-1, null, true);
+		m.lastCat=m.currentCat;
 	}
 };
 m.getUriList=function (catStrArray) {
@@ -6964,6 +6961,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			m.fsViewAndScroll(fs, $li);
 			fs.getAndPlayVideo(true);
 			fs.lastIndex=fs.currentIndex;
+			console.log(`fs.currentIndex: ${fs.currentIndex} and fs.getAndPlayVideo(true);`);
 			return;
 		}
 		else {
