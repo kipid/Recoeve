@@ -2669,13 +2669,11 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.fsToRsOn=async function () {
-return new Promise(function (resolve, reject) {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
 		await m.doFSToRs();
-		resolve();
 	}
 	else {
 		$table_of_recos.off("keyup.fs cut.fs paste.fs");
@@ -2683,10 +2681,8 @@ return new Promise(function (resolve, reject) {
 			$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 			m.previous=Date.now();
 			await m.doFSToRs();
-			resolve();
 		}, m.wait*1.5-passed);
 	}
-});
 };
 // $table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
 // $table_of_recos.trigger("keyup.fs");
@@ -2704,10 +2700,10 @@ m.reTriggerFS=async function (fs) {
 return new Promise(function (resolve, reject) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	if (fs===m.fsToRs||fs===m.fsGotoCats) {
+	if (fs===m.fsToRs) {
 		fs.$fs.off("keyup.fs");
-		fs.$fs.on("keyup.fs", async function (e) {
-			await fs.fsOn(e);
+		fs.$fs.on("keyup.fs", function (e) {
+			fs.fsOn(e);
 			resolve();
 		});
 		fs.$fs.trigger("keyup.fs");
