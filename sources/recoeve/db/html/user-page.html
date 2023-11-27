@@ -2701,7 +2701,7 @@ m.fsMRCat.fsOn=m.fsMRCatOn;
 m.fsGotoCats.fsOn=m.fsGotoCatsOn;
 m.fsTimezone.fsOn=m.fsTimezoneOn;
 m.reTriggerFS=async function (fs) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	if (fs===m.fsToRs||fs===m.fsGotoCats) {
@@ -6145,9 +6145,9 @@ m.intervalOpenCat=function (intervalId) {
 			m.doNotPushHistory=false;
 		}
 		if ($gotoCatsI.exists()) {
-			if (m.intervalCount[intervalId]>4) {
+			// if (m.intervalCount[intervalId]>4) {
 				clearInterval(intervalId);
-			}
+			// }
 			$gotoCatsI.trigger("click");
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
 			console.log(`m.currentCat: `, m.currentCat);
