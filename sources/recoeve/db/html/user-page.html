@@ -1334,13 +1334,13 @@ m.fsViewAndScroll=function (fs, $next) {
 		if ($fs_container.is(":visible")) {
 			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
 		}
-		else {
-			$fs_container.show();
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-			setTimeout(function () {
-				$fs_container.hide();
-			}, 64);
-		}
+		// else {
+			// $fs_container.show();
+			// $fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
+			// setTimeout(function () {
+			// 	$fs_container.hide();
+			// }, 64);
+		// }
 	}
 };
 
@@ -6253,6 +6253,7 @@ m.processShortKey=function (e) {
 		}
 		else {
 			$goto_cats_container.show();
+			m.fsViewAndScroll(m.fsGotoCats, m.fsGotoCats.$fsl.find(".selected"));
 			$goto_cats_container.css({zIndex:++m.zIndex});
 			$goto_cats.focus();
 			$button_goto_cats.addClass("enabled");
@@ -6277,6 +6278,7 @@ m.processShortKey=function (e) {
 		}
 		else {
 			$fuzzy_search_container.show();
+			m.fsViewAndScroll(m.fsGo, m.fsGo.$fsl.find(".selected"));
 			$fuzzy_search_container.css({zIndex:++m.zIndex});
 			$fuzzy_search.focus();
 			$button_Go.addClass("enabled");
@@ -6301,6 +6303,7 @@ m.processShortKey=function (e) {
 		}
 		else {
 			$table_of_recos_container.show();
+			m.fsViewAndScroll(m.fsToRs, m.fsToRs.$fsl.find(".selected"));
 			$table_of_recos_container.css({zIndex:++m.zIndex});
 			$table_of_recos.focus();
 			$button_ToR.addClass("enabled");
