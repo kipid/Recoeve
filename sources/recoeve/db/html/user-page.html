@@ -6973,8 +6973,8 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
 			clearTimeout(m.setTimeoutPlayNext);
-			m.setTimeoutPlayNext=setTimeout(async function () {
-				await m.reTriggerFS(fs);
+			m.setTimeoutPlayNext=setTimeout(function () {
+				// await m.reTriggerFS(fs);
 				fs.playNext(increment, cue, first);
 			}, 1024);
 			return;
