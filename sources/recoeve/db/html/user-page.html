@@ -2446,11 +2446,12 @@ m.reTriggerFS=function (fs) {
 return new Promise(function (resolve, reject) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	if (fs===m.fsToRs||fs===m.fsGotoCats) {
+	if (fs===m.fsToRs) {
 		fs.$fs.off("keyup.fs");
 		fs.$fs.on("keyup.fs", async function (e) {
 			await fs.fsOn(e);
-			resolve();
+			console.log("return resolve();")
+			return resolve();
 		});
 		fs.$fs.trigger("keyup.fs");
 	}
