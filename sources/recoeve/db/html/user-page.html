@@ -2450,7 +2450,6 @@ return new Promise(function (resolve, reject) {
 		fs.$fs.off("keyup.fs");
 		fs.$fs.on("keyup.fs", async function (e) {
 			await fs.fsOn(e);
-			console.log("return resolve();")
 			return resolve();
 		});
 		fs.$fs.trigger("keyup.fs");
@@ -2477,18 +2476,16 @@ return new Promise(async function (resolve, reject) {
 	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
 		await m.fsGotoCatsOn(event);
-		console.log("m.fsGotoCatsOn(event)");
 		return resolve();
 	});
 
 	if (m.initialOpen) {
 		await m.reTriggerFS(m.fsGo);
-		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsCat);
 		await m.reTriggerFS(m.fsMRCat);
 		await m.reTriggerFS(m.fsTimezone);
+		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsGotoCats);
-		console.log("end of m.reNewfsCatsOn.")
 	}
 	else {
 		resolve();
@@ -6536,7 +6533,6 @@ $choose_timezone.on("click", function (e) {
 ////////////////////////////////////////////////
 $document.ready(async function () {
 	await m.reNewfsCatsOn();
-	console.log("$document.ready after await m.reNewfsCatsOn();");
 
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
@@ -6711,6 +6707,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	if (m.recoMode===""||m.recoMode==="multireco") {
 		m.getAndShowRecosOnCat(m.currentCat);
+		console.log("m.getAndShowRecosOnCat(m.currentCat);");
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats0);
