@@ -6832,6 +6832,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 		let uriRendered=await uriRendering(r.uri, false, inListPlay);
 		let from=String(uriRendered.from);
 		if (from==="youtube") {
+			console.log("m.fsToRs.getAndPlayVideo from youtube called.");
 			$eveElse.html('');
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
@@ -6879,6 +6880,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 					fs.lastIndex=fs.currentIndex;
 				}
 				else {
+					console.log("fs.prepareRecoListPlay(true);");
 					fs.prepareRecoListPlay(true);
 				}
 			}
