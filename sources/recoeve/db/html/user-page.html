@@ -2476,6 +2476,7 @@ return new Promise(async function (resolve, reject) {
 	$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
 	$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
 		await m.fsGotoCatsOn(event);
+		console.log("m.fsGotoCatsOn(event)");
 		return resolve();
 	});
 
@@ -2486,6 +2487,7 @@ return new Promise(async function (resolve, reject) {
 		await m.reTriggerFS(m.fsMRCat);
 		await m.reTriggerFS(m.fsTimezone);
 		await m.reTriggerFS(m.fsGotoCats);
+		console.log("end of m.reNewfsCatsOn.")
 	}
 	else {
 		resolve();
