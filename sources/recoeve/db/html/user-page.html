@@ -2559,137 +2559,6 @@ m.fsGoOn=async function () {
 $fuzzy_search.on("keyup.fs cut.fs paste.fs", m.fsGoOn);
 $fuzzy_search.trigger("keyup.fs");
 
-///////////////////////////////////////////
-// Fuzzy search on Table of Recos (TofR)
-///////////////////////////////////////////
-m.playLi=function (e, elem, k, fs) {
-	if (!(e&&e.srcElement&&e.srcElement.nodeName==="A")) {
-		let $elem=$(elem);
-		if (!$elem.hasClass("list-item")) {
-			$elem=$elem.parents(".list-item");
-		}
-		// let uri=fs.fullList[k].uri;
-		if ($elem.hasClass("selected")) {
-			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
-		}
-		else {
-			fs.currentIndex=k;
-			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
-			fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
-			if ($playlist_container.is(":visible")) {
-				let pHeight=$playlist_container.height();
-				if (fs.fixed) {
-					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
-				}
-				else {
-					$window.scrollTop($playlist_container.offset().top);
-				}
-			}
-		}
-	}
-};
-m.datetimeToMs=function (datetime) {
-	return (new Date(datetime.replace(/\s/, "T"))).getTime();
-};
-m.doFSToRs=async function (shuffle) {
-return new Promise(async function (resolve, reject) {
-	let fs=m.fsToRs;
-	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
-	let shuffled=fs.shuffled=[];
-	let l=fs.fullList.length;
-	switch (shuffle) {
-	case "shuffle":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:Math.random()};
-		}
-		break;
-	case "tFirst-desc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
-		}
-		break;
-	case "tFirst-asc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tFirst)};
-		}
-		break;
-	case "tLast-desc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tLast)};
-		}
-		break;
-	case "tLast-asc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tLast)};
-		}
-		break;
-	case "point-desc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
-		}
-		break;
-	case "point-asc":
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
-		}
-		break;
-	default:
-		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:i};
-		}
-		break;
-	}
-	for (let i=1;i<l;i++) {
-		let temp=shuffled[i];
-		let j=i;
-		for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
-			shuffled[j]=shuffled[j-1];
-		} // desc sorting. The same reversed.
-		shuffled[j]=temp;
-	}
-	let fsRes=m.fuzzySearch(fsPtnSH, fs);
-	let sorted=fsRes.sorted;
-	let str="";
-	for (let i=0;i<sorted.length;i++) {
-		let k=fsRes[sorted[i]].i;
-		let fsFLk=fs.fullList[k];
-		if (fsFLk?.inRange&&!fsFLk.r.deleted) {
-			let uri=fsFLk.uri;
-			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">${fs.fullList[k].html}${((fsRes[sorted[i]].highlight!==undefined)?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:"")}</div>`;
-		}
-	}
-	fs.$fsl.html(str);
-	fs.$fsLis=fs.$fsl.find(".list-item");
-	m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
-	if (m.lastCat!==m.currentCat||shuffle) {
-		fs.playNext(-1, null, true);
-		m.lastCat=m.currentCat;
-	}
-	resolve();
-});
-};
-m.fsToRsOn=async function () {
-	let now=Date.now();
-	let passed=now-m.previous;
-	if (passed>m.wait) {
-		m.previous=now;
-		await m.doFSToRs();
-	}
-	else {
-		$table_of_recos.off("keyup.fs cut.fs paste.fs");
-		setTimeout(async function () {
-			$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
-			m.previous=Date.now();
-			await m.doFSToRs();
-		}, m.wait*1.5-passed);
-	}
-};
-// $table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
-// $table_of_recos.trigger("keyup.fs");
-$table_of_recos.on("keydown", function (e) {
-	m.onKeydownInFS0(e, 'T', m.fsToRs)
-});
-
 m.fsGo.fsOn=m.fsGoOn;
 m.fsToRs.fsOn=m.fsToRsOn;
 m.fsCat.fsOn=m.fsCatOn;
@@ -5923,6 +5792,136 @@ if ($recoElem?.exists()) {
 	}
 }};
 
+///////////////////////////////////////////
+// Fuzzy search on Table of Recos (TofR)
+///////////////////////////////////////////
+m.playLi=function (e, elem, k, fs) {
+	if (!(e&&e.srcElement&&e.srcElement.nodeName==="A")) {
+		let $elem=$(elem);
+		if (!$elem.hasClass("list-item")) {
+			$elem=$elem.parents(".list-item");
+		}
+		// let uri=fs.fullList[k].uri;
+		if ($elem.hasClass("selected")) {
+			fs.$fs.trigger({type:'keydown', keyCode:27}); // keyCode:27=ESC
+		}
+		else {
+			fs.currentIndex=k;
+			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
+			fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
+			if ($playlist_container.is(":visible")) {
+				let pHeight=$playlist_container.height();
+				if (fs.fixed) {
+					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
+				}
+				else {
+					$window.scrollTop($playlist_container.offset().top);
+				}
+			}
+		}
+	}
+};
+m.datetimeToms=function (datetime) {
+	return (new Date(datetime.replace(/\s/, "T"))).getTime();
+};
+m.doFSToRs=async function (shuffle) {
+return new Promise(async function (resolve, reject) {
+	let fs=m.fsToRs;
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
+	let shuffled=fs.shuffled=[];
+	let l=fs.fullList.length;
+	switch (shuffle) {
+	case "shuffle":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:Math.random()};
+		}
+		break;
+	case "tFirst-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tFirst)};
+		}
+		break;
+	case "tFirst-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tFirst)};
+		}
+		break;
+	case "tLast-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tLast)};
+		}
+		break;
+	case "tLast-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tLast)};
+		}
+		break;
+	case "point-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
+		}
+		break;
+	case "point-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
+		}
+		break;
+	default:
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:i};
+		}
+		break;
+	}
+	for (let i=1;i<l;i++) {
+		let temp=shuffled[i];
+		let j=i;
+		for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
+			shuffled[j]=shuffled[j-1];
+		} // desc sorting. The same reversed.
+		shuffled[j]=temp;
+	}
+	let fsRes=m.fuzzySearch(fsPtnSH, fs);
+	let sorted=fsRes.sorted;
+	let str="";
+	for (let i=0;i<sorted.length;i++) {
+		let k=fsRes[sorted[i]].i;
+		let fsFLk=fs.fullList[k];
+		if (fsFLk?.inRange&&!fsFLk.r.deleted) {
+			let uri=fsFLk.uri;
+			str+=`<div id="toR-${k}" class="list-item${k===fs.currentIndex?' selected':''}" onclick="m.playLi(event,this,${k},m.fsToRs)">${fs.fullList[k].html}${((fsRes[sorted[i]].highlight!==undefined)?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:"")}</div>`;
+		}
+	}
+	fs.$fsl.html(str);
+	fs.$fsLis=fs.$fsl.find(".list-item");
+	m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
+	if (m.lastCat!==m.currentCat||shuffle) {
+		fs.playNext(-1, null, true);
+		m.lastCat=m.currentCat;
+	}
+	resolve();
+});
+};
+m.fsToRsOn=async function () {
+	let now=Date.now();
+	let passed=now-m.previous;
+	if (passed>m.wait) {
+		m.previous=now;
+		await m.doFSToRs();
+	}
+	else {
+		$table_of_recos.off("keyup.fs cut.fs paste.fs");
+		setTimeout(async function () {
+			$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+			m.previous=Date.now();
+			await m.doFSToRs();
+		}, m.wait*1.5-passed);
+	}
+};
+$table_of_recos.on("keyup.fs cut.fs paste.fs", m.fsToRsOn);
+$table_of_recos.trigger("keyup.fs");
+$table_of_recos.on("keydown", function (e) {
+	m.onKeydownInFS0(e, 'T', m.fsToRs)
+});
 $button_save_this_order=$("#button-save-this-order");
 $result_of_change_order=$("#result-of-change-order")
 if (m.myPage) {
