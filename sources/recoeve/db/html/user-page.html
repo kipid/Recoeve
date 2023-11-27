@@ -6460,8 +6460,8 @@ if ($shortkeyDesc.exists()) {
 `<li><span onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold">F</span>: [--To List Play(_Z_)--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold">F</span>: [--To Contents(_X_)--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold">Z</span>: [--To List Play(_Z_)--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold">X</span>: [--To Contents(_X_)--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold">F</span>: [--_F_orward--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold">D</span>: [--Backwar_d_--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})"><span class="bold">N</span>: [--_N_ew reco--]</span></li>
@@ -6474,7 +6474,18 @@ if ($shortkeyDesc.exists()) {
 	);
 }
 $shortkeyDesc.hide();
-$shortkeyDesc.before(`<div class="button" onclick="$shortkeyDesc.toggle()">[--Toggle ShortKey Description--]</div>`)
+m.toggleShortkeyDesc=function () {
+	if ($shortkeyDesc.is(":visible")) {
+		$shortkeyDesc.hide();
+		$button_toggle_shortkey_desc.removeClass("enabled");
+	}
+	else {
+		$shortkeyDesc.show();
+		$button_toggle_shortkey_desc.addClass("enabled");
+	}
+}
+$shortkeyDesc.before(`<div class="button" id="button-toggle-shortkey-desc" onclick="m.toggleShortkeyDesc()">[--Toggle ShortKey Description--]</div>`);
+$button_toggle_shortkey_desc=$("#button-toggle-shortkey-desc");
 
 ////////////////////////////////////////////////////
 // Language/언어/語言
