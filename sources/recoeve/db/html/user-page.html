@@ -6965,10 +6965,8 @@ m.fsToRs.playNext=function (increment, cue, first) {
 		if ($li.exists()&&$li.hasClass("list-item")) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li);
-			if (fs.lastIndex!==fs.currentIndex) {
-				fs.getAndPlayVideo(true);
-				fs.lastIndex=fs.currentIndex;
-			}
+			fs.getAndPlayVideo(true);
+			fs.lastIndex=fs.currentIndex;
 			return;
 		}
 		else {
@@ -7017,8 +7015,8 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	let fs=m.fsToRs;
 	if (!m.YtAPILoaded) {
 		if (YtAPINeeded) {
-			let $ytAPI=$(`<script id="YouTube-API" src="https://www.youtube.com/player_api"></`+`script>`); // Avoid closing script
-			$scripts.append($ytAPI);
+			let ytAPI=`<script id="YouTube-API" src="https://www.youtube.com/player_api"></`+`script>`; // Avoid closing script
+			$scripts.append(ytAPI);
 			m.YtAPILoaded=true;
 		}
 	}
