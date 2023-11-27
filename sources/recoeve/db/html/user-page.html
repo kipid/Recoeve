@@ -2461,7 +2461,7 @@ return new Promise(function (resolve, reject) {
 });
 };
 m.reNewfsCatsOn=async function () {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 	$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
 	$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
