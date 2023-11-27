@@ -4554,7 +4554,7 @@ m.ExpCol=function (elem, catEC) {
 		catEC.subCatExpanded=true;
 	}
 };
-
+console.log("middle check 1!");
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
@@ -5239,6 +5239,7 @@ $button_reco.on("click", function (e) {
 		valid=false;
 		errorMsg="[--URI is Empty.--]";
 	}
+	// TODO: delete below.
 	// else if (m.getUTF8Length(uri)>255) {
 	// 	valid=false;
 	// 	errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
@@ -5487,6 +5488,7 @@ m.triggerOpenCat=async function (event) {
 			let i=fs.fullList.length;
 			fsFLCat=fs.fullList[i]=fs.fullList[cat]={i, cat, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 		}
+		// TODO: delete below.
 		// Duplicate operations.
 		// $("#catList").find(".cat").removeClass("selected");
 		// $elem.parent(".cat").addClass("selected");
@@ -5677,6 +5679,7 @@ m.gotoLi=async function (event) {
 			m.gotoLi(event);
 		}, 512);
 		return;
+		// TODO: delete below.
 		// let r=m.userRecos[uri];
 		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		// fsFLk.catAndI={};
@@ -5760,8 +5763,8 @@ m.fsGoOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
-$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
-$fuzzy_search.trigger("keyup.fs");
+// $fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+// $fuzzy_search.trigger("keyup.fs");
 
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos (TofR)
@@ -5792,7 +5795,7 @@ m.playLi=function (e, elem, k, fs) {
 		}
 	}
 };
-m.datetimeToms=function (datetime) {
+m.datetimeToMs=function (datetime) {
 	return (new Date(datetime.replace(/\s/, "T"))).getTime();
 };
 m.doFSToRs=async function (shuffle) {
@@ -5809,22 +5812,22 @@ return new Promise(async function (resolve, reject) {
 		break;
 	case "tFirst-desc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tFirst)};
+			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
 		}
 		break;
 	case "tFirst-asc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tFirst)};
+			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tFirst)};
 		}
 		break;
 	case "tLast-desc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToms(fs.fullList[i].r.tLast)};
+			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tLast)};
 		}
 		break;
 	case "tLast-asc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToms(fs.fullList[i].r.tLast)};
+			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tLast)};
 		}
 		break;
 	case "point-desc":
@@ -5893,8 +5896,8 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.fsToRs.fsOn=m.fsToRsOn;
-$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
-$table_of_recos.trigger("keyup.fs");
+// $table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
+// $table_of_recos.trigger("keyup.fs");
 $table_of_recos.on("keydown", function (e) {
 	m.onKeydownInFS0(e, 'T', m.fsToRs)
 });
@@ -6529,6 +6532,7 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
+	console.log("$document.ready");
 	await m.reNewfsCatsOn();
 
 	let blogStat=`URI	referer	REACTION_GUEST
