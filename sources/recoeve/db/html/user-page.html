@@ -17,13 +17,13 @@ window.m={
 	, valsStatN:20
 	, recosShown:false
 	, previous:0
-	, lastRecoMode:"nothing"
 	, tNow:new Date()
 	, fsLength:300
 	, gotoCatsOn:false
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
+	, lastRecoMode:"nothing"
 	, lastCat:"i8@ㅏ%자DKW2!"
 };
 </script>
@@ -1390,7 +1390,7 @@ m.fsGo.$fs_container=$fuzzy_search_container;
 m.fsToRs=[];
 m.fsToRs[0]=m.fsToRs[1]=[];
 m.fsToRs.fixed=false;
-m.fsToRs.lastIndex=-1;
+m.fsToRs.lastIndex=-2;
 m.fsToRs.currentIndex=-1;
 m.fsToRs.fullList=[];
 m.fsToRs.shuffled=[];
@@ -6832,12 +6832,13 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 		let uriRendered=await uriRendering(r.uri, false, inListPlay);
 		let from=String(uriRendered.from);
 		if (from==="youtube") {
-			console.log("m.fsToRs.getAndPlayVideo from youtube called.");
 			$eveElse.html('');
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.show();
 			fs.$playing=$rC_youtube_uri_rendered;
-			if (m.lastIndex!==m.currentIndex||m.lastCat!==m.currentCat) {
+			console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}`);
+			console.log(`m.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}`);
+			if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
 				if (inListPlay&&m.YtPlayer) {
 					console.log("inListPlay&&m.YtPlayer");
 					if (cue&&m.YtPlayer.cueVideoById) {
