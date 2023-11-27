@@ -1337,7 +1337,9 @@ m.fsViewAndScroll=function (fs, $next) {
 		else {
 			$fs_container.show();
 			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-			$fs_container.hide();
+			setTimeout(function () {
+				$fs_container.hide();
+			}, m.wait);
 		}
 	}
 };
