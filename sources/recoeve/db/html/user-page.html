@@ -4554,7 +4554,7 @@ m.ExpCol=function (elem, catEC) {
 		catEC.subCatExpanded=true;
 	}
 };
-console.log("middle check 1!");
+
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
@@ -6532,8 +6532,8 @@ $choose_timezone.on("click", function (e) {
 // Initial open :: Lang : set cookie, Cat : get and show recos
 ////////////////////////////////////////////////
 $document.ready(async function () {
-	console.log("$document.ready");
 	await m.reNewfsCatsOn();
+	console.log("$document.ready after await m.reNewfsCatsOn();");
 
 	let blogStat=`URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${m.myId}`;
