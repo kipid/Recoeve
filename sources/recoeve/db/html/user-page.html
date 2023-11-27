@@ -2575,8 +2575,12 @@ return new Promise(function (resolve, reject) {
 			fs.fsOn(e);
 			resolve();
 		});
+		fs.$fs.trigger("keyup.fs");
 	}
-	fs.$fs.trigger("keyup.fs");
+	else {
+		fs.$fs.trigger("keyup.fs");
+		resolve();
+	}
 });
 };
 
