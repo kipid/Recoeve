@@ -881,7 +881,7 @@ m.kakaoInitDo=function () {
 		}
 	}
 };
-m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
+m.kakaoInit=setInterval(m.kakaoInitDo, 2*m.wait);
 
 /* Prerequisite */
 //////////////////
@@ -1177,7 +1177,7 @@ m.log_out_do=function (args, err) {
 		$err.html(resp);
 		setTimeout(function () {
 			window.location.href=args.href;
-		}, 1024);
+		}, m.wait);
 	});
 };
 m.a_log_out=function (e) {
@@ -1214,7 +1214,7 @@ m.log_out_from_all_do=function (args, err) {
 		$err.zIndex(31200);
 		setTimeout(function () {
 			window.location.href=args.href;
-		}, 1024);
+		}, m.wait);
 	});
 };
 m.a_log_out_from_all=function (e) {
@@ -1555,7 +1555,7 @@ m.muInTL=function (e) {
 		m.timeoutTL=setTimeout(function () {
 			$button_get_recoms.removeClass("enabled");
 			$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)});
-		}, 2048);
+		}, 2*m.wait);
 	}
 };
 $time_limit_scroll.on("mousedown.mdPRL touchstart.mdPRL", function (e0) {
@@ -2563,7 +2563,7 @@ m.onKeydownInFS=function (e, fs) {
 	fs.$fs.focus();
 	m.setTimeoutTargetOn=setTimeout(async function () {
 		m.reNewfsCatsOn();
-	}, 4096);
+	}, 4*m.wait);
 };
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, m.fsCat);
@@ -2860,7 +2860,7 @@ $show_recos_without_points.on("click", function (e) {
 	clearTimeout(m.timeOutRange);
 	m.timeOutRange=setTimeout(async function () {
 		await m.getUriListAndShowRecosOnCat(m.currentCat, true);
-	}, 1024);
+	}, m.wait);
 });
 m.PRtoFixed=function (w) { // 0.0 ~ 10.0
 	return (1.0*m.PRmax*w/m.PRw).toFixed(1);
@@ -2936,7 +2936,7 @@ m.mmInPR=function (e) {
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
-		}, 1024);
+		}, m.wait);
 	}
 };
 m.mmInPR1=function (e) {
@@ -3007,7 +3007,7 @@ m.mmInPR1=function (e) {
 			let fs=m.fsToRs;
 			fs[0].ptnSH=m.splitHangul("$!@#");
 			fs.$fs.trigger("keyup.fs");
-		}, 1024);
+		}, m.wait);
 	}
 };
 
@@ -3508,7 +3508,7 @@ m.starsOnClick=function (e) {
 	}
 	m.timeout[uri]=setTimeout(function () {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-	}, 2048);
+	}, 2*m.wait);
 };
 m.starsOnTouchMove=function (e) {
 	e.preventDefault();
@@ -3584,7 +3584,7 @@ m.starsOnUpClick=function (e) {
 	$star.find(".bar").css({width:m.starsWidth*val.val});
 	m.timeout[uri]=setTimeout(function () {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-	}, 2048);
+	}, 2*m.wait);
 };
 m.starsOnDownClick=function (e) {
 	e.preventDefault();
@@ -3616,7 +3616,7 @@ m.starsOnDownClick=function (e) {
 	$star.find(".bar").css({width:m.starsWidth*val.val});
 	m.timeout[uri]=setTimeout(function () {
 		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-	}, 2048);
+	}, 2*m.wait);
 };
 m.reNewAndReOn=async function () {
 	m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
@@ -3637,7 +3637,7 @@ m.reNewAndReOn=async function () {
 			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 			m.timeout[uri]=setTimeout(function () {
 				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-			}, 2048);
+			}, 2*m.wait);
 		});
 	});
 	let $ups=$(".my-point>.up");
@@ -4154,7 +4154,7 @@ return new Promise(async function (resolve, reject) {
 	else {
 		setTimeout(async function () {
 			await m.getUriListAndShowRecosOnCat(cat, scroll);
-		}, 512);
+		}, m.wait);
 		return reject();
 	}
 	switch (m.recoMode) {
@@ -5038,7 +5038,7 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
 			m.reNewAndReOn();
-		}, 512);
+		}, m.wait);
 	}
 });
 
@@ -5196,7 +5196,7 @@ m.reco_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-			}, 1024);
+			}, m.wait);
 		}
 		else if (result.startsWith("changed")) {
 			$error.html(result);
@@ -5210,7 +5210,7 @@ m.reco_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-			}, 1024);
+			}, m.wait);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -5316,7 +5316,7 @@ m.reco_change_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-			}, 1024);
+			}, m.wait);
 		}
 		else {
 			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
@@ -5424,7 +5424,7 @@ m.reco_delete_do=function (args, err) {
 			m.refresh(cats, "deleted", args.uri);
 			setTimeout(function () {
 				$button_close.trigger("click");
-			}, 1024);
+			}, m.wait);
 		}
 		else {
 			m.delayedLogOut(res[1]?.result, 60*60*24, args.$result);
@@ -5630,7 +5630,7 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 	if (fs!==m.fsToRs) {
 		m.setTimeoutTargetOn0=setTimeout(async function () {
 			m.reNewfsCatsOn();
-		}, 4096);
+		}, 4*m.wait);
 	}
 };
 $fuzzy_search.on("keydown.fs", function (e) {
@@ -5673,7 +5673,7 @@ m.gotoLi=async function (event) {
 	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
-		}, 512);
+		}, m.wait);
 		return;
 		// TODO: delete below.
 		// let r=m.userRecos[uri];
@@ -5721,9 +5721,9 @@ m.gotoLi=async function (event) {
 				m.showAndScrollTo($recoElem);
 			}
 			else {
-				setTimeout(selfGotoLi, 256);
+				setTimeout(selfGotoLi, m.wait);
 			}
-		}, 256);
+		}, m.wait);
 	}
 };
 m.doFSGo=function (fs) {
@@ -6332,7 +6332,7 @@ m.processShortKey=function (e) {
 		clearInterval(m.initialFsGotoCats1);
 		m.initialFsGotoCats1=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats1);
-		}, 256);
+		}, m.wait);
 		break;
 	case 77: // M=77
 		e.preventDefault();
@@ -6360,7 +6360,7 @@ m.processShortKey=function (e) {
 			clearInterval(m.initialFsGotoCats2);
 			m.initialFsGotoCats2=setInterval(function () {
 				m.intervalOpenCat(m.initialFsGotoCats2);
-			}, 256);
+			}, m.wait);
 		}
 		else {
 			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
@@ -6387,7 +6387,7 @@ m.processShortKey=function (e) {
 			clearInterval(m.initialFsGotoCats3);
 			m.initialFsGotoCats3=setInterval(function () {
 				m.intervalOpenCat(m.initialFsGotoCats3);
-			}, 256);
+			}, m.wait);
 		}
 		break;
 	case 78: // N=78
@@ -6617,7 +6617,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if (!changed&&m.initialFillFromLocalStorageN>7) {
 			clearInterval(m.initialFillFromLocalStorage);
 		}
-	}, 512);
+	}, m.wait);
 
 	m.args={};
 	if (vars.timezone) {
@@ -6705,7 +6705,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats0);
-		}, 512);
+		}, m.wait);
 	}
 
 	if (m.recoMode==="") {
@@ -6771,7 +6771,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 					$(`#li-${k}`).trigger("click");
 				}
 			}
-		}, 512);
+		}, m.wait);
 		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 		if ($elem.exists()) {
 			clearInterval(m.setIntervalFsGo);
@@ -6795,7 +6795,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		await m.reTriggerFS(m.fsTimezone);
 		await m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 2048);
+	}, 2*m.wait);
 	setTimeout(async function () {
 		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsCat);
@@ -6804,7 +6804,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		await m.reTriggerFS(m.fsTimezone);
 		await m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 4096);
+	}, 4*m.wait);
 });
 
 ////////////////////////////////////////////////////
@@ -6852,7 +6852,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 						clearTimeout(m.setTimeoutGetAndPlayVideo);
 						m.setTimeoutGetAndPlayVideo=setTimeout(function () {
 							fs.getAndPlayVideo(cue, inListPlay);
-						}, 512);
+						}, m.wait);
 						return;
 					}
 				}
@@ -6865,7 +6865,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 									clearTimeout(m.playListSetTimeoutYT);
 									m.playListSetTimeoutYT=setTimeout(function () {
 										if (fs.skip) { fs.playNext(); }
-									}, 4096);
+									}, 4*m.wait);
 								}
 							}, 'onStateChange':function (e) {
 								if (e.data===YT.PlayerState.ENDED) {
@@ -6970,7 +6970,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			else {
 				m.setTimeoutPlayNext=setTimeout(function () {
 					fs.playNext(increment, cue, first);
-				}, 512);
+				}, m.wait);
 			}
 			return;
 		}
@@ -6987,7 +6987,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			clearTimeout(m.setTimeoutPlayNext);
 			m.setTimeoutPlayNext=setTimeout(function () {
 				fs.playNext(increment, cue, first);
-			}, 512);
+			}, m.wait);
 			return;
 		}
 	}
@@ -7032,7 +7032,7 @@ m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	else {
 		setTimeout(function () {
 			fs.prepareRecoListPlay(YtAPINeeded);
-		}, 1024);
+		}, m.wait);
 	}
 };
 
