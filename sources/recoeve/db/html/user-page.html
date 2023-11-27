@@ -2569,11 +2569,13 @@ m.reTriggerFS=async function (fs) {
 return new Promise(function (resolve, reject) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
-	fs.$fs.off("keyup.fs");
-	fs.$fs.on("keyup.fs", function (e) {
-		fs.fsOn(e);
-		resolve();
-	});
+	if (fs===m.fsToRs) {
+		fs.$fs.off("keyup.fs");
+		fs.$fs.on("keyup.fs", function (e) {
+			fs.fsOn(e);
+			resolve();
+		});
+	}
 	fs.$fs.trigger("keyup.fs");
 });
 };
