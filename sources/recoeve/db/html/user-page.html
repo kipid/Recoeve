@@ -5835,6 +5835,10 @@ return new Promise(async function (resolve, reject) {
 	case "tFirst-desc":
 		for (let i=0;i<l;i++) {
 			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
+			let time=m.datetimeToMs(fs.fullList[i].r.tFirst);
+			if (!time||time.constructor!==Number) {
+				console.log(time);
+			}
 		}
 		break;
 	case "tFirst-asc":
