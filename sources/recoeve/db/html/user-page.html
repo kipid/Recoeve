@@ -760,7 +760,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<form><button type="button" onclick="m.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="m.ClineHeight(1)" style="font-size:1.6em">=</button></form>
 	<div class="deviceInfo"></div>
 </div><!-- div#change-style -->
-<div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
+<div class="side2" id="foot">&nbsp; &nbsp; &nbsp; [--version--] [--foot--]<br><a id="out-focus" href="https://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a><br><br>
 </div><!-- div#foot -->
 <div class="side2"><ul id="shortkeys"></ul></div>
 <div class="side2" id="google-search">
@@ -768,7 +768,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 <script async src="https://cse.google.com/cse.js?cx=6305e99769f4b47dd"></script>
 <div class="side2" id="head">
-	<div class="button button-Go" id="out-focus" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--] [--_G_o (FS)--]</div>
+	<div class="button button-Go" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">[--Fuzzy Search--] [--_G_o (FS)--]</div>
 	<div class="button button-goto-cats" onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})">[--Go to _C_ats--]</div>
 	<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})">[--Neigh_b_ors mode--]</div>
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">[--_M_ultireco mode--]</div>
@@ -5650,11 +5650,10 @@ $fuzzy_search.on("keydown.fs", function (e) {
 });
 m.showAndScrollTo=function ($recoElem) {
 if ($recoElem?.exists()) {
-	if (!$recoElem?.is(":visible")) {
-		$recoElem?.removeClass("none");
-		$recoElem?.show();
+	if (!$recoElem.is(":visible")) {
+		$recoElem.removeClass("none");
+		$recoElem.show();
 	}
-	$window.scrollTop($recoElem?.offset()?.top);
 	let hIID=$recoElem[0].id;
 	if ($recoElem.hasClass("reco")) {
 		m.hashURI=m.unescapeHTML($recoElem.find(".textURI").html());
@@ -5666,6 +5665,7 @@ if ($recoElem?.exists()) {
 		window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 	}
+	$window.scrollTop($recoElem.offset().top);
 }};
 m.gotoLi=async function (event) {
 	clearTimeout(m.setTimeoutGotoLi);
