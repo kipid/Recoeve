@@ -5525,7 +5525,7 @@ m.completeCatAndOpenCat=async function (event) {
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
 	let fs=m.fsGotoCats;
 	let fsGotoCatsFLCat=fs.fullList[cat];
-	if (!fsGotoCatsFLCat) {
+	if (!fsGotoCatsFLCat) { // Must have this.
 		let i=fs.fullList.length;
 		fsGotoCatsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 	}
@@ -5542,7 +5542,7 @@ m.completeCatAndOpenCat=async function (event) {
 		fs.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 		$elem.addClass("down");
 	}
-	let k=fs.k; // index of cat on sEnd.
+	// let k=fs.k; // index of cat on sEnd.
 	// TODO: remain the below for later use.
 	// fs.listOfCats[k]=cat; // Do not fill the m.fsToRs.$fs
 	// fs.$fs[0].value=fs.listOfCats.join(";");
@@ -5576,7 +5576,9 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
-		m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
+		setTimeout(function () {
+			m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
+		}, m.wait);
 	}
 	m.currentCat=cat;
 	m.fsViewAndScroll(fs, $elem);
