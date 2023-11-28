@@ -5804,7 +5804,7 @@ m.playLi=function (e, elem, k, fs) {
 		else {
 			fs.currentIndex=k;
 			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
-			fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
+			await fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let pHeight=$playlist_container.height();
 				if (fs.fixed) {
@@ -6854,6 +6854,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 // YouTube API
 ////////////////////////////////////////////////////
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
+return new Promise(async function (resolve, reject) {
 	clearTimeout(m.playListSetTimeoutYT);
 	clearTimeout(m.playListSetTimeout);
 	clearTimeout(m.setTimeoutPlayNext);
@@ -6896,7 +6897,7 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 						m.setTimeoutGetAndPlayVideo=setTimeout(function () {
 							fs.getAndPlayVideo(cue, inListPlay);
 						}, m.wait);
-						return;
+						return resolve();
 					}
 				}
 				else if (YT?.Player) {
@@ -6986,6 +6987,8 @@ m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 		m.lastCat=m.currentCat;
 	}
 	m.reNewAndReOn();
+	resolve();
+});
 };
 m.fsToRs.pauseVideo=function () {
 	if ($video&&$video[0]&&$video[0].tagName==="VIDEO") {
@@ -6995,7 +6998,7 @@ m.fsToRs.pauseVideo=function () {
 		m.YtPlayer.pauseVideo();
 	}
 };
-m.fsToRs.playNext=function (increment, cue, first) {
+m.fsToRs.playNext=async function (increment, cue, first) {
 	clearTimeout(m.playListSetTimeoutYT);
 	clearTimeout(m.playListSetTimeout);
 	clearTimeout(m.setTimeoutPlayNext);
@@ -7009,7 +7012,7 @@ m.fsToRs.playNext=function (increment, cue, first) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li);
-				fs.getAndPlayVideo(true);
+				await fs.getAndPlayVideo(true);
 			}
 			else {
 				m.setTimeoutPlayNext=setTimeout(function () {
