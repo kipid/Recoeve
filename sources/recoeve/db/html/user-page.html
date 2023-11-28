@@ -7044,6 +7044,18 @@ m.fsToRs.playNext=function (increment, cue, first) {
 	if ($next?.exists()) {
 		$next.trigger("click");
 		m.fsViewAndScroll(fs, $next);
+		m.setTimeoutPlayNextCount=0;
+	}
+	else {
+		if (m.setTimeoutPlayNextCount===undefined) {
+			m.setTimeoutPlayNextCount=0;
+		}
+		m.setTimeoutPlayNextCount++;
+		if (m.setTimeoutPlayNextCount<7) {
+			setTimeout(function () {
+				fs.playNext(increment, cue, first);
+			}, m.wait);
+		}
 	}
 	return;
 };
