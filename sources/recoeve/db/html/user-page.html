@@ -5576,9 +5576,10 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
-		setTimeout(function () {
-			m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
-		}, m.wait);
+		// TODO: Delete the below.
+		// setTimeout(function () {
+		// 	m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
+		// }, m.wait);
 	}
 	m.currentCat=cat;
 	m.fsViewAndScroll(fs, $elem);
