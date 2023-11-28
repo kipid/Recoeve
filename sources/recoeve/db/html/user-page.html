@@ -4434,7 +4434,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
-				fs.shuffled[fs.shuffled.length-1]={...fs.shuffled[fs.shuffled.length-1], i:fs.fullList.length-1, sortN:fs.fullList.length-1};
+				fs.shuffled[fs.shuffled.length-1]={i:fs.fullList.length-1, sortN:fs.fullList.length-1};
 			}
 			await m.reTriggerFS(fs);
 			break;
@@ -5487,9 +5487,9 @@ m.triggerOpenCat=async function (event) {
 		event.stopPropagation();
 		if (cat!==m.currentCat||m.recoMode!==""&&m.recoMode!=="multireco") {
 			m.recosShown=false;
+			m.fsToRs.shuffled=null;
 		}
 		m.doNotPushHistory=false;
-		m.fsToRs.shuffled=null;
 		let fs=m.fsGotoCats;
 		let fsFLCat=fs.fullList[cat];
 		if (!fsFLCat) {
@@ -5939,7 +5939,7 @@ if (m.myPage) {
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
 			for (let i=0;i<fs.shuffled.length;i++) {
-				uris=uris+fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
+				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();
 			if (m.catUriList[m.currentCat].UriList.trim()===uris) {
