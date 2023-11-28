@@ -5791,7 +5791,7 @@ m.fsGoOn=async function () {
 ///////////////////////////////////////////
 // Fuzzy search on Table of Recos (TofR)
 ///////////////////////////////////////////
-m.playLi=function (e, elem, k, fs) {
+m.playLi=async function (e, elem, k, fs) {
 	if (!(e&&e.srcElement&&e.srcElement.nodeName==="A")) {
 		let $elem=$(elem);
 		if (!$elem.hasClass("list-item")) {
