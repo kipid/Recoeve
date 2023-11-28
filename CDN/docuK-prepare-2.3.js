@@ -154,12 +154,13 @@ return new Promise(function (resolve, reject) {
 		else {
 			exec=m.ptnURI["youtu.be"].regEx2.exec(uriRest);
 			if (exec!==null) {
+				let v=exec[1];
 				let vars=null;
 				if (exec[2]) {
 					vars=m.getSearchVars(exec[2]);
 				}
 				let list=vars?.list?.val;
-				return resolve({html:(toA?`<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}">https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}</a><br>`:"")+m.YTiframe(exec[1], inListPlay), from:"youtube", videoId:exec[1], list});
+				return resolve({html:(toA?`<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}">https://www.youtube.com/watch?v=${v}${list?`&list=${list}`:""}</a><br>`:"")+m.YTiframe(v, inListPlay), from:"youtube", videoId:v, list});
 			}
 			else {
 				exec=m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
@@ -174,7 +175,21 @@ return new Promise(function (resolve, reject) {
 			}
 		}
 	}
-	return resolve(false);
+	return reject(false);
+});
+};
+
+ptnURI=m.ptnURI["docs.google.com"]={};
+ptnURI.regEx=/^spreadsheets\/d\/e\/([\w-]+)\/pubhtml/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["docs.google.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br>`:"")+m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false" frameborder="0" scrolling="auto"></iframe>`), from:"docs-google", docId:exec[1]});
+	}
+	else {
+		return reject(false);
+	}
 });
 };
 
@@ -187,7 +202,21 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br>`:"")+m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from:"instagram", imgId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
+	}
+});
+};
+
+ptnURI=m.ptnURI["imgur.com"]=m.ptnURI["www.imgur.com"]={};
+ptnURI.regEx=/^a\/([\w-]+)/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["imgur.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br>`:"")+m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "imgur", null, true), from:"imgur", imgId:exec[1]});
+	}
+	else {
+		return reject(false);
 	}
 });
 };
@@ -201,7 +230,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>`:"")+m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from:"tiktok", userId:exec[1], videoId:exec[2]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -227,6 +256,20 @@ return new Promise(function (resolve, reject) {
 });
 };
 
+ptnURI=m.ptnURI["serviceapi.rmcnmv.naver.com"]={};
+ptnURI.regEx=/^\S+/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		return resolve({html:(toA?`<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[0]});
+	}
+	else {
+		return reject(false);
+	}
+});
+};
+
 ptnURI=m.ptnURI["tv.naver.com"]={};
 ptnURI.regEx=/^(?:v|embed)\/([0-9]+)/i;
 ptnURI.toIframe=function (uriRest, inListPlay, toA) {
@@ -236,7 +279,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"naver", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -250,7 +293,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br>`:"")+m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"weverse", singer:exec[1] ,videoId:exec[2]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -270,7 +313,7 @@ return new Promise(function (resolve, reject) {
 			return resolve({html:(toA?`<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"kakao", videoId:exec[1]});
 		}
 		else {
-			return resolve(false);
+			return reject(false);
 		}
 	}
 });
@@ -284,7 +327,7 @@ return new Promise(function (resolve, reject) {
 	if (exec!==null) {
 		return resolve({html:(toA?`<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length<15?'$':''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"daum", videoId:exec[1]});
 	}
-	return resolve(false);
+	return reject(false);
 });
 };
 
@@ -297,7 +340,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"vimeo", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -311,7 +354,22 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"dailymotion", videoId:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
+	}
+});
+};
+
+ptnURI=m.ptnURI["namu.wiki"]={};
+ptnURI.regEx=/w\/(.*)/i;
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["namu.wiki"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let pathname=exec[1].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+		return resolve({html:`<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from:"namu.wiki", pathname});
+	}
+	else {
+		return reject(false);
 	}
 });
 };
@@ -336,7 +394,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:"ted", videoId:v});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -360,27 +418,58 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br>`:"")+m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0,lastPath.length-1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed soundcloud":"soundcloud")), from:"soundcloud", videoId:vars?.url?.val});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
 
+ptnURI=m.ptnURI["gall.dcinside.com"]={};
+ptnURI.regEx=/\/movie\/share_movie(\?\S+)/i;
+ptnURI.regEx1=/\/poll\/vote(\?\S+)/i;
+https://gall.dcinside.com/board/poll/vote?no=710233
+ptnURI.toIframe=function (uriRest, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
+	if (exec!==null) {
+		let vars=m.getSearchVars(exec[1]);
+		let v=vars.no?.val;
+		if (v) {
+			return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br>`:"")+m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":"")), from:"dcinside", videoId:v});
+		}
+		else {
+			return resolve({html:`<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>`});
+		}
+	}
+	else {
+		exec=m.ptnURI["gall.dcinside.com"].regEx1.exec(uriRest);
+		if (exec!==null) {
+			let vars=m.getSearchVars(exec[1]);
+			let no=vars.no?.val;
+			if (no) {
+				return resolve({html:(toA?`<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>`:"")+m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`), from:"dcinside", voteId:no})
+			}
+		}
+	}
+	return reject(false);
+});
+};
+
 ptnURI=m.ptnURI[0]={};
-ptnURI.regEx=/^https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif)(?=$|\?|\s)/i;
+ptnURI.regEx=/^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[0].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<div class="center"><img delayed-src="${exec[0]}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'image', src:exec[0]});
+		return resolve({html:(toA?`<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+`<div class="center"><img delayed-src="${exec[1]}"/></div>`, from:'image', src:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
 
 ptnURI=m.ptnURI[1]={};
-ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm)(?=$|\?|\s)/i;
+ptnURI.regEx=/^https?:\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
 ptnURI.toIframe=function (uri, inListPlay, toA) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[1].regEx.exec(uri);
@@ -388,7 +477,7 @@ return new Promise(function (resolve, reject) {
 		return resolve({html:(toA?`<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`:"")+m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'video', src:exec[0]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
 	}
 });
 };
@@ -400,30 +489,63 @@ ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[2].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr57.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr57.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr57.sogirl.so${exec[1]?exec[1]:""}`, from:'sogirl', src:exec[1]});
 	}
 	else {
 		exec=m.ptnURI[2].regEx1.exec(uri);
 		if (exec!==null) {
-			return resolve({html:`<a target="_blank" href="https://kr56.sogirl.so${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr56.sogirl.so${exec[1]?exec[1]:"/"}`))}</a>`, from:'sogirl', src:exec[1]});
+			return resolve({html:`<a target="_blank" href="https://kr57.sogirl.so${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr57.sogirl.so${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr57.sogirl.so${exec[1]?exec[1]:""}`, from:'sogirl', src:exec[1]});
 		}
 		else {
-			return resolve(false);
+			return reject(false);
 		}
 	}
 });
 };
 
 ptnURI=m.ptnURI[3]={};
-ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(?:(\/[\s\S]*))?/i;
+ptnURI.regEx=/^https?:\/\/kr[\d]+\.topgirl\.co(\/\S*)?/i;
 ptnURI.toIframe=function (uri, inListPlay) {
 return new Promise(function (resolve, reject) {
 	let exec=m.ptnURI[3].regEx.exec(uri);
 	if (exec!==null) {
-		return resolve({html:`<a target="_blank" href="https://kr25.topgirl.co${exec[1]?exec[1]:"/"}">${m.escapeOnlyTag(decodeURIComponent(`https://kr25.topgirl.co${exec[1]?exec[1]:"/"}`))}</a>`, from:'topgirl', src:exec[1]});
+		return resolve({html:`<a target="_blank" href="https://kr26.topgirl.co${exec[1]?exec[1]:""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr26.topgirl.co${exec[1]?exec[1]:""}`))}</a>`, newURI:`https://kr26.topgirl.co${exec[1]?exec[1]:""}`, from:'topgirl', src:exec[1]});
 	}
 	else {
-		return resolve(false);
+		return reject(false);
+	}
+});
+};
+
+ptnURI=m.ptnURI[4]={};
+ptnURI.regEx=/^file:\/\/\/(\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+ptnURI.regEx1=/^file:\/\/\/(\S+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
+ptnURI.regEx2=/^file:\/\/\/(\S+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
+ptnURI.toIframe=function (uri, inListPlay, toA) {
+return new Promise(function (resolve, reject) {
+	let exec=m.ptnURI[4].regEx.exec(uri);
+	let href=null;
+	if (exec!==null) {
+		href=exec[1].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+		uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+		return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`+m.rC(`<div class="center"><img delayed-src="${href}"/></div>`, (inListPlay&&m.fsToRs.fixed?"fixed eveElse":"eveElse")), from:'file-image', src:href});
+	}
+	else {
+		exec=m.ptnURI[4].regEx1.exec(uri);
+		if (exec!==null) {
+			href=exec[1].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+			uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+			return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<video controls preload="auto" delayed-src="${href}"></video>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-video', src:href});
+		}
+		else {
+			exec=m.ptnURI[4].regEx2.exec(uri);
+			if (exec!==null) {
+				href=exec[1].replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+				uri=uri.replace(/\+/gi,"%20").replace(/%2B/gi,"%20");
+				return resolve({html:`<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>`+m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null)), from:'file-pdf', src:href});
+			}
+		}
+		return reject(false);
 	}
 });
 };
@@ -450,24 +572,28 @@ return new Promise(async function (resolve, reject) {
 						uriRest=uri.substring(l+1);
 					}
 					if (m.ptnURI[uriHost]) {
-						let promise=m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
-						let result=await promise;
-						promise.then(function (result) {
-							if (result!==false&&(!result.list)) {
+						try {
+							let result=await m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
+							if (Boolean(result)!==false&&(!result.list)) {
 								return resolve(result);
 							}
-						});
+						}
+						catch (error) {
+							// continue.
+						}
 					}
 				}
 			}
 			for (let i=0;i<m.ptnURI.length;i++) {
-				let promise=m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
-				let result=await promise;
-				promise.then(function (result) {
-					if (result!==false) {
+				try {
+					let result=await m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
+					if (Boolean(result)!==false) {
 						return resolve(result);
 					}
-				});
+				}
+				catch (error) {
+					// continue.
+				}
 			}
 			if (toA) {
 				return resolve({html:m.uriToA(uri)});
