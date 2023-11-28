@@ -5599,7 +5599,20 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 	case 27: // ESC=27
 		e.preventDefault();
 		$target.off("keyup.fs cut.fs paste.fs click.fs");
-		$window.trigger({type:'keydown', keyCode:shortKey.charCodeAt(0)});
+		switch (shortKey) {
+		case 'T':
+			m.fsToRsOn=false;
+			m.fsToRs.$fs_container.hide();
+			break;
+		case 'G':
+			m.fsGoOn=false;
+			m.fsGo.$fs_container.hide();
+			break;
+		}
+		if (!m.doNotPushHistory) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
+		m.doNotPushHistory=false;
 		break;
 	case 38: // up=38
 	case 40: // down=40
