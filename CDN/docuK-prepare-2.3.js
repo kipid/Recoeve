@@ -1176,7 +1176,7 @@ else {
 	}
 }};
 m.doFSGo=function(fs) {
-	let fsPtnSH=m.splitHangul(fs.$fs.text().trim());
+	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let res=m.fuzzySearch(fsPtnSH, fs);
 		let sorted=res.sorted;
