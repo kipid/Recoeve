@@ -744,7 +744,7 @@ m.logPrint=function (str) {
 	m.$log.scrollTop(m.$log[0].scrollHeight);
 };
 m.logPrint(`m.logPrint() is working!`);
-m.$log.after(`<div id="fuzzy-search-container" style="display:none">
+m.$log.after(`<div class="fs-container" id="fuzzy-search-container" style="display:none">
 	<div class="move" style="z-index:20000; position:absolute; display:inline-block; left:0; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="10%" y1="50%" x2="90%" y2="50%"></line>
 		<line x1="10%" y1="50%" x2="20%" y2="40%"></line>
@@ -757,8 +757,8 @@ m.$log.after(`<div id="fuzzy-search-container" style="display:none">
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-	<div id="fuzzy-search" contenteditable="true"></div>
-	<div id="fuzzy-search-list"></div>
+	<textarea class="fs-input single-line" id="fuzzy-search"></textarea>
+	<div class="fs-list" id="fuzzy-search-list"></div>
 	<div class="reset" style="z-index:20000; position:absolute; display:inline-block; right:1.8em; top:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
 		<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
 		<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
@@ -768,7 +768,7 @@ m.$log.after(`<div id="fuzzy-search-container" style="display:none">
 	</g></svg></div>
 	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
-<div id="out-focus" class="none">out focus</div>`);
+<a id="out-focus" class="none">out focus</a>`);
 
 $out_focus=$("#out-focus");
 $fuzzy_search_container=$("#fuzzy-search-container");
