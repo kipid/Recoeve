@@ -163,7 +163,6 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .docuK .bold {font-weight:bold}
 .docuK .underline {text-decoration:underline}
 .docuK .italic {font-style:italic}
-.docuK .p {overflow-x:visible; overflow-y:visible; padding:.2em .2em 1em .2em; text-indent:.5em}
 .docuK img {min-width:1em; min-height:1em; max-width:100%; max-height:100%}
 .docuK ul, .docuK ol {margin:0; padding:0}
 .docuK li, .docuK dd {margin:.3em 0 .5em 2em}
