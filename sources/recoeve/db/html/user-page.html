@@ -5807,7 +5807,7 @@ m.playLi=async function (e, elem, k, fs) {
 			await fs.getAndPlayVideo(($elem[0].id===fs.$fsl.find(".list-item")[0].id?true:false)); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let pHeight=$playlist_container.height();
-				if (fs.fixed) {
+				if (m.fsToRs.$playing.hasClass("fixed")) {
 					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
 				}
 				else {
