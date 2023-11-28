@@ -23,6 +23,7 @@ window.m={
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
+	, shuffledOnece:false
 	, lastRecoMode:"nothing"
 	, lastCat:"i8@ㅏ%자DKW2!"
 };
@@ -5826,6 +5827,9 @@ return new Promise(async function (resolve, reject) {
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
+	if (shuffle) {
+		m.shuffledOnece=true;
+	}
 	switch (shuffle) {
 	case "shuffle":
 		for (let i=0;i<l;i++) {
@@ -5876,9 +5880,6 @@ return new Promise(async function (resolve, reject) {
 		} // desc sorting. The same reversed.
 		shuffled[j]=temp;
 	}
-	for (let i=0;i<l;i++) {
-		console.log(shuffled[i].sortN);
-	}
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
@@ -5893,7 +5894,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(String(str));
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li=fs.$fsLis.eq(0);
-	if (m.lastCat!==m.currentCat||shuffle) {
+	if (m.lastCat!==m.currentCat||m.shuffledOnece) {
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
@@ -5957,6 +5958,7 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
 							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
 							fs.shuffled=null;
+							m.shuffledOnece=false;
 							m.lastRecoMode="nothing";
 							await m.openCat(m.currentCat);
 							await m.reTriggerFS(fs);

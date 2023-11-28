@@ -918,39 +918,39 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 	return res;
 };
 m.fuzzySearch=function (ptnSH, fs) {
-	if (ptnSH.splitted===fs[0].ptnSH.splitted) {
-		return fs[0];
-	}
-	else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)>=0) {
-		fs[1]=fs[0];
-	}
-	else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)>=0) {
-		if (ptnSH.splitted===fs[1].ptnSH.splitted) {
-			return fs[1];
+	if (!m.shuffledOnece) {
+		if (ptnSH.splitted===fs[0].ptnSH.splitted) {
+			return fs[0];
+		}
+		else if (ptnSH.splitted.indexOf(fs[0].ptnSH.splitted)>=0) {
+			fs[1]=fs[0];
+		}
+		else if (fs[1]&&ptnSH.splitted.indexOf(fs[1].ptnSH.splitted)>=0) {
+			if (ptnSH.splitted===fs[1].ptnSH.splitted) {
+				return fs[1];
+			}
+		}
+		else {
+			fs[1]=null;
 		}
 	}
-	else {
-		fs[1]=null;
-	}
 	let list=[];
-	if (fs[1]?.sorted?.length>=0) {
+	if (m.shuffledOnece&&fs.shuffled&&fs.shuffled.length>0) {
+		let shuffled=fs.shuffled;
+		for (let i=0;i<shuffled.length;i++) {
+			list.push(fs.fullList[shuffled[i].i]);
+		}
+	}
+	else if (fs[1]?.sorted?.length>=0) {
 		let sorted=fs[1].sorted;
 		for (let i=0;i<sorted.length;i++) {
 			list.push(fs.fullList[fs[1][sorted[i]].i]);
 		}
 	}
 	else {
-		if (fs.shuffled&&fs.shuffled.length>0) {
-			let shuffled=fs.shuffled;
-			for (let i=0;i<shuffled.length;i++) {
-				list.push(fs.fullList[shuffled[i].i]);
-			}
-		}
-		else {
-			let l=fs.fullList.length;
-			for (let i=0;i<l;i++) {
-				list.push(fs.fullList[l-1-i]);
-			}
+		let l=fs.fullList.length;
+		for (let i=0;i<l;i++) {
+			list.push(fs.fullList[l-1-i]);
 		}
 	}
 	fs[0]=[];
@@ -1075,6 +1075,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 		sorted[j]=temp;
 	}
+	m.shuffledOnece=false;
 	return fs[0];
 };
 
