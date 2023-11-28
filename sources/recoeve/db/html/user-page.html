@@ -5818,7 +5818,7 @@ m.playLi=async function (e, elem, k, fs) {
 	}
 };
 m.datetimeToMs=function (datetime) {
-	return (new Date(datetime.replace(/\s/, "T"))).getTime();
+	return (new Date(datetime.replace(/\s/, "T"))).getTime()/1000;
 };
 m.doFSToRs=async function (shuffle) {
 return new Promise(async function (resolve, reject) {
@@ -5836,9 +5836,7 @@ return new Promise(async function (resolve, reject) {
 		for (let i=0;i<l;i++) {
 			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
 			let time=m.datetimeToMs(fs.fullList[i].r.tFirst);
-			if (!time||time.constructor!==Number) {
-				console.log(time);
-			}
+			console.log(time);
 		}
 		break;
 	case "tFirst-asc":
