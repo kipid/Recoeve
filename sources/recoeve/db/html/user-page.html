@@ -5430,6 +5430,7 @@ m.reco_delete_do=function (args, err) {
 			$error.html("[--Deleted.--]");
 			let cats=String(args.r.cats);
 			m.myRecos[args.uri].deleted=true;
+			m.myRecos[args.uri].has=false;
 			m.delCats_UriFromLists(cats, args.uri);
 			if (m.myPage) {
 				$numbers_of_recos.html(`[--Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.--]`);
