@@ -5041,15 +5041,17 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 });
 $input_cats.off("keydown.common");
 $input_uri.on("input keyup keydown cut paste click focus", function (e) {
-	let uri=this.value;
+	let uri=$input_uri[0].value;
 	if (uri==="") {
 		m.myRecos[""].cats=m.currentCat;
 	}
+	console.log("uri!==m.lastURI: ", uri!==m.lastURI);
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
+			console.log("m.getAndShowDefsAndRecoInNewReco(false);");
 			m.reNewAndReOn();
 		}, m.wait);
 	}
