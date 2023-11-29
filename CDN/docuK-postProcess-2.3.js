@@ -255,12 +255,10 @@ if (!m.printMode) {
 	m.printDeviceInfo();
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
-	if (!m.printMode) {
+	$page_views_chart=$("#page-views-chart");
+	if (!($page_views_chart.exists())) {
+		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed">Get page views</div>`);
 		$page_views_chart=$("#page-views-chart");
-		if (!($page_views_chart.exists())) {
-			$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed">Get page views</div>`);
-			$page_views_chart=$("#page-views-chart");
-		}
 	}
 
 	// Kakao js script (from kakao.com CDN) is added.
