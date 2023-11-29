@@ -145,14 +145,14 @@ m.saveSSN=function () {
 ////////////////////////////////////////////////////
 m.localStorage={
 	setItem:function (key, val) {
-		localStorage.setItem(encodeURIComponent(key), encodeURIComponent(val));
+		localStorage.setItem(key, val);
 		return true;
 	}
 	, getItem:function (key) {
-		return decodeURIComponent(localStorage.getItem(encodeURIComponent(key)));
+		return localStorage.getItem(key);
 	}
 	, removeItem:function (key) {
-		localStorage.removeItem(encodeURIComponent(key));
+		localStorage.removeItem(key);
 		return true;
 	}
 	, clear:function () {
@@ -730,7 +730,7 @@ return new Promise(function (resolve, reject) {
 			else {
 				m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3,11), iter), 3, "/", false, true);
 				callback(args, null); // null means no error.
-				m.localStorage.clear();
+				// m.localStorage.clear();
 				resolve();
 				// m.docCookies.removeItem("SSN", "/", false, true);
 			}
