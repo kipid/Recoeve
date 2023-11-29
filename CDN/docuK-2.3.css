@@ -159,7 +159,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .docuK .center {text-align:center}
 .docuK .right {text-align:right}
 .docuK .fLeft {float:left}
-.docuK .fRight {float:right}
+.docuK .fRight, .fRight {float:right}
 .docuK .dCenter {margin-left:auto; margin-right:auto}
 .docuK .cBoth {clear:both}
 .docuK .bold {font-weight:bold}
