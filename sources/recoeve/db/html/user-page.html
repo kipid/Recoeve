@@ -1954,7 +1954,12 @@ $change_catList_order.on("click", function (e) {
 	$cats.prepend('<div class="edit-bar"></div>');
 	$cats.append('<div class="edit-bar"></div>');
 	$("#catList .edit-bar").on("mousedown touchstart", function (e) {
-		let $catM=$(this).parent(); // cat-moving
+		e.preventDefault();
+		e.stopPropagation();
+		let $catM=$(this);
+		if (!$catM.hasClass("cat")) {
+			$catM=$catM.parents(".cat"); // cat-moving
+		}
 		let $catSiblings=$catM.siblings(".cat").not(`#cat-`);
 		if ($catSiblings.exists()) {
 			let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
