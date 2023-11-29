@@ -2713,6 +2713,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 			m.updateGotoCatsFS();
 		}
 		m.updateCatFS();
+		m.reTriggerFS(m.fsGotoCats);
 	}
 };
 m.delCats_UriFromLists=async function (cats, uri) {
