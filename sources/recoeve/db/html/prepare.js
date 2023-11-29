@@ -414,8 +414,8 @@ m.escapeEncodePctg=function (str) {
 // String to Array
 ////////////////////////////
 m.encloseStr=function (str) {
-	if (!str || str.constructor!==String) { return ''; }
-	if (str.charAt(0)==='"' || /[\n\t]/.test(str)) {
+	if (!str||str.constructor!==String) { return ''; }
+	if (str.charAt(0)==='"'||/[\n\t]/.test(str)) {
 		return `"${str.replace(/"/g,'""')}"`;
 	} return str;
 };
@@ -542,29 +542,29 @@ m.arrayToTableHTML=function (txtArray) {
 	return tableStr;
 };
 m.JSONtoStr=function (JSON) {
-	let res=JSON[0][0];
+	let res=m.encloseStr(JSON[0][0]);
 	for (let j=1;j<JSON[0].length;j++) {
-		res+="\t"+JSON[0][j];
+		res+="\t"+m.encloseStr(JSON[0][j]);
 	}
 	for (let i=1;i<JSON.length;i++) {
-		res+="\n"+JSON[i][JSON[0][0]];
+		res+="\n"+m.encloseStr(JSON[i][JSON[0][0]]);
 		let jMax=JSON[0].length<JSON[i].length?JSON[0].length:JSON[i].length;
 		for (let j=1;j<jMax;j++) {
-			res+="\t"+JSON[i][JSON[0][j]];
+			res+="\t"+m.encloseStr(JSON[i][JSON[0][j]]);
 		}
 	}
 	return Promise.resolve(res);
 };
 m.JSONtoStrRev=function (JSON) {
-	let res=JSON[0][0];
+	let res=m.encloseStr(JSON[0][0]);
 	for (let j=1;j<JSON[0].length;j++) {
-		res+="\t"+JSON[0][j];
+		res+="\t"+m.encloseStr(JSON[0][j]);
 	}
 	for (let i=JSON.length-1;i>0;i--) {
-		res+="\n"+JSON[i][JSON[0][0]];
+		res+="\n"+m.encloseStr(JSON[i][JSON[0][0]]);
 		let jMax=JSON[0].length<JSON[i].length?JSON[0].length:JSON[i].length;
 		for (let j=1;j<jMax;j++) {
-			res+="\t"+JSON[i][JSON[0][j]];
+			res+="\t"+m.encloseStr(JSON[i][JSON[0][j]]);
 		}
 	}
 	return Promise.resolve(res);
