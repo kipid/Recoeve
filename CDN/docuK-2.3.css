@@ -155,17 +155,17 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .docuK data {display:none}
 .docuK .emph {color:rgb(255,150,150)}
 	.docuK.bright .emph {color:rgb(255,60,60)}
-.docuK .none {display:none}
-.docuK .center {text-align:center}
-.docuK .right {text-align:right}
-.docuK .fLeft {float:left}
+.docuK .none, .none {display:none}
+.docuK .center, .center {text-align:center}
+.docuK .right, .right {text-align:right}
+.docuK .fLeft, .fLeft {float:left}
 .docuK .fRight, .fRight {float:right}
-.docuK .dCenter {margin-left:auto; margin-right:auto}
-.docuK .cBoth {clear:both}
-.docuK .bold {font-weight:bold}
-.docuK .underline {text-decoration:underline}
-.docuK .italic {font-style:italic}
-.docuK img {min-width:1em; min-height:1em; max-width:100%; max-height:100%}
+.docuK .dCenter, .dCenter {margin-left:auto; margin-right:auto}
+.docuK .cBoth, .cBoth {clear:both}
+.docuK .bold, .bold {font-weight:bold}
+.docuK .underline, .underline {text-decoration:underline}
+.docuK .italic, .italic {font-style:italic}
+.docuK img, img {min-width:1em; min-height:1em; max-width:100%; max-height:100%}
 .docuK ul, .docuK ol {margin:0; padding:0}
 .docuK li, .docuK dd {margin:.3em 0 .5em 2em}
 .docuK code {overflow-wrap:break-word; word-wrap:break-word; white-space:pre-wrap; word-break:break-all; font-family:monospace; font-size:.9em; padding:.2em; display:inline; border:2px solid rgb(200,150,150); border-radius:.2em; background:rgb(30,30,30)}
