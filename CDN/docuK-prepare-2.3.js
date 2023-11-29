@@ -794,7 +794,7 @@ $fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
 });
 
 $("#fuzzy-search-container>.reset").on("click.reset", function (e) {
-	$fuzzy_search.html("");
+	$fuzzy_search[0].value="";
 	$fuzzy_search.focus();
 	$fuzzy_search.trigger("input.fs");
 });
