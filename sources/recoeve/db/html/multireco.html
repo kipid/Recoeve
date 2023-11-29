@@ -297,6 +297,19 @@ $button_multireco.on("click", async function (e) {
 	let strRecoDo=await m.JSONtoStrRev(recosJSON);
 	m.rmb_me(m.reco_do, {strRecoDo:String(strRecoDo)});
 });
+
+m.processShortKey=function (e) {
+	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
+	switch (e.target.nodeName) {
+		case "INPUT": case "SELECT": case "TEXTAREA": return;
+	}
+	switch (e.keyCode) {
+		case 90: // Z=90 To Textarea
+			$window.scrollTop($textarea_recos.offset().top);
+			break;
+	}
+};
+$window.on("keydown.sk", m.processShortKey);
 })(window.m, jQuery);
 </script>
 </html>
