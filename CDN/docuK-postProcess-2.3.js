@@ -255,97 +255,6 @@ if (!m.printMode) {
 	m.printDeviceInfo();
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
-	$page_views_chart=$("#page-views-chart");
-	if (!($page_views_chart.exists())) {
-		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed">Get page views</div>`);
-		$page_views_chart=$("#page-views-chart");
-	}
-
-	// Kakao js script (from kakao.com CDN) is added.
-	m.kakao_js_id='kakao-jssdk';
-	if (!$(`#${m.kakao_js_id}`)) {
-		let $kakao_js=$(`<script id="${m.kakao_js_id}" src="https://developers.kakao.com/sdk/js/kakao.js"></`+`script>`); // Avoid closing script
-		$headOrBody.append($kakao_js);
-	}
-	m.logPrint(`<br><br>kakao.js with id="${m.kakao_js_id}" is loaded.`);
-	m.kakaoInitDo=function () {
-		if (typeof Kakao!=='undefined') {
-			clearInterval(m.kakaoInit);
-			if (!Kakao.isInitialized()) {
-				Kakao.init('c85c800b54a2a95faa5ca7a5e3d357ef');
-			}
-			m.logPrint(`<br>Kakao.isInitialized()=${Kakao.isInitialized()};`);
-		}
-	};
-	m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
-
-	m.popUpKakao=function () {
-		let $desc=$("meta[name='description']");
-		let href=window.location.href;
-		Kakao.Share.sendDefault({
-			objectType: 'feed',
-			content: {
-				title: $("title").html(),
-				description: $desc?$desc[0].content:'',
-				imageUrl: '',
-				link: {
-					mobileWebUrl: href,
-					webUrl: href,
-				},
-			},
-		});
-	};
-
-	// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-	if (docuK.find('.prettyprint').exists()) {
-		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
-		$headOrBody.append($gcp);
-		m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
-	}
-
-	// MathJax js script (from cdn.mathjax.org) is added.
-	if (docuK.find('eq, eqq').exists()) {
-		let $mjxConfig=$(`<script>
-window.MathJax={
-	startup: {
-		typeset: false, // Skip startup typeset.
-		ready: function () {
-			m.logPrint('<br><br>MathJax is loaded, but not yet initialized.');
-			MathJax.startup.defaultReady();
-			m.logPrint('<br><br>MathJax is initialized, and the initial typeset is queued.');
-		}
-	},
-	asciimath: {
-		delimiters: [['$','$']] // AsciiMath to Jax
-	},
-	tex: {
-		inlineMath: [['$','$'], ['\\\\(','\\\\)']], // Using $ for inline math.
-		displayMath: [['$$','$$'], ['\\\\[','\\\\]']], // Using $$ for outline math.
-		processEscapes: true, // Escape \\$
-		processEnvironments: false // Ignore \\begin{something} ... \\end{something}
-	},
-	svg: {
-		fontCache: 'global'
-	}
-};
-</`+`script>`); // Avoid closing script
-		$headOrBody.append($mjxConfig);
-		let $mjx=$(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></`+`script>`); // Avoid closing script
-		$headOrBody.append($mjx);
-		m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
-		// MathJax PreProcess after the above MathJax.js is loaded.
-		m.mathJaxPreProcessDo=function () {
-			if (MathJax.startup!==undefined&&MathJax.typeset) {
-				MathJax.typeset();
-			}
-			else {
-				setTimeout(m.mathJaxPreProcessDo, 2048);
-			}
-		};
-		m.mathJaxPreProcess=setTimeout(m.mathJaxPreProcessDo, 2048);
-	}
-
-if (!m.printMode) {
 	m.myIPs=["14.38.247.30", "175.212.158.53"];
 	m.ignoreMe=true;
 	m.weekDays=["일", "월", "화", "수", "목", "금", "토"];
@@ -465,8 +374,95 @@ if (!m.printMode) {
 			$page_views_chart.html(countChartHTML);
 		}, 512);
 	};
-	$page_views_chart.on("click", m.loadPageViewsStat);
-}
+	$page_views_chart=$("#page-views-chart");
+	if (!($page_views_chart.exists())) {
+		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed" onclick="m.loadPageViewsStat()">Get page views</div>`);
+		$page_views_chart=$("#page-views-chart");
+	}
+
+	// Kakao js script (from kakao.com CDN) is added.
+	m.kakao_js_id='kakao-jssdk';
+	if (!$(`#${m.kakao_js_id}`)) {
+		let $kakao_js=$(`<script id="${m.kakao_js_id}" src="https://developers.kakao.com/sdk/js/kakao.js"></`+`script>`); // Avoid closing script
+		$headOrBody.append($kakao_js);
+	}
+	m.logPrint(`<br><br>kakao.js with id="${m.kakao_js_id}" is loaded.`);
+	m.kakaoInitDo=function () {
+		if (typeof Kakao!=='undefined') {
+			clearInterval(m.kakaoInit);
+			if (!Kakao.isInitialized()) {
+				Kakao.init('c85c800b54a2a95faa5ca7a5e3d357ef');
+			}
+			m.logPrint(`<br>Kakao.isInitialized()=${Kakao.isInitialized()};`);
+		}
+	};
+	m.kakaoInit=setInterval(m.kakaoInitDo, 2048);
+
+	m.popUpKakao=function () {
+		let $desc=$("meta[name='description']");
+		let href=window.location.href;
+		Kakao.Share.sendDefault({
+			objectType: 'feed',
+			content: {
+				title: $("title").html(),
+				description: $desc?$desc[0].content:'',
+				imageUrl: '',
+				link: {
+					mobileWebUrl: href,
+					webUrl: href,
+				},
+			},
+		});
+	};
+
+	// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
+	if (docuK.find('.prettyprint').exists()) {
+		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
+		$headOrBody.append($gcp);
+		m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
+	}
+
+	// MathJax js script (from cdn.mathjax.org) is added.
+	if (docuK.find('eq, eqq').exists()) {
+		let $mjxConfig=$(`<script>
+window.MathJax={
+	startup: {
+		typeset: false, // Skip startup typeset.
+		ready: function () {
+			m.logPrint('<br><br>MathJax is loaded, but not yet initialized.');
+			MathJax.startup.defaultReady();
+			m.logPrint('<br><br>MathJax is initialized, and the initial typeset is queued.');
+		}
+	},
+	asciimath: {
+		delimiters: [['$','$']] // AsciiMath to Jax
+	},
+	tex: {
+		inlineMath: [['$','$'], ['\\\\(','\\\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\\\[','\\\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \\$
+		processEnvironments: false // Ignore \\begin{something} ... \\end{something}
+	},
+	svg: {
+		fontCache: 'global'
+	}
+};
+</`+`script>`); // Avoid closing script
+		$headOrBody.append($mjxConfig);
+		let $mjx=$(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></`+`script>`); // Avoid closing script
+		$headOrBody.append($mjx);
+		m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
+		// MathJax PreProcess after the above MathJax.js is loaded.
+		m.mathJaxPreProcessDo=function () {
+			if (MathJax.startup!==undefined&&MathJax.typeset) {
+				MathJax.typeset();
+			}
+			else {
+				setTimeout(m.mathJaxPreProcessDo, 2048);
+			}
+		};
+		m.mathJaxPreProcess=setTimeout(m.mathJaxPreProcessDo, 2048);
+	}
 
 	// ShortKeys (including default 'processShortcut(event)' of tistory.)
 	m.$fdList=$("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer"); // Ordered automatically by jQuery.
