@@ -1272,11 +1272,11 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
 			let jMax=ret[i].length>firstColSize?firstColSize:ret[i].length;
 			for (let j=0;j<firstColSize;j++) {
 				let key=ret[0][j];
-				if (j>=jMax) {
-					ret[i][key]="";
+				if (j<jMax) {
+					ret[i][key]=ret[i][j];
 				}
 				else {
-					ret[i][key]=ret[i][j];
+					ret[i][key]="";
 				}
 			}
 		}
@@ -1305,8 +1305,7 @@ m.csvToJSON=function (str, colMap=true, rowMap=false) {
 	if (colMap) {
 		const firstColSize=rows[0].length;
 		for (let i=0;i<rows.length;i++) {
-			let jMax=rows[i].length;
-			if (jMax>firstColSize) { jMax=firstColSize; }
+			let jMax=rows[i].length>firstColSize?firstColSize:rows[i].length;
 			for (let j=0;j<jMax;j++) {
 				let key=rows[0][j];
 				if (key!==undefined) {
