@@ -1269,7 +1269,7 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
 	if (colMap) {
 		const firstColSize=ret[0].length;
 		for (let i=0;i<ret.length;i++) {
-			let jMax=ret[i].length;
+			let jMax=ret[i].length>firstColSize?firstColSize:ret[i].length;
 			for (let j=0;j<firstColSize;j++) {
 				let key=ret[0][j];
 				if (j>=jMax) {
