@@ -242,16 +242,14 @@ if (!m.printMode) {
 		}
 	}
 
-	if (!m.printMode) {
+	$disqus_thread=$("#disqus_thread");
+	if (!($disqus_thread.exists())) {
+		($("#docuK-script")||$("body")).append(`<div id="disqus_thread"></div>`);
 		$disqus_thread=$("#disqus_thread");
-		if (!($disqus_thread.exists())) {
-			($("#docuK-script")||$("body")).append(`<div id="disqus_thread"></div>`);
-			$disqus_thread=$("#disqus_thread");
-		}
-		let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
-		$headOrBody.append($disqus_js);
-		m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 	}
+	let $disqus_js=$(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></`+`script>`); // Avoid closing script
+	$headOrBody.append($disqus_js);
+	m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 
 	m.plink=$('meta[property="dg:plink"]').attr('content');
 	m.printDeviceInfo();
