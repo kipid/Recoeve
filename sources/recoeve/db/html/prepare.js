@@ -474,8 +474,8 @@ m.strToJSON=function (str, colMap=true, rowMap=false) {
 		const firstColSize=ret[0].length;
 		for (let j=0;j<firstColSize;j++) {
 			let key=ret[0][j];
-			ret[i][key]=ret[i][j];
-			console.log(ret[i][j]);
+			ret[0][key]=ret[0][j];
+			console.log(ret[0][j]);
 		}
 		for (let i=1;i<ret.length;i++) {
 			let jMax=(ret[i].length>firstColSize?firstColSize:ret[i].length);
