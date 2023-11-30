@@ -236,12 +236,12 @@ if (!m.printMode) {
 		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
 		let hrefAnalyzed=m.analysisURL(window.location.href);
 		let urlAnalyzed=m.analysisURL(url);
-		console.log(hrefAnalyzed.protocol);
 		if (hrefAnalyzed.protocol.toLowerCase()===urlAnalyzed.protocol.toLowerCase()&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
 			window.location.pathname=urlAnalyzed.pathname;
 		}
 	}
 
+if (!m.printMode) {
 	$disqus_thread=$("#disqus_thread");
 	if (!($disqus_thread.exists())) {
 		($("#docuK-script")||$("body")).append(`<div id="disqus_thread"></div>`);
@@ -379,6 +379,7 @@ if (!m.printMode) {
 		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed" onclick="m.loadPageViewsStat()">Get page views</div>`);
 		$page_views_chart=$("#page-views-chart");
 	}
+}
 
 	// Kakao js script (from kakao.com CDN) is added.
 	m.kakao_js_id='kakao-jssdk';

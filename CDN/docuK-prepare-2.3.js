@@ -723,14 +723,9 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 </ul>
 </div>
 <div class="caption p cmt" style="margin:1em 0 0">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00#headPlay">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a></div>
-<div class="p bcf">Kakao talk open chat (카카오톡 오픈 채팅방) :: <a class="wheat" target="_blank" href="https://open.kakao.com/me/kipid">open.kakao.com :: Recoeve.net 개발 관련</a></div>
-<div class="caption p cmt" style="margin:1em 0 0">Recoeve manual, How to use. (레코이브 사용 설명서, 가입하기, 다른 사람 페이지에서 multireco 하기, 내 페이지에서 자동으로 연결된 이웃들로부터 추천받기.)
+<div class="caption p cmt" style="margin:1em 0 0">How to use Recoeve.net and How to reco (레코이브 사용법)
 <div class="p rC"><div class="rSC">
-	<iframe delayed-src="https://www.youtube.com/embed/YGadSrC2UXw" frameborder="0"></iframe>
-</div></div></div>
-<div class="caption p cmt" style="margin:1em 0 0">Recoeve.net 유튜브 뮤비들 목록 재생하기, Playing Youtube MV (Music Videos) playlist.
-<div class="p rC"><div class="rSC">
-	<iframe delayed-src="https://www.youtube.com/embed/t5Uc8Uyau38" frameborder="0"></iframe>
+	<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
 </div></div></div>
 </div>`;
 };
