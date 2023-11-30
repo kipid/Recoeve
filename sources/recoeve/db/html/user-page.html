@@ -5482,7 +5482,7 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 m.triggerOpenCat=async function (event) {
 	let $elem=$(event.target);
-	if (!$elem.hasClass("baseCat")) {
+	if (event?.srcElement?.nodeName!=="A"&&!$elem.hasClass("baseCat")) {
 		$elem=$elem.parents(".baseCat");
 	}
 	let cat=m.unescapeHTML($elem.find(".list-index-id").html());
