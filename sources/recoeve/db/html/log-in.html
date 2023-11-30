@@ -7,6 +7,7 @@
 <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script>
 (function (m, undefined) {
 let fullPath=window.location.pathname+window.location.search+window.location.hash;
@@ -71,19 +72,20 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
+	<div class="g-signin2" data-onsuccess="m.onSignIn" tabindex="6"></div>
 </form>
 
 <form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
 	<label for="input-su-userId">[--ID--]</label>
-	<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
+	<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="7"/>
 	<label for="input-su-userEmail">[--E-mail--]</label>
-	<input id="input-su-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="6"/>
+	<input id="input-su-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="8"/>
 	<label for="input-su-userPwd">[--Password--]</label>
-	<input id="input-su-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="7"/>
+	<input id="input-su-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="9"/>
 	<label for="input-su-userPwdCfm">[--Password confirm--]</label>
-	<input id="input-su-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="8"/>
-	<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="9">[--Sign up for Recoeve--]</button>
+	<input id="input-su-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="10"/>
+	<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="11">[--Sign up for Recoeve--]</button>
 </form>
 
 <div class="desc">
