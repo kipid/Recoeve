@@ -71,7 +71,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-	<button id="google-log-in" class="g-signin2 button" data-onsuccess="m.onSignIn" tabindex="6">Log in with Google</button>
+	<!-- <button id="google-log-in" class="g-signin2 button" data-onsuccess="m.onSignIn" tabindex="6">Log in with Google</button> -->
 </form>
 
 <form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
@@ -465,6 +465,7 @@ ${window.location.href}	${document.referrer}	guest`;
 		console.log("done", resp);
 	});
 
+	/* // Google log-in
 	$google_log_in.on("click", function (e) {
 		// generate a random state
 		let state=Math.random().toString(36).substring(7);
@@ -478,11 +479,12 @@ ${window.location.href}	${document.referrer}	guest`;
 			scope:"email"
 		});
 		window.location.href=authorization_uri;
-	});
+	}); */
 });
 
 m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
 
+/* // Google log-in
 m.onSignIn=function (googleUser) {
 	// Get user profile information
 	let profile=googleUser.getBasicProfile();
@@ -515,7 +517,7 @@ m.renderButton=function () {
 		'onsuccess':() => {},
 		'onfailure':() => {}
 	});
-};
+}; */
 })(window.m, jQuery);
 </script>
 <script src="https://apis.google.com/js/platform.js?onload=googleInit" async defer></script>
