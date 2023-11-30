@@ -10,7 +10,7 @@ SET DC=C:\Recoeve\classes
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
 :: Compile %~nx1 with {filename:%~nx1, encoding:UTF-8, destination:%DC%, classpath:%CLASSPATH%}
-javac %~nx1 -encoding UTF-8 -d "%DC%" -classpath "%CLASSPATH%"
+javac %~nx1 -Xlint:deprecation -encoding UTF-8 -d "%DC%" -classpath "%CLASSPATH%"
 
 IF NOT %ERRORLEVEL%==0 GOTO :EOF
 
