@@ -7,7 +7,6 @@
 <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 <script src="/CDN/jquery.js"></script>
 <script src="/prepare.js"></script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script>
 (function (m, undefined) {
 let fullPath=window.location.pathname+window.location.search+window.location.hash;
@@ -72,7 +71,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-	<div id="google-log-in" class="g-signin2" data-onsuccess="m.onSignIn" tabindex="6"></div>
+	<div id="google-log-in" class="g-signin2 button" data-onsuccess="m.onSignIn" tabindex="6">Log in with Google</div>
 </form>
 
 <form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
@@ -476,5 +475,6 @@ m.onSignIn=function (googleUser) {
 }
 })(window.m, jQuery);
 </script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
 </html>
