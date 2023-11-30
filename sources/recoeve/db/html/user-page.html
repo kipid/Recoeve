@@ -1921,7 +1921,7 @@ m.catsToA=function (cats) {
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a class="" onmouseup="return m.triggerOpenCat(event)" class="move-cat${m.currentCat===cat?` currentCat`:''}"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat(event)" class="move-cat${m.currentCat===cat?` currentCat`:''}"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
