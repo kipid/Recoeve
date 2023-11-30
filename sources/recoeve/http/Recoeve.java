@@ -20,6 +20,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import java.sql.*;
 
@@ -36,9 +37,9 @@ import java.lang.StringBuilder;
 
 import recoeve.http.Cookie;
 import recoeve.http.BodyData;
-// import recoeve.db.RecoeveDB;
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
+import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
 
@@ -54,14 +55,15 @@ public static final long day31InMs=31*24*60*60*1000;
 public static final Vertx vertx=Vertx.vertx();
 public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
+public static final Router router2=Router.router(vertx);
 public static final Router router=Router.router(vertx);
 public static final OAuth2Options authOptions=new OAuth2Options()
 		.setClientId("424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com")
 		.setClientSecret("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")
 		.setSite("https://accounts.google.com")
 		.setTokenPath("/o/oauth2/token")
-		.setAuthorizationPath("/o/oauth2/auth")
-		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
+		.setAuthorizationPath("/o/oauth2/auth");
+		// .setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
 public static final OAuth2Auth authProvider=OAuth2Auth.create(vertx, authOptions);
 
 @Override
@@ -284,7 +286,7 @@ public static void main(String... args) {
 		String hashpath=ctx.pathParam("hashpath");
 		String originalURI=pl.db.getRedirectURI(pl.db.hexStringToLong(hashpath));
 		System.out.println("originalURI: "+Encoder.decodeURIComponent(originalURI));
-		ctx.response().setStatusCode(302) // Set the HTTP status code for redirection
+		pl.req.response().setStatusCode(302) // Set the HTTP status code for redirection
 			.putHeader("Location", originalURI) // Set the new location
 			.end();
 	});
@@ -641,21 +643,6 @@ public static void main(String... args) {
 			String param0=ctx.pathParam("param0");
 			System.out.println("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$ :: param0="+param0);
 			switch (param0) {
-				case "auth-google":
-					String code=pl.req.getParam("code");
-					authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
-						if (res.succeeded()) {
-							User user=res.result();
-							System.out.println(user.attributes());
-							System.out.println(user.get("email").toString());
-							// Handle the authenticated user
-							pl.req.response().end("Authentication successful");
-						} else {
-							// Handle authentication failure
-							pl.req.response().setStatusCode(401).end();
-						}
-					});
-					break;
 				case "verify": // path=/account/verify/:userId/:token
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (pl.sessionPassed&&pl.method==HttpMethod.POST) {
@@ -986,6 +973,34 @@ public static void main(String... args) {
 		});
 	});
 
+	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/auth/google");
+
+	oauth2Handler.withScopes(List.of("email"));
+	router2.route("/auth/*").handler(oauth2Handler);
+
+	router2.route("/auth/:authenticater").handler(ctx -> {
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		String authenticater=ctx.pathParam("authenticater");
+		switch (authenticater) {
+		case "google":
+			String code=pl.req.getParam("code");
+			authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
+				if (res.succeeded()) {
+					User user=res.result();
+					System.out.println(user.attributes());
+					System.out.println(user.get("email").toString());
+					// Handle the authenticated user
+					pl.req.response().end("Authentication successful");
+				} else {
+					// Handle authentication failure
+					pl.req.response().setStatusCode(401).end();
+				}
+			});
+			break;
+		}
+	});
+
 	vertx.createHttpServer(
 		new HttpServerOptions()
 			.setUseAlpn(true)
@@ -995,7 +1010,7 @@ public static void main(String... args) {
 				.setPassword("o8lx6xxp")
 			)
 	).requestHandler(req -> {
-		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN/")?router1:router;
+		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN/")?router1:req.path().startsWith("/auth/")?router2:router;
 		try {
 			routerK.handle(req);
 		}
@@ -1003,7 +1018,7 @@ public static void main(String... args) {
 			System.out.println(e);
 		}
 		catch (IllegalStateException e) {
-			// RecoeveDB.err(e);
+			RecoeveDB.err(e);
 		}
 	}).listen(443);
 	// UnderConstruction.HOST
