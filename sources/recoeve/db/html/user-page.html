@@ -169,6 +169,8 @@ else if (m.docCookies.hasItem("lang")) {
 #foot {clear:both; border-top:.15em solid white; padding:1em .5em}
 	.bright #foot {border-color:black}
 
+.move-cat {cursor:pointer}
+
 #floating-key {display:flex; flex-wrap:wrap; bottom:2.6em; width:9em; height:auto}
 #floating-key div.button {border-top:none; text-align:center; margin:0; padding:0; width:9em; height:auto}
 	#floating-key div.button:first-child {border-top:2px solid rgb(50,50,50)}
@@ -1913,13 +1915,13 @@ for (let i=$catECs.length-1;i>=0;i--) {
 }
 m.catsToA=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
-		return `<a onmouseup="return m.triggerOpenCat(event)"${m.currentCat===""?` class="currentCat"`:''}><span class="list-index-id"></span>[--Uncategorized--]</a>`;
+		return `<a onmouseup="return m.triggerOpenCat(event)" class="move-cat${m.currentCat===""?` currentCat`:''}"><span class="list-index-id"></span>[--Uncategorized--]</a>`;
 	}
 	let arrayHTML=[];
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let cat=list[i];
-		arrayHTML.push(`<a onmouseup="return m.triggerOpenCat(event)"${m.currentCat===cat?` class="currentCat"`:''}><span class="list-index-id">${m.escapeOnlyTag(m.catList[m.catList[cat].i].cat)}</span>${m.escapeOnlyTag(cat)}</a>`);
+		arrayHTML.push(`<a class="" onmouseup="return m.triggerOpenCat(event)" class="move-cat${m.currentCat===cat?` currentCat`:''}"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cat)}</a>`);
 	}
 	return arrayHTML.join(" ; ");
 };
