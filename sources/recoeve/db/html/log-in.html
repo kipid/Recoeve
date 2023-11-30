@@ -481,6 +481,18 @@ googleInit=function () {
 		});
 	});
 };
+renderButton=function () {
+	gapi.signin2.render('google-log-in',
+	{
+		'scope': 'profile email',
+		'width': 240,
+		'height': 40,
+		'longtitle': true,
+		'theme': 'dark',
+		'onsuccess': () => {},
+		'onfailure': () => {}
+	});
+};
 })(window.m, jQuery);
 </script>
 <script src="https://apis.google.com/js/platform.js?onload=googleInit" async defer></script>
