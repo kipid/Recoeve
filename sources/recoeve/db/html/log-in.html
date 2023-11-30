@@ -469,11 +469,14 @@ ${window.location.href}	${document.referrer}	guest`;
 		// generate a random state
 		let state=Math.random().toString(36).substring(7);
 		// generate the authorization URL
-		let authorization_uri=oauth2.authorizeURL(new JsonObject()
+		let authorization_uri=gapi.auth2.authorizeURL(new JsonObject()
 			.put("redirect_uri", "http://recoeve.net/auth/google")
 			.put("scope", "email")
 			.put("state", state));
 		// redirect the user to the Google authorization page
+		m.googleAuth.signIn({
+			scope:"email"
+		});
 		window.location.href=authorization_uri;
 	});
 });
@@ -486,11 +489,19 @@ m.onSignIn=function (googleUser) {
 	$google_log_in.before( m.encloseErr(`Name: ${profile.getName()}, Email: ${profile.getEmail()}`) );
 };
 window.googleInit=function () {
-	gapi.load('oauth2', () => {
-		gapi.oauth2.init({client_id:"424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com"}).then(() => {
+	m.googleAuth=gapi.load('auth2', () => {
+		gapi.auth2.init({
+			client_id:"424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com"
+			,
+		}).then(() => {
 			// DO NOT ATTEMPT TO RENDER BUTTON UNTIL THE 'Init' PROMISE RETURNS
 			m.renderButton();
 		});
+	});
+	m.googleAuth.then(() => {
+		gapi.auth2.init("424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com", "recoeve.net", "email", false, "recoeve.net", "popup", "https://recoeve.net/auth/google")
+	}, () => {
+		// Error.
 	});
 };
 m.renderButton=function () {
