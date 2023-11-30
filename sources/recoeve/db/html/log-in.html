@@ -472,9 +472,17 @@ m.onSignIn=function (googleUser) {
 	// Get user profile information
 	let profile=googleUser.getBasicProfile();
 	$google_log_in.before( m.encloseErr(`Name: ${profile.getName()}, Email: ${profile.getEmail()}`) );
-}
+};
+googleInit=function () {
+	gapi.load('auth2', () => {
+		gapi.auth2.init({ client_id:"424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com" }).then(() => {
+			// DO NOT ATTEMPT TO RENDER BUTTON UNTIL THE 'Init' PROMISE RETURNS
+			renderButton();
+		});
+	});
+};
 })(window.m, jQuery);
 </script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=googleInit" async defer></script>
 </body>
 </html>
