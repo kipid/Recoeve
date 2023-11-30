@@ -72,7 +72,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-	<div class="g-signin2" data-onsuccess="m.onSignIn" tabindex="6"></div>
+	<div id="google-log-in" class="g-signin2" data-onsuccess="m.onSignIn" tabindex="6"></div>
 </form>
 
 <form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
@@ -126,6 +126,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 <script>
 (async function (m, $, undefined) {
+$button_log_in=$("#button-log-in");
+$button_forgot_pwd=$("#button-forgot-pwd");
+$button_sign_up=$("#button-sign-up");
+$google_log_in=$("#google-log-in");
+
 $(".replace-reco-eve").html(function (i, orgHtml) {
 	return orgHtml
 		.replace(/reco/ig,'<span class="reco bold">$&</span>')
@@ -160,6 +165,10 @@ if (sW<sH) {
 
 m.errCount=0;
 m.encloseErr=function (msg) {
+	let $old=$(`#error-msg-${m.errCount-8}`);
+	if ($old.exists()) {
+		$old.hide();
+	}
 	return `<div id="error-msg-${m.errCount++}" class="error-msg">${msg}</div>`;
 };
 m.byteCount=function (str) {
@@ -258,9 +267,9 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
-	for (i=m.errCount-7;i>=0;i--) {
-		$("#error-msg-"+i).hide();
-	}
+	// for (i=m.errCount-7;i>=0;i--) {
+	// 	$("#error-msg-"+i).hide();
+	// }
 };
 
 m.forgotPwd=function (elem) {
@@ -324,9 +333,9 @@ m.forgotPwd=function (elem) {
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
-	for (i=m.errCount-7;i>=0;i--) {
-		$("#error-msg-"+i).hide();
-	}
+	// for (i=m.errCount-7;i>=0;i--) {
+	// 	$("#error-msg-"+i).hide();
+	// }
 };
 
 m.signUp=function (elem) {
@@ -417,27 +426,28 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
-	for (i=m.errCount-7;i>=0;i--) {
-		$("#error-msg-"+i).hide();
-	}
+	// TODO: delete the below.
+	// for (i=m.errCount-7;i>=0;i--) {
+	// 	$("#error-msg-"+i).hide();
+	// }
 };
 
 // TODO: Press <code>Enter</code> to go to the next input.
-$("#input-userPwd").on("keyup keydown input", function (e) {
+$("#input-userPwd").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
 		e.stopPropagation();
 		$("#button-log-in").trigger("click");
 	}
 });
-$("#input-su-userPwdCfm").on("keyup keydown input", function (e) {
+$("#input-su-userPwdCfm").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
 		e.stopPropagation();
 		$("#button-sign-up").trigger("click");
 	}
 });
-$("input.go-next").on("keyup keydown input", function (e) {
+$("input.go-next").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
 		e.stopPropagation();
@@ -458,6 +468,12 @@ ${window.location.href}	${document.referrer}	guest`;
 });
 
 m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+
+m.onSignIn=function (googleUser) {
+	// Get user profile information
+	let profile=googleUser.getBasicProfile();
+	$google_log_in.before( m.encloseErr(`Name: ${profile.getName()}, Email: ${profile.getEmail()}`) );
+}
 })(window.m, jQuery);
 </script>
 </body>

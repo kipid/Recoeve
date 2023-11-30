@@ -7,8 +7,14 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
+import io.vertx.ext.auth.User;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
+import io.vertx.ext.auth.oauth2.Oauth2Credentials;
+import io.vertx.ext.auth.oauth2.OAuth2FlowType;
+import io.vertx.ext.auth.oauth2.OAuth2Options;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpResponse;
@@ -49,6 +55,14 @@ public static final Vertx vertx=Vertx.vertx();
 public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
 public static final Router router=Router.router(vertx);
+public static final OAuth2Options authOptions=new OAuth2Options()
+		.setClientId("424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com")
+		.setClientSecret("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")
+		.setSite("https://accounts.google.com")
+		.setTokenPath("/o/oauth2/token")
+		.setAuthorizationPath("/o/oauth2/auth")
+		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
+public static final OAuth2Auth authProvider=OAuth2Auth.create(vertx, authOptions);
 
 @Override
 public void start() {
@@ -329,6 +343,14 @@ public static void main(String... args) {
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
 				switch (fileName) {
+					case "personal-info-handle": // e.g. path=/personal-info-handle
+						pl.req.response().putHeader("Content-Type","text/html")
+							.end(FileMap.get("personal-info-handle.html", pl.lang), ENCODING);
+						break;
+					case "service-summary": // e.g. path=/service-summary
+						pl.req.response().putHeader("Content-Type","text/html")
+							.end(FileMap.get("service-summary.html", pl.lang), ENCODING);
+						break;
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
 							.end(FileMapWithVar.get("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
@@ -619,6 +641,21 @@ public static void main(String... args) {
 			String param0=ctx.pathParam("param0");
 			System.out.println("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$ :: param0="+param0);
 			switch (param0) {
+				case "auth-google":
+					String code=pl.req.getParam("code");
+					authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
+						if (res.succeeded()) {
+							User user=res.result();
+							System.out.println(user.attributes());
+							System.out.println(user.get("email").toString());
+							// Handle the authenticated user
+							pl.req.response().end("Authentication successful");
+						} else {
+							// Handle authentication failure
+							pl.req.response().setStatusCode(401).end();
+						}
+					});
+					break;
 				case "verify": // path=/account/verify/:userId/:token
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 					if (pl.sessionPassed&&pl.method==HttpMethod.POST) {
