@@ -435,6 +435,8 @@ $("#input-userPwd").on("keydown", function (e) {
 	}
 });
 $("#input-userPwd").on("blur", function (e) {
+	console.log(e);
+	console.log("blur is triggered.");
 	if (e?.isTrusted) {
 		setTimeout(function () {
 			$("#button-log-in").trigger("click");
