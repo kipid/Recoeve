@@ -4394,7 +4394,7 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.refresh=async function (cats, option, uri, openCat) {
-return new Promise(async function (resolve, reject) {
+return new Promise(function (resolve, reject) {
 	cats=String(cats);
 	option=String(option);
 	uri=String(uri);
