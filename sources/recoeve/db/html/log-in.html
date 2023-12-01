@@ -434,6 +434,11 @@ $("#input-userPwd").on("keydown", function (e) {
 		$("#button-log-in").trigger("click");
 	}
 });
+$("#input-userPwd").on("paste", function (e) {
+	setTimeout(function () {
+		$("#button-log-in").trigger("click");
+	}, 512);
+});
 $("#input-su-userPwdCfm").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
