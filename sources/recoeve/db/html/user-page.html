@@ -3812,14 +3812,15 @@ return new Promise(async function (resolve, reject) {
 		let respK=await resp[k];
 		let uri=String(respK.uri);
 		let r=recos[uri];
-		if (!r) { r=recos[uri]={}; }
+		if (!r) { r=recos[uri]=respK; } // Direct asign.
+		// if (!r) { r=recos[uri]={}; }
 		r.has=true; // User has a reco on the uri.
-		for (let prop in respK) {
-			if (isNaN(prop)) {
-				prop=String(prop);
-				r[prop]=String(respK[prop]);
-			}
-		}
+		// for (let prop in respK) {
+		// 	if (isNaN(prop)) {
+		// 		prop=String(prop);
+		// 		r[prop]=String(respK[prop]); // Hard copy.
+		// 	}
+		// }
 		r.deleted=false;
 		if (r.desc!==undefined) {
 			r.descR=m.renderStrDescCmt(String(r.desc)); // R for rendered.
@@ -3842,7 +3843,7 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats)?r.cats.split(";"):[""], uri, r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
