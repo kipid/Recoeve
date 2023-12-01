@@ -5754,7 +5754,7 @@ m.gotoLi=async function (event) {
 	if (!m.beInCurrentCat) {
 		await m.openCat(catsSplit[0]);
 	}
-	let l=fsFLk.catAndI[m.currentCat].i??fs.fullList.length;
+	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
