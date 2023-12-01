@@ -3850,7 +3850,7 @@ return new Promise(async function (resolve, reject) {
 			if (!fsFLk.catAndI) {
 				fsFLk.catAndI={};
 			}
-			fsFLk.catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??-1};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -3864,7 +3864,7 @@ return new Promise(async function (resolve, reject) {
 			}
 			r.i=uris.length-1-k;
 		}
-		m.lastIndexOfUriList=uris.length;
+		m.lastIndexOfUriList=uris.length-1;
 	}
 	return resolve();
 });
@@ -4416,8 +4416,8 @@ return new Promise(function (resolve, reject) {
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
-				r.i=m.lastIndexOfUriList;
 				m.lastIndexOfUriList++;
+				r.i=m.lastIndexOfUriList;
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
@@ -4449,7 +4449,7 @@ return new Promise(function (resolve, reject) {
 			if (!m.fsGo.fullList[uri].catAndI) {
 				m.fsGo.fullList[uri].catAndI={}
 			}
-			m.fsGo.fullList[uri].catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??-1};
 			resolve();
 			break;
 		case "changed": case "deleted":
@@ -4594,7 +4594,7 @@ m.openCat=async function (cat) {
 				m.userRecos[uri]={uri, i:uris.length-1-k};
 			}
 		}
-		m.lastIndexOfUriList=uris.length;
+		m.lastIndexOfUriList=uris.length-1;
 	}
 	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 	m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
@@ -5729,7 +5729,7 @@ m.gotoLi=async function (event) {
 		// let r=m.userRecos[uri];
 		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		// fsFLk.catAndI={};
-		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
 	if ($elem.hasClass("selected")) {
 		if ($elem.hasClass("clicked-twice")) {
