@@ -3850,7 +3850,7 @@ return new Promise(async function (resolve, reject) {
 			if (!fsFLk.catAndI) {
 				fsFLk.catAndI={};
 			}
-			fsFLk.catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+			fsFLk.catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i) ?? -1};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -4449,7 +4449,7 @@ return new Promise(function (resolve, reject) {
 			if (!m.fsGo.fullList[uri].catAndI) {
 				m.fsGo.fullList[uri].catAndI={}
 			}
-			m.fsGo.fullList[uri].catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i:(m.fsToRs.fullList[uri]?.i) ?? -1};
 			resolve();
 			break;
 		case "changed": case "deleted":
@@ -5729,7 +5729,7 @@ m.gotoLi=async function (event) {
 		// let r=m.userRecos[uri];
 		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		// fsFLk.catAndI={};
-		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:(m.fsToRs.fullList[uri]?.i)??-1};
+		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:(m.fsToRs.fullList[uri]?.i) ?? -1};
 	}
 	if ($elem.hasClass("selected")) {
 		if ($elem.hasClass("clicked-twice")) {
@@ -5746,7 +5746,7 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catSplit=fsFLk.catSplit??[""];
+	let catSplit=fsFLk.catSplit ?? [""];
 	for (let i=0;i<catSplit.length;i++) {
 		if (m.currentCat===catSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5757,7 +5757,7 @@ m.gotoLi=async function (event) {
 		await m.openCat(catSplit[0]);
 		// m.currentCat=catSplit[0];
 	}
-	let l=fsFLk.catAndI[m.currentCat].i??-1;
+	let l=fsFLk.catAndI[m.currentCat].i ?? -1;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
