@@ -3111,7 +3111,7 @@ m.renderStrDescCmt=function (str) {
 			k++;
 			key=match[0]
 			listOfValues=[];
-			let value0=trimedStrSplitted[i].substring(match[0].length).trim();
+			let value0=trimedStrSplitted[i].substring(match[0].length);
 			if (value0) {
 				listOfValues[0]=value0;
 			}
@@ -3173,17 +3173,20 @@ m.recomHTML=async function (r) {
 			case "#": case "":
 				res+=`<div class="value">${key} ${value.replace(/\n/g,"<br>")}</div>`;
 				break;
-			case "#lyrics": case "#lyric": case "#가사":
+			case "#lyrics": case "#lyrics:":
+			case "#lyric": case "#lyric:":
+			case "#가사": case "#가사:":
 				res+=`<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.replace(/\n/g,"<br>")}</div>
+	<div class="lyrics">${value.trim().replace(/\n/g,"<br>")}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
 				break;
-			case "#related": case "#originaluri":
+			case "#related": case "#related:":
+			case "#originaluri": case "#originaluri:":
 				res+=`<div class="value"><span class="key">${key}</span>:`;
 				let relateds=value.split("\n");
 				for (let p=0;p<relateds.length;p++) {
@@ -3254,17 +3257,20 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 				case "#": case "":
 					res+=`<div class="value">${key} ${value.replace(/\n/g,"<br>")}</div>`;
 					break;
-				case "#lyrics": case "#lyric": case "#가사":
+				case "#lyrics": case "#lyrics:":
+				case "#lyric": case "#lyric:":
+				case "#가사": case "#가사:":
 					res+=`<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.replace(/\n/g,"<br>")}</div>
+	<div class="lyrics">${value.trim().replace(/\n/g,"<br>")}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
 					break;
-				case "#related": case "#originaluri":
+				case "#related": case "#related:":
+				case "#originaluri": case "#originaluri:":
 					res+=`<div class="value"><span class="key">${key}</span>:`;
 					let relateds=value.split("\n");
 					for (let p=0;p<relateds.length;p++) {
