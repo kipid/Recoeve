@@ -2688,10 +2688,10 @@ m.deleteCat=function (cat) {
 	return res;
 };
 m.putCats_UriToLists=async function (cats, uri) {
-	let catSplit=cats.split(";");
+	let catsSplit=cats.split(";");
 	let catIsPut=false;
-	for (let i=0;i<catSplit.length;i++) {
-		let cat=catSplit[i];
+	for (let i=0;i<catsSplit.length;i++) {
+		let cat=catsSplit[i];
 		if (m.myPage) {
 			if (m.catUriList[cat]?.has) {
 				m.catUriList[cat].UriList=uri+"\n"+m.catUriList[cat].UriList;
@@ -2723,10 +2723,10 @@ m.putCats_UriToLists=async function (cats, uri) {
 };
 m.delCats_UriFromLists=async function (cats, uri) {
 if (m.myPage) {
-	let catSplit=cats.split(";");
+	let catsSplit=cats.split(";");
 	let superCatIsDeleted=false;
-	for (let i=0;i<catSplit.length;i++) {
-		let cat=catSplit[i];
+	for (let i=0;i<catsSplit.length;i++) {
+		let cat=catsSplit[i];
 		if (!(m.catUriList[cat]&&m.catUriList[cat].has)) {
 			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 		}
@@ -3842,14 +3842,14 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats).split(";"), uri, r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit:String(r.cats).split(";"), uri, r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
 			if (!fsFLk.catAndI) {
 				fsFLk.catAndI={};
 			}
-			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i};
+			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -4039,10 +4039,10 @@ return new Promise(async function (resolve, reject) {
 				recoms.push(recoms[uri]);
 			}
 			let val={user:respJSONi.user, val:respJSONi.val};
-			let catSplit=respJSONi.cats.split(";");
+			let catsSplit=respJSONi.cats.split(";");
 			let simAvg100=0;
-			for (let j=0;j<catSplit.length;j++) {
-				let sim=m.neighbors[cat][`${val.user}\t${catSplit[j]}`];
+			for (let j=0;j<catsSplit.length;j++) {
+				let sim=m.neighbors[cat][`${val.user}\t${catsSplit[j]}`];
 				if (sim?.simAvg100>simAvg100) {
 					simAvg100=sim.simAvg100; // Get the largest sim of user cats.
 				}
@@ -4432,10 +4432,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 			}
 			m.reNewAndReOn();
 
-			let fs=m.fsGo;
-			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
-			fs.fullList.push(fs.fullList[uri]);
-			await m.reTriggerFS(fs);
+			// fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
+			// fs.fullList.push(fs.fullList[uri]);
+			await m.reTriggerFS(m.fsGo);
 
 			fs=m.fsToRs;
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
@@ -4444,6 +4443,10 @@ m.refresh=async function (cats, option, uri, openCat) {
 				fs.shuffled[fs.shuffled.length-1]={i:fs.fullList.length-1, sortN:fs.fullList.length-1};
 			}
 			await m.reTriggerFS(fs);
+			if (!m.fsGo.fullList[uri].catAndI) {
+				m.fsGo.fullList[uri].catAndI={};
+			}
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
@@ -4530,6 +4533,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 					if (!fsFLk) {
 						fsFLk=fs.fullList[uri]={uri, has:false, down:true};
 					}
+					fsFLk.uri=uri;
+					fsFLk.has=false;
+					fsFLk.down=true;
 					fsFLk.deleted=true;
 					await m.reTriggerFS(fs);
 
@@ -4538,6 +4544,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 					if (!fsFLk) {
 						fs.fullList[uri]={uri, has:false, down:true};
 					}
+					fsFLk.uri=uri;
+					fsFLk.has=false;
+					fsFLk.down=true;
 					fsFLk.deleted=true;
 					fsFLk.inRange=false;
 					await m.reTriggerFS(fs);
@@ -5716,7 +5725,7 @@ m.gotoLi=async function (event) {
 		return;
 		// TODO: delete below.
 		// let r=m.userRecos[uri];
-		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 		// fsFLk.catAndI={};
 		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
 	}
@@ -5735,18 +5744,17 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catSplit=fsFLk.catSplit;
-	for (let i=0;i<catSplit.length;i++) {
-		if (m.currentCat===catSplit[i]) {
+	let catsSplit=fsFLk.catsSplit??["No cats"];
+	for (let i=0;i<catsSplit.length;i++) {
+		if (m.currentCat===catsSplit[i]) {
 			m.beInCurrentCat=true;
 			break;
 		}
 	}
 	if (!m.beInCurrentCat) {
-		await m.openCat(catSplit[0]);
-		// m.currentCat=catSplit[0];
+		await m.openCat(catsSplit[0]);
 	}
-	let l=fsFLk.catAndI[m.currentCat].i;
+	let l=fsFLk.catAndI[m.currentCat].i??fs.fullList.length;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
