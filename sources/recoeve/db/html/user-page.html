@@ -3850,7 +3850,7 @@ return new Promise(async function (resolve, reject) {
 			if (!fsFLk.catAndI) {
 				fsFLk.catAndI={};
 			}
-			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i};
+			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??-1};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -4394,20 +4394,21 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.refresh=async function (cats, option, uri, openCat) {
+return new Promise(function (resolve, reject) {
 	cats=String(cats);
 	option=String(option);
 	uri=String(uri);
-	let c=cats.split(";");
+	let catsSplit=cats.split(";");
 	let k=0;
 	if (m.currentCat!==undefined) {
-		for (k=c.length-1;k>0;k--) {
-			if (c[k]===m.currentCat) {break;}
+		for (k=catsSplit.length-1;k>0;k--) {
+			if (catsSplit[k]===m.currentCat) {break;}
 		}
 	}
 	let r=m.myRecos[uri];
 	let cat=m.currentCat;
-	if (c[k]!==m.currentCat&&openCat) {
-		cat=m.currentCat=c[k];
+	if (catsSplit[k]!==m.currentCat&&openCat) {
+		cat=m.currentCat=catsSplit[k];
 		$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`).trigger("click");
 	}
 	else {
@@ -4445,6 +4446,11 @@ m.refresh=async function (cats, option, uri, openCat) {
 				fs.shuffled[fs.shuffled.length-1]={i:fs.fullList.length-1, sortN:fs.fullList.length-1};
 			}
 			await m.reTriggerFS(fs);
+			if (!m.fsGo.fullList[uri].catAndI) {
+				m.fsGo.fullList[uri].catAndI={}
+			}
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??-1};
+			resolve();
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
@@ -4544,11 +4550,15 @@ m.refresh=async function (cats, option, uri, openCat) {
 					await m.reTriggerFS(fs);
 				}
 			}
+			resolve();
 			break;
 		default:
 			m.openCat(cat);
+			resolve();
+			break;
 		}
 	}
+});
 };
 
 m.ExpCol=function (elem, catEC) {
@@ -5736,7 +5746,7 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catSplit=fsFLk.catSplit;
+	let catSplit=fsFLk.catSplit??[""];
 	for (let i=0;i<catSplit.length;i++) {
 		if (m.currentCat===catSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5747,7 +5757,7 @@ m.gotoLi=async function (event) {
 		await m.openCat(catSplit[0]);
 		// m.currentCat=catSplit[0];
 	}
-	let l=fsFLk.catAndI[m.currentCat].i;
+	let l=fsFLk.catAndI[m.currentCat].i??-1;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
