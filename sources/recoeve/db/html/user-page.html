@@ -3843,7 +3843,7 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:(String(r.cats)?String(r.cats).split(";"):[""]), uri, r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catSplit:String(r.cats)?r.cats.split(";"):[""], uri, r};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
