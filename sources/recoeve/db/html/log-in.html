@@ -435,13 +435,9 @@ $("#input-userPwd").on("keydown", function (e) {
 	}
 });
 $("#input-userPwd").on("blur", function (e) {
-	console.log(e);
-	console.log("blur is triggered.");
-	if (e?.isTrusted) {
-		setTimeout(function () {
-			$("#button-log-in").trigger("click");
-		}, 512);
-	}
+	setTimeout(function () {
+		$("#button-log-in").trigger("click");
+	}, 512);
 });
 $("#input-su-userPwdCfm").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
