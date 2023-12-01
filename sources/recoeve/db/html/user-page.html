@@ -2293,7 +2293,7 @@ m.completeMRCat=function (event) {
 	$multireco_input_cats[0].setSelectionRange(sEnd,sEnd);
 };
 m.doFSCat=async function (fs) {
-return new Promise(async function (resolve, reject) {
+return new Promise(function (resolve, reject) {
 	let catsTxt=fs.$fs[0].value;
 	let sEnd=fs.$fs[0].selectionEnd;
 	fs.listOfCats=catsTxt.split(";");
@@ -2448,7 +2448,7 @@ m.fsTimezoneOn=async function () {
 	}
 };
 m.reTriggerFS=function (fs) {
-return new Promise(async function (resolve, reject) {
+return new Promise(function (resolve, reject) {
 	fs[1]=null;
 	fs[0].ptnSH=m.splitHangul("$!@#");
 	if (fs===m.fsToRs) {
@@ -3889,7 +3889,7 @@ m.getRecos=function (uris, recos, cat) {
 			getRecosN++;
 		}
 	}
-	return new Promise(async function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		if (getRecosN>0) {
 			let postURL=((recos===m.userRecos)?`${m.userPath}/get-Recos`:(m.myIndex?`/user/${m.myId}/get-Recos`:null));
 			if (postURL) {
@@ -3939,7 +3939,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	}
 };
 m.getUriList=function (catStrArray) {
-	return new Promise(async function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		$.ajax({
 			type:"POST", url:`${m.userPath}/get-UriList`, data:catStrArray
 			, dataType:"text"
@@ -4394,7 +4394,7 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.refresh=async function (cats, option, uri, openCat) {
-return new Promise(async function (resolve, reject) {
+return new Promise(function (resolve, reject) {
 	cats=String(cats);
 	option=String(option);
 	uri=String(uri);
@@ -4763,7 +4763,7 @@ m.emptifyRecoInNewReco=function () {
 	m.reNewAndReOn();
 };
 m.getH1=function (uri) {
-return new Promise(async function (resolve, reject) {
+return new Promise(function (resolve, reject) {
 	$.ajax({
 		type:"POST", url:"/reco/getH1", data:uri
 		, dataType:"text"
@@ -4943,7 +4943,7 @@ $multirecoDeleteCat.on("click", function (e) {
 	$multireco_input_cats.trigger("keyup.fs");
 });
 m.getAndFillRecoInNewReco=function (r, fillDefs) {
-	return new Promise(async function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		if (r.down) {
 			m.fillRecoInNewReco(r, fillDefs);
 			resolve();
@@ -4963,7 +4963,7 @@ m.getAndFillRecoInNewReco=function (r, fillDefs) {
 	});
 };
 m.getAndFillDefsInNewReco=function (r, fillDefs) {
-	return new Promise(async function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		let uri=r.uri;
 		if (m.recoDefs[uri]?.defs) {
 			m.showDefs(uri);
