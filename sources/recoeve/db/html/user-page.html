@@ -4589,7 +4589,7 @@ m.openCat=async function (cat) {
 	$title.html(`${cat||cat===""?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
-		for (let k=0;k<uris.length;k++) {
+		for (let k=uris.length-1;k>=0;k--) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) { // Must have recos on these uris.
 				m.userRecos[uri].i=uris.length-1-k;
@@ -5728,12 +5728,14 @@ m.gotoLi=async function (event) {
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
 		}, m.wait);
-		return;
 		// TODO: delete below.
-		// let r=m.userRecos[uri];
-		// fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-		// fsFLk.catAndI={};
-		// fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i};
+		let r=m.userRecos[uri];
+		if (r) {
+			fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:String(r.cats).split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+			fsFLk.catAndI={};
+			fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length};
+		}
+		return;
 	}
 	if ($elem.hasClass("selected")) {
 		if ($elem.hasClass("clicked-twice")) {
@@ -6835,15 +6837,15 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.doNotPushHistory=false;
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
-	let hashURI=m.initialHashURI;
-	if (hashURI) {
+	if (m.initialHashURI) {
 		m.fsGo.tryN=0;
 		m.setIntervalFsGo=setInterval(function () {
-			if (m.fsGo.fullList[hashURI]||m.fsGo.tryN++>7) {
-				let k=m.fsGo.fullList[hashURI]?.i;
+			if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>12) {
+				let k=m.fsGo.fullList[m.initialHashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
 					clearInterval(m.setIntervalFsGo);
+					console.log(`$(\`#li-${k}\`).trigger("click");`)
 					$(`#li-${k}`).trigger("click");
 				}
 			}
@@ -6863,15 +6865,15 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (m.docCookies.getItem("hideFK")==="y") {
 		$floating_key.hide();
 	}
-	setTimeout(async function () {
-		await m.reTriggerFS(m.fsToRs);
-		await m.reTriggerFS(m.fsCat);
-		await m.reTriggerFS(m.fsMRCat);
-		await m.reTriggerFS(m.fsGotoCats);
-		await m.reTriggerFS(m.fsTimezone);
-		await m.reTriggerFS(m.fsGo);
-		m.initialOpen=false;
-	}, 2*m.wait);
+	// setTimeout(async function () {
+	// 	await m.reTriggerFS(m.fsToRs);
+	// 	await m.reTriggerFS(m.fsCat);
+	// 	await m.reTriggerFS(m.fsMRCat);
+	// 	await m.reTriggerFS(m.fsGotoCats);
+	// 	await m.reTriggerFS(m.fsTimezone);
+	// 	await m.reTriggerFS(m.fsGo);
+	// 	m.initialOpen=false;
+	// }, 2*m.wait);
 	setTimeout(async function () {
 		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsCat);
