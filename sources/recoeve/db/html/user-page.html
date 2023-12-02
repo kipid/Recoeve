@@ -2446,7 +2446,7 @@ return new Promise(function (resolve, reject) {
 		fs.$fs.off("keyup.fs");
 		fs.$fs.on("keyup.fs", async function (e) {
 			await fs.fsOn(e);
-			return resolve();
+			resolve();
 		});
 		fs.$fs.trigger("keyup.fs");
 	}
@@ -5846,7 +5846,7 @@ return new Promise(async function (resolve, reject) {
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
-	if (shuffle) {
+	if (shuffle||shuffle==="") {
 		m.shuffledOnece=true;
 	}
 	switch (shuffle) {
@@ -5894,9 +5894,9 @@ return new Promise(async function (resolve, reject) {
 	for (let i=1;i<l;i++) {
 		let temp=shuffled[i];
 		let j=i;
-		for (;(j>0)&&(shuffled[j-1].sortN<=temp.sortN);j--) {
+		for (;(j>0)&&(shuffled[j-1].sortN<temp.sortN);j--) {
 			shuffled[j]=shuffled[j-1];
-		} // desc sorting. The same reversed.
+		} // desc sorting. The same reversed. Stable sort.
 		shuffled[j]=temp;
 	}
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);

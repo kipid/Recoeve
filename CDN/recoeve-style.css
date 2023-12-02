@@ -71,12 +71,12 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	.bright .fs-container {background:wheat}
 #cat-fs-container {position:relative}
 #multireco-cat-fs-container {position:relative; width:25em; max-width:100%; height:auto; text-align:left}
-.fs-name {padding:.1em 3em}
-.fs-input {height:2em; max-height:5em; overflow-y:auto; font:inherit; font-size:1.3em; color:black; width:100%; padding:.1em; border:.15em gray solid; background:white}
-.fs-container textarea {display:block; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:0.2em 0.3em; background:white; color:rgb(50,50,50)}
+.fs-name {display:inherit; padding:.1em 3em}
+.fs-input {display:inherit; height:2em; max-height:5em; overflow-y:auto; font:inherit; font-size:1.3em; color:black; width:100%; padding:.1em; border:.15em gray solid; background:white}
+.fs-container textarea {display:inherit; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:0.2em 0.3em; background:white; color:rgb(50,50,50)}
 	#goto-cats {height:4em; margin-bottom:-0.4em}
-.fs-list {height:auto; min-height:2em; max-height:15em; overflow-y:auto; border:.15em gray solid; background:rgb(20,20,20)}
-.fs-list .list-item {background:black; color:white; padding:.2em .5em .4em}
+.fs-list {display:inherit; height:auto; min-height:2em; max-height:15em; overflow-y:auto; border:.15em gray solid; background:rgb(20,20,20)}
+.fs-list .list-item {display:inherit; background:black; color:white; padding:.2em .5em .4em}
 	.bright .fs-list .list-item {background:rgb(240,240,240); color:black}
 .fs-list .list-item:nth-child(2n) {background:rgb(40,40,40)}
 	.bright .fs-list .list-item:nth-child(2n) {background:white}
@@ -85,8 +85,8 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .fs-list .list-item.selected {border:.15em solid rgb(210,150,150)}
 .fs-list .list-item.deleted {background:rgb(70,30,30); border:1px solid rgb(120,120,150)}
 .list-index-id, .fs-list .list-item .list-index, .fs-list .list-item .list-index-id {display:none}
-.fs-list .list-item .cat {font-size:.9em}
-.fs-list .list-item .highlighted {font-size:.5em; color:rgb(150,150,150)}
+.fs-list .list-item .cat {display:inherit; font-size:.9em}
+.fs-list .list-item .highlighted {display:inherit; font-size:.5em; color:rgb(150,150,150)}
 .fs-list .list-item .highlighted .bold {color:rgb(170,250,170)}
 .exit {z-index:10010; position:absolute; display:inline-block; right:0; top:0; margin:0; width:1.8em; height:1.8em; line-height:1.0; text-align:center; /*border-radius:.4em;*/ cursor:pointer; border:.15em rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white}
 .exit>svg {width:100%; height:100%; font-size:1.8em; line-height:1.0}
