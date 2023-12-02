@@ -6840,7 +6840,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (m.initialHashURI) {
 		m.fsGo.tryN=0;
 		m.setIntervalFsGo=setInterval(function () {
-			if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>12) {
+			if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>25) {
 				let k=m.fsGo.fullList[m.initialHashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.exists()) {
