@@ -1324,20 +1324,11 @@ m.maxShowReco=20;
 m.fsViewAndScroll=function (fs, $next) {
 	let $fsl=fs.$fsl;
 	let $fs_container=fs.$fs_container;
-	if (!$next.exists()) {
+	if (!$next?.exists()) {
 		$next=$fsl.find(".selected");
 	}
 	if ($next.exists()) {
-		if ($fs_container.is(":visible")) {
-			$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-		}
-		// else {
-			// $fs_container.show();
-			// $fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
-			// setTimeout(function () {
-			// 	$fs_container.hide();
-			// }, 64);
-		// }
+		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
 	}
 };
 
