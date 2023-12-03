@@ -3155,7 +3155,8 @@ m.recomHTML=async function (r) {
 		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 	}
 	if (m.myPage) {
-		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>
+<div class="cBoth button fLeft" onclick="m.stashReco(event)">[--Stash--]</div>`;
 	}
 	res+=`<div class="cBoth"></div><div class="result"></div>`;
 	if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
