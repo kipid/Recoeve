@@ -3183,7 +3183,7 @@ m.recomHTML=async function (r) {
 			case "#related": case "#related:":
 			case "#originaluri": case "#originaluri:":
 				res+=`<div class="value"><span class="key">${key}</span>:`;
-				let relateds=value.split("\n");
+				let relateds=value.trim().split("\n");
 				for (let p=0;p<relateds.length;p++) {
 					res+='<br>';
 					let uriRendered=await uriRendering(m.formatURI(relateds[p]), true);
@@ -3267,7 +3267,7 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 				case "#related": case "#related:":
 				case "#originaluri": case "#originaluri:":
 					res+=`<div class="value"><span class="key">${key}</span>:`;
-					let relateds=value.split("\n");
+					let relateds=value.trim().split("\n");
 					for (let p=0;p<relateds.length;p++) {
 						res+='<br>';
 						let uriRendered=await uriRendering(m.formatURI(relateds[p]), true);
