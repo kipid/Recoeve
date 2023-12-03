@@ -6900,8 +6900,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if ($elem.exists()) {
 			clearInterval(m.setIntervalFsGo);
 			m.setIntervalFsGo1N=0;
-			m.hashURI=m.initialHashURI;
 			m.setIntervalFsGo1=setInterval(function () {
+				m.hashURI=m.initialHashURI;
 				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 				if ($elem.exists()) {
 					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
