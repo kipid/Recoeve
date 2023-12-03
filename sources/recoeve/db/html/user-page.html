@@ -6009,6 +6009,9 @@ $textarea_copied=$("#textarea-copied");
 $notify_copied.on("click", function (e) {
 	$notify_copied.hide();
 });
+$textarea_copied.on("click", function (e) {
+	e.stopPropagation();
+});
 m.notifyCopied=function (copied) {
 	$notify_copied.show();
 	$textarea_copied[0].value=copied;
