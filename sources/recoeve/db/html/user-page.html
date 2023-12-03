@@ -6902,12 +6902,13 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			m.setIntervalFsGo1N=0;
 			m.hashURI=m.initialHashURI;
 			m.setIntervalFsGo1=setInterval(function () {
-				window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
 				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 				if ($elem.exists()) {
+					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
+					window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 					$window.scrollTop($elem.offset().top);
 				}
-				if (m.setIntervalFsGo1N++>7) {
+				if (m.setIntervalFsGo1N++>4) {
 					clearInterval(m.setIntervalFsGo1);
 				}
 			}, m.wait);
