@@ -6899,9 +6899,18 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 		if ($elem.exists()) {
 			clearInterval(m.setIntervalFsGo);
+			m.setIntervalFsGo1N=0;
 			m.hashURI=m.initialHashURI;
-			window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
-			$window.scrollTop($elem.offset().top);
+			m.setIntervalFsGo1=setInterval(function () {
+				window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
+				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
+				if ($elem.exists()) {
+					$window.scrollTop($elem.offset().top);
+				}
+				if (m.setIntervalFsGo1N++>7) {
+					clearInterval(m.setIntervalFsGo1);
+				}
+			}, m.wait);
 		}
 	}
 	$goto_cats_container.hide();
