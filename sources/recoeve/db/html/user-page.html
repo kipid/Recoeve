@@ -3115,6 +3115,38 @@ m.renderStrDescCmt=function (str) {
 	res[k]=res[key]={i:k, key, value:listOfValues.join("\n\n")};
 	return res;
 };
+m.stashReco=function (event) {
+	if (!m.myIndex) {
+		m.delayedLogOut("You are not logged-in.", 60*60*24, $result);
+		return;
+	}
+	let $target=$(event.target);
+	let $reco=$target.parents(".reco");
+	if (m.myPage&&$reco.hasClass(".recom")) {
+		let inRecoms=true;
+		let valStr=$reco.find(".str").html();
+		let uri=m.unescapeHTML($reco.find(".textURI").html());
+		let strHeads="do\turi\tval";
+		let strContents=`overwrite\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+		let r=m.myRecos[uri];
+		let recoDef=m.recoDefs[uri];
+		if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+			strHeads+="\ttitle";
+			strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
+		}
+		if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+			strHeads+="\tdesc";
+			strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
+		}
+		let cats="[--Stashed--]";
+		strHeads+="\tcats";
+		strContents+=`\t${m.encloseStr(cats)}`;
+		$result=$reco.find(".result");
+		$result?.html(`Stashing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
+		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+		m.putCats_UriToLists(cats, uri);
+	}
+};
 m.recomHTML=async function (r) {
 	if (r?.has) {
 		let recoHTML=await m.recoHTML(r, false, true, true);
@@ -3156,9 +3188,9 @@ m.recomHTML=async function (r) {
 	}
 	if (m.myPage) {
 		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>
-<div class="cBoth button fLeft" onclick="m.stashReco(event)">[--Stash--]</div>`;
+<div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
 	}
-	res+=`<div class="cBoth"></div><div class="result"></div>`;
+	res+=`<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 	if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
 		let descR=m.renderStrDescCmt(recoDef.defDescs[0][0]);
 		res+=`<div class="desc">`;
@@ -3242,7 +3274,7 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 		else {
 			res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 		}
-		res+=`<div class="cBoth"></div><div class="result"></div>`;
+		res+=`<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (r.desc) {
 			let descR=r.descR;
 			res+=`<div class="desc">`;
