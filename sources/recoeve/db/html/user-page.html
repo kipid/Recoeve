@@ -866,7 +866,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>
 </div><!-- div#container -->
 <div id="notify-copied" class="block-touch" style="display:-webkit-flex; display:flex"><div style="display:inline-block; margin:auto; border:5px solid wheat; width:30em; max-width:100%">
-	<div style="padding:.3em; width:100%; background:black; color:white">The following is copied!</div>
+	<div style="padding:.3em; width:100%; background:black; color:white">[--The following is copied!--]</div>
 	<textarea id="textarea-copied" style="padding:.3em; width:100%; height:20em; background:white; color:black"></textarea>
 </div></div>
 </body>
@@ -6045,10 +6045,10 @@ m.shareCurrentPage=function (service, elem) {
 				$elem.focus();
 				let written=`${title}\n${recoeveURI}\n\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}`;
 				navigator.clipboard.writeText(written).then(function () {
-					m.notifyCopied(`The following is copied!\n"${written}"`);
+					m.notifyCopied(written);
 				}
 				, function (err) {
-					m.notifyCopied(`Could not copy text: ${err}`);
+					m.notifyCopied(`[--Could not copy text--]: ${err}`);
 				});
 			}
 			return false;
@@ -6057,7 +6057,7 @@ m.shareCurrentPage=function (service, elem) {
 				$elem.focus();
 				let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
 				navigator.clipboard.writeText(written1).then(function () {
-					m.notifyCopied(`[--The following is copied!--]\n"${written1}"`);
+					m.notifyCopied(written1);
 				}
 				, function (err) {
 					m.notifyCopied(`[--Could not copy text--]: ${err}`);
@@ -6109,7 +6109,7 @@ m.shareSNS=function (elem, service) {
 			$elem.focus();
 			let written=`${title}\n${recoeveURI}\n\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}\n\n${uri}`;
 			navigator.clipboard.writeText(written).then(function () {
-				m.notifyCopied(`[--The following is copied!--]\n"${written}"`);
+				m.notifyCopied(written);
 			}
 			, function (err) {
 				m.notifyCopied(`[--Could not copy text--]: ${err}`);
@@ -6119,7 +6119,7 @@ m.shareSNS=function (elem, service) {
 			$elem.focus();
 			let written1=`${title}:<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a><br>\n<br>\n<a target="_blank" href="${uri}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
 			navigator.clipboard.writeText(written1).then(function () {
-				m.notifyCopied(`[--The following is copied!--]\n"${written1}"`);
+				m.notifyCopied(written1);
 			}
 			, function (err) {
 				m.notifyCopied(`[--Could not copy text--]: ${err}`);
@@ -6129,7 +6129,7 @@ m.shareSNS=function (elem, service) {
 			$elem.focus();
 			let written2=`${title}:\n${recoeveURI}\n${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}\n\n${m.escapeOnlyTag(uri)}<br>\n<br>\n<a target="_blank" href="${recoeveURI}">${m.escapeOnlyTag(decodeURIComponent(recoeveURI))}</a>`;
 			navigator.clipboard.writeText(written2).then(function () {
-				m.notifyCopied(`[--The following is copied!--]\n"${written2}"`);
+				m.notifyCopied(written2);
 			}
 			, function (err) {
 				m.notifyCopied(`[--Could not copy text--]: ${err}`);
