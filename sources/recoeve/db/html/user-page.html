@@ -4982,15 +4982,17 @@ m.getAndFillRecoInNewReco=function (r, fillDefs) {
 		}
 		else {
 			let getRecosStr="uri"+"\n"+r.uri;
-			$.ajax({
-				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
-				, dataType:"text"
-			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-				m.recoDowned(r.uri, m.myRecos);
-				await m.recoToEve(resp, m.myRecos);
-				m.fillRecoInNewReco(r, fillDefs);
-				resolve();
-			});
+			if (m.myIndex) {
+				$.ajax({
+					type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
+					, dataType:"text"
+				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
+					m.recoDowned(r.uri, m.myRecos);
+					await m.recoToEve(resp, m.myRecos);
+					m.fillRecoInNewReco(r, fillDefs);
+					resolve();
+				});
+			}
 		}
 	});
 };
