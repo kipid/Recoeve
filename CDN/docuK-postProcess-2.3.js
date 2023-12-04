@@ -240,6 +240,9 @@ if (!m.printMode) {
 			window.location.pathname=urlAnalyzed.pathname;
 		}
 	}
+	m.plink=$('meta[property="dg:plink"]').attr('content');
+	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
+	m.printDeviceInfo();
 
 if (!m.printMode) {
 	$disqus_thread=$("#disqus_thread");
@@ -251,9 +254,6 @@ if (!m.printMode) {
 	$headOrBody.append($disqus_js);
 	m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 
-	m.plink=$('meta[property="dg:plink"]').attr('content');
-	m.printDeviceInfo();
-	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 
 	m.myIPs=["14.38.247.30", "175.212.158.53"];
 	m.ignoreMe=true;
