@@ -169,8 +169,8 @@ m.byteCount=function (str) {
 	return encodeURI(str).split(/%..|./).length-1;
 };
 
-m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
-m.regExEmail=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+@[a-zA-Zㄱ-ㅎ가-힣0-9-_]+\.[\w]+$/;
+m.regExId=/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+$/;
+m.regExEmail=/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+\.[\w]{2,3}$/;
 m.minIdLength=1;
 m.maxIdLength=128;
 m.minPwdLength=4;
