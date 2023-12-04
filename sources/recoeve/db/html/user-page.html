@@ -823,7 +823,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div class="button button-loop" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">[--_L_oop--]</div>
 		<div class="button button-one-loop" onclick="$window.trigger({type:'keydown', keyCode:'P'.charCodeAt(0)})">[--One-loo_p_--]</div>
 		<div class="button button-ToR" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">[--_T_ofR--]</div>
-		<div class="button button-move-all" onclick="$window.trigger({type:'keydown', keyCode:'V'.charCodeAt(0)})">[--Move filtered all recos in ToRs to the different cats at once.--]</div>
+		<div class="button button-move-all" onclick="m.moveAllTo()">[--Move filtered all recos in ToRs to the different cats at once.--]</div>
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
@@ -3387,7 +3387,7 @@ m.reco_pointChange_do=function (args, err) {
 				r.desc="";
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
-			m.refresh(r.cats, "recoed", uri, true);
+			m.refresh(r.cats, "recoed", uri);
 			console.log("recoed: ", r, m.myRecos[uri]);
 			m.putCats_UriToLists(r.cats, uri);
 		}
@@ -5229,6 +5229,9 @@ m.closeNewReco=function () {
 		m.toggleNewReco();
 	}
 };
+m.moveAllTo=function () {
+
+};
 m.reco_do=function (args, err) {
 	if (err) {
 		m.delayedLogOut(`[--Reco failed.--] ${err}`, 60*60*24);
@@ -5260,7 +5263,7 @@ m.reco_do=function (args, err) {
 				m.myRecos[uri].desc=(`#originalURI\n${res[1]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
 			}
 			let cats=String(m.myRecos[uri].cats);
-			m.refresh(cats, "recoed", uri, true);
+			m.refresh(cats, "recoed", uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
