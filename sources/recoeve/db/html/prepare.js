@@ -66,14 +66,14 @@ m.pathOfNeighbor=function (user_id, cat, mode, lang, hashURI, args) {
 	}
 	return `/user/${user_id}${mode?`/mode/${mode}`:''}?${(cat!==null&&cat!==undefined)?`cat=${encodeURIComponent(cat)}`:""}${argsSearch}${lang?`&lang=${lang}`:""}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`;
 };
-m.pathOfRecoStat=function (uri, lang, hashURI, args) {
+m.pathOfRecoStat=function (uri, lang, hash, args) {
 	let argsSearch="";
 	if (args) {
 		for (const prop in args) {
 			argsSearch+=`&${prop}=${encodeURIComponent(args[prop])}`;
 		}
 	}
-	return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${lang?`&lang=${lang}`:""}${hashURI?`#${encodeURIComponent(hashURI)}`:""}`
+	return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${lang?`&lang=${lang}`:""}${hash?`#${encodeURIComponent(hash)}`:""}`
 }
 
 /*	:: cookies.js :: Slightly edited by kipid at 2023-10-25.
@@ -781,6 +781,7 @@ return new Promise(function (resolve, reject) {
 // Hangul (Korean) split and map to English
 // KE : Korean Expanded
 ////////////////////////////////////////////////////
+m.fsLength=m.fsLength||300;
 m.jamoKE=["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
 m.jamo=["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄸ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅃ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
 
