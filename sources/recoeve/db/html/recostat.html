@@ -2159,18 +2159,23 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		// console.log(blogStat);
 	});
 
-	if (m.initialHashURI==="new-reco") {
-		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-	}
-	else if (m.initialHashURI==="reco-stat") {
-		$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})
-	}
-
-	if (m.initialURI) {
-		m.uri=$input_uri[0].value=m.initialURI;
-		$input_uri.trigger("input");
-	}
-	window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
+	m.setIntervalInitialN=0;
+	m.setIntervalInitial=setInterval(function () {
+		if (m.initialHashURI==="new-reco") {
+			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+		}
+		else if (m.initialHashURI==="reco-stat") {
+			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})
+		}
+		if (m.initialURI) {
+			m.uri=$input_uri[0].value=m.initialURI;
+			$input_uri.trigger("input");
+		}
+		window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
+		if (m.setIntervalInitialN++>4) {
+			clearInterval(m.setIntervalInitial);
+		}
+	}, m.wait);
 });
 })(window.m, jQuery);
 </script>
