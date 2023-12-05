@@ -1175,18 +1175,19 @@ m.a_log_in=function (e) {
 	return false;
 };
 m.log_out_do=function (args, err) {
-	let $err=$("#log-out-do-container>.center");
 	if (err) {
-		$err.html(err);
+		$log_out_do_container.show();
+		$log_out_do.html(err);
 	}
 	$.ajax({
 		type:"POST", url:`/account/log-out.do`, data:args
 		, dataType:"text"
 	}).fail(function (resp) {
-		let msg="[--Log-out has failed.--]";
-		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
+		$log_out_do_container.show();
+		$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
 	}).done(function (resp) {
-		$err.html(resp);
+		$log_out_do_container.show();
+		$log_out_do.html(resp);
 		setTimeout(function () {
 			window.location.href=args.href;
 		}, m.wait);
@@ -1209,22 +1210,20 @@ m.a_log_out=function (e) {
 	}
 	return false;
 };
-m.log_out_from_all_do=function (args, err) {
-	let $err=$("#log-out-do-container>.center");
+m.log_out_do_from_all=function (args, err) {
 	if (err) {
-		$err.html(err);
-		$err.zIndex(31100);
+		$log_out_do_container.show();
+		$log_out_do.html(err);
 	}
 	$.ajax({
 		type:"POST", url:`/account/log-out-from-all.do`, data:args
 		, dataType:"text"
 	}).fail(function (resp) {
-		let msg="[--Log-out has failed.--]";
-		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
-		$err.zIndex(31200);
+		$log_out_do_container.show();
+		$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
 	}).done(function (resp) {
-		$err.html(resp);
-		$err.zIndex(31200);
+		$log_out_do_container.show();
+		$log_out_do.html(resp);
 		setTimeout(function () {
 			window.location.href=args.href;
 		}, m.wait);
