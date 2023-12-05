@@ -205,7 +205,7 @@ m.fullPts=10.0;
 
 m.a_log_in=function (e, elem) {
 	let uri=$input_uri[0].value;
-	let fullPath=m.pathOfRecoStat(uri, m.lang, window.location.hash);
+	let fullPath=m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
 		$a_log_in.attr("href", href);
@@ -218,7 +218,7 @@ m.a_log_in=function (e, elem) {
 };
 m.a_log_out=function (e, elem) {
 	let uri=$input_uri[0].value;
-	let fullPath=m.pathOfRecoStat(uri, m.lang, window.location.hash);
+	let fullPath=m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 	let href=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 	if (e&&e.which===2) {
 		$a_log_out.attr("href", href);
@@ -1618,7 +1618,7 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 		clearTimeout(m.timeOutGetInfos);
 		m.timeOutGetInfos=setTimeout(function () {
 			m.getAndShowDefsAndRecoInNewReco(false);
-			window.history.pushState({uri:m.uri}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash));
+			window.history.pushState({uri:m.uri}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 		}, 1024);
 	}
 });
@@ -2026,13 +2026,13 @@ m.processShortKey=function (e) {
 		m.hashURI="new-reco";
 		window.location.hash=`#${m.hashURI}`;
 		$window.scrollTop($new_reco.offset().top); // For when hash is not changed.
-		window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+		window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		break;
 	case 88: // X=88 To reco-stat
 		m.hashURI="reco-stat";
 		window.location.hash=`#${m.hashURI}`;
 		$window.scrollTop($reco_stat.offset().top); // For when hash is not changed.
-		window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+		window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		break;
 	case 69: // E=69 Expand/Hide floating keys
 		m.toggleFK();
@@ -2076,7 +2076,7 @@ m.processShortKey=function (e) {
 			m.hashURI=m.unescapeHTML($hI.find(".textURI").html());
 			window.location.hash=`#${encodeURIComponent(m.hashURI)}`;
 			$window.scrollTop($hI.offset().top);
-			window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+			window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		}
 		else if (hIID) {
 			m.hashURI=hIID;
@@ -2086,7 +2086,7 @@ m.processShortKey=function (e) {
 			else { // F=70 (normal) and D=68
 				$window.scrollTop($hI.offset().top);
 			}
-			window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+			window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		}
 		break;
 	case 73: // I=73
@@ -2114,7 +2114,7 @@ m.changeLang=function (lang, e, elem) {
 		vars.lang={key:"lang", val:lang};
 		vars.push(vars.lang);
 	}
-	let href=m.pathOfRecoStat(vars.uri?.val, vars.lang?.val, window.location.hash);
+	let href=m.pathOfRecoStat(vars.uri?.val, vars.lang?.val, window.location.hash.substring(1));
 	if (e&&e.which===2) { // wheel click.
 		$(elem).attr({"href":href});
 		window.open(href, "_blank");
@@ -2128,7 +2128,7 @@ m.changeLang=function (lang, e, elem) {
 let dataLang=await m.strToJSON($data_lang.html().trim());
 let htmlLangs="";
 for (let i=0;i<dataLang[0].length;i++) {
-	htmlLangs+=`<a href="${m.pathOfRecoStat(m.initialURI, m.lang, window.location.hash)}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+	htmlLangs+=`<a href="${m.pathOfRecoStat(m.initialURI, m.lang, window.location.hash.substring(1))}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
 }
 $choose_lang_list.html(htmlLangs);
 $choose_lang.on("click", function (e) {
@@ -2170,7 +2170,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		m.uri=$input_uri[0].value=m.initialURI;
 		$input_uri.trigger("input");
 	}
-	window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash));
+	window.history.replaceState({uri:m.uri, hash:window.location.hash.substring(1)}, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 });
 })(window.m, jQuery);
 </script>
