@@ -125,7 +125,7 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 
 #shortkeys {line-height:1}
 
-.numbers-of-recos {margin:1em 0; padding:.5em; width:100%}
+.numbers-of-recos {margin:0; padding:.5em; width:100%}
 
 .multireco {display:flex; justify-content:space-evenly; flex-wrap:wrap}
 .reco {margin:0 0 1em; border-top:.15em solid rgb(100,100,100); border-bottom:.15em solid rgb(100,100,100); background:black}
