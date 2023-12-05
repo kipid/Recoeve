@@ -23,7 +23,7 @@ window.m={
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
-	, shuffledOnece:false
+	, shuffledOnce:false
 	, lastRecoMode:"nothing"
 	, lastCat:"i8@ㅏ%자DKW2!"
 };
@@ -318,11 +318,11 @@ else if (m.docCookies.hasItem("lang")) {
 	</div>
 	<div id="error-msg" class="cBoth"></div>
 	<div class="buttons">
+		<div class="button fLeft" id="button-close" tabindex="5" onclick="m.closeNewReco()">[--Close--]</div>
+		<div class="button fLeft" id="button-back" tabindex="6">[--Back--]</div>
 		<div class="button" id="button-reco" tabindex="7">[--Reco--]</div>
 		<div class="button" id="button-edit" tabindex="8">[--Edit--]</div>
 		<div class="button" id="button-del" tabindex="9" style="background:#ff7600">[--Del--]</div>
-		<div class="button fLeft" id="button-close" tabindex="5" onclick="m.closeNewReco()">[--Close--]</div>
-		<div class="button fLeft" id="button-back" tabindex="6">[--Back--]</div>
 		<div class="cBoth"></div>
 	</div>
 	<label for="input-desc">[--Description--]</label>
@@ -2395,7 +2395,7 @@ m.fsCatOn=async function () {
 	else {
 		$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
-			$input_cats[0].value=$input_cats[0].value.replace(/[\"\'\`]+/ig,"");
+			$input_cats[0].value=m.formatCats($input_cats[0].value);
 			$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 			m.previous=Date.now();
 			m.doFSCat(m.fsCat);
@@ -2855,6 +2855,7 @@ m.val=function (val) {
 	str+=`${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
 	m.starsWidth=xc-pad0-2;
 	m.stars=function (val) {
+		if (!val||val.constructor!==Number||val===NaN) { val=-1; }
 		if (val<0) { val=0; }
 		else if (val>1) { val=1; }
 		return `<div class="stars-container" style="width:${xc+pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0+1}px; width:${(m.starsWidth*val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
@@ -3137,18 +3138,19 @@ m.renderStrDescCmt=function (str) {
 	return res;
 };
 m.stashReco=function (event) {
+	let $target=$(event.target);
+	let $reco=$target.parents(".reco");
+	let $result=$reco.find(".result");
 	if (!m.myIndex) {
 		m.delayedLogOut("You are not logged-in.", 60*60*24, $result);
 		return;
 	}
-	let $target=$(event.target);
-	let $reco=$target.parents(".reco");
-	if (m.myPage&&$reco.hasClass(".recom")) {
+	else {
 		let inRecoms=true;
 		let valStr=$reco.find(".str").html();
 		let uri=m.unescapeHTML($reco.find(".textURI").html());
 		let strHeads="do\turi\tval";
-		let strContents=`overwrite\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+		let strContents=`overwrite\t${m.encloseStr(uri)}\t`; // Empty val.
 		let r=m.myRecos[uri];
 		let recoDef=m.recoDefs[uri];
 		if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
@@ -3162,8 +3164,7 @@ m.stashReco=function (event) {
 		let cats="[--Stashed--]";
 		strHeads+="\tcats";
 		strContents+=`\t${m.encloseStr(cats)}`;
-		$result=$reco.find(".result");
-		$result?.html(`Stashing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
+		$result?.html(`Stashing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
 		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		m.putCats_UriToLists(cats, uri);
 	}
@@ -3856,7 +3857,7 @@ m.recoDowned=function (urisStr, recos) {
 	for (k=0;k<uris.length;k++) {
 		let uri=uris[k];
 		let r=recos[uri];
-		if (!r) { r=recos[uri]={}; }
+		if (!r) { r=recos[uri]={uri}; }
 		r.down=true; // User's or My reco on the uri is downloaded.
 	}
 };
@@ -4043,7 +4044,7 @@ m.loadMoreRecoms=async function (elem, sortedUntil, sortN) {
 			let uri=defs[j].uri;
 			let recoDefs=m.recoDefs[uri];
 			if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
-			recoDefs.defs=true;
+			recoDefs.down=true;
 			recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
 			recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
 			recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
@@ -4175,7 +4176,7 @@ return new Promise(async function (resolve, reject) {
 				let uri=defs[j].uri;
 				let recoDefs=m.recoDefs[uri];
 				if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
-				recoDefs.defs=true;
+				recoDefs.down=true;
 				recoDefs.defCats=await m.strToJSON(String(defs[j]["def-cats"]), false);
 				recoDefs.defTitles=await m.strToJSON(String(defs[j]["def-titles"]), false);
 				recoDefs.defDescs=await m.strToJSON(String(defs[j]["def-descs"]), false);
@@ -4495,7 +4496,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			if (fs.shuffled) {
-				fs.shuffled[fs.shuffled.length-1]={i:fs.fullList.length-1, sortN:fs.fullList.length-1};
+				fs.shuffled[fs.shuffled.length-1]={i:-1, sortN:-1};
 			}
 			await m.reTriggerFS(fs);
 			if (!m.fsGo.fullList[uri].catAndI) {
@@ -4530,9 +4531,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 						$reco.replaceWith(String(recoHTML));
 					}
 				}
-				let $recos_recos=$contents.find(".reco");
-				for (let k=0;k<$recos_recos.length;k++) {
-					let $reco=$recos_recos.eq(k);
+				let $contents_recos=$contents.find(".reco");
+				for (let k=0;k<$contents_recos.length;k++) {
+					let $reco=$contents_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
 					if (recoURI===uri) {
 						let recoHTML=await m.recoHTML(r, false, true);
@@ -4572,9 +4573,9 @@ m.refresh=async function (cats, option, uri, openCat) {
 							$reco.find(".button.edit").addClass("deleted");
 						}
 					}
-					$recos_recos=$contents.find(".reco");
-					for (let k=0;k<$recos_recos.length;k++) {
-						let $reco=$recos_recos.eq(k);
+					$contents_recos=$contents.find(".reco");
+					for (let k=0;k<$contents_recos.length;k++) {
+						let $reco=$contents_recos.eq(k);
 						let recoURI=m.unescapeHTML($reco.find(".textURI").html());
 						if (recoURI===uri) {
 							$reco.addClass("none deleted");
@@ -4733,7 +4734,7 @@ m.myRecos[""]=m.userRecos[""]={
 	uri:"", has:true, down:true, title:"", cats:"", desc:"", cmt:"", val:m.val("10.0/10")
 };
 m.recoDefs[""]={
-	uri:"", defTitles:[[""]], defCats:[[""]], defDescs:[[""]], defs:true, h1:"Empty URI."
+	uri:"", defTitles:[[""]], defCats:[[""]], defDescs:[[""]], down:true, h1:"Empty URI."
 };
 $my_reco=$("#my-reco");
 m.showReco=async function (r) {
@@ -4780,7 +4781,9 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 		if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 			$input_title[0].value=recoDef.defTitles[0][0];
 		}
-		$input_cats[0].value=m.currentCat;
+		if (recoDef.defCats[0]&&recoDef.defCats[0][0]) {
+			$input_cats[0].value=recoDef.defCats[0][0];
+		}
 		if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
 			$input_desc[0].value=recoDef.defDescs[0][0];
 		}
@@ -4829,7 +4832,7 @@ return new Promise(function (resolve, reject) {
 }
 m.showDefs=async function (uri) {
 	let recoDefs=m.recoDefs[uri];
-	if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri, defTitles:[[""]], defCats:[[""]], defDescs:[[""]], defs:false, h1:undefined}; }
+	if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri, defTitles:[[""]], defCats:[[""]], defDescs:[[""]], down:false, h1:undefined}; }
 	let defTitles=recoDefs.defTitles;
 	let defTitlesHTML="";
 	if (!recoDefs.h1) {
@@ -4941,7 +4944,11 @@ $def_cmd.on("click", function (e) {
 	let sStart=$input_desc[0].selectionStart;
 	let sEnd=$input_desc[0].selectionEnd;
 	let inputValue=$input_desc[0].value;
-	let inserted=m.unescapeHTML($(this).html());
+	let $target=$(event.target);
+	if (!$target.hasClass("def-cmd")) {
+		$target=$target.parents(".def-cmd");
+	}
+	let inserted=m.unescapeHTML($target.html());
 	$input_desc[0].value=`${inputValue.substring(0,sStart)}${inserted}${inputValue.substring(sEnd)}`;
 	$input_desc.focus();
 	sEnd=sStart+inserted.length;
@@ -5023,7 +5030,7 @@ return new Promise(function (resolve, reject) {
 m.getAndFillDefsInNewReco=function (r, fillDefs) {
 return new Promise(function (resolve, reject) {
 	let uri=r.uri;
-	if (m.recoDefs[uri]?.defs) {
+	if (m.recoDefs[uri]?.down) {
 		m.showDefs(uri);
 		resolve();
 	}
@@ -5036,7 +5043,7 @@ return new Promise(function (resolve, reject) {
 			let defs=await m.strToJSON(resp);
 			let recoDefs=m.recoDefs[uri];
 			if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri}; }
-			recoDefs.defs=true;
+			recoDefs.down=true;
 			if (defs[1]) {
 				recoDefs.defCats=await m.strToJSON(defs[1]["def-cats"], false);
 				recoDefs.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
@@ -5897,7 +5904,7 @@ return new Promise(async function (resolve, reject) {
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
 	if (shuffle||shuffle==="") {
-		m.shuffledOnece=true;
+		m.shuffledOnce=true;
 	}
 	switch (shuffle) {
 	case "shuffle":
@@ -5963,7 +5970,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(String(str));
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li=fs.$fsLis.eq(0);
-	if (m.lastCat!==m.currentCat||m.shuffledOnece) {
+	if (m.lastCat!==m.currentCat||m.shuffledOnce) {
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
@@ -6031,7 +6038,7 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
 							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
 							fs.shuffled=null;
-							m.shuffledOnece=false;
+							m.shuffledOnce=false;
 							m.lastRecoMode="nothing";
 							m.doNotPushHistory=true;
 							await m.openCat(m.currentCat);
@@ -6568,7 +6575,7 @@ m.processShortKey=function (e) {
 		else if (hIID) {
 			m.hashURI=hIID;
 			if (e.keyCode===70&&hIID.startsWith("load-recos-")) { // F=70
-				$window.scrollTop($hI.offset().top-$window.height()/2);
+				$window.scrollTop($hI.offset().top-$window.height()*2.0/3.0);
 			}
 			else { // F=70 (normal) and D=68
 				$window.scrollTop($hI.offset().top);
