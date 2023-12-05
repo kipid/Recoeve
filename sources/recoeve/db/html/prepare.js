@@ -1145,7 +1145,7 @@ m.formatCats=function (cats) {
 	if (!cats||cats.constructor!==String||cats.trim().length===0) {
 		return "";
 	}
-	cats=cats.trim().replace(/[\t\r\n]/g," ");
+	cats=cats.trim().replace(/[\t\r\n]/g," ").replace(/[\"\'\`]+/ig,"");
 	let list=cats.split(";");
 	for (let i=0;i<list.length;i++) {
 		let levels=list[i].split("--");
