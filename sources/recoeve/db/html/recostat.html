@@ -2025,13 +2025,13 @@ m.processShortKey=function (e) {
 	case 90: // Z=90 To new-reco
 		m.hashURI="new-reco";
 		window.location.hash=`#${m.hashURI}`;
-		$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+		$window.scrollTop($new_reco.offset().top); // For when hash is not changed.
 		window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		break;
 	case 88: // X=88 To reco-stat
 		m.hashURI="reco-stat";
 		window.location.hash=`#${m.hashURI}`;
-		$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
+		$window.scrollTop($reco_stat.offset().top); // For when hash is not changed.
 		window.history.replaceState({uri:m.uri, hash:window.location.hash}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 		break;
 	case 69: // E=69 Expand/Hide floating keys
