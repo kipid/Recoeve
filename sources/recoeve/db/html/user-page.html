@@ -776,7 +776,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button button-new-reco" onclick="$window.trigger({type:'keydown', keyCode:'N'.charCodeAt(0)})">[--_N_ew reco--]</div>
 </div><!-- div#head -->
 <div class="side2">
-	<div class="numbers-of-recos"></div>
 	<div id="button-get-recoms" class="button-mode none"></div>
 </div>
 <div class="side2 multireco" id="contents-recoms"></div>
@@ -791,6 +790,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </div>
 <div class="side2" id="headPlay">
 	<div style="font-size:.8em">[--When you just listen to music without seeing videos, to save data transfer fee and battery, hide list play with the below toggle button.--]</div>
+	<div class="numbers-of-recos" id="numbers-of-recos0"></div>
 	<a id="out-focus" style="display:none">out-focus</a>
 	<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">▼ [--Showing reco list play--]</div>
 	<div id="playlist-container">
@@ -827,7 +827,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<div id="reco-playing"></div>
 	</div>
 </div><!-- div#headPlay -->
-<div class="side2"><div class="numbers-of-recos"></div></div>
+<div class="side2"><div class="numbers-of-recos" id="numbers-of-recos1"></div></div>
 <div class="side2">
 	<div class="tip">[--Tip0: You can reco simply by dragging stars/points in well-organized other user's Recoeve.net.--]<br>
 <br>
@@ -3673,7 +3673,7 @@ m.reNewAndReOn=async function () {
 	$window.off("scroll.delayedLoad");
 	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 	$window.trigger("scroll.delayedLoad");
-	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed");
 	let $stars=$(".my-point>.stars-container");
 	$stars.off("click.mdInStars");
 	$stars.on("click.mdInStars", m.starsOnClick);
@@ -6289,7 +6289,7 @@ $block_touch.on("click dblclick touch mousedown touchstart mousemove touchmove m
 	e.stopPropagation();
 	e.preventDefault();
 });
-m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, #numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
+m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 m.zIndex=10010;
 m.processShortKey=function (e) {
 	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
