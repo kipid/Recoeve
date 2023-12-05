@@ -2924,6 +2924,8 @@ m.mmInPR=function (e) {
 			if (m.ptsRangeFrom!==PRL) {
 				m.ptsRangeFrom=Number(PRL.toFixed(2));
 				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
+				m.args.PRL=PRL.toFixed(2);
+				window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
 		}
 		if (m.mdInPRR) {
@@ -2931,6 +2933,8 @@ m.mmInPR=function (e) {
 			if (m.ptsRangeTo!==PRR) {
 				m.ptsRangeTo=Number(PRR.toFixed(2));
 				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
+				m.args.PRR=PRR.toFixed(2);
+				window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
@@ -2995,6 +2999,8 @@ m.mmInPR1=function (e) {
 			if (m.ptsRangeFrom!==PRL) {
 				m.ptsRangeFrom=Number(PRL.toFixed(2));
 				m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
+				m.args.PRL=PRL.toFixed(2);
+				window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
 		}
 		if (m.mdInPRR1) {
@@ -3002,6 +3008,8 @@ m.mmInPR1=function (e) {
 			if (m.ptsRangeTo!==PRR) {
 				m.ptsRangeTo=Number(PRR.toFixed(2));
 				m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
+				m.args.PRR=PRR.toFixed(2);
+				window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
 		}
 		$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
@@ -5932,7 +5940,7 @@ return new Promise(async function (resolve, reject) {
 		break;
 	default:
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:i};
+			shuffled[l-1-i]={i, sortN:i};
 		}
 		break;
 	}
@@ -5964,6 +5972,10 @@ return new Promise(async function (resolve, reject) {
 			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
 			fs.playNext(-1, null, true);
 		}
+	}
+	if (fs===m.fsToRs&&$table_of_recos_container.is(":visible")) {
+		m.args.ToR=$table_of_recos[0].value;
+		window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.hashURI, m.args));
 	}
 	resolve();
 });
@@ -6761,7 +6773,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	m.args={};
 	if (vars.timezone) {
-		let timezone=m.args.timezone=vars.timezone;
+		let timezone=vars.timezone;
 		m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
 		m.setTimezone(null, timezone);
 		$search_timezone[0].value=timezone;
