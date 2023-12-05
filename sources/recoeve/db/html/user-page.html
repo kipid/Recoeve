@@ -6237,6 +6237,13 @@ m.intervalOpenCat=function (intervalId) {
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 			}
 			m.doNotPushHistory=false;
+			if (m.searchVars.ToR?.val===""||m.searchVars.ToR?.val) {
+				$table_of_recos[0].value=m.searchVars.ToR.val;
+				if (!$table_of_recos_container.is(":visible")) {
+					$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+					$table_of_recos.trigger("keyup.fs");
+				}
+			}
 		}
 		else if (m.intervalCount[intervalId]>7) {
 			clearInterval(intervalId);
@@ -6250,6 +6257,13 @@ m.intervalOpenCat=function (intervalId) {
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 			}
 			m.doNotPushHistory=false;
+			if (m.searchVars.ToR?.val===""||m.searchVars.ToR?.val) {
+				$table_of_recos[0].value=m.searchVars.ToR.val;
+				if (!$table_of_recos_container.is(":visible")) {
+					$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
+					$table_of_recos.trigger("keyup.fs");
+				}
+			}
 		}
 	}
 };
@@ -6814,13 +6828,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 
 	$point_range_result.html((m.ptsRangeFrom*m.PRmax).toFixed(1)+"~"+(m.ptsRangeTo*m.PRmax).toFixed(1)+" / "+m.PRmax);
 
-	if (vars.ToR?.val===""||vars.ToR?.val) {
-		$table_of_recos[0].value=vars.ToR.val;
-		$table_of_recos.trigger("keyup.fs");
-		if (!$table_of_recos_container.is(":visible")) {
-			$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
-		}
-	}
 	if (!m.doNotPushHistory&&m.initialPathname!=="/reco") {
 		window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(cat, m.recoMode, m.lang, m.initialHashURI, m.args));
 	}
