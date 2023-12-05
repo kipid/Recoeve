@@ -335,6 +335,7 @@ else if (m.docCookies.hasItem("lang")) {
 	<div class="exit" style="margin:-1em -.2em 0 0" onclick='$button_close.trigger("click")'><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 	</form>
 </div><!-- div#new-reco -->
+<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" id="log-out-do" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em"></div></div>
 <div id="multireco-cats-container" class="fs-container" style="display:none">
 	<label for="multireco-input-cats" style="padding:.1em 3em">[--Multireco Categories--]</label>
 	<div class="move" style="z-index:10000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
@@ -917,6 +918,15 @@ $change_catList_order_ok=$("#change-catList-order-ok");
 $change_catList_order_cancel=$("#change-catList-order-cancel");
 
 $new_reco=$("#new-reco");
+$log_out_do_container=$("#log-out-do-container");
+$log_out_do_container.hide();
+$log_out_do=$("#log-out-do");
+$log_out_do_container.on("click", function (e) {
+	$log_out_do_container.hide();
+});
+$log_out_do.on("click", function (e) {
+	e.stopPropagation();
+});
 
 $headPlay=$("#headPlay");
 $toggle_reco_list_play=$("#toggle-reco-list-play");
@@ -1192,7 +1202,8 @@ m.a_log_out=function (e) {
 		window.open(href_log_out);
 	}
 	else {
-		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out from Recoeve.net--]</div></div>`);
+		$log_out_do_container.show();
+		$log_out_do.html(`[--Log-out from Recoeve.net--]`);
 		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 		m.rmb_me(m.log_out_do, {href:href_log_in, goto:fullPath});
 	}
@@ -1229,7 +1240,8 @@ m.a_log_out_from_all=function (e) {
 		window.open(href_log_out_from_all);
 	}
 	else {
-		$new_reco.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out at all devices from Recoeve.net--]</div></div>`);
+		$log_out_do_container.show();
+		$log_out_do.html(`[--Log-out at all devices from Recoeve.net--]`);
 		let href_log_in=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 		m.rmb_me(m.log_out_do_from_all, {href:href_log_in, goto:fullPath});
 	}
@@ -5238,7 +5250,9 @@ m.closeNewReco=function () {
 	}
 };
 m.moveAllTo=function () {
+	if (!$table_of_recos_container.is(":visible")) {
 
+	}
 };
 m.reco_do=function (args, err) {
 	if (err) {
