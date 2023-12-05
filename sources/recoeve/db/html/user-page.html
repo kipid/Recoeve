@@ -1169,7 +1169,7 @@ m.a_log_in=function (e) {
 	let href=`/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 	$a_log_in.attr("href", href);
 	if (e?.which===2) {
-		window.open(href);
+		window.open(href, "_blank");
 	}
 	else {
 		window.location.href=href;
@@ -1202,7 +1202,7 @@ m.a_log_out=function (e) {
 	let href_log_out=`/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 	$a_log_out.attr("href", href_log_out);
 	if (e?.which===2) {
-		window.open(href_log_out);
+		window.open(href_log_out, "_blank");
 	}
 	else {
 		$log_out_do_container.show();
@@ -1238,7 +1238,7 @@ m.a_log_out_from_all=function (e) {
 	let href_log_out_from_all=`/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
 	$a_log_out_from_all.attr("href", href_log_out_from_all);
 	if (e?.which===2) {
-		window.open(href_log_out_from_all);
+		window.open(href_log_out_from_all, "_blank");
 	}
 	else {
 		$log_out_do_container.show();
@@ -1254,7 +1254,7 @@ m.a_to_my_page=function (e) {
 	let fullPath=m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	$a_to_my_page.attr("href", fullPath);
 	if (e?.which===2) {
-		window.open(fullPath);
+		window.open(fullPath, "_blank");
 	}
 	else {
 		window.location.href=fullPath;
@@ -5330,11 +5330,6 @@ $button_reco.on("click", function (e) {
 		valid=false;
 		errorMsg="[--URI is Empty.--]";
 	}
-	// TODO: delete below.
-	// else if (m.getUTF8Length(uri)>255) {
-	// 	valid=false;
-	// 	errorMsg="[--URI (Length "+m.getUTF8Length(uri)+" &gt; maxUTF8Length 255) is too long.--]";
-	// }
 	else if (!val.valid) {
 		valid=false;
 		errorMsg="[--Points is of invalid form.--]";
@@ -5564,7 +5559,6 @@ m.triggerOpenCat=async function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		window.open(m.pathOfCat(cat, m.recoMode, null, m.hashURI), "_blank");
-		return;
 	}
 	else if (event?.which===1) {
 		event.preventDefault();
@@ -5580,14 +5574,6 @@ m.triggerOpenCat=async function (event) {
 			let i=fs.fullList.length;
 			fsFLCat=fs.fullList[i]=fs.fullList[cat]={i, cat, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 		}
-		// TODO: delete below.
-		// Duplicate operations.
-		// $("#catList").find(".cat").removeClass("selected");
-		// $elem.parent(".cat").addClass("selected");
-		// if (m.recoMode===""||m.recoMode==="multireco") {
-		// 	fsFLCat.down=true;
-		// 	$elem.addClass("down");
-		// }
 		let k=fsFLCat.i;
 		let $gotoCatsK=$(`#gotoCats-${k}`);
 		if ($gotoCatsK.exists()) {
@@ -5597,8 +5583,8 @@ m.triggerOpenCat=async function (event) {
 		fs.$fsl.prepend(`<div class="list-item${fsFLCat?.down?" down":""}${fsFLCat?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${k}</span>${fs.fullList[k].html}</div>`);
 		$gotoCatsK=$(`#gotoCats-${k}`);
 		$gotoCatsK.trigger("click");
-		return false;
 	}
+	return false;
 };
 m.completeCatAndOpenCat=async function (event) {
 	let $elem=$(event.target);
@@ -5659,10 +5645,6 @@ m.completeCatAndOpenCat=async function (event) {
 	}
 	else {
 		await m.openCat(cat);
-		// TODO: Delete the below.
-		// setTimeout(function () {
-		// 	m.fsToRs.$fsl.find(".list-item").eq(0).trigger("click");
-		// }, m.wait);
 	}
 	m.currentCat=cat;
 	m.fsViewAndScroll(fs, $elem);
@@ -6159,7 +6141,7 @@ m.shareCurrentPage=function (service, elem) {
 			});
 			return false;
 	}
-	window.open(href);
+	window.open(href, "_blank");
 	return false;
 };
 m.shareSNS=function (elem, service) {
@@ -6227,7 +6209,7 @@ m.shareSNS=function (elem, service) {
 			});
 			return;
 	}
-	window.open(href);
+	window.open(href, "_blank");
 	return false;
 };
 
