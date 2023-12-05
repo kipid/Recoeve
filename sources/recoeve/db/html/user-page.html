@@ -4495,9 +4495,6 @@ m.refresh=async function (cats, option, uri, openCat) {
 			fs=m.fsToRs;
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
-			if (fs.shuffled) {
-				fs.shuffled[fs.shuffled.length-1]={i:-1, sortN:-1};
-			}
 			await m.reTriggerFS(fs);
 			if (!m.fsGo.fullList[uri].catAndI) {
 				m.fsGo.fullList[uri].catAndI={};
