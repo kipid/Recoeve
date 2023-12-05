@@ -336,6 +336,7 @@ else if (m.docCookies.hasItem("lang")) {
 	</form>
 </div><!-- div#new-reco -->
 <div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" id="log-out-do" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em"></div></div>
+<div class="block-touch-exit exit" id="log-out-do-exit" style="z-index:31000; position:fixed" onclick="$('#log-out-do-container, #log-out-do-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="multireco-cats-container" class="fs-container" style="display:none">
 	<label for="multireco-input-cats" style="padding:.1em 3em">[--Multireco Categories--]</label>
 	<div class="move" style="z-index:10000; position:absolute; display:inline-block; left:0; top:0; width:2.1em; height:2.1em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white"><svg style="display:inline-block; width:100%; height:100%"><g style="stroke:white; stroke-width:10%; stroke-linecap:round">
@@ -870,6 +871,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div style="padding:.5em 1em; width:100%; background:black; color:white">[--The following is copied!--]</div>
 	<textarea id="textarea-copied" style="padding:.5em 1em; width:100%; height:20em; background:white; color:black"></textarea>
 </div></div>
+<div class="block-touch-exit exit" id="notify-copied-exit" style="z-index:31000; position:fixed" onclick="$('#notify-copied, #notify-copied-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </body>
 <div id="scripts"></div>
 <script>
@@ -6910,7 +6912,8 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				}
 				return false;
 			};
-			$new_reco.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in-container, #should-do-log-in-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+			$new_reco.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--You should log-in | sign-up first with remember me option.--]</div></div>
+<div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in-container, #should-do-log-in-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
 		}
 		if (!m.doNotPushHistory) {
 			window.history.replaceState({cat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", `/reco${m.initialSearch}${m.initialHashURI?`#${encodeURIComponent(m.initialHashURI)}`:""}`);
