@@ -5987,6 +5987,7 @@ return new Promise(async function (resolve, reject) {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
+		m.shuffledOnce=false;
 		await m.doFSToRs();
 		resolve();
 	}
@@ -5995,6 +5996,7 @@ return new Promise(async function (resolve, reject) {
 		setTimeout(async function () {
 			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
 			m.previous=Date.now();
+			m.shuffledOnce=false;
 			await m.doFSToRs();
 			resolve();
 		}, m.wait*1.5-passed);

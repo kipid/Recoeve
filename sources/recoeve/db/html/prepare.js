@@ -918,7 +918,7 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 	return res;
 };
 m.fuzzySearch=function (ptnSH, fs) {
-	if (!m.shuffledOnece) {
+	if (!m.shuffledOnce) {
 		if (ptnSH.splitted===fs[0].ptnSH.splitted) {
 			return fs[0];
 		}
@@ -935,7 +935,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 	}
 	let list=[];
-	if (m.shuffledOnece&&fs.shuffled&&fs.shuffled.length>0) {
+	if (m.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
 		for (let i=0;i<shuffled.length;i++) {
 			list.push(fs.fullList[shuffled[i].i]);
@@ -1075,7 +1075,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 		sorted[j]=temp;
 	}
-	m.shuffledOnece=false;
+	m.shuffledOnce=false;
 	return fs[0];
 };
 
