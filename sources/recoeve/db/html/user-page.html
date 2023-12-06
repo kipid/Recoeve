@@ -23,7 +23,6 @@ window.m={
 	, goOn:false
 	, ToRsOn:false
 	, newRecoOn:false
-	, shuffledOnce:false
 	, lastRecoMode:"nothing"
 	, lastCat:"i8@ㅏ%자DKW2!"
 };
@@ -1399,6 +1398,7 @@ m.fsToRs.lastIndex=-2;
 m.fsToRs.currentIndex=-1;
 m.fsToRs.fullList=[];
 m.fsToRs.shuffled=[];
+m.fsToRs.shuffledOnce=false;
 m.fsToRs.$fs=$table_of_recos;
 m.fsToRs.$fsl=$table_of_recos_list;
 m.fsToRs.$fs_container=$table_of_recos_container;
@@ -4490,16 +4490,17 @@ m.refresh=async function (cats, option, uri, openCat) {
 
 			// fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			// fs.fullList.push(fs.fullList[uri]);
-			await m.reTriggerFS(m.fsGo);
 
 			fs=m.fsToRs;
 			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
 			fs.fullList.push(fs.fullList[uri]);
 			await m.reTriggerFS(fs);
-			if (!m.fsGo.fullList[uri].catAndI) {
-				m.fsGo.fullList[uri].catAndI={};
-			}
-			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
+			m.fsGo.shuffledOnce=true;
+			await m.reTriggerFS(m.fsGo);
+			// if (!m.fsGo.fullList[uri].catAndI) {
+			// 	m.fsGo.fullList[uri].catAndI={};
+			// }
+			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
@@ -5903,7 +5904,8 @@ return new Promise(async function (resolve, reject) {
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
 	if (shuffle) {
-		m.shuffledOnce=true;
+		fs.shuffledOnce=true;
+		m.fsGo.shuffledOnce=true;
 	}
 	switch (shuffle) {
 	case "shuffle":
@@ -5969,7 +5971,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(String(str));
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li=fs.$fsLis.eq(0);
-	if (m.lastCat!==m.currentCat||m.shuffledOnce) {
+	if (m.lastCat!==m.currentCat||fs.shuffledOnce) {
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
@@ -6019,7 +6021,7 @@ if (m.myPage) {
 		let uris="\n";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
-			for (let i=fs.shuffled.length-1;i>=0;i--) {
+			for (let i=fs.shuffled.length-1;i>=0;i--) { // Newest uri to the top.
 				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();
@@ -6040,11 +6042,13 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
 							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
 							fs.shuffled=null;
-							m.shuffledOnce=false;
+							fs.shuffledOnce=true;
+							m.fsGo.shuffledOnce=true;
 							m.lastRecoMode="nothing";
 							m.doNotPushHistory=true;
 							await m.openCat(m.currentCat);
 							await m.reTriggerFS(fs);
+							await m.reTriggerFS(m.fsGo);
 							await m.reTriggerFS(m.fsGotoCats);
 						}
 						else if (resp==="false") {
