@@ -3728,7 +3728,10 @@ return new Promise(async function (resolve, reject) {
 		return resolve();
 	}
 	m.lastRecoMode=m.recoMode;
-	let $elem=$(elem);
+	let $elem=null;
+	if (elem) {
+		$elem=$(elem);
+	}
 	let fs=m.fsToRs;
 	let l=fs.fullList.length;
 	let strHTML="";
@@ -3745,7 +3748,7 @@ return new Promise(async function (resolve, reject) {
 	else if (elem===undefined||elem===null) {
 		from=l-1;
 		let nHiden=0, nShown=0;
-		for (let k=0;k<l;k++) {
+		for (let k=l-1;k>=0;k--) {
 			let fsFLk=fs.fullList[k];
 			let uri=fsFLk.uri;
 			let r=fsFLk.r;
@@ -3804,7 +3807,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	else if (from!==undefined&&from!==null&&from.constructor===Number) {
 		for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
-			let fsFLi=fs.fullList[i];
+			let fsFLi=fs.fullList[fs.shuffled[i].i];
 			let r=fsFLi.r;
 			let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
 			strHTML+=String(recoHTML);
@@ -4204,6 +4207,7 @@ return new Promise(async function (resolve, reject) {
 };
 m.getUriListAndShowRecosOnCat=async function (cat, scroll) {
 return new Promise(async function (resolve, reject) {
+	clearTimeout(m.setTimeoutGetUriListAndShowRecosOnCat);
 	if (m.catList[cat]) {
 		$("#catList").find(".cat").removeClass("selected");
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
@@ -4221,7 +4225,7 @@ return new Promise(async function (resolve, reject) {
 		}
 		m.countGetUriListAndShowRecosOnCat++;
 		if (m.countGetUriListAndShowRecosOnCat<7) {
-			setTimeout(async function () {
+			m.setTimeoutGetUriListAndShowRecosOnCat=setTimeout(async function () {
 				await m.getUriListAndShowRecosOnCat(cat, scroll);
 			}, m.wait);
 		}
@@ -4637,10 +4641,10 @@ m.openCat=async function (cat) {
 	$title.html(`${cat||cat===""?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
-		for (let k=uris.length-1;k>=0;k--) {
+		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) { // Must have recos on these uris.
-				m.userRecos[uri].i=uris.length-1-k;
+				m.userRecos[uri].i=uris.length-1-k; // Newest has the maximum index i.
 			}
 			else {
 				m.userRecos[uri]={uri, i:uris.length-1-k};
@@ -4656,15 +4660,14 @@ m.openCat=async function (cat) {
 			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
 				$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 			}
+			else if ($button_get_recoms.hasClass("enabled")) {
+				m.hashURI="button-get-recoms";
+				window.location.hash=`#${m.hashURI}`;
+				$window.scrollTop($button_get_recoms.offset().top);
+				window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+			}
 			else {
-				if ($button_get_recoms.hasClass("enabled")) {
-					m.hashURI="button-get-recoms";
-					window.location.hash=`#${m.hashURI}`;
-					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-				}
-				else {
-					$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-				}
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 			}
 		}
 		m.doNotPushHistory=false;
@@ -6021,7 +6024,7 @@ if (m.myPage) {
 		let uris="\n";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
-			for (let i=fs.shuffled.length-1;i>=0;i--) { // Newest uri to the top.
+			for (let i=fs.shuffled.length-1;i>=0;i--) { // Newest has the maximum index i. Newest uri to the top.
 				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();

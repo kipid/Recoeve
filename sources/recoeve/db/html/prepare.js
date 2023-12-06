@@ -634,7 +634,7 @@ $.fn.inView=function () {
 		let scrollTop=$window.scrollTop();
 		let elemTop=this.offset().top-m.delayPad;
 		let elemBottom=elemTop+this.height()+m.delayPad;
-		return (scrollTop+viewportHeight>elemTop)&&(scrollTop<elemBottom);
+		return (scrollTop+viewportHeight>=elemTop)&&(scrollTop<=elemBottom);
 	}
 	else {
 		return false;
