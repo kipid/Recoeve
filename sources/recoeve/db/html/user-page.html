@@ -3991,7 +3991,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	let fs=m.fsToRs;
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
-	fs.currentIndex=fs.fullList.length-1;
+	fs.currentIndex=0;
 	if (m.lastCat!==m.currentCat) {
 		fs.playNext(-1, null, true);
 	}
@@ -5977,7 +5977,7 @@ return new Promise(async function (resolve, reject) {
 	if (m.lastCat!==m.currentCat||fs.shuffledOnce) {
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
-			m.fsViewAndScroll(fs, $(`#toR-${fs.currentIndex}`));
+			m.fsViewAndScroll(fs, $li);
 			fs.playNext(-1, null, true);
 		}
 	}
@@ -7149,7 +7149,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
 	if (first) {
 		let $li=fs.$fsLis.eq(0);
-		if ($li.exists()&&$li.hasClass("list-item")) {
+		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li);
@@ -7163,7 +7163,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 			return;
 		}
 		else {
-			fs.currentIndex=-1;
+			fs.currentIndex=0;
 			$reco_playing.html('');
 			$eveElse.html('');
 			$youtube.html('');
@@ -7176,6 +7176,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 			m.setTimeoutPlayNext=setTimeout(function () {
 				fs.playNext(increment, cue, first);
 			}, m.wait);
+			console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
 			return;
 		}
 	}
