@@ -937,7 +937,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	let list=[];
 	if (m.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
-		for (let i==;i<shuffled.length;i++) {
+		for (let i=0;i<shuffled.length;i++) {
 			list.push(fs.fullList[shuffled[i].i]);
 		}
 	}
