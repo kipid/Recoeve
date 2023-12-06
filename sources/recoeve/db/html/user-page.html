@@ -835,8 +835,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <br>
 [--Tip0 Examples--]</div>
 </div>
-<div class="side2"><div class="button" id="toggle-manual" onclick="m.toggleManual()">▼ [--Hiding Recoeve.net Manual--]</div></div>
-<div class="side2 none" id="recoeve-manual" style="border:3px solid #f5deb3">
+<div class="side2"><div class="button" id="toggle-manual" onclick="m.toggleManual()">▼ [--Showing Recoeve.net Manual--]</div></div>
+<div class="side2" id="recoeve-manual" style="border:3px solid #f5deb3">
 	<div class="p">
 		Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a>
 	</div>
@@ -859,7 +859,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<span class="bold">Connect with Like-Minded Users</span>: The platform likely has features for connecting with other users who share your interests. You might follow or connect with these users to build your network.
 	</div>
 	<div style="margin:2em 0 0">How to use Recoeve.net and How to reco (레코이브 사용법)</div>
-	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0" allowfullscreen></iframe></div></div>
+	<div class="rC" style="margin:1em 0"><div class="rSC"><iframe delayed-src="https://www.youtube.com/embed/[--Manual youtube id--]" frameborder="0" allowfullscreen></iframe></div></div>
 </div><!-- div#recoeve-manual -->
 <div class="numbers-of-recos" id="numbers-of-recos"></div>
 <div class="side2" id="contents"></div><!-- div#contents -->
@@ -6951,6 +6951,11 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	if (m.docCookies.getItem("hideFK")==="y") {
 		$floating_key.hide();
 	}
+	if (m.docCookies.getItem("hideManual")==="y") {
+		if ($recoeve_manual.is(":visible")) {
+			m.toggleManual();
+		}
+	}
 	// setTimeout(async function () {
 	// 	await m.reTriggerFS(m.fsToRs);
 	// 	await m.reTriggerFS(m.fsCat);
@@ -7262,11 +7267,13 @@ m.toggleManual=function () {
 		$recoeve_manual.hide();
 		$toggle_manual.removeClass("enabled");
 		$toggle_manual.html(`▼ [--Hiding Recoeve.net Manual--]`);
+		m.docCookies.setItem("hideManual", "y", Infinity, "/", false, true);
 	}
 	else {
 		$recoeve_manual.show();
 		$toggle_manual.addClass("enabled");
 		$toggle_manual.html(`▼ [--Showing Recoeve.net Manual--]`);
+		m.docCookies.removeItem("hideManual", "/", false, true);
 	}
 };
 })(window.m, jQuery);
