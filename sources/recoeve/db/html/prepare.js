@@ -918,7 +918,7 @@ m.matchScoreFromIndices=function (strSH, ptnSH, indices) {
 	return res;
 };
 m.fuzzySearch=function (ptnSH, fs) {
-	if (!m.shuffledOnce) {
+	if (!fs.shuffledOnce) {
 		if (ptnSH.splitted===fs[0].ptnSH.splitted) {
 			return fs[0];
 		}
@@ -935,7 +935,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 	}
 	let list=[];
-	if (m.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
+	if (fs.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
 		for (let i=0;i<shuffled.length;i++) {
 			list.push(fs.fullList[shuffled[i].i]);
@@ -950,6 +950,15 @@ m.fuzzySearch=function (ptnSH, fs) {
 	else {
 		for (let i=0;i<fs.fullList.length;i++) {
 			list.push(fs.fullList[i]);
+		}
+		if (fs===m.fsGo&&fs.shuffledOnce) {
+			for (let i=0;i<fs.fullList.length;i++) {
+				let uri=fs.fullList[i].uri;
+				if (!fs.fullList[uri].catAndI) {
+					fs.fullList[uri].catAndI={};
+				}
+				fs.fullList[uri].catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
+			}
 		}
 	}
 	fs[0]=[];
@@ -1074,7 +1083,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		} // Desc sorting. Stable sort.
 		sorted[j]=temp;
 	}
-	m.shuffledOnce=false;
+	fs.shuffledOnce=false;
 	return fs[0];
 };
 
