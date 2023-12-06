@@ -5768,8 +5768,9 @@ m.gotoLi=async function (event) {
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLk=fs.fullList[uri];
-	fs.fullList[k]=fs.fullList[uri];
-	if (!fsFLk) { // if (!fsFLk), error!. Must be there.
+	console.log("fsFLkfs.fullList[uri];: ", fsFLk);
+	if (!fsFLk||fs.fullList[k]!==fs.fullList[uri]) { // if (!fsFLk), error!. Must be there.
+		console.log("Error: There is no m.fsGo.fullList[uri] or fs.fullList[k]!==fs.fullList[uri].");
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
 		}, m.wait);
@@ -5797,7 +5798,7 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catsSplit=fsFLk.catsSplit??["No cats"];
+	let catsSplit=fsFLk?.catsSplit??["No cats"];
 	for (let i=0;i<catsSplit.length;i++) {
 		if (m.currentCat===catsSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5807,6 +5808,7 @@ m.gotoLi=async function (event) {
 	if (!m.beInCurrentCat) {
 		await m.openCat(catsSplit[0]);
 	}
+	console.log("fsFLk.catAndI[m.currentCat]: ", fsFLk.catAndI[m.currentCat]);
 	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
