@@ -920,9 +920,9 @@ $change_catList_order_ok=$("#change-catList-order-ok");
 $change_catList_order_cancel=$("#change-catList-order-cancel");
 
 $new_reco=$("#new-reco");
-$log_out_do_container=$("#log-out-do-container");
-$log_out_do_container.hide();
+$log_out_do_container=$("#log-out-do-container, #log-out-do-exit");
 $log_out_do=$("#log-out-do");
+$log_out_do_container.hide();
 $log_out_do_container.on("click", function (e) {
 	$log_out_do_container.hide();
 });
@@ -6069,7 +6069,7 @@ if (m.myPage) {
 ////////////////////////////////////////////////////
 // SNS Sharing
 ////////////////////////////////////////////////////
-$notify_copied=$("#notify-copied");
+$notify_copied=$("#notify-copied, #notify-copied-exit");
 $textarea_copied=$("#textarea-copied");
 $notify_copied.hide();
 $notify_copied.on("click", function (e) {
