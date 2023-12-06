@@ -6012,16 +6012,18 @@ $result_of_change_order=$("#result-of-change-order")
 if (m.myPage) {
 	$button_save_this_order.show();
 	$button_save_this_order.on("click", function (e) {
-		$result_of_change_order.html("Changing the order of UriList.");
+		$result_of_change_order.html("[--Changing the order of UriList.--]");
+		$numbers_of_recos.html("[--Changing the order of UriList.--]");
 		let uris="\n";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
-			for (let i=0;i<fs.shuffled.length;i++) {
+			for (let i=fs.shuffled.length-1;i>=0;i--) {
 				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();
 			if (m.catUriList[m.currentCat].UriList.trim()===uris) {
-				$result_of_change_order.html("UriList order is the same as before.");
+				$result_of_change_order.html("[--UriList order is the same as before.--]");
+				$numbers_of_recos.html("[--UriList order is the same as before.--]");
 			}
 			else {
 				m.rmb_me(function (args) {
@@ -6031,7 +6033,8 @@ if (m.myPage) {
 						$result_of_change_order.html(resp);
 					}).done(async function (resp) {
 						if (resp==="true") {
-							$result_of_change_order.html("UriList order is changed.");
+							$result_of_change_order.html("[--UriList order is changed.--]");
+							$numbers_of_recos.html("[--UriList order is changed.--]");
 							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
 							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
 							fs.shuffled=null;
@@ -6043,17 +6046,20 @@ if (m.myPage) {
 							await m.reTriggerFS(m.fsGotoCats);
 						}
 						else if (resp==="false") {
-							$result_of_change_order.html("UriList order is NOT changed. Some error may occur.")
+							$result_of_change_order.html("[--UriList order is NOT changed. Some error may occur.--]");
+							$numbers_of_recos.html("[--UriList order is NOT changed. Some error may occur.--]");
 						}
 						else {
-							$result_of_change_order.html("Server error.")
+							$result_of_change_order.html("[--Server error.--]");
+							$numbers_of_recos.html("[--Server error.--]");
 						}
 					});
 				}, null);
 			}
 		}
 		else {
-			$result_of_change_order.html("UriList order is the same as before.");
+			$result_of_change_order.html("[--UriList order is the same as before.--]");
+			$numbers_of_recos.html("[--UriList order is the same as before.--]");
 		}
 	});
 }
