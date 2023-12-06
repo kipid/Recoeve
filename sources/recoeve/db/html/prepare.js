@@ -937,7 +937,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	let list=[];
 	if (m.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
-		for (let i=0;i<shuffled.length;i++) {
+		for (let i=shuffled.length-1;i>=0;i--) {
 			list.push(fs.fullList[shuffled[i].i]);
 		}
 	}
@@ -948,9 +948,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 	}
 	else {
-		let l=fs.fullList.length;
-		for (let i=0;i<l;i++) {
-			list.push(fs.fullList[l-1-i]);
+		for (let i=fs.fullList.length-1;i>=0;i--) {
+			list.push(fs.fullList[i]);
 		}
 	}
 	fs[0]=[];
@@ -1072,7 +1071,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 		let j=i;
 		for (;(j>0)&&(fs[0][sorted[j-1]].maxMatchScore<fs[0][temp].maxMatchScore);j--) {
 			sorted[j]=sorted[j-1];
-		}
+		} // Desc sorting. Stable sort.
 		sorted[j]=temp;
 	}
 	m.shuffledOnce=false;
