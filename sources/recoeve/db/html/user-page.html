@@ -6222,16 +6222,16 @@ m.shareSNS=function (elem, service) {
 ////////////////////////////////////////////////////
 m.intervalCount={};
 m.intervalOpenCat=function (intervalId) {
+	if (m.intervalCount[intervalId]===undefined) {
+		m.intervalCount[intervalId]=0;
+	}
+	m.intervalCount[intervalId]++;
 	console.log(`intervalId: ${intervalId}, m.intervalCount[intervalId]: ${m.intervalCount[intervalId]}`);
 	let fs=m.fsGotoCats;
 	let fsGotoCatsFLCat=fs.fullList[m.currentCat];
 	if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
 		let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-		if (m.intervalCount[intervalId]===undefined) {
-			m.intervalCount[intervalId]=0;
-		}
-		m.intervalCount[intervalId]++;
-		if (m.intervalCount[intervalId]>15) {
+		if (m.intervalCount[intervalId]>8) {
 			clearInterval(intervalId);
 			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
@@ -6258,7 +6258,7 @@ m.intervalOpenCat=function (intervalId) {
 				}
 			}
 		}
-		else if (m.intervalCount[intervalId]>7) {
+		else if (m.intervalCount[intervalId]>4) {
 			clearInterval(intervalId);
 			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
 			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
@@ -6277,6 +6277,12 @@ m.intervalOpenCat=function (intervalId) {
 					$table_of_recos.trigger("keyup.fs");
 				}
 			}
+		}
+	}
+	else {
+		if (m.intervalCount[intervalId]>4) {
+			clearInterval(intervalId);
+			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`)
 		}
 	}
 };
