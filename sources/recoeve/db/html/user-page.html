@@ -5978,7 +5978,7 @@ return new Promise(async function (resolve, reject) {
 		if ($li.exists()) {
 			fs.currentIndex=Number($li.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li);
-			fs.playNext(-1, null, true);
+			fs.playNext(-1, true, true);
 		}
 	}
 	if (fs===m.fsToRs&&$table_of_recos_container.is(":visible")) {
