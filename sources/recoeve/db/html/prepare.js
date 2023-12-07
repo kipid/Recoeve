@@ -938,7 +938,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 	if (fs.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
 		for (let i=shuffled.length-1;i>=0;i--) { // Newest bottom to the top. Max index to the top.
-			list.push(fs.fulurilList[shuffled[i].i]);
+			list.push(fs.fullList[shuffled[i].i]);
 		}
 	}
 	else if (fs[1]?.sorted?.length>=0) {
