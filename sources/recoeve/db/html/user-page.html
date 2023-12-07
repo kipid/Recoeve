@@ -6137,8 +6137,8 @@ if (m.myPage) {
 						if (resp==="true") {
 							$result_of_change_order.html("[--UriList order is changed.--]");
 							$numbers_of_recos.html("[--UriList order is changed.--]");
-							m.catUriList[m.currentCat].UriList="\n"+uris.trim()+"\n";
-							m.catUriList[m.currentCat].uris=uris.trim().split("\n");
+							m.catUriList[m.currentCat].uris=uris.trim().split("\n").reverse();
+							m.catUriList[m.currentCat].UriList="\n"+m.catUriList[m.currentCat].uris.join("\n")+"\n";
 							fs.shuffled=null;
 							fs.shuffledOnce=true;
 							m.fsGo.shuffledOnce=true;
