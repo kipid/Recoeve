@@ -3903,14 +3903,17 @@ return new Promise(async function (resolve, reject) {
 		r.val=m.val(String(r.val));
 		let catsSplit=r.cats?.split(";");
 		if (!m.fsGo.fullList[uri]) {
-			m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
+			m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			m.fsGo.fullList.push(m.fsGo.fullList[uri]);
 		}
 		else {
-			m.fsGo.fullList[uri].catsSplit=catsSplit;
-			m.fsGo.fullList[uri].uri=uri;
-			m.fsGo.fullList[uri].r=r;
-			m.fsGo.fullList[uri].catAndI={};
+			m.fsGo.fullList[uri]={...m.fsGo.fullList[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)}
+			// m.fsGo.fullList[uri].catsSplit=catsSplit;
+			// m.fsGo.fullList[uri].uri=uri;
+			// m.fsGo.fullList[uri].r=r;
+			// m.fsGo.fullList[uri].catAndI={};
+			// m.fsGo.fullList[uri].txt=m.splitHangul(`${r.cats} :: ${r.title}`);
+			// m.fsGo.fullList[uri].html=m.escapeOnlyTag(r.title);
 		}
 		for (let k=0;k<catsSplit.length;k++) {
 			let cat=catsSplit[k];
