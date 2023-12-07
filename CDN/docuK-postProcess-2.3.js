@@ -254,7 +254,6 @@ if (!m.printMode) {
 	$headOrBody.append($disqus_js);
 	m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 
-
 	m.myIPs=["14.38.247.30", "175.212.158.53"];
 	m.ignoreMe=true;
 	m.weekDays=["일", "월", "화", "수", "목", "금", "토"];
