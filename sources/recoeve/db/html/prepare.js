@@ -1125,7 +1125,7 @@ m.getUTF8Length=function (s) {
 };
 m.formatURI=function (uri) {
 	if (uri&&uri.constructor===String) {
-		uri=uri.trim().replace(/[\t\n]/g," ");
+		uri=uri.trim().replace(/[\s\t\n]+/g," ");
 		let exec=m.ptnTag.exec(uri);
 		if (exec!==null) {
 			try {
@@ -1154,35 +1154,35 @@ m.formatCats=function (cats) {
 		return "";
 	}
 	cats=cats.trim().replace(/[\t\r\n]/g," ").replace(/[\"\'\`]+/ig,"");
-	let list=cats.split(";");
-	for (let i=0;i<list.length;i++) {
-		let levels=list[i].split("--");
+	let catsSplit=cats.split(";");
+	for (let i=0;i<catsSplit.length;i++) {
+		let levels=catsSplit[i].split("--");
 		for (let j=0;j<levels.length;j++) {
-			levels[j]=levels[j].replace(/^[\s-]+/,"").replace(/[\s-]+$/,"");
+			levels[j]=levels[j].replace(/^[\s\-]+/,"").replace(/[\s\-]+$/,"");
 		}
-		list[i]="";
+		catsSplit[i]="";
 		let k=0;
 		for (;k<levels.length;k++) {
 			if (levels[k].length!==0) {
-				list[i]=levels[k];
+				catsSplit[i]=levels[k];
 				break;
 			}
 		}
 		for (k++;k<levels.length;k++) {
 			if (levels[k].length!==0) {
-				list[i]+="--"+levels[k];
+				catsSplit[i]+="--"+levels[k];
 			}
 		}
 	}
 	let catsMap={};
-	catsMap[list[0]]=true;
-	cats=list[0];
-	for (let i=1;i<list.length;i++) {
-		if (catsMap[list[i]]) {
+	catsMap[catsSplit[0]]=true;
+	cats=catsSplit[0];
+	for (let i=1;i<catsSplit.length;i++) {
+		if (catsMap[catsSplit[i]]) {
 		}
 		else {
-			catsMap[list[i]]=true;
-			cats+=";"+list[i];
+			catsMap[catsSplit[i]]=true;
+			cats+=";"+catsSplit[i];
 		}
 	}
 	return cats;
@@ -1696,20 +1696,13 @@ return new Promise(async function (resolve, reject) {
 					k++;
 				}
 				if (uri.substring(k,k+3)==="://") {
+					let uriAnalysed=m.analysisURL(uri);
 					k+=3;
-					let l=uri.indexOf('/',k);
-					let uriHost=null;
-					let uriRest='';
-					if (l===-1) {
-						uriHost=uri.substring(k);
-					}
-					else {
-						uriHost=uri.substring(k,l);
-						uriRest=uri.substring(l+1);
-					}
+					let uriHost=uriAnalysed.host;
+					let uriRest=uriAnalysed.pathname.substring(1)+uriAnalysed.search+uriAnalysed.hash;
 					if (m.ptnURI[uriHost]) {
 						try {
-							let result=await m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
+							let result=await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA);
 							if (Boolean(result)!==false&&(!result.list)) {
 								return resolve(result);
 							}
