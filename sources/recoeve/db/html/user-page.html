@@ -3934,7 +3934,7 @@ return new Promise(async function (resolve, reject) {
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
 			fsFLk.catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-			fsFL.push(fsFLk);
+			// fsFL.push(fsFLk);
 		}
 		await m.reTriggerFS(fs);
 	}
