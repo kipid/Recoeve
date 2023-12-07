@@ -3931,20 +3931,20 @@ m.getRecos=function (uris, recos, cat) {
 	let getRecosStr="uri";
 	let getRecosN=0;
 	let fs1=m.fsToRs;
-	let fs1FL=fs1.fullList;
-	if (recos===m.userRecos) {
-		fs1FL=fs1.fullList=[];
-	}
-	for (let i=uris.length-1;i>=0;i--) {
+	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=recos[uri];
 		if (!r) { r=recos[uri]={uri, down:false}; }
-		if (recos===m.userRecos) {
-			fs1FL[uris.length-1-i]=fs1FL[uri]={i:uris.length-1-i, uri, r};
-		}
 		if (!r.down) {
 			getRecosStr+="\n"+uri;
 			getRecosN++;
+		}
+	}
+	if (recos===m.userRecos) {
+		fs1.fullList=[];
+		for (let i=0;i<uris.length;i++) {
+			let uri=uris[i];
+			fs1.fullList[i]=fs1.fullList[uri]={i, uri, r:m.userRecos[uri]};
 		}
 	}
 	return new Promise(function (resolve, reject) {
