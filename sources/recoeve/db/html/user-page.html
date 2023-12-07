@@ -3266,7 +3266,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${r.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${m.fsToRs.fullList[r.uri].i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 <div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -3902,20 +3902,22 @@ return new Promise(async function (resolve, reject) {
 		}
 		r.val=m.val(String(r.val));
 		let catsSplit=r.cats?.split(";");
-		m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
-		m.fsGo.fullList.push(m.fsGo.fullList[uri]);
+		if (!m.fsGo.fullList[uri]) {
+			m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
+			m.fsGo.fullList.push(m.fsGo.fullList[uri]);
+		}
+		else {
+			m.fsGo.fullList[uri].catsSplit=catsSplit;
+			m.fsGo.fullList[uri].uri=uri;
+			m.fsGo.fullList[uri].r=r;
+			m.fsGo.fullList[uri].catAndI={};
+		}
 		for (let k=0;k<catsSplit.length;k++) {
 			let cat=catsSplit[k];
 			if (!m.catUriList[cat]?.has) {
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 			}
-			let i=0;
-			for (;i<m.catUriList[cat]?.uris?.length;i++) {
-				if (uri===m.catUriList[cat]?.uris[i]) {
-					break;
-				}
-			}
-			m.fsGo.fullList[uri].catAndI[cat]={cat, i};
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 		}
 	}
 	let fs=m.fsGo;
@@ -4036,13 +4038,17 @@ m.getUriList=function (catStrArray) {
 				catUL.has=true;
 				for (let p in respJSON[i]) {
 					if (isNaN(p)) {
-						catUL[p]=respJSON[i][p]; // cat, UriList
+						catUL[p]=respJSON[i][p]; // {cat, UriList}
 					}
 				}
 				catUL.uris=[];
 				if (catUL.UriList?.length!==0) {
 					catUL.uris=catUL.UriList.trim().split("\n").reverse(); // Newest has the maximum index i.
-					catUL.UriList="\n"+catUL.uris.join("\n")+"\n"
+					catUL.UriList="\n"+catUL.uris.join("\n")+"\n";
+					for (k=0;k<catUL.uris.length;k++) {
+						let uri=catUL.uris[k];
+						catUL.uris[uri]={i:k, uri};
+					}
 				}
 			}
 			resolve();
@@ -5820,20 +5826,22 @@ m.gotoLi=async function (event) {
 	}
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	let fsFLk=fs.fullList[uri];
-	console.log("fsFLkfs.fullList[uri];: ", fsFLk);
-	if (!fsFLk||fs.fullList[k]!==fs.fullList[uri]) { // if (!fsFLk), error!. Must be there.
+	let fsFLUri=fs.fullList[uri];
+	console.log("fsFLkfs.fullList[uri];: ", fsFLUri);
+	if (!fsFLUri||fs.fullList[k]!==fs.fullList[uri]) { // if (!fsFLUri), error!. Must be there.
+		// TODO: delete below.
+		let r=m.userRecos[uri];
+		if (r) {
+			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:String(r.cats).split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+			if (!fsFLUri.catAndI) {
+				fsFLUri.catAndI={};
+			}
+			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
+		}
 		console.log("Error: There is no m.fsGo.fullList[uri] or fs.fullList[k]!==fs.fullList[uri].");
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
 		}, m.wait);
-		// TODO: delete below.
-		let r=m.userRecos[uri];
-		if (r) {
-			fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:String(r.cats).split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-			fsFLk.catAndI={};
-			fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
-		}
 		return;
 	}
 	if ($elem.hasClass("selected")) {
@@ -5851,10 +5859,10 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	if (!fsFLk.catsSplit) {
-		fsFLk.catsSplit=fsFLk.r?.cats?.split(";");
+	if (!fsFLUri.catsSplit) {
+		fsFLUri.catsSplit=fsFLUri.r?.cats?.split(";");
 	}
-	let catsSplit=fsFLk.catsSplit??["No cats"];
+	let catsSplit=fsFLUri.catsSplit??["No cats"];
 	for (let i=0;i<catsSplit.length;i++) {
 		if (m.currentCat===catsSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5865,8 +5873,8 @@ m.gotoLi=async function (event) {
 		m.currentCat=catsSplit[0];
 		await m.openCat(m.currentCat);
 	}
-	console.log("fsFLk.catAndI[m.currentCat]: ", fsFLk.catAndI[m.currentCat]);
-	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length-1;
+	console.log("fsFLUri.catAndI[m.currentCat]: ", fsFLUri.catAndI[m.currentCat]);
+	let l=fsFLUri.catAndI[m.currentCat]?.i??fs1.fullList.length-1;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
