@@ -937,8 +937,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 	let list=[];
 	if (fs.shuffledOnce&&fs.shuffled&&fs.shuffled.length>0) {
 		let shuffled=fs.shuffled;
-		for (let i=0;i<shuffled.length;i++) {
-			list.push(fs.fullList[shuffled[i].i]);
+		for (let i=shuffled.length-1;i>=0;i--) { // Newest bottom to the top. Max index to the top.
+			list.push(fs.fulurilList[shuffled[i].i]);
 		}
 	}
 	else if (fs[1]?.sorted?.length>=0) {
@@ -948,16 +948,16 @@ m.fuzzySearch=function (ptnSH, fs) {
 		}
 	}
 	else {
-		for (let i=0;i<fs.fullList.length;i++) {
+		for (let i=fs.fullList.length-1;i>=0;i--) { // Newest bottom to the top. Max index to the top.
 			list.push(fs.fullList[i]);
 		}
 		if (fs===m.fsGo&&fs.shuffledOnce) {
-			for (let i=0;i<fs.fullList.length;i++) {
+			for (let i=fs.fullList.length-1;i>=0;i--) { // Newest bottom to the top. Max index to the top.
 				let uri=fs.fullList[i].uri;
 				if (!fs.fullList[uri].catAndI) {
 					fs.fullList[uri].catAndI={};
 				}
-				fs.fullList[uri].catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
+				fs.fullList[uri].catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length-1}
 			}
 		}
 	}

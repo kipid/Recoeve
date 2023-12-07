@@ -3901,6 +3901,22 @@ return new Promise(async function (resolve, reject) {
 			r.cmtR=m.renderStrDescCmt("");
 		}
 		r.val=m.val(String(r.val));
+		let catsSplit=r.cats?.split(";");
+		m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
+		m.fsGo.fullList.push(m.fsGo.fullList[uri]);
+		for (let k=0;k<catsSplit.length;k++) {
+			let cat=catsSplit[k];
+			if (!m.catUriList[cat]?.has) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
+			let i=0;
+			for (;i<m.catUriList[cat]?.uris?.length;i++) {
+				if (uri===m.catUriList[cat]?.uris[i]) {
+					break;
+				}
+			}
+			m.fsGo.fullList[uri].catAndI[cat]={cat, i};
+		}
 	}
 	let fs=m.fsGo;
 	let fsFL=fs.fullList=fs.fullList||[];
@@ -3916,7 +3932,7 @@ return new Promise(async function (resolve, reject) {
 			if (!fsFLk.catAndI) {
 				fsFLk.catAndI={};
 			}
-			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length};
+			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -3930,7 +3946,6 @@ return new Promise(async function (resolve, reject) {
 			}
 			r.i=uris.length-1-k;
 		}
-		m.lastIndexOfUriList=uris.length-1;
 	}
 	return resolve();
 });
@@ -4026,7 +4041,8 @@ m.getUriList=function (catStrArray) {
 				}
 				catUL.uris=[];
 				if (catUL.UriList?.length!==0) {
-					catUL.uris=catUL.UriList.trim().split("\n");
+					catUL.uris=catUL.UriList.trim().split("\n").reverse(); // Newest has the maximum index i.
+					catUL.UriList="\n"+catUL.uris.join("\n")+"\n"
 				}
 			}
 			resolve();
@@ -4500,13 +4516,15 @@ if (m.myPage) {
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
-				m.lastIndexOfUriList++;
-				r.i=m.lastIndexOfUriList; // Newest has the maximum index i of m.fsGo.fullList[i].
 				m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
 				m.fsGo.fullList.push(m.fsGo.fullList[uri]);
 				for (let k=0;k<catsSplit.length;k++) {
 					let cat=catsSplit[k];
-					m.fsGo.fullList[uri].catAndI[cat]={cat, i:0};
+					if (!m.catUriList[cat]?.has) {
+						$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
+						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					}
+					m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris?.length-1};
 				}
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
@@ -4536,7 +4554,7 @@ if (m.myPage) {
 			// if (!m.fsGo.fullList[uri].catAndI) {
 			// 	m.fsGo.fullList[uri].catAndI={};
 			// }
-			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length}
+			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1}
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
@@ -4667,7 +4685,6 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 // Open Cat
 /////////////////////////////////////////
-m.lastIndexOfUriList=0;
 m.openCat=async function (cat) {
 	cat=cat??"";
 	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
@@ -4677,13 +4694,12 @@ m.openCat=async function (cat) {
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) { // Must have recos on these uris.
-				m.userRecos[uri].i=k; // Newest has the minimum index i.
+				m.userRecos[uri].i=k; // Newest has the maximum index i.
 			}
 			else {
 				m.userRecos[uri]={uri, i:k};
 			}
 		}
-		m.lastIndexOfUriList=uris.length-1;
 	}
 	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 	m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
@@ -5816,7 +5832,7 @@ m.gotoLi=async function (event) {
 		if (r) {
 			fsFLk=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:String(r.cats).split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			fsFLk.catAndI={};
-			fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.fsToRs.fullList.length};
+			fsFLk.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
 		}
 		return;
 	}
@@ -5850,7 +5866,7 @@ m.gotoLi=async function (event) {
 		await m.openCat(m.currentCat);
 	}
 	console.log("fsFLk.catAndI[m.currentCat]: ", fsFLk.catAndI[m.currentCat]);
-	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length;
+	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length-1;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
@@ -5991,7 +6007,7 @@ return new Promise(async function (resolve, reject) {
 		break;
 	default:
 		for (let i=0;i<l;i++) {
-			shuffled[l-1-i]={i:l-1-i, sortN:i};
+			shuffled[l-1-i]={i:l-1-i, sortN:i}; // Desc sorted.
 		}
 		break;
 	}
@@ -6067,7 +6083,7 @@ if (m.myPage) {
 		let uris="\n";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
-			for (let i=0;i<fs.shuffled.length;i++) { // Newest has the minimum index i. Newest uri to the top.
+			for (let i=;i<fs.shuffled.length;i++) { // Newest has the maximum index i. Newest uri to the bottom (push).
 				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();
@@ -6076,6 +6092,7 @@ if (m.myPage) {
 				$numbers_of_recos.html("[--UriList order is the same as before.--]");
 			}
 			else {
+				uris=uris.split("\n").reverse().join("\n");
 				m.rmb_me(function (args) {
 					$.ajax({
 						type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
