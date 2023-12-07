@@ -6083,7 +6083,7 @@ if (m.myPage) {
 		let uris="\n";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
-			for (let i=;i<fs.shuffled.length;i++) { // Newest has the maximum index i. Newest uri to the bottom (push).
+			for (let i=0;i<fs.shuffled.length;i++) { // Newest has the maximum index i. Newest uri to the bottom (push).
 				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
 			}
 			uris=uris.trim();
