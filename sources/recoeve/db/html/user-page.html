@@ -3815,7 +3815,10 @@ return new Promise(async function (resolve, reject) {
 	}
 	else if (from!==undefined&&from!==null&&from.constructor===Number) {
 		for (let i=from, k=0;i>=0&&k<m.maxShowReco;i--, k++) {
-			let fsFLi=fs.fullList[fs.shuffled[i].i];
+			let fsFLi=fs.fullList[i];
+			if (fs.shuffled[i]) {
+				fsFLi=fs.fullList[fs.shuffled[i].i];
+			}
 			let r=fsFLi.r;
 			let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
 			strHTML+=String(recoHTML);
