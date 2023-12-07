@@ -6127,18 +6127,18 @@ if (m.myPage) {
 				$numbers_of_recos.html("[--UriList order is the same as before.--]");
 			}
 			else {
-				uris=uris.split("\n").reverse().join("\n");
+				let urisReversed=uris.split("\n").reverse().join("\n");
 				m.rmb_me(function (args) {
 					$.ajax({
-						type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:uris, dataType:"text"
+						type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:urisReversed, dataType:"text"
 					}).fail(function (resp) {
 						$result_of_change_order.html(resp);
 					}).done(async function (resp) {
 						if (resp==="true") {
 							$result_of_change_order.html("[--UriList order is changed.--]");
 							$numbers_of_recos.html("[--UriList order is changed.--]");
-							m.catUriList[m.currentCat].uris=uris.trim().split("\n").reverse();
-							m.catUriList[m.currentCat].UriList="\n"+m.catUriList[m.currentCat].uris.join("\n")+"\n";
+							m.catUriList[m.currentCat].UriList="\n"+uris+"\n";
+							m.catUriList[m.currentCat].uris=uris.split("\n");
 							fs.shuffled=null;
 							fs.shuffledOnce=true;
 							m.fsGo.shuffledOnce=true;
