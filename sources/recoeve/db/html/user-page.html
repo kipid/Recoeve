@@ -824,6 +824,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div class="button" onclick="m.doFSToRs('tLast-asc')">[--Sort by tLast, asc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-desc')">[--Sort by point, desc--]</div>
 				<div class="button" onclick="m.doFSToRs('point-asc')">[--Sort by point, asc--]</div>
+				<div class="button" onclick="m.doFSToRs('title-desc')">[--Sort by title, desc--]</div>
+				<div class="button" onclick="m.doFSToRs('title-asc')">[--Sort by title, asc--]</div>
 				<div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
 				<div id="result-of-change-order" style="display:table; font-size:.7em; max-width:20em"></div>
 			</div>
@@ -5988,32 +5990,42 @@ return new Promise(async function (resolve, reject) {
 		break;
 	case "tFirst-desc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
+			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tFirst)};
 		}
 		break;
 	case "tFirst-asc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tFirst)};
+			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tFirst)};
 		}
 		break;
 	case "tLast-desc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tLast)};
+			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tLast)};
 		}
 		break;
 	case "tLast-asc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-m.datetimeToMs(fs.fullList[i].r.tLast)};
+			shuffled[i]={i, sortN:m.datetimeToMs(fs.fullList[i].r.tLast)};
 		}
 		break;
 	case "point-desc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
+			shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
 		}
 		break;
 	case "point-asc":
 		for (let i=0;i<l;i++) {
-			shuffled[i]={i, sortN:-fs.fullList[i].r.val.val};
+			shuffled[i]={i, sortN:fs.fullList[i].r.val.val};
+		}
+		break;
+	case "title-desc":
+		for (let i=0;i<l;i++) {
+			shuffled[i]={i, sortN:fs.fullList[i].r.title.toLowerCase()};
+		}
+		break;
+	case "title-asc":
+		for (let i=0;i<l;i++) {
+			shuffled[l-1-i]={i:l-1-i, sortN:fs.fullList[i].r.title.toLowerCase()};
 		}
 		break;
 	default:
@@ -6027,7 +6039,7 @@ return new Promise(async function (resolve, reject) {
 		let j=i;
 		for (;(j>0)&&(shuffled[j-1].sortN<temp.sortN);j--) {
 			shuffled[j]=shuffled[j-1];
-		} // Desc sorting. Stable sort.
+		} // Desc sorting. Stable sort. Largest to the bottom.
 		shuffled[j]=temp;
 	}
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
