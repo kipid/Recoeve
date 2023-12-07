@@ -5835,7 +5835,10 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	let catsSplit=fsFLk?.catsSplit??["No cats"];
+	if (!fsFLk.catsSplit) {
+		fsFLk.catsSplit=fsFLk.r?.cats?.split(";");
+	}
+	let catsSplit=fsFLk.catsSplit??["No cats"];
 	for (let i=0;i<catsSplit.length;i++) {
 		if (m.currentCat===catsSplit[i]) {
 			m.beInCurrentCat=true;
@@ -5843,7 +5846,8 @@ m.gotoLi=async function (event) {
 		}
 	}
 	if (!m.beInCurrentCat) {
-		await m.openCat(catsSplit[0]);
+		m.currentCat=catsSplit[0];
+		await m.openCat(m.currentCat);
 	}
 	console.log("fsFLk.catAndI[m.currentCat]: ", fsFLk.catAndI[m.currentCat]);
 	let l=fsFLk.catAndI[m.currentCat]?.i??fs1.fullList.length;
