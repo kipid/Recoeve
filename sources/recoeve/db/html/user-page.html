@@ -4455,21 +4455,37 @@ return new Promise(async function (resolve, reject) {
 });
 };
 m.refresh=async function (cats, option, uri, openCat) {
+if (m.myPage) {
 	cats=String(cats);
 	option=String(option);
 	uri=String(uri);
-	let c=cats.split(";");
+	let catsSplit=cats.split(";");
 	let k=0;
 	if (m.currentCat!==undefined) {
-		for (k=c.length-1;k>0;k--) {
-			if (c[k]===m.currentCat) {break;}
+		for (k=catsSplit.length-1;k>0;k--) {
+			if (catsSplit[k]===m.currentCat) {break;}
 		}
 	}
 	let r=m.myRecos[uri];
 	let cat=m.currentCat;
-	if (c[k]!==m.currentCat&&openCat) {
-		cat=m.currentCat=c[k];
-		$(`#gotoCats-${m.fsGotoCats.fullList[m.currentCat].i}`).trigger("click");
+	if (catsSplit[k]!==m.currentCat&&openCat) {
+		cat=m.currentCat=catsSplit[k];
+		let fsGotoCatsFLCat=m.fsGotoCats.fullList[m.currentCat];
+		if (fsGotoCatsFLCat) {
+			let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
+			if ($gotoCatsI.exists()) {
+				$gotoCatsI.trigger("click");
+			}
+			else {
+				m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
+				$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
+				$gotoCatsI.trigger("click");
+			}
+		}
+		else {
+			window.open(m.pathOfCat(m.currentCat), "_blank");
+			return;
+		}
 	}
 	else {
 		let $recoms_recos=null;
@@ -4477,7 +4493,13 @@ m.refresh=async function (cats, option, uri, openCat) {
 		case "recoed":
 			if (m.myPage) {
 				m.lastIndexOfUriList++;
-				r.i=m.lastIndexOfUriList;
+				r.i=m.lastIndexOfUriList; // Newest has the maximum index i of m.fsGo.fullList[i].
+				m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}};
+				m.fsGo.fullList.push(m.fsGo.fullList[uri]);
+				for (let k=0;k<catsSplit.length;k++) {
+					let cat=catsSplit[k];
+					m.fsGo.fullList[uri].catAndI[cat]={cat, i:0};
+				}
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
@@ -4617,7 +4639,7 @@ m.refresh=async function (cats, option, uri, openCat) {
 			m.openCat(cat);
 		}
 	}
-};
+}};
 
 m.ExpCol=function (elem, catEC) {
 	let $elem=$(elem);
@@ -4639,8 +4661,9 @@ m.ExpCol=function (elem, catEC) {
 /////////////////////////////////////////
 m.lastIndexOfUriList=0;
 m.openCat=async function (cat) {
+	cat=cat??"";
 	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
-	$title.html(`${cat||cat===""?`${m.escapeOnlyTag(cat)} of `:""}${m.userId}'s recoeve.net`);
+	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:"[--Uncategorized--] of "}${m.userId}'s recoeve.net`);
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
 		for (let k=0;k<uris.length;k++) {
@@ -4649,7 +4672,7 @@ m.openCat=async function (cat) {
 				m.userRecos[uri].i=k; // Newest has the minimum index i.
 			}
 			else {
-				m.userRecos[uri]={uri, i:uris.length-1-k};
+				m.userRecos[uri]={uri, i:k};
 			}
 		}
 		m.lastIndexOfUriList=uris.length-1;
@@ -6059,7 +6082,8 @@ if (m.myPage) {
 							m.doNotPushHistory=true;
 							await m.reTriggerFS(fs);
 							await m.reTriggerFS(m.fsGo);
-							await m.reTriggerFS(m.fsGotoCats);
+							fs.shuffledOnce=true;
+							m.fsGo.shuffledOnce=true;
 							await m.openCat(m.currentCat);
 						}
 						else if (resp==="false") {
@@ -6067,8 +6091,8 @@ if (m.myPage) {
 							$numbers_of_recos.html("[--UriList order is NOT changed. Some error may occur.--]");
 						}
 						else {
-							$result_of_change_order.html("[--Server error.--]");
-							$numbers_of_recos.html("[--Server error.--]");
+							$result_of_change_order.html(`[--Server error.--] ${resp}`);
+							$numbers_of_recos.html(`[--Server error.--] ${resp}`);
 						}
 					});
 				}, null);
@@ -7157,6 +7181,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	if (first) {
 		let $li0=fs.$fsLis.eq(0);
 		if ($li0.exists()) {
+			fs.lastIndex=-1;
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li0);
@@ -7170,7 +7195,8 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 			return;
 		}
 		else {
-			fs.currentIndex=fs.fullList.length-1;
+			fs.lastIndex=-1;
+			fs.currentIndex=0;
 			$reco_playing.html('');
 			$eveElse.html('');
 			$youtube.html('');
@@ -7212,7 +7238,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 		m.setTimeoutPlayNextCount=0;
 	}
 	else {
-		if (m.setTimeoutPlayNextCount===undefined) {
+		if (m.setTimeoutPlayNextCount===undefined||m.setTimeoutPlayNextCount>=7) {
 			m.setTimeoutPlayNextCount=0;
 		}
 		m.setTimeoutPlayNextCount++;
