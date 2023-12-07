@@ -3819,9 +3819,11 @@ return new Promise(async function (resolve, reject) {
 			if (fs.shuffled[i]) {
 				fsFLi=fs.fullList[fs.shuffled[i].i];
 			}
-			let r=fsFLi.r;
-			let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
-			strHTML+=String(recoHTML);
+			let r=fsFLi?.r;
+			if (r) {
+				let recoHTML=await m.recoHTML(r, false, fsFLi.inRange);
+				strHTML+=String(recoHTML);
+			}
 		}
 		let beforeLoadSH=document.documentElement.scrollHeight;
 		let beforeST=$window.scrollTop();
