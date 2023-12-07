@@ -5826,15 +5826,15 @@ m.gotoLi=async function (event) {
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLUri=fs.fullList[uri];
 	console.log("fsFLkfs.fullList[uri];: ", fsFLUri);
-	if (!fsFLUri||fs.fullList[k]!==fs.fullList[uri]) { // if (!fsFLUri), error!. Must be there.
+	if (!fsFLUri) { // if (!fsFLUri), error!. Must be there.
 		// TODO: delete below.
 		let r=m.userRecos[uri];
 		if (r) {
-			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:String(r.cats).split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			if (!fsFLUri.catAndI) {
 				fsFLUri.catAndI={};
 			}
-			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
+			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.catUriList[m.currentCat]?.uris[uri]?.i};
 		}
 		console.log("Error: There is no m.fsGo.fullList[uri] or fs.fullList[k]!==fs.fullList[uri].");
 		m.setTimeoutGotoLi=setTimeout(function () {
