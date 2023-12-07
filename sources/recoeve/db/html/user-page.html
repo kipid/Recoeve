@@ -3927,14 +3927,11 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit:String(r.cats).split(";"), uri, r};
+			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit:String(r.cats).split(";"), uri, r, catAndI:{}};
 			fsFL.push(fsFLk);
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
-			if (!fsFLk.catAndI) {
-				fsFLk.catAndI={};
-			}
-			fsFLk.catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
+			fsFLk.catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -4530,7 +4527,7 @@ if (m.myPage) {
 						$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
 						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					}
-					m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris?.length-1};
+					m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 				}
 			}
 			$recoms_recos=$contents_recoms.find(".reco");
@@ -4560,7 +4557,7 @@ if (m.myPage) {
 			// if (!m.fsGo.fullList[uri].catAndI) {
 			// 	m.fsGo.fullList[uri].catAndI={};
 			// }
-			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.fsToRs.fullList[uri]?.i??m.catUriList.uris.length-1};
+			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
