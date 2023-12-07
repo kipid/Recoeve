@@ -197,7 +197,7 @@ public static void main(String... args) {
 			String fileName=null;
 			try {
 				fileName=URLDecoder.decode(ctx.pathParam("fileName"), "UTF-8");
-				System.out.println("/CND/:fileName :: fileName="+fileName);
+				System.out.println("/CDN/:fileName :: fileName="+fileName);
 			}
 			catch (UnsupportedEncodingException e) {
 				System.out.println(e);
@@ -205,7 +205,7 @@ public static void main(String... args) {
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
 				pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
-				pl.req.response().putHeader("ETag", "1.5.1");
+				pl.req.response().putHeader("ETag", "1.5.2");
 				String[] fileNameSplit=fileName.split("\\.");
 				switch (fileNameSplit[fileNameSplit.length-1]) {
 					case "ico":
