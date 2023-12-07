@@ -3901,40 +3901,40 @@ return new Promise(async function (resolve, reject) {
 			r.cmtR=m.renderStrDescCmt("");
 		}
 		r.val=m.val(String(r.val));
-		let catsSplit=r.cats?.split(";");
-		if (!m.fsGo.fullList[uri]) {
-			m.fsGo.fullList[uri]={i:m.fsGo.fullList.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-			m.fsGo.fullList.push(m.fsGo.fullList[uri]);
-		}
-		else {
-			m.fsGo.fullList[uri]={...m.fsGo.fullList[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)}
-			// m.fsGo.fullList[uri].catsSplit=catsSplit;
-			// m.fsGo.fullList[uri].uri=uri;
-			// m.fsGo.fullList[uri].r=r;
-			// m.fsGo.fullList[uri].catAndI={};
-			// m.fsGo.fullList[uri].txt=m.splitHangul(`${r.cats} :: ${r.title}`);
-			// m.fsGo.fullList[uri].html=m.escapeOnlyTag(r.title);
-		}
-		for (let k=0;k<catsSplit.length;k++) {
-			let cat=catsSplit[k];
-			if (!m.catUriList[cat]?.has) {
-				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-			}
-			m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-		}
 	}
 	let fs=m.fsGo;
-	let fsFL=fs.fullList=fs.fullList||[];
+	let fsFL=fs.fullList;
 	if (recos===m.userRecos) {
 		for (let k=1;k<resp.length;k++) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit:String(r.cats).split(";"), uri, r, catAndI:{}};
-			fsFL.push(fsFLk);
+			let catsSplit=r.cats?.split(";");
+			if (!fsFL[uri]) {
+				fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+				fsFL.push(fsFL[uri]);
+			}
+			else {
+				fsFL[uri]={...fsFL[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)}
+				// fsFL[uri].catsSplit=catsSplit;
+				// fsFL[uri].uri=uri;
+				// fsFL[uri].r=r;
+				// fsFL[uri].catAndI={};
+				// fsFL[uri].txt=m.splitHangul(`${r.cats} :: ${r.title}`);
+				// fsFL[uri].html=m.escapeOnlyTag(r.title);
+			}
+			for (let k=0;k<catsSplit.length;k++) {
+				let cat=catsSplit[k];
+				if (!m.catUriList[cat]?.has) {
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				}
+				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+			}
+			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}};
 			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
 			fsFLk.html=m.escapeOnlyTag(String(r.title));
 			fsFLk.catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+			fsFL.push(fsFLk);
 		}
 		await m.reTriggerFS(fs);
 	}
