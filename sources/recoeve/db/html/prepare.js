@@ -970,8 +970,8 @@ m.fuzzySearch=function (ptnSH, fs) {
 	}
 	for (let i=0;i<list.length;i++) {
 		let listI=list[i];
-		if (regExs.length>0) {
-			let txt=listI.txt;
+		let txt=listI.txt;
+		if (regExs.length>0&&txt) {
 			let txtS=txt.splitted;
 			let txtSReversed=txtS.split("").reverse().join("");
 			regExs[0].lastIndex=0;
