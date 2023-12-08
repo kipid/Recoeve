@@ -4056,6 +4056,12 @@ m.getAndShowRecosOnCat=async function (cat) {
 		await m.getRecos(uris, m.myRecos, cat);
 	}
 	let fs=m.fsToRs;
+	let fsFL=fs.fullList=[];
+	for (let i=0;i<uris.length;i++) {
+		let uri=uris[i];
+		let r=m.userRecos[uri];
+		fsFL.push({i:fsFL.length, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)});
+	}
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
 	fs.currentIndex=fs.fullList.length-1;
@@ -5734,7 +5740,6 @@ m.completeCatAndOpenCat=async function (event) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco") {
-			fs.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 			$catI.find(".baseCat").addClass("down");
 		}
 	}
@@ -5800,11 +5805,11 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		$target.off("keyup.fs cut.fs paste.fs click.fs");
 		switch (shortKey) {
 		case 'T':
-			m.fsToRsOn=false;
+			m.ToRsOn=false;
 			m.fsToRs.$fs_container.hide();
 			break;
 		case 'G':
-			m.fsGoOn=false;
+			m.GoOn=false;
 			m.fsGo.$fs_container.hide();
 			break;
 		}
@@ -7126,15 +7131,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			m.toggleManual();
 		}
 	}
-	// setTimeout(async function () {
-	// 	await m.reTriggerFS(m.fsToRs);
-	// 	await m.reTriggerFS(m.fsCat);
-	// 	await m.reTriggerFS(m.fsMRCat);
-	// 	await m.reTriggerFS(m.fsGotoCats);
-	// 	await m.reTriggerFS(m.fsTimezone);
-	// 	await m.reTriggerFS(m.fsGo);
-	// 	m.initialOpen=false;
-	// }, 2*m.wait);
 	setTimeout(async function () {
 		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsCat);
@@ -7143,7 +7139,16 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		await m.reTriggerFS(m.fsTimezone);
 		await m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 4*m.wait);
+	}, 2*m.wait);
+	// setTimeout(async function () {
+	// 	await m.reTriggerFS(m.fsToRs);
+	// 	await m.reTriggerFS(m.fsCat);
+	// 	await m.reTriggerFS(m.fsMRCat);
+	// 	await m.reTriggerFS(m.fsGotoCats);
+	// 	await m.reTriggerFS(m.fsTimezone);
+	// 	await m.reTriggerFS(m.fsGo);
+	// 	m.initialOpen=false;
+	// }, 4*m.wait);
 });
 
 ////////////////////////////////////////////////////
