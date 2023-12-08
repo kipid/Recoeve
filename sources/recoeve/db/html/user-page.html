@@ -2545,6 +2545,21 @@ m.onKeydownInFS=function (e, fs) {
 		case 27: // ESC=27
 			e.preventDefault();
 			$fs_container.hide();
+			if (fs===m.fsGo) {
+				$button_Go.removeClass("enabled");
+			}
+			else if (fs===m.fsToRs) {
+				$button_ToR.removeClass("enabled");
+			}
+			else if (fs===m.fsGotoCats) {
+				$button_goto_cats.removeClass("enabled");
+			}
+			else if (fs===m.fsMRCat) {
+				$button_multireco_mode.removeClass("enabled");
+			}
+			else if (fs===m.fsTimezone) {
+				$choose_timezone.removeClass("enabled");
+			}
 			break;
 		case 38: // up=38
 		case 40: // down=40
