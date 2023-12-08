@@ -4283,6 +4283,7 @@ return new Promise(async function (resolve, reject) {
 		m.countGetUriListAndShowRecosOnCat++;
 		if (m.countGetUriListAndShowRecosOnCat<7) {
 			m.setTimeoutGetUriListAndShowRecosOnCat=setTimeout(async function () {
+				console.log("await m.getUriListAndShowRecosOnCat(cat, scroll);");
 				await m.getUriListAndShowRecosOnCat(cat, scroll);
 			}, m.wait);
 		}
@@ -5680,7 +5681,7 @@ m.completeCatAndOpenCat=async function (event) {
 	if (!$elem.hasClass("list-item")) {
 		$elem=$elem.parents(".list-item");
 	}
-	let cat=m.unescapeHTML($elem.find(".list-index-id").html())
+	let cat=m.currentCat=m.unescapeHTML($elem.find(".list-index-id").html())
 	let fs=m.fsGotoCats;
 	let fsGotoCatsFLCat=fs.fullList[cat];
 	if (!fsGotoCatsFLCat) { // Must have this.
@@ -5735,7 +5736,6 @@ m.completeCatAndOpenCat=async function (event) {
 	else {
 		await m.openCat(cat);
 	}
-	m.currentCat=cat;
 	m.fsViewAndScroll(fs, $elem);
 };
 
@@ -7328,6 +7328,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 		}
 		m.setTimeoutPlayNextCount++;
 		if (m.setTimeoutPlayNextCount<7) {
+			console.log("fs.playNext(increment, cue, first);");
 			setTimeout(function () {
 				fs.playNext(increment, cue, first);
 			}, m.wait);
