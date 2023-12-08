@@ -1123,6 +1123,7 @@ m.getUTF8Length=function (s) {
 	}
 	return len;
 };
+m.ptnPureNumber=/^\d+$/;
 m.formatURI=function (uri) {
 	if (uri&&uri.constructor===String) {
 		uri=uri.trim().replace(/[\s\t\n]+/g," ");
@@ -1141,6 +1142,10 @@ m.formatURI=function (uri) {
 			} catch (err) {
 				console.log(err);
 			}
+		}
+		exec=m.ptnPureNumber.exec(uri);
+		if (exec!==null) {
+			uri="Number: "+uri;
 		}
 		return m.unescapeHTML(uri).trim();
 	}
