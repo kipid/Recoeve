@@ -4041,7 +4041,7 @@ m.getAndShowRecosOnCat=async function (cat) {
 	let fs=m.fsToRs;
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
-	fs.currentIndex=0;
+	fs.currentIndex=fs.fullList.length-1;
 	if (m.lastCat!==m.currentCat) {
 		fs.playNext(-1, null, true);
 	}
@@ -7281,7 +7281,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 		}
 		else {
 			fs.lastIndex=-1;
-			fs.currentIndex=0;
+			fs.currentIndex=m.fsToRs.fullList.length-1;
 			$reco_playing.html('');
 			$eveElse.html('');
 			$youtube.html('');
