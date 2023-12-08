@@ -5449,7 +5449,8 @@ m.reco_do=function (args, err) {
 			}, m.wait);
 		}
 		else {
-			m.delayedLogOut(result, 60*60*24, args.$result);
+			// m.delayedLogOut(result, 60*60*24, args.$result);
+			args.$result?.html(m.arrayToTableHTML(res));
 			let uri=res[1]?.uri;
 			if (uri!==res[1]?.originalURI) {
 				$input_uri[0].value=uri;
