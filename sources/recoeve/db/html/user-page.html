@@ -4041,6 +4041,7 @@ m.getRecos=function (uris, recos, cat) {
 	});
 };
 m.getAndShowRecosOnCat=async function (cat) {
+return new Promise(async function (resolve, reject) {
 	m.currentCat=cat;
 	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
 	await m.getRecos(uris, m.userRecos, cat);
@@ -4060,7 +4061,8 @@ m.getAndShowRecosOnCat=async function (cat) {
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
-		fsFL.push({i:fsFL.length, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)});
+		fsFL[uri]={i:fsFL.length, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		fsFL.push(fsFL[uri]);
 	}
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
@@ -4068,6 +4070,8 @@ m.getAndShowRecosOnCat=async function (cat) {
 	if (m.lastCat!==m.currentCat||m.lastIndex!==m.currentIndex) {
 		fs.playNext(-1, null, true);
 	}
+	resolve();
+});
 };
 m.getUriList=function (catStrArray) {
 	return new Promise(function (resolve, reject) {
@@ -4329,12 +4333,12 @@ return new Promise(async function (resolve, reject) {
 			if (catListCat) {
 				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
 				if (catUriList.down) {
-					m.getAndShowRecosOnCat(cat);
+					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
 					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeOnlyTag(cat)}.`);
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-					m.getAndShowRecosOnCat(cat);
+					await m.getAndShowRecosOnCat(cat);
 				}
 			}
 			else {
@@ -7029,7 +7033,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
 	if (m.recoMode===""||m.recoMode==="multireco") {
-		// m.getAndShowRecosOnCat(m.currentCat);
+		await m.getAndShowRecosOnCat(m.currentCat);
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats0);
