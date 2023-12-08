@@ -17,6 +17,10 @@ li, dd {margin:.3em 0 .5em 2em}
 code {overflow-wrap:break-word; word-wrap:break-word; white-space:pre-wrap; word-break:break-all; font-family:monospace; font-size:.9em; padding:.2em; display:inline; border:2px solid rgb(200,150,150); border-radius:.2em; background:rgb(30,30,30)}
 	.bright code {background:rgb(230,230,230)}
 
+table {background-color:#f8f9fa; color:#202122; margin:1em 0; border:1px solid #a2a9b1; border-collapse:collapse}
+table>tr>th, table>tr>td, table>*>tr>th, table>*>tr>td {font-size:.7em; border:1px solid #a2a9b1; padding:0.2em 0.4em !important}
+#error table tr td:nth-child(1) {min-width:6em}
+
 .button {display:inline-block; cursor:pointer; margin:0 .1em .5em; padding:.2em .5em; border:.15em solid rgb(50,50,50); background:rgb(110,110,110)}
 	.bright .button {border-color:rgb(200,200,200); background:rgb(190,190,190)}
 	.pink .button {border-color:rgb(180,0,180); background:rgb(138,13,106)}
