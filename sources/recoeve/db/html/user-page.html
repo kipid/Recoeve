@@ -884,7 +884,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </body>
 <div id="scripts"></div>
 <script>
-(function (m, $, undefined) {
+(async function (m, $, undefined) {
 $("#javascript-disable").hide();
 m.kakaoTries=0;
 m.kakaoInitDo=function () {
@@ -1844,6 +1844,7 @@ m.getSuperCat=function (cat) {
 	return null;
 };
 m.strCatListToJSON=function (strCatList, catList) {
+return new Promise(function (resolve, reject) {
 	let list=strCatList.trim().split("\n");
 	if (strCatList.length===0) {
 		list=[];
@@ -1870,11 +1871,13 @@ m.strCatListToJSON=function (strCatList, catList) {
 			catList[i]=catList[cat]={i, cat, baseCat, depth};
 		}
 	}
+	resolve();
+});
 };
 m.catListToHTML=async function () {
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -1889,14 +1892,14 @@ m.catListToHTML=async function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i]?.depth}em">`;
+		catListHTML+=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i]?.depth}em">`;
 		if (currentDepth<afterDepth) {
 			catListHTML+=`<span class="EC" onclick="m.ExpCol(this,m.catList['${cat}'])">▶</span>`;
 		}
 		else {
 			catListHTML+=`<span class="noEC"></span>`;
 		}
-		catListHTML+=`<a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 	}
 	if (cL.length>1) {
 		cat=cL[i].cat;
@@ -1910,7 +1913,7 @@ m.catListToHTML=async function () {
 				catListHTML+=`</div>`;
 			}
 		}
-		catListHTML+=`<div class="cat" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+		catListHTML+=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-${encodeURIComponent(cat)}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		for (let j=0;j<currentDepth;j++) { // close subCats
 			catListHTML+=`</div>`;
 		}
@@ -1918,13 +1921,13 @@ m.catListToHTML=async function () {
 	$catList.html(catListHTML);
 };
 if (m.myIndex) {
-	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+	await m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 }
 if (!m.myPage) {
-	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
+	await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 }
 else if (m.myIndex==="") {
-	m.strCatListToJSON("", m.catList);
+	await m.strCatListToJSON("", m.catList);
 }
 m.catListToHTML();
 let $catECs=$catList.find(".cat:has(>.EC)");
@@ -2075,11 +2078,11 @@ m.change_catList_order_do=function (args, err) {
 		console.log(err);
 		$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 		m.updateCatFS();
-		$change_catList_order.show();
 		if (m.myPage) {
 			$data_catList.html(m.escapeOnlyTag(args.catListChanged));
 			m.updateGotoCatsFS();
 		}
+		$change_catList_order.show();
 	}
 	else {
 		$.ajax({
@@ -2099,11 +2102,11 @@ m.change_catList_order_do=function (args, err) {
 		}).always(function () {
 			$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 			m.updateCatFS();
-			$change_catList_order.show();
 			if (m.myPage) {
 				$data_catList.html(m.escapeOnlyTag(args.catListChanged));
 				m.updateGotoCatsFS();
 			}
+			$change_catList_order.show();
 		});
 	}
 };
@@ -2123,7 +2126,7 @@ $change_catList_order_ok.on("click", async function (e) {
 	}
 	await m.reTriggerFS(m.fsGotoCats);
 });
-$change_catList_order_cancel.on("click", function (e) {
+$change_catList_order_cancel.on("click", async function (e) {
 	let catListChanged=m.getCatListChanged();
 	let catList=m.unescapeHTML($data_catList.html());
 	if (catListChanged!==catList) {
@@ -2132,7 +2135,7 @@ $change_catList_order_cancel.on("click", function (e) {
 		for (let i=0;i<$catSelected.length;i++) {
 			selected.push(m.catList[decodeURIComponent($catSelected.eq(i).attr("id").substring(4))].cat);
 		}
-		m.strCatListToJSON(catList);
+		await m.strCatListToJSON(catList);
 		m.catListToHTML();
 		for (let i=0;i<selected.length;i++) {
 			$(`#cat-${m.escapeEncodePctg(encodeURIComponent(m.catList[selected[i]].cat))}`).addClass("selected");
@@ -2223,9 +2226,10 @@ m.putCatToFSFullList=function (i, cat, catList) {
 	}
 };
 m.updateCatFS=async function () {
-	m.fsCat.fullList.splice(0, m.fsCat.fullList.length); // splice(start, deleteCount)
-	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
-	m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+	m.fsCat.fullList=[];
+	m.fsMRCat.fullList=[];
+	m.fsGotoCats.fullList=[];
+	await m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	let l=m.myCatList.length;
 	for (let i=l-1;i>0;i--) {
 		m.putCatToFSFullList(l-1-i, m.myCatList[i].cat, m.myCatList);
@@ -2249,16 +2253,27 @@ m.updateCatFS=async function () {
 		fsFLCat.txt=m.splitHangul("[--Uncategorized--]");
 		fsFLCat.cat=cat;
 		fsFLCat.html=m.escapeOnlyTag("[--Uncategorized--]");
-		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat];
+		m.fsMRCat.fullList[i]=fsFLCat;
 	}
 	else {
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
 	}
+	if (m.fsGotoCats.fullList[cat]) {
+		let fsFLCat=m.fsGotoCats.fullList[cat];
+		fsFLCat.i=i;
+		fsFLCat.txt=m.splitHangul("[--Uncategorized--]");
+		fsFLCat.cat=cat;
+		fsFLCat.html=m.escapeOnlyTag("[--Uncategorized--]");
+		m.fsMRCat.fullList[i]=fsFLCat;
+	}
+	else {
+		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
+	}
 };
 m.updateCatFS();
 m.updateGotoCatsFS=async function () {
-	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
-	m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
+	m.fsGotoCats.fullList=[];
+	await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 	let l=m.catList.length;
 	for (let i=l-1;i>0;i--) {
 		m.putCatToFSFullList(l-1-i, m.catList[i].cat, m.catList);
