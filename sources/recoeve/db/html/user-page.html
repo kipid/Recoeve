@@ -1063,6 +1063,9 @@ m.resetStyle=function () {
 	if (!$floating_key.is(":visible")) {
 		m.toggleFK();
 	}
+	if (!$recoeve_manual.is(":visible")) {
+		$toggle_manual.trigger("click");
+	}
 }
 m.Cmode=function (modeI) {
 	m.$container.removeClass("bright");
