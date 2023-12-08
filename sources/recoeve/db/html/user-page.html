@@ -2739,7 +2739,7 @@ m.deleteCat=function (cat) {
 	if (res) { $data_myCatList.html(m.escapeOnlyTag(fullCats)); }
 	return res;
 };
-m.refreshFSToRs=function (cat) {
+m.refreshFSToRs=async function (cat) {
 	cat=cat??m.currentCat;
 	let fs=m.fsToRs;
 	let fsFL=fs.fullList=[];
