@@ -5416,7 +5416,10 @@ m.reco_do=function (args, err) {
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		let uri=res[1]?.uri;
-		if (result.startsWith("recoed")) {
+		if (res[2]?.uri) { // When multireco.
+			args.$result?.html(m.arrayToTableHTML(res));
+		}
+		else if (result.startsWith("recoed")) {
 			$error.html(result);
 			args.$result?.html(result);
 			m.recoDowned(uri, m.myRecos);
