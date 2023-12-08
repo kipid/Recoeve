@@ -5195,7 +5195,7 @@ m.getAndShowDefsAndRecoInNewReco=async function (noFormatURI, fillDefs) {
 	if (elem.value!==uri) { elem.value=uri; }
 	let uriRendered=await uriRendering(uri,true);
 	if (!noFormatURI) {
-		elem.value=m.formatUriFully(uri, uriRendered);
+		elem.value=m.formatURIFully(uri, uriRendered);
 	}
 	$show_URI.html(String(uriRendered.html));
 	let r=m.myRecos[uri];
