@@ -6131,7 +6131,7 @@ return new Promise(async function (resolve, reject) {
 		let fsFLk=fs.fullList[k];
 		if (fsFLk.inRange&&!fsFLk.r.deleted) {
 			let uri=fsFLk.uri;
-			str+=`<div id="toR-${k}" class="list-item" onclick="m.playLi(event,this,${k},m.fsToRs)"><span class="list-item-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight!==undefined)?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:"")}</div>`;
+			str+=`<div id="toR-${k}" class="list-item" onclick="m.playLi(event,this,${k},m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight!==undefined)?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:"")}</div>`;
 		}
 	}
 	fs.$fsl.html(str);
