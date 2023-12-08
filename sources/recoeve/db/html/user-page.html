@@ -209,8 +209,8 @@ else if (m.docCookies.hasItem("lang")) {
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
 <data id="data-CatList">{--CatList--}</data>
-<div class="block-touch" id="block-touch" style="display:none"></div>
-<div class="block-touch-exit exit" id="block-touch-exit" style="display:none; z-index:31000; position:fixed"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+<div class="block-touch" id="block-touch" style="display:-webkit-flex; display:flex"></div>
+<div class="block-touch-exit exit" id="block-touch-exit" onclick="$(`#block-touch, #block-touch-exit`).hide()" style="display:none; z-index:31000; position:fixed"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
 <div id="sidebar-dragger">
 	<svg id="sidebar-toggle"><g style="stroke:white;stroke-width:20%; stroke-linecap:round"><line x1="20%" y1="50%" x2="80%" y2="50%"></line><line x1="80%" y1="50%" x2="50%" y2="20%"></line><line x1="80%" y1="50%" x2="50%" y2="80%"></line></g></svg>
@@ -903,6 +903,7 @@ m.kakaoInit=setInterval(m.kakaoInitDo, 2*m.wait);
 //////////////////
 $block_touch=$("#block-touch");
 $block_touch_exit=$("#block-touch-exit");
+$block_touch_exit.trigger("click");
 $data_myCatList=$("#data-myCatList");
 $data_catList=m.myPage?$data_myCatList:$("#data-CatList");
 $choose_lang=$("#choose-lang");
@@ -2724,14 +2725,25 @@ m.deleteCat=function (cat) {
 	return res;
 };
 m.putCats_UriToLists=async function (cats, uri) {
+	// uri
+	// A	uri[0]=A
+	// B	uri[1]=B
+	// C	uri[2]=C
+	// No reverse() is needed.
 	let catsSplit=cats.split(";");
 	let catIsPut=false;
 	for (let i=0;i<catsSplit.length;i++) {
 		let cat=catsSplit[i];
 		if (m.myPage) {
 			if (m.catUriList[cat]?.has) {
-				m.catUriList[cat].UriList=uri+"\n"+m.catUriList[cat].UriList;
-				m.catUriList[cat].uris.splice(0, 0, uri);
+				if (uri?.constructor===String) {
+					m.catUriList[cat].UriList=m.catUriList[cat].UriList+"\n"+uri;
+					m.catUriList[cat].uris.push(uri);
+				}
+				else if (uri?.constructor===Array) {
+					m.catUriList[cat].UriList=m.catUriList[cat].UriList+"\n"+uri.join("\n");
+					m.catUriList[cat].uris=[...m.catUriList[cat].uris, ...uri];
+				}
 			}
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
@@ -2739,7 +2751,12 @@ m.putCats_UriToLists=async function (cats, uri) {
 			}
 			else {
 				catIsPut=m.putCat(cat)||catIsPut;
-				m.catUriList[cat]={cat, down:true, has:true, UriList:uri, uris:[uri]};
+				if (uri?.constructor===String) {
+					m.catUriList[cat]={cat, down:true, has:true, UriList:uri, uris:[uri]};
+				}
+				else if (uri?.constructor===Array) {
+					m.catUriList[cat]={cat, down:true, has:true, UriList:uri.join("\n"), uris:uri};
+				}
 			}
 		}
 		else {
@@ -2789,7 +2806,7 @@ if (m.myPage) {
 		// Intentionally no m.updateCatFS(); and m.updateGotoCatsFS();
 	}
 }};
-m.catsChangedOnUri=function (oldCats, newCats, uri) {
+m.changedCats_UriList=function (oldCats, newCats, uri) {
 if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
 	let oldCatSplit=oldCats.split(";");
 	let newCatSplit=newCats.split(";");
@@ -3409,7 +3426,7 @@ m.reco_pointChange_do=function (args, err) {
 			m.myRecos[uri].tLast=res[1]?.tLast;
 			args.$result?.html(m.escapeOnlyTag(res[1].result));
 			m.refresh(args.cats, "changed", uri);
-			m.catsChangedOnUri(m.myRecos[uri].cats, args.cats, uri);
+			m.changedCats_UriList(m.myRecos[uri].cats, args.cats, uri);
 		}
 		else if (result.startsWith("recoed")) {
 			let r=m.myRecos[uri];
@@ -5341,9 +5358,33 @@ m.closeNewReco=function () {
 	}
 };
 m.moveAllTo=function () {
+	let notify="";
 	if (!$table_of_recos_container.is(":visible")) {
-
+		notify+="[--ToR must be on.--]"
 	}
+	if (!$multireco_cats_container.is(":visible")) {
+		notify+="\n[--Multireco mode must be on.--]"
+	}
+	if (!$table_of_recos_container.is(":visible")||!$multireco_cats_container.is(":visible")) {
+		$log_out_do.html(notify.trim().replace(/\n/g, "<br>"));
+		$log_out_do_container.show();
+		return;
+	}
+	let cats=$multireco_input_cats[0].value=m.formatCats($multireco_input_cats[0].value);
+	let uris=[];
+	let fs=m.fsToRs;
+	fs.$fsLis=fs.$fsl.find(".list-item");
+	let strRecoDo="do\turi\tcats";
+	for (let i=fs.$fsLis.length-1;i>=0;i--) {
+		let $liI=fs.$fsLis.eq(i);
+		let uri=m.unescapeHTML($liI.find(".list-index-id").html());
+		uris.push(uri);
+		strRecoDo+=`\nchange\t${uri}\t${cats}`;
+		m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+	}
+	let $result=$numbers_of_recos;
+	m.rmb_me(m.reco_do, {strRecoDo, $result});
+	m.putCats_UriToLists(cats, uris);
 };
 m.reco_do=function (args, err) {
 	if (err) {
@@ -5394,7 +5435,7 @@ m.reco_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.catsChangedOnUri(m.myRecos[uri].cats, args.cats, uri)
+				m.changedCats_UriList(m.myRecos[uri].cats, args.cats, uri)
 			}, m.wait);
 		}
 		else {
@@ -5495,7 +5536,7 @@ m.reco_change_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
+				m.changedCats_UriList(args.r.cats, args.cats, args.uri);
 			}, m.wait);
 		}
 		else {
@@ -5858,13 +5899,10 @@ m.gotoLi=async function (event) {
 		// TODO: delete below.
 		let r=m.userRecos[uri];
 		if (r) {
-			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-			if (!fsFLUri.catAndI) {
-				fsFLUri.catAndI={};
-			}
+			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title), catAndI:{}};
 			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.catUriList[m.currentCat]?.uris[uri]?.i};
 		}
-		console.log("Error: There is no m.fsGo.fullList[uri] or fs.fullList[k]!==fs.fullList[uri].");
+		console.log("Error: There is no m.fsGo.fullList[uri].");
 		m.setTimeoutGotoLi=setTimeout(function () {
 			m.gotoLi(event);
 		}, m.wait);
