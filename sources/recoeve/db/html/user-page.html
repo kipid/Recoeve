@@ -2739,6 +2739,26 @@ m.deleteCat=function (cat) {
 	if (res) { $data_myCatList.html(m.escapeOnlyTag(fullCats)); }
 	return res;
 };
+m.refreshFSToRs=function (cat) {
+	cat=cat??m.currentCat;
+	let fs=m.fsToRs;
+	let fsFL=fs.fullList=[];
+	let uris=m.catUriList[cat].uris;
+	for (let i=0;i<uris.length;i++) {
+		let uri=uris[i];
+		let r=m.userRecos[uri];
+		let catsSplit=r.cats.split(";");
+		fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		for (let j=0;j<catsSplit;j++) {
+			let cat=catsSplit[j];
+			if (!m.catUriList[cat]?.has) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
+			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+		}
+		fsFL.push(fsFL[uri]);
+	}
+};
 m.putCats_UriToLists=async function (cats, uri) {
 	// uri
 	// A	uri[0]=A
@@ -2763,6 +2783,21 @@ m.putCats_UriToLists=async function (cats, uri) {
 			else if (m.catUriList[cat]) {
 				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				if (uri?.constructor===String) {
+					if (!m.catUriList[cat].uris[uri]) {
+						m.catUriList[cat].UriList+="\n"+uri;
+						m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
+						m.catUriList[cat].uris.push(uri);
+					}
+				}
+				else if (uri?.constructor===Array) {
+					for (let j=0;j<uri.length;j++) {
+						let uriJ=uri[j];
+						m.catUriList[cat].UriList+="\n"+uriJ;
+						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
+						m.catUriList[cat].uris.push(uriJ);
+					}
+				}
 			}
 			else {
 				catIsPut=m.putCat(cat)||catIsPut;
@@ -2795,7 +2830,7 @@ if (m.myPage) {
 	let superCatIsDeleted=false;
 	for (let i=0;i<catsSplit.length;i++) {
 		let cat=catsSplit[i];
-		if (!(m.catUriList[cat]&&m.catUriList[cat].has)) {
+		if (!m.catUriList[cat]?.has) {
 			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 		}
 		let fullURIs="\n"+m.catUriList[cat].UriList.trim()+"\n";
@@ -2803,6 +2838,11 @@ if (m.myPage) {
 		if (k!==-1) {
 			m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			// Intentionally no change on m.catUriList[cat].uris;
+			// if (m.catUriList[cat].uris[uri]) {
+			// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
+			// 	delete m.catUriList[cat].uris[uri];
+			// 	m.refreshFSToRs(cat);
+			// }
 		}
 		if (m.catUriList[cat].UriList.length===0) {
 			let catIsDeleted=true;
@@ -2821,7 +2861,7 @@ if (m.myPage) {
 		// Intentionally no m.updateCatFS(); and m.updateGotoCatsFS();
 	}
 }};
-m.changedCats_UriList=function (oldCats, newCats, uri) {
+m.changeCats_UriList=function (oldCats, newCats, uri) {
 if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
 	let oldCatSplit=oldCats.split(";");
 	let newCatSplit=newCats.split(";");
@@ -3227,6 +3267,7 @@ m.stashReco=function (event) {
 		$result?.html(`Stashing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
 		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 		m.putCats_UriToLists(cats, uri);
+		m.refreshFSToRs(m.currentCat);
 	}
 };
 m.recomHTML=async function (r) {
@@ -3441,7 +3482,8 @@ m.reco_pointChange_do=function (args, err) {
 			m.myRecos[uri].tLast=res[1]?.tLast;
 			args.$result?.html(m.escapeOnlyTag(res[1].result));
 			m.refresh(args.cats, "changed", uri);
-			m.changedCats_UriList(m.myRecos[uri].cats, args.cats, uri);
+			m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
+			m.refreshFSToRs(m.currentCat);
 		}
 		else if (result.startsWith("recoed")) {
 			let r=m.myRecos[uri];
@@ -3472,6 +3514,7 @@ m.reco_pointChange_do=function (args, err) {
 			m.refresh(r.cats, "recoed", uri);
 			console.log("recoed: ", r, m.myRecos[uri]);
 			m.putCats_UriToLists(r.cats, uri);
+			m.refreshFSToRs(m.currentCat);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -3510,6 +3553,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
 			m.putCats_UriToLists(cats, uri);
+			m.refreshFSToRs(m.currentCat);
 		}
 		else if (valStr!==m.myRecos[uri].val?.str) {
 			let strHeads="do\turi\tval";
@@ -3972,13 +4016,7 @@ return new Promise(async function (resolve, reject) {
 				fsFL.push(fsFL[uri]);
 			}
 			else {
-				fsFL[uri]={...fsFL[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)}
-				// fsFL[uri].catsSplit=catsSplit;
-				// fsFL[uri].uri=uri;
-				// fsFL[uri].r=r;
-				// fsFL[uri].catAndI={};
-				// fsFL[uri].txt=m.splitHangul(`${r.cats} :: ${r.title}`);
-				// fsFL[uri].html=m.escapeOnlyTag(r.title);
+				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			}
 			for (let k=0;k<catsSplit.length;k++) {
 				let cat=catsSplit[k];
@@ -3987,11 +4025,6 @@ return new Promise(async function (resolve, reject) {
 				}
 				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 			}
-			let fsFLk=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}};
-			fsFLk.txt=m.splitHangul(`${String(r.cats)} :: ${String(r.title)}`);
-			fsFLk.html=m.escapeOnlyTag(String(r.title));
-			fsFLk.catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-			// fsFL.push(fsFLk);
 		}
 		await m.reTriggerFS(fs);
 	}
@@ -5410,6 +5443,7 @@ m.moveAllTo=function () {
 	let $result=$numbers_of_recos;
 	m.rmb_me(m.reco_do, {strRecoDo, $result});
 	m.putCats_UriToLists(cats, uris);
+	m.refreshFSToRs(m.currentCat);
 };
 m.reco_do=function (args, err) {
 	if (err) {
@@ -5450,6 +5484,7 @@ m.reco_do=function (args, err) {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.putCats_UriToLists(cats, uri);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else if (result.startsWith("changed")) {
@@ -5463,7 +5498,8 @@ m.reco_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.changedCats_UriList(m.myRecos[uri].cats, args.cats, uri)
+				m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else {
@@ -5565,7 +5601,8 @@ m.reco_change_do=function (args, err) {
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.changedCats_UriList(args.r.cats, args.cats, args.uri);
+				m.changeCats_UriList(args.r.cats, args.cats, args.uri);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else {
