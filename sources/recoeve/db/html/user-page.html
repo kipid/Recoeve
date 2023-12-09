@@ -2748,14 +2748,14 @@ m.refreshFSToRs=async function (cat) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		let catsSplit=r.cats.split(";");
-		fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
-		for (let j=0;j<catsSplit;j++) {
-			let cat=catsSplit[j];
-			if (!m.catUriList[cat]?.has) {
-				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-			}
-			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-		}
+		fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		// for (let j=0;j<catsSplit;j++) {
+		// 	let cat=catsSplit[j];
+		// 	if (!m.catUriList[cat]?.has) {
+		// 		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		// 	}
+		// 	fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+		// }
 		fsFL.push(fsFL[uri]);
 	}
 };
