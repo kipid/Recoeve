@@ -1066,7 +1066,7 @@ m.fuzzySearch=function (ptnSH, fs) {
 			}
 		}
 		else {
-			fs[0].push({i:listI.i, maxMatchScore:0});
+			fs[0].push({i:listI?.i, maxMatchScore:0});
 		}
 	}
 	let sorted=fs[0].sorted=[];
