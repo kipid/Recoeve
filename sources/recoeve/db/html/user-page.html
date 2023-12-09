@@ -2758,7 +2758,7 @@ m.refreshFSToRs=async function (cat) {
 		// }
 		fsFL.push(fsFL[uri]);
 	}
-	m.fsToRsInRangeCheck();
+	await m.fsToRsInRangeCheck();
 	console.log("m.fsToRs.fullList: ", m.fsToRs.fullList);
 };
 m.putCats_UriToLists=async function (cats, uri) {
@@ -3821,7 +3821,9 @@ m.reNewAndReOn=async function () {
 	m.reNewfsCatsOn();
 };
 m.fsToRsInRangeCheck=async function () {
+return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
+	let l=fs.fullList.length;
 	let nHiden=0, nShown=0;
 	for (let k=l-1;k>=0;k--) {
 		let fsFLk=fs.fullList[k];
@@ -3874,7 +3876,9 @@ m.fsToRsInRangeCheck=async function () {
 		nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
 	}
 	$numbers_of_recos.html(nOfRecos);
-}
+	resolve();
+});
+};
 m.showRecosOnCat=async function (elem, from) {
 return new Promise(async function (resolve, reject) {
 	let cat=m.currentCat;
@@ -3910,7 +3914,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	else if (elem===undefined||elem===null) {
 		from=l-1;
-		m.fsToRsInRangeCheck();
+		await m.fsToRsInRangeCheck();
 		for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 			strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 		}
