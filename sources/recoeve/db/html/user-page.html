@@ -2075,7 +2075,7 @@ $change_catList_order.on("click", function (e) {
 });
 m.change_catList_order_do=function (args, err) {
 	if (err) {
-		console.log(err);
+		args.$result?.html(err);
 		$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 		m.updateCatFS();
 		if (m.myPage) {
@@ -2089,16 +2089,12 @@ m.change_catList_order_do=function (args, err) {
 			type:"POST", url:"/changeOrders/CatList", data:args.catListChanged
 			, dataType:"text"
 		}).fail(function () {
-			console.log("Changing CatList order has failed.");
-			args.$result?.html("Changing CatList order has failed.");
+			args.$result?.html("[--Changing CatList order has failed.--]");
 		}).done(function (resp) {
-			if (args.$result) {
-				args.$result.html(m.escapeOnlyTag(resp));
-				setTimeout(function () {
-					args.$result.html("");
-				}, 5000);
-			}
-			console.log(resp);
+			args.$result?.html(m.escapeOnlyTag(resp));
+			setTimeout(function () {
+				args.$result?.html("");
+			}, 5000);
 		}).always(function () {
 			$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 			m.updateCatFS();
@@ -2759,7 +2755,6 @@ m.refreshFSToRs=async function (cat) {
 		fsFL.push(fsFL[uri]);
 	}
 	await m.fsToRsInRangeCheck();
-	console.log("m.fsToRs.fullList: ", m.fsToRs.fullList);
 };
 m.putCats_UriToLists=async function (cats, uri) {
 	// uri
@@ -3515,7 +3510,6 @@ m.reco_pointChange_do=function (args, err) {
 				r.desc="";
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
-			console.log("recoed: ", r, m.myRecos[uri]);
 			m.putCats_UriToLists(r.cats, uri);
 			m.refreshFSToRs(m.currentCat);
 			m.refresh(r.cats, "recoed", uri);
@@ -4424,7 +4418,6 @@ return new Promise(async function (resolve, reject) {
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 				, dataType:"text"
 			}).fail(function (resp) {
-				console.log(resp);
 				$contents.html(resp);
 				if (scroll) {
 					$window.scrollTop($contents.offset().top);
@@ -4564,7 +4557,6 @@ return new Promise(async function (resolve, reject) {
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 					, dataType:"text"
 				}).fail(function (resp) {
-					console.log(resp);
 					$numbers_of_recos.html(resp);
 					resolve();
 				}).done(async function (resp) {
@@ -5287,7 +5279,6 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 	if (uri==="") {
 		m.myRecos[""].cats=m.currentCat;
 	}
-	console.log("uri!==m.lastURI: ", uri!==m.lastURI);
 	if (uri!==m.lastURI) {
 		m.lastURI=uri;
 		clearTimeout(m.timeOutGetInfos);
@@ -5974,7 +5965,6 @@ m.gotoLi=async function (event) {
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
 	let fsFLUri=fs.fullList[uri];
-	console.log("fsFLkfs.fullList[uri];: ", fsFLUri);
 	if (!fsFLUri) { // if (!fsFLUri), error!. Must be there.
 		// TODO: delete below.
 		let r=m.userRecos[uri];
@@ -6017,7 +6007,6 @@ m.gotoLi=async function (event) {
 		m.currentCat=catsSplit[0];
 		await m.openCat(m.currentCat);
 	}
-	console.log("fsFLUri.catAndI[m.currentCat]: ", fsFLUri.catAndI[m.currentCat]);
 	let l=fsFLUri.catAndI[m.currentCat]?.i??fs1.fullList.length-1;
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
@@ -6094,7 +6083,6 @@ m.playLi=async function (e, elem, k, fs) {
 		}
 		else {
 			fs.currentIndex=k;
-			console.log(`$elem[0].id===fs.$fsl.find(".list-item")[0].id: ${$elem[0].id===fs.$fsl.find(".list-item")[0].id}`);
 			await fs.getAndPlayVideo($elem[0].id===fs.$fsl.find(".list-item")[0].id); // cue or not?
 			if ($playlist_container.is(":visible")) {
 				let pHeight=$playlist_container.height();
@@ -6113,9 +6101,7 @@ m.datetimeToMs=function (datetime) {
 };
 m.doFSToRs=async function (shuffle) {
 return new Promise(async function (resolve, reject) {
-	console.log("m.doFSToRs triggered!");
 	let fs=m.fsToRs;
-	console.log("m.fsToRs: ", m.fsToRs);
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
@@ -6198,7 +6184,6 @@ return new Promise(async function (resolve, reject) {
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
-	console.log("fsRes.sorted: ", sorted);
 	for (let i=0;i<sorted.length;i++) {
 		let k=fsRes[sorted[i]].i;
 		let fsFLk=fs.fullList[k];
@@ -6946,11 +6931,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
 		type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
-		// console.log("Failed to post blogStat", resp);
-		// console.log(blogStat);
 	}).done(function (resp) {
-		// console.log("Posted blogStat", resp);
-		// console.log(blogStat);
 	});
 
 	m.browserWidth=window.innerWidth;
@@ -7280,7 +7261,6 @@ return new Promise(async function (resolve, reject) {
 					}
 				}
 				else if (YT?.Player) {
-					console.log("YT?.Player: ", YT?.Player);
 					m.YtPlayer=new YT.Player('youtube', {
 						videoId:uriRendered.videoId, events:{
 							'onError':function (e) {
