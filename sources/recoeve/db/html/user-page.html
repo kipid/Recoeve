@@ -2758,6 +2758,7 @@ m.refreshFSToRs=async function (cat) {
 		// }
 		fsFL.push(fsFL[uri]);
 	}
+	console.log("m.fsToRs.fullList: ", m.fsToRs.fullList);
 };
 m.putCats_UriToLists=async function (cats, uri) {
 	// uri
@@ -6101,6 +6102,7 @@ m.datetimeToMs=function (datetime) {
 };
 m.doFSToRs=async function (shuffle) {
 return new Promise(async function (resolve, reject) {
+	console.log("m.doFSToRs triggered!");
 	let fs=m.fsToRs;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
