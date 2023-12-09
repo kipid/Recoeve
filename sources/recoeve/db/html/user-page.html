@@ -3485,9 +3485,9 @@ m.reco_pointChange_do=function (args, err) {
 			}
 			m.myRecos[uri].tLast=res[1]?.tLast;
 			args.$result?.html(m.escapeOnlyTag(res[1].result));
-			m.refresh(args.cats, "changed", uri);
 			m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
 			m.refreshFSToRs(m.currentCat);
+			m.refresh(args.cats, "changed", uri);
 		}
 		else if (result.startsWith("recoed")) {
 			let r=m.myRecos[uri];
@@ -3515,10 +3515,10 @@ m.reco_pointChange_do=function (args, err) {
 				r.desc="";
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
-			m.refresh(r.cats, "recoed", uri);
 			console.log("recoed: ", r, m.myRecos[uri]);
 			m.putCats_UriToLists(r.cats, uri);
 			m.refreshFSToRs(m.currentCat);
+			m.refresh(r.cats, "recoed", uri);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -4639,7 +4639,7 @@ if (m.myPage) {
 					}
 					m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 				}
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat);
 				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
@@ -4676,7 +4676,7 @@ if (m.myPage) {
 				}
 			}
 			if (m.myPage) {
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat);
 				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
