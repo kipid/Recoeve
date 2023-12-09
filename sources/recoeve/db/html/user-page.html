@@ -3359,7 +3359,7 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${m.fsToRs.fullList[r.uri].i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${m.fsToRs.fullList[r.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 <div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
@@ -4631,35 +4631,24 @@ if (m.myPage) {
 					}
 					m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 				}
-			}
-			$recoms_recos=$contents_recoms.find(".reco");
-			for (let k=0;k<$recoms_recos.length;k++) {
-				let $reco=$recoms_recos.eq(k);
-				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
-				if (recoURI===uri) {
-					let recoHTML=await m.recoHTML(r, false, true, true);
-					$reco.replaceWith(String(recoHTML));
+				m.refreshFSToRs(m.currentCat);
+				$recoms_recos=$contents_recoms.find(".reco");
+				for (let k=0;k<$recoms_recos.length;k++) {
+					let $reco=$recoms_recos.eq(k);
+					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+					if (recoURI===uri) {
+						let recoHTML=await m.recoHTML(r, false, true, true);
+						$reco.replaceWith(String(recoHTML));
+					}
 				}
-			}
-			if (m.myPage) {
 				let recoHTML=await m.recoHTML(r, false, true)
 				$contents.prepend(String(recoHTML));
+				m.reNewAndReOn();
+				m.fsToRs.shuffledOnce=true;
+				await m.reTriggerFS(m.fsToRs);
+				m.fsGo.shuffledOnce=true;
+				await m.reTriggerFS(m.fsGo);
 			}
-			m.reNewAndReOn();
-
-			// fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
-			// fs.fullList.push(fs.fullList[uri]);
-
-			fs=m.fsToRs;
-			fs.fullList[uri]={i:fs.fullList.length, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title), inRange:true};
-			fs.fullList.push(fs.fullList[uri]);
-			await m.reTriggerFS(fs);
-			m.fsGo.shuffledOnce=true;
-			await m.reTriggerFS(m.fsGo);
-			// if (!m.fsGo.fullList[uri].catAndI) {
-			// 	m.fsGo.fullList[uri].catAndI={};
-			// }
-			// m.fsGo.fullList[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 			break;
 		case "changed": case "deleted":
 			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
@@ -4679,6 +4668,7 @@ if (m.myPage) {
 				}
 			}
 			if (m.myPage) {
+				m.refreshFSToRs(m.currentCat);
 				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
@@ -4709,7 +4699,6 @@ if (m.myPage) {
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
-					if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
 					fsFLk.txt=m.splitHangul(r.title);
 					fsFLk.html=m.escapeOnlyTag(r.title);
 					fsFLk.inRange=true;
@@ -5467,6 +5456,20 @@ m.reco_do=function (args, err) {
 		let uri=res[1]?.uri;
 		if (res[2]?.uri) { // When multireco.
 			args.$result?.html(m.arrayToTableHTML(res));
+			let uris=[];
+			for (let i=1;i<res.length;i++) {
+				let uriI=res[i].uri;
+				uris.push(uri);
+				m.recoDowned(uriI, m.myRecos);
+				m.myRecos[uriI].tFirst=m.myRecos[uriI].tLast=res[i]?.tLast;
+				if (uriI!==res[i]?.originalURI) {
+					m.myRecos[uriI].desc=(`#originalURI\n${res[i]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
+				}
+				m.delCats_UriFromLists(m.myRecos[uriI].cats, uri);
+			}
+			await m.recoToEve(args.strRecoDo, m.myRecos);
+			m.putCats_UriToLists(m.myRecos[uris[0]].cats, uris);
+			m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0]);
 		}
 		else if (result.startsWith("recoed")) {
 			$error.html(result);
@@ -5479,12 +5482,12 @@ m.reco_do=function (args, err) {
 				m.myRecos[uri].desc=(`#originalURI\n${res[1]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
 			}
 			let cats=String(m.myRecos[uri].cats);
-			m.refresh(cats, "recoed", uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.putCats_UriToLists(cats, uri);
 				m.refreshFSToRs(m.currentCat);
+				m.refresh(cats, "recoed", uri);
 			}, m.wait);
 		}
 		else if (result.startsWith("changed")) {
@@ -5494,16 +5497,16 @@ m.reco_do=function (args, err) {
 			await m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[args.uri].tLast=res[1]?.tLast;
 			let cats=String(m.myRecos[args.uri].cats);
-			m.refresh(cats, "changed", args.uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
 				m.refreshFSToRs(m.currentCat);
+				m.refresh(cats, "changed", args.uri);
 			}, m.wait);
 		}
 		else {
-			// m.delayedLogOut(result, 60*60*24, args.$result);
+			m.delayedLogOut(result, 60*60*24, args.$result);
 			args.$result?.html(m.arrayToTableHTML(res));
 			let uri=res[1]?.uri;
 			if (uri!==res[1]?.originalURI) {
