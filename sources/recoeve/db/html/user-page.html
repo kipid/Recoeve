@@ -2782,7 +2782,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				if (uri?.constructor===String) {
 					if (!m.catUriList[cat].uris[uri]) {
-						m.catUriList[cat].UriList+="\n"+uri;
+						m.catUriList[cat].UriList=(m.catUriList[cat].UriList+"\n"+uri).trim();
 						m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
 						m.catUriList[cat].uris.push(uri);
 					}
@@ -2794,6 +2794,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
 						m.catUriList[cat].uris.push(uriJ);
 					}
+					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim();
 				}
 			}
 			else {
@@ -4150,7 +4151,7 @@ m.getUriList=function (catStrArray) {
 				catUL.uris=[];
 				if (catUL.UriList?.length!==0) {
 					catUL.uris=catUL.UriList.trim().split("\n").reverse(); // Newest has the maximum index i.
-					catUL.UriList="\n"+catUL.uris.join("\n")+"\n";
+					catUL.UriList=catUL.uris.join("\n");
 					for (k=0;k<catUL.uris.length;k++) {
 						let uri=catUL.uris[k];
 						catUL.uris[uri]={i:k, uri};
