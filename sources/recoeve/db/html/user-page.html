@@ -3636,7 +3636,7 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			strContents+=`\t${m.encloseStr(cats)}`;
 			let strRecoDo=strHeads+"\n"+strContents;
 			$result.html("[--Recoing to your recoeve.net.--]");
-			m.rmb_me(m.reco_do, {strRecoDo, $result}, true);
+			m.rmb_me(m.reco_do, {strRecoDo, cats, uri, $result}, true);
 		}
 	}
 };
@@ -5430,7 +5430,7 @@ m.moveAllTo=function () {
 		// m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
 	}
 	let $result=$numbers_of_recos;
-	m.rmb_me(m.reco_do, {strRecoDo, $result});
+	m.rmb_me(m.reco_do, {strRecoDo, cats, uri:uris[0], r:m.myRecos[uris[0]], $result});
 	// m.putCats_UriToLists(cats, uris);
 	// m.refreshFSToRs(m.currentCat);
 };
@@ -5559,7 +5559,7 @@ $button_reco.on("click", function (e) {
 
 		let strRecoDo=strHeads+"\n"+strContents;
 		$error.html("Being recoed.");
-		m.rmb_me(m.reco_do, {strRecoDo}, true);
+		m.rmb_me(m.reco_do, {strRecoDo, cats, uri}, true);
 	}
 	else {
 		$error.html(errorMsg);
@@ -6318,19 +6318,19 @@ m.shareCurrentPage=function (service, elem) {
 	let title=`${m.currentCat} of ${m.userId}'s Recoeve.net`;
 	let href="";
 	let desc=title;
-	let args={};
+	m.args={};
 	let argName="PRL"
 	if (m.docCookies.hasItem(argName)) {
-		args[argName]=m.docCookies.getItem(argName);
+		m.args[argName]=m.docCookies.getItem(argName);
 	}
 	argName="PRR"
 	if (m.docCookies.hasItem(argName)) {
-		args[argName]=m.docCookies.getItem(argName);
+		m.args[argName]=m.docCookies.getItem(argName);
 	}
 	if ($table_of_recos_container.is(":visible")) {
-		args["ToR"]=$table_of_recos[0].value;
+		m.args["ToR"]=$table_of_recos[0].value;
 	}
-	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, args);
+	let recoeveURI=window.location.origin+m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 	switch (service) {
 		case 'link':
 			if ($elem) {
