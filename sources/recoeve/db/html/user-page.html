@@ -2758,6 +2758,7 @@ m.refreshFSToRs=async function (cat) {
 		// }
 		fsFL.push(fsFL[uri]);
 	}
+	m.fsToRsInRangeCheck();
 	console.log("m.fsToRs.fullList: ", m.fsToRs.fullList);
 };
 m.putCats_UriToLists=async function (cats, uri) {
@@ -3819,6 +3820,61 @@ m.reNewAndReOn=async function () {
 	$downs.on("click.ud", m.starsOnDownClick);
 	m.reNewfsCatsOn();
 };
+m.fsToRsInRangeCheck=function () {
+	let fs=m.fsToRs;
+	let nHiden=0, nShown=0;
+	for (let k=l-1;k>=0;k--) {
+		let fsFLk=fs.fullList[k];
+		let uri=fsFLk.uri;
+		let r=fsFLk.r;
+		let val=r.val?.val;
+		// fsFLk.txt=m.splitHangul(r.title);
+		// fsFLk.html=m.escapeOnlyTag(r.title);
+		if (val===undefined||val===-1) {
+			if (m.showRWOP) {
+				fsFLk.inRange=true;
+				nShown++;
+			}
+			else {
+				fsFLk.inRange=false;
+				nHiden++
+			}
+		}
+		else {
+			if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
+				fsFLk.inRange=true;
+				nShown++;
+			}
+			else {
+				fsFLk.inRange=false;
+				nHiden++;
+			}
+		}
+	}
+	let nUnrecoed=0;
+	if ((!m.myPage)) {
+		for (let k=0;k<l;k++) {
+			let fsFLk=fs.fullList[k];
+			let uri=fsFLk.uri;
+			if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
+				if (fsFLk.inRange) {
+					nShown--;
+					nHiden++;
+				}
+				fsFLk.inRange=false;
+			}
+			if (!m.myRecos[uri].has) {
+				nUnrecoed++;
+			}
+		}
+	}
+	await m.reTriggerFS(fs);
+	let nOfRecos=`${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
+	if (!m.myPage) {
+		nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
+	}
+	$numbers_of_recos.html(nOfRecos);
+}
 m.showRecosOnCat=async function (elem, from) {
 return new Promise(async function (resolve, reject) {
 	let cat=m.currentCat;
@@ -3854,58 +3910,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	else if (elem===undefined||elem===null) {
 		from=l-1;
-		let nHiden=0, nShown=0;
-		for (let k=l-1;k>=0;k--) {
-			let fsFLk=fs.fullList[k];
-			let uri=fsFLk.uri;
-			let r=fsFLk.r;
-			let val=r.val?.val;
-			fsFLk.txt=m.splitHangul(r.title);
-			fsFLk.html=m.escapeOnlyTag(r.title);
-			if (val===undefined||val===-1) {
-				if (m.showRWOP) {
-					fsFLk.inRange=true;
-					nShown++;
-				}
-				else {
-					fsFLk.inRange=false;
-					nHiden++
-				}
-			}
-			else {
-				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
-					fsFLk.inRange=true;
-					nShown++;
-				}
-				else {
-					fsFLk.inRange=false;
-					nHiden++;
-				}
-			}
-		}
-		let nUnrecoed=0;
-		if ((!m.myPage)) {
-			for (let k=0;k<l;k++) {
-				let fsFLk=fs.fullList[k];
-				let uri=fsFLk.uri;
-				if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
-					if (fsFLk.inRange) {
-						nShown--;
-						nHiden++;
-					}
-					fsFLk.inRange=false;
-				}
-				if (!m.myRecos[uri].has) {
-					nUnrecoed++;
-				}
-			}
-		}
-		await m.reTriggerFS(fs);
-		let nOfRecos=`${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
-		if (!m.myPage) {
-			nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
-		}
-		$numbers_of_recos.html(nOfRecos);
+		m.fsToRsInRangeCheck();
 		for (let i=from, k=0;i>=0;i-=m.maxShowReco, k++) {
 			strHTML+=`<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i-m.maxShowReco+1>=0?i-m.maxShowReco+1:0}</span></div>`;
 		}
@@ -6189,6 +6194,7 @@ return new Promise(async function (resolve, reject) {
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
+	console.log("fsRes.sorted: ", sorted);
 	for (let i=0;i<sorted.length;i++) {
 		let k=fsRes[sorted[i]].i;
 		let fsFLk=fs.fullList[k];
