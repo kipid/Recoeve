@@ -3254,21 +3254,23 @@ m.stashReco=function (event) {
 		let strContents=`overwrite\t${m.encloseStr(uri)}\t`; // Empty val.
 		let r=m.myRecos[uri];
 		let recoDef=m.recoDefs[uri];
-		if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
-			strHeads+="\ttitle";
-			strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
-		}
-		if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
-			strHeads+="\tdesc";
-			strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
+		if (!r) {
+			if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+				strHeads+="\ttitle";
+				strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
+			}
+			if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+				strHeads+="\tdesc";
+				strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
+			}
 		}
 		let cats="[--Stashed--]";
 		strHeads+="\tcats";
-		strContents+=`\t${m.encloseStr(cats)}`;
+		strContents+=`\t${cats}`;
 		$result?.html(`Stashing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
 		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
-		m.putCats_UriToLists(cats, uri);
-		m.refreshFSToRs(m.currentCat);
+		// m.putCats_UriToLists(cats, uri);
+		// m.refreshFSToRs(m.currentCat);
 	}
 };
 m.recomHTML=async function (r) {
@@ -3553,8 +3555,8 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			strContents+=`\t${m.encloseStr(cats)}`;
 			$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
 			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
-			m.putCats_UriToLists(cats, uri);
-			m.refreshFSToRs(m.currentCat);
+			// m.putCats_UriToLists(cats, uri);
+			// m.refreshFSToRs(m.currentCat);
 		}
 		else if (valStr!==m.myRecos[uri].val?.str) {
 			let strHeads="do\turi\tval";
@@ -4645,9 +4647,9 @@ if (m.myPage) {
 				let recoHTML=await m.recoHTML(r, false, true)
 				$contents.prepend(String(recoHTML));
 				m.reNewAndReOn();
-				m.fsToRs.shuffledOnce=true;
+				// m.fsToRs.shuffledOnce=true;
+				// m.fsGo.shuffledOnce=true;
 				await m.reTriggerFS(m.fsToRs);
-				m.fsGo.shuffledOnce=true;
 				await m.reTriggerFS(m.fsGo);
 			}
 			break;
@@ -5601,12 +5603,12 @@ m.reco_change_do=function (args, err) {
 			}
 			if (args.val.str!==args.r.val.str) { args.r.val=args.val; }
 			args.r.tLast=res[1]?.tLast;
-			m.refresh(args.cats, "changed", args.uri);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.changeCats_UriList(args.r.cats, args.cats, args.uri);
 				m.refreshFSToRs(m.currentCat);
+				m.refresh(args.cats, "changed", args.uri);
 			}, m.wait);
 		}
 		else {
@@ -6104,6 +6106,7 @@ m.doFSToRs=async function (shuffle) {
 return new Promise(async function (resolve, reject) {
 	console.log("m.doFSToRs triggered!");
 	let fs=m.fsToRs;
+	console.log("m.fsToRs: ", m.fsToRs);
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
@@ -6269,14 +6272,14 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].UriList="\n"+uris+"\n";
 							m.catUriList[m.currentCat].uris=uris.split("\n");
 							fs.shuffled=null;
-							fs.shuffledOnce=true;
-							m.fsGo.shuffledOnce=true;
+							// fs.shuffledOnce=true;
+							// m.fsGo.shuffledOnce=true;
 							m.lastRecoMode="nothing";
 							m.doNotPushHistory=true;
 							await m.reTriggerFS(fs);
 							await m.reTriggerFS(m.fsGo);
-							fs.shuffledOnce=true;
-							m.fsGo.shuffledOnce=true;
+							// fs.shuffledOnce=true;
+							// m.fsGo.shuffledOnce=true;
 							await m.openCat(m.currentCat);
 						}
 						else if (resp==="false") {
