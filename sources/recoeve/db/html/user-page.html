@@ -5427,12 +5427,12 @@ m.moveAllTo=function () {
 		let uri=m.unescapeHTML($liI.find(".list-index-id").html());
 		uris.push(uri);
 		strRecoDo+=`\nchange\t${uri}\t${cats}`;
-		m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+		// m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
 	}
 	let $result=$numbers_of_recos;
 	m.rmb_me(m.reco_do, {strRecoDo, $result});
-	m.putCats_UriToLists(cats, uris);
-	m.refreshFSToRs(m.currentCat);
+	// m.putCats_UriToLists(cats, uris);
+	// m.refreshFSToRs(m.currentCat);
 };
 m.reco_do=function (args, err) {
 	if (err) {
