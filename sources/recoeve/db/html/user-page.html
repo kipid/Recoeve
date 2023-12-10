@@ -1279,14 +1279,14 @@ m.a_to_my_page=function (e) {
 };
 m.delayedLogOut=function (msg, delayTime=27, $result) {
 	let delay=delayTime&&delayTime.constructor===Number?delayTime:27;
-	clearInterval(m.deleyedLogOutInterval);
-	m.deleyedLogOutInterval=setInterval(function () {
+	clearInterval(m.setIntervalDeleyedLogOut);
+	m.setIntervalDeleyedLogOut=setInterval(function () {
 		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
 		$result?.html($error.html());
 		delay--;
 	}, 1000);
-	clearTimeout(m.deleyedLogOutTimeout);
-	m.deleyedLogOutTimeout=setTimeout(function () {
+	clearTimeout(m.setTimeoutDeleyedLogOut);
+	m.setTimeoutDeleyedLogOut=setTimeout(function () {
 		window.location.href=`/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
 	}, delay*1000);
 };
@@ -3463,8 +3463,8 @@ m.reco_pointChange_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		if (args.inRecoms) {
 			args.$result?.html(`[--Reco failed.--]: ${resp}`);
 		}
@@ -3472,8 +3472,8 @@ m.reco_pointChange_do=function (args, err) {
 			args.$result?.html(`[--Failed change.--]: ${resp}`);
 		}
 	}).done(async function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		let uri=res[1]?.uri;
@@ -5451,13 +5451,13 @@ m.reco_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
 	}).fail(function () {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		$error.html("[--Reco failed.--]");
 		args.$result?.html($error.html());
 	}).done(async function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result);
 		let uri=res[1]?.uri;
@@ -5583,12 +5583,12 @@ m.reco_change_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		$error.html("[--Failed change.--] "+resp);
 	}).done(async function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		let res=await m.strToJSON(resp);
 		let result=String(res[1]?.result)
 		if (result.startsWith("changed")) {
@@ -5702,13 +5702,13 @@ m.reco_delete_do=function (args, err) {
 		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
 		, dataType:"text"
 	}).fail(function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		$error.html("[--Failed delete.--]");
 		args.$result?.html($error.html());
 	}).done(async function (resp) {
-		clearInterval(m.deleyedLogOutInterval);
-		clearTimeout(m.deleyedLogOutTimeout);
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
 		let res=await m.strToJSON(resp);
 		if (res[1]?.result.startsWith("deleted")) {
 			$error.html("[--Deleted.--]");
