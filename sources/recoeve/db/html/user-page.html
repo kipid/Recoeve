@@ -4804,7 +4804,7 @@ m.openCat=async function (cat) {
 				m.userRecos[uri]={uri, i:k};
 			}
 			let fsFLUri=fsFL[uri];
-			if (!fsFLUri.catAndI) {
+			if (!fsFLUri?.catAndI) {
 				fsFLUri.catAndI={};
 			}
 			fsFLUri.catAndI[cat]={cat, i:uris[uri]?.i};
