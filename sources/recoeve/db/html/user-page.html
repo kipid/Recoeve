@@ -2431,11 +2431,14 @@ m.doFSTimezone=function () {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 };
 
-m.fsCatOn=async function () {
+m.fsCatOn=async function (event) {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
+		if (event.keyCode!==27) { // ESC=27
+			m.fsCat.$fs_container.show();
+		}
 		m.doFSCat(m.fsCat);
 	}
 	else {
@@ -2444,15 +2447,21 @@ m.fsCatOn=async function () {
 			$input_cats[0].value=m.formatCats($input_cats[0].value);
 			$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 			m.previous=Date.now();
+			if (event.keyCode!==27) { // ESC=27
+				m.fsCat.$fs_container.show();
+			}
 			m.doFSCat(m.fsCat);
 		}, m.wait*1.5-passed);
 	}
 };
-m.fsMRCatOn=async function () {
+m.fsMRCatOn=async function (event) {
 	let now=Date.now();
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
+		if (event.keyCode!==27) { // ESC=27
+			m.fsMRCat.$fs_container.show();
+		}
 		m.doMRFSCat();
 	}
 	else {
@@ -2460,6 +2469,9 @@ m.fsMRCatOn=async function () {
 		setTimeout(function () {
 			$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 			m.previous=Date.now();
+			if (event.keyCode!==27) { // ESC=27
+				m.fsMRCat.$fs_container.show();
+			}
 			m.doMRFSCat();
 		}, m.wait*1.5-passed);
 	}
@@ -2581,19 +2593,16 @@ m.onKeydownInFS=function (e, fs) {
 		case 27: // ESC=27
 			e.preventDefault();
 			console.log("ESC is triggered!");
+			$fs_container.hide();
 			if (fs===m.fsCat) {
-				fs.$fsl.hide();
 			}
 			else if (fs===m.fsGotoCats) {
-				$fs_container.hide();
 				$button_goto_cats.removeClass("enabled");
 			}
 			else if (fs===m.fsMRCat) {
-				fs.$fsl.hide();
 				$button_multireco_mode.removeClass("enabled");
 			}
 			else if (fs===m.fsTimezone) {
-				$fs_container.hide();
 				$choose_timezone.removeClass("enabled");
 			}
 			break;
