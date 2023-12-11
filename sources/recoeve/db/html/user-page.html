@@ -2581,13 +2581,7 @@ m.onKeydownInFS=function (e, fs) {
 		case 27: // ESC=27
 			e.preventDefault();
 			$fs_container.hide();
-			if (fs===m.fsGo) {
-				$button_Go.removeClass("enabled");
-			}
-			else if (fs===m.fsToRs) {
-				$button_ToR.removeClass("enabled");
-			}
-			else if (fs===m.fsGotoCats) {
+			if (fs===m.fsGotoCats) {
 				$button_goto_cats.removeClass("enabled");
 			}
 			else if (fs===m.fsMRCat) {
@@ -2612,10 +2606,10 @@ m.onKeydownInFS=function (e, fs) {
 				if ($liTo.exists()) {
 					$liTo.eq(0).trigger("click");
 					if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
-						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
+						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-52);
 					}
-					else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()+2) { // $liTo at downside of scroll.
-						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()-2);
+					else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()-2) { // $liTo at downside of scroll.
+						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()+52);
 					}
 				}
 			}
@@ -2637,7 +2631,7 @@ m.onKeydownInFS=function (e, fs) {
 	fs.$fs.focus();
 	m.setTimeoutTargetOn=setTimeout(async function () {
 		m.reNewfsCatsOn();
-	}, 4*m.wait);
+	}, 3*m.wait);
 };
 $input_cats.on("keydown.fs", function (e) {
 	m.onKeydownInFS(e, m.fsCat);
@@ -5901,10 +5895,14 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		case 'T':
 			m.ToRsOn=false;
 			m.fsToRs.$fs_container.hide();
+			$out_focus.focus();
+			$button_ToR.removeClass("enabled");
 			break;
 		case 'G':
 			m.GoOn=false;
 			m.fsGo.$fs_container.hide();
+			$out_focus.focus();
+			$button_Go.removeClass("enabled");
 			break;
 		}
 		if (!m.doNotPushHistory) {
