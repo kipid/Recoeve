@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 // 		"News"
 
 public class CatList {
-	public static final String defListName="upToDate";
+	public static final String DEF_LIST_NAME="upToDate";
 	public static int getDepthOfTabs(String str) {
 		int i=-1;
 		if (str!=null) {

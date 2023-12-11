@@ -1047,7 +1047,7 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 			long user_i=user.getLong("i");
 			varMap.put("{--userIndex--}", Long.toString(user_i, 16));
 			varMap.put("{--userId--}", HTMLString.escapeOnlyTag(user.getString("id")));
-			varMap.put("{--CatList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
+			varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
 		}
 	}
 	catch (SQLException e) {
@@ -1058,7 +1058,7 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 	varMap.putIfAbsent("{--myIndex--}", "");
 	varMap.putIfAbsent("{--myId--}", "");
 	varMap.putIfAbsent("{--myCatList--}", "");
-	varMap.putIfAbsent("{--CatList--}", "");
+	varMap.putIfAbsent("{--catList--}", "");
 	return varMap;
 }
 public Map<String, String> varMapMyPage(Cookie cookie) {
@@ -1080,7 +1080,7 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 				varMap.put("{--myId--}", user.getString("id"));
 				varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 				varMap.put("{--userId--}", varMap.get("{--myId--}"));
-				varMap.put("{--CatList--}", varMap.get("{--myCatList--}"));
+				varMap.put("{--catList--}", varMap.get("{--myCatList--}"));
 			}
 		}
 		catch (SQLException e) {
@@ -1092,7 +1092,7 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 	varMap.putIfAbsent("{--myIndex--}", "");
 	varMap.putIfAbsent("{--myId--}", "");
 	varMap.putIfAbsent("{--myCatList--}", "");
-	varMap.putIfAbsent("{--CatList--}", "");
+	varMap.putIfAbsent("{--catList--}", "");
 	return varMap;
 }
 public String sessionIter(Cookie cookie, Timestamp tNow) {
@@ -2494,7 +2494,7 @@ public String getStringCatList(long user_me) {
 	return res;
 }
 public CatList getCatList(long user_me) throws SQLException {
-	CatList catL=getCatList(user_me, CatList.defListName);
+	CatList catL=getCatList(user_me, CatList.DEF_LIST_NAME);
 	if (catL==null) {
 		catL=new CatList();
 	}
@@ -2510,7 +2510,7 @@ public CatList getCatList(long user_me, String listName) throws SQLException {
 	return new CatList();
 }
 public boolean putCatList(long user_me, CatList catL) throws SQLException {
-	return putCatList(user_me, CatList.defListName, catL);
+	return putCatList(user_me, CatList.DEF_LIST_NAME, catL);
 }
 public boolean putCatList(long user_me, String listName, CatList catL) throws SQLException {
 	pstmtPutCatList.setLong(1, user_me);
@@ -2519,7 +2519,7 @@ public boolean putCatList(long user_me, String listName, CatList catL) throws SQ
 	return pstmtPutCatList.executeUpdate()==1;
 }
 public boolean updateCatList(long user_me, CatList catL) throws SQLException {
-	return updateCatList(user_me, CatList.defListName, catL);
+	return updateCatList(user_me, CatList.DEF_LIST_NAME, catL);
 }
 public boolean updateCatList(long user_me, String listName, CatList catL) throws SQLException {
 	pstmtGetCatList.setLong(1, user_me);
@@ -2535,7 +2535,7 @@ public boolean updateCatList(long user_me, String listName, CatList catL) throws
 	}
 }
 public boolean changeOrdersCatList(long user_me, String newFullCats) {
-	return changeOrdersCatList(user_me, CatList.defListName, newFullCats);
+	return changeOrdersCatList(user_me, CatList.DEF_LIST_NAME, newFullCats);
 }
 public boolean changeOrdersCatList(long user_me, String listName, String newFullCats) {
 	try {
