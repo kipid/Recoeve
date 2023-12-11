@@ -2135,9 +2135,6 @@ $change_catList_order_cancel.on("click", async function (e) {
 		if ($catSelected.exists()) {
 			selectedCat=m.unescapeHTML($catSelected.find(".list-index-id").html());
 		}
-		for (let i=0;i<$catSelected.length;i++) {
-			selected.push(m.catList[decodeURIComponent($catSelected.eq(i).attr("id").substring(4))].cat);
-		}
 		await m.strCatListToJSON(catList, m.catList);
 		await m.catListToHTML();
 		if (selectedCat) {
