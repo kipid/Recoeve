@@ -759,7 +759,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 <div class="cBoth"></div>
 <div class="side2" style="padding:.5em"></div>
 <div class="side2" id="change-style">
-	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset style</button></form>
+	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">[--Reset style--]</button></form>
 	<form>
 		<input id="button-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label></input>
 		<input id="button-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input>
@@ -6268,7 +6268,7 @@ if (m.myPage) {
 						if (resp==="true") {
 							$result_of_change_order.html("[--UriList order is changed.--]");
 							$numbers_of_recos.html("[--UriList order is changed.--]");
-							m.catUriList[m.currentCat].UriList="\n"+uris+"\n";
+							m.catUriList[m.currentCat].UriList=uris;
 							m.catUriList[m.currentCat].uris=uris.split("\n");
 							fs.shuffled=null;
 							// fs.shuffledOnce=true;
