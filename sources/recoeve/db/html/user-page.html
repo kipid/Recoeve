@@ -2580,14 +2580,20 @@ m.onKeydownInFS=function (e, fs) {
 			break;
 		case 27: // ESC=27
 			e.preventDefault();
-			$fs_container.hide();
-			if (fs===m.fsGotoCats) {
+			console.log("ESC is triggered!");
+			if (fs===m.fsCat) {
+				fs.$fsl.hide();
+			}
+			else if (fs===m.fsGotoCats) {
+				$fs_container.hide();
 				$button_goto_cats.removeClass("enabled");
 			}
 			else if (fs===m.fsMRCat) {
+				fs.$fsl.hide();
 				$button_multireco_mode.removeClass("enabled");
 			}
 			else if (fs===m.fsTimezone) {
+				$fs_container.hide();
 				$choose_timezone.removeClass("enabled");
 			}
 			break;
