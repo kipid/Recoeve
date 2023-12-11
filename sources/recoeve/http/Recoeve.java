@@ -53,6 +53,8 @@ public static final String ENCODING="UTF-8";
 public static final String INVALID_ACCESS="INVALID ACCESS";
 public static final long day31InMs=31*24*60*60*1000;
 public static final Vertx vertx=Vertx.vertx();
+public static final FileMap fileMap=new FileMap();
+public static final FileMapWithVar fileMapWithVar=new FileMapWithVar();
 public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
 public static final Router router2=Router.router(vertx);
@@ -232,10 +234,19 @@ public static void main(String... args) {
 					default:
 						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 				}
-				// TODO: Check if a file with fileName exists.
-				String fullFilePath=FileMap.getCDNFile(fileName);
-				pl.req.response().sendFile(fullFilePath); // TODO: Cache file datas in memory to response faster.
-				System.out.println("Sended "+fullFilePath+".");
+				Buffer fileInMemory=fileMap.getCDNFileInMemory(fileName);
+				if (fileInMemory!=null) {
+					pl.req.response().end(fileInMemory, endHandler -> {
+						if (endHandler.succeeded()) {
+							System.out.println("Write operation completed.");
+						} else {
+							System.err.println("Failed to complete the write operation: " + endHandler.cause());
+						}
+					});
+				}
+				else {
+					System.out.println("No file in memory: "+fileName+".");
+				}
 			}
 			else {
 				pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
@@ -271,11 +282,11 @@ public static void main(String... args) {
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		if (pl.cookie.get("I")!=null||pl.cookie.get("rmbdI")!=null) {
-			pl.req.response().end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
+			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
 			System.out.println("Sended user-page.html");
 		}
 		else {
-			pl.req.response().end(FileMap.get("log-in.html", pl.lang), ENCODING); // to "/account/log-in".
+			pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING); // to "/account/log-in".
 			System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 		}
 	});
@@ -307,7 +318,7 @@ public static void main(String... args) {
 			switch (query) {
 			case "logs":
 				pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-					.sendFile(FileMap.getCDNFile("logs.html"));
+					.sendFile(fileMap.getCDNFile("logs.html"));
 				break;
 			case "printLogs":
 				if (pl.sessionPassed) {
@@ -347,24 +358,24 @@ public static void main(String... args) {
 				switch (fileName) {
 					case "personal-info-handle": // e.g. path=/personal-info-handle
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(FileMap.get("personal-info-handle.html", pl.lang), ENCODING);
+							.end(fileMap.get("personal-info-handle.html", pl.lang), ENCODING);
 						break;
 					case "service-summary": // e.g. path=/service-summary
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(FileMap.get("service-summary.html", pl.lang), ENCODING);
+							.end(fileMap.get("service-summary.html", pl.lang), ENCODING);
 						break;
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(FileMapWithVar.get("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.get("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
-							.end(FileMap.get("jquery.js", pl.lang), ENCODING);
+							.end(fileMap.get("jquery.js", pl.lang), ENCODING);
 						System.out.println("Sended jquery.js.");
 						break;
 					case "prepare.js": // e.g. path=/prepare.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
-							.end(FileMap.get("prepare.js", pl.lang), ENCODING);
+							.end(fileMap.get("prepare.js", pl.lang), ENCODING);
 						System.out.println("Sended prepare.js.");
 						break;
 					case "sessionIter": // e.g. path=/sessionIter
@@ -375,22 +386,22 @@ public static void main(String... args) {
 						break;
 					case "reco": // e.g. path=/reco
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 						break;
 					case "recostat": // e.g. path=/recostat?uri=...
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(FileMapWithVar.get("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.get("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended recostat.html.");
 						break;
 					case "robots.txt": // e.g. path=/robots.txt
 						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-							.end(FileMap.get("robots.txt", "df"), ENCODING);
+							.end(fileMap.get("robots.txt", "df"), ENCODING);
 						System.out.println("Sended robots.txt.");
 						break;
 					case "ads.txt": // e.g. path=/ads.txt
 						pl.req.response().putHeader("Content-Type", "text/plain")
-							.end(FileMap.get("ads.txt", "df"), ENCODING);
+							.end(fileMap.get("ads.txt", "df"), ENCODING);
 						System.out.println("Sended ads.txt.");
 						break;
 					default:
@@ -427,11 +438,11 @@ public static void main(String... args) {
 				userId=ctx.pathParam("userId");
 			}
 			if (userId!=null&&!userId.isEmpty()&&pl.db.idExists(userId)) {
-				pl.req.response().end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapUserPage(pl.cookie, userId)), ENCODING);
+				pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapUserPage(pl.cookie, userId)), ENCODING);
 				System.out.println("Sended user-page.html");
 			}
 			else {
-				String res=FileMap.replaceStr("<h1>[--User does not exist.--] UserID="+userId+"</h1>", pl.lang);
+				String res=fileMap.replaceStr("<h1>[--User does not exist.--] UserID="+userId+"</h1>", pl.lang);
 				pl.req.response().end(res, ENCODING);
 				System.out.println("Sended '"+res+"'");
 			}
@@ -523,7 +534,7 @@ public static void main(String... args) {
 				}
 			}
 			else {
-				String res=FileMap.replaceStr("[--User does not exist.--] UserID="+finalUserId, pl.lang);
+				String res=fileMap.replaceStr("[--User does not exist.--] UserID="+finalUserId, pl.lang);
 				pl.req.response().end(res, ENCODING);
 				System.out.println("Sended '"+res+"'");
 			}
@@ -610,7 +621,7 @@ public static void main(String... args) {
 						pl.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
 							String res=pl.db.recoDo(Long.parseLong(pl.cookie.get("I"), 16), recoStr, pl.tNow);
-							pl.req.response().end(FileMap.replaceStr(res, pl.lang));
+							pl.req.response().end(fileMap.replaceStr(res, pl.lang));
 							System.out.println("Do reco:\n"+recoStr);
 						});
 					}
@@ -674,7 +685,7 @@ public static void main(String... args) {
 					else if (pl.method==HttpMethod.GET) {
 						// Log-in 유도.
 						pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-						pl.req.response().end(FileMap.get("verify.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.get("verify.html", pl.lang), ENCODING);
 						System.out.println("Sended 'Please log in first to verify your account.'.");
 					}
 					else {
@@ -685,7 +696,7 @@ public static void main(String... args) {
 				case "changePwd": // path=/account/changePwd
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (pl.db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
-						pl.req.response().end(FileMap.get("changePwd.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.get("changePwd.html", pl.lang), ENCODING);
 						System.out.println("Sended changePwd.html.");
 					}
 					else {
@@ -734,18 +745,18 @@ public static void main(String... args) {
 							if (pl.db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), pl.tNow)) {
 								System.out.println("Token is verified. User ID: "+inputs.get("userId"));
 								if (pl.db.changePwd(inputs, pl.ip, pl.tNow)) {
-									final String res=FileMap.replaceStr("[--Your password is changed.--]", pl.lang);
+									final String res=fileMap.replaceStr("[--Your password is changed.--]", pl.lang);
 									pl.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 								else {
-									final String res=FileMap.replaceStr("[--Error occured during changing password. Please try again.--]", pl.lang);
+									final String res=fileMap.replaceStr("[--Error occured during changing password. Please try again.--]", pl.lang);
 									pl.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
 							}
 							else {
-								final String res=FileMap.replaceStr("[--Token is invalid.--]", pl.lang);
+								final String res=fileMap.replaceStr("[--Token is invalid.--]", pl.lang);
 								pl.req.response().end(res, ENCODING);
 								System.out.println("Sended "+res);
 							}
@@ -759,15 +770,15 @@ public static void main(String... args) {
 				case "log-in": // path=/account/log-in
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (pl.sessionPassed) {
-						pl.req.response().end(FileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+						pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
 					else if (pl.cookie.get("rmbdI")!=null) {
-						pl.req.response().end(FileMap.get("remember-me.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.get("remember-me.html", pl.lang), ENCODING);
 						System.out.println("Sended remember-me.html.");
 					}
 					else {
-						pl.req.response().end(FileMap.get("log-in.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
 						System.out.println("Sended log-in.html. (No rmbd cookie)");
 					}
 					break;
@@ -823,7 +834,7 @@ public static void main(String... args) {
 					break;
 				case "log-out": case "log-out-from-all": // path=/account/log-out or /account/log-out-from-all
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-					pl.req.response().end(FileMap.get("log-out.html", pl.lang), ENCODING);
+					pl.req.response().end(fileMap.get("log-out.html", pl.lang), ENCODING);
 					System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
 					break;
 				case "log-out.do": // path=/account/log-out.do
@@ -832,7 +843,7 @@ public static void main(String... args) {
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie1) {
 						pl.req.response().addCookie(singleCookie);
 					}
-					pl.req.response().end(FileMap.replaceStr("[--Log-out : All log-in | session in server are deleted.--]", pl.lang), ENCODING);
+					pl.req.response().end(fileMap.replaceStr("[--Log-out : All log-in | session in server are deleted.--]", pl.lang), ENCODING);
 					System.out.println("Sended log-out msg.");
 					break;
 				case "log-out-from-all.do": // path=/account/log-out-from-all.do
@@ -841,7 +852,7 @@ public static void main(String... args) {
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie2) {
 						pl.req.response().addCookie(singleCookie);
 					}
-					pl.req.response().end(FileMap.replaceStr("[--Log-out : All log-in | session in server from all devices are deleted.--]", pl.lang), ENCODING);
+					pl.req.response().end(fileMap.replaceStr("[--Log-out : All log-in | session in server from all devices are deleted.--]", pl.lang), ENCODING);
 					System.out.println("Sended log-out-from-all msg.");
 					break;
 				case "check": // path=/account/check
@@ -905,11 +916,11 @@ public static void main(String... args) {
 									Map<String,String> varMap=new HashMap<String,String>();
 									varMap.put("{--user id--}", inputs.get(1, "userId"));
 									varMap.put("{--user email--}", inputs.get(1, "userEmail"));
-									pl.req.response().end(FileMapWithVar.get("signed-up.html", pl.lang, varMap), ENCODING);
+									pl.req.response().end(fileMapWithVar.get("signed-up.html", pl.lang, varMap), ENCODING);
 									System.out.println("Sended signed-up.html.");
 								}
 								else {
-									final String res=FileMap.replaceStr("[--Error occured during registration. Please sign-up again.--]", pl.lang);
+									final String res=fileMap.replaceStr("[--Error occured during registration. Please sign-up again.--]", pl.lang);
 									pl.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
 								}
@@ -951,12 +962,12 @@ public static void main(String... args) {
 			}
 			if (setCookieRMB.size()>0&&setCookieRMB.get(0).getName()=="I") {
 				// Success: Session cookie and New token.
-				pl.req.response().end(FileMap.replaceStr("Rmbd: [--Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)--]", pl.lang), ENCODING);
+				pl.req.response().end(fileMap.replaceStr("Rmbd: [--Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)--]", pl.lang), ENCODING);
 				System.out.println("Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
 			}
 			else { // if (setCookieRMB.startsWith("rmbdI="))
 				// Failed: Delete rmbd cookie.
-				pl.req.response().end(FileMap.replaceStr("[--Remembering you failed.--] [--Refresh the page and try again.--]", pl.lang), ENCODING);
+				pl.req.response().end(fileMap.replaceStr("[--Remembering you failed.--] [--Refresh the page and try again.--]", pl.lang), ENCODING);
 				System.out.println("Sended 'Failed' with Set-Cookie of deleting rmbd cookie. (Fail in remembering the user.)");
 			}
 		});
