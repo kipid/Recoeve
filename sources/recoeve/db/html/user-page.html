@@ -4806,7 +4806,7 @@ m.openCat=async function (cat) {
 			let fsFLUri=fsFL[uri];
 			if (!fsFLUri) {
 				let r=m.userRecos[uri];
-				fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title), catAndI:{}};
+				fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:String(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
 			}
 			if (!fsFLUri?.catAndI) {
 				fsFLUri.catAndI={};
