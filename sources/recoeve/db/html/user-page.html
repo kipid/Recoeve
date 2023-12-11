@@ -4793,6 +4793,8 @@ m.openCat=async function (cat) {
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:"[--Uncategorized--] of "}${m.userId}'s recoeve.net`);
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
+		let fs=m.fsGo;
+		let fsFL=fs.fullList;
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
 			if (m.userRecos[uri]) { // Must have recos on these uris.
@@ -4801,6 +4803,11 @@ m.openCat=async function (cat) {
 			else {
 				m.userRecos[uri]={uri, i:k};
 			}
+			let fsFLUri=fsFL[uri];
+			if (!fsFLUri.catAndI) {
+				fsFLUri.catAndI={};
+			}
+			fsFLUri.catAndI[cat]={cat, i:uris[uri]?.i};
 		}
 	}
 	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
@@ -6031,6 +6038,14 @@ m.gotoLi=async function (event) {
 	}
 };
 m.doFSGo=function (fs) {
+	if (fs.shuffledOnce===true) {
+		let fsFL=fs.fullList;
+		for (let k=0;k<fsFL.length;k++) {
+			let fsFLk=fsFL[k];
+			let uri=fsFLk.uri;
+			fsFLk.catAndI[m.currentCat]=m.catUriList[m.currentCat]?.uris[uri]?.i;
+		}
+	}
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let fsRes=m.fuzzySearch(fsPtnSH, fs);
@@ -6271,8 +6286,8 @@ if (m.myPage) {
 							m.catUriList[m.currentCat].UriList=uris;
 							m.catUriList[m.currentCat].uris=uris.split("\n");
 							fs.shuffled=null;
-							// fs.shuffledOnce=true;
-							// m.fsGo.shuffledOnce=true;
+							fs.shuffledOnce=true;
+							m.fsGo.shuffledOnce=true;
 							m.lastRecoMode="nothing";
 							m.doNotPushHistory=true;
 							await m.reTriggerFS(fs);
