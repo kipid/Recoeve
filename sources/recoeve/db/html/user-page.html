@@ -42,6 +42,7 @@ window.m={
 (function (m, $, undefined) {
 m.initialOpen=true;
 m.saveSSN();
+m.userIndex="{--userIndex--}";
 m.myIndex="{--myIndex--}";
 m.myId="{--myId--}";
 
@@ -54,8 +55,11 @@ if (m.initialPathname.substring(0,6)!=="/user/") { // e.g. path=/ or /reco?... o
 }
 
 m.pathnameSplit=m.pathname.split("/");
-m.userId=decodeURIComponent(m.pathnameSplit[2]);
-m.myPage=(m.myId===m.userId);
+if ("{--userId--}"!==decodeURIComponent(m.pathnameSplit[2])) {
+	console.log(`Error: userId is not matched.: {--userId--}!==${decodeURIComponent(m.pathnameSplit[2])}`);
+}
+m.userId="{--userId--}"===decodeURIComponent(m.pathnameSplit[2])?"{--userId--}":decodeURIComponent(m.pathnameSplit[2]);
+m.myPage=(m.myIndex===m.userIndex);
 m.userPath=`/user/${encodeURIComponent(m.userId)}`;
 m.recoMode=m.pathnameSplit[3]==="mode"&&m.pathnameSplit[4]?m.pathnameSplit[4]:"";
 
@@ -208,7 +212,7 @@ else if (m.docCookies.hasItem("lang")) {
 </head>
 <body>
 <data id="data-myCatList">{--myCatList--}</data>
-<data id="data-CatList">{--CatList--}</data>
+<data id="data-catList">{--catList--}</data>
 <div class="block-touch" id="block-touch" style="display:-webkit-flex; display:flex"></div>
 <div class="block-touch-exit exit" id="block-touch-exit" onclick="$(`#block-touch, #block-touch-exit`).hide()" style="display:none; z-index:31000; position:fixed"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 <div id="container">
@@ -908,7 +912,7 @@ $block_touch=$("#block-touch");
 $block_touch_exit=$("#block-touch-exit");
 $block_touch_exit.trigger("click");
 $data_myCatList=$("#data-myCatList");
-$data_catList=m.myPage?$data_myCatList:$("#data-CatList");
+$data_catList=m.myPage?$data_myCatList:$("#data-catList");
 $choose_lang=$("#choose-lang");
 $choose_lang_list=$("#choose-lang-list");
 $data_lang=$("#data-lang");
@@ -1345,8 +1349,8 @@ else {
 	});
 }
 
-m.catList=[];
-m.myCatList=m.myPage?m.catList:[];
+m.myCatList=[];
+m.catList=m.myPage?m.myCatList:[];
 m.catUriList=[];
 m.userRecos={};
 m.myRecos=m.myPage?m.userRecos:{};
@@ -1884,6 +1888,7 @@ return new Promise(function (resolve, reject) {
 };
 m.catListToHTML=async function () {
 return new Promise(async function (resolve, reject) {
+	// TODO: initialize m.fsGotoCats
 	let cL=m.catList;
 	let cat=cL[0].cat;
 	let catListHTML=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
@@ -2080,34 +2085,40 @@ $change_catList_order.on("click", function (e) {
 m.change_catList_order_do=function (args, err) {
 	if (err) {
 		args.$result?.html(err);
+		return;
+	}
+	if (m.myPage) {
 		$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
 		m.updateCatFS();
-		if (m.myPage) {
-			$data_catList.html(m.escapeOnlyTag(args.catListChanged));
-			m.updateGotoCatsFS();
-		}
-		$change_catList_order.show();
 	}
 	else {
+		$data_catList.html(m.escapeOnlyTag(args.catListChanged));
+		m.updateGotoCatsFS();
+	}
+	$change_catList_order.show();
+	if (m.myPage) {
 		$.ajax({
 			type:"POST", url:"/changeOrders/CatList", data:args.catListChanged
 			, dataType:"text"
 		}).fail(function () {
 			args.$result?.html("[--Changing CatList order has failed.--]");
 		}).done(function (resp) {
-			args.$result?.html(m.escapeOnlyTag(resp));
+			if (resp==="true") {
+				args.$result?.html(`[--The order of catList is changed.--]`);
+			}
+			else {
+				args.$result?.html(`[--The order of catList is NOT changed. Some error may occur.--]`);
+			}
 			setTimeout(function () {
 				args.$result?.html("");
-			}, 5000);
-		}).always(function () {
-			$data_myCatList.html(m.escapeOnlyTag(args.catListChanged));
-			m.updateCatFS();
-			if (m.myPage) {
-				$data_catList.html(m.escapeOnlyTag(args.catListChanged));
-				m.updateGotoCatsFS();
-			}
-			$change_catList_order.show();
+			}, 5*m.wait);
 		});
+	}
+	else {
+		args.$result?.html(`[--This is not your page. The order is just temporarily changed.--]`);
+		setTimeout(function () {
+			args.$result?.html("");
+		}, 5*m.wait);
 	}
 };
 $change_catList_order_ok.on("click", async function (e) {
@@ -2120,11 +2131,13 @@ $change_catList_order_ok.on("click", async function (e) {
 			$data_catList.html(m.escapeOnlyTag(catListChanged));
 			$change_catList_order.show();
 		}
+		await m.reTriggerFS(m.fsGotoCats);
+		await m.reTriggerFS(m.fsCat);
+		await m.reTriggerFS(m.fsMRCat);
 	}
 	else {
 		$change_catList_order.show();
 	}
-	await m.reTriggerFS(m.fsGotoCats);
 });
 $change_catList_order_cancel.on("click", async function (e) {
 	let catListChanged=m.unescapeHTML(m.getCatListChanged());
@@ -2147,6 +2160,9 @@ $change_catList_order_cancel.on("click", async function (e) {
 		}
 	}
 	$change_catList_order.show();
+	await m.reTriggerFS(m.fsGotoCats);
+	await m.reTriggerFS(m.fsCat);
+	await m.reTriggerFS(m.fsMRCat);
 });
 
 $timezone_trs=$("table.timezone").find("tr");
@@ -2184,7 +2200,7 @@ m.toLocalTime=function (UTCDateTime) {
 };
 
 //////////////////////////////////////
-// Fuzzy search on Cat
+// Fuzzy search on Cat :: Initialize m.fsCat, m.fsMRCat, m.fsGotoCats
 //////////////////////////////////////
 m.putCatToFSFullList=function (i, cat, catList) {
 	if (catList===m.myCatList) {
@@ -2194,7 +2210,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			fsCatFLCat.txt=m.splitHangul(cat);
 			fsCatFLCat.cat=cat;
 			fsCatFLCat.html=m.escapeOnlyTag(cat);
-			m.fsCat.fullList[i]=m.fsCat.fullList[cat]=fsCatFLCat;
+			m.fsCat.fullList[i]=fsCatFLCat;
 		}
 		else {
 			m.fsCat.fullList[i]=m.fsCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
@@ -2205,7 +2221,7 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			fsMRCatFLCat.txt=m.splitHangul(cat);
 			fsMRCatFLCat.cat=cat;
 			fsMRCatFLCat.html=m.escapeOnlyTag(cat);
-			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]=fsMRCatFLCat;
+			m.fsMRCat.fullList[i]=fsMRCatFLCat;
 		}
 		else {
 			m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
@@ -2218,17 +2234,20 @@ m.putCatToFSFullList=function (i, cat, catList) {
 			fsGotoCatsFLCat.txt=m.splitHangul(cat);
 			fsGotoCatsFLCat.cat=cat;
 			fsGotoCatsFLCat.html=m.escapeOnlyTag(cat);
-			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]=fsGotoCatsFLCat;
+			m.fsGotoCats.fullList[i]=fsGotoCatsFLCat;
 		}
 		else {
 			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]=fsGotoCatsFLCat={i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 		}
 	}
 };
-m.updateCatFS=async function () {
-	m.fsCat.fullList=[];
-	m.fsMRCat.fullList=[];
-	m.fsGotoCats.fullList=[];
+m.updateCatFS=async function () { // m.myCatList must be updated.
+	m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
+	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
+	if (m.myPage) {
+		m.fsGotoCats.fullList=splice(0, m.fsGotoCats.fullList.length);
+		// No need to do: await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
+	}
 	await m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
 	let l=m.myCatList.length;
 	for (let i=l-1;i>0;i--) {
@@ -2258,21 +2277,23 @@ m.updateCatFS=async function () {
 	else {
 		m.fsMRCat.fullList[i]=m.fsMRCat.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
 	}
-	if (m.fsGotoCats.fullList[cat]) {
-		let fsFLCat=m.fsGotoCats.fullList[cat];
-		fsFLCat.i=i;
-		fsFLCat.txt=m.splitHangul("[--Uncategorized--]");
-		fsFLCat.cat=cat;
-		fsFLCat.html=m.escapeOnlyTag("[--Uncategorized--]");
-		m.fsMRCat.fullList[i]=fsFLCat;
-	}
-	else {
-		m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
+	if (m.myPage) {
+		if (m.fsGotoCats.fullList[cat]) {
+			let fsFLCat=m.fsGotoCats.fullList[cat];
+			fsFLCat.i=i;
+			fsFLCat.txt=m.splitHangul("[--Uncategorized--]");
+			fsFLCat.cat=cat;
+			fsFLCat.html=m.escapeOnlyTag("[--Uncategorized--]");
+			m.fsMRCat.fullList[i]=fsFLCat;
+		}
+		else {
+			m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
+		}
 	}
 };
 m.updateCatFS();
-m.updateGotoCatsFS=async function () {
-	m.fsGotoCats.fullList=[];
+m.updateGotoCatsFS=async function () { // m.catList must be updated. if (m.myPage) this is not needed.
+	m.fsGotoCats.fullList=splice(0, m.fsGotoCats.fullList.length);
 	await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 	let l=m.catList.length;
 	for (let i=l-1;i>0;i--) {
@@ -2282,11 +2303,7 @@ m.updateGotoCatsFS=async function () {
 	let cat="";
 	let fsFLCat=m.fsGotoCats.fullList[cat];
 	if (fsFLCat) {
-		fsFLCat.i=i;
-		fsFLCat.txt=m.splitHangul("[--Uncategorized--]");
-		fsFLCat.cat=cat;
-		fsFLCat.html=m.escapeOnlyTag("[--Uncategorized--]");
-		m.fsGotoCats.fullList[i]=fsFLCat;
+		m.fsGotoCats.fullList[i]=fsFLCat={...fsFLCat, i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
 	}
 	else {
 		fsFLCat=m.fsGotoCats.fullList[i]=m.fsGotoCats.fullList[cat]={i, txt:m.splitHangul("[--Uncategorized--]"), cat, html:m.escapeOnlyTag("[--Uncategorized--]")};
@@ -2694,9 +2711,6 @@ m.putCat=function (cat) {
 	if (res) {
 		$data_myCatList.html(m.escapeOnlyTag(fullCats));
 		m.updateCatFS();
-		if (m.myPage) {
-			m.updateGotoCatsFS()
-		}
 	}
 	return res;
 };
@@ -2816,11 +2830,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 		}
 	}
 	if (catIsPut) {
-		if (m.myPage) {
-			$change_catList_order_cancel.trigger("click");
-			m.updateGotoCatsFS();
-		}
-		m.updateCatFS();
+		$change_catList_order_cancel.trigger("click");
 		await m.reTriggerFS(m.fsGotoCats);
 		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsGo);
