@@ -2245,7 +2245,7 @@ m.updateCatFS=async function () { // m.myCatList must be updated.
 	m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
 	m.fsMRCat.fullList.splice(0, m.fsMRCat.fullList.length);
 	if (m.myPage) {
-		m.fsGotoCats.fullList=splice(0, m.fsGotoCats.fullList.length);
+		m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 		// No need to do: await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 	}
 	await m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
@@ -2293,7 +2293,7 @@ m.updateCatFS=async function () { // m.myCatList must be updated.
 };
 m.updateCatFS();
 m.updateGotoCatsFS=async function () { // m.catList must be updated. if (m.myPage) this is not needed.
-	m.fsGotoCats.fullList=splice(0, m.fsGotoCats.fullList.length);
+	m.fsGotoCats.fullList.splice(0, m.fsGotoCats.fullList.length);
 	await m.strCatListToJSON(m.unescapeHTML($data_catList.html()), m.catList);
 	let l=m.catList.length;
 	for (let i=l-1;i>0;i--) {
