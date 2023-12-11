@@ -2747,7 +2747,7 @@ m.refreshFSToRs=async function (cat) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		let catsSplit=r.cats.split(";");
-		fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
 		// for (let j=0;j<catsSplit;j++) {
 		// 	let cat=catsSplit[j];
 		// 	if (!m.catUriList[cat]?.has) {
@@ -2755,7 +2755,7 @@ m.refreshFSToRs=async function (cat) {
 		// 	}
 		// 	fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 		// }
-		fsFL.push(fsFL[uri]);
+		// fsFL.push(fsFL[uri]);
 	}
 	await m.fsToRsInRangeCheck();
 };
@@ -4124,7 +4124,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
-	fs.currentIndex=fs.fullList.length-1;
+	fs.currentIndex=m.catUriList[m.currentCat].uris.length-1;
 	if (m.lastCat!==m.currentCat||fs.lastIndex!==fs.currentIndex) {
 		fs.playNext(-1, null, true);
 	}
@@ -4804,6 +4804,10 @@ m.openCat=async function (cat) {
 				m.userRecos[uri]={uri, i:k};
 			}
 			let fsFLUri=fsFL[uri];
+			if (!fsFLUri) {
+				let r=m.userRecos[uri];
+				fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title), catAndI:{}};
+			}
 			if (!fsFLUri?.catAndI) {
 				fsFLUri.catAndI={};
 			}
@@ -6261,11 +6265,11 @@ if (m.myPage) {
 	$button_save_this_order.on("click", function (e) {
 		$result_of_change_order.html("[--Changing the order of UriList.--]");
 		$numbers_of_recos.html("[--Changing the order of UriList.--]");
-		let uris="\n";
+		let uris="";
 		let fs=m.fsToRs;
 		if (fs.shuffled) {
 			for (let i=0;i<fs.shuffled.length;i++) { // Newest has the maximum index i. Newest uri to the bottom (push).
-				uris+=fs.fullList[fs.shuffled[i].i]?.r?.uri+"\n";
+				uris+="\n"+fs.fullList[fs.shuffled[i].i]?.r?.uri;
 			}
 			uris=uris.trim();
 			if (m.catUriList[m.currentCat].UriList.trim()===uris) {
@@ -7209,15 +7213,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 			m.toggleManual();
 		}
 	}
-	setTimeout(async function () {
-		await m.reTriggerFS(m.fsToRs);
-		await m.reTriggerFS(m.fsCat);
-		await m.reTriggerFS(m.fsMRCat);
-		await m.reTriggerFS(m.fsGotoCats);
-		await m.reTriggerFS(m.fsTimezone);
-		await m.reTriggerFS(m.fsGo);
-		m.initialOpen=false;
-	}, 2*m.wait);
 	// setTimeout(async function () {
 	// 	await m.reTriggerFS(m.fsToRs);
 	// 	await m.reTriggerFS(m.fsCat);
@@ -7226,7 +7221,16 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	// 	await m.reTriggerFS(m.fsTimezone);
 	// 	await m.reTriggerFS(m.fsGo);
 	// 	m.initialOpen=false;
-	// }, 4*m.wait);
+	// }, 2*m.wait);
+	setTimeout(async function () {
+		await m.reTriggerFS(m.fsToRs);
+		await m.reTriggerFS(m.fsCat);
+		await m.reTriggerFS(m.fsMRCat);
+		await m.reTriggerFS(m.fsGotoCats);
+		await m.reTriggerFS(m.fsTimezone);
+		await m.reTriggerFS(m.fsGo);
+		m.initialOpen=false;
+	}, 4*m.wait);
 });
 
 ////////////////////////////////////////////////////
@@ -7401,7 +7405,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 		}
 		else {
 			fs.lastIndex=-1;
-			fs.currentIndex=fs.fullList.length-1;
+			fs.currentIndex=m.catUriList[m.currentCat].uris.length-1;
 			$reco_playing.html('');
 			$eveElse.html('');
 			$youtube.html('');
