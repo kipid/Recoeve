@@ -2605,10 +2605,10 @@ m.onKeydownInFS=function (e, fs) {
 				}
 				if ($liTo.exists()) {
 					$liTo.eq(0).trigger("click");
-					if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
+					if ($liTo.offset().top<$fsl.offset().top+52) { // $liTo at upside of scroll.
 						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-52);
 					}
-					else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()-2) { // $liTo at downside of scroll.
+					else if ($liTo.offset().top+$liTo.outerHeight()>$fsl.offset().top+$fsl.height()-52) { // $liTo at downside of scroll.
 						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top+$liTo.outerHeight()-$fsl.offset().top-$fsl.height()+52);
 					}
 				}
