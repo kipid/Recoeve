@@ -1044,15 +1044,17 @@ public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
 	try {
 		ResultSet user=findUserById(userId);
 		if (user.next()) {
-			long user_me=user.getLong("i");
-			if ((cookie.get("I")==null&&cookie.get("rmbdI")==null)||user_me!=my_i) {
-				varMap.put("{--CatList--}", HTMLString.escapeOnlyTag(getCatList(user_me).toString()));
-			}
+			long user_i=user.getLong("i");
+			varMap.put("{--userIndex--}", Long.toString(user_i, 16));
+			varMap.put("{--userId--}", HTMLString.escapeOnlyTag(user.getString("id")));
+			varMap.put("{--CatList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
 		}
 	}
 	catch (SQLException e) {
 		err(e);
 	}
+	varMap.putIfAbsent("{--userIndex--}", "");
+	varMap.putIfAbsent("{--userId--}", "");
 	varMap.putIfAbsent("{--myIndex--}", "");
 	varMap.putIfAbsent("{--myId--}", "");
 	varMap.putIfAbsent("{--myCatList--}", "");
@@ -1070,18 +1072,23 @@ public Map<String, String> varMapMyPage(Cookie cookie) {
 	}
 	if (!myIndex.isEmpty()) {
 		varMap.put("{--myIndex--}", myIndex);
+		varMap.put("{--userIndex--}", myIndex);
 		long my_i=Long.parseLong(myIndex, 16);
 		try {
 			ResultSet user=findUserByIndex(my_i);
 			if (user.next()) {
 				varMap.put("{--myId--}", user.getString("id"));
 				varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
+				varMap.put("{--userId--}", varMap.get("{--myId--}"));
+				varMap.put("{--CatList--}", varMap.get("{--myCatList--}"));
 			}
 		}
 		catch (SQLException e) {
 			err(e);
 		}
 	}
+	varMap.putIfAbsent("{--userIndex--}", "");
+	varMap.putIfAbsent("{--userId--}", "");
 	varMap.putIfAbsent("{--myIndex--}", "");
 	varMap.putIfAbsent("{--myId--}", "");
 	varMap.putIfAbsent("{--myCatList--}", "");
