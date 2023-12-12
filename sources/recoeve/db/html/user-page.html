@@ -5495,7 +5495,7 @@ m.moveAllTo=function () {
 		m.rmb_me(m.reco_do, {strRecoDo, cats, uri, r:m.myRecos[uri], $result});
 	}
 };
-m.reco_do=function (args, err) { // args : {strRecoDo, $result, uri}
+m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 	if (err) {
 		m.delayedLogOut(`[--Reco failed.--] ${err}`, 60*60*24);
 		$button_reco.removeClass("disabled");
