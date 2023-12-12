@@ -3875,9 +3875,9 @@ return new Promise(async function (resolve, reject) {
 		}
 	}
 	await m.reTriggerFS(fs);
-	let nOfRecos=`${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat=${m.escapeOnlyTag(m.currentCat)}.`;
+	let nOfRecos=`[--${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
 	if (!m.myPage) {
-		nOfRecos+=`<br>You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat=${m.escapeOnlyTag(m.currentCat)}`;
+		nOfRecos+=`<br>[--You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
 	}
 	$numbers_of_recos.html(nOfRecos);
 	resolve();
