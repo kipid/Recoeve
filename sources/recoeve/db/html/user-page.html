@@ -2766,14 +2766,6 @@ m.refreshFSToRs=async function (cat) {
 		let r=m.userRecos[uri];
 		let catsSplit=r.cats.split(";");
 		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
-		// for (let j=0;j<catsSplit;j++) {
-		// 	let cat=catsSplit[j];
-		// 	if (!m.catUriList[cat]?.has) {
-		// 		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-		// 	}
-		// 	fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-		// }
-		// fsFL.push(fsFL[uri]);
 	}
 	await m.fsToRsInRangeCheck();
 };
@@ -4004,7 +3996,8 @@ return new Promise(async function (resolve, reject) {
 		let respK=await resp[k];
 		let uri=String(respK.uri);
 		let r=recos[uri];
-		if (!r) { r=recos[uri]={}; }
+		if (!r) { r=recos[uri]={uri}; }
+		r.down=true;
 		r.has=true; // User has a reco on the uri.
 		for (let prop in respK) {
 			if (isNaN(prop)) {
@@ -4036,18 +4029,17 @@ return new Promise(async function (resolve, reject) {
 			let r=recos[uri];
 			let catsSplit=r.cats?.split(";");
 			if (!fsFL[uri]) {
-				fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
-				fsFL.push(fsFL[uri]);
+				fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			}
 			else {
-				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			}
-			for (let k=0;k<catsSplit.length;k++) {
-				let cat=catsSplit[k];
-				if (!m.catUriList[cat]?.has) {
-					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			for (let l=0;l<catsSplit.length;l++) {
+				let catL=catsSplit[l];
+				if (!m.catUriList[catL]?.has) {
+					await m.getUriList("cat\n"+(catL===""?"\tp":catL));
 				}
-				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+				fsFL[uri].catAndI[catL]={catL, i:m.catUriList[catL]?.uris[uri]?.i};
 			}
 		}
 		await m.reTriggerFS(fs);
@@ -4160,15 +4152,16 @@ m.getUriList=function (catStrArray) {
 				let catUL=m.catUriList[respJSON[i].cat]=m.catUriList[respJSON[i].cat]||{};
 				catUL.down=true;
 				catUL.has=true;
-				for (let p in respJSON[i]) {
-					if (isNaN(p)) {
-						catUL[p]=respJSON[i][p]; // {cat, UriList}
+				for (let prop in respJSON[i]) {
+					if (isNaN(prop)) {
+						catUL[prop]=respJSON[i][prop]; // {cat, UriList}
 					}
 				}
+				catUL.UriList=catUL.UriList.trim();
 				catUL.uris=[];
 				if (catUL.UriList?.length!==0) {
-					catUL.uris=catUL.UriList.trim().split("\n").reverse(); // Newest has the maximum index i.
-					catUL.UriList=catUL.uris.join("\n");
+					catUL.uris=catUL.UriList.split("\n").reverse(); // Newest has the maximum index i.
+					catUL.UriList=catUL.uris.join("\n").trim();
 					for (k=0;k<catUL.uris.length;k++) {
 						let uri=catUL.uris[k];
 						catUL.uris[uri]={i:k, uri};
@@ -4808,14 +4801,21 @@ m.openCat=async function (cat) {
 	if (m.catUriList[cat]?.has) {
 		let uris=m.catUriList[cat].uris;
 		let fs=m.fsGo;
+		let fs1=m.fsToRs;
 		let fsFL=fs.fullList;
+		let fs1FL=fs1.fullList;
 		for (let k=0;k<uris.length;k++) {
 			let uri=uris[k];
-			if (m.userRecos[uri]) { // Must have recos on these uris.
-				m.userRecos[uri].i=k; // Newest has the maximum index i.
+			let r=m.userRecos[uri];
+			if (!r) { // Must have recos on these uris.
+				r=m.userRecos[uri]={i:k, uri, down:false, has:false}; // Newest has the maximum index i.
+			}
+			let fs1FLUri=fs1FL[uri];
+			if (!fs1FLUri) {
+				fs1FLUri=fs1FL[uri]={uri, r, i:k, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
 			}
 			else {
-				m.userRecos[uri]={uri, i:k};
+				fs1FLUri=fs1FL[k]=fs1FL[uri]={...fs1FL[uri], uri, r, i:k, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
 			}
 			let fsFLUri=fsFL[uri];
 			if (!fsFLUri) {
@@ -6063,13 +6063,16 @@ m.gotoLi=async function (event) {
 };
 m.doFSGo=function (fs) {
 	if (fs.shuffledOnce===true) {
-		let fsFL=fs.fullList;
-		for (let k=0;k<fsFL.length;k++) {
-			let fsFLk=fsFL[k];
-			let uri=fsFLk.uri;
-			fsFLk.catAndI[m.currentCat]=m.catUriList[m.currentCat]?.uris[uri]?.i;
+		let uris=m.catUriList[m.currentCat]?.uris;
+		if (uris?.constructor===Array) {
+			let fsFL=fs.fullList;
+			for (let k=0;k<uris.length;k++) {
+				let uri=uris[k];
+				fsFL[uri].catAndI[m.currentCat]={cat:m.currentCat, i:m.catUriList[m.currentCat]?.uris[uri]?.i};
+			}
 		}
 	}
+	fs.shuffledOnce=false;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
 		let fsRes=m.fuzzySearch(fsPtnSH, fs);
