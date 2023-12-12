@@ -482,7 +482,7 @@ public static void main(String... args) {
 					case "get-UriList": // e.g. path=/user/kipid/get-UriList
 						pl.req.bodyHandler((Buffer data) -> {
 							pl.req.response().end(pl.db.getStringCatUriList(finalUserId, new StrArray(data.toString())), ENCODING);
-							System.out.println("Sended uriLists.");
+							System.out.println("Sended uriLists.\n"+data.toString());
 						});
 						break;
 					case "change-order-of-UriList": // e.g. path=/user/kipid/change-order-of-UriList?cat=......
