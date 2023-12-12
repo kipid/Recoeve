@@ -4034,13 +4034,14 @@ return new Promise(async function (resolve, reject) {
 			else {
 				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
 			}
-			for (let l=0;l<catsSplit.length;l++) {
-				let catL=catsSplit[l];
-				if (!m.catUriList[catL]?.has) {
-					await m.getUriList("cat\n"+(catL===""?"\tp":catL));
-				}
-				fsFL[uri].catAndI[catL]={catL, i:m.catUriList[catL]?.uris[uri]?.i};
-			}
+			// TODO: Delete? or Preserve the below?
+			// for (let l=0;l<catsSplit.length;l++) {
+			// 	let catL=catsSplit[l];
+			// 	if (!m.catUriList[catL]?.has) {
+			// 		await m.getUriList("cat\n"+(catL===""?"\tp":catL));
+			// 	}
+			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+			// }
 		}
 		await m.reTriggerFS(fs);
 	}
