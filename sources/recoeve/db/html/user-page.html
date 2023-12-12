@@ -2782,11 +2782,11 @@ m.putCats_UriToLists=async function (cats, uri) {
 		if (m.myPage) {
 			if (m.catUriList[cat]?.has) {
 				if (uri?.constructor===String) {
-					m.catUriList[cat].UriList=m.catUriList[cat].UriList+"\n"+uri;
+					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
 					m.catUriList[cat].uris.push(uri);
 				}
 				else if (uri?.constructor===Array) {
-					m.catUriList[cat].UriList=m.catUriList[cat].UriList+"\n"+uri.join("\n");
+					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri.join("\n");
 					m.catUriList[cat].uris=[...m.catUriList[cat].uris, ...uri];
 				}
 			}
@@ -2795,7 +2795,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				if (uri?.constructor===String) {
 					if (!m.catUriList[cat].uris[uri]) {
-						m.catUriList[cat].UriList=(m.catUriList[cat].UriList+"\n"+uri).trim();
+						m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
 						m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
 						m.catUriList[cat].uris.push(uri);
 					}
@@ -2803,8 +2803,8 @@ m.putCats_UriToLists=async function (cats, uri) {
 				else if (uri?.constructor===Array) {
 					for (let j=0;j<uri.length;j++) {
 						let uriJ=uri[j];
-						m.catUriList[cat].UriList+="\n"+uriJ;
-						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
+						m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uriJ;
+						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uri:uriJ};
 						m.catUriList[cat].uris.push(uriJ);
 					}
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim();
@@ -2831,6 +2831,10 @@ m.putCats_UriToLists=async function (cats, uri) {
 		await m.reTriggerFS(m.fsGo);
 	}
 };
+m.indexOfUriOnCatUriListCat=function (catUriListCat, uri) {
+	let fullURIs="\n"+catUriListCat.UriList.trim()+"\n";
+	return fullURIs.indexOf("\n"+uri+"\n");
+};
 m.delCats_UriFromLists=async function (cats, uri) {
 if (m.myPage) {
 	let catsSplit=cats.split(";");
@@ -2840,8 +2844,7 @@ if (m.myPage) {
 		if (!m.catUriList[cat]?.has) {
 			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 		}
-		let fullURIs="\n"+m.catUriList[cat].UriList.trim()+"\n";
-		let k=fullURIs.indexOf("\n"+uri+"\n");
+		let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
 		if (k!==-1) {
 			m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			// Intentionally no change on m.catUriList[cat].uris;
