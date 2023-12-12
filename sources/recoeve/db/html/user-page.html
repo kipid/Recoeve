@@ -2799,13 +2799,23 @@ m.putCats_UriToLists=async function (cats, uri) {
 						m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
 						m.catUriList[cat].uris.push(uri);
 					}
+					else {
+						let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
+						if (k===-1) {
+							m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
+							m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
+							m.catUriList[cat].uris.push(uri);
+						}
+					}
 				}
 				else if (uri?.constructor===Array) {
 					for (let j=0;j<uri.length;j++) {
 						let uriJ=uri[j];
-						m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uriJ;
-						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uri:uriJ};
-						m.catUriList[cat].uris.push(uriJ);
+						if (!m.catUriList[cat].uris[uriJ]) {
+							m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uriJ;
+							m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uri:uriJ};
+							m.catUriList[cat].uris.push(uriJ);
+						}
 					}
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim();
 				}
@@ -2825,8 +2835,11 @@ m.putCats_UriToLists=async function (cats, uri) {
 		}
 	}
 	if (catIsPut) {
+		// TODO: update m.currentCat;
 		$change_catList_order_cancel.trigger("click");
 		await m.reTriggerFS(m.fsGotoCats);
+		m.fsToRs.shuffledOnce=true;
+		m.fsGo.shuffledOnce=true;
 		await m.reTriggerFS(m.fsToRs);
 		await m.reTriggerFS(m.fsGo);
 	}
@@ -2872,7 +2885,7 @@ if (m.myPage) {
 	}
 }};
 m.changeCats_UriList=function (oldCats, newCats, uri) {
-if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
+if (oldCats!==null&&oldCats!==undefined&&oldCats.constructor===String&&newCats!==null&&newCats!==undefined&&newCats.constructor===String) {
 	let oldCatSplit=oldCats.split(";");
 	let newCatSplit=newCats.split(";");
 	let o=[];
@@ -2895,11 +2908,24 @@ if (uri&&uri.constructor===String&&oldCats!==null&&oldCats!==undefined&&oldCats.
 	for (let p in o) {
 		if (o[p]) { oldCats+=p+";"; }
 	}
-	if (oldCats.length>0) {
-		m.delCats_UriFromLists(oldCats.substring(0,oldCats.length-1), uri);
+	if (uri&&uri.constructor===String) {
+		if (oldCats.length>0) {
+			m.delCats_UriFromLists(oldCats.substring(0,oldCats.length-1), uri);
+		}
+		if (newCats.length>0) {
+			m.putCats_UriToLists(newCats.substring(0,newCats.length-1), uri);
+		}
 	}
-	if (newCats.length>0) {
-		m.putCats_UriToLists(newCats.substring(0,newCats.length-1), uri);
+	else if (uri&&uri.constructor===Array) {
+		if (oldCats.length>0) {
+			for (j=0;j<uri.length;j++) {
+				let uriJ=uri[j];
+				m.delCats_UriFromLists(oldCats.substring(0,oldCats.length-1), uriJ);
+			}
+		}
+		if (newCats.length>0) {
+			m.putCats_UriToLists(newCats.substring(0,newCats.length-1), uri);
+		}
 	}
 }};
 
@@ -3257,10 +3283,10 @@ m.stashReco=function (event) {
 	}
 	else {
 		let inRecoms=true;
-		let valStr=$reco.find(".str").html();
+		let valStr=""; // $reco.find(".str").html();
 		let uri=m.unescapeHTML($reco.find(".textURI").html());
-		let strHeads="do\turi\tval";
-		let strContents=`overwrite\t${m.encloseStr(uri)}\t`; // Empty val.
+		let strHeads="uri\tdo\tval";
+		let strContents=`${m.encloseStr(uri)}\toverwrite\t`; // Empty val.
 		let r=m.myRecos[uri];
 		let recoDef=m.recoDefs[uri];
 		if (!r) {
@@ -3277,9 +3303,7 @@ m.stashReco=function (event) {
 		strHeads+="\tcats";
 		strContents+=`\t${cats}`;
 		$result?.html(`Stashing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
-		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
-		// m.putCats_UriToLists(cats, uri);
-		// m.refreshFSToRs(m.currentCat);
+		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
 	}
 };
 m.recomHTML=async function (r) {
@@ -3461,7 +3485,7 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 	}
 	return res;
 };
-m.reco_pointChange_do=function (args, err) {
+m.reco_pointChange_do=function (args, err) { // args : {strHeads, strContents, $result, uri, cats, valStr, inRecoms}
 	if (err) {
 		m.delayedLogOut(err, 60*60*24, args.$result);
 		return;
@@ -3488,12 +3512,12 @@ m.reco_pointChange_do=function (args, err) {
 		let uri=res[1]?.uri;
 		if (result.startsWith("changed")) {
 			m.myRecos[uri].val=m.val(args.valStr);
+			m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
 			if (m.myRecos[uri].cats!==args.cats) {
 				m.myRecos[uri].cats=args.cats;
 			}
 			m.myRecos[uri].tLast=res[1]?.tLast;
-			args.$result?.html(m.escapeOnlyTag(res[1].result));
-			m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
+			args.$result?.html(res[1].result);
 			m.refreshFSToRs(m.currentCat);
 			m.refresh(args.cats, "changed", uri);
 		}
@@ -3540,8 +3564,8 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 	let valStr=$str.html();
 	if (m.myPage) {
 		if (inRecoms) {
-			let strHeads="do\turi\tval";
-			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\treco\t${m.encloseStr(valStr)}`;
 			let r=m.myRecos[uri];
 			let recoDef=m.recoDefs[uri];
 			if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
@@ -3562,13 +3586,11 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 			}
 			strContents+=`\t${m.encloseStr(cats)}`;
 			$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
-			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
-			// m.putCats_UriToLists(cats, uri);
-			// m.refreshFSToRs(m.currentCat);
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
 		}
 		else if (valStr!==m.myRecos[uri].val?.str) {
-			let strHeads="do\turi\tval";
-			let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\tchange\t${m.encloseStr(valStr)}`;
 			let cats="";
 			let catsChanged=true;
 			if (m.recoMode==="multireco") {
@@ -3590,14 +3612,14 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 				strContents+=`\t${m.encloseStr(cats)}`;
 			}
 			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is "${m.escapeOnlyTag(cats)}".`:""}`);
-			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
 		}
 	}
 	else {
 		if (m.myRecos[uri].has) {
 			if (m.myRecos[uri].val?.str!==valStr) {
-				let strHeads="do\turi\tval";
-				let strContents=`change\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+				let strHeads="uri\tdo\tval";
+				let strContents=`${m.encloseStr(uri)}\tchange\t${m.encloseStr(valStr)}`;
 				let cats="";
 				let catsChanged=true;
 				if (m.recoMode==="multireco") {
@@ -3618,13 +3640,13 @@ m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
 					strHeads+="\tcats";
 					strContents+=`\t${m.encloseStr(cats)}`;
 				}
-				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to ${m.escapeOnlyTag(cats)}.`:""}`);
-				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, uri, valStr, $result, inRecoms, cats});
+				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to "${m.escapeOnlyTag(cats)}".`:""}`);
+				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
 			}
 		}
 		else {
-			let strHeads="do\turi\tval";
-			let strContents=`reco\t${m.encloseStr(uri)}\t${m.encloseStr(valStr)}`;
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\treco\t${m.encloseStr(valStr)}`;
 			let uR=m.userRecos[uri];
 			if (uR) {
 				if (uR.title) {
@@ -4996,6 +5018,7 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 	}
 };
 m.emptifyRecoInNewReco=function () {
+	m.localStorage.clear();
 	$input_uri[0].value="";
 	$input_val.trigger("keyup");
 	m.getAndShowDefsAndRecoInNewReco(true);
@@ -5459,25 +5482,26 @@ m.moveAllTo=function () {
 	let uris=[];
 	let fs=m.fsToRs;
 	fs.$fsLis=fs.$fsl.find(".list-item");
-	let strRecoDo="do\turi\tcats";
+	let strRecoDo="uri\tdo\tcats";
 	for (let i=fs.$fsLis.length-1;i>=0;i--) {
 		let $liI=fs.$fsLis.eq(i);
 		let uri=m.unescapeHTML($liI.find(".list-index-id").html());
 		uris.push(uri);
-		strRecoDo+=`\nchange\t${uri}\t${cats}`;
-		// m.delCats_UriFromLists(m.myRecos[uri].cats, uri);
+		strRecoDo+=`\n${uri}\tchange\t${cats}`;
 	}
 	let $result=$numbers_of_recos;
-	m.rmb_me(m.reco_do, {strRecoDo, cats, uri:uris[0], r:m.myRecos[uris[0]], $result});
-	// m.putCats_UriToLists(cats, uris);
-	// m.refreshFSToRs(m.currentCat);
+	for (let i=fs.$fsLis.length-1;i>=0;i--) {
+		let uri=m.unescapeHTML($liI.find(".list-index-id").html());
+		m.rmb_me(m.reco_do, {strRecoDo, cats, uri, r:m.myRecos[uri], $result});
+	}
 };
-m.reco_do=function (args, err) {
+m.reco_do=function (args, err) { // args : {strRecoDo, $result, uri}
 	if (err) {
 		m.delayedLogOut(`[--Reco failed.--] ${err}`, 60*60*24);
 		$button_reco.removeClass("disabled");
 		return;
 	}
+	let strRecoDoJSON=await m.strToJSON(strRecoDo, true, true);
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
@@ -5503,10 +5527,9 @@ m.reco_do=function (args, err) {
 				if (uriI!==res[i]?.originalURI) {
 					m.myRecos[uriI].desc=(`#originalURI\n${res[i]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
 				}
-				m.delCats_UriFromLists(m.myRecos[uriI].cats, uri);
+				m.changeCats_UriList(m.myRecos[uriI].cats, String(strRecoDoJSON[i].cats), uriI);
 			}
 			await m.recoToEve(args.strRecoDo, m.myRecos);
-			m.putCats_UriToLists(m.myRecos[uris[0]].cats, uris);
 			m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0]);
 		}
 		else if (result.startsWith("recoed")) {
@@ -5532,13 +5555,13 @@ m.reco_do=function (args, err) {
 			$error.html(result);
 			args.$result?.html(result);
 			m.recoDowned(args.uri, m.myRecos);
+			m.changeCats_UriList(m.myRecos[uri].cats, String(strRecoDoJSON[1].cats), uri);
 			await m.recoToEve(args.strRecoDo, m.myRecos);
 			m.myRecos[args.uri].tLast=res[1]?.tLast;
 			let cats=String(m.myRecos[args.uri].cats);
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
 				m.refreshFSToRs(m.currentCat);
 				m.refresh(cats, "changed", args.uri);
 			}, m.wait);
@@ -5572,8 +5595,8 @@ $button_reco.on("click", function (e) {
 		errorMsg="[--Points is of invalid form.--]";
 	}
 	if (valid) {
-		let strHeads="do\turi";
-		let strContents="reco\t"+m.encloseStr(uri);
+		let strHeads="uri\tdo";
+		let strContents=m.encloseStr(uri)+"\treco";
 
 		let title=m.formatTitle($input_title[0].value);
 		strHeads+="\ttitle";
@@ -5604,7 +5627,7 @@ $button_reco.on("click", function (e) {
 		$button_reco.removeClass("disabled");
 	}
 });
-m.reco_change_do=function (args, err) {
+m.reco_change_do=function (args, err) { // args : {strHeads, strContents, $result, r, uri, title, cats, desc, cmt, val}
 	if (err) {
 		m.delayedLogOut(`[--Failed change.--] ${err}`, 60*60*24);
 		$button_edit.removeClass("disabled");
@@ -5659,8 +5682,8 @@ $button_edit.on("click", function (e) {
 	let val=m.val($input_val[0].value.trim());
 	let r=m.myRecos[uri];
 	if (uri.length!==0&&val.valid&&r) {
-		let strHeads="do"+"\t"+"uri";
-		let strContents="change"+"\t"+m.encloseStr(uri);
+		let strHeads="uri\tdo";
+		let strContents=m.encloseStr(uri)+"\tchange";
 		let changed=false;
 
 		let title=m.formatTitle($input_title[0].value);
@@ -5701,7 +5724,7 @@ $button_edit.on("click", function (e) {
 
 		if (changed) {
 			$error.html("[--Being changed.--]");
-			m.rmb_me(m.reco_change_do, {strHeads, strContents, cats, r, uri, title, desc, cmt, val}, true);
+			m.rmb_me(m.reco_change_do, {strHeads, strContents, $result:$error, r, uri, title, cats, desc, cmt, val}, true);
 		}
 		else {
 			$error.html("[--You have made no change.--]");
@@ -5723,7 +5746,7 @@ $button_edit.on("click", function (e) {
 		$button_edit.removeClass("disabled");
 	}
 });
-m.reco_delete_do=function (args, err) {
+m.reco_delete_do=function (args, err) { // args : {strHeads, strContents, $result, r, uri}
 	if (err) {
 		m.delayedLogOut(`[--Failed delete.--] ${err}`, 60*60*24);
 		$button_del.removeClass("disabled");
@@ -5769,15 +5792,18 @@ $button_del.on("click", function (e) {
 	if (uri.length!==0&&r) {
 		let strHeads="do"+"\t"+"uri";
 		let strContents="delete"+"\t"+m.encloseStr(uri);
-		m.rmb_me(m.reco_delete_do, {strHeads, strContents, r, uri}, true);
+		m.rmb_me(m.reco_delete_do, {strHeads, strContents, $result:$error, r, uri}, true);
 	}
 	else {
 		let errorMsg="";
 		if (uri.length===0) {
 			errorMsg="[--URI is required.--]";
 		}
-		else {
+		else if (!r?.has) {
 			errorMsg="[--You have no reco on this URI.--]";
+		}
+		else {
+			errorMsg="[--Some error occurs.--]";
 		}
 		$error.html(errorMsg);
 		$button_del.removeClass("disabled");
