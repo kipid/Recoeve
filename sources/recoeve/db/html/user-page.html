@@ -2773,7 +2773,7 @@ m.refreshFSToRs=async function (cat) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
 		let catsSplit=String(r?.cats).split(";");
-		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 	}
 	await m.fsToRsInRangeCheck();
 };
@@ -3319,18 +3319,18 @@ m.recomHTML=async function (r) {
 		let recoHTML=await m.recoHTML(r, false, true, true);
 		return String(recoHTML);
 	}
-	let recoDef=m.recoDefs[r.uri];
-	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r.uri]?.i}">
+	let recoDef=m.recoDefs[r?.uri];
+	let res=`<div class="reco recom" id="recom-${m.recoms[m.currentCat][r?.uri]?.i}">
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
-	<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
-	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>`;
+	<div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
+	<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>`;
 	if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 		res+=`<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
 	}
 	res+=`<div class="cats">${m.escapeOnlyTag(m.currentCat)}</div>`;
-	let uriRendered=await uriRendering(r.uri, false, false);
+	let uriRendered=await uriRendering(r?.uri, false, false);
 	res+=String(uriRendered.html);
-	let recomsI=m.recoms[m.currentCat][r.uri];
+	let recomsI=m.recoms[m.currentCat][r?.uri];
 	if (recomsI?.valsStat) {
 		let valsStat=recomsI.valsStat;
 		let dx=100.0/(m.valsStatN+2);
@@ -3403,19 +3403,19 @@ m.recomHTML=async function (r) {
 m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r.uri]?.i}"`:`-${m.fsToRs.fullList[r.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r?.uri]?.i}"`:`-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
-<div class="textURI">${m.escapeOnlyTag(r.uri)}</div>
-<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r.uri)}">RecoStat</a>${m.uriToA(r.uri)}</div>
-<div class="title">${m.escapeOnlyTag(r.title)}</div>
+<div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
+<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
+<div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
 		if (!inListPlay) {
-			let uriRendered=await uriRendering(r.uri, false, inListPlay);
+			let uriRendered=await uriRendering(r?.uri, false, inListPlay);
 			res+=String(uriRendered.html);
 		}
 		res+=`<div class="cBoth"></div>`;
 		if (r.val?.str) {
-			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
+			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
 		}
 		else {
 			res+=`<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
@@ -3423,14 +3423,14 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 		res+=`<div class="cBoth"></div>`;
 		if (m.myPage) {
 			if (r.val?.str) {
-				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r.val.str)}</span></div>`;
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
 			}
 			else {
 				res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 			}
 		}
-		else if (m.myRecos[r.uri]) {
-			let mR=m.myRecos[r.uri];
+		else if (m.myRecos[r?.uri]) {
+			let mR=m.myRecos[r?.uri];
 			if (mR.has) {
 				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
 			}
@@ -3481,7 +3481,7 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 			}
 			res+=`</div>`;
 		}
-		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeOnlyTag(r.cmt).replace(/\n/g,"<br>")}</div>`):"");
+		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g,"<br>")}</div>`):"");
 		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
 		if (r.tFirst!==r.tLast) {
 			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
@@ -3868,7 +3868,7 @@ return new Promise(async function (resolve, reject) {
 		let r=fsFLk.r;
 		let val=r.val?.val;
 		// fsFLk.txt=m.splitHangul(r.title);
-		// fsFLk.html=m.escapeOnlyTag(r.title);
+		// fsFLk.html=m.escapeOnlyTag(r?.title);
 		if (val===undefined||val===-1) {
 			if (m.showRWOP) {
 				fsFLk.inRange=true;
@@ -3997,7 +3997,7 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		if (!(r&&r.has)) {
 			r=m.userRecos[uri];
 		}
-		$input_uri[0].value=r.uri;
+		$input_uri[0].value=r?.uri;
 		$input_uri[0].disabled=true;
 		if (uri.length!==0&&uri!==m.lastURI) {
 			m.getAndShowDefsAndRecoInNewReco(true, fillDefs);
@@ -4062,10 +4062,10 @@ return new Promise(async function (resolve, reject) {
 			let r=recos[uri];
 			let catsSplit=r.cats?.split(";");
 			if (!fsFL[uri]) {
-				fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+				fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title)};
 			}
 			else {
-				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title)};
 				if (!fsFL[uri].catAndI) {
 					fsFL[uri].catAndI={};
 				}
@@ -4163,7 +4163,7 @@ return new Promise(async function (resolve, reject) {
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
-		fsFL[uri]={i:fsFL.length, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+		fsFL[uri]={i:fsFL.length, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 		fsFL.push(fsFL[uri]);
 	}
 	await m.reTriggerFS(fs);
@@ -4757,14 +4757,14 @@ if (m.myPage) {
 					let fs=m.fsGo;
 					let fsFLk=fs.fullList[uri];
 					if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
-					fsFLk.txt=m.splitHangul(`${r.cats} :: ${r.title}`);
-					fsFLk.html=m.escapeOnlyTag(r.title);
+					fsFLk.txt=m.splitHangul(`${r?.cats} :: ${r?.title}`);
+					fsFLk.html=m.escapeOnlyTag(r?.title);
 					await m.reTriggerFS(fs);
 
 					fs=m.fsToRs;
 					fsFLk=fs.fullList[uri];
-					fsFLk.txt=m.splitHangul(r.title);
-					fsFLk.html=m.escapeOnlyTag(r.title);
+					fsFLk.txt=m.splitHangul(r?.title);
+					fsFLk.html=m.escapeOnlyTag(r?.title);
 					fsFLk.inRange=true;
 					await m.reTriggerFS(fs);
 				}
@@ -4861,10 +4861,10 @@ m.openCat=async function (cat) {
 			}
 			let fs1FLUri=fs1FL[uri];
 			if (!fs1FLUri) {
-				fs1FLUri=fs1FL[uri]={uri, r, i:k, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+				fs1FLUri=fs1FL[uri]={uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 			}
 			else {
-				fs1FLUri=fs1FL[k]=fs1FL[uri]={...fs1FL[uri], uri, r, i:k, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
+				fs1FLUri=fs1FL[k]=fs1FL[uri]={...fs1FL[uri], uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 			}
 			let fsFLUri=fsFL[uri];
 			if (!fsFLUri) {
@@ -5005,7 +5005,7 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 		$input_val.trigger("keyup");
 	}
 	else if (fillDefs) {
-		let recoDef=m.recoDefs[r.uri];
+		let recoDef=m.recoDefs[r?.uri];
 		if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
 			$input_title[0].value=recoDef.defTitles[0][0];
 		}
@@ -5016,7 +5016,7 @@ m.fillRecoInNewReco=function (r, fillDefs) {
 			$input_desc[0].value=recoDef.defDescs[0][0];
 		}
 	}
-	let uri=r.uri;
+	let uri=r?.uri;
 	let myR=m.myRecos[uri];
 	if (!myR) { myR=m.myRecos[uri]={uri}; }
 	if (myR.has) {
@@ -5238,13 +5238,13 @@ return new Promise(function (resolve, reject) {
 		resolve();
 	}
 	else {
-		let getRecosStr="uri"+"\n"+r.uri;
+		let getRecosStr="uri"+"\n"+r?.uri;
 		if (m.myIndex) {
 			$.ajax({
 				type:"POST", url:`/user/${m.myId}/get-Recos`, data:getRecosStr
 				, dataType:"text"
 			}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
-				m.recoDowned(r.uri, m.myRecos);
+				m.recoDowned(r?.uri, m.myRecos);
 				await m.recoToEve(resp, m.myRecos);
 				m.fillRecoInNewReco(r, fillDefs);
 				resolve();
@@ -5258,7 +5258,7 @@ return new Promise(function (resolve, reject) {
 };
 m.getAndFillDefsInNewReco=function (r, fillDefs) {
 return new Promise(function (resolve, reject) {
-	let uri=r.uri;
+	let uri=r?.uri;
 	if (m.recoDefs[uri]?.down) {
 		m.showDefs(uri);
 		resolve();
@@ -6057,7 +6057,7 @@ m.gotoLi=async function (event) {
 		// TODO: delete below.
 		let r=m.userRecos[uri];
 		if (r) {
-			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title), catAndI:{}};
+			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
 			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.catUriList[m.currentCat]?.uris[uri]?.i};
 		}
 		console.log("Error: There is no m.fsGo.fullList[uri].");
@@ -7331,7 +7331,7 @@ return new Promise(async function (resolve, reject) {
 		let r=fs.fullList[i].r;
 		let recoHTML=await m.recoHTML(r, inListPlay, true);
 		$reco_playing.html(String(recoHTML));
-		let uriRendered=await uriRendering(r.uri, false, inListPlay);
+		let uriRendered=await uriRendering(r?.uri, false, inListPlay);
 		let from=String(uriRendered.from);
 		if (from==="youtube") {
 			$eveElse.html('');
