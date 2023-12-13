@@ -317,7 +317,7 @@ else if (m.docCookies.hasItem("lang")) {
 		<div id="def-titles"></div>
 		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
 	<label for="input-cats">[--Categories--]</label>
-		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
+		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
 		<div id="cat-fs-container" class="fs-container" style="display:none">
 			<div id="cat-fs-list" class="fs-list"></div>
@@ -366,7 +366,7 @@ else if (m.docCookies.hasItem("lang")) {
 		<line x1="40%" y1="80%" x2="50%" y2="90%"></line>
 		<line x1="60%" y1="80%" x2="50%" y2="90%"></line>
 	</g></svg></div>
-		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat add-txt" id="multireco-add-cat">;</div> <div class="def-cat add-txt" id="multireco-sub-cat">--</div> <div class="def-cat delete-cat" id="multireco-delete-cat">[--Delete--]</div></div>
+		<div id="multireco-def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div class="def-cat add-txt" id="multireco-add-cat">;</div> <div class="def-cat add-txt" id="multireco-sub-cat">--</div> <div class="def-cat delete-cat" id="multireco-delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="multireco-input-cats" name="multireco-cats" placeholder="Category--Sub category--Subsub category ; Another category ; ..." type="text"></textarea>
 		<div id="multireco-cat-fs-container" style="display:none">
 			<div id="multireco-cat-fs-list" class="fs-list"></div>
@@ -2015,7 +2015,7 @@ $change_catList_order.on("click", function (e) {
 			let cat=decodeURIComponent($catM.attr("id").substring(4));
 			let $catTo=$(`<div id="cat-to-here" style="margin-left:${m.catList[cat].depth+0.5}em"></div>`);
 			$catM.before($catTo);
-			let catTo=-1;
+			let catTo=-2;
 			$html.on("mousemove.mdInEB touchmove.mdInEB", function (e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
@@ -2674,6 +2674,7 @@ l=m.catList.length;
 for (let i=l-1;i>0;i--) {
 	let cat=m.catList[i].cat;
 	m.fsGotoCats.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+	m.catUriList[cat]={cat, down:false};
 }
 m.fsGotoCats.fullList[l-1]={i:l-1, txt:m.splitHangul("[--Uncategorized--]"), cat:"", html:m.escapeOnlyTag("[--Uncategorized--]")};
 $input_cats.trigger("keyup.fs");
@@ -2760,6 +2761,12 @@ m.deleteCat=function (cat) {
 	if (res) { $data_myCatList.html(m.escapeOnlyTag(fullCats)); }
 	return res;
 };
+m.catsToString=function (cats) {
+	if (cats===undefined||cats===null) {
+		return "[--Unknown--]";
+	}
+	return String(cats);
+}
 m.refreshFSToRs=async function (cat) {
 	cat=cat??m.currentCat;
 	let fs=m.fsToRs;
@@ -2772,7 +2779,7 @@ m.refreshFSToRs=async function (cat) {
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
-		let catsSplit=String(r?.cats).split(";");
+		let catsSplit=m.catsToString(r?.cats).split(";");
 		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 	}
 	await m.fsToRsInRangeCheck();
@@ -2791,15 +2798,20 @@ m.putCats_UriToLists=async function (cats, uri) {
 			if (m.catUriList[cat]?.has) {
 				if (uri?.constructor===String) {
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
+					m.catUriList[cat].uris[uri].i=m.catUriList[cat].uris.length;
 					m.catUriList[cat].uris.push(uri);
 				}
 				else if (uri?.constructor===Array) {
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri.join("\n");
-					m.catUriList[cat].uris=[...m.catUriList[cat].uris, ...uri];
+					for (let i=m.catUriList[cat].uris.length, k=0;k<uri.length;k++) {
+						let uriK=uri[k];
+						m.catUriList[cat].uris[uriK]={uri:uriK, i:i+k};
+						m.catUriList[cat].uris.push(uriK);
+					}
 				}
 			}
 			else if (m.catUriList[cat]) {
-				$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
+				$numbers_of_recos.html(`Getting UriList of cat="${m.escapeOnlyTag(cat)}".`);
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				if (uri?.constructor===String) {
 					if (!m.catUriList[cat].uris[uri]) {
@@ -2824,6 +2836,14 @@ m.putCats_UriToLists=async function (cats, uri) {
 							m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uri:uriJ};
 							m.catUriList[cat].uris.push(uriJ);
 						}
+						else {
+							let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uriJ);
+							if (k===-1) {
+								m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uriJ;
+								m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
+								m.catUriList[cat].uris.push(uriJ);
+							}
+						}
 					}
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim();
 				}
@@ -2834,7 +2854,11 @@ m.putCats_UriToLists=async function (cats, uri) {
 					m.catUriList[cat]={cat, down:true, has:true, UriList:uri, uris:[uri]};
 				}
 				else if (uri?.constructor===Array) {
-					m.catUriList[cat]={cat, down:true, has:true, UriList:uri.join("\n"), uris:uri};
+					m.catUriList[cat]={cat, down:true, has:true, UriList:uri.join("\n"), uris:[]};
+					for (let j=0;j<uri.length;j++) {
+						m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
+						m.catUriList[cat].uris.push(uriJ);
+					}
 				}
 			}
 		}
@@ -2875,13 +2899,20 @@ if (m.myPage) {
 			// 	m.refreshFSToRs(cat);
 			// }
 		}
-		if (m.catUriList[cat].UriList.length===0) {
+		if (m.catUriList[cat].UriList.trim().length===0) {
 			let catIsDeleted=true;
 			while (cat!==null&&catIsDeleted) {
 				catIsDeleted=false;
-				if (m.catUriList[cat].has&&m.catUriList[cat].UriList.length===0) {
-					catIsDeleted=m.deleteCat(cat);
-					superCatIsDeleted=superCatIsDeleted||catIsDeleted;
+				if (m.catUriList[cat].has) {
+					if (m.catUriList[cat].UriList.trim().length===0) {
+						catIsDeleted=m.deleteCat(cat);
+						superCatIsDeleted=superCatIsDeleted||catIsDeleted;
+					}
+				}
+				else {
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					catIsDeleted=true;
+					continue;
 				}
 				cat=m.getSuperCat(cat);
 			}
@@ -4060,24 +4091,26 @@ return new Promise(async function (resolve, reject) {
 			let respK=resp[k];
 			let uri=String(respK.uri);
 			let r=recos[uri];
-			let catsSplit=r.cats?.split(";");
+			let catsSplit=m.catsToString(r?.cats).split(";");
 			if (!fsFL[uri]) {
 				fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, catAndI:{}, txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title)};
 			}
 			else {
-				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title)};
+				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title)}; // i and catAndI is preserved.
 				if (!fsFL[uri].catAndI) {
 					fsFL[uri].catAndI={};
 				}
 			}
-			// TODO: Delete? or Preserve the below?
-			// for (let l=0;l<catsSplit.length;l++) {
-			// 	let catL=catsSplit[l];
-			// 	if (!m.catUriList[catL]?.has) {
-			// 		await m.getUriList("cat\n"+(catL===""?"\tp":catL));
-			// 	}
-			// 	fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
-			// }
+		}
+		// TODO: Delete? or Preserve the below?
+		if (!m.catUriList[cat]?.has) {
+			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		}
+		for (let k=1;k<resp.length;k++) {
+			let respK=resp[k];
+			let uri=String(respK.uri);
+			let r=recos[uri];
+			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
 		}
 		fs.shuffledOnce=true;
 		await m.reTriggerFS(fs);
@@ -4090,10 +4123,10 @@ return new Promise(async function (resolve, reject) {
 			if (!r) {
 				r=recos[uri]={uri, down:true, has:false};
 			}
-			r.i=uris.length-1-k;
+			r.i=k;
 		}
 	}
-	return resolve();
+	resolve();
 });
 };
 m.getRecos=function (uris, recos, cat) {
@@ -4145,7 +4178,10 @@ m.getRecos=function (uris, recos, cat) {
 m.getAndShowRecosOnCat=async function (cat) {
 return new Promise(async function (resolve, reject) {
 	m.currentCat=cat;
-	let uris=m.catUriList[cat]?.has?m.catUriList[cat].uris:[];
+	if (!m.catUriList[cat]?.has) {
+		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+	}
+	let uris=m.catUriList[cat].uris;
 	await m.getRecos(uris, m.userRecos, cat);
 	if (!m.myIndex) {
 		for (let i=0;i<uris.length;i++) {
@@ -4163,13 +4199,14 @@ return new Promise(async function (resolve, reject) {
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
-		fsFL[uri]={i:fsFL.length, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
+		fsFL[uri]={i, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 		fsFL.push(fsFL[uri]);
 	}
 	await m.reTriggerFS(fs);
 	await m.showRecosOnCat();
-	fs.currentIndex=m.catUriList[m.currentCat]?.uris?.length-1;
-	if (m.lastCat!==m.currentCat||fs.lastIndex!==fs.currentIndex) {
+	fs.lastIndex=-2;
+	fs.currentIndex=m.catUriList[cat].uris.length-1;
+	if (m.lastCat!==cat||fs.lastIndex!==fs.currentIndex) {
 		fs.playNext(-1, null, true);
 	}
 	resolve();
@@ -4434,8 +4471,8 @@ return new Promise(async function (resolve, reject) {
 			}
 			let catListCat=m.catList[cat];
 			if (catListCat) {
-				let catUriList=m.catUriList[cat]=m.catUriList[cat]||{};
-				if (catUriList.down) {
+				let catUriListCat=m.catUriList[cat]=m.catUriList[cat]||{};
+				if (catUriListCat.down) {
 					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
@@ -4644,16 +4681,19 @@ if (m.myPage) {
 	option=String(option);
 	uri=String(uri);
 	let catsSplit=cats.split(";");
-	let k=0;
+	let k=catsSplit.length-1;
 	if (m.currentCat!==undefined) {
-		for (k=catsSplit.length-1;k>0;k--) {
-			if (catsSplit[k]===m.currentCat) {break;}
+		for (;k>=0;k--) {
+			if (catsSplit[k]===m.currentCat) {
+				m.beInCurrentCat=true;
+				break;
+			}
 		}
 	}
 	let r=m.myRecos[uri];
 	let cat=m.currentCat;
-	if (catsSplit[k]!==cat) {
-		cat=catsSplit[k];
+	if (!m.beInCurrentCat) {
+		cat=catsSplit[0];
 		if (openCat) {
 			m.currentCat=cat;
 			let fsGotoCatsFLCat=m.fsGotoCats.fullList[m.currentCat];
@@ -4679,23 +4719,23 @@ if (m.myPage) {
 		switch (option) {
 		case "recoed":
 			if (m.myPage) {
-				for (let k=0;k<catsSplit.length;k++) {
-					let cat=catsSplit[k];
-					if (!m.catUriList[cat]?.has) {
-						$numbers_of_recos.html(`Getting UriList of cat=${m.escapeOnlyTag(cat)}.`);
-						await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-					}
-					let fsGoFLUri=m.fsGo.fullList[uri];
-					if (!fsGoFLUri) {
-						let r=m.userRecos[uri];
-						fsGoFLUri=m.fsGo.fullList[m.fsGo.fullList.length]=m.fsGo.fullList[uri]={uri, r, i:m.fsGo.fullList.length, catsSplit:String(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
-					}
-					if (!fsGoFLUri.catAndI) {
-						fsGoFLUri.catAndI={};
-					}
-					fsGoFLUri.catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+				let fsGoFLUri=m.fsGo.fullList[uri];
+				if (!fsGoFLUri) {
+					let r=m.userRecos[uri]; // Must be there, because it is recoed.
+					fsGoFLUri=m.fsGo.fullList[m.fsGo.fullList.length]=m.fsGo.fullList[uri]={uri, r, i:m.fsGo.fullList.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
 				}
-				// m.refreshFSToRs(m.currentCat);
+				if (!fsGoFLUri.catAndI) {
+					fsGoFLUri.catAndI={};
+				}
+				if (!m.catUriList[cat]?.has) {
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+				}
+				if (!m.catUriList[cat].uris[uri]) {
+					m.catUriList[cat].uris[uri]={uri, i:m.catUriList[cat].uris.length};
+					m.catUriList[cat].uris.push(uri);
+				}
+				fsGoFLUri.catAndI[cat]={cat, i:m.catUriList[cat].uris[uri].i};
+
 				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
@@ -4708,8 +4748,8 @@ if (m.myPage) {
 				let recoHTML=await m.recoHTML(r, false, true)
 				$contents.prepend(String(recoHTML));
 				m.reNewAndReOn();
-				// m.fsToRs.shuffledOnce=true;
-				// m.fsGo.shuffledOnce=true;
+				m.fsToRs.shuffledOnce=true;
+				m.fsGo.shuffledOnce=true;
 				await m.reTriggerFS(m.fsToRs);
 				await m.reTriggerFS(m.fsGo);
 			}
@@ -4847,35 +4887,39 @@ m.openCat=async function (cat) {
 	cat=cat??"";
 	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
 	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:"[--Uncategorized--] of "}${m.userId}'s recoeve.net`);
-	if (m.catUriList[cat]?.has) {
-		let uris=m.catUriList[cat].uris;
-		let fs=m.fsGo;
-		let fs1=m.fsToRs;
-		let fsFL=fs.fullList;
-		let fs1FL=fs1.fullList;
-		for (let k=0;k<uris.length;k++) {
-			let uri=uris[k];
-			let r=m.userRecos[uri];
-			if (!r) { // Must have recos on these uris.
-				r=m.userRecos[uri]={i:k, uri, down:false, has:false}; // Newest has the maximum index i.
-			}
-			let fs1FLUri=fs1FL[uri];
-			if (!fs1FLUri) {
-				fs1FLUri=fs1FL[uri]={uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
-			}
-			else {
-				fs1FLUri=fs1FL[k]=fs1FL[uri]={...fs1FL[uri], uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
-			}
-			let fsFLUri=fsFL[uri];
-			if (!fsFLUri) {
-				let r=m.userRecos[uri];
-				fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:String(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
-			}
-			if (!fsFLUri?.catAndI) {
-				fsFLUri.catAndI={};
-			}
-			fsFLUri.catAndI[cat]={cat, i:uris[uri]?.i};
+	if (!m.catUriList[cat]?.has) {
+		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+	}
+	let uris=m.catUriList[cat].uris;
+	let fs=m.fsGo;
+	let fs1=m.fsToRs;
+	let fsFL=fs.fullList;
+	let fs1FL=fs1.fullList;
+	for (let k=0;k<uris.length;k++) {
+		let uri=uris[k];
+		let r=m.userRecos[uri];
+		if (!r) { // Must have recos on these uris. But it can be not downloaded yet.
+			r=m.userRecos[uri]={i:k, uri, down:false, has:false}; // Newest has the maximum index i.
 		}
+		let fs1FLUri=fs1FL[uri];
+		if (!fs1FLUri) {
+			fs1FLUri=fs1FL[uri]={uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
+		}
+		else {
+			fs1FLUri=fs1FL[k]=fs1FL[uri]={...fs1FL[uri], uri, r, i:k, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)}; // TODO: Preserve what?
+		}
+		let fsFLUri=fsFL[uri];
+		if (!fsFLUri) {
+			fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
+		}
+		if (!fsFLUri.catAndI) { // Preserve canAndI.
+			fsFLUri.catAndI={};
+		}
+		if (!uris[uri]) {
+			uris[uri]={uri, i:uris.length};
+			uris.push(uri);
+		}
+		fsFLUri.catAndI[cat]={cat, i:uris[uri].i};
 	}
 	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
 	if (fsGotoCatsFLCat) {
@@ -4902,11 +4946,6 @@ m.openCat=async function (cat) {
 	m.currentCat=cat;
 	return false;
 };
-
-for (let i=0;i<m.catList.length;i++) {
-	let cat=m.catList[i].cat;
-	m.catUriList[cat]={cat, down:false};
-}
 
 window.onpopstate=function (e) {
 	if (e.state) {
@@ -5084,7 +5123,7 @@ m.showDefs=async function (uri) {
 	});
 
 	let defCats=m.recoDefs[uri].defCats;
-	let defCatsHTML=`<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
+	let defCatsHTML=`<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
 	for (let i=0;i<defCats.length;i++) {
 		let cat=defCats[i][0].trim();
 		if (cat.length!==0) {
@@ -6058,6 +6097,9 @@ m.gotoLi=async function (event) {
 		let r=m.userRecos[uri];
 		if (r) {
 			fsFLUri=fs.fullList[k]=fs.fullList[uri]={uri, r, i:k, catsSplit:r.cats.split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
+			if (!m.catUriList[m.currentCat]) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
 			fsFLUri.catAndI[m.currentCat]={cat:m.currentCat, i:m.catUriList[m.currentCat]?.uris[uri]?.i};
 		}
 		console.log("Error: There is no m.fsGo.fullList[uri].");
@@ -6081,11 +6123,8 @@ m.gotoLi=async function (event) {
 		$elem.addClass("selected");
 	}
 	m.beInCurrentCat=false;
-	if (!fsFLUri.catsSplit) {
-		fsFLUri.catsSplit=fsFLUri.r?.cats?.split(";");
-	}
-	let catsSplit=fsFLUri.catsSplit??["No cats"];
-	for (let i=0;i<catsSplit.length;i++) {
+	let catsSplit=fsFLUri.catsSplit=m.catsToString(fsFLUri.r?.cats).split(";");
+	for (let i=catsSplit.length-1;i>=0;i--) {
 		if (m.currentCat===catsSplit[i]) {
 			m.beInCurrentCat=true;
 			break;
@@ -6208,6 +6247,7 @@ return new Promise(async function (resolve, reject) {
 	if (shuffle) {
 		fs.shuffledOnce=true;
 		m.fsGo.shuffledOnce=true;
+		fs.lastIndex=-2;
 	}
 	switch (shuffle) {
 	case "shuffle":
@@ -6366,7 +6406,13 @@ if (m.myPage) {
 							$result_of_change_order.html("[--UriList order is changed.--]");
 							$numbers_of_recos.html("[--UriList order is changed.--]");
 							m.catUriList[m.currentCat].UriList=uris;
-							m.catUriList[m.currentCat].uris=uris.split("\n");
+							m.catUriList[m.currentCat].uris.splice(0, m.catUriList[m.currentCat].uris.length);
+							let urisSplit=uris.split("\n");
+							for (let i=0;i<urisSplit.length;i++) {
+								let uri=urisSplit[i]
+								m.catUriList[m.currentCat].uris[i]=uri;
+								m.catUriList[m.currentCat].uris[uri].i=i;
+							}
 							fs.shuffled=null;
 							fs.shuffledOnce=true;
 							m.fsGo.shuffledOnce=true;
@@ -7469,7 +7515,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	if (first) {
 		let $li0=fs.$fsLis.eq(0);
 		if ($li0.exists()) {
-			fs.lastIndex=-1;
+			fs.lastIndex=-2;
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
 				m.fsViewAndScroll(fs, $li0);
@@ -7484,7 +7530,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 			return;
 		}
 		else {
-			fs.lastIndex=-1;
+			fs.lastIndex=-2;
 			fs.currentIndex=m.catUriList[m.currentCat]?.uris?.length-1;
 			$reco_playing.html('');
 			$eveElse.html('');
