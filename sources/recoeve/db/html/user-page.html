@@ -7459,6 +7459,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 					fs.playNext(increment, cue, first);
 				}, m.wait);
 			}
+			m.setTimeoutPlayNextCount=0;
 			return;
 		}
 		else {
@@ -7508,7 +7509,6 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	if ($next?.exists()) {
 		$next.trigger("click");
 		m.fsViewAndScroll(fs, $next);
-		m.setTimeoutPlayNextCount=0;
 	}
 	else {
 		if (m.setTimeoutPlayNextCount===undefined||m.setTimeoutPlayNextCount>=7) {
@@ -7521,8 +7521,9 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 				fs.playNext(increment, cue, first);
 			}, m.wait);
 		}
+		return;
 	}
-	return;
+	m.setTimeoutPlayNextCount=0;
 };
 m.fsToRs.prepareRecoListPlay=async function (YtAPINeeded) {
 	let fs=m.fsToRs;
