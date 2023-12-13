@@ -6143,20 +6143,27 @@ m.gotoLi=async function (event) {
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.exists()) {
 		m.showAndScrollTo($recoElem);
+		m.setTimeoutSelfGotoLiCount=0;
 	}
 	else {
-		setTimeout(function selfGotoLi() {
-			console.log(`selfGotoLi() is triggered. $recoElem=$(\`#reco-${l}\`);`);
-			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
-			$(`#load-recos-${i}`).trigger("click");
-			let $recoElem=$(`#reco-${l}`);
-			if ($recoElem.exists()) {
-				m.showAndScrollTo($recoElem);
-			}
-			else {
-				setTimeout(selfGotoLi, m.wait);
-			}
-		}, m.wait);
+		if (m.setTimeoutSelfGotoLiCount===undefined||m.setTimeoutSelfGotoLiCount>=7) {
+			m.setTimeoutSelfGotoLiCount=0;
+		}
+		m.setTimeoutSelfGotoLiCount++;
+		if (m.setTimeoutSelfGotoLiCount<7) {
+			m.setTimeoutSelfGotoLi=setTimeout(function selfGotoLi() {
+				console.log(`selfGotoLi() is triggered. $recoElem=$(\`#reco-${l}\`);`);
+				let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
+				$(`#load-recos-${i}`).trigger("click");
+				let $recoElem=$(`#reco-${l}`);
+				if ($recoElem.exists()) {
+					m.showAndScrollTo($recoElem);
+				}
+				else {
+					m.setTimeoutSelfGotoLi=setTimeout(selfGotoLi, m.wait);
+				}
+			}, m.wait);
+		}
 	}
 };
 m.doFSGo=async function () {
