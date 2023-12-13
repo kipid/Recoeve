@@ -33,6 +33,7 @@ window.m={
 	, newRecoOn:false
 	, lastRecoMode:"nothing"
 	, lastCat:"i8@ㅏ%자DKW2!"
+	, args:{}
 };
 </script>
 <script src="/CDN/jquery.js"></script>
@@ -73,7 +74,10 @@ if (m.initialHashURI>0) {
 }
 
 m.searchVars=m.getSearchVars(m.initialSearch);
-m.currentCat=m.searchVars.cat?.val||"";
+m.currentCat=m.searchVars.cat?.val??"";
+for (let prop in m.searchVars) {
+	m.args[m.searchVars[prop].key]=m.searchVars[prop].val;
+}
 
 m.lang=null;
 if (m.searchVars?.lang) {
@@ -7088,7 +7092,6 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		}
 	}, m.wait);
 
-	m.args={};
 	if (vars.timezone) {
 		let timezone=vars.timezone;
 		m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
