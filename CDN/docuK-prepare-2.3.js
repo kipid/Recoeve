@@ -1455,8 +1455,8 @@ m.renderToDocuK=function (toBeRendered) {
 			untilEnter.lastIndex=hN=hN[0].length;
 			closeSec(hN);
 			head=untilEnter.exec(ps[i]);
-			head=head[0].trim();
 			emmet=getEmmetFromHead(head[0]);
+			head=head[0].trim();
 			classes=elemId="";
 			if (emmet) {
 				head=head[0].substring(emmet.length+2).trim();
