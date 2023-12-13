@@ -7166,7 +7166,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	m.doNotPushHistory=false;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
-	if (m.recoMode===""||m.recoMode==="multireco") {
+	if (m.userIndex&&m.recoMode===""||m.recoMode==="multireco") {
 		await m.getAndShowRecosOnCat(m.currentCat);
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
@@ -7227,18 +7227,20 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
 	if (m.initialHashURI) {
-		m.fsGo.tryN=0;
-		m.setIntervalFsGo=setInterval(function () {
-			if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>25) {
-				let k=m.fsGo.fullList[m.initialHashURI]?.i;
-				let $liK=$(`#li-${k}`);
-				if ($liK.exists()) {
-					clearInterval(m.setIntervalFsGo);
-					console.log(`$(\`#li-${k}\`).trigger("click");`)
-					$(`#li-${k}`).trigger("click");
+		if (m.userIndex) {
+			m.fsGo.tryN=0;
+			m.setIntervalFsGo=setInterval(function () {
+				if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>25) {
+					let k=m.fsGo.fullList[m.initialHashURI]?.i;
+					let $liK=$(`#li-${k}`);
+					if ($liK.exists()) {
+						clearInterval(m.setIntervalFsGo);
+						console.log(`$(\`#li-${k}\`).trigger("click");`)
+						$(`#li-${k}`).trigger("click");
+					}
 				}
-			}
-		}, m.wait);
+			}, m.wait);
+		}
 		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
 		if ($elem.exists()) {
 			clearInterval(m.setIntervalFsGo);
