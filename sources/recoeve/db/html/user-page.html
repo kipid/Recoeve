@@ -2772,7 +2772,7 @@ m.refreshFSToRs=async function (cat) {
 	for (let i=0;i<uris.length;i++) {
 		let uri=uris[i];
 		let r=m.userRecos[uri];
-		let catsSplit=r.cats.split(";");
+		let catsSplit=String(r?.cats).split(";");
 		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r.title), html:m.escapeOnlyTag(r.title)};
 	}
 	await m.fsToRsInRangeCheck();
