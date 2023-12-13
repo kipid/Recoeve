@@ -7473,10 +7473,16 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 			$eveElse_uri_rendered.hide();
 			$rC_youtube_uri_rendered.hide();
 			clearTimeout(m.setTimeoutPlayNext);
-			m.setTimeoutPlayNext=setTimeout(function () {
-				fs.playNext(increment, cue, first);
-			}, m.wait);
-			console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
+			if (m.setTimeoutPlayNextCount===undefined||m.setTimeoutPlayNextCount>=17) {
+				m.setTimeoutPlayNextCount=0;
+			}
+			m.setTimeoutPlayNextCount++;
+			if (m.setTimeoutPlayNextCount<17) {
+				m.setTimeoutPlayNext=setTimeout(function () {
+					fs.playNext(increment, cue, first);
+				}, m.wait);
+				console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
+			}
 			return;
 		}
 	}
