@@ -1426,13 +1426,13 @@ m.renderToDocuK=function (toBeRendered) {
 		}
 	}
 	function getEmmetFromHead(head) {
-		const exec=/^\[([\w\S\#\.\_\:\-\%]+)\]/.exec(head);
+		const exec=/^\[([^\s\t\n\]]+?)\]/.exec(head);
 		if (exec) {
 			return exec[1];
 		}
 	}
 	function getClassesFromEmmet(str) {
-		const rexClasses=/\.([\w:-]+)/g;
+		const rexClasses=/\.([^\s\t\n\.\#]+)/g;
 		let classes="";
 		let res;
 		while (res=rexClasses.exec(str)) {
@@ -1441,7 +1441,7 @@ m.renderToDocuK=function (toBeRendered) {
 		return classes.trim();
 	}
 	function getIdFromEmmet(str) {
-		let res=/#([\w:-]+)/.exec(str);
+		let res=/#([^\s\t\n\.\#]+)/.exec(str);
 		if (res) {
 			return res[1];
 		}
@@ -1455,8 +1455,8 @@ m.renderToDocuK=function (toBeRendered) {
 			untilEnter.lastIndex=hN=hN[0].length;
 			closeSec(hN);
 			head=untilEnter.exec(ps[i]);
-			head=head[0];
-			emmet=getEmmetFromHead(head);
+			head=head[0].trim();
+			emmet=getEmmetFromHead(head[0]);
 			classes=elemId="";
 			if (emmet) {
 				head=head.substring(emmet.length+2).trim();
