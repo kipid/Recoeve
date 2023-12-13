@@ -1425,8 +1425,8 @@ m.renderToDocuK=function (toBeRendered) {
 			default:
 		}
 	}
-	function getEmmetFromHead(trimedHead) {
-		const exec=/^\[([\w\s#._:-]+)\]/.exec(trimedHead);
+	function getEmmetFromHead(head) {
+		const exec=/^\[([\w\S\#\.\_\:\-\%]+)\]/.exec(head);
 		if (exec) {
 			return exec[1];
 		}
@@ -1455,7 +1455,7 @@ m.renderToDocuK=function (toBeRendered) {
 			untilEnter.lastIndex=hN=hN[0].length;
 			closeSec(hN);
 			head=untilEnter.exec(ps[i]);
-			head=head[0].trim();
+			head=head[0];
 			emmet=getEmmetFromHead(head);
 			classes=elemId="";
 			if (emmet) {
@@ -1521,7 +1521,7 @@ m.renderToDocuK=function (toBeRendered) {
 				str+=ps[i];
 			}
 			else if (/^```/.test(ps[i])) {
-				ps[i]=ps[i].replace(/^```/,'').replace(/```\/$/,'').trim();
+				ps[i]=ps[i].replace(/^```/,'').replace(/```\/$/,'');
 				emmet=getEmmetFromHead(ps[i]);
 				classes=elemId="";
 				if (emmet) {
