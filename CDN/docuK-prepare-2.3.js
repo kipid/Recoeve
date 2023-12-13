@@ -1459,7 +1459,7 @@ m.renderToDocuK=function (toBeRendered) {
 			emmet=getEmmetFromHead(head[0]);
 			classes=elemId="";
 			if (emmet) {
-				head=head.substring(emmet.length+2).trim();
+				head=head[0].substring(emmet.length+2).trim();
 				classes=getClassesFromEmmet(emmet);
 				elemId=getIdFromEmmet(emmet);
 				if (classes) {
