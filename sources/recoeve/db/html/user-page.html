@@ -6066,6 +6066,7 @@ if ($recoElem?.exists()) {
 		$recoElem.show();
 	}
 	let hIID=$recoElem[0].id;
+	m.hashURI="";
 	if ($recoElem.hasClass("reco")) {
 		m.hashURI=m.unescapeHTML($recoElem.find(".textURI").html());
 	}
@@ -6091,6 +6092,10 @@ m.gotoLi=async function (event) {
 	}
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
+	for (let i=0;i<;i++) {
+		fs.fullList[i].selected=false;
+	}
+	fs.fullList[uri].selected=true;
 	let fsFLUri=fs.fullList[uri];
 	if (!fsFLUri) { // if (!fsFLUri), error!. Must be there.
 		// TODO: delete below.
@@ -6141,6 +6146,7 @@ m.gotoLi=async function (event) {
 	}
 	else {
 		setTimeout(function selfGotoLi() {
+			console.log(`selfGotoLi() is triggered. $recoElem=$(\`#reco-${l}\`);`);
 			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
 			$(`#load-recos-${i}`).trigger("click");
 			let $recoElem=$(`#reco-${l}`);
@@ -6153,16 +6159,19 @@ m.gotoLi=async function (event) {
 		}, m.wait);
 	}
 };
-m.doFSGo=function (fs) {
-	if (fs.shuffledOnce===true) {
-		let uris=m.catUriList[m.currentCat]?.uris;
-		if (uris?.constructor===Array) {
-			let fsFL=fs.fullList;
-			for (let k=0;k<uris.length;k++) {
-				let uri=uris[k];
-				m.catUriList[m.currentCat].uris[uri].i=k;
-				fsFL[uri].catAndI[m.currentCat]={cat:m.currentCat, i:k};
-			}
+m.doFSGo=function () {
+	let fs=m.fsGo;
+	if (fs.shuffledOnce) {
+		let cat=m.currentCat;
+		if (!m.catUriList[cat]) {
+			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		}
+		let uris=m.catUriList[cat].uris;
+		let fsFL=fs.fullList;
+		for (let k=0;k<uris.length;k++) {
+			let uri=uris[k];
+			m.catUriList[cat].uris[uri].i=k; // Because shuffledOnce.
+			fsFL[uri].catAndI[cat]={cat, i:k};
 		}
 	}
 	fs.shuffledOnce=false;
@@ -6175,11 +6184,18 @@ m.doFSGo=function (fs) {
 			let k=fsRes[sorted[i]].i;
 			let fsFLk=fs.fullList[k];
 			if (fsFLk) {
-				str+=`<div id="li-${k}" class="list-item${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
+				str+=`<div id="li-${k}" class="list-item${fsFLk.selected?" selected":""}${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
 			}
 		}
 		fs.$fsl.html(str);
 		fs.$fsLis=fs.$fsl.find(".list-item");
+		$selected=fs.$fsLis.filter(".selected");
+		if ($selected.exists()) {
+			fs.$fsl.scrollTop($selected.offset().top-fs.$fsl.offset().top-52);
+		}
+		else {
+			fs.$fsl.scrollTop(0);
+		}
 	}
 };
 m.fsGoOn=async function () {
@@ -6187,14 +6203,14 @@ m.fsGoOn=async function () {
 	let passed=now-m.previous;
 	if (passed>m.wait) {
 		m.previous=now;
-		m.doFSGo(m.fsGo);
+		m.doFSGo();
 	}
 	else {
 		$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
 		setTimeout(function () {
 			$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 			m.previous=Date.now();
-			m.doFSGo(m.fsGo);
+			m.doFSGo();
 		}, m.wait*1.5-passed);
 	}
 };
@@ -6395,7 +6411,7 @@ if (m.myPage) {
 				$numbers_of_recos.html("[--UriList order is the same as before.--]");
 			}
 			else {
-				let urisReversed=uris.split("\n").reverse().join("\n");
+				let urisReversed=uris.split("\n").reverse().join("\n"); // Reverse is needed.
 				m.rmb_me(function (args) {
 					$.ajax({
 						type:"POST", url:`${m.userPath}/change-order-of-UriList?cat=${encodeURIComponent(m.currentCat)}`, data:urisReversed, dataType:"text"
@@ -6406,7 +6422,7 @@ if (m.myPage) {
 							$result_of_change_order.html("[--UriList order is changed.--]");
 							$numbers_of_recos.html("[--UriList order is changed.--]");
 							m.catUriList[m.currentCat].UriList=uris;
-							m.catUriList[m.currentCat].uris.splice(0, m.catUriList[m.currentCat].uris.length);
+							m.catUriList[m.currentCat].uris.splice(0, m.catUriList[m.currentCat].uris.length); // To preserve uris[uri]={cat, i}.
 							let urisSplit=uris.split("\n");
 							for (let i=0;i<urisSplit.length;i++) {
 								let uri=urisSplit[i]
