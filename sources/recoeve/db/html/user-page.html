@@ -4062,6 +4062,9 @@ return new Promise(async function (resolve, reject) {
 			}
 			else {
 				fsFL[fsFL[uri].i]=fsFL[uri]={...fsFL[uri], catsSplit, uri, r, txt:m.splitHangul(`${r.cats} :: ${r.title}`), html:m.escapeOnlyTag(r.title)};
+				if (!fsFL[uri].catAndI) {
+					fsFL[uri].catAndI={};
+				}
 			}
 			// TODO: Delete? or Preserve the below?
 			// for (let l=0;l<catsSplit.length;l++) {
@@ -4069,9 +4072,10 @@ return new Promise(async function (resolve, reject) {
 			// 	if (!m.catUriList[catL]?.has) {
 			// 		await m.getUriList("cat\n"+(catL===""?"\tp":catL));
 			// 	}
-			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
+			// 	fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat]?.uris[uri]?.i};
 			// }
 		}
+		fs.shuffledOnce=true;
 		await m.reTriggerFS(fs);
 	}
 	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
