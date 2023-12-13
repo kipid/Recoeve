@@ -5505,7 +5505,7 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 		$button_reco.removeClass("disabled");
 		return;
 	}
-	let strRecoDoJSON=await m.strToJSON(strRecoDo, true, true);
+	let strRecoDoJSON=await m.strToJSON(args.strRecoDo, true, true);
 	$.ajax({
 		type:"POST", url:"/reco/do", data:args.strRecoDo
 		, dataType:"text"
