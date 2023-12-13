@@ -1454,12 +1454,12 @@ m.renderToDocuK=function (toBeRendered) {
 		if (hN=/^#+(?![#\/])/.exec(ps[i])) {
 			untilEnter.lastIndex=hN=hN[0].length;
 			closeSec(hN);
-			head=untilEnter.exec(ps[i]);
-			emmet=getEmmetFromHead(head[0]);
-			head=head[0].trim();
+			headTotal=untilEnter.exec(ps[i]);
+			emmet=getEmmetFromHead(headTotal[0]);
+			head=headTotal[0].trim();
 			classes=elemId="";
 			if (emmet) {
-				head=head[0].substring(emmet.length+2).trim();
+				head=headTotal[0].substring(emmet.length+2).trim();
 				classes=getClassesFromEmmet(emmet);
 				elemId=getIdFromEmmet(emmet);
 				if (classes) {
