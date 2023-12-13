@@ -3866,8 +3866,8 @@ return new Promise(async function (resolve, reject) {
 		let fsFLk=fs.fullList[k];
 		let uri=fsFLk.uri;
 		let r=fsFLk.r;
-		let val=r.val?.val;
-		// fsFLk.txt=m.splitHangul(r.title);
+		let val=r?.val?.val;
+		// fsFLk.txt=m.splitHangul(r?.title);
 		// fsFLk.html=m.escapeOnlyTag(r?.title);
 		if (val===undefined||val===-1) {
 			if (m.showRWOP) {
