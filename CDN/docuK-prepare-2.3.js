@@ -1432,7 +1432,7 @@ m.renderToDocuK=function (toBeRendered) {
 		}
 	}
 	function getClassesFromEmmet(str) {
-		const rexClasses=/\.([^\s\t\n\.\#]+)/g;
+		const rexClasses=/\.([\w\:\-]+)/g;
 		let classes="";
 		let res;
 		while (res=rexClasses.exec(str)) {
@@ -1441,7 +1441,7 @@ m.renderToDocuK=function (toBeRendered) {
 		return classes.trim();
 	}
 	function getIdFromEmmet(str) {
-		let res=/#([^\s\t\n\.\#]+)/.exec(str);
+		let res=/#([\w\:\-]+)/.exec(str);
 		if (res) {
 			return res[1];
 		}
