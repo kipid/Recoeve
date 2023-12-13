@@ -6092,7 +6092,7 @@ m.gotoLi=async function (event) {
 	}
 	let k=Number($elem.find(".list-index").html());
 	let uri=m.unescapeHTML($elem.find(".list-index-id").html());
-	for (let i=0;i<;i++) {
+	for (let i=0;i<fs.fullList.length;i++) {
 		fs.fullList[i].selected=false;
 	}
 	fs.fullList[uri].selected=true;
@@ -6159,11 +6159,11 @@ m.gotoLi=async function (event) {
 		}, m.wait);
 	}
 };
-m.doFSGo=function () {
+m.doFSGo=async function () {
 	let fs=m.fsGo;
 	if (fs.shuffledOnce) {
 		let cat=m.currentCat;
-		if (!m.catUriList[cat]) {
+		if (!m.catUriList[cat]?.has) {
 			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 		}
 		let uris=m.catUriList[cat].uris;
