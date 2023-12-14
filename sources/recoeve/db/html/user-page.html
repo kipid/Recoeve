@@ -4750,7 +4750,7 @@ if (m.myPage) {
 
 			let fs1FLUri=m.fsToRs.fullList[uri];
 			if (!fs1FLUri) {
-				fs1FLUri=m.fsToRs.fullList[uri]={uri, r, i:m.fsToRs.fullList.length, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
+				fs1FLUri=m.fsToRs.fullList[m.fsToRs.fullList.length]=m.fsToRs.fullList[uri]={uri, r, i:m.fsToRs.fullList.length, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
 			}
 
 			$recoms_recos=$contents_recoms.find(".reco");
