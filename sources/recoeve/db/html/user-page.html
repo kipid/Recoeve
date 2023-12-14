@@ -6286,6 +6286,7 @@ return new Promise(async function (resolve, reject) {
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
+	console.log("shuffle: ", shuffle);
 	if (shuffle) {
 		fs.shuffledOnce=true;
 		m.fsGo.shuffledOnce=true;
