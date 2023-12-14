@@ -3557,7 +3557,7 @@ m.reco_pointChange_do=function (args, err) { // args : {strHeads, strContents, $
 			}
 			m.myRecos[uri].tLast=res[1]?.tLast;
 			args.$result?.html(res[1].result);
-			m.refreshFSToRs(m.currentCat);
+			// m.refreshFSToRs(m.currentCat);
 			m.refresh(args.cats, "changed", uri);
 		}
 		else if (result.startsWith("recoed")) {
@@ -3587,7 +3587,7 @@ m.reco_pointChange_do=function (args, err) { // args : {strHeads, strContents, $
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
-			m.refreshFSToRs(m.currentCat);
+			// m.refreshFSToRs(m.currentCat);
 			m.refresh(r.cats, "recoed", uri);
 		}
 		else {
@@ -4102,18 +4102,31 @@ return new Promise(async function (resolve, reject) {
 				}
 			}
 		}
-		// TODO: Delete? or Preserve the below?
-		if (!m.catUriList[cat]?.has) {
-			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		if (cat!==""&&!cat) { // If (cat!==""&&!cat), only resp[1] is there in most cases.
+			let catsSplit=m.catsToString(resp[1]?.cats).split(";");
+			for (let i=catsSplit.length-1;i>=0;i--) {
+				let catI=catsSplit[i];
+				if (catI===m.currentCat) {
+					m.beInCurrentCat=true;
+					break;
+				}
+			}
+			cat=m.beInCurrentCat?m.currentCat:catsSplit[0];
 		}
-		for (let k=1;k<resp.length;k++) {
-			let respK=resp[k];
-			let uri=String(respK.uri);
-			let r=recos[uri];
-			fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
+		if (cat||cat==="") {
+			// TODO: Delete? or Preserve the below?
+			if (!m.catUriList[cat]?.has) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
+			for (let k=1;k<resp.length;k++) {
+				let respK=resp[k];
+				let uri=String(respK.uri);
+				let r=recos[uri];
+				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
+			}
+			fs.shuffledOnce=true;
+			await m.reTriggerFS(fs);
 		}
-		fs.shuffledOnce=true;
-		await m.reTriggerFS(fs);
 	}
 	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
 		let uris=m.catUriList[cat].uris;
@@ -4719,8 +4732,8 @@ if (m.myPage) {
 	case "recoed":
 		if (m.myPage) {
 			let fsGoFLUri=m.fsGo.fullList[uri];
+			let r=m.userRecos[uri]; // Must be there, because it is recoed.
 			if (!fsGoFLUri) {
-				let r=m.userRecos[uri]; // Must be there, because it is recoed.
 				fsGoFLUri=m.fsGo.fullList[m.fsGo.fullList.length]=m.fsGo.fullList[uri]={uri, r, i:m.fsGo.fullList.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
 			}
 			if (!fsGoFLUri.catAndI) {
@@ -4734,6 +4747,11 @@ if (m.myPage) {
 				m.catUriList[cat].uris.push(uri);
 			}
 			fsGoFLUri.catAndI[cat]={cat, i:m.catUriList[cat].uris[uri].i};
+
+			let fs1FLUri=m.fsToRs.fullList[uri];
+			if (!fs1FLUri) {
+				fs1FLUri=m.fsToRs.fullList[uri]={uri, r, i:m.fsToRs.fullList.length, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
+			}
 
 			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
@@ -4771,7 +4789,6 @@ if (m.myPage) {
 			}
 		}
 		if (m.myPage) {
-			// m.refreshFSToRs(m.currentCat);
 			$recoms_recos=$contents_recoms.find(".reco");
 			for (let k=0;k<$recoms_recos.length;k++) {
 				let $reco=$recoms_recos.eq(k);
@@ -4795,13 +4812,14 @@ if (m.myPage) {
 
 				let fs=m.fsGo;
 				let fsFLk=fs.fullList[uri];
-				if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
+				if (!fsFLk) { fsFLk=fs.fullList[uri]={uri, down:false}; }
 				fsFLk.txt=m.splitHangul(`${r?.cats} :: ${r?.title}`);
 				fsFLk.html=m.escapeOnlyTag(r?.title);
 				await m.reTriggerFS(fs);
 
 				fs=m.fsToRs;
 				fsFLk=fs.fullList[uri];
+				if (!fsFLk) { fsFLk=fs.fullList[uri]={uri, down:false}; }
 				fsFLk.txt=m.splitHangul(r?.title);
 				fsFLk.html=m.escapeOnlyTag(r?.title);
 				fsFLk.inRange=true;
@@ -5587,9 +5605,10 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 				if (uriI!==res[i]?.originalURI) {
 					m.myRecos[uriI].desc=(`#originalURI\n${res[i]?.originalURI}\n\n${desc?desc.trim():""}`).trim();
 				}
-				m.changeCats_UriList(m.myRecos[uriI].cats, String(strRecoDoJSON[i].cats), uriI);
+				m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[i].cats), uriI);
 			}
 			await m.recoToEve(args.strRecoDo, m.myRecos);
+			m.refreshFSToRs(m.currentCat);
 			m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
 		}
 		else if (result.startsWith("recoed")) {
@@ -5607,7 +5626,7 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.putCats_UriToLists(cats, uri);
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat);
 				m.refresh(cats, "recoed", uri, true);
 			}, m.wait);
 		}
@@ -5622,7 +5641,7 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat);
 				m.refresh(cats, "changed", args.uri);
 			}, m.wait);
 		}
@@ -5725,7 +5744,7 @@ m.reco_change_do=function (args, err) { // args : {strHeads, strContents, $resul
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.changeCats_UriList(args.r.cats, args.cats, args.uri);
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat);
 				m.refresh(args.cats, "changed", args.uri);
 			}, m.wait);
 		}
@@ -6264,11 +6283,10 @@ return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
-	let l=fs.fullList.length;
+	let l=m.catUriList[m.currentCat].uris.length;
 	if (shuffle) {
 		fs.shuffledOnce=true;
 		m.fsGo.shuffledOnce=true;
-		fs.lastIndex=-2;
 	}
 	switch (shuffle) {
 	case "shuffle":
@@ -6357,6 +6375,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li0=fs.$fsLis.eq(0);
 	if (m.lastCat!==m.currentCat||fs.shuffledOnce) {
+		fs.lastIndex=-2;
 		if ($li0.exists()) {
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li0);
