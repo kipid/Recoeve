@@ -4714,154 +4714,152 @@ if (m.myPage) {
 			}
 		}
 	}
-	else {
-		let $recoms_recos=null;
-		switch (option) {
-		case "recoed":
-			if (m.myPage) {
-				let fsGoFLUri=m.fsGo.fullList[uri];
-				if (!fsGoFLUri) {
-					let r=m.userRecos[uri]; // Must be there, because it is recoed.
-					fsGoFLUri=m.fsGo.fullList[m.fsGo.fullList.length]=m.fsGo.fullList[uri]={uri, r, i:m.fsGo.fullList.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
-				}
-				if (!fsGoFLUri.catAndI) {
-					fsGoFLUri.catAndI={};
-				}
-				if (!m.catUriList[cat]?.has) {
-					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-				}
-				if (!m.catUriList[cat].uris[uri]) {
-					m.catUriList[cat].uris[uri]={uri, i:m.catUriList[cat].uris.length};
-					m.catUriList[cat].uris.push(uri);
-				}
-				fsGoFLUri.catAndI[cat]={cat, i:m.catUriList[cat].uris[uri].i};
+	let $recoms_recos=null;
+	switch (option) {
+	case "recoed":
+		if (m.myPage) {
+			let fsGoFLUri=m.fsGo.fullList[uri];
+			if (!fsGoFLUri) {
+				let r=m.userRecos[uri]; // Must be there, because it is recoed.
+				fsGoFLUri=m.fsGo.fullList[m.fsGo.fullList.length]=m.fsGo.fullList[uri]={uri, r, i:m.fsGo.fullList.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
+			}
+			if (!fsGoFLUri.catAndI) {
+				fsGoFLUri.catAndI={};
+			}
+			if (!m.catUriList[cat]?.has) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
+			if (!m.catUriList[cat].uris[uri]) {
+				m.catUriList[cat].uris[uri]={uri, i:m.catUriList[cat].uris.length};
+				m.catUriList[cat].uris.push(uri);
+			}
+			fsGoFLUri.catAndI[cat]={cat, i:m.catUriList[cat].uris[uri].i};
 
-				$recoms_recos=$contents_recoms.find(".reco");
-				for (let k=0;k<$recoms_recos.length;k++) {
-					let $reco=$recoms_recos.eq(k);
-					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
-					if (recoURI===uri) {
-						let recoHTML=await m.recoHTML(r, false, true, true);
-						$reco.replaceWith(String(recoHTML));
-					}
+			$recoms_recos=$contents_recoms.find(".reco");
+			for (let k=0;k<$recoms_recos.length;k++) {
+				let $reco=$recoms_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true, true);
+					$reco.replaceWith(String(recoHTML));
 				}
-				let recoHTML=await m.recoHTML(r, false, true)
-				$contents.prepend(String(recoHTML));
+			}
+			let recoHTML=await m.recoHTML(r, false, true)
+			$contents.prepend(String(recoHTML));
+			m.reNewAndReOn();
+			m.fsToRs.shuffledOnce=true;
+			m.fsGo.shuffledOnce=true;
+			await m.reTriggerFS(m.fsToRs);
+			await m.reTriggerFS(m.fsGo);
+		}
+		break;
+	case "changed": case "deleted":
+		if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
+			if (option==="changed") {
+				let r=m.myRecos[uri];
+				let recoHTML=await m.recoHTML(r, true, true);
+				$reco_playing.html(String(recoHTML));
 				m.reNewAndReOn();
-				m.fsToRs.shuffledOnce=true;
-				m.fsGo.shuffledOnce=true;
-				await m.reTriggerFS(m.fsToRs);
-				await m.reTriggerFS(m.fsGo);
 			}
-			break;
-		case "changed": case "deleted":
-			if (m.myPage&&uri===m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
-				if (option==="changed") {
-					let r=m.myRecos[uri];
-					let recoHTML=await m.recoHTML(r, true, true);
-					$reco_playing.html(String(recoHTML));
-					m.reNewAndReOn();
-				}
-				else if (option==="deleted") {
-					m.fsToRs.pauseVideo();
-					$reco_playing.html('');
-					$eveElse.html('');
-					$youtube.html('');
-					$eveElse_uri_rendered.hide();
-					$rC_youtube_uri_rendered.hide();
+			else if (option==="deleted") {
+				m.fsToRs.pauseVideo();
+				$reco_playing.html('');
+				$eveElse.html('');
+				$youtube.html('');
+				$eveElse_uri_rendered.hide();
+				$rC_youtube_uri_rendered.hide();
+			}
+		}
+		if (m.myPage) {
+			// m.refreshFSToRs(m.currentCat);
+			$recoms_recos=$contents_recoms.find(".reco");
+			for (let k=0;k<$recoms_recos.length;k++) {
+				let $reco=$recoms_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true, true);
+					$reco.replaceWith(String(recoHTML));
 				}
 			}
-			if (m.myPage) {
-				// m.refreshFSToRs(m.currentCat);
+			let $contents_recos=$contents.find(".reco");
+			for (let k=0;k<$contents_recos.length;k++) {
+				let $reco=$contents_recos.eq(k);
+				let recoURI=m.unescapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, false, true);
+					$reco.replaceWith(String(recoHTML));
+				}
+			}
+			if (option==="changed") {
+				m.reNewAndReOn();
+
+				let fs=m.fsGo;
+				let fsFLk=fs.fullList[uri];
+				if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
+				fsFLk.txt=m.splitHangul(`${r?.cats} :: ${r?.title}`);
+				fsFLk.html=m.escapeOnlyTag(r?.title);
+				await m.reTriggerFS(fs);
+
+				fs=m.fsToRs;
+				fsFLk=fs.fullList[uri];
+				fsFLk.txt=m.splitHangul(r?.title);
+				fsFLk.html=m.escapeOnlyTag(r?.title);
+				fsFLk.inRange=true;
+				await m.reTriggerFS(fs);
+			}
+			else if (option==="deleted") {
+				let r=m.myRecos[uri];
+				r.deleted=true;
+				r.has=false;
+				m.lastURI="";
 				$recoms_recos=$contents_recoms.find(".reco");
 				for (let k=0;k<$recoms_recos.length;k++) {
 					let $reco=$recoms_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
 					if (recoURI===uri) {
-						let recoHTML=await m.recoHTML(r, false, true, true);
-						$reco.replaceWith(String(recoHTML));
+						let recomHTML=await m.recomHTML(r);
+						$reco.replaceWith(String(recomHTML));
+						$reco.find(".button.edit").addClass("deleted");
 					}
 				}
-				let $contents_recos=$contents.find(".reco");
+				$contents_recos=$contents.find(".reco");
 				for (let k=0;k<$contents_recos.length;k++) {
 					let $reco=$contents_recos.eq(k);
 					let recoURI=m.unescapeHTML($reco.find(".textURI").html());
 					if (recoURI===uri) {
-						let recoHTML=await m.recoHTML(r, false, true);
-						$reco.replaceWith(String(recoHTML));
+						$reco.addClass("none deleted");
+						$reco.find(".button.edit").addClass("deleted");
 					}
 				}
-				if (option==="changed") {
-					m.reNewAndReOn();
+				m.reNewAndReOn();
 
-					let fs=m.fsGo;
-					let fsFLk=fs.fullList[uri];
-					if (!fsFLk) { fsFLk=fs.fullList[uri]={uri}; }
-					fsFLk.txt=m.splitHangul(`${r?.cats} :: ${r?.title}`);
-					fsFLk.html=m.escapeOnlyTag(r?.title);
-					await m.reTriggerFS(fs);
-
-					fs=m.fsToRs;
-					fsFLk=fs.fullList[uri];
-					fsFLk.txt=m.splitHangul(r?.title);
-					fsFLk.html=m.escapeOnlyTag(r?.title);
-					fsFLk.inRange=true;
-					await m.reTriggerFS(fs);
+				let fs=m.fsGo;
+				let fsFLk=fs.fullList[uri];
+				if (!fsFLk) {
+					fsFLk=fs.fullList[uri]={uri, has:false, down:true};
 				}
-				else if (option==="deleted") {
-					let r=m.myRecos[uri];
-					r.deleted=true;
-					r.has=false;
-					m.lastURI="";
-					$recoms_recos=$contents_recoms.find(".reco");
-					for (let k=0;k<$recoms_recos.length;k++) {
-						let $reco=$recoms_recos.eq(k);
-						let recoURI=m.unescapeHTML($reco.find(".textURI").html());
-						if (recoURI===uri) {
-							let recomHTML=await m.recomHTML(r);
-							$reco.replaceWith(String(recomHTML));
-							$reco.find(".button.edit").addClass("deleted");
-						}
-					}
-					$contents_recos=$contents.find(".reco");
-					for (let k=0;k<$contents_recos.length;k++) {
-						let $reco=$contents_recos.eq(k);
-						let recoURI=m.unescapeHTML($reco.find(".textURI").html());
-						if (recoURI===uri) {
-							$reco.addClass("none deleted");
-							$reco.find(".button.edit").addClass("deleted");
-						}
-					}
-					m.reNewAndReOn();
+				fsFLk.uri=uri;
+				fsFLk.has=false;
+				fsFLk.down=true;
+				fsFLk.deleted=true;
+				await m.reTriggerFS(fs);
 
-					let fs=m.fsGo;
-					let fsFLk=fs.fullList[uri];
-					if (!fsFLk) {
-						fsFLk=fs.fullList[uri]={uri, has:false, down:true};
-					}
-					fsFLk.uri=uri;
-					fsFLk.has=false;
-					fsFLk.down=true;
-					fsFLk.deleted=true;
-					await m.reTriggerFS(fs);
-
-					fs=m.fsToRs;
-					fsFLk=fs.fullList[uri];
-					if (!fsFLk) {
-						fs.fullList[uri]={uri, has:false, down:true};
-					}
-					fsFLk.uri=uri;
-					fsFLk.has=false;
-					fsFLk.down=true;
-					fsFLk.deleted=true;
-					fsFLk.inRange=false;
-					await m.reTriggerFS(fs);
+				fs=m.fsToRs;
+				fsFLk=fs.fullList[uri];
+				if (!fsFLk) {
+					fs.fullList[uri]={uri, has:false, down:true};
 				}
+				fsFLk.uri=uri;
+				fsFLk.has=false;
+				fsFLk.down=true;
+				fsFLk.deleted=true;
+				fsFLk.inRange=false;
+				await m.reTriggerFS(fs);
 			}
-			break;
-		default:
-			m.openCat(cat);
 		}
+		break;
+	default:
+		m.openCat(cat);
 	}
 }};
 
