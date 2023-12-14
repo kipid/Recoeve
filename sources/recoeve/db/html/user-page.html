@@ -6386,7 +6386,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li0=fs.$fsLis.eq(0);
-	if (m.lastCat!==m.currentCat||fs.shuffledOnce) {
+	if (m.lastCat!==m.currentCat||fs.lastIndex!==fs.currentIndex||fs.shuffledOnce) {
 		console.log("fs.shuffledOnce is queried.");
 		fs.lastIndex=-2;
 		if ($li0.exists()) {
