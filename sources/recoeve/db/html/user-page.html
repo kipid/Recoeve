@@ -6390,6 +6390,7 @@ return new Promise(async function (resolve, reject) {
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
 				if ($li0.exists()) {
+					console.log("fs.playNext(-1, true, true);");
 					fs.currentIndex=Number($li0.attr("id").substring(4));
 					m.fsViewAndScroll(fs, $li0);
 					fs.playNext(-1, true, true);
