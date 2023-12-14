@@ -78,6 +78,8 @@ m.currentCat=m.searchVars.cat?.val??"";
 for (let prop in m.searchVars) {
 	m.args[m.searchVars[prop].key]=m.searchVars[prop].val;
 }
+delete m.args.cat;
+delete m.args.lang;
 
 m.lang=null;
 if (m.searchVars?.lang) {
