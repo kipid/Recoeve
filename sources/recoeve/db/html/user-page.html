@@ -6283,7 +6283,7 @@ return new Promise(async function (resolve, reject) {
 	let fs=m.fsToRs;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
-	let l=m.catUriList[m.currentCat].uris.length;
+	let l=fs.fullList.length;
 	if (shuffle) {
 		fs.shuffledOnce=true;
 		m.fsGo.shuffledOnce=true;
