@@ -6380,10 +6380,10 @@ return new Promise(async function (resolve, reject) {
 		console.log("fs.shuffledOnce is queried.");
 		fs.lastIndex=-2;
 		if ($li0.exists()) {
+			console.log("fs.playNext(-1, true, true);");
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li0);
 			fs.playNext(-1, true, true);
-			console.log("fs.playNext(-1, true, true);");
 		}
 		else {
 			setTimeout(function selfPlayNextFirst() {
