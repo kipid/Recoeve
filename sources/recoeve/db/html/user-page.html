@@ -1414,6 +1414,7 @@ m.fsMRCat.$fs_container=$multireco_cat_fs_container;
 m.fsGo=[];
 m.fsGo[0]=m.fsGo[1]=[];
 m.fsGo.fullList=[];
+m.fsGo.shuffledOnce=false;
 m.fsGo.$fs=$fuzzy_search;
 m.fsGo.$fsl=$fuzzy_search_list;
 m.fsGo.$fs_container=$fuzzy_search_container;
@@ -1551,6 +1552,13 @@ $button_mode=$(".button-mode");
 $button_neighbors_mode=$(".button-neighbors-mode");
 $button_multireco_mode=$(".button-multireco-mode");
 $sort_list=$("#sort-list");
+
+if (m.fsToRs.skip) {
+	$button_auto_skip.addClass("enabled");
+}
+else {
+	$button_auto_skip.removeClass("enabled");
+}
 
 $button_get_recoms=$(".button-get-recoms");
 $button0_get_recoms=$("#button-get-recoms");
@@ -6291,6 +6299,7 @@ return new Promise(async function (resolve, reject) {
 		fs.shuffledOnce=true;
 		m.fsGo.shuffledOnce=true;
 	}
+	console.log("fs.shuffledOnce: ", fs.shuffledOnce);
 	switch (shuffle) {
 	case "shuffle":
 		for (let i=0;i<l;i++) {
@@ -7214,6 +7223,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 		if (!changed) {
 			m.initialFillFromLocalStorageN++;
 		}
+		console.log("m.initialFillFromLocalStorageN: ", m.initialFillFromLocalStorageN);
 		if (!changed&&m.initialFillFromLocalStorageN>7) {
 			clearInterval(m.initialFillFromLocalStorage);
 		}
