@@ -3279,7 +3279,7 @@ $formatting_lyrics.on("click", function (e) {
 			trimedLyricsSplitted[i]="\n\n"+trimedLyricsSplitted[i];
 		}
 	}
-	$input_desc[0].value=trimedLyricsSplitted.join("\n\n");
+	$input_desc[0].value=trimedLyricsSplitted.join("\n\n").trim();
 });
 m.ptnDescCmt=/^#\S+/; // \w=[A-Za-z0-9_]
 m.renderStrDescCmt=function (str) {
