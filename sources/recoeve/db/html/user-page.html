@@ -2831,7 +2831,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 						m.catUriList[cat].uris.push(uri);
 					}
 					else {
-						let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
+						let {k}=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
 						if (k===-1) {
 							m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
 							m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
@@ -2848,7 +2848,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 							m.catUriList[cat].uris.push(uriJ);
 						}
 						else {
-							let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uriJ);
+							let {k}=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uriJ);
 							if (k===-1) {
 								m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uriJ;
 								m.catUriList[cat].uris[uriJ]={i:m.catUriList[cat].uris.length, uriJ};
@@ -2889,7 +2889,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 };
 m.indexOfUriOnCatUriListCat=function (catUriListCat, uri) {
 	let fullURIs="\n"+catUriListCat.UriList.trim()+"\n";
-	return fullURIs.indexOf("\n"+uri+"\n");
+	return {k:fullURIs.indexOf("\n"+uri+"\n"), fullURIs};
 };
 m.delCats_UriFromLists=async function (cats, uri) {
 if (m.myPage) {
@@ -2900,7 +2900,7 @@ if (m.myPage) {
 		if (!m.catUriList[cat]?.has) {
 			await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 		}
-		let k=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
+		let {k, fullURIs}=m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
 		if (k!==-1) {
 			m.catUriList[cat].UriList=(fullURIs.substring(0,k)+fullURIs.substring(k+uri.length+1)).trim();
 			// Intentionally no change on m.catUriList[cat].uris;
