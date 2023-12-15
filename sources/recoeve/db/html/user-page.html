@@ -6399,6 +6399,7 @@ return new Promise(async function (resolve, reject) {
 		}
 		else {
 			setTimeout(function selfPlayNextFirst() {
+				console.log("selfPlayNextFirst is triggered.");
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
 				if ($li0.exists()) {
