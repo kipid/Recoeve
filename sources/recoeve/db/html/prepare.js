@@ -721,7 +721,7 @@ return new Promise(function (resolve, reject) {
 			type:"GET", url:"/sessionIter"
 			, dataType:"text"
 		}).done(function (resp) {
-			console.log(resp);
+			console.log("sessionIter: ", resp);
 			let iter=Number(resp);
 			if (isNaN(iter)) {
 				callback(args, resp);
