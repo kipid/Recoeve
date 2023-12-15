@@ -177,7 +177,7 @@ else if (m.docCookies.hasItem("lang")) {
 	.bright .vals-stat text.max-simSum {fill:blue}
 .vals-stat text.tick {fill:gray; font-size:.8em}
 
-.neighbor-con {position:relative; margin:1.5em 0; padding:1.1em; border:2px solid rgb(150,100,100); width:100%; background:black}
+.neighbor-con {position:relative; margin:1em 0; padding:1.1em; border:2px solid rgb(150,100,100); width:100%; background:black}
 	.bright .neighbor-con {background:wheat}
 .neighbor-sim {background:yellow; position:absolute; left:0; top:0; bottom:0}
 .neighbor-a {position:absolute; overflow-wrap:normal; word-wrap:normal; word-break:normal; left:0; right:0; top:0; bottom:0; padding:.2em}
@@ -1530,6 +1530,7 @@ if (m.myPage) {
 </div></div>`);
 	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>
 <div class="cBoth"></div>`);
+	$("#button-get-recoms").after(` <div class="button button-mode button-daily-mix fLeft" onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})">[--Dail_y_ Mix Recoms in ToR--]</div>`)
 }
 else {
 	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>`);
