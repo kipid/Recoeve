@@ -6495,8 +6495,8 @@ if (m.myPage) {
 							m.doNotPushHistory=true;
 							await m.reTriggerFS(fs);
 							await m.reTriggerFS(m.fsGo);
-							// fs.shuffledOnce=true;
-							// m.fsGo.shuffledOnce=true;
+							fs.shuffledOnce=true;
+							m.fsGo.shuffledOnce=true;
 							await m.openCat(m.currentCat);
 						}
 						else if (resp==="false") {
