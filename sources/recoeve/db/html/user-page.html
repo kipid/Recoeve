@@ -6409,9 +6409,9 @@ return new Promise(async function (resolve, reject) {
 					fs.playNext(-1, true, true);
 				}
 				else {
-					setTimeout(selfPlayNextFirst, m.wait);
+					setTimeout(selfPlayNextFirst, 2*m.wait);
 				}
-			}, m.wait);
+			}, 2*m.wait);
 		}
 	}
 	if (fs===m.fsToRs&&$table_of_recos_container.is(":visible")) {
