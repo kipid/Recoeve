@@ -1317,6 +1317,7 @@ m.toggleNewReco=function () {
 	else {
 		$button_new_reco.addClass("enabled");
 		$input_uri[0].disabled=false;
+		$input_uri.on("input keyup keydown cut paste click focus", m.input_uriOn);
 		$new_reco.show();
 		m.newRecoOn=true;
 		if (!m.doNotPushHistory) {
@@ -4031,7 +4032,7 @@ return new Promise(async function (resolve, reject) {
 };
 m.editOrRecoToMine=function (elem, fillDefs) {
 	if (!$new_reco.is(":visible")) {
-		m.toggleNewReco();
+		$new_reco.show();
 		let $reco=$(elem).parent(".reco");
 		let uri=m.unescapeHTML($reco.find(".textURI").html());
 		let r=m.myRecos[uri];
@@ -4039,6 +4040,7 @@ m.editOrRecoToMine=function (elem, fillDefs) {
 		if (!(r&&r.has)) {
 			r=m.userRecos[uri];
 		}
+		$input_uri.off("input keyup keydown cut paste click focus");
 		$input_uri[0].value=r?.uri;
 		$input_uri[0].disabled=true;
 		if (uri.length!==0&&uri!==m.lastURI) {
@@ -5422,7 +5424,7 @@ $new_reco.find("input, textarea").on("keydown.common", function (e) {
 	}
 });
 $input_cats.off("keydown.common");
-$input_uri.on("input keyup keydown cut paste click focus", function (e) {
+m.input_uriOn=function (e) {
 	let uri=$input_uri[0].value;
 	if (uri==="") {
 		m.myRecos[""].cats=m.currentCat;
@@ -5435,7 +5437,8 @@ $input_uri.on("input keyup keydown cut paste click focus", function (e) {
 			m.reNewAndReOn();
 		}, m.wait);
 	}
-});
+};
+$input_uri.on("input keyup keydown cut paste click focus", m.input_uriOn);
 
 m.lastVal=m.val("");
 $input_val_stars=$("#input-val-stars");
