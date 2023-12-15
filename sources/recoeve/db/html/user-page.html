@@ -200,7 +200,7 @@ else if (m.docCookies.hasItem("lang")) {
 	.bright #floating-key, .bright #toggle-floating-key {color:black}
 	.pink #floating-key, .pink #toggle-floating-key {color:wheat}
 
-#contents-recoms .msg {text-align:center; display:block; width:100%; padding:1em; margin:auto}
+#contents-recoms .msg, #contents .msg {text-align:center; display:block; width:100%; padding:1em; margin:auto}
 
 @media all and (min-width:701px) {
 	#container {margin-left:15em}
@@ -1906,7 +1906,7 @@ return new Promise(async function (resolve, reject) {
 	// TODO: initialize m.fsGotoCats
 	let cL=m.catList;
 	let cat=cL[0].cat;
-	let catListHTML=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+	let catListHTML=`<div class="cat${m.fsGotoCats?.fullList[cat]?.selected?" selected":""}" id="cat-" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down?" down":""}" href="${m.pathOfCat(cat)}" onmouseup="return m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
 	let i=1;
 	for (;i<cL.length-1;i++) {
 		cat=cL[i].cat;
@@ -3910,8 +3910,8 @@ return new Promise(async function (resolve, reject) {
 		let uri=fsFLk.uri;
 		let r=fsFLk.r;
 		let val=r?.val?.val;
-		// fsFLk.txt=m.splitHangul(r?.title);
-		// fsFLk.html=m.escapeOnlyTag(r?.title);
+		fsFLk.txt=m.splitHangul(r?.title);
+		fsFLk.html=m.escapeOnlyTag(r?.title);
 		if (val===undefined||val===-1) {
 			if (m.showRWOP) {
 				fsFLk.inRange=true;
@@ -3951,11 +3951,11 @@ return new Promise(async function (resolve, reject) {
 		}
 	}
 	await m.reTriggerFS(fs);
-	// let nOfRecos=`[--${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
-	// if (!m.myPage) {
-	// 	nOfRecos+=`<br>[--You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
-	// }
-	// $numbers_of_recos.html(nOfRecos);
+	let nOfRecos=`[--${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
+	if (!m.myPage) {
+		nOfRecos+=`<br>[--You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
+	}
+	$numbers_of_recos.html(nOfRecos);
 	resolve();
 });
 };
@@ -4565,7 +4565,7 @@ return new Promise(async function (resolve, reject) {
 						let neighborI=neighbors[sorted[i]];
 						strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeOnlyTag(neighborI.cat_to)} of ${m.escapeOnlyTag(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
 					}
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
+					strHTML=`<div class="msg">Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.</div>`+strHTML;
 					$contents.html(strHTML);
 					if (scroll) {
 						$window.scrollTop($contents.offset().top);
@@ -4586,8 +4586,7 @@ return new Promise(async function (resolve, reject) {
 					}
 				}
 				else {
-					$numbers_of_recos.html(`[--You have no neighbors on cat=${m.escapeOnlyTag(cat)}.--]`);
-					$contents.html("");
+					$contents.html(`<div class="msg">[--You have no neighbors on cat=${m.escapeOnlyTag(cat)}.--]</div>`);
 				}
 				resolve();
 			});
