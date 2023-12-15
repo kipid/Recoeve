@@ -4113,43 +4113,43 @@ return new Promise(async function (resolve, reject) {
 				}
 			}
 		}
-		if (cat!==""&&!cat) { // If (cat!==""&&!cat), only resp[1] is there in most cases.
-			let catsSplit=m.catsToString(resp[1]?.cats).split(";");
-			for (let i=catsSplit.length-1;i>=0;i--) {
-				let catI=catsSplit[i];
-				if (catI===m.currentCat) {
-					m.beInCurrentCat=true;
-					break;
-				}
-			}
-			cat=m.beInCurrentCat?m.currentCat:catsSplit[0];
-		}
-		if (cat||cat==="") {
-			// TODO: Delete? or Preserve the below?
-			if (!m.catUriList[cat]?.has) {
-				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-			}
-			for (let k=1;k<resp.length;k++) {
-				let respK=resp[k];
-				let uri=String(respK.uri);
-				let r=recos[uri];
-				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
-			}
-			fs.shuffledOnce=true;
-			await m.reTriggerFS(fs);
-		}
+		// if (cat!==""&&!cat) { // If (cat!==""&&!cat), only resp[1] is there in most cases.
+		// 	let catsSplit=m.catsToString(resp[1]?.cats).split(";");
+		// 	for (let i=catsSplit.length-1;i>=0;i--) {
+		// 		let catI=catsSplit[i];
+		// 		if (catI===m.currentCat) {
+		// 			m.beInCurrentCat=true;
+		// 			break;
+		// 		}
+		// 	}
+		// 	cat=m.beInCurrentCat?m.currentCat:catsSplit[0];
+		// }
+		// if (cat||cat==="") {
+		// 	// TODO: Delete? or Preserve the below?
+		// 	if (!m.catUriList[cat]?.has) {
+		// 		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+		// 	}
+		// 	for (let k=1;k<resp.length;k++) {
+		// 		let respK=resp[k];
+		// 		let uri=String(respK.uri);
+		// 		let r=recos[uri];
+		// 		fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
+		// 	}
+		// 	fs.shuffledOnce=true;
+		// 	await m.reTriggerFS(fs);
+		// }
 	}
-	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
-		let uris=m.catUriList[cat].uris;
-		for (k=0;k<uris.length;k++) {
-			let uri=uris[k];
-			let r=recos[uri];
-			if (!r) {
-				r=recos[uri]={uri, down:true, has:false};
-			}
-			r.i=k;
-		}
-	}
+	// if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
+	// 	let uris=m.catUriList[cat].uris;
+	// 	for (k=0;k<uris.length;k++) {
+	// 		let uri=uris[k];
+	// 		let r=recos[uri];
+	// 		if (!r) {
+	// 			r=recos[uri]={uri, down:true, has:false};
+	// 		}
+	// 		r.i=k;
+	// 	}
+	// }
 	resolve();
 });
 };
@@ -4953,6 +4953,7 @@ m.openCat=async function (cat) {
 		m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 	}
 	await m.getUriListAndShowRecosOnCat(cat, true);
+	m.refreshFSToRs(cat);
 	if (!m.initialOpen) {
 		if (!m.doNotPushHistory) {
 			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
@@ -5619,8 +5620,8 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 				m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[i].cats), uriI);
 			}
 			await m.recoToEve(args.strRecoDo, m.myRecos);
-			m.refreshFSToRs(m.currentCat);
 			m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
+			m.refreshFSToRs(m.currentCat);
 		}
 		else if (result.startsWith("recoed")) {
 			$error.html(result);
@@ -5637,8 +5638,8 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.putCats_UriToLists(cats, uri);
-				// m.refreshFSToRs(m.currentCat);
 				m.refresh(cats, "recoed", uri, true);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else if (result.startsWith("changed")) {
@@ -5652,8 +5653,8 @@ m.reco_do=async function (args, err) { // args : {strRecoDo, $result, uri}
 			setTimeout(function () {
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
-				// m.refreshFSToRs(m.currentCat);
 				m.refresh(cats, "changed", args.uri);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else {
@@ -5755,8 +5756,8 @@ m.reco_change_do=function (args, err) { // args : {strHeads, strContents, $resul
 				m.emptifyRecoInNewReco();
 				$button_close.trigger("click");
 				m.changeCats_UriList(args.r.cats, args.cats, args.uri);
-				// m.refreshFSToRs(m.currentCat);
 				m.refresh(args.cats, "changed", args.uri);
+				m.refreshFSToRs(m.currentCat);
 			}, m.wait);
 		}
 		else {
