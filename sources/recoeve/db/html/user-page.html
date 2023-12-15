@@ -2808,7 +2808,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 			if (m.catUriList[cat]?.has) {
 				if (uri?.constructor===String) {
 					m.catUriList[cat].UriList=m.catUriList[cat].UriList.trim()+"\n"+uri;
-					m.catUriList[cat].uris[uri].i=m.catUriList[cat].uris.length;
+					m.catUriList[cat].uris[uri]={i:m.catUriList[cat].uris.length, uri};
 					m.catUriList[cat].uris.push(uri);
 				}
 				else if (uri?.constructor===Array) {
@@ -2821,6 +2821,7 @@ m.putCats_UriToLists=async function (cats, uri) {
 				}
 			}
 			else if (m.catUriList[cat]) {
+				// TODO: DO NOT load uriList of every cat of catsSplit.
 				$numbers_of_recos.html(`Getting UriList of cat="${m.escapeOnlyTag(cat)}".`);
 				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 				if (uri?.constructor===String) {
@@ -7559,8 +7560,8 @@ return new Promise(async function (resolve, reject) {
 		$youtube.html('');
 		$eveElse_uri_rendered.hide();
 		$rC_youtube_uri_rendered.hide();
-		fs.lastIndex=fs.currentIndex;
-		m.lastCat=m.currentCat;
+		// fs.lastIndex=fs.currentIndex;
+		// m.lastCat=m.currentCat;
 	}
 	m.reNewAndReOn();
 	resolve();
