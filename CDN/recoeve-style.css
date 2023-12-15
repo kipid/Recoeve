@@ -80,7 +80,7 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 .fs-container textarea {display:inherit; max-width:100%; width:100%; resize:vertical; font:inherit; font-weight:bold; overflow-x:hidden; overflow-y:auto; padding:0.2em 0.3em; background:white; color:rgb(50,50,50)}
 	#goto-cats {height:4em; margin-bottom:-0.4em}
 .fs-list {display:inherit; height:auto; min-height:2em; max-height:15em; overflow-y:auto; border:.15em gray solid; background:rgb(20,20,20)}
-.fs-list .list-item {display:inherit; background:black; color:white; padding:.2em .5em .4em}
+.fs-list .list-item {display:inherit; background:black; color:white; padding:.3em .5em}
 	.bright .fs-list .list-item {background:rgb(240,240,240); color:black}
 .fs-list .list-item:nth-child(2n) {background:rgb(40,40,40)}
 	.bright .fs-list .list-item:nth-child(2n) {background:white}
