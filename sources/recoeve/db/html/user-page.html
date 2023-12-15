@@ -4126,32 +4126,32 @@ return new Promise(async function (resolve, reject) {
 		// 	}
 		// 	cat=m.beInCurrentCat?m.currentCat:catsSplit[0];
 		// }
-		// if (cat||cat==="") {
-		// 	// TODO: Delete? or Preserve the below?
-		// 	if (!m.catUriList[cat]?.has) {
-		// 		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
-		// 	}
-		// 	for (let k=1;k<resp.length;k++) {
-		// 		let respK=resp[k];
-		// 		let uri=String(respK.uri);
-		// 		let r=recos[uri];
-		// 		fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
-		// 	}
-		// 	fs.shuffledOnce=true;
-		// 	await m.reTriggerFS(fs);
-		// }
+		if (cat||cat==="") {
+			// TODO: Delete? or Preserve the below?
+			if (!m.catUriList[cat]?.has) {
+				await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+			}
+			for (let k=1;k<resp.length;k++) {
+				let respK=resp[k];
+				let uri=String(respK.uri);
+				let r=recos[uri];
+				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
+			}
+			fs.shuffledOnce=true;
+			await m.reTriggerFS(fs);
+		}
 	}
-	// if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
-	// 	let uris=m.catUriList[cat].uris;
-	// 	for (k=0;k<uris.length;k++) {
-	// 		let uri=uris[k];
-	// 		let r=recos[uri];
-	// 		if (!r) {
-	// 			r=recos[uri]={uri, down:true, has:false};
-	// 		}
-	// 		r.i=k;
-	// 	}
-	// }
+	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
+		let uris=m.catUriList[cat].uris;
+		for (k=0;k<uris.length;k++) {
+			let uri=uris[k];
+			let r=recos[uri];
+			if (!r) {
+				r=recos[uri]={uri, down:true, has:false};
+			}
+			r.i=k;
+		}
+	}
 	resolve();
 });
 };
