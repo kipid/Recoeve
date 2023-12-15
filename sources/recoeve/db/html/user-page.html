@@ -6295,12 +6295,6 @@ return new Promise(async function (resolve, reject) {
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
 	let shuffled=fs.shuffled=[];
 	let l=fs.fullList.length;
-	console.log("shuffle: ", shuffle);
-	if (shuffle) {
-		fs.shuffledOnce=true;
-		m.fsGo.shuffledOnce=true;
-	}
-	console.log("fs.shuffledOnce: ", fs.shuffledOnce);
 	switch (shuffle) {
 	case "shuffle":
 		for (let i=0;i<l;i++) {
@@ -6373,6 +6367,10 @@ return new Promise(async function (resolve, reject) {
 			shuffled[j]=temp;
 		}
 	}
+	if (shuffle) {
+		fs.shuffledOnce=true;
+		m.fsGo.shuffledOnce=true;
+	}
 	let fsRes=m.fuzzySearch(fsPtnSH, fs);
 	let sorted=fsRes.sorted;
 	let str="";
@@ -6387,9 +6385,11 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let $li0=fs.$fsLis.eq(0);
-	console.log("fs.shuffledOnce: ", fs.shuffledOnce);
+	if (shuffle) {
+		fs.shuffledOnce=true;
+		m.fsGo.shuffledOnce=true;
+	}
 	if (fs.shuffledOnce||m.lastCat!==m.currentCat||fs.lastIndex!==fs.currentIndex) {
-		console.log("fs.shuffledOnce is queried.");
 		fs.lastIndex=-2;
 		if ($li0.exists()) {
 			console.log("fs.playNext(-1, true, true);");
