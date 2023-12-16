@@ -1478,7 +1478,7 @@ $floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">
 	${m.myPage?`<div class="button button-mode button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
 		[--Get _R_ecoms--]
 	</div>
-	<div class="button button-mode button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})">
+	<div class="button button-mode button-daily-mix" onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})">
 		[--Dail_y_ Mix--]
 	</div>`:``}
 	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})">
@@ -1532,7 +1532,7 @@ if (m.myPage) {
 </svg>
 </div></div>`);
 	$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">[--Get _R_ecoms--]</div>
-<div class="button button-mode button-daily-mix fLeft" onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})">[--Dail_y_ Mix Recoms in ToR--]</div>
+<div class="button button-mode button-daily-mix fLeft" onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})">[--Dail_y_ Mix Recoms with ToR--]</div>
 <div class="cBoth"></div>`);
 }
 else {
@@ -2386,8 +2386,10 @@ return new Promise(function (resolve, reject) {
 	if (fs===m.fsGotoCats) {
 		for (let i=0;i<fsRes.length;i++) {
 			let fsSortedI=fsRes[fsRes.sorted[i]];
-			let fsFLk=fs.fullList[fsSortedI.i]; // fs.fullList[i] 랑 fs.fullList[cat] 이랑 다르게 저장되어 있네? 뭐지?
-			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${fsFLk.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
+			let k=fsSortedI.i;
+			let fsFLk=fs.fullList[k]; // fs.fullList[i] 랑 fs.fullList[cat] 이랑 다르게 저장되어 있네? 뭐지?
+			fsFLk=fs.fullList[k]=fs.fullList[fsFLk?.cat];
+			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 			let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
 			if ($catI.exists()) {
 				if (fsFLk?.down) {
@@ -2688,10 +2690,10 @@ for (let i=l-1;i>=0;i--) {
 l=m.catList.length;
 for (let i=l-1;i>0;i--) {
 	let cat=m.catList[i].cat;
-	m.fsGotoCats.fullList[l-1-i]={i:l-1-i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
+	m.fsGotoCats.fullList[l-1-i]=m.fsGotoCats.fullList[cat]={i:l-1-i, txt:m.splitHangul(cat), cat, html:m.escapeOnlyTag(cat)};
 	m.catUriList[cat]={cat, down:false};
 }
-m.fsGotoCats.fullList[l-1]={i:l-1, txt:m.splitHangul("[--Uncategorized--]"), cat:"", html:m.escapeOnlyTag("[--Uncategorized--]")};
+m.fsGotoCats.fullList[l-1]=m.fsGotoCats.fullList[""]={i:l-1, txt:m.splitHangul("[--Uncategorized--]"), cat:"", html:m.escapeOnlyTag("[--Uncategorized--]")};
 $input_cats.trigger("keyup.fs");
 $multireco_input_cats.trigger("keyup.fs");
 $goto_cats.trigger("keyup.fs");
@@ -4474,16 +4476,6 @@ return new Promise(async function (resolve, reject) {
 		}
 	}
 	else {
-		if (m.countGetUriListAndShowRecosOnCat===undefined||m.countGetUriListAndShowRecosOnCat>=7) {
-			m.countGetUriListAndShowRecosOnCat=0;
-		}
-		m.countGetUriListAndShowRecosOnCat++;
-		if (m.countGetUriListAndShowRecosOnCat<7) {
-			m.setTimeoutGetUriListAndShowRecosOnCat=setTimeout(async function () {
-				console.log(`await m.getUriListAndShowRecosOnCat(cat=${cat}, scroll=${scroll});`);
-				await m.getUriListAndShowRecosOnCat(cat, scroll);
-			}, m.wait);
-		}
 		return reject();
 	}
 	switch (m.recoMode) {
@@ -4526,6 +4518,32 @@ return new Promise(async function (resolve, reject) {
 			}
 			m.recosShown=true;
 			resolve();
+			break;
+		case "daily-mix":
+			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
+			$button_mode.removeClass("enabled");
+			$button_daily_mix.addClass("enabled");
+			$contents.removeClass("multireco");
+			let catListCat=m.catList[cat];
+			if (catListCat) {
+				let catUriListCat=m.catUriList[cat]=m.catUriList[cat]||{};
+				if (catUriListCat.down) {
+					await m.getAndShowRecosOnCat(cat);
+				}
+				else {
+					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeOnlyTag(cat)}.`);
+					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
+					await m.getAndShowRecosOnCat(cat);
+				}
+			}
+			else {
+				$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
+				$contents.html("");
+				m.lastRecoMode=m.recoMode;
+			}
+			if (scroll) {
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+			}
 			break;
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}, and plotting charts.`);
@@ -4947,15 +4965,7 @@ m.openCat=async function (cat) {
 		if (!fsFLUri.catAndI) { // Preserve canAndI.
 			fsFLUri.catAndI={};
 		}
-		if (!uris[uri]) {
-			uris[uri]={uri, i:uris.length};
-			uris.push(uri);
-		}
 		fsFLUri.catAndI[cat]={cat, i:uris[uri].i};
-	}
-	let fsGotoCatsFLCat=m.fsGotoCats.fullList[cat];
-	if (fsGotoCatsFLCat) {
-		m.fsGotoCats.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
 	}
 	await m.getUriListAndShowRecosOnCat(cat, true);
 	m.refreshFSToRs(cat);
@@ -5910,6 +5920,67 @@ $button_del.on("click", function (e) {
 ///////////////////////////////////////////
 // Go to Cats (Somewhat different from Go, TofR)
 ///////////////////////////////////////////
+m.completeCatAndOpenCat=async function (event) {
+	let $elem=$(event.target);
+	if (!$elem.hasClass("list-item")) {
+		$elem=$elem.parents(".list-item");
+	}
+	let cat=m.currentCat=m.unescapeHTML($elem.find(".list-index-id").html());
+	let fs2=m.fsGotoCats;
+	let fsGotoCatsFLCat=fs2.fullList[cat];
+	if (!fsGotoCatsFLCat) { // Must be there.
+		let i=fs2.fullList.length;
+		fsGotoCatsFLCat=fs2.fullList[i]=fs2.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
+	}
+	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
+	if ($catI.exists()) {
+		$("#catList").find(".cat").removeClass("selected");
+		$catI.addClass("selected");
+		if (m.recoMode===""||m.recoMode==="multireco"||m.recoMode==="daily-mix") {
+			$catI.find(".baseCat").addClass("down");
+		}
+	}
+	if (m.recoMode===""||m.recoMode==="multireco"||m.recoMode==="daily-mix") {
+		fs2.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
+		$elem.addClass("down");
+	}
+	// let k=fs2.k; // index of cat on sEnd.
+	// TODO: remain the below for later use.
+	// fs2.catsSplit[k]=cat; // Do not fill the m.fsToRs.$fs2
+	// fs2.$fs2[0].value=fs2.catsSplit.join(";");
+	// let sStart=0;
+	// for (let i=0;i<k;i++) {
+	// 	sStart+=fs2.catsSplit[i].length+1;
+	// }
+	// sEnd=sStart+fs2.catsSplit[k].length;
+	$goto_cats.focus();
+	// fs2.$fs2[0].setSelectionRange(sEnd,sEnd);
+	for (let i=0;i<fs2.fullList.length;i++) {
+		fs2.fullList[i].selected=false;
+	}
+	fs2.fullList[fsGotoCatsFLCat.i].selected=fsGotoCatsFLCat.selected=true;
+	fs2.$fsLis=fs2.$fsl.find(".list-item");
+	fs2.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	if ((m.lastRecoMode===""&&m.recoMode==="multireco")||(m.lastRecoMode==="daily-mix"&&m.recoMode==="multireco")) {
+		$contents.addClass("multireco");
+		if (!m.doNotPushHistory) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
+		m.doNotPushHistory=false;
+	}
+	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="")||(m.lastRecoMode==="daily-mix"&&m.recoMode==="")||(m.lastRecoMode==="multireco"&&m.recoMode==="daily-mix")||(m.lastRecoMode===""&&m.recoMode==="daily-mix")) {
+		$contents.removeClass("multireco");
+		if (!m.doNotPushHistory) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
+		m.doNotPushHistory=false;
+	}
+	else {
+		await m.openCat(cat);
+	}
+	m.fsViewAndScroll(fs2, $elem);
+};
 m.triggerOpenCat=async function (event) {
 	let $elem=$(event.target);
 	if (event?.srcElement?.nodeName!=="A"&&!$elem.hasClass("baseCat")) {
@@ -5946,67 +6017,6 @@ m.triggerOpenCat=async function (event) {
 		$gotoCatsK.trigger("click");
 	}
 	return false;
-};
-m.completeCatAndOpenCat=async function (event) {
-	let $elem=$(event.target);
-	if (!$elem.hasClass("list-item")) {
-		$elem=$elem.parents(".list-item");
-	}
-	let cat=m.currentCat=m.unescapeHTML($elem.find(".list-index-id").html())
-	let fs=m.fsGotoCats;
-	let fsGotoCatsFLCat=fs.fullList[cat];
-	if (!fsGotoCatsFLCat) { // Must have this.
-		let i=fs.fullList.length;
-		fsGotoCatsFLCat=fs.fullList[i]=fs.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
-	}
-	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-	if ($catI.exists()) {
-		$("#catList").find(".cat").removeClass("selected");
-		$catI.addClass("selected");
-		if (m.recoMode===""||m.recoMode==="multireco") {
-			$catI.find(".baseCat").addClass("down");
-		}
-	}
-	if (m.recoMode===""||m.recoMode==="multireco") {
-		fs.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
-		$elem.addClass("down");
-	}
-	// let k=fs.k; // index of cat on sEnd.
-	// TODO: remain the below for later use.
-	// fs.catsSplit[k]=cat; // Do not fill the m.fsToRs.$fs
-	// fs.$fs[0].value=fs.catsSplit.join(";");
-	// let sStart=0;
-	// for (let i=0;i<k;i++) {
-	// 	sStart+=fs.catsSplit[i].length+1;
-	// }
-	// sEnd=sStart+fs.catsSplit[k].length;
-	$goto_cats.focus();
-	// fs.$fs[0].setSelectionRange(sEnd,sEnd);
-	for (let i=0;i<fs.fullList.length;i++) {
-		fs.fullList[i].selected=false;
-	}
-	fs.fullList[fsGotoCatsFLCat.i].selected=fsGotoCatsFLCat.selected=true;
-	fs.$fsLis=fs.$fsl.find(".list-item");
-	fs.$fsLis.removeClass("selected");
-	$elem.addClass("selected");
-	if (m.lastRecoMode===""&&m.recoMode==="multireco") {
-		$contents.addClass("multireco");
-		if (!m.doNotPushHistory) {
-			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-		}
-		m.doNotPushHistory=false;
-	}
-	else if (m.lastRecoMode==="multireco"&&m.recoMode==="") {
-		$contents.removeClass("multireco");
-		if (!m.doNotPushHistory) {
-			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-		}
-		m.doNotPushHistory=false;
-	}
-	else {
-		await m.openCat(cat);
-	}
-	m.fsViewAndScroll(fs, $elem);
 };
 
 ///////////////////////////////////////////
@@ -6976,6 +6986,28 @@ m.processShortKey=function (e) {
 			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
+	case 89: // Y=89
+		if (m.myPage) {
+			e.preventDefault();
+			if ($button_daily_mix.hasClass("enabled")) {
+				m.recoMode="";
+				$contents_recoms.html("");
+				$button_mode.removeClass("enabled");
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+			}
+			else {
+				m.recoMode="daily-mix";
+				$button_mode.removeClass("enabled");
+				$button_daily_mix.addClass("enabled");
+				$contents_recoms.hide();
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+			}
+			clearInterval(m.initialFsGotoCats4);
+			m.initialFsGotoCats4=setInterval(function () {
+				m.intervalOpenCat(m.initialFsGotoCats4);
+			}, m.wait);
+		}
+		break;
 	case 82: // R=82
 		if (m.myPage) {
 			e.preventDefault();
@@ -6989,9 +7021,12 @@ m.processShortKey=function (e) {
 				m.recoMode="recoms";
 				$button_mode.removeClass("enabled");
 				$button_get_recoms.addClass("enabled");
+				$contents_recoms.show();
 				$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 				m.hashURI="button-get-recoms";
 				window.location.hash=`#${m.hashURI}`;
+				$window.scrollTop($(`#${m.hashURI}`).offset().top);
+				window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 			}
 			clearInterval(m.initialFsGotoCats3);
 			m.initialFsGotoCats3=setInterval(function () {
@@ -7076,7 +7111,7 @@ if ($shortkeyDesc.exists()) {
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)})"><span class="bold">M</span>: [--_M_ultireco mode--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)})"><span class="bold">B</span>: [--Neigh_b_ors mode--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})"><span class="bold">R</span>: [--Get _R_ecoms--]</span></li>
-<li><span onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})"><span class="bold">Y</span>: [--Dail_y_ Mix Recoms in ToR--]</span></li>
+<li><span onclick="$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)})"><span class="bold">Y</span>: [--Dail_y_ Mix Recoms with ToR--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})"><span class="bold">U</span>: [--Block to_u_ch--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold">I</span>: [--Log _i_n--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold">O</span>: [--Log _o_ut--]</span></li>`
