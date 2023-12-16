@@ -4519,7 +4519,7 @@ return new Promise(async function (resolve, reject) {
 			m.recosShown=true;
 			resolve();
 			break;
-		case "daily-mix":
+		case "daily-mix": {
 			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
 			$button_mode.removeClass("enabled");
 			$button_daily_mix.addClass("enabled");
@@ -4545,6 +4545,7 @@ return new Promise(async function (resolve, reject) {
 				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 			}
 			break;
+		}
 		case "neighbors":
 			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}, and plotting charts.`);
 			let cat_from=m.currentCat=cat;
