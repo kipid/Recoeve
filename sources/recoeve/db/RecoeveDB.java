@@ -2303,7 +2303,7 @@ public void updateNeighbors(long user_from, String uri, Categories cats, Points 
 				else {
 					System.out.println("neighborListFrom.toString()\n"+neighborListFrom.toStringRowMap());
 					rSneighborListFrom.updateString("userCatList", neighborListFrom.toStringRowMap());
-					// rSneighborListFrom.updateTimestamp("tUpdate", tNow);
+					rSneighborListFrom.updateTimestamp("tUpdate", tNow);
 					rSneighborListFrom.updateInt("nUpdate", rSneighborListFrom.getInt("nUpdate")+1);
 					rSneighborListFrom.updateRow();
 				}
