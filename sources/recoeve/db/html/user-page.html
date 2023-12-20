@@ -3372,7 +3372,7 @@ m.recomHTML=async function (r, inListPlay) {
 	}
 	let recoDef=m.recoDefs[r?.uri];
 	if (!recoDef) {
-
+		await m.getMultiDefs(r?.uri);
 	}
 	let res=`<div class="reco recom"${inListPlay?``:` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
 	<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
@@ -3456,10 +3456,10 @@ m.recomHTML=async function (r, inListPlay) {
 	res+=`</div>`;
 	return res;
 };
-m.recoHTML=async function (r, inListPlay, inRange, inRecom) {
+m.recoHTML=async function (r, inListPlay, inRange, inRecoms) {
 	let res="";
 	if (r?.has) {
-		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecom?`m-${m.recoms[m.currentCat][r?.uri]?.i}"`:`-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecoms?`m-${m.recoms[m.currentCat][r?.uri]?.i}"`:`-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
@@ -3612,8 +3612,8 @@ m.reco_pointChange_do=function (args, err) { // args : {strHeads, strContents, $
 			}
 			r.descR=m.renderStrDescCmt(r.desc);
 			m.putCats_UriToLists(r.cats, uri);
-			// m.refreshFSToRs(m.currentCat);
 			m.refresh(r.cats, "recoed", uri);
+			m.refreshFSToRs(m.currentCat);
 		}
 		else {
 			m.delayedLogOut(result, 60*60*24, args.$result);
@@ -4414,6 +4414,7 @@ return new Promise(async function (resolve, reject) {
 		let avgValStr=avgVal.toFixed(2);
 		recomsI.avgVal=avgVal;
 		recomsI.avgValStr=avgValStr;
+		recomsI.avgValPlusRandom=avgValPlusRandom;
 		recomsI.avgValPlusRandomStr=avgValPlusRandom.toFixed(2);
 	}
 	m.recoms[cat]=recoms;
@@ -4578,11 +4579,13 @@ return new Promise(async function (resolve, reject) {
 					}
 					else {
 						strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
-						fs.$fsLis=m.fsToRs.$fsl.find(".list-item");
+						let fs=m.fsToRs;
+						fs.$fsLis=fs.$fsl.find(".list-item");
 						for (let i=m.recoms[cat].length-1, j=2;i>=recomsPlusRandomUntil&&j<fs.$fsLis.length;i--, j+=m.dailyMixPer) {
 							let k=m.recomsPlusRandomSorted[cat][i];
 							let uri=m.recoms[cat][k].uri;
-							fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(m.recoms[cat][k]?.title)}</div>`);
+							let recoDef=m.recoDefs[uri];
+							fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
 							// let recomHTML=await m.recomHTML(m.userRecos[uri])
 							// strHTML+=String(recomHTML);
 						}
@@ -4930,6 +4933,14 @@ if (m.myPage) {
 					$reco.replaceWith(String(recoHTML));
 				}
 			}
+			{
+				let $reco=$reco_playing.find(".reco");
+				let recoURI=m.escapeHTML($reco.find(".textURI").html());
+				if (recoURI===uri) {
+					let recoHTML=await m.recoHTML(r, true, true, true);
+					$reco_playing.html(String(recoHTML));
+				}
+			}
 			let recoHTML=await m.recoHTML(r, false, true)
 			$contents.prepend(String(recoHTML));
 			m.reNewAndReOn();
@@ -5046,6 +5057,7 @@ if (m.myPage) {
 		break;
 	default:
 		m.openCat(cat);
+		break;
 	}
 }};
 
@@ -6546,7 +6558,8 @@ return new Promise(async function (resolve, reject) {
 		for (let j=2, i=m.recoms[cat].length-1;j<fs.$fsLis.length&&i>=0;j+=m.dailyMixPer, i--) {
 			let k=m.recomsPlusRandomSorted[cat][i];
 			let uri=m.recoms[cat][k].uri;
-			fs.$fsLis.eq(i).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.recoms[m.currentCat][k]?.title}</div>`);
+			let recoDef=m.recoDefs[uri];
+			fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
 		}
 	}
 	let $li0=fs.$fsLis.eq(0);
