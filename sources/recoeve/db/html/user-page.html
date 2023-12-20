@@ -6587,7 +6587,7 @@ return new Promise(async function (resolve, reject) {
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	let cat=m.currentCat;
-	if (m.recoMode==="daily-mix"&&m.recoms[cat]) {
+	if (m.recoMode==="daily-mix"&&m.recoms[cat]&&m.recomsPlusRandomSorted[cat]) {
 		for (let j=2, i=m.recoms[cat].length-1;j<fs.$fsLis.length&&i>=0;j+=m.dailyMixPer, i--) {
 			let k=m.recomsPlusRandomSorted[cat][i];
 			let uri=m.recoms[cat][k].uri;
