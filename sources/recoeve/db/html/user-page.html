@@ -4410,7 +4410,7 @@ return new Promise(async function (resolve, reject) {
 		for (let k=recomsI.vals.length-1;k>=0;k--) {
 			let j=recomsI.vals.cmtsSorted[k];
 			let valJ=recomsI.vals[j];
-			cmtsHTML+=`<div class="cmt"><a target="_blank" href="${m.pathOfNeighbor(valJ.user_id, valJ.maxCat)}">Cat="${valJ.maxCat}" of ${valJ.user_id}</a> (${valJ.simAvg100}) :: ${m.escapeOnlyTag(valJ.cmt)}</div>`;
+			cmtsHTML+=`<div class="cmt"><a target="_blank" href="${m.pathOfNeighbor(valJ.user_id, valJ.maxCat)}">Cat="${valJ.maxCat}" of ${valJ.user_id}</a> (${(valJ.simAvg100/10000.0).toFixed(2)}) :: ${m.escapeOnlyTag(valJ.cmt)}</div>`;
 		}
 		cmtsHTML+=`</div>`;
 		recomsI.cmtsHTML=cmtsHTML;
