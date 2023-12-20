@@ -5111,7 +5111,7 @@ m.openCat=async function (cat) {
 		if (!fsFLUri.catAndI) { // Preserve canAndI.
 			fsFLUri.catAndI={};
 		}
-		fsFLUri.catAndI[cat]={cat, i:uris[uri].i};
+		fsFLUri.catAndI[cat]={cat, i:uris[uri]?.i??uris.length};
 	}
 	await m.getUriListAndShowRecosOnCat(cat, true);
 	m.refreshFSToRs(cat);
