@@ -3367,7 +3367,7 @@ m.stashReco=function (event) {
 };
 m.recomHTML=async function (r, inListPlay) {
 	if (r?.has) {
-		let recoHTML=await m.recoHTML(r, false, true, true);
+		let recoHTML=await m.recoHTML(r, inListPlay, true, true);
 		return String(recoHTML);
 	}
 	let recoDef=m.recoDefs[r?.uri];
@@ -3452,6 +3452,9 @@ m.recomHTML=async function (r, inListPlay) {
 			}
 		}
 		res+=`</div>`;
+	}
+	if (recomsI?.cmtsHTML) {
+		res+=recomsI.cmtsHTML;
 	}
 	res+=`</div>`;
 	return res;
@@ -4364,16 +4367,19 @@ return new Promise(async function (resolve, reject) {
 				recoms[uri].valsStat["max"]=0;
 				recoms.push(recoms[uri]);
 			}
-			let val={user:respJSONi.user, val:respJSONi.val};
+			let val={user:respJSONi.user, user_id:respJSONi.user_id, val:respJSONi.val, cmt:respJSONi.cmt};
 			let catsSplit=respJSONi.cats.split(";");
 			let simAvg100=0;
+			let maxCat=null;
 			for (let j=0;j<catsSplit.length;j++) {
 				let sim=m.neighbors[cat][`${val.user}\t${catsSplit[j]}`];
 				if (sim?.simAvg100>simAvg100) {
 					simAvg100=sim.simAvg100; // Get the largest sim of user cats.
+					maxCat=catsSplit[j];
 				}
 			}
 			val.simAvg100=simAvg100;
+			val.maxCat=maxCat;
 			recoms[uri].vals.push(val);
 			recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
 		}
@@ -4395,6 +4401,19 @@ return new Promise(async function (resolve, reject) {
 			m.recomsPlusRandomSorted[cat].push(i);
 		}
 		let recomsI=recoms[i];
+		recomsI.vals.cmtsSorted=[];
+		for (let k=0;k<recomsI.vals.length;k++) {
+			recomsI.vals.cmtsSorted.push(k);
+		}
+		m.heapsort(recomsI.vals, "simAvg100", recomsI.vals.cmtsSorted, recomsI.vals.length);
+		let cmtsHTML=`<div class="cmts">`;
+		for (let k=recomsI.vals.length-1;k>=0;k--) {
+			let j=recomsI.vals.cmtsSorted[k];
+			let valJ=recomsI.vals[j];
+			cmtsHTML+=`<div class="cmt"><a target="_blank" href="${m.pathOfNeighbor(valJ.user_id, valJ.maxCat)}">Cat="${valJ.maxCat}" of ${valJ.user_id}</a> (${valJ.simAvg100}) :: ${m.escapeOnlyTag(valJ.cmt)}</div>`;
+		}
+		cmtsHTML+=`</div>`;
+		recomsI.cmtsHTML=cmtsHTML;
 		let valSimSum=0;
 		let simSum=0;
 		for (let j=0;j<recomsI.vals.length;j++) {
@@ -4421,7 +4440,7 @@ return new Promise(async function (resolve, reject) {
 	let recomsUntil=m.recomsSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
 	let recomsPlusRandomUntil=null;
 	if (plusRandom) {
-		recomsPlusRandomUntil=m.recomsPlusRandomSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgValPlusRandom", m.recomsPlusRandomSorted[cat], m.fsToRs.fullList/m.dailyMixPer);
+		recomsPlusRandomUntil=m.recomsPlusRandomSorted[cat].sortedUntil=m.heapsort(m.recoms[cat], "avgValPlusRandom", m.recomsPlusRandomSorted[cat], m.fsToRs.fullList.length/m.dailyMixPer+1);
 	}
 	let uris="";
 	let minRecomsUntil=0;
@@ -4452,7 +4471,7 @@ return new Promise(async function (resolve, reject) {
 			if (m.myRecos[uri]?.has) {
 				recomHTML=await m.recoHTML(m.myRecos[uri], false, true, true);
 			} else {
-				recomHTML=await m.recomHTML(m.myRecos[uri]);
+				recomHTML=await m.recomHTML(m.myRecos[uri], false);
 			}
 			strHTML+=String(recomHTML);
 		}
@@ -4506,7 +4525,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	switch (m.recoMode) {
 		case "multireco": case "": default:
-			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
+			$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
 			if (m.recoMode==="multireco") {
 				$button_mode.removeClass("enabled");
 				$button_multireco_mode.addClass("enabled");
@@ -4524,7 +4543,7 @@ return new Promise(async function (resolve, reject) {
 					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
-					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeOnlyTag(cat)}.`);
+					$numbers_of_recos.html(`Getting UriList on cat="${m.escapeOnlyTag(cat)}".`);
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					await m.getAndShowRecosOnCat(cat);
 				}
@@ -4546,7 +4565,7 @@ return new Promise(async function (resolve, reject) {
 			resolve();
 			break;
 		case "daily-mix": {
-			$numbers_of_recos.html(`Loading recos in cat=${m.escapeOnlyTag(cat)}.`);
+			$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
 			$button_mode.removeClass("enabled");
 			$button_daily_mix.addClass("enabled");
 			$contents.removeClass("multireco");
@@ -4557,7 +4576,7 @@ return new Promise(async function (resolve, reject) {
 					await m.getAndShowRecosOnCat(cat);
 				}
 				else {
-					$numbers_of_recos.html(`Getting UriList on cat=${m.escapeOnlyTag(cat)}.`);
+					$numbers_of_recos.html(`Getting UriList on cat="${m.escapeOnlyTag(cat)}".`);
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					await m.getAndShowRecosOnCat(cat);
 				}
@@ -4567,18 +4586,16 @@ return new Promise(async function (resolve, reject) {
 				$contents.html("");
 				m.lastRecoMode=m.recoMode;
 			}
-			if (scroll) {
-				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-			}
+			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 			if (m.neighbors[cat]) {
 				if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) { // TL for Time Limit.
-					let recomsPlusRandomUntil=m.recomsPlusRandomSorted[cat].sortedUntil;
+					let recomsPlusRandomUntil=m.recomsPlusRandomSorted[cat]?.sortedUntil;
 					let strHTML="";
-					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`);
+					if (m.recoms[cat]?.length===0) {
+						strHTML=`<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`;
 					}
-					else {
-						strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
+					else if (m.recoms[cat]?.length>0) {
+						strHTML=`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`;
 						let fs=m.fsToRs;
 						fs.$fsLis=fs.$fsl.find(".list-item");
 						for (let i=m.recoms[cat].length-1, j=2;i>=recomsPlusRandomUntil&&j<fs.$fsLis.length;i--, j+=m.dailyMixPer) {
@@ -4586,23 +4603,25 @@ return new Promise(async function (resolve, reject) {
 							let uri=m.recoms[cat][k].uri;
 							let recoDef=m.recoDefs[uri];
 							fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
-							// let recomHTML=await m.recomHTML(m.userRecos[uri])
-							// strHTML+=String(recomHTML);
 						}
+						// let recomsUntil=m.recomsSorted[cat].sortedUntil;
+						// for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+						// 	let k=m.recomsSorted[cat][i];
+						// 	let uri=m.recoms[cat][k].uri;
+						// 	let recomHTML=await m.recomHTML(m.userRecos[uri])
+						// 	strHTML+=String(recomHTML);
+						// }
 						// if (recomsUntil>0) {
 						// 	strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
 						// }
 					}
 					$contents_recoms.html(strHTML);
 					m.reNewAndReOn();
-					// $contents_recoms.hide();
-					if (scroll) {
-						$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-					}
+					$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 					resolve();
 				}
 				else {
-					if (!(m.neighborsRecos[cat]&&m.recomsPlusRamdomSorted[cat])) {
+					if (!m.neighborsRecos[cat]) {
 						let req=`user\tcat`;
 						let n=m.neighbors[cat].length;
 						let until=n<m.neighborUpto?0:n-m.neighborUpto;
@@ -4629,31 +4648,27 @@ return new Promise(async function (resolve, reject) {
 							respJSON.splice(0, 1);
 							m.neighborsRecos[cat]=respJSON;
 							await m.showRecoms(m.neighborsRecos[cat], cat, true);
-							if (scroll) {
-								$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-							}
+							$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 							resolve();
 						});
 					}
-					else if (m.lastTLIndex!==m.TLIndex) {
+					else if (m.lastTLIndex!==m.TLIndex||!m.recomsPlusRandomSorted[cat]) {
 						await m.showRecoms(m.neighborsRecos[cat], cat, true);
 						m.lastTLIndex=m.TLIndex;
-						if (scroll) {
-							$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-						}
+						$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 						resolve();
 					}
 				}
 			}
 			else {
-				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}.`);
+				$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
 				let cat_from=m.currentCat=cat;
 				$.ajax({
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
 					, dataType:"text"
 				}).fail(function (resp) {
 					$numbers_of_recos.html(resp);
-					resolve();
+					reject();
 				}).done(async function (resp) {
 					let respJSON=await m.strToJSON(resp);
 					let neighbors=[];
@@ -4664,7 +4679,7 @@ return new Promise(async function (resolve, reject) {
 						neighborI.cat_from=cat_from;
 						let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
 						let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
-						neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
+						neighborI.simAvg100=Math.round(100.0*sumSim/(nSim>5?nSim:5));
 						if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
 							neighbors[n]=neighborI
 							neighbors[n].i=n;
@@ -4672,9 +4687,15 @@ return new Promise(async function (resolve, reject) {
 							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighbors[n];
 							n++;
 						}
+						else {
+							let neighbor=neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`];
+							if (neighbor.simAvg100<neighborI.simAvg100) {
+								neighbor.simAvg100=neighborI.simAvg100; // Take the biggest simAvg100.
+							}
+						}
 					}
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".`);
 					m.neighbors[cat_from]=neighbors;
 					await m.getUriListAndShowRecosOnCat(cat, scroll);
 					resolve();
@@ -4683,7 +4704,7 @@ return new Promise(async function (resolve, reject) {
 			break;
 		}
 		case "neighbors":
-			$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}, and plotting charts.`);
+			$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}", and plotting charts.`);
 			let cat_from=m.currentCat=cat;
 			$.ajax({
 				type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -4724,7 +4745,7 @@ return new Promise(async function (resolve, reject) {
 						let neighborI=neighbors[sorted[i]];
 						strHTML+=`<div class="neighbor-con"><div class="neighbor-sim" style="width:${neighborI["simAvg100"]/100.0}%"></div><div class="neighbor-a"><a target="_blank" href="${m.pathOfNeighbor(neighborI.user_id, neighborI.cat_to, "multireco")}">${m.escapeOnlyTag(neighborI.cat_to)} of ${m.escapeOnlyTag(neighborI.user_id)}'s Recoeve.net (${(neighborI["simAvg100"]/100.0).toFixed(2)})</a> <span class="neighbor-tUpdate">${m.toLocalTime(neighborI.tUpdate)}</span></div></div>`;
 					}
-					strHTML=`<div class="msg">Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.</div>`+strHTML;
+					strHTML=`<div class="msg">Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".</div>`+strHTML;
 					$contents.html(strHTML);
 					if (scroll) {
 						$window.scrollTop($contents.offset().top);
@@ -4745,7 +4766,7 @@ return new Promise(async function (resolve, reject) {
 					}
 				}
 				else {
-					$contents.html(`<div class="msg">[--You have no neighbors on cat=${m.escapeOnlyTag(cat)}.--]</div>`);
+					$contents.html(`<div class="msg">[--You have no neighbors on cat="${m.escapeOnlyTag(cat)}".--]</div>`);
 				}
 				resolve();
 			});
@@ -4821,7 +4842,7 @@ return new Promise(async function (resolve, reject) {
 				}
 			}
 			else {
-				$numbers_of_recos.html(`Loading neighbors of cat=${m.escapeOnlyTag(cat)}.`);
+				$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
 				let cat_from=m.currentCat=cat;
 				$.ajax({
 					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
@@ -4849,7 +4870,7 @@ return new Promise(async function (resolve, reject) {
 						}
 					}
 					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat=${m.escapeOnlyTag(cat)}.`);
+					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".`);
 					m.neighbors[cat_from]=neighbors;
 					await m.getUriListAndShowRecosOnCat(cat, scroll);
 					resolve();
@@ -6115,14 +6136,26 @@ m.completeCatAndOpenCat=async function (event) {
 		}
 		m.doNotPushHistory=false;
 	}
-	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="")||(m.lastRecoMode==="daily-mix"&&m.recoMode==="")||(m.lastRecoMode==="multireco"&&m.recoMode==="daily-mix")||(m.lastRecoMode===""&&m.recoMode==="daily-mix")) {
+	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="")||(m.lastRecoMode==="daily-mix"&&m.recoMode==="")) {
 		$contents.removeClass("multireco");
 		if (!m.doNotPushHistory) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
 	}
+	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="daily-mix")||(m.lastRecoMode===""&&m.recoMode==="daily-mix")) {
+		$contents.removeClass("multireco");
+		if (!m.doNotPushHistory) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
+		m.doNotPushHistory=false;
+		await m.openCat(cat);
+	}
 	else {
+		if (!m.doNotPushHistory) {
+			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
+		m.doNotPushHistory=false;
 		await m.openCat(cat);
 	}
 	m.fsViewAndScroll(fs2, $elem);
