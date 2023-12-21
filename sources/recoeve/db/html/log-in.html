@@ -446,8 +446,8 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	// }
 };
 
+window.state=Math.random().toString(16).substring(2);
 m.logInWithGoogle=function () {
-	let state=Math.random().toString(16).substring(2);
 	// Google's OAuth 2.0 endpoint for requesting an access token
 	let oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -527,7 +527,7 @@ ${window.location.href}	${document.referrer}	guest`;
 	}
 	if (Object.keys(params).length>0) {
 	  localStorage.setItem('oauth2-params', JSON.stringify(params));
-	  if (params['state']&&params['state']===state) {
+	  if (params['state']) {
 	    trySampleRequest();
 	  }
 	}
