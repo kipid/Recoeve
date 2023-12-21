@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+window.m={
+	initialPathname:window.location.pathname
+	, initialSearch:window.location.search
+	, initialHash:window.location.hash
+}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M350MQ7791"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
+window.dataLayer=window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-M350MQ7791');
@@ -37,8 +44,11 @@ h1 {display:block; font:inherit; font-size:3em; font-weight:bold; margin:0 0 .5e
 .form-login>label.checkbox {font-weight:normal}
 .form-login>input {display:block; width:100%; height:auto; overflow:hidden; padding:.3em .5em; font-family:inherit; font-weight:normal; font-size:1em; line-height:1.5; background:white; color:rgb(50,50,50)}
 .form-login>input:focus {background:rgb(240,240,255)}
-.form-login>button {width:100%; font:inherit; font-weight:bold; padding:.5em; text-align:center; margin-top:1.3em} .form-login>button:disabled {background:rgb(70,70,70)}
+.form-login>button {width:100%; font:inherit; font-weight:bold; padding:.3em .3em .5em; text-align:center; margin-top:1.3em} .form-login>button:disabled {background:rgb(70,70,70)}
+div.form-login>button {margin-top:0}
 .form-login>.error-msg {border:1px solid gray; padding:.3em .5em; margin:.5em 0 0; color:rgb(255,200,200); line-height:1.3}
+
+.logo-google {display:inline-block; height:18px; margin-right:8px; min-width:18px; width:18px}
 
 .desc {padding:.5em}
 data {display:none}
@@ -79,8 +89,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
 	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
 	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-	<!-- <button id="google-log-in" class="g-signin2 button" data-onsuccess="m.onSignIn" tabindex="6">Log in with Google</button> -->
 </form>
+<div class="form-login">
+	<button id="log-in-with-google" class="button" onclick="m.logInWithGoogle()" tabindex="6"><div class="logo-google"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="LgbsSe-Bz112c"><g><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></g></svg></div>Log in with Google</button>
+</div>
 
 <form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
 <h2>[--Sign up for Recoeve--]</h2>
@@ -125,13 +137,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
 </div></div>
 </div><!-- #recoeve-container -->
-
+</body>
 <script>
 (async function (m, $, undefined) {
 $button_log_in=$("#button-log-in");
 $button_forgot_pwd=$("#button-forgot-pwd");
 $button_sign_up=$("#button-sign-up");
-$google_log_in=$("#google-log-in");
+$google_log_in=$("#log-in-with-google");
 
 $(".replace-reco-eve").html(function (i, orgHtml) {
 	return orgHtml
@@ -434,6 +446,40 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	// }
 };
 
+m.logInWithGoogle=function () {
+	let state=Math.random().toString(16).substring(2);
+	// Google's OAuth 2.0 endpoint for requesting an access token
+	let oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
+
+	let form=document.createElement('form');
+	form.setAttribute('method', 'GET'); // Send as a GET request.
+	form.setAttribute('action', oauth2Endpoint);
+
+	// Parameters to pass to OAuth 2.0 endpoint.
+	let params={
+		client_id:'964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
+		redirect_uri:`https://recoeve.net/account/log-in${m.initialSearch}`,
+		response_type:'token',
+		scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+		include_granted_scopes:'true',
+		state,
+		login_hint:$("#input-userId")[0].value
+	};
+
+	// Add form parameters as hidden input values.
+	for (let p in params) {
+		let input=document.createElement('input');
+		input.setAttribute('type', 'hidden');
+		input.setAttribute('name', p);
+		input.setAttribute('value', params[p]);
+		form.appendChild(input);
+	}
+
+	// Add form to page and submit it to open the OAuth 2.0 endpoint.
+	document.body.appendChild(form);
+	form.submit();
+};
+
 // TODO: Press <code>Enter</code> to go to the next input.
 $("#input-userPwd").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
@@ -468,66 +514,56 @@ ${window.location.href}	${document.referrer}	guest`;
 	$.ajax({
 		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
-		console.log("fail", resp);
 	}).done(function (resp) {
-		console.log("done", resp);
 	});
 
-	/* // Google log-in
-	$google_log_in.on("click", function (e) {
-		// generate a random state
-		let state=Math.random().toString(36).substring(7);
-		// generate the authorization URL
-		let authorization_uri=gapi.auth2.authorizeURL(new JsonObject()
-			.put("redirect_uri", "http://recoeve.net/auth/google")
-			.put("scope", "email")
-			.put("state", state));
-		// redirect the user to the Google authorization page
-		m.googleAuth.signIn({
-			scope:"email"
-		});
-		window.location.href=authorization_uri;
-	}); */
+	let fragmentString=location.hash.substring(1);
+
+	// Parse query string to see if page request is coming from OAuth 2.0 server.
+	let params={};
+	let regex=/([^&=]+)=([^&]*)/g, m;
+	while (m=regex.exec(fragmentString)) {
+	  params[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);
+	}
+	if (Object.keys(params).length>0) {
+	  localStorage.setItem('oauth2-params', JSON.stringify(params));
+	  if (params['state']&&params['state']===state) {
+	    trySampleRequest();
+	  }
+	}
+
+	// If there's an access token, try an API request.
+	// Otherwise, start OAuth 2.0 flow.
+	function trySampleRequest() {
+	  let params=JSON.parse(localStorage.getItem('oauth2-params'));
+	  if (params&&params['access_token']) {
+	    let xhr=new XMLHttpRequest();
+	    xhr.open('GET',
+	        'https://www.googleapis.com/auth/userinfo.email?' +
+	        'access_token='+params['access_token']);
+	    xhr.onreadystatechange=function (e) {
+	      if (xhr.readyState===4&&xhr.status===200) {
+	        console.log(xhr.response);
+	      } else if (xhr.readyState===4&&xhr.status===401) {
+	        // Token invalid, so prompt for user permission.
+	        m.logInWithGoogle();
+	      }
+	    };
+	    xhr.send(null);
+	    $.ajax({
+	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
+				, dataType:"text"
+	    }).done(function (resp) {
+	    	console.log(resp);
+	    });
+	  } else {
+	    m.logInWithGoogle();
+	  }
+	}
 });
 
 m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-
-/* // Google log-in
-m.onSignIn=function (googleUser) {
-	// Get user profile information
-	let profile=googleUser.getBasicProfile();
-	$google_log_in.before( m.encloseErr(`Name: ${profile.getName()}, Email: ${profile.getEmail()}`) );
-};
-window.googleInit=function () {
-	m.googleAuth=gapi.load('auth2', () => {
-		gapi.auth2.init({
-			client_id:"424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com"
-			,
-		}).then(() => {
-			// DO NOT ATTEMPT TO RENDER BUTTON UNTIL THE 'Init' PROMISE RETURNS
-			m.renderButton();
-		});
-	});
-	m.googleAuth.then(() => {
-		gapi.auth2.init("424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com", "recoeve.net", "email", false, "recoeve.net", "popup", "https://recoeve.net/auth/google")
-	}, () => {
-		// Error.
-	});
-};
-m.renderButton=function () {
-	gapi.signin2.render('google-log-in',
-	{
-		'scope':'email',
-		'width':"100%",
-		'height':40,
-		'longtitle':true,
-		'theme':'dark',
-		'onsuccess':() => {},
-		'onfailure':() => {}
-	});
-}; */
 })(window.m, jQuery);
 </script>
-<script src="https://apis.google.com/js/platform.js?onload=googleInit" async defer></script>
-</body>
+<!-- <script src="https://apis.google.com/js/platform.js?onload=googleInit" async defer></script> -->
 </html>
