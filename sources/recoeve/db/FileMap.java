@@ -84,7 +84,7 @@ private static final int txtFileMapSize=100;
 private static final int fileLangMapSize=100; // # of languages translated to support.
 
 public static Set<String> refererSet;
-public static Map<String, String> fileMap;
+// public static Map<String, String> fileMap;
 	// fileMap.get("fileName")
 public static Map<String, Map<String, String>> txtFileMap;
 	// txtFileMap.get("txtFileName").get("lang")
@@ -98,10 +98,10 @@ static {
 		refererSet.add(referer);
 	}
 
-	fileMap=new HashMap<String, String>();
-	for (String fileName: fileNames) {
-		fileMap.put(fileName, filePath+fileName);
-	}
+	// fileMap=new HashMap<String, String>();
+	// for (String fileName: fileNames) {
+	// 	fileMap.put(fileName, filePath+fileName);
+	// }
 
 	txtFileMap=new HashMap<String, Map<String, String>>(txtFileMapSize);
 	File file=null;
@@ -173,9 +173,9 @@ public static boolean refererAllowed(String host) {
 	return true;
 }
 
-public static String getCDNFile(String fileName) {
-	return fileMap.get(fileName);
-}
+// public static String getCDNFile(String fileName) {
+// 	return fileMap.get(fileName);
+// }
 
 public static ArrayList<String> strToList(String fileStr) {
 	if (fileStr==null) {

@@ -246,6 +246,8 @@ public static void main(String... args) {
 					});
 				}
 				else {
+					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println("No file in memory: "+fileName+".");
 				}
 			}
@@ -363,7 +365,13 @@ public static void main(String... args) {
 			switch (query) {
 			case "logs":
 				pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-					.sendFile(fileMap.getCDNFile("logs.html"));
+					.end(fileMap.getCDNFileInMemory("logs.html"), endHandler -> {
+						if (endHandler.succeeded()) {
+							System.out.println("Write operation completed.");
+						} else {
+							System.err.println("Failed to complete the write operation: " + endHandler.cause());
+						}
+					});
 				break;
 			case "printLogs":
 				if (pl.sessionPassed) {
