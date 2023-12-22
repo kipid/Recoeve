@@ -157,8 +157,8 @@ textarea.multi-line {font-size:.9em; min-height:10em}
 .reco>.cats>a.currentCat {pointer-events:none; color:rgb(140,180,140); font-weight:bold; text-decoration:none}
 .reco>.desc {margin:.5em 0; padding:.5em}
 .reco>.desc .value {padding-bottom:1em}
-.reco>.cmts {margin:.5em 0; padding:0}
-.reco>.cmt, .reco>.cmts>.cmt {font-size:.7em; margin:0; padding:.3em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
+.reco>.cmts {margin:.5em 0; padding:0; max-height:20em; overflow-y:scroll}
+.reco>.cmt, .reco>.cmts>.cmt {font-size:.8em; margin:0; padding:.3em; background:rgb(30,30,30); border-left:.3em solid rgb(10,80,80)}
 .multireco .reco>.desc, .multireco .reco>.cmt {font-size:.7em; margin:0; padding:.3em}
 	.bright .reco>.cmt {background:rgb(200,200,200)}
 	.pink .reco>.cmt {background:rgb(75,47,47)}
