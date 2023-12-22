@@ -460,8 +460,8 @@ m.logInWithGoogle=function () {
 		client_id:'964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
 		redirect_uri:`https://recoeve.net/account/log-in/google`,
 		response_type:'token',
-		// scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-		scope:'email profile',
+		scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+		// scope:'email profile',
 		include_granted_scopes:'true',
 		state,
 		login_hint:$("#input-userId")[0].value
@@ -553,12 +553,14 @@ ${window.location.href}	${document.referrer}	guest`;
 	    // xhr.send(null);
 	    $.ajax({
 	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.email?access_token=${params['access_token']}`
+	    	, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
 				, dataType:"jsonp"
 	    }).done(function (resp) {
 	    	console.log(resp);
 	    });
 	    $.ajax({
 	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
+	    	, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
 				, dataType:"jsonp"
 	    }).done(function (resp) {
 	    	console.log(resp);
