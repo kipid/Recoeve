@@ -60,8 +60,8 @@ public static final Router router1=Router.router(vertx);
 public static final Router router2=Router.router(vertx);
 public static final Router router=Router.router(vertx);
 public static final OAuth2Options authOptions=new OAuth2Options()
-		.setClientId("424410910653-p7op2chqautecf78tak1cpvl9o7h4t3p.apps.googleusercontent.com")
-		.setClientSecret("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")
+		.setClientId("964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com")
+		.setClientSecret("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")
 		.setSite("https://accounts.google.com")
 		.setTokenPath("/o/oauth2/token")
 		.setAuthorizationPath("/o/oauth2/auth");
@@ -985,31 +985,44 @@ public static void main(String... args) {
 		});
 	});
 
-	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/auth/google");
+	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in");
 
-	oauth2Handler.withScopes(List.of("email"));
-	router2.route("/auth/*").handler(oauth2Handler);
+	oauth2Handler.withScopes(List.of("email", "profile"));
+	router2.route("/account/log-in/*").handler(oauth2Handler);
 
-	router2.route("/auth/:authenticater").handler(ctx -> {
+	router2.route("/account/log-in/:authenticater").handler(ctx -> {
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
-		String authenticater=ctx.pathParam("authenticater");
-		switch (authenticater) {
-		case "google":
-			String code=pl.req.getParam("code");
-			authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
-				if (res.succeeded()) {
-					User user=res.result();
-					System.out.println(user.attributes());
-					System.out.println(user.get("email").toString());
-					// Handle the authenticated user
-					pl.req.response().end("Authentication successful");
-				} else {
-					// Handle authentication failure
-					pl.req.response().setStatusCode(401).end();
-				}
-			});
-			break;
+		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
+		if (pl.sessionPassed) {
+			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+			System.out.println("Sended user-page.html. (already logged-in)");
+		}
+		else if (pl.cookie.get("rmbdI")!=null) {
+			pl.req.response().end(fileMap.get("remember-me.html", pl.lang), ENCODING);
+			System.out.println("Sended remember-me.html.");
+		}
+		else {
+			String authenticater=ctx.pathParam("authenticater");
+			switch (authenticater) {
+			case "google":
+				String code=pl.req.getParam("code");
+				authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
+					if (res.succeeded()) {
+						User user=res.result();
+						System.out.println(user.attributes());
+						System.out.println(user.get("email").toString());
+						// Handle the authenticated user
+						pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
+						System.out.println("Sended log-in.html. (No rmbd cookie)");
+						// pl.req.response().end("Authentication successful");
+					} else {
+						// Handle authentication failure
+						pl.req.response().setStatusCode(401).end();
+					}
+				});
+				break;
+			}
 		}
 	});
 
