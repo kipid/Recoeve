@@ -276,13 +276,14 @@ public static void main(String... args) {
 		.allowedHeader("Content-Type");
 
 	router.route().handler(corsHandler);
+	router2.route().handler(corsHandler);
 
 	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/google");
 
 	oauth2Handler.withScopes(List.of("email", "profile"));
-	router.route("/account/log-in/*").handler(oauth2Handler);
+	router2.route("/account/log-in/*").handler(oauth2Handler);
 
-	router.route("/account/log-in/:authenticater").handler(ctx -> {
+	router2.route("/account/log-in/:authenticater").handler(ctx -> {
 		PrintLog pl=new PrintLog();
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
@@ -1035,7 +1036,7 @@ public static void main(String... args) {
 				.setPassword("o8lx6xxp")
 			)
 	).requestHandler(req -> {
-		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN/")?router1:router;
+		Router routerK=req.path().startsWith("/BlogStat")?router0:req.path().startsWith("/CDN/")?router1:req.path().startsWith("/account/log-in/")?router2:router;
 		try {
 			routerK.handle(req);
 		}
