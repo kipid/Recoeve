@@ -265,6 +265,7 @@ public static void main(String... args) {
 		.addOrigin("https://www.youtube.com")
 		.addOrigin("https://g.doubleclick.net")
 		.addOrigin("https://tpc.googlesyndication.com")
+		.addOrigin("https://www.googleapis.com")
 		.addOrigin("https://localhost")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://www.recoeve.net")
