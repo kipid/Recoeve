@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="recoeve.db.TestMainVerticle" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-06-06T10:22:28" hostname="KIPIDS-LG-GRAM" time="0.271">
-  <properties/>
-  <testcase name="verticle_deployed(Vertx, VertxTestContext)" classname="recoeve.db.TestMainVerticle" time="0.271"/>
-  <system-out><![CDATA[HTTP server started on port 8888
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
