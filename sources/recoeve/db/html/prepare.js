@@ -32,22 +32,6 @@ m.getSearchVars=function (searchStr) {
 	return vars;
 };
 
-m.analysisURL=function (url) {
-	let parser=document.createElement('a');
-	parser.href=url;
-	let res={};
-	res.href=parser.href;
-	res.origin=parser.origin;
-	res.protocol=parser.protocol;
-	res.host=parser.host;
-	res.hostname=parser.hostname;
-	res.port=parser.port;
-	res.pathname=parser.pathname;
-	res.search=parser.search;
-	res.hash=parser.hash;
-	return res;
-};
-
 m.pathOfCat=function (cat, mode, lang, hashURI, args) {
 	let argsSearch="";
 	if (args) {
@@ -1701,7 +1685,7 @@ return new Promise(async function (resolve, reject) {
 					k++;
 				}
 				if (uri.substring(k,k+3)==="://") {
-					let uriAnalysed=m.analysisURL(uri);
+					let uriAnalysed=new URL(uri);
 					k+=3;
 					let uriHost=uriAnalysed.host;
 					let uriRest=uriAnalysed.pathname.substring(1)+uriAnalysed.search+uriAnalysed.hash;
