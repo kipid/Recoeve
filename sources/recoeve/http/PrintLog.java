@@ -8,6 +8,8 @@ import io.vertx.ext.web.RoutingContext;
 import java.sql.*;
 
 import java.net.URLDecoder;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -72,16 +74,15 @@ public void printLog(RoutingContext ctx) {
 		}
 		if (referer.startsWith("://",k)) {
 			k+=3;
-			int l=referer.indexOf('/',k);
-			String refererHost=null;
-			if (l==-1) {
-				refererHost=referer.substring(k);
+			try {
+				URI refererURI=new URI(referer);
+				String refererHost=refererURI.getHost();
+				refererAllowed=FileMap.refererAllowed(refererHost);
+				System.out.println("Referer Host: "+refererHost);
 			}
-			else {
-				refererHost=referer.substring(k,l);
+			catch (URISyntaxException e) {
+				db.err(e);
 			}
-			refererAllowed=FileMap.refererAllowed(refererHost);
-			System.out.println("Referer Host: "+refererHost);
 		}
 	}
 	System.out.println("Referer Allowed: "+refererAllowed);
