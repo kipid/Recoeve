@@ -537,22 +537,28 @@ ${window.location.href}	${document.referrer}	guest`;
 	function trySampleRequest() {
 	  let params=JSON.parse(localStorage.getItem('oauth2-params'));
 	  if (params&&params['access_token']) {
-	    let xhr=new XMLHttpRequest();
-	    xhr.open('GET',
-	        'https://www.googleapis.com/auth/userinfo.email?' +
-	        'access_token='+params['access_token']);
-	    xhr.onreadystatechange=function (e) {
-	      if (xhr.readyState===4&&xhr.status===200) {
-	        console.log(xhr.response);
-	      } else if (xhr.readyState===4&&xhr.status===401) {
-	        // Token invalid, so prompt for user permission.
-	        m.logInWithGoogle();
-	      }
-	    };
-	    xhr.send(null);
+	    // let xhr=new XMLHttpRequest();
+	    // xhr.open('GET',
+	    //     'https://www.googleapis.com/auth/userinfo.email?' +
+	    //     'access_token='+params['access_token']);
+	    // xhr.onreadystatechange=function (e) {
+	    //   if (xhr.readyState===4&&xhr.status===200) {
+	    //     console.log(xhr.response);
+	    //   } else if (xhr.readyState===4&&xhr.status===401) {
+	    //     // Token invalid, so prompt for user permission.
+	    //     m.logInWithGoogle();
+	    //   }
+	    // };
+	    // xhr.send(null);
+	    $.ajax({
+	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.email?access_token=${params['access_token']}`
+				, dataType:"jsonp"
+	    }).done(function (resp) {
+	    	console.log(resp);
+	    });
 	    $.ajax({
 	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
-				, dataType:"json"
+				, dataType:"jsonp"
 	    }).done(function (resp) {
 	    	console.log(resp);
 	    });
