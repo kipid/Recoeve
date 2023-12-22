@@ -464,7 +464,8 @@ m.logInWithGoogle=function () {
 		// scope:'email profile',
 		include_granted_scopes:'true',
 		state,
-		login_hint:$("#input-userId")[0].value
+		login_hint:$("#input-userId")[0].value,
+		prompt:"consent"
 	};
 
 	// Add form parameters as hidden input values.
