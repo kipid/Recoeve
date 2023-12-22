@@ -13,8 +13,9 @@ import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.Oauth2Credentials;
-import io.vertx.ext.auth.oauth2.OAuth2FlowType;
-import io.vertx.ext.auth.oauth2.OAuth2Options;
+// import io.vertx.ext.auth.oauth2.OAuth2FlowType;
+// import io.vertx.ext.auth.oauth2.OAuth2Options;
+import io.vertx.ext.auth.oauth2.providers.GoogleAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpResponse;
@@ -59,14 +60,14 @@ public static final Router router0=Router.router(vertx);
 public static final Router router1=Router.router(vertx);
 public static final Router router2=Router.router(vertx);
 public static final Router router=Router.router(vertx);
-public static final OAuth2Options authOptions=new OAuth2Options()
-		.setClientId("964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com")
-		.setClientSecret("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")
-		.setSite("https://accounts.google.com")
-		.setTokenPath("/o/oauth2/v2/token")
-		.setAuthorizationPath("/o/oauth2/v2/auth");
-		// .setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
-public static final OAuth2Auth authProvider=OAuth2Auth.create(vertx, authOptions);
+// public static final OAuth2Options authOptions=new OAuth2Options()
+// 		.setClientId()
+// 		.setClientSecret()
+// 		.setSite("https://accounts.google.com")
+// 		.setTokenPath("/o/oauth2/v2/token")
+// 		.setAuthorizationPath("/o/oauth2/v2/auth");
+// 		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
+public static final OAuth2Auth authProvider=GoogleAuth.create(vertx, "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com", "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");
 
 @Override
 public void start() {
