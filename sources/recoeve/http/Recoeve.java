@@ -307,14 +307,14 @@ public static void main(String... args) {
 						System.out.println(user.attributes());
 						System.out.println(user.get("email").toString());
 						// Handle the authenticated user
-						pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
-						System.out.println("Sended log-in.html. (No rmbd cookie)");
 						// pl.req.response().end("Authentication successful");
 					} else {
 						// Handle authentication failure
-						pl.req.response().setStatusCode(401).end("Wrong code!");
-						System.out.println("Wrong code!");
+						// pl.req.response().setStatusCode(401).end("Wrong code!");
+						// System.out.println("Wrong code!");
 					}
+					pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
+					System.out.println("Sended log-in.html. (No rmbd cookie)");
 				});
 				break;
 			}
