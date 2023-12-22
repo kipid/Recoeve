@@ -312,7 +312,8 @@ public static void main(String... args) {
 						// pl.req.response().end("Authentication successful");
 					} else {
 						// Handle authentication failure
-						pl.req.response().setStatusCode(401).end();
+						pl.req.response().setStatusCode(401).end("Wrong code!");
+						System.out.println("Wrong code!");
 					}
 				});
 				break;
