@@ -36,7 +36,8 @@ dependencies {
 	implementation("javax.mail:mail:1.4.7")
 	implementation("org.jsoup:jsoup:1.17.1")
 	// https://mvnrepository.com/artifact/io.vertx/vertx-core
-	implementation("io.vertx:vertx-core:4.5.1")
+	implementation("io.vertx:vertx-core:$vertxVersion")
+	implementation("io.vertx:vertx-micrometer-metrics:$vertxVersion")
 	implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
 	implementation("io.vertx:vertx-web-client")
 	implementation("io.vertx:vertx-web")
