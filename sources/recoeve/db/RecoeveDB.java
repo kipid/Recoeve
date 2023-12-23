@@ -685,7 +685,7 @@ public String putPreGoogle(String state, String ip, Timestamp tNow) {
 		pstmtPutPreGoogle.setString(2, ip.split(":")[0]);
 		pstmtPutPreGoogle.setString(3, state);
 		pstmtPutPreGoogle.executeQuery();
-		return "Saved.";
+		return "IP and state are saved.";
 	}
 	catch (SQLException e) {
 		err(e);

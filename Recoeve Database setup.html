@@ -105,7 +105,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 우선 DATABASE 를 만든 후, TABLE <refer class="table-redirect"></refer> 를 만듬.
 
-TABLE <refer class="table-UserClass"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
+TABLE <refer class="table-UserClass"></refer>, <refer class="table-PreGoogle"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
 
 E-mail stat 좀 확인하고 싶어서 <refer class="table-EmailStat"></refer>.
 
@@ -564,6 +564,22 @@ DELETE FROM `Users` WHERE 7&lt;datediff(utc_timestamp(),`tReg`) and `class`=0;
 	</li>
 </ol>
 
+
+
+#### TABLE `PreGoogle`
+
+<div id="table-PreGoogle"><span class="number none">PreGoogle</span>
+
+```[.scrollable.lang-sql]
+CREATE TABLE `PreGoogle` (
+	`ip` char() NOT NULL
+	, `state` char() NOT NULL
+	, `t` datetime NOT NULL
+	, primary key (`ip`, `state`)
+);
+```/
+
+</div>
 
 
 #### TABLE `Users`

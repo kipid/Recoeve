@@ -298,9 +298,8 @@ public static void main(String... args) {
 			switch (authenticater) {
 			case "pre-google":
 				pl.req.bodyHandler((Buffer data) -> {
-					pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow);
-					pl.req.response().end("", ENCODING);
-					System.out.println("Sended recos.");
+					pl.req.response().end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
+					System.out.println("Sended pre-google saved or not.");
 				});
 				break;
 			case "google":
