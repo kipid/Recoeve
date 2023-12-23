@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
 
 public class RecoeveWebClient {
 public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
-public static final Vertx vertx=Vertx.vertx();
+public static final Vertx vertx=Recoeve.vertx;
 
 public WebClient webClient;
 public long timerId;

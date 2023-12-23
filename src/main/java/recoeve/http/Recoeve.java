@@ -59,7 +59,11 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-final public static Vertx vertx=Vertx.vertx();
+public static Vertx vertx;
+static {
+	Recoeve recoeve=new Recoeve();
+	vertx=recoeve.context.owner();
+}
 
 @Override
 public void start() {
