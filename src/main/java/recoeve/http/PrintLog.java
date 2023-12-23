@@ -96,15 +96,18 @@ public void printLog(RoutingContext ctx) {
 	try {
 		System.out.println("Absolute URI: "+URLDecoder.decode(req.absoluteURI(), "UTF-8"));
 		URI uri=new URI(req.absoluteURI());
-		System.out.println(uri.getFragment());
-		String[] hashs=uri.getFragment().substring(1).split("&");
-		for (String hash: hashs) {
-			String[] hashSplit=hash.split("=");
-			if (hashSplit.length>=2) {
-				uriHashMap.put(hashSplit[0], hashSplit[1]);
-			}
-			else {
-				uriHashMap.put(hashSplit[0], "");
+		String hash=uri.getFragment();
+		if (hash!=null&&hash.length()>1) {
+			System.out.println(hash);
+			String[] hashs=uri.getFragment().substring(1).split("&");
+			for (String hashI: hashs) {
+				String[] hashISplit=hashI.split("=");
+				if (hashISplit.length>=2) {
+					uriHashMap.put(hashISplit[0], hashISplit[1]);
+				}
+				else {
+					uriHashMap.put(hashISplit[0], "");
+				}
 			}
 		}
 	}
