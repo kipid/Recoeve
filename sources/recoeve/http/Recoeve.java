@@ -1039,6 +1039,8 @@ public static void main(String... args) {
 
 	vertx.createHttpServer(
 		new HttpServerOptions()
+			.setPort(443)
+			.setHost(HOST)
 			.setUseAlpn(true)
 			.setSsl(true)
 			.setKeyStoreOptions(new JksOptions()
