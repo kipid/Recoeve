@@ -43,6 +43,7 @@ private static final String[] fileNames={
 		, "logs.html"
 		, "right-to-commit-suicide.html"
 	};
+public static final Vertx vertx=Vertx.vertx();
 public static final LocalMap<String, Buffer> fileStorage=vertx.sharedData().getLocalMap("fileStorage"); // Use LocalMap to store files in memory
 static {
 	FileSystem fileSystem=vertx.fileSystem();
