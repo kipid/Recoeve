@@ -137,6 +137,9 @@ private PreparedStatement pstmtPutBlogVisitor;
 private PreparedStatement pstmtGetBlogVisitor;
 private PreparedStatement pstmtDelBlogVisitor;
 
+private PreparedStatement pstmtPutPreGoogle;
+private PreparedStatement pstmtGetPreGoogle;
+
 private PreparedStatement pstmtSession;
 private PreparedStatement pstmtCreateAuthToken;
 private PreparedStatement pstmtCheckAuthToken;
@@ -220,6 +223,9 @@ public RecoeveDB() {
 		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
 		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?;");
+
+		pstmtPutPreGoogle=con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`) VALUES (?, ?, ?);");
+		pstmtGetPreGoogle=con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		pstmtCreateAuthToken=con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
@@ -672,6 +678,19 @@ public void updateEmailStat(String emailHost, int increment)
 		pstmtCreateEmailStat.setString(1, emailHost);
 		pstmtCreateEmailStat.executeUpdate();
 	}
+}
+public String putPreGoogle(String state, String ip, Timestamp tNow) {
+	try {
+		pstmtPutPreGoogle.setTimestamp(1, tNow);
+		pstmtPutPreGoogle.setString(2, ip.split(":")[0]);
+		pstmtPutPreGoogle.setString(3, state);
+		pstmtPutPreGoogle.executeQuery();
+		return "Saved.";
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return "Not saved.";
 }
 public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	boolean done=false;

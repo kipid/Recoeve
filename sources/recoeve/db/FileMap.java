@@ -51,15 +51,16 @@ static {
 	// Example: Reading a file and storing it in memory
 	for (String fileName: fileNames) {
 		String fileFullPath=filePath+fileName;
-		fileSystem.readFile(fileFullPath, ar -> {
-			if (ar.succeeded()) {
-				Buffer fileContent=ar.result();
-				fileStorage.put(fileName, fileContent);
-				System.out.println("File stored in memory: "+fileName);
-			} else {
-				System.err.println("Error reading file: "+ar.cause());
-			}
-		});
+		fileSystem.readFile(fileFullPath)
+			.onComplete(ar -> {
+				if (ar.succeeded()) {
+					Buffer fileContent=ar.result();
+					fileStorage.put(fileName, fileContent);
+					System.out.println("File stored in memory: "+fileName);
+				} else {
+					System.err.println("Error reading file: "+ar.cause());
+				}
+			});
 	}
 }
 public static Buffer getCDNFileInMemory(String fileName) {

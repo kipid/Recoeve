@@ -237,13 +237,8 @@ public static void main(String... args) {
 				}
 				Buffer fileInMemory=fileMap.getCDNFileInMemory(fileName);
 				if (fileInMemory!=null) {
-					pl.req.response().end(fileInMemory, endHandler -> {
-						if (endHandler.succeeded()) {
-							System.out.println("Write operation completed.");
-						} else {
-							System.err.println("Failed to complete the write operation: " + endHandler.cause());
-						}
-					});
+					pl.req.response().end(fileInMemory);
+					System.out.println("Sended file in memory: "+fileName);
 				}
 				else {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
@@ -301,6 +296,13 @@ public static void main(String... args) {
 		else {
 			String authenticater=ctx.pathParam("authenticater");
 			switch (authenticater) {
+			case "pre-google":
+				pl.req.bodyHandler((Buffer data) -> {
+					pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow);
+					pl.req.response().end("", ENCODING);
+					System.out.println("Sended recos.");
+				});
+				break;
 			case "google":
 				String code=pl.req.getParam("code");
 				authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("code", code)), res -> {
@@ -365,13 +367,8 @@ public static void main(String... args) {
 			switch (query) {
 			case "logs":
 				pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-					.end(fileMap.getCDNFileInMemory("logs.html"), endHandler -> {
-						if (endHandler.succeeded()) {
-							System.out.println("Write operation completed.");
-						} else {
-							System.err.println("Failed to complete the write operation: " + endHandler.cause());
-						}
-					});
+					.end(fileMap.getCDNFileInMemory("logs.html"));
+				System.out.println("Sended \"logs.html\" file in memory.");
 				break;
 			case "printLogs":
 				if (pl.sessionPassed) {
@@ -1043,7 +1040,7 @@ public static void main(String... args) {
 			.setHost(HOST)
 			.setUseAlpn(true)
 			.setSsl(true)
-			.setKeyStoreOptions(new JksOptions()
+			.setKeyCertOptions(new JksOptions()
 				.setPath("C:/RecoeveNet/Convert/recoeve.net_202302280263A.jks")
 				.setPassword("o8lx6xxp")
 			)

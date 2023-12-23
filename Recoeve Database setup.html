@@ -583,7 +583,7 @@ ALTER TABLE Users ADD `tokenChangePwd` binary(32);
 # `UserClass` TABLE 을 먼저 CREATE 해야 함.
 CREATE TABLE `Users` (
 	`i` bigint #AUTO_INCREMENT by using `UserClass` (`class`=-1, `desc`="User index to put", `count`).
-	, `id` char(21) NOT NULL UNIQUE #CHARACTER SET utf8 COLLATE utf8_general_ci
+	, `id` varchar(255) NOT NULL UNIQUE #CHARACTER SET utf8 COLLATE utf8_general_ci
 	, `email` varchar(50) NOT NULL UNIQUE #CHARACTER SET utf8 COLLATE utf8_general_ci
 	, `pwd_salt` binary(128) NOT NULL #DEFAULT random_bytes(128)
 	, `pwd` binary(64) NOT NULL
@@ -604,7 +604,9 @@ CREATE TABLE `Users` (
 	, PRIMARY KEY (`i`)
 	, FOREIGN KEY (`class`) REFERENCES `UserClass` (`class`)
 );
-	# Since DEFAULT value must be constant, so random_bytes() and utc_timestamp() cannot be used in DEFAULT.
+# Since DEFAULT value must be constant, so random_bytes() and utc_timestamp() cannot be used in DEFAULT.
+
+ALTER TABLE `Users` MODIFY COLUMN `id` varchar(255) NOT NULL UNIQUE;
 
 `i`: Index, bigint (unsigned: 0 ~ 1844,6744,0737,0955,1615: ? $2^{64}-1$, and cf) int unsigned: 0 ~ 42,9496,7295)
 	# AUTO_INCREMENT 로 하려고도 했으나, 내부적으로 어떻게 돌아가는지 (중간이나 마지막 데이터가 지워지면 어떻게 처리되는거지?) 자세한걸 파악하기 힘들어서 그냥 직접 구현.
