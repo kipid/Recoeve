@@ -6,10 +6,11 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 
 import java.sql.*;
-
 import java.net.URLDecoder;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.UnsupportedEncodingException;
 
@@ -34,6 +35,7 @@ public Timestamp tNow=null;
 public String referer=null;
 public String ip=null;
 public String userAgent=null;
+public Map<String, String> uriHashMap=new HashMap<String, String>(10);
 
 public PrintLog() {}
 
@@ -93,9 +95,19 @@ public void printLog(RoutingContext ctx) {
 	System.out.println("Method: "+method);
 	try {
 		System.out.println("Absolute URI: "+URLDecoder.decode(req.absoluteURI(), "UTF-8"));
+		URI uri=new URI(req.absoluteURI());
+		System.out.println(uri.getFragment());
+		String[] hashs=uri.getFragment().substring(1).split("&");
+		for (String hash: hashs) {
+			String[] hashSplit=hash.split("=");
+			uriHashMap.put(hashSplit[0], hashSplit[1]);
+		}
 	}
 	catch (UnsupportedEncodingException e) {
-		System.out.println(e);
+		db.err(e);
+	}
+	catch (URISyntaxException e) {
+		db.err(e);
 	}
 
 	ip=req.remoteAddress().toString();

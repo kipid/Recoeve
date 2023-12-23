@@ -684,13 +684,27 @@ public String putPreGoogle(String state, String ip, Timestamp tNow) {
 		pstmtPutPreGoogle.setTimestamp(1, tNow);
 		pstmtPutPreGoogle.setString(2, ip.split(":")[0]);
 		pstmtPutPreGoogle.setString(3, state);
-		pstmtPutPreGoogle.executeQuery();
+		pstmtPutPreGoogle.executeUpdate();
 		return "IP and state are saved.";
 	}
 	catch (SQLException e) {
 		err(e);
 	}
 	return "Not saved.";
+}
+public boolean getPreGoogle(String state, String ip, Timestamp tNow) {
+	try {
+		pstmtGetPreGoogle.setString(1, ip.split(":")[0]);
+		pstmtGetPreGoogle.setString(1, state);
+		ResultSet rs=pstmtGetPreGoogle.executeQuery();
+		if (rs.next()) {
+			return tNow.before(new Timestamp(rs.getTimestamp("t").getTime()+300000L));
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return false;
 }
 public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	boolean done=false;
