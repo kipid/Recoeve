@@ -1065,7 +1065,7 @@ public static void main(String... args) {
 		catch (IllegalStateException e) {
 			RecoeveDB.err(e);
 		}
-	}).listen(443, HOST);
+	}).listen(443);
 	// UnderConstruction.HOST
 	// 탄력적 IP | 할당된 IPv4 주소 | 퍼블릭 IPv4 주소 : "43.200.166.14"
 	// 퍼블릭 IPv4 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
