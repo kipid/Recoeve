@@ -453,31 +453,24 @@ m.logInWithGoogle=function (elem) {
 	// Google's OAuth 2.0 endpoint for requesting an access token
 	let oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
 
-	let form=document.createElement('form');
-	form.setAttribute('method', 'GET'); // Send as a GET request.
-	form.setAttribute('action', oauth2Endpoint);
-
 	// Parameters to pass to OAuth 2.0 endpoint.
 	let params={
 		client_id:'964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
 		redirect_uri:'https://recoeve.net/account/log-in/with/google',
-		response_type:'code',
+		response_type:'token',
 		scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
 		// scope:'email profile',
-		include_granted_scopes:'true',
 		state:state,
 		login_hint:$("#input-userId")[0].value,
 		prompt:"consent"
 	};
 
+	let paramsSearch="";
 	// Add form parameters as hidden input values.
 	for (let p in params) {
-		let input=document.createElement('input');
-		input.setAttribute('type', 'hidden');
-		input.setAttribute('name', p);
-		input.setAttribute('value', params[p]);
-		form.appendChild(input);
+		paramsSearch+=`&${encodeURIComponent(p)}=${encodeURIComponent(params[p])}`;
 	}
+	paramsSearch="?"+paramsSearch.substring(1);
 
 	$.ajax({
 		type:"POST", url:"/account/log-in/with/pre-google", data:state
@@ -486,8 +479,7 @@ m.logInWithGoogle=function (elem) {
 		console.log(resp);
 		$elem.before( m.encloseErr(resp) );
 		// Add form to page and submit it to open the OAuth 2.0 endpoint.
-		document.body.appendChild(form);
-		form.submit();
+		window.open(oauth2Endpoint+paramsSearch, "_blank");
 	});
 };
 
