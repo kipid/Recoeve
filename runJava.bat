@@ -2,7 +2,7 @@
 @ECHO OFF
 
 :: destination of class to be created
-SET DC=C:\Recoeve\build\classes\java\main
+SET DC=C:\\Recoeve\\build\\classes\\java\\main
 
 :: The whole CLASSPATH list splited by ";"
 :: The whole classes are integrated into C:\Recoeve\gradle\wrapper\gradle-wrapper.jar
@@ -11,7 +11,7 @@ SET DC=C:\Recoeve\build\classes\java\main
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
 :: Compile %~nx1 with {filename:%~nx1, encoding:UTF-8, destination:%DC%, classpath:%CLASSPATH%}
-javac %~nx1 -Xlint:deprecation -Xlint:unchecked -encoding UTF-8 -d "%DC%" -classpath "%CLASSPATH%"
+javac %~nx1 -Xlint:deprecation -encoding UTF-8 -d "%DC%" -classpath "%CLASSPATH%"
 
 IF NOT %ERRORLEVEL%==0 GOTO :EOF
 
