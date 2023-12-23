@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 public class FileMapWithVar {
-	private static String filePath="C:/Recoeve/src/main/java/recoeve/db/html";
+	private static String filePath="C:\\Recoeve\\src\\main\\java\\recoeve\\db\\html\\";
 	private static final String[] fileNames={
 			"user-page.html", "recostat.html"
 			, "signed-up.html"
@@ -182,6 +182,6 @@ public class FileMapWithVar {
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
 		varMap.put("{--user email--}", "id@email.com");
-		// System.out.println(FileMapWithVar.get("multireco.html", "df", null));
+		System.out.println(FileMapWithVar.get("multireco.html", "en", varMap));
 	}
 }

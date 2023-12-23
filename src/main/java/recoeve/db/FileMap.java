@@ -33,7 +33,7 @@ private static final String[] referersAllowed={
 		, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
 
-private static final String filePath="C:/Recoeve/CDN/";
+private static final String filePath="C:\\Recoeve\\CDN\\";
 private static final String[] fileNames={
 		"favicon.ico"
 		, "jquery.js", "recoeve-style.css"
@@ -56,7 +56,7 @@ static {
 				if (ar.succeeded()) {
 					Buffer fileContent=ar.result();
 					fileStorage.put(fileName, fileContent);
-					System.out.println("File stored in memory: "+fileName);
+					// System.out.println("File stored in memory: "+fileName);
 				} else {
 					System.err.println("Error reading file: "+ar.cause());
 				}
@@ -69,12 +69,12 @@ public static Buffer getCDNFileInMemory(String fileName) {
 	if (retrievedFile!=null) {
 		System.out.println("Retrieved file content: "+fileName);
 	} else {
-		System.err.println("File not found in memory!");
+		System.err.println("File not found in memory!: "+fileName);
 	}
 	return retrievedFile;
 }
 
-private static final String txtFilePath="C:/Recoeve/src/main/java/recoeve/db/html";
+private static final String txtFilePath="C:\\Recoeve\\src\\main\\java\\recoeve\\db\\html\\";
 private static final String[] txtFileNames={
 		"jquery.js", "prepare.js"
 		, "robots.txt", "ads.txt"
@@ -233,12 +233,15 @@ public static String get(String txtFileName, String lang) {
 }
 
 public static void main(String... args) {
-	// System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
-	// System.out.println(FileMap.refererAllowed("localhost"));
-	// System.out.println(Pattern.quote("[a-d]"));
-	// vertx.setTimer(2000, timerId -> {
-	// 	getCDNFileInMemory("link.png");
-	// 	// getCDNFileInMemory("docuK-2.3.css");
-	// });
+	FileMap fileMap=new FileMap();
+	vertx.setTimer(2000, timerId -> {
+		System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
+		System.out.println(fileMap.get("log-in.html", "ko"));
+		System.out.println(fileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
+		System.out.println(fileMap.refererAllowed("localhost"));
+		System.out.println(Pattern.quote("[a-d]"));
+		getCDNFileInMemory("link.png");
+		// getCDNFileInMemory("docuK-2.3.css");
+	});
 }
 }
