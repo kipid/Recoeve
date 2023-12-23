@@ -37,6 +37,8 @@ dependencies {
 	implementation("org.jsoup:jsoup:1.17.1")
 	// https://mvnrepository.com/artifact/io.vertx/vertx-core
 	implementation("io.vertx:vertx-core:$vertxVersion")
+	//Thanks for using https://jar-download.com
+	compile "io.micrometer:micrometer-registry-prometheus:1.12.1"
 	// https://mvnrepository.com/artifact/io.vertx/vertx-micrometer-metrics
 	implementation("io.vertx:vertx-micrometer-metrics:$vertxVersion")
 	implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
