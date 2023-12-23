@@ -2,7 +2,7 @@
 @ECHO OFF
 
 :: destination of class to be created
-SET DC=C:\Recoeve\classes\main\java
+SET DC=C:\Recoeve\build\classes\main\java
 
 :: The whole CLASSPATH list splited by ";"
 :: The whole classes are integrated into C:\Recoeve\gradle\wrapper\gradle-wrapper.jar
