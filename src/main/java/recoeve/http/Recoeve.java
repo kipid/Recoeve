@@ -59,7 +59,7 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-public static Vertx vertx=null;
+public Vertx vertx=getVertx();
 
 @Override
 public void start() {
@@ -67,8 +67,6 @@ public void start() {
 } // public void start()
 
 public static void main(String... args) {
-	Recoeve recoeve=new Recoeve();
-	vertx=recoeve.getVertx();
 	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
 	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
 	// 	.setEnabled(true);
