@@ -100,7 +100,12 @@ public void printLog(RoutingContext ctx) {
 		String[] hashs=uri.getFragment().substring(1).split("&");
 		for (String hash: hashs) {
 			String[] hashSplit=hash.split("=");
-			uriHashMap.put(hashSplit[0], hashSplit[1]);
+			if (hashSplit.length>=2) {
+				uriHashMap.put(hashSplit[0], hashSplit[1]);
+			}
+			else {
+				uriHashMap.put(hashSplit[0], "");
+			}
 		}
 	}
 	catch (UnsupportedEncodingException e) {
