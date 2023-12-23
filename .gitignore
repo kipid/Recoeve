@@ -187,3 +187,5 @@ nbdist/
 # Sublime text
 *.sublime-workspace
 *.sublime-project
+*.log
+*.mdmp
