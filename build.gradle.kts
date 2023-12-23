@@ -37,6 +37,7 @@ dependencies {
 	implementation("org.jsoup:jsoup:1.17.1")
 	// https://mvnrepository.com/artifact/io.vertx/vertx-core
 	implementation("io.vertx:vertx-core:$vertxVersion")
+	// https://mvnrepository.com/artifact/io.vertx/vertx-micrometer-metrics
 	implementation("io.vertx:vertx-micrometer-metrics:$vertxVersion")
 	implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
 	implementation("io.vertx:vertx-web-client")
