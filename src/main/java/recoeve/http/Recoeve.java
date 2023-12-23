@@ -59,7 +59,7 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-public Vertx vertx=getVertx();
+final public static Vertx vertx=Vertx.vertx();
 
 @Override
 public void start() {

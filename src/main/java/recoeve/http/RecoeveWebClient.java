@@ -1,5 +1,6 @@
 package recoeve.http;
 
+import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -13,17 +14,18 @@ import org.jsoup.select.Elements;
 
 public class RecoeveWebClient {
 public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
+public static final Vertx vertx=Vertx.vertx();
 
 public WebClient webClient;
 public long timerId;
 public int timerN;
 
 public RecoeveWebClient() {
-	webClient=WebClient.create(Recoeve.vertx, options);
+	webClient=WebClient.create(vertx, options);
 	timerN=0;
 }
 public void doUntilH1IsFound(HttpResponse response, PrintLog pl, int delay) {
-	timerId=Recoeve.vertx.setTimer(delay, timerHandler -> {
+	timerId=vertx.setTimer(delay, timerHandler -> {
 		timerN++;
 		if (response.statusCode()==200) {
 			String body=response.bodyAsString();
