@@ -292,7 +292,7 @@ public static void main(String... args) {
 	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
 
 	oauth2Handler.withScopes(List.of("email", "profile"));
-	router2.route("/account/log-in/with/*").handler(oauth2Handler);
+	router2.route("/account/log-in/with/google").handler(oauth2Handler);
 
 	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
 		PrintLog pl=new PrintLog();
