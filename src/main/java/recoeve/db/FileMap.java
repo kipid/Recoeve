@@ -1,5 +1,6 @@
 package recoeve.db;
 
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
@@ -23,11 +24,10 @@ import recoeve.http.Recoeve;
 
 
 
-public class FileMap {
+public class FileMap extends AbstractVerticle {
 private static final String[] referersAllowed={
 		"localhost"
-		, "recoeve.net"
-		// , "www.recoeve.net"
+		, "recoeve.net", "www.recoeve.net"
 		// , "127.0.0.1"
 		// , "172.30.1.18"
 		, "kipid.tistory.com", "tistory1.daumcdn.net"
@@ -43,9 +43,17 @@ private static final String[] fileNames={
 		, "logs.html"
 		, "right-to-commit-suicide.html"
 	};
-public static final Vertx vertx=Recoeve.vertx;
-public static final LocalMap<String, Buffer> fileStorage=vertx.sharedData().getLocalMap("fileStorage"); // Use LocalMap to store files in memory
-static {
+
+protected Vertx vertx;
+public final LocalMap<String, Buffer> fileStorage;
+
+@Override
+public void start() {
+	vertx=context.owner();
+}
+
+public FileMap() {
+	fileStorage=vertx.sharedData().getLocalMap("fileStorage"); // Use LocalMap to store files in memory
 	FileSystem fileSystem=vertx.fileSystem();
 
 	// Example: Reading a file and storing it in memory
@@ -63,7 +71,7 @@ static {
 			});
 	}
 }
-public static Buffer getCDNFileInMemory(String fileName) {
+public Buffer getCDNFileInMemory(String fileName) {
 	// Example: Retrieving file content from memory
 	Buffer retrievedFile=fileStorage.get(fileName);
 	if (retrievedFile!=null) {
@@ -81,8 +89,8 @@ private static final String[] txtFileNames={
 		, "log-in.html", "verify.html", "changePwd.html", "log-out.html"
 		, "user-page.html", "remember-me.html"
 	};
-private static final int txtFileMapSize=100;
-private static final int fileLangMapSize=100; // # of languages translated to support.
+private static final int txtFileMapSize=50;
+private static final int fileLangMapSize=500; // # of languages translated to support.
 
 public static Set<String> refererSet;
 // public static Map<String, String> fileMap;
@@ -167,16 +175,10 @@ static {
 	}
 }
 
-public FileMap() {}
-
 public static boolean refererAllowed(String host) {
 	// return refererSet.contains(host);
 	return true;
 }
-
-// public static String getCDNFile(String fileName) {
-// 	return fileMap.get(fileName);
-// }
 
 public static ArrayList<String> strToList(String fileStr) {
 	if (fileStr==null) {
@@ -234,13 +236,13 @@ public static String get(String txtFileName, String lang) {
 
 public static void main(String... args) {
 	FileMap fileMap=new FileMap();
-	vertx.setTimer(2000, timerId -> {
+	fileMap.vertx.setTimer(2000, timerId -> {
 		System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
 		System.out.println(fileMap.get("log-in.html", "ko"));
 		System.out.println(fileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
 		System.out.println(fileMap.refererAllowed("localhost"));
 		System.out.println(Pattern.quote("[a-d]"));
-		getCDNFileInMemory("link.png");
+		System.out.println(fileMap.getCDNFileInMemory("link.png"));
 		// getCDNFileInMemory("docuK-2.3.css");
 	});
 }

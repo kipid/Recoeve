@@ -1,5 +1,6 @@
 package recoeve.http;
 
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
@@ -12,13 +13,18 @@ import org.jsoup.select.Elements;
 
 
 
-public class RecoeveWebClient {
+public class RecoeveWebClient extends AbstractVerticle {
 public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
-public static final Vertx vertx=Recoeve.vertx;
+protected Vertx vertx;
 
 public WebClient webClient;
 public long timerId;
 public int timerN;
+
+@Override
+public void start() {
+	vertx=context.owner();
+}
 
 public RecoeveWebClient() {
 	webClient=WebClient.create(vertx, options);

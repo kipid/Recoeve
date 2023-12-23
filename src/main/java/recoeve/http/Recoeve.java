@@ -26,8 +26,8 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-// import io.vertx.micrometer.MicrometerMetricsOptions;
-// import io.vertx.micrometer.VertxPrometheusOptions;
+import io.vertx.micrometer.MicrometerMetricsOptions;
+import io.vertx.micrometer.VertxPrometheusOptions;
 
 import java.sql.*;
 
@@ -59,23 +59,16 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-public static Vertx vertx;
-static {
-	Recoeve recoeve=new Recoeve();
-	vertx=recoeve.context.owner();
-}
+// public Vertx vertx;
 
 @Override
 public void start() {
-	main();
-} // public void start()
-
-public static void main(String... args) {
-	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
-	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
-	// 	.setEnabled(true);
-	// final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
-	// final Vertx vertx=Vertx.vertx(vertxOptions);
+	final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
+		.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
+		.setEnabled(true);
+	final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
+	final Vertx vertx=Vertx.vertx(vertxOptions);
+	// vertx=context.owner();
 	final FileMap fileMap=new FileMap();
 	final FileMapWithVar fileMapWithVar=new FileMapWithVar();
 	final Router router0=Router.router(vertx);
@@ -1098,6 +1091,11 @@ public static void main(String... args) {
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
 
-	// vertx.deployVerticle(new Recoeve());
+	vertx.deployVerticle(new Recoeve());
+} // public void start()
+
+public static void main(String... args) {
+	Recoeve recoeve=new Recoeve();
+	recoeve.start();
 }
 } // public class Recoeve extends AbstractVerticle
