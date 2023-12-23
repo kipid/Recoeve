@@ -74,7 +74,7 @@ public static Buffer getCDNFileInMemory(String fileName) {
 	return retrievedFile;
 }
 
-private static final String txtFilePath="C:/Recoeve/sources/recoeve/db/html/";
+private static final String txtFilePath="C:/Recoeve/src/main/java/recoeve/db/html";
 private static final String[] txtFileNames={
 		"jquery.js", "prepare.js"
 		, "robots.txt", "ads.txt"

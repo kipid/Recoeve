@@ -1072,7 +1072,7 @@ public void start() {
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
 
-	vertx.deployVerticle(new Recoeve());
+	// vertx.deployVerticle(new Recoeve());
 } // public void start()
 
 public static void main(String... args) {
