@@ -68,7 +68,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=.;%JAVA_HOME%\lib;%RECOEVE_CLASS%\classes;%RECOEVE_CLASS%\classes\*;%VERTX_HOME%\target\*;%VERTX_HOME%\target\classes;C:\vertx\lib\*;%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
+set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
 
 
 @rem Execute Gradle
