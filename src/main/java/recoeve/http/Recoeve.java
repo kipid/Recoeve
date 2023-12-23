@@ -59,7 +59,7 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-final public static Vertx vertx=Vertx.vertx();
+public static Vertx vertx=null;
 
 @Override
 public void start() {
@@ -67,6 +67,8 @@ public void start() {
 } // public void start()
 
 public static void main(String... args) {
+	Recoeve recoeve=new Recoeve();
+	vertx=recoeve.getVertx();
 	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
 	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
 	// 	.setEnabled(true);
@@ -287,7 +289,22 @@ public static void main(String... args) {
 		.allowedHeader("Content-Type");
 
 	router.route().handler(corsHandler);
-	router2.route().handler(corsHandler);
+
+	CorsHandler corsHandler2=CorsHandler.create()
+		.addOrigin("https://www.youtube.com")
+		.addOrigin("https://g.doubleclick.net")
+		.addOrigin("https://tpc.googlesyndication.com")
+		.addOrigin("https://www.googleapis.com")
+		.addOrigin("https://localhost")
+		.addOrigin("https://recoeve.net")
+		.addOrigin("https://www.recoeve.net")
+		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
+		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
+		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
+		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
+		.allowedHeader("Content-Type");
+
+	router2.route().handler(corsHandler2);
 
 	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
 
