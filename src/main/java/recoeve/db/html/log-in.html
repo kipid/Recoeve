@@ -475,7 +475,7 @@ m.logInWithGoogle=function (elem) {
 	let $elem=$(elem);
 
 	$.ajax({
-		type:"POST", url:"/account/log-in/with/pre-google", data:state
+		type:"POST", url:"/account/log-in/with/pre-google", data:m.state
 		, dataType:"text"
 	}).done(function (resp) {
 		console.log(resp);
