@@ -2,6 +2,7 @@ package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.Launcher;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
@@ -58,10 +59,13 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-final public static Vertx vertx=Vertx.currentContext().owner();
+final public static Vertx vertx=Vertx.vertx();
 
 @Override
 public void start() {
+} // public void start()
+
+public static void main(String... args) {
 	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
 	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
 	// 	.setEnabled(true);
@@ -1073,9 +1077,5 @@ public void start() {
 	// 	.requestHandler(router).listen(80);
 
 	// vertx.deployVerticle(new Recoeve());
-} // public void start()
-
-public static void main(String... args) {
-	// Do nothing.
 }
 } // public class Recoeve extends AbstractVerticle
