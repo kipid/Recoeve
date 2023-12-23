@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+<meta name="keywords" content="Recoeve.net"/>
+<style>
+* {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
+body {width:100%; max-width:1000px; margin:0 auto; padding:5px 0}
+#recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(40,40,55); color:white}
+h1 {display:block; font:inherit; font-size:3em; font-weight:bold; margin:0 0 .5em; padding:.6em .5em; border-bottom:5px solid rgb(140,140,150)}
+.form-login {width:20em; max-width:100%; margin:0 auto 1em; padding:1em; font-size:16px; color:white; line-height:1; background:black; border:3px solid rgb(120,120,130)}
+.form-login>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3; font-weight:bold}
+.form-login>label {display:block; color:white; font-size:1em; font-weight:bold; margin:.9em 0 .4em}
+.form-login>label:first-of-type {margin-top:0}
+.form-login>label.checkbox {font-weight:normal}
+.form-login>input {display:block; width:100%; height:auto; overflow:hidden; padding:.3em .5em; font-family:inherit; font-weight:normal; font-size:1em; line-height:1.5; background:white; color:rgb(50,50,50)}
+.form-login>input:focus {background:rgb(240,240,255)}
+.form-login>button {width:100%; font:inherit; font-weight:bold; padding:.5em; text-align:center; margin-top:1.3em} .form-login>button:disabled {background:rgb(70,70,70)}
+.form-login>.error-msg {border:1px solid gray; padding:.3em .5em; margin:.5em 0 0; color:rgb(255,200,200); line-height:1.3}
+
+.desc {font-size:1.7em; padding:.5em}
+data {display:none}
+.lang {font-size:1.6em; padding:.5em}
+.p {padding-bottom:1em}
+.bold {font-weight:bold}
+.reco {color:rgb(200,130,130)}
+.eve {color:rgb(130,130,200)}
+
+a {text-decoration:none}
+a:link {color:rgb(190,190,235)}
+a:visited {color:rgb(170,170,215)}
+a:active {color:rgb(100,215,215)}
+a:hover {color:rgb(170,215,170); text-decoration:underline}
+
+#foot {clear:both; border-top:2px solid white; padding:1em .5em; font-size:1.5em;}
+
+@media all and (min-width:640px) {
+	.form-login {margin:0 .6em 1em 1em; float:right; clear:right}
+}
+</style>
+<title>[--Change password--] of Recoeve.net</title>
+</head>
+<body>
+<div id="recoeve-container">
+<h1>[--Change password--]</h1>
+
+<form class="form-login" id="form-change-pwd" action="/account/changePwd.do" accept-charset="UTF-8" method="post">
+<h2>[--Change password--]</h2>
+	<label for="input-cp-userId">[--ID--]</label>
+	<input id="input-cp-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="5"/>
+	<label for="input-cp-userEmail">[--E-mail--]</label>
+	<input id="input-cp-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="6"/>
+	<label for="input-cp-userPwd">[--Password--]</label>
+	<input id="input-cp-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="7"/>
+	<label for="input-cp-userPwdCfm">[--Password confirm--]</label>
+	<input id="input-cp-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="8"/>
+	<button id="button-changePwd" type="button" onclick="m.changePwd(this)" tabindex="9">[--Change password--]</button>
+</form>
+
+<div class="lang">
+	<div class="p">Language/언어/語言</div>
+<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	pt	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Português/Portuguese/포르투갈어/葡萄牙語/pt	Русский/Russian/러시아어/俄語/ru</data>
+</div>
+
+<div id="foot">[--version--] [--foot--]<br><a href="http://kipid.tistory.com/entry/Introducing-what-we-are-making-Recoevenet">Introducing what we are making : Recoeve.net</a></div>
+</div><!-- #recoeve-container -->
+
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
+<script>
+(async function(m, $, undefined) {
+$(".replace-reco-eve").html(function(i, orgHtml) {
+	return orgHtml
+		.replace(/reco/ig,'<span class="reco bold">$&</span>')
+		.replace(/eve/ig,'<span class="eve bold">$&</span>');
+});
+
+let vars=m.getSearchVars(window.location.search);
+if (vars.lang?.val) {
+	m.docCookies.setItem("lang", vars.lang.val, Infinity, "/");
+}
+if (vars.id?.val) {
+	$("#input-cp-userId")[0].value=vars.id.val;
+}
+$("#input-cp-userId")[0].disabled=true;
+if (vars.email?.val) {
+	$("#input-cp-userEmail")[0].value=vars.email.val;
+}
+$("#input-cp-userEmail")[0].disabled=true;
+
+let $dataLang=$("#data-lang");
+let dataLang=await m.strToJSON($dataLang.html().trim());
+let originPathname=window.location.origin+window.location.pathname+'?';
+
+let htmlLang='<div class="p">';
+for (let i=0;i<dataLang[0].length;i++) {
+	htmlLang+=`<a href="${originPathname}`;
+	vars.lang.val=dataLang[0][i];
+	let search='';
+	for (let p in vars) {
+		search+=`${p}=${vars[p].val}&`;
+	}
+	htmlLang+=search.substring(0,search.length-1)+'">'+dataLang[1][i]+'</a><br>';
+}
+htmlLang+='</div>';
+$dataLang.after(htmlLang);
+
+//////////////////////////////////////////////////////////
+// Form handling. (Validity check, encrypt, and submit)
+//////////////////////////////////////////////////////////
+
+m.errCount=0;
+m.encloseErr=function(msg) {
+	return '<div id="error-msg-'+(m.errCount++)+'" class="error-msg">'+msg+'</div>';
+};
+m.byteCount=function(str) {
+	return encodeURI(str).split(/%..|./).length-1;
+};
+
+m.regExId=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
+m.regExEmail=/^[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+@[a-zA-Zㄱ-ㅎ가-힣0-9-_.]+$/;
+m.minIdLength=1;
+m.maxIdLength=255;
+m.minPwdLength=6;
+m.maxPwdLength=255;
+
+m.changePwd=function(elem) {
+	let $elem=$(elem).eq(0);
+	$elem[0].disabled=true;
+	let $form=$elem.parent("form").eq(0);
+	let userId=$("#input-cp-userId")[0].value;
+	let userIdLength=m.byteCount(userId);
+	let userEmail=$("#input-cp-userEmail")[0].value;
+	let userPwd=$("#input-cp-userPwd")[0].value;
+	let userPwdCfm=$("#input-cp-userPwdCfm")[0].value;
+	let err="";
+	let valid=false;
+
+	if (userPwd.length==0) {
+		err+="[--Password is empty.--]";
+	} else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
+		err+=(userPwd.length<m.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")+" ([--Password--].[--length--]:"+m.minPwdLength+"~"+m.maxPwdLength+")";
+	} else if (userPwd!==userPwdCfm) {
+		err+="[--Confirm your password correctly.--]";
+	} else {
+		valid=true;
+	}
+
+	if (valid) {
+		$elem.before(m.encloseErr("[--Checking ID and E-mail--] : [--Please wait.--]"));
+		$.ajax("/account/getNewSalt", {
+			type: "POST"
+			, data: userId+"\t"+vars.token.val
+		}).fail(function() {
+			$elem.before(m.encloseErr("[--Request time out.--] [--Please click the change password button again.--]"));
+			$elem[0].disabled=false;
+		}).done(function(resp) { // resp: pwd_salt
+			$elem.before(m.encloseErr("[--Password is being encrypted.--]"));
+			$form.prepend(
+				'<input type="hidden" name="token" value="'+vars.token.val+'"/>'
+				+'<input type="hidden" name="userId" value="'+vars.id.val+'"/>'
+			);
+			setTimeout(function() {
+				$("#input-cp-userPwd")[0].value=m.encrypt(resp, userPwd, m.iterFull);
+				userPwd="";
+				$("#input-cp-userPwdCfm")[0].value="confirmed";
+				userPwdCfm="";
+				$elem.before(m.encloseErr("[--Changing password--] : [--Please wait.--]"));
+				// $form.submit();
+				let $inputs=$("#form-change-pwd").find("input");
+				let $inputI=$inputs.eq(0);
+				let dataToPut=`${$inputI.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
+				for (let i=1;i<$inputs.length;i++) {
+					$inputI=$inputs.eq(i);
+					dataToPut+=`&${$inputI.attr("name")}=${encodeURIComponent($inputI[0].value)}`;
+				}
+				$.ajax({
+					type:"POST", url:`/account/changePwd.do${window.location.search}`, data:dataToPut, dataType:"text"
+				}).fail(function (resp) {
+					$elem.before(m.encloseErr(resp));
+				}).done(function (resp) {
+					$elem.before(m.encloseErr(resp));
+					$elem.before(m.encloseErr(`To <a href="/account/log-in">Log-in page</a>.`));
+				})
+			}, 1024);
+		});
+	} else {
+		$elem.before(m.encloseErr(err));
+		$elem[0].disabled=false;
+	}
+	for (i=m.errCount-7;i>=0;i--) {
+		$("#error-msg-"+i).hide();
+	}
+};
+
+$("#sign-up-userPwdCfm").on("keyup keydown input", function(e) {
+	if (e.keyCode===13) { // Enter
+		e.preventDefault();
+		e.stopPropagation();
+		$("#button-changePwd").trigger("click");
+	}
+});
+$("input.go-next").on("keyup keydown input", function(e) {
+	if (e.keyCode===13) { // Enter
+		e.preventDefault();
+		e.stopPropagation();
+		$(e.target).next("input").focus();
+	}
+});
+
+$(document).ready(function () {
+	let blogStat=`URI	referer	REACTION_GUEST
+${window.location.href}	${document.referrer}	${vars.id.val}`;
+	$.ajax({
+		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+	}).fail(function (resp) {
+		console.log("fail", resp);
+	}).done(function (resp) {
+		console.log("done", resp);
+	});
+});
+})(window.m, jQuery);
+</script>
+</body>
+</html>

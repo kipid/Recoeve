@@ -1,0 +1,157 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+
+<codeprint id="docuK-style">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+<!-- From kipid.tistory CDN -->
+<link rel="stylesheet" media="all" type="text/css" href="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-2.2.css">
+<script src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-prepare-2.2.js"></script>
+</codeprint><!-- docuK-style -->
+
+<style>
+data {display:none}
+.div-table {}
+.div-table>div {position:relative; clear:both}
+.div-table>div:nth-child(1) {font-weight:bold; background:rgb(0,15,45)}
+.div-table>div:nth-child(1)>div {height:2em;}
+.div-table>div>div {
+	/*position:absolute; top:0; bottom:0;*/
+	float:left; height:5em;
+	border:1px gray solid; text-align:center; overflow:auto
+}
+
+/*.div-table>div>div:nth-child(1) {width:15%; left:0}
+.div-table>div>div:nth-child(2) {width:20%; left:15%}
+.div-table>div>div:nth-child(3) {width:20%; left:35%}
+.div-table>div>div:nth-child(4) {width:10%; left:55%}
+.div-table>div>div:nth-child(5) {width:25%; right:10%}
+.div-table>div>div:nth-child(6) {width:10%; right:0}*/
+
+.div-table>div>div:nth-child(1) {width:15%;}
+.div-table>div>div:nth-child(2) {width:20%;}
+.div-table>div>div:nth-child(3) {width:20%;}
+.div-table>div>div:nth-child(4) {width:10%;}
+.div-table>div>div:nth-child(5) {width:25%;}
+.div-table>div>div:nth-child(6) {width:10%;}
+.div-table>div>div:last-child {clear:both; float:none; height:0; width:100%; border:0;}
+</style>
+
+<codeprint class="SEE">
+# AJAX post test (Cross orgin policy) and Reco test
+
+AJAX post 를 cross origin 으로도 보낼 수 있는건가? 이런게 가능한거면 공격에 취약해질거 같은데.. 이럴 경우 매번 referer check 까지 해줘야 하나? (CORS 걸림)
+
+아래 table 데이터들을 reco 해 봅시다 : <button id="button-reco">reco</button>
+
+<script></script>
+
+<div id="toBePrinted"></div>
+</codeprint><!-- SEE -->
+
+<data id="data-recos">uri	cats	title	desc	cmt	val
+http://apod.nasa.gov/apod/astropix.html	Bookmarks--물리/수학/과학--News	Astronomy Picture of the Day	Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.	"NASA 에서 운영하는 사이트. 매일 우주관련, 과학관련 사진을 업로드 함.
+사이트가 css 적으로 좀 덜 꾸며져있는게 아쉽."	9/10
+http://www.codecogs.com/latex/eqneditor.php	Bookmarks--물리/수학/과학	Online LaTeX Equation Editor	Put your latex equation, then you will get an image of that equation.	LaTeX 수식 입력기. LaTeX 수식 문법을 잘 몰라도 쉽게 사용할 수 있음.	10/10
+http://climate.nasa.gov/interactives/climate_time_machine	Bookmarks--물리/수학/과학	NASA - Climate Time Machine	History of global climage changes.	You can see the change of climate graphically.	8/10
+http://climate.nasa.gov/	Bookmarks--물리/수학/과학	NASA - Global Climate Change	"This website is produced by the Earth Science Communications Team at
+NASA's Jet Propulsion Laboratory | California Institute of Technology"	"지구 기후 변화에 대한 자료들이 정리되어 있음.
+
+꽤나 잘 정리되어 있는거 같은데, 아직 자세히 살펴보지는 못한..."	8/10
+http://earth.nullschool.net/#current/wind/surface/level/equirectangular	Bookmarks--물리/수학/과학	Earth :: an animated map of global wind and weather	지구의 실시간 바람 지도.	-	10/10
+http://www.feynmanlectures.info/flp	Bookmarks--물리/수학/과학	The Feynman Lectures on Physics	-	스마트폰에서 보기는 안좋음 ㅡㅡ;;;	8/10
+http://theoreticalminimum.com/	Bookmarks--물리/수학/과학	The Theoretical Minimum	이론 물리학자 Leonard Susskind 의 온라인 물리학 강의.	-	10/10
+http://www.nowykurier.com/toys/gravity/gravity.html	Bookmarks--물리/수학/과학	Simulation of gravity	-	-	7/10
+http://dic.daum.net/index.do?dic=eng	Bookmarks--사전/지도/TV	Daum dictionary	Korean to English	한영사전을 이걸 쓰는데... 괜찮음.	9/10
+http://kipid.tistory.com/category/0	Bookmarks--Blog	kipid's blog	-	내 블로그. 점수가 너무 관대한가?ㅋ	9/10
+http://www.todayhumor.co.kr/	Bookmarks--Fun	오늘의 유머	-	유머 커뮤니티. UI 가 좀 좋아졌으면 함.	8/10
+http://web.humoruniv.com/main.html	Bookmarks--Fun	웃긴대학	-	유머 커뮤니티.	7/10
+http://www.ilbe.com/	Bookmarks--Fun	일베	-	가끔 들어가는 봄. 이런 인간들도 있구나를 느끼며...	1/10
+http://techneedle.com/	Bookmarks--IT--News	Tech Needle	-	IT 관련 기사를 큐레이팅해서 요약, 번역해주심.	9/10
+https://drive.google.com/drive/#my-drive	Bookmarks--IT--Service	Google Drive	-	문서들 공유도 되고 짱 좋음.	9/10
+https://translate.google.co.kr/	Bookmarks--IT--Service	Google Translate	-	번역기. 완벽하지는 않지만 꽤나 유용. 특히나 자신이 거의 모르는 언어 번역할때 좋음.	9/10
+https://twitter.com/	Bookmarks--IT--Service	Twitter	SNS	"내 스타일의 SNS?
+업데이트 되면서 뭔가 UX, UI 가 마음에 안들긴 하지만... 트윗 클릭할때 홈에서는 expand 되는데, 프로필 화면 가서는 왜 쓸데없이 새창이 뜨는지 모르겠음. 이게 가장 불만!"	9/10
+http://www.daum.net/	Bookmarks--IT--Service	다음	-	포탈 사이트	9/10
+http://www.naver.com/	Bookmarks--IT--Service	네이버	-	포탈 사이트	9/10
+https://github.com	Bookmarks--IT--Service	GitHub	-	프로그램 버전 관리 및 클라우드 식으로 여러명이 함께 프로그래밍 하는걸 도와주는!	9/10
+http://feedly.com/index.html#my	Bookmarks--IT--Service	Feedly	-	RSS 리더기. 블로그나 뉴스 등 새로 글이 작성된 것들을 모아서 알려줌.	9/10
+http://media.daum.net/issue	Bookmarks--News	미디어다음 - 이슈	-	이슈별로 뉴스를 모아서 보여줌.	9/10
+http://newspeppermint.com/	Bookmarks--News	News Peppermint	-	외신 기사를 큐레이팅해서 요약, 번역해주는 사이트. 괜찮은 기사들이 참 많음.	9.5/10
+http://slownews.kr/	Bookmarks--News	Slow news	-	"느림을 추구하는 뉴스? 중요하다 생각되는 것들을 심층있게 작성하는걸 목표로 하는듯 함.
+
+그런데 너무 길어서 잘 안읽게 되는것도 같음;;;"	7/10
+http://ppss.kr/	Bookmarks--News	ㅍㅍㅅㅅ	-	폭풍시사란 뜻인가? 가끔 재밌는 글들이 올라오는듯. 그런데 대부분 어느 블로그에 올라오는 글들 긁어오는듯한 느낌이? 뭐 허락받고 옮기는 것이겠지만.	7/10
+http://newstapa.org/	Bookmarks--News	뉴스타파	-	꽤나 심도있는 탐사 저널리즘이라 생각하는데, 시간 투자를 많이 필요로해서 자주 못보는... 누군가 정리해 주면 그걸로 자주 접하는...	9/10
+https://github.com/kipid	Bookmarks--Programming	GitHub - kipid	-	"내 GitHub. 점수가 관대한건 자기홍보를 위해?ㅋ 어차피 이런식으로 홍보도 안되겄지만;;;;
+관련된 다른 사이트들과 카테고리를 묶어서 reco 해놔야 홍보가 될듯."	9/10
+http://newspeppermint.com/2013/01/14/%EC%99%9C-%EC%82%AC%EB%9E%8C%EB%93%A4%EC%9D%80-%ED%8E%98%EC%9D%B4%EC%8A%A4%EB%B6%81%EC%97%90-%EB%81%8A%EC%9E%84%EC%97%86%EC%9D%B4-%EB%AC%B4%EC%96%B8%EA%B0%80%EB%A5%BC-%EA%B8%B0%EB%A1%9D%ED%95%A0/	[사회/정치/경제]--심리	News Peppermint - 사람들이 페이스북에 끊임없이 무언가를 기록하는 이유	-	"“더 많은 페이스북의 사용이 행복감과 우울감에는 변화를 주지 않았던 데 비해, 외로움은 감소시키는 것으로.”
+
+트위터에 혼잣말을 떠들어도 외로움은 조금 감소되는듯? 그런데 이걸 읽고나니 뭔가;;; 이젠 혼잣말을 계속 떠들어도 외로움이 감소되지 않을거 같은?ㅋ"	10/10
+http://newspeppermint.com/2013/05/27/internet/	[사회/정치/경제]--심리	News Peppermint - 사람들이 하루종일 인터넷에 매달리는 이유	-	보상이 즉각적으로 주어진다는 점 역시 인터넷의 유혹을 거부할 수 없게 만든다네요. 이건 다르게도 활용할 수 있을듯? 보상이 즉각적으로 주어지도록 여러가지를 설계해 놓으면 지치지 않고 꾸준히 무언가를 하게 할수도 있을거 같은데?	10/10
+http://newspeppermint.com/2014/02/27/teenstweetaddiction/	[사회/정치/경제]--심리	News Peppermint - 왜 청소년들은 유명인들의 트위터 계정에 중독되는가?	-	"뭐 크게 걱정할 거리는 아닌듯. 같은 팬클럽인 애들끼리 친하게 지내고... 뭐 건강한 팬 문화가 꽤나 자리 잡은거 같아서?
+스타가 팬들 언능 공부하라고 타이르기도 하고 말이지ㅋ."	10/10
+http://undertheradar.co.kr/2014/10/16/161/	벤처캐피탈	[161] 벤처캐피탈 집중 해부 #1. 초기투자전문 VC 및 스타트업 인큐베이터	-	국내 여러 벤처캐피탈들을 비교해 놓음.	9/10</data>
+
+<codeprint id="docuK-script">
+<script>
+kipid.wait=500;
+kipid.delayPad=0;
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+	skipStartupTypeset: true, // Skip startup typeset.
+	positionToHash: false, // No repositioning to #something anchor.
+	tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\[','\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \$
+		processEnvironments: false, // Ignore \begin{something} ... \end{something}
+	}
+});
+</script>
+<!-- From kipid.tistory CDN -->
+<script src="http://cfs.tistory.com/custom/blog/146/1468360/skin/images/docuK-postProcess-2.2.js"></script>
+</codeprint><!-- docuK-script -->
+
+<script>
+(function() {
+	var recosStr=$("#data-recos").html().trim();
+	var recos=kipid.strToJSON( recosStr );
+	kipid.arrayToDivTable=function(txtArray) {
+		var tableStr="<div class='div-table'>";
+		for (var row=0;row<txtArray.length;row++) {
+			tableStr+="<div>";
+			for (var col=0;col<txtArray[row].length;col++) {
+				tableStr+="<div>"+kipid.escapeHTML(txtArray[row][col]).replace(/\n/g,'<br>')+"</div>";
+			}
+			tableStr+="<div></div></div>";
+		}
+		tableStr+="</div>";
+		return tableStr;
+	};
+	$("#toBePrinted").after( kipid.arrayToDivTable(recos) );
+	// $("#toBePrinted").after( kipid.arrayToTableHTML(recos) );
+	
+	$("#button-reco").on("click", function() {
+		var $this=$(this);
+		$this[0].disabled=true;
+		$.post("/reco/put", recosStr, function(a, b, c){
+			console.log("Data is submitted."
+				+"\na: "+a // Object data : e.g. text, xml, json, script, html
+				+"\nb: "+b // String textStatus : e.g. success, error
+				+"\nc: "+c); // jqXHR jqXHR : jQuery XMLHttpRequest
+		}, "text")
+		.fail(function(a, b, c){
+			console.log("Reco is failed."
+				+"\na: "+a
+				+"\nb: "+b
+				+"\nc: "+c);
+		})
+		.always(function(){
+			console.log("Always done.");
+			$this[0].disabled=false;
+		});
+	});
+})();
+</script>

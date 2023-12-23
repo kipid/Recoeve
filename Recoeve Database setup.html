@@ -572,8 +572,8 @@ DELETE FROM `Users` WHERE 7&lt;datediff(utc_timestamp(),`tReg`) and `class`=0;
 
 ```[.scrollable.lang-sql]
 CREATE TABLE `PreGoogle` (
-	`ip` char() NOT NULL
-	, `state` char() NOT NULL
+	`ip` char(15) NOT NULL
+	, `state` char(13) NOT NULL
 	, `t` datetime NOT NULL
 	, primary key (`ip`, `state`)
 );

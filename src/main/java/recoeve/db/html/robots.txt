@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /reco
+Disallow: /account/changePwd
+Disallow: /account/changePwd.do
+Disallow: /account/getNewSalt
+Disallow: /CDN/*

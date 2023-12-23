@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+<meta name="google-adsense-account" content="ca-pub-9843810906985249">
+<title>Recoeve.net</title>
+<link rel="stylesheet" href="/CDN/recoeve-style.css">
+<script src="/CDN/jquery.js"></script>
+<script src="/prepare.js"></script>
+<script>
+(function(m, undefined) {
+m.saveSSN();
+m.myIndex="{--myIndex--}";
+m.myId="{--myId--}";
+m.userPath=`/user/${m.myId}`;
+
+m.searchVars=m.getSearchVars(m.initialSearch);
+m.lang=null;
+if (m.searchVars?.lang) {
+	m.lang=m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang=m.docCookies.getItem("lang");
+}
+})(window.m);
+</script>
+<style>
+.block-touch {position:fixed; z-index:30000; left:0; right:0; top:0; bottom:0; background:rgb(0,0,0,0.3)}
+.block-touch-exit {z-index:31000}
+
+#container {max-width:100%; width:100%}
+</style>
+</head>
+<body>
+<div id="container" class="dark">
+<div id="javascript-disable">
+	Your javascript on this page is disabled. Please enable javascipt to see this page properly.
+</div><!-- div#javascript-disable -->
+<div id="right-top-log-in">
+	<div class="button" id="my-id"></div>
+	<div class="button" id="choose-lang">▼ Language/언어/語言</div>
+</div>
+<div class="cBoth"></div>
+<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Русский/Russian/러시아어/俄語/ru</data>
+<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
+<div class="cBoth"></div>
+<div>Ref: <a target="_blank" href="https://docs.google.com/spreadsheets/d/1NlENXqRP99TG4TerIKdLe_XD4STzsX0JVFIU9VqpjwM/edit?usp=sharing">Google document :: Multireco example</a></div>
+<div class="rC"><div class="rSC" style="padding-bottom:40%">
+	<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRu3-Kj-HVJZluru8i1KGJ56rng0nQ2IK9s3PlxUzz45uaFUxGdgvon_MAr6lFxlJmuL5dPBJ1E7pNC/pubhtml?widget=true&amp;headers=false" frameborder="0"></iframe>
+</div></div>
+<textarea id="textarea-recos" style="background:white; color:black; width:100%; height:37em; font-size:.8em"></textarea>
+<div class="button fRight" id="button-multireco">Multireco</div>
+<div class="cBoth"></div>
+<div class="fLeft" id="error"></div>
+</div>
+</body>
+<div id="scripts"></div>
+<script>
+(function(m, $, undefined) {
+$("#javascript-disable").hide();
+
+$data_lang=$("#data-lang");
+
+$window=$(window);
+$html=$("html");
+$body=$("body");
+
+$container=$("#container");
+$my_id=$("#my-id");
+$choose_lang=$("#choose-lang");
+$choose_lang_list=$("#choose-lang-list");
+
+$textarea_recos=$("#textarea-recos");
+$button_multireco=$("#button-multireco");
+$error=$("#error");
+
+m.delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+
+////////////////////////////////////////////////////
+// Language/언어/語言
+////////////////////////////////////////////////////
+m.changeLang=function (lang, e, elem) {
+	let href=`${window.location.pathname}${lang?`?lang=${lang}`:""}`;
+	if (e?.which===2) { // wheel click.
+		$(elem).attr({"href":href});
+		return true;
+	}
+	else {
+		window.location.href=href;
+		return false;
+	}
+};
+(async function () {
+let dataLang=await m.strToJSON($data_lang.html().trim());
+let htmlLangs="";
+for (let i=0;i<dataLang[0].length;i++) {
+	htmlLangs+=`<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
+}
+$choose_lang_list.html(htmlLangs);
+$choose_lang.on("click", function (e) {
+	if ($choose_lang.hasClass("enabled")) {
+		$choose_lang.removeClass("enabled");
+		$choose_lang_list.hide();
+	}
+	else {
+		$choose_lang.addClass("enabled");
+		$choose_lang_list.show();
+	}
+});
+})();
+
+m.a_log_in=function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	let href=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
+	$a_log_in.attr("href", href);
+	if (e?.which===2) {
+		window.open(href);
+	}
+	else {
+		window.location.href=href;
+	}
+	return false;
+};
+m.log_out_do=function (args, err) {
+	let $err=$("#log-out-do-container>.center");
+	if (err) {
+		$err.html(err);
+	}
+	$.ajax({
+		type:"POST", url:`/account/log-out.do`, data:args
+		, dataType:"text"
+	}).fail(function (resp) {
+		let msg="[--Log-out has failed.--]";
+		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
+	}).done(function (resp) {
+		$err.html(resp);
+		setTimeout(function () {
+			window.location.href=args.href;
+		}, 1024);
+	});
+};
+m.a_log_out=function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	let href_log_out=`/account/log-out?goto=${encodeURIComponent("/multireco")}`;
+	$a_log_out.attr("href", href_log_out);
+	if (e?.which===2) {
+		window.open(href_log_out);
+	}
+	else {
+		$container.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out from Recoeve.net--]</div></div>`);
+		let href_log_in=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
+		m.rmb_me(m.log_out_do, {href:href_log_in, goto:"/multireco"});
+	}
+	return false;
+};
+m.log_out_from_all_do=function (args, err) {
+	let $err=$("#log-out-do-container>.center");
+	if (err) {
+		$err.html(err);
+		$err.zIndex(31100);
+	}
+	$.ajax({
+		type:"POST", url:`/account/log-out-from-all.do`, data:args
+		, dataType:"text"
+	}).fail(function (resp) {
+		let msg="[--Log-out has failed.--]";
+		$err.html(`${msg} ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
+		$err.zIndex(31200);
+	}).done(function (resp) {
+		$err.html(resp);
+		$err.zIndex(31200);
+		setTimeout(function () {
+			window.location.href=args.href;
+		}, 1024);
+	});
+};
+m.a_log_out_from_all=function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	let href_log_out_from_all=`/account/log-out-from-all?goto=${encodeURIComponent("/multireco")}`;
+	$a_log_out_from_all.attr("href", href_log_out_from_all);
+	if (e?.which===2) {
+		window.open(href_log_out_from_all);
+	}
+	else {
+		$container.after(`<div class="block-touch" id="log-out-do-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--Log-out at all devices from Recoeve.net--]</div></div>`);
+		let href_log_in=`/account/log-in?goto=${encodeURIComponent("/multireco")}`;
+		m.rmb_me(m.log_out_do_from_all, {href:href_log_in, goto:"/multireco"});
+	}
+	return false;
+};
+
+////////////////////////////////////////////////////
+// Right top Log-in | Log-out
+////////////////////////////////////////////////////
+$right_top_log_in=$("#right-top-log-in");
+$right_top_log_in.append(`${m.myIndex===""?`<div class="button"><a class="a-log-in" href="/account/log-in">[--Log _i_n--]</a></div>`:`<div class="button"><a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a></div>
+<div class="button"><a class="a-log-out-from-all" href="/account/log-out-from-all">[--Log out from all--]</a></div>`}`);
+
+$a_log_in=$(".a-log-in");
+$a_log_out=$(".a-log-out");
+$a_log_out_from_all=$(".a-log-out-from-all");
+$a_log_in.on("click mousedown mouseup", m.a_log_in);
+$a_log_out.on("click mousedown mouseup", m.a_log_out);
+$a_log_out_from_all.on("click mousedown mouseup", m.a_log_out_from_all);
+
+if (m.myIndex) {
+	$my_id.html(m.myId+" ▾");
+}
+else {
+	$my_id.hide();
+}
+if (m.myIndex) {
+	$a_log_in.hide();
+}
+else {
+	$a_log_out.hide();
+	$a_log_out_from_all.hide();
+}
+
+if (!(m.docCookies.hasItem("rmbdI")&&m.docCookies.getItem("rmbdI"))) {
+	$container.after(`<div class="block-touch" id="should-do-log-in-container" style="display:-webkit-flex; display:flex"><div class="center" style="display:inline-block; margin:auto; color:wheat; background:black; border:5px solid wheat; padding:1em">[--You should log-in | sign-up first with remember me option.--]</div></div><div class="block-touch-exit exit" id="should-do-log-in-exit" style="z-index:31000; position:fixed" onclick="$('#should-do-log-in-container, #should-do-log-in-exit').hide()"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+}
+
+m.delayedLogOut=function (msg, delayTime=27, $result) {
+	let delay=delayTime&&delayTime.constructor===Number?delayTime:27;
+	clearInterval(m.deleyedLogOutInterval);
+	m.deleyedLogOutInterval=setInterval(function () {
+		$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
+		$result?.html($error.html());
+		delay--;
+	}, 1000);
+	clearTimeout(m.deleyedLogOutTimeout);
+	m.deleyedLogOutTimeout=setTimeout(function () {
+		window.location.href=`/account/log-out?goto=${encodeURIComponent("/multireco")}`;
+	}, delay*1000);
+};
+
+m.reco_do=function (args, err) {
+	if (err) {
+		m.delayedLogOut(`[--Reco failed.--] ${err}`, 60*60*24);
+		$button_multireco.removeClass("disabled");
+		return;
+	}
+	$.ajax({
+		type:"POST", url:"/reco/do", data:args.strRecoDo
+		, dataType:"text"
+	}).fail(function () {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
+		$error.html("[--Reco failed.--]");
+		args.$result?.html($error.html());
+	}).done(async function (resp) {
+		clearInterval(m.deleyedLogOutInterval);
+		clearTimeout(m.deleyedLogOutTimeout);
+		let res=await m.strToJSON(resp);
+		$error.html(m.arrayToTableHTML(res));
+	}).always(function () {
+		$button_multireco.removeClass("disabled");
+	});
+};
+$button_multireco.on("click", async function (e) {
+	let recosJSON=await m.strToJSON($textarea_recos[0].value);
+	for (let i=1;i<recosJSON.length;i++) {
+		let recosJSONi=recosJSON[i];
+		if (recosJSONi.uri) {
+			recosJSONi.uri=m.formatURI(recosJSONi.uri);
+		}
+		if (recosJSONi.title) {
+			recosJSONi.title=m.formatTitle(recosJSONi.title);
+		}
+		if (recosJSONi.cats) {
+			recosJSONi.cats=m.formatCats(recosJSONi.cats);
+		}
+	}
+	let strRecoDo=await m.JSONtoStrRev(recosJSON);
+	m.rmb_me(m.reco_do, {strRecoDo:String(strRecoDo)});
+});
+
+m.processShortKey=function (e) {
+	if (e.altKey||e.ctrlKey||e.metaKey) { return; }
+	switch (e.target.nodeName) {
+		case "INPUT": case "SELECT": case "TEXTAREA": return;
+	}
+	switch (e.keyCode) {
+		case 90: // Z=90 To Textarea
+			$window.scrollTop($textarea_recos.offset().top);
+			break;
+	}
+};
+$window.on("keydown.sk", m.processShortKey);
+})(window.m, jQuery);
+</script>
+</html>

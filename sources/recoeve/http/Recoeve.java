@@ -71,9 +71,6 @@ public static final OAuth2Auth authProvider=GoogleAuth.create(vertx, "9644964462
 
 @Override
 public void start() {
-} // public void start()
-
-public static void main(String... args) {
 	CorsHandler corsHandler0=CorsHandler.create()
 		.addOrigin("https://kipid.tistory.com")
 		.addOrigin("https://recoeve.net")
@@ -1036,7 +1033,7 @@ public static void main(String... args) {
 	vertx.createHttpServer(
 		new HttpServerOptions()
 			.setPort(443)
-			.setHost(HOST)
+			// .setHost(HOST)
 			.setUseAlpn(true)
 			.setSsl(true)
 			.setKeyCertOptions(new JksOptions()
@@ -1065,5 +1062,9 @@ public static void main(String... args) {
 
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
+} // public void start()
+
+public static void main(String... args) {
+	// Do nothing.
 }
 } // public class Recoeve extends AbstractVerticle
