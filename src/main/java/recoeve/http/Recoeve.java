@@ -3,11 +3,13 @@ package recoeve.http;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.metrics.MetricsOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.auth.User;
@@ -23,6 +25,9 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+// import io.vertx.micrometer.MicrometerMetricsOptions;
+// import io.vertx.micrometer.VertxPrometheusOptions;
+
 import java.sql.*;
 
 import java.util.HashMap;
@@ -46,34 +51,37 @@ import recoeve.db.StrArray;
 
 
 public class Recoeve extends AbstractVerticle {
-public static final String HOST
+final public static String HOST
 	="recoeve.net";
 	// ="0.0.0.0";
 	// ="localhost";
-public static final String ENCODING="UTF-8";
-public static final String INVALID_ACCESS="INVALID ACCESS";
-public static final long day31InMs=31*24*60*60*1000;
-public static final Vertx vertx=Vertx.vertx();
-public static final FileMap fileMap=new FileMap();
-public static final FileMapWithVar fileMapWithVar=new FileMapWithVar();
-public static final Router router0=Router.router(vertx);
-public static final Router router1=Router.router(vertx);
-public static final Router router2=Router.router(vertx);
-public static final Router router=Router.router(vertx);
-// public static final OAuth2Options authOptions=new OAuth2Options()
-// 		.setClientId()
-// 		.setClientSecret()
-// 		.setSite("https://accounts.google.com")
-// 		.setTokenPath("/o/oauth2/v2/token")
-// 		.setAuthorizationPath("/o/oauth2/v2/auth");
-// 		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
-public static final OAuth2Auth authProvider=GoogleAuth.create(vertx, "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com", "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");
+final public static String ENCODING="UTF-8";
+final public static String INVALID_ACCESS="INVALID ACCESS";
+final public static long day31InMs=31*24*60*60*1000;
+final public static Vertx vertx=Vertx.currentContext().owner();
 
 @Override
 public void start() {
-} // public void start()
+	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
+	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
+	// 	.setEnabled(true);
+	// final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
+	// final Vertx vertx=Vertx.vertx(vertxOptions);
+	final FileMap fileMap=new FileMap();
+	final FileMapWithVar fileMapWithVar=new FileMapWithVar();
+	final Router router0=Router.router(vertx);
+	final Router router1=Router.router(vertx);
+	final Router router2=Router.router(vertx);
+	final Router router=Router.router(vertx);
+	// final OAuth2Options authOptions=new OAuth2Options()
+	// 		.setClientId()
+	// 		.setClientSecret()
+	// 		.setSite("https://accounts.google.com")
+	// 		.setTokenPath("/o/oauth2/v2/token")
+	// 		.setAuthorizationPath("/o/oauth2/v2/auth");
+	// 		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
+	final OAuth2Auth authProvider=GoogleAuth.create(vertx, "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com", "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");
 
-public static void main(String... args) {
 	CorsHandler corsHandler0=CorsHandler.create()
 		.addOrigin("https://kipid.tistory.com")
 		.addOrigin("https://recoeve.net")
@@ -1035,8 +1043,6 @@ public static void main(String... args) {
 
 	vertx.createHttpServer(
 		new HttpServerOptions()
-			.setPort(443)
-			.setHost(HOST)
 			.setUseAlpn(true)
 			.setSsl(true)
 			.setKeyCertOptions(new JksOptions()
@@ -1065,5 +1071,11 @@ public static void main(String... args) {
 
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
+
+	vertx.deployVerticle(new Recoeve());
+} // public void start()
+
+public static void main(String... args) {
+	// Do nothing.
 }
 } // public class Recoeve extends AbstractVerticle
