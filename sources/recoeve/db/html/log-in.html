@@ -468,7 +468,7 @@ m.logInWithGoogle=function (elem) {
 	let paramsSearch="";
 	// Add form parameters as hidden input values.
 	for (let p in params) {
-		paramsSearch+=`&${encodeURIComponent(p)}=${encodeURIComponent(params[p])}`;
+		paramsSearch+=`&${p}=${escape(params[p])}`;
 	}
 	paramsSearch="?"+paramsSearch.substring(1);
 
