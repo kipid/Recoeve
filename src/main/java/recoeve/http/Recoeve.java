@@ -153,36 +153,14 @@ public void start() {
 					if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
 						System.out.println("State is matched!");
 						String redirect=pl.db.getGotoPreGoogle(dataMap.get("state"), pl.ip);
-						// recoeveWebClient.webClient.getAbs("https://www.googleapis.com/auth/userinfo.email?access_token="+dataMap.get("access_token")+"&token_type="+dataMap.get("token_type"))
-						// 	.bearerTokenAuthentication(dataMap.get("access_token"))
-						// 	.send()
-						// 	.compose(resp -> {
-						// 		if (resp.statusCode()==HttpResponseStatus.OK.code()) {
-						// 		}
-						// 	});
-						// authProvider.authenticate(new Oauth2Credentials(
-						// 	new JsonObject()
-						// 		.put("credential", credential)
-						// 		.put("token_type", dataMap.get("token_type"))
-						// ), res -> {
-						// 	if (res.succeeded()) {
-						// 		User user=res.result();
-						// 		System.out.println(user.attributes());
-						// 		System.out.println(user.get("email").toString());
-						// 		// Handle the authenticated user
-						// 		// pl.req.response().end("Authentication successful");
-						// 	} else {
-						// 		// Handle authentication failure
-						// 		// pl.req.response().setStatusCode(401).end("Wrong code!");
-						// 		// System.out.println("Wrong code!");
-						// 	}
-						// });
 						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 							.end(redirect, ENCODING);
 						System.out.println("Sended redirect goto=?.");
 					}
 					else {
-						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // to send #hash data with POST method.
+						Map<String, String> varMap=new HashMap<String, String>();
+						varMap.put("{--m.authToken--}", someToken);
+						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // To send #hash data with POST method.
 						System.out.println("Sended log-in.html");
 					}
 				});
