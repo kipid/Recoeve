@@ -47,7 +47,7 @@ SELECT * FROM `LogInLogs` WHERE `log`='rmb';
 ## Dump
 
 ```
-mysqldump -u root -p recoeve0.1 &gt; mydump.sql
+mysqldump --extended-insert=true -u root -p recoeve0.1 &gt; mydump.sql
 mysql -u root -p recoeve0.1 &lt; mydump.sql
 ```/
 
