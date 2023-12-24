@@ -24,12 +24,10 @@ gtag('config', 'G-M350MQ7791');
 <script src="/prepare.js"></script>
 <script>
 (function (m, undefined) {
-let fullPath=window.location.pathname+window.location.search+window.location.hash;
-console.log(fullPath);
-let pathname=window.location.pathname;
+let fullPath=initialPathname+initialSearch+initialHash;
 let path="/account/log-in";
-if (pathname!==path) {
-	window.history.replaceState({}, "", `/account/log-in?goto=${encodeURIComponent(fullPath)}`);
+if (!initialPathname.startsWith(path)) {
+	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
 }
 })(window.m);
 </script>
