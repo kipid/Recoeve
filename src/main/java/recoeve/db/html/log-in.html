@@ -26,10 +26,12 @@ gtag('config', 'G-M350MQ7791');
 <script>
 (function (m, undefined) {
 let fullPath=m.initialPathname+m.initialSearch+m.initialHash;
+console.log(fullPath);
 let path="/account/log-in";
 if (!m.initialPathname.startsWith(path)) {
 	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
 }
+console.log(m.initialHash);
 if (m.initialHash) {
 	let hashSplit=m.initialHash.substring(1).split("&");
 	for (let i=0;i<hashSplit.length;i++) {
