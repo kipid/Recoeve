@@ -134,6 +134,7 @@ public void start() {
 			case "google":
 				pl.req.bodyHandler((Buffer data) -> {
 					String dataStr=data.toString();
+					System.out.println("dataStr: "+dataStr);
 					Map<String, String> dataMap=new HashMap<String, String>();
 					if (dataStr!=null&&dataStr.length()>0) {
 						System.out.println(dataStr);
