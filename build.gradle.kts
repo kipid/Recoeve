@@ -50,7 +50,7 @@ dependencies {
 	implementation("io.vertx:vertx-json-schema")
 	implementation("io.vertx:vertx-web-api-contract")
 	implementation("io.vertx:vertx-rx-java3")
-	implementation("io.vertx:vertx-auth-oauth2")
+	implementation("io.vertx:vertx-auth-oauth2:$vertxVersion")
 	implementation("io.vertx:vertx-jdbc-client")
 	implementation("io.vertx:vertx-config")
 	implementation("io.vertx:vertx-rx-java2")
