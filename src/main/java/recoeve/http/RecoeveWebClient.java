@@ -13,20 +13,16 @@ import org.jsoup.select.Elements;
 
 
 
-public class RecoeveWebClient extends AbstractVerticle {
+public class RecoeveWebClient {
 public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
-protected Vertx vertx;
 
+public Vertx vertx;
 public WebClient webClient;
 public long timerId;
 public int timerN;
 
-@Override
-public void start() {
-	vertx=context.owner();
-}
-
-public RecoeveWebClient() {
+public RecoeveWebClient(Vertx vertx) {
+	this.vertx=vertx;
 	webClient=WebClient.create(vertx, options);
 	timerN=0;
 }

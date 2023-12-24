@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 	// deprecated API?
 
@@ -59,18 +61,29 @@ final public static String HOST
 final public static String ENCODING="UTF-8";
 final public static String INVALID_ACCESS="INVALID ACCESS";
 final public static long day31InMs=31*24*60*60*1000;
-// public Vertx vertx;
+
+public Vertx vertx;
+public FileMap fileMap;
+public FileMapWithVar fileMapWithVar;
+public RecoeveWebClient recoeveWebClient;
+
+public Recoeve(Vertx vertx, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient) {
+	this.vertx=vertx;
+	this.fileMap=fileMap;
+	this.fileMapWithVar=fileMapWithVar;
+	this.recoeveWebClient=recoeveWebClient;
+}
 
 @Override
 public void start() {
-	final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
-		.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
-		.setEnabled(true);
-	final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
-	final Vertx vertx=Vertx.vertx(vertxOptions);
+	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
+	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
+	// 	.setEnabled(true);
+	// final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
+	// final Vertx vertx=Vertx.vertx(vertxOptions);
 	// vertx=context.owner();
-	final FileMap fileMap=new FileMap();
-	final FileMapWithVar fileMapWithVar=new FileMapWithVar();
+	// final FileMap fileMap=new FileMap();
+	// final FileMapWithVar fileMapWithVar=new FileMapWithVar();
 	final Router router0=Router.router(vertx);
 	final Router router1=Router.router(vertx);
 	final Router router2=Router.router(vertx);
@@ -139,41 +152,37 @@ public void start() {
 				}
 				if (shortURI.startsWith("://",k)) {
 					k+=3;
-					int l=shortURI.indexOf('/',k);
-					String shortURIHost=null;
-					if (l==-1) {
-						shortURIHost=shortURI.substring(k);
-					}
-					else {
-						shortURIHost=shortURI.substring(k,l);
-					}
-					System.out.println("shortURIHost: "+shortURIHost);
-					RecoeveWebClient recoeveWebClient=new RecoeveWebClient();
-					recoeveWebClient.webClient.headAbs(shortURI)
-						.send()
-						.onSuccess(response -> {
-							if (response.statusCode()==200) {
-								// The response is a redirect, so get the followedRedirects().
-								List<String> followedURIs=response.followedRedirects();
-								String fullURI=followedURIs.get(followedURIs.size()-1);
-								System.out.println("Full TikTok URL: "+fullURI);
-								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-									.end(fullURI, ENCODING);
-							}
-							else {
+					try {
+						URI uriAnalysed=new URI(shortURI);
+						String shortURIHost=uriAnalysed.getHost();
+						System.out.println("shortURIHost: "+shortURIHost);
+						recoeveWebClient.webClient.headAbs(shortURI)
+							.send()
+							.onSuccess(response -> {
+								if (response.statusCode()==200) {
+									// The response is a redirect, so get the followedRedirects().
+									List<String> followedURIs=response.followedRedirects();
+									String fullURI=followedURIs.get(followedURIs.size()-1);
+									System.out.println("Full TikTok URL: "+fullURI);
+									pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+										.end(fullURI, ENCODING);
+								}
+								else {
+									System.out.println("Sended shortURI.");
+									pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+										.end(shortURI, ENCODING);
+								}
+							})
+							.onFailure(throwable -> {
+								throwable.printStackTrace();
 								System.out.println("Sended shortURI.");
 								pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 									.end(shortURI, ENCODING);
-							}
-							recoeveWebClient.webClient.close();
-						})
-						.onFailure(throwable -> {
-							throwable.printStackTrace();
-							System.out.println("Sended shortURI.");
-							pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-								.end(shortURI, ENCODING);
-							recoeveWebClient.webClient.close();
-						});
+							});
+					}
+					catch (URISyntaxException e) {
+						pl.db.err(e);
+					}
 				}
 				else {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
@@ -315,7 +324,7 @@ public void start() {
 			System.out.println("Sended user-page.html. (already logged-in)");
 		}
 		else if (pl.cookie.get("rmbdI")!=null) {
-			pl.req.response().end(fileMap.get("remember-me.html", pl.lang), ENCODING);
+			pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
 			System.out.println("Sended remember-me.html.");
 		}
 		else {
@@ -342,7 +351,7 @@ public void start() {
 							// pl.req.response().setStatusCode(401).end("Wrong code!");
 							// System.out.println("Wrong code!");
 						}
-						pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 						System.out.println("Sended log-in.html. (No rmbd cookie)");
 					});
 				}
@@ -361,7 +370,7 @@ public void start() {
 			System.out.println("Sended user-page.html");
 		}
 		else {
-			pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING); // to "/account/log-in".
+			pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // to "/account/log-in".
 			System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 		}
 	});
@@ -434,11 +443,11 @@ public void start() {
 				switch (fileName) {
 					case "personal-info-handle": // e.g. path=/personal-info-handle
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(fileMap.get("personal-info-handle.html", pl.lang), ENCODING);
+							.end(fileMap.getFileWithLang("personal-info-handle.html", pl.lang), ENCODING);
 						break;
 					case "service-summary": // e.g. path=/service-summary
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(fileMap.get("service-summary.html", pl.lang), ENCODING);
+							.end(fileMap.getFileWithLang("service-summary.html", pl.lang), ENCODING);
 						break;
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
@@ -446,12 +455,12 @@ public void start() {
 						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
-							.end(fileMap.get("jquery.js", pl.lang), ENCODING);
+							.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
 						System.out.println("Sended jquery.js.");
 						break;
 					case "prepare.js": // e.g. path=/prepare.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
-							.end(fileMap.get("prepare.js", pl.lang), ENCODING);
+							.end(fileMap.getFileWithLang("prepare.js", pl.lang), ENCODING);
 						System.out.println("Sended prepare.js.");
 						break;
 					case "sessionIter": // e.g. path=/sessionIter
@@ -472,12 +481,12 @@ public void start() {
 						break;
 					case "robots.txt": // e.g. path=/robots.txt
 						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-							.end(fileMap.get("robots.txt", "df"), ENCODING);
+							.end(fileMap.getFileWithLang("robots.txt", "df"), ENCODING);
 						System.out.println("Sended robots.txt.");
 						break;
 					case "ads.txt": // e.g. path=/ads.txt
 						pl.req.response().putHeader("Content-Type", "text/plain")
-							.end(fileMap.get("ads.txt", "df"), ENCODING);
+							.end(fileMap.getFileWithLang("ads.txt", "df"), ENCODING);
 						System.out.println("Sended ads.txt.");
 						break;
 					default:
@@ -644,27 +653,24 @@ public void start() {
 							}
 							if (uri.startsWith("://",k)) {
 								k+=3;
-								int l=uri.indexOf('/',k);
-								String shortURIHost=null;
-								if (l==-1) {
-									shortURIHost=uri.substring(k);
+								try {
+									URI uriAnalysed=new URI(uri);
+									String shortURIHost=uriAnalysed.getHost();
+									System.out.println("shortURIHost: "+shortURIHost);
+									recoeveWebClient.webClient.getAbs(uri)
+										.send(ar -> {
+											if (ar.succeeded()) {
+												recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
+											}
+											else {
+												System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
+												pl.req.response().end("Failed to retrieve the webpage.", ENCODING);
+											}
+										});
 								}
-								else {
-									shortURIHost=uri.substring(k,l);
+								catch (URISyntaxException e) {
+									pl.db.err(e);
 								}
-								System.out.println("shortURIHost: "+shortURIHost);
-								RecoeveWebClient recoeveWebClient=new RecoeveWebClient();
-								recoeveWebClient.webClient.getAbs(uri)
-									.send(ar -> {
-										if (ar.succeeded()) {
-											recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
-										}
-										else {
-											System.err.println("Failed to retrieve the webpage: "+ar.cause().getMessage());
-											pl.req.response().end("Failed to retrieve the webpage.", ENCODING);
-											recoeveWebClient.webClient.close();
-										}
-									});
 							}
 							else {
 								pl.req.response().end("No http-URI.", ENCODING);
@@ -761,7 +767,7 @@ public void start() {
 					else if (pl.method==HttpMethod.GET) {
 						// Log-in 유도.
 						pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-						pl.req.response().end(fileMap.get("verify.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.getFileWithLang("verify.html", pl.lang), ENCODING);
 						System.out.println("Sended 'Please log in first to verify your account.'.");
 					}
 					else {
@@ -772,7 +778,7 @@ public void start() {
 				case "changePwd": // path=/account/changePwd
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (pl.db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
-						pl.req.response().end(fileMap.get("changePwd.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.getFileWithLang("changePwd.html", pl.lang), ENCODING);
 						System.out.println("Sended changePwd.html.");
 					}
 					else {
@@ -850,11 +856,11 @@ public void start() {
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
 					else if (pl.cookie.get("rmbdI")!=null) {
-						pl.req.response().end(fileMap.get("remember-me.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
 						System.out.println("Sended remember-me.html.");
 					}
 					else {
-						pl.req.response().end(fileMap.get("log-in.html", pl.lang), ENCODING);
+						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 						System.out.println("Sended log-in.html. (No rmbd cookie)");
 					}
 					break;
@@ -910,7 +916,7 @@ public void start() {
 					break;
 				case "log-out": case "log-out-from-all": // path=/account/log-out or /account/log-out-from-all
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-					pl.req.response().end(fileMap.get("log-out.html", pl.lang), ENCODING);
+					pl.req.response().end(fileMap.getFileWithLang("log-out.html", pl.lang), ENCODING);
 					System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
 					break;
 				case "log-out.do": // path=/account/log-out.do
@@ -1090,12 +1096,9 @@ public void start() {
 
 	// vertx.createHttpServer()
 	// 	.requestHandler(router).listen(80);
-
-	vertx.deployVerticle(new Recoeve());
 } // public void start()
 
 public static void main(String... args) {
-	Recoeve recoeve=new Recoeve();
-	recoeve.start();
+	// Do nothing.
 }
 } // public class Recoeve extends AbstractVerticle

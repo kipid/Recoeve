@@ -24,7 +24,7 @@ import recoeve.http.Recoeve;
 
 
 
-public class FileMap extends AbstractVerticle {
+public class FileMap {
 private static final String[] referersAllowed={
 		"localhost"
 		, "recoeve.net", "www.recoeve.net"
@@ -44,15 +44,11 @@ private static final String[] fileNames={
 		, "right-to-commit-suicide.html"
 	};
 
-protected Vertx vertx;
-public final LocalMap<String, Buffer> fileStorage;
+public Vertx vertx;
+public LocalMap<String, Buffer> fileStorage;
 
-@Override
-public void start() {
-	vertx=context.owner();
-}
-
-public FileMap() {
+public FileMap(Vertx vertx) {
+	this.vertx=vertx;
 	fileStorage=vertx.sharedData().getLocalMap("fileStorage"); // Use LocalMap to store files in memory
 	FileSystem fileSystem=vertx.fileSystem();
 
@@ -89,12 +85,10 @@ private static final String[] txtFileNames={
 		, "log-in.html", "verify.html", "changePwd.html", "log-out.html"
 		, "user-page.html", "remember-me.html"
 	};
-private static final int txtFileMapSize=50;
-private static final int fileLangMapSize=500; // # of languages translated to support.
+private static final int txtFileMapSize=30;
+private static final int fileLangMapSize=20; // # of languages translated to support.
 
 public static Set<String> refererSet;
-// public static Map<String, String> fileMap;
-	// fileMap.get("fileName")
 public static Map<String, Map<String, String>> txtFileMap;
 	// txtFileMap.get("txtFileName").get("lang")
 public static StrArray langMap;
@@ -106,11 +100,6 @@ static {
 	for (String referer: referersAllowed) {
 		refererSet.add(referer);
 	}
-
-	// fileMap=new HashMap<String, String>();
-	// for (String fileName: fileNames) {
-	// 	fileMap.put(fileName, filePath+fileName);
-	// }
 
 	txtFileMap=new HashMap<String, Map<String, String>>(txtFileMapSize);
 	File file=null;
@@ -224,7 +213,7 @@ public static String replaceStr(String str, String lang) {
 	return replaceStr(strToList(str), lang);
 }
 
-public static String get(String txtFileName, String lang) {
+public static String getFileWithLang(String txtFileName, String lang) {
 	Map<String, String> fileLangMap=txtFileMap.get(txtFileName);
 	if (fileLangMap==null) {return null;}
 	String res=fileLangMap.get(lang);
@@ -235,10 +224,10 @@ public static String get(String txtFileName, String lang) {
 }
 
 public static void main(String... args) {
-	FileMap fileMap=new FileMap();
+	FileMap fileMap=new FileMap(Vertx.vertx());
 	fileMap.vertx.setTimer(2000, timerId -> {
 		System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
-		System.out.println(fileMap.get("log-in.html", "ko"));
+		System.out.println(fileMap.getFileWithLang("log-in.html", "ko"));
 		System.out.println(fileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
 		System.out.println(fileMap.refererAllowed("localhost"));
 		System.out.println(Pattern.quote("[a-d]"));

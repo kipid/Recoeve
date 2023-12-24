@@ -2,22 +2,27 @@ package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+
+import recoeve.db.*;
 
 public class MainVerticle extends AbstractVerticle {
+public Vertx vertx;
+public FileMap fileMap;
+public FileMapWithVar fileMapWithVar;
+public RecoeveWebClient recoeveWebClient;
 
-  @Override
-  public void start(Promise<Void> startPromise) throws Exception {
-    vertx.createHttpServer().requestHandler(req -> {
-      req.response()
-        .putHeader("content-type", "text/plain")
-        .end("Hello from Vert.x!");
-    }).listen(8888, http -> {
-      if (http.succeeded()) {
-        startPromise.complete();
-        System.out.println("HTTP server started on port 8888");
-      } else {
-        startPromise.fail(http.cause());
-      }
-    });
-  }
+@Override
+public void start() {
+	vertx=getVertx();
+	fileMap=new FileMap(vertx);
+	fileMapWithVar=new FileMapWithVar();
+	recoeveWebClient=new RecoeveWebClient(vertx);
+	vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient));
+}
+
+public static void main(String... args) {
+	MainVerticle verticle=new MainVerticle();
+	verticle.start();
+}
 }

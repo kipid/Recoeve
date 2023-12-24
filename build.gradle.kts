@@ -17,7 +17,7 @@ repositories {
 val vertxVersion = "4.5.1"
 val junitJupiterVersion = "5.9.1"
 
-val mainVerticleName = "recoeve.http.Recoeve"
+val mainVerticleName = "recoeve.http.MainVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
 
 val watchForChange = "src/**/*"
