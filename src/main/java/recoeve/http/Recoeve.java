@@ -106,7 +106,7 @@ public void start() {
 	router2.route().handler(corsHandler2);
 
 	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
-	oauth2Handler.withScopes(List.of("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"));
+	// oauth2Handler.withScopes(List.of("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"));
 	router2.route("/account/log-in/with/google").handler(oauth2Handler);
 
 	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
