@@ -6,6 +6,7 @@ window.m={
 	initialPathname:window.location.pathname
 	, initialSearch:window.location.search
 	, initialHash:window.location.hash
+	, hashMap:{}
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -28,6 +29,35 @@ let fullPath=initialPathname+initialSearch+initialHash;
 let path="/account/log-in";
 if (!initialPathname.startsWith(path)) {
 	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
+}
+if (initialHash) {
+	let hashSplit=initialHash.substring(1).split("&");
+	for (let i=0;i<hashSplit.length;i++) {
+		let hashISplit=hashSplit[i].split("=");
+		if (hashISplit.length>=2) {
+			m.hashMap[hashISplit[0]]=hashISplit[1];
+		}
+		else {
+			m.hashMap[hashISplit[0]]="";
+		}
+	}
+	if (m.hashMap.access_token&&m.hashMap.token_type) {
+		$.ajax({
+			type:"GET", url:`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token}&token_type=${m.hashMap.token_type}`
+			, dataType:"json"
+		}).done(function (resp) {
+			console.log(resp);
+			if (resp.verified_email&&resp.email) {
+				// Log-in with this email, but state and ip check also.
+			}
+		});
+	}
+	// $.ajax({
+	// 	type:"POST", url:initialPathname, data:initialHash.substring(1)
+	// 	, dataType:"text"
+	// }).done(async function (resp) {
+	// 	resp=await m.strToJSON(resp);
+	// });
 }
 })(window.m);
 </script>
@@ -447,10 +477,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	// }
 };
 
-m.state="{--m.state--}"||null;
-if (!m.state) {
-	m.state=Math.random().toString(16).substring(2);
-}
+m.state=Math.random().toString(16).substring(2);
 // Google's OAuth 2.0 endpoint for requesting an access token
 m.oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -459,7 +486,7 @@ m.params={
 	client_id:'964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
 	redirect_uri:'https://recoeve.net/account/log-in/with/google',
 	response_type:'token',
-	scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+	scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/oauth2/v2/userinfo',
 	// scope:'email profile',
 	state:m.state,
 	login_hint:$("#input-userId")[0].value,
@@ -474,7 +501,6 @@ m.paramsSearch="?"+m.paramsSearch.substring(1);
 m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
 console.log(m.authGoogleURL);
 
-m.authToken=`{--m.authToken--}`;
 m.logInWithGoogle=function (elem) {
 	$.ajax("/account/check", {
 		type: "POST"
