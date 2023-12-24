@@ -128,7 +128,7 @@ public void start() {
 				pl.req.bodyHandler((Buffer data) -> {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 						.end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow, pl.req.getParam("goto")), ENCODING);
-					System.out.println("Sended pre-google saved or not.");
+					System.out.println("Sended pre-google saved or not. state:"+data.toString());
 				});
 				break;
 			case "google":
@@ -148,6 +148,7 @@ public void start() {
 							}
 						}
 					}
+					System.out.println("state:"+dataMap.get("state"));
 					if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
 						System.out.println("State is matched!");
 						String redirect=pl.db.getGotoPreGoogle(dataMap.get("state"), pl.ip);
