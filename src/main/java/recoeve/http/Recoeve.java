@@ -101,7 +101,8 @@ public void start() {
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST).allowedHeader("Content-Type")
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
-		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE);
+		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
+		.allowedHeader("Access-Control-Allow-Origin");
 
 	router2.route().handler(corsHandler2);
 
@@ -132,30 +133,44 @@ public void start() {
 				break;
 			case "google":
 				pl.req.bodyHandler((Buffer data) -> {
-					System.out.println(data.toString());
-					String access_token=pl.uriHashMap.get("access_token");
-					if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
-						System.out.println("State is matched!");
-						authProvider.authenticate(new Oauth2Credentials(
-							new JsonObject()
-								.put("access_token", access_token)
-								.put("token_type", pl.uriHashMap.get("token_type"))
-						), res -> {
-							if (res.succeeded()) {
-								User user=res.result();
-								System.out.println(user.attributes());
-								System.out.println(user.get("email").toString());
-								// Handle the authenticated user
-								// pl.req.response().end("Authentication successful");
-							} else {
-								// Handle authentication failure
-								// pl.req.response().setStatusCode(401).end("Wrong code!");
-								// System.out.println("Wrong code!");
+					String dataStr=data.toString();
+					Map<String, String> dataMap=new HashMap<String, String>();
+					if (dataStr!=null&&dataStr.length()>0) {
+						System.out.println(dataStr);
+						String[] dataSplit=dataStr.split("&");
+						for (String dataI: dataSplit) {
+							String[] dataISplit=dataI.split("=");
+							if (dataISplit.length>=2) {
+								dataMap.put(dataISplit[0], dataISplit[1]);
 							}
-							pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
-							System.out.println("Sended log-in.html. (No rmbd cookie)");
-						});
+							else {
+								dataMap.put(dataISplit[0], "");
+							}
+						}
 					}
+					String credential=dataMap.get("credential");
+					if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
+						System.out.println("State is matched!");
+						// authProvider.authenticate(new Oauth2Credentials(
+						// 	new JsonObject()
+						// 		.put("credential", credential)
+						// 		.put("token_type", dataMap.get("token_type"))
+						// ), res -> {
+						// 	if (res.succeeded()) {
+						// 		User user=res.result();
+						// 		System.out.println(user.attributes());
+						// 		System.out.println(user.get("email").toString());
+						// 		// Handle the authenticated user
+						// 		// pl.req.response().end("Authentication successful");
+						// 	} else {
+						// 		// Handle authentication failure
+						// 		// pl.req.response().setStatusCode(401).end("Wrong code!");
+						// 		// System.out.println("Wrong code!");
+						// 	}
+						// });
+					}
+					pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
+					System.out.println("Sended log-in.html. (No rmbd cookie)");
 				});
 				break;
 			}
