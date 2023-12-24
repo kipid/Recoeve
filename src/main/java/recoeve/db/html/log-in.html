@@ -447,7 +447,10 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 	// }
 };
 
-m.state=Math.random().toString(16).substring(2);
+m.state="{--m.state--}"||null;
+if (!m.state) {
+	m.state=Math.random().toString(16).substring(2);
+}
 // Google's OAuth 2.0 endpoint for requesting an access token
 m.oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -471,13 +474,15 @@ m.paramsSearch="?"+m.paramsSearch.substring(1);
 m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
 console.log(m.authGoogleURL);
 
+m.authToken=`{--m.authToken--}`;
 m.logInWithGoogle=function (elem) {
 	$.ajax("/account/check", {
 		type: "POST"
 		, data: "[idAvailable]\t[emailAvailable@recoeve.net]"
 	}).done(function (resp) {
 		let res=resp.split('\t');
-		m.state=res[3].substring(0, 13);
+		m.authToken=res[3];
+		m.state=m.authToken.substring(0, 13);
 		$.ajax({
 			type:"POST", url:"/account/log-in/with/pre-google", data:m.state
 			, dataType:"text"
