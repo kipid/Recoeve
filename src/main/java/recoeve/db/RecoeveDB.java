@@ -695,7 +695,7 @@ public String putPreGoogle(String state, String ip, Timestamp tNow) {
 public boolean getPreGoogle(String state, String ip, Timestamp tNow) {
 	try {
 		pstmtGetPreGoogle.setString(1, ip.split(":")[0]);
-		pstmtGetPreGoogle.setString(1, state);
+		pstmtGetPreGoogle.setString(2, state);
 		ResultSet rs=pstmtGetPreGoogle.executeQuery();
 		if (rs.next()) {
 			return tNow.before(new Timestamp(rs.getTimestamp("t").getTime()+300000L));
