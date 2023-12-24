@@ -114,7 +114,7 @@ public void start() {
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 		if (pl.sessionPassed) {
-			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 			System.out.println("Sended user-page.html. (already logged-in)");
 		}
 		else if (pl.cookie.get("rmbdI")!=null) {
@@ -383,7 +383,7 @@ public void start() {
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		if (pl.cookie.get("I")!=null||pl.cookie.get("rmbdI")!=null) {
-			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
+			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
 			System.out.println("Sended user-page.html");
 		}
 		else {
@@ -468,7 +468,7 @@ public void start() {
 						break;
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(fileMapWithVar.get("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
@@ -488,12 +488,12 @@ public void start() {
 						break;
 					case "reco": // e.g. path=/reco
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 						break;
 					case "recostat": // e.g. path=/recostat?uri=...
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(fileMapWithVar.get("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended recostat.html.");
 						break;
 					case "robots.txt": // e.g. path=/robots.txt
@@ -540,7 +540,7 @@ public void start() {
 				userId=ctx.pathParam("userId");
 			}
 			if (userId!=null&&!userId.isEmpty()&&pl.db.idExists(userId)) {
-				pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapUserPage(pl.cookie, userId)), ENCODING);
+				pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapUserPage(pl.cookie, userId)), ENCODING);
 				System.out.println("Sended user-page.html");
 			}
 			else {
@@ -869,7 +869,7 @@ public void start() {
 				case "log-in": // path=/account/log-in
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (pl.sessionPassed) {
-						pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+						pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
 					else if (pl.cookie.get("rmbdI")!=null) {
@@ -1015,7 +1015,7 @@ public void start() {
 									Map<String,String> varMap=new HashMap<String,String>();
 									varMap.put("{--user id--}", inputs.get(1, "userId"));
 									varMap.put("{--user email--}", inputs.get(1, "userEmail"));
-									pl.req.response().end(fileMapWithVar.get("signed-up.html", pl.lang, varMap), ENCODING);
+									pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("signed-up.html", pl.lang, varMap), ENCODING);
 									System.out.println("Sended signed-up.html.");
 								}
 								else {

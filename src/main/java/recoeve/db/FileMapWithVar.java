@@ -18,13 +18,13 @@ public class FileMapWithVar {
 	private static String filePath="C:\\Recoeve\\src\\main\\java\\recoeve\\db\\html\\";
 	private static final String[] fileNames={
 			"user-page.html", "recostat.html"
-			, "signed-up.html"
+			,"log-in.html" , "signed-up.html"
 			, "reco.html"
 			, "multireco.html"
 			// , "redirect.html", "remember-me.html"
 		};
-	private static final int fileMapSize=50;
-	private static final int fileLangMapSize=10;
+	private static final int fileMapSize=15;
+	private static final int fileLangMapSize=20;
 
 	public static Map<String, Map<String, ArrayList<String>>> fileMap;
 		// fileMap.get("fileName").get("lang")
@@ -156,7 +156,7 @@ public class FileMapWithVar {
 
 	public FileMapWithVar() {}
 
-	public static String get(String fileName, String lang, Map<String,String> varMap) {
+	public static String getFileWithLangAndVars(String fileName, String lang, Map<String,String> varMap) {
 		Map<String, ArrayList<String>> fileLangMap=fileMap.get(fileName);
 		if (fileLangMap==null) {return null;}
 		ArrayList<String> strList=fileLangMap.get(lang);
@@ -182,6 +182,6 @@ public class FileMapWithVar {
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
 		varMap.put("{--user email--}", "id@email.com");
-		System.out.println(FileMapWithVar.get("multireco.html", "en", varMap));
+		System.out.println(FileMapWithVar.getFileWithLangAndVars("multireco.html", "en", varMap));
 	}
 }
