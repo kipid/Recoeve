@@ -490,7 +490,7 @@ $.ajax("/account/check", {
 		, dataType:"text"
 	}).done(function (resp) {
 		console.log(resp);
-		$elem.before( m.encloseErr(resp) );
+		$(".form-login>.g_id_signin").before( m.encloseErr(resp) );
 		// Add form to page and submit it to open the OAuth 2.0 endpoint.
 		// window.open(m.authGoogleURL, "_blank");
 	});
