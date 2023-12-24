@@ -76,26 +76,85 @@ public Recoeve(Vertx vertx, FileMap fileMap, FileMapWithVar fileMapWithVar, Reco
 
 @Override
 public void start() {
-	// final MetricsOptions metricsOptions=new MicrometerMetricsOptions()
-	// 	.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
-	// 	.setEnabled(true);
-	// final VertxOptions vertxOptions=new VertxOptions().setMetricsOptions(metricsOptions);
-	// final Vertx vertx=Vertx.vertx(vertxOptions);
-	// vertx=context.owner();
-	// final FileMap fileMap=new FileMap();
-	// final FileMapWithVar fileMapWithVar=new FileMapWithVar();
 	final Router router0=Router.router(vertx);
 	final Router router1=Router.router(vertx);
 	final Router router2=Router.router(vertx);
 	final Router router=Router.router(vertx);
 	// final OAuth2Options authOptions=new OAuth2Options()
-	// 		.setClientId()
-	// 		.setClientSecret()
+	// 		.setClientId("964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com")
+	// 		.setClientSecret("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")
 	// 		.setSite("https://accounts.google.com")
 	// 		.setTokenPath("/o/oauth2/v2/token")
 	// 		.setAuthorizationPath("/o/oauth2/v2/auth");
 	// 		.setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
 	final OAuth2Auth authProvider=GoogleAuth.create(vertx, "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com", "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");
+
+	CorsHandler corsHandler2=CorsHandler.create()
+		.addOrigin("https://www.youtube.com")
+		.addOrigin("https://g.doubleclick.net")
+		.addOrigin("https://tpc.googlesyndication.com")
+		.addOrigin("https://www.googleapis.com")
+		.addOrigin("https://localhost")
+		.addOrigin("https://recoeve.net")
+		.addOrigin("https://www.recoeve.net")
+		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
+		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
+		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
+		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
+		.allowedHeader("Content-Type");
+
+	router2.route().handler(corsHandler2);
+
+	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
+
+	oauth2Handler.withScopes(List.of("email", "profile"));
+	router2.route("/account/log-in/with/google").handler(oauth2Handler);
+
+	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
+		PrintLog pl=new PrintLog();
+		pl.printLog(ctx);
+		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
+		if (pl.sessionPassed) {
+			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+			System.out.println("Sended user-page.html. (already logged-in)");
+		}
+		else if (pl.cookie.get("rmbdI")!=null) {
+			pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
+			System.out.println("Sended remember-me.html.");
+		}
+		else {
+			String authenticater=ctx.pathParam("authenticater");
+			switch (authenticater) {
+			case "pre-google":
+				pl.req.bodyHandler((Buffer data) -> {
+					pl.req.response().end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
+					System.out.println("Sended pre-google saved or not.");
+				});
+				break;
+			case "google":
+				String access_token=pl.uriHashMap.get("access_token");
+				if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
+					System.out.println("State is matched!");
+					authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("access_token", access_token)), res -> {
+						if (res.succeeded()) {
+							User user=res.result();
+							System.out.println(user.attributes());
+							System.out.println(user.get("email").toString());
+							// Handle the authenticated user
+							// pl.req.response().end("Authentication successful");
+						} else {
+							// Handle authentication failure
+							// pl.req.response().setStatusCode(401).end("Wrong code!");
+							// System.out.println("Wrong code!");
+						}
+						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
+						System.out.println("Sended log-in.html. (No rmbd cookie)");
+					});
+				}
+				break;
+			}
+		}
+	});
 
 	CorsHandler corsHandler0=CorsHandler.create()
 		.addOrigin("https://kipid.tistory.com")
@@ -293,72 +352,6 @@ public void start() {
 		.allowedHeader("Content-Type");
 
 	router.route().handler(corsHandler);
-
-	CorsHandler corsHandler2=CorsHandler.create()
-		.addOrigin("https://www.youtube.com")
-		.addOrigin("https://g.doubleclick.net")
-		.addOrigin("https://tpc.googlesyndication.com")
-		.addOrigin("https://www.googleapis.com")
-		.addOrigin("https://localhost")
-		.addOrigin("https://recoeve.net")
-		.addOrigin("https://www.recoeve.net")
-		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
-		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
-		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
-		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
-		.allowedHeader("Content-Type");
-
-	router2.route().handler(corsHandler2);
-
-	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
-
-	oauth2Handler.withScopes(List.of("email", "profile"));
-	router2.route("/account/log-in/with/google").handler(oauth2Handler);
-
-	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
-		PrintLog pl=new PrintLog();
-		pl.printLog(ctx);
-		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-		if (pl.sessionPassed) {
-			pl.req.response().end(fileMapWithVar.get("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
-			System.out.println("Sended user-page.html. (already logged-in)");
-		}
-		else if (pl.cookie.get("rmbdI")!=null) {
-			pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
-			System.out.println("Sended remember-me.html.");
-		}
-		else {
-			String authenticater=ctx.pathParam("authenticater");
-			switch (authenticater) {
-			case "pre-google":
-				pl.req.bodyHandler((Buffer data) -> {
-					pl.req.response().end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
-					System.out.println("Sended pre-google saved or not.");
-				});
-				break;
-			case "google":
-				String access_token=pl.uriHashMap.get("access_token");
-				if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
-					authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("access_token", access_token)), res -> {
-						if (res.succeeded()) {
-							User user=res.result();
-							System.out.println(user.attributes());
-							System.out.println(user.get("email").toString());
-							// Handle the authenticated user
-							// pl.req.response().end("Authentication successful");
-						} else {
-							// Handle authentication failure
-							// pl.req.response().setStatusCode(401).end("Wrong code!");
-							// System.out.println("Wrong code!");
-						}
-						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
-						System.out.println("Sended log-in.html. (No rmbd cookie)");
-					});
-				}
-				break;
-			}
-		}
-	});
 
 	// String[] pathSplit=path.split("/");
 	router.get("/").handler(ctx -> { // path=/
