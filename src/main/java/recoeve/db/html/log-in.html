@@ -25,13 +25,13 @@ gtag('config', 'G-M350MQ7791');
 <script src="/prepare.js"></script>
 <script>
 (function (m, undefined) {
-let fullPath=initialPathname+initialSearch+initialHash;
+let fullPath=m.initialPathname+m.initialSearch+m.initialHash;
 let path="/account/log-in";
-if (!initialPathname.startsWith(path)) {
+if (!m.initialPathname.startsWith(path)) {
 	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
 }
-if (initialHash) {
-	let hashSplit=initialHash.substring(1).split("&");
+if (m.initialHash) {
+	let hashSplit=m.initialHash.substring(1).split("&");
 	for (let i=0;i<hashSplit.length;i++) {
 		let hashISplit=hashSplit[i].split("=");
 		if (hashISplit.length>=2) {
@@ -53,7 +53,7 @@ if (initialHash) {
 		});
 	}
 	// $.ajax({
-	// 	type:"POST", url:initialPathname, data:initialHash.substring(1)
+	// 	type:"POST", url:m.initialPathname, data:m.initialHash.substring(1)
 	// 	, dataType:"text"
 	// }).done(async function (resp) {
 	// 	resp=await m.strToJSON(resp);
