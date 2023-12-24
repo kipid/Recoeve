@@ -100,10 +100,8 @@ public void start() {
 		.addOrigin("https://www.recoeve.net")
 		.addOrigin("https://localhost")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
-		.allowedMethod(io.vertx.core.http.HttpMethod.POST).allowedHeader("Content-Type");
-		// .allowedMethod(io.vertx.core.http.HttpMethod.PUT)
-		// .allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
-		// .allowCredentials(true);
+		.allowedMethod(io.vertx.core.http.HttpMethod.POST).allowedHeader("Content-Type")
+		.allowCredentials(false);
 
 	router2.route().handler(corsHandler2);
 
