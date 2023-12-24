@@ -95,6 +95,7 @@ public void start() {
 		.addOrigin("https://tpc.googlesyndication.com")
 		.addOrigin("https://www.googleapis.com")
 		.addOrigin("https://accounts.google.com")
+		.addOrigin("https://www.google.com/")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://www.recoeve.net")
 		.addOrigin("https://localhost")
