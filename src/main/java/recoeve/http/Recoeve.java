@@ -91,12 +91,13 @@ public void start() {
 
 	CorsHandler corsHandler2=CorsHandler.create()
 		.addOrigin("https://www.youtube.com")
-		.addOrigin("https://g.doubleclick.net")
-		.addOrigin("https://tpc.googlesyndication.com")
-		.addOrigin("https://www.googleapis.com")
-		.addOrigin("https://localhost")
+		// .addOrigin("https://g.doubleclick.net")
+		// .addOrigin("https://tpc.googlesyndication.com")
+		// .addOrigin("https://www.googleapis.com")
+		.addOrigin("https://accounts.google.com/")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://www.recoeve.net")
+		.addOrigin("https://localhost")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
@@ -134,7 +135,11 @@ public void start() {
 				String access_token=pl.uriHashMap.get("access_token");
 				if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
 					System.out.println("State is matched!");
-					authProvider.authenticate(new Oauth2Credentials(new JsonObject().put("access_token", access_token)), res -> {
+					authProvider.authenticate(new Oauth2Credentials(
+						new JsonObject()
+							.put("access_token", access_token)
+							.put("token_type", pl.uriHashMap.get("token_type"))
+					), res -> {
 						if (res.succeeded()) {
 							User user=res.result();
 							System.out.println(user.attributes());
@@ -338,12 +343,12 @@ public void start() {
 
 	CorsHandler corsHandler=CorsHandler.create()
 		.addOrigin("https://www.youtube.com")
-		.addOrigin("https://g.doubleclick.net")
-		.addOrigin("https://tpc.googlesyndication.com")
-		.addOrigin("https://www.googleapis.com")
-		.addOrigin("https://localhost")
+		// .addOrigin("https://g.doubleclick.net")
+		// .addOrigin("https://tpc.googlesyndication.com")
+		// .addOrigin("https://www.googleapis.com")
 		.addOrigin("https://recoeve.net")
 		.addOrigin("https://www.recoeve.net")
+		.addOrigin("https://localhost")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
