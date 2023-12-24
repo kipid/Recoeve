@@ -47,9 +47,11 @@ SELECT * FROM `LogInLogs` WHERE `log`='rmb';
 ## Dump
 
 ```
-mysqldump recoeve0.1 -u root -p &gt; mydump.sql
-mysql recoeve0.1 -u root -p &lt; mydump.sql
+mysqldump -u root -p recoeve0.1 &gt; mydump.sql
+mysql -u root -p recoeve0.1 &lt; mydump.sql
 ```/
+
+mysqldump 는 빠른데, mysql 은 시간이 왜 이리 오래 걸리지?
 
 
 
