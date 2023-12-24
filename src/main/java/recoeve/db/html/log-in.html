@@ -545,47 +545,10 @@ ${window.location.href}	${document.referrer}	guest`;
 	$.ajax({
 		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
+		console.log(resp);
 	}).done(function (resp) {
+		console.log(resp);
 	});
-
-	let fragmentString=location.hash.substring(1);
-
-	// Parse query string to see if page request is coming from OAuth 2.0 server.
-	let params={};
-	let regex=/([^&=]+)=([^&]*)/g, m;
-	while (m=regex.exec(fragmentString)) {
-		params[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);
-	}
-	if (Object.keys(params).length>0) {
-		localStorage.setItem('oauth2-params', JSON.stringify(params));
-		if (params['state']) {
-			trySampleRequest();
-		}
-	}
-
-	// If there's an access token, try an API request.
-	// Otherwise, start OAuth 2.0 flow.
-	function trySampleRequest() {
-		let params=JSON.parse(localStorage.getItem('oauth2-params'));
-		if (params&&params['access_token']) {
-			$.ajax({
-				type:"GET", url:`https://www.googleapis.com/auth/userinfo.email?access_token=${params['access_token']}`
-				, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
-				, dataType:"jsonp"
-			}).done(function (resp) {
-				console.log(resp);
-			});
-			$.ajax({
-				type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
-				, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
-				, dataType:"jsonp"
-			}).done(function (resp) {
-				console.log(resp);
-			});
-		} else {
-			m.logInWithGoogle();
-		}
-	}
 });
 
 m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
