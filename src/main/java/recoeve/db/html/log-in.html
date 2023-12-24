@@ -508,7 +508,6 @@ m.logInWithGoogle=function (elem) {
 	}).done(function (resp) {
 		let res=resp.split('\t');
 		m.authToken=res[3];
-		m.state=m.authToken.substring(0, 13);
 		$.ajax({
 			type:"POST", url:"/account/log-in/with/pre-google", data:m.state
 			, dataType:"text"
