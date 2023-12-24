@@ -22,19 +22,20 @@ import recoeve.db.FileMap;
 public class PrintLog implements Handler<RoutingContext> {
 private static long numberOfClients=0;
 public static final RecoeveDB db=new RecoeveDB();
-public HttpServerRequest req=null;
+public HttpServerRequest req;
 public String lang="df";
 public boolean refererAllowed=false;
 public String path="/";
-public Cookie cookie=null;
+public Cookie cookie;
 public boolean sessionPassed=false;
-public String user_i=null;
-public HttpMethod method=null;
-public String now=null;
-public Timestamp tNow=null;
-public String referer=null;
-public String ip=null;
-public String userAgent=null;
+public String user_i;
+public HttpMethod method;
+public String now;
+public Timestamp tNow;
+public String referer;
+public String ip;
+public String userAgent;
+public String absoluteURI;
 
 public PrintLog() {}
 
@@ -92,8 +93,9 @@ public void printLog(RoutingContext ctx) {
 	path=req.path();
 	final String query=req.query();
 	System.out.println("Method: "+method);
+	absoluteURI=req.absoluteURI();
 	try {
-		System.out.println("Absolute URI: "+URLDecoder.decode(req.absoluteURI(), "UTF-8"));
+		System.out.println("Absolute URI: "+URLDecoder.decode(absoluteURI, "UTF-8"));
 	}
 	catch (UnsupportedEncodingException e) {
 		db.err(e);
