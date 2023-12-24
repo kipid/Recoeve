@@ -35,7 +35,6 @@ public Timestamp tNow=null;
 public String referer=null;
 public String ip=null;
 public String userAgent=null;
-public Map<String, String> uriHashMap=new HashMap<String, String>(10);
 
 public PrintLog() {}
 
@@ -95,26 +94,8 @@ public void printLog(RoutingContext ctx) {
 	System.out.println("Method: "+method);
 	try {
 		System.out.println("Absolute URI: "+URLDecoder.decode(req.absoluteURI(), "UTF-8"));
-		URI uri=new URI(req.absoluteURI());
-		String hash=uri.getFragment();
-		if (hash!=null&&hash.length()>1) {
-			System.out.println(hash);
-			String[] hashs=uri.getFragment().substring(1).split("&");
-			for (String hashI: hashs) {
-				String[] hashISplit=hashI.split("=");
-				if (hashISplit.length>=2) {
-					uriHashMap.put(hashISplit[0], hashISplit[1]);
-				}
-				else {
-					uriHashMap.put(hashISplit[0], "");
-				}
-			}
-		}
 	}
 	catch (UnsupportedEncodingException e) {
-		db.err(e);
-	}
-	catch (URISyntaxException e) {
 		db.err(e);
 	}
 
