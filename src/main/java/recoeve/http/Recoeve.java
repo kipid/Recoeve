@@ -103,7 +103,7 @@ public void start() {
 		.allowedMethod(io.vertx.core.http.HttpMethod.POST).allowedHeader("Content-Type")
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
 		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
-		.allowedHeader("Access-Control-Allow-Origin");
+		.allowCredentials(true);
 
 	router2.route().handler(corsHandler2);
 
