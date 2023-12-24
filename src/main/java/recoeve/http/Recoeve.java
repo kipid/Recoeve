@@ -99,10 +99,9 @@ public void start() {
 		.addOrigin("https://www.recoeve.net")
 		.addOrigin("https://localhost")
 		.allowedMethod(io.vertx.core.http.HttpMethod.GET)
-		.allowedMethod(io.vertx.core.http.HttpMethod.POST)
+		.allowedMethod(io.vertx.core.http.HttpMethod.POST).allowedHeader("Content-Type")
 		.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
-		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
-		.allowedHeader("Content-Type");
+		.allowedMethod(io.vertx.core.http.HttpMethod.DELETE);
 
 	router2.route().handler(corsHandler2);
 
