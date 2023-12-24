@@ -148,29 +148,33 @@ public void start() {
 						}
 					}
 					String credential=dataMap.get("credential");
-					if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
-						System.out.println("State is matched!");
-						// authProvider.authenticate(new Oauth2Credentials(
-						// 	new JsonObject()
-						// 		.put("credential", credential)
-						// 		.put("token_type", dataMap.get("token_type"))
-						// ), res -> {
-						// 	if (res.succeeded()) {
-						// 		User user=res.result();
-						// 		System.out.println(user.attributes());
-						// 		System.out.println(user.get("email").toString());
-						// 		// Handle the authenticated user
-						// 		// pl.req.response().end("Authentication successful");
-						// 	} else {
-						// 		// Handle authentication failure
-						// 		// pl.req.response().setStatusCode(401).end("Wrong code!");
-						// 		// System.out.println("Wrong code!");
-						// 	}
-						// });
-					}
+				});
+				if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
+					System.out.println("State is matched!");
+					// authProvider.authenticate(new Oauth2Credentials(
+					// 	new JsonObject()
+					// 		.put("credential", credential)
+					// 		.put("token_type", dataMap.get("token_type"))
+					// ), res -> {
+					// 	if (res.succeeded()) {
+					// 		User user=res.result();
+					// 		System.out.println(user.attributes());
+					// 		System.out.println(user.get("email").toString());
+					// 		// Handle the authenticated user
+					// 		// pl.req.response().end("Authentication successful");
+					// 	} else {
+					// 		// Handle authentication failure
+					// 		// pl.req.response().setStatusCode(401).end("Wrong code!");
+					// 		// System.out.println("Wrong code!");
+					// 	}
+					// });
 					pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 					System.out.println("Sended log-in.html. (No rmbd cookie)");
-				});
+				}
+				else {
+					pl.req.response().end(INVALID_ACCESS, ENCODING);
+					System.out.println("No matched state!");
+				}
 				break;
 			}
 		}
