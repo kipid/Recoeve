@@ -105,9 +105,9 @@ public void start() {
 
 	router2.route().handler(corsHandler2);
 
-	OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
+	// OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider, "https://recoeve.net/account/log-in/with/google");
 	// oauth2Handler.withScopes(List.of("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"));
-	router2.route("/account/log-in/with/google").handler(oauth2Handler);
+	// router2.route("/account/log-in/with/google").handler(oauth2Handler);
 
 	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
 		PrintLog pl=new PrintLog();
@@ -131,29 +131,32 @@ public void start() {
 				});
 				break;
 			case "google":
-				String access_token=pl.uriHashMap.get("access_token");
-				if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
-					System.out.println("State is matched!");
-					authProvider.authenticate(new Oauth2Credentials(
-						new JsonObject()
-							.put("access_token", access_token)
-							.put("token_type", pl.uriHashMap.get("token_type"))
-					), res -> {
-						if (res.succeeded()) {
-							User user=res.result();
-							System.out.println(user.attributes());
-							System.out.println(user.get("email").toString());
-							// Handle the authenticated user
-							// pl.req.response().end("Authentication successful");
-						} else {
-							// Handle authentication failure
-							// pl.req.response().setStatusCode(401).end("Wrong code!");
-							// System.out.println("Wrong code!");
-						}
-						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
-						System.out.println("Sended log-in.html. (No rmbd cookie)");
-					});
-				}
+				pl.req.bodyHandler((Buffer data) -> {
+					System.out.println(data.toString());
+					String access_token=pl.uriHashMap.get("access_token");
+					if (pl.db.getPreGoogle(pl.uriHashMap.get("state"), pl.ip, pl.tNow)) {
+						System.out.println("State is matched!");
+						authProvider.authenticate(new Oauth2Credentials(
+							new JsonObject()
+								.put("access_token", access_token)
+								.put("token_type", pl.uriHashMap.get("token_type"))
+						), res -> {
+							if (res.succeeded()) {
+								User user=res.result();
+								System.out.println(user.attributes());
+								System.out.println(user.get("email").toString());
+								// Handle the authenticated user
+								// pl.req.response().end("Authentication successful");
+							} else {
+								// Handle authentication failure
+								// pl.req.response().setStatusCode(401).end("Wrong code!");
+								// System.out.println("Wrong code!");
+							}
+							pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
+							System.out.println("Sended log-in.html. (No rmbd cookie)");
+						});
+					}
+				});
 				break;
 			}
 		}
