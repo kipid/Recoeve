@@ -7,6 +7,13 @@ window.m={
 	, initialSearch:window.location.search
 	, initialHash:window.location.hash
 	, hashMap:{}
+	, authToken:"{--m.authToken--}"
+	, regExId:/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+$/
+	, regExEmail:/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/
+	, minIdLength:1
+	, maxIdLength:128
+	, minPwdLength:4
+	, maxPwdLength:128
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -26,12 +33,10 @@ gtag('config', 'G-M350MQ7791');
 <script>
 (function (m, undefined) {
 let fullPath=m.initialPathname+m.initialSearch+m.initialHash;
-console.log(fullPath);
 let path="/account/log-in";
 if (!m.initialPathname.startsWith(path)) {
 	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
 }
-console.log(m.initialHash);
 if (m.initialHash) {
 	let hashSplit=m.initialHash.substring(1).split("&");
 	for (let i=0;i<hashSplit.length;i++) {
@@ -43,7 +48,7 @@ if (m.initialHash) {
 			m.hashMap[hashISplit[0]]="";
 		}
 	}
-	if (m.hashMap.access_token&&m.hashMap.token_type) {
+	if (m.hashMap.state&&m.hashMap.access_token&&m.hashMap.token_type) {
 		$.ajax({
 			type:"GET", url:`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token}&token_type=${m.hashMap.token_type}`
 			, dataType:"json"
@@ -51,15 +56,10 @@ if (m.initialHash) {
 			console.log(resp);
 			if (resp.verified_email&&resp.email) {
 				// Log-in with this email, but state and ip check also.
+				console.log(resp);
 			}
 		});
 	}
-	// $.ajax({
-	// 	type:"POST", url:m.initialPathname, data:m.initialHash.substring(1)
-	// 	, dataType:"text"
-	// }).done(async function (resp) {
-	// 	resp=await m.strToJSON(resp);
-	// });
 }
 })(window.m);
 </script>
@@ -222,13 +222,6 @@ m.byteCount=function (str) {
 	return encodeURI(str).split(/%..|./).length-1;
 };
 
-m.regExId=/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+$/;
-m.regExEmail=/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9-_\.]+\.[\w]{2,3}$/;
-m.minIdLength=1;
-m.maxIdLength=128;
-m.minPwdLength=4;
-m.maxPwdLength=128;
-
 m.logIn=function (elem) {
 	let $elem=$(elem).eq(0);
 	$elem[0].disabled=true;
@@ -314,9 +307,6 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
-	// for (i=m.errCount-7;i>=0;i--) {
-	// 	$("#error-msg-"+i).hide();
-	// }
 };
 
 m.forgotPwd=function (elem) {
@@ -501,7 +491,6 @@ for (let p in m.params) {
 }
 m.paramsSearch="?"+m.paramsSearch.substring(1);
 m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
-console.log(m.authGoogleURL);
 
 m.logInWithGoogle=function (elem) {
 	$.ajax("/account/check", {
@@ -565,50 +554,37 @@ ${window.location.href}	${document.referrer}	guest`;
 	let params={};
 	let regex=/([^&=]+)=([^&]*)/g, m;
 	while (m=regex.exec(fragmentString)) {
-	  params[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);
+		params[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);
 	}
 	if (Object.keys(params).length>0) {
-	  localStorage.setItem('oauth2-params', JSON.stringify(params));
-	  if (params['state']) {
-	    trySampleRequest();
-	  }
+		localStorage.setItem('oauth2-params', JSON.stringify(params));
+		if (params['state']) {
+			trySampleRequest();
+		}
 	}
 
 	// If there's an access token, try an API request.
 	// Otherwise, start OAuth 2.0 flow.
 	function trySampleRequest() {
-	  let params=JSON.parse(localStorage.getItem('oauth2-params'));
-	  if (params&&params['access_token']) {
-	    // let xhr=new XMLHttpRequest();
-	    // xhr.open('GET',
-	    //     'https://www.googleapis.com/auth/userinfo.email?' +
-	    //     'access_token='+params['access_token']);
-	    // xhr.onreadystatechange=function (e) {
-	    //   if (xhr.readyState===4&&xhr.status===200) {
-	    //     console.log(xhr.response);
-	    //   } else if (xhr.readyState===4&&xhr.status===401) {
-	    //     // Token invalid, so prompt for user permission.
-	    //     m.logInWithGoogle();
-	    //   }
-	    // };
-	    // xhr.send(null);
-	    $.ajax({
-	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.email?access_token=${params['access_token']}`
-	    	, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
+		let params=JSON.parse(localStorage.getItem('oauth2-params'));
+		if (params&&params['access_token']) {
+			$.ajax({
+				type:"GET", url:`https://www.googleapis.com/auth/userinfo.email?access_token=${params['access_token']}`
+				, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
 				, dataType:"jsonp"
-	    }).done(function (resp) {
-	    	console.log(resp);
-	    });
-	    $.ajax({
-	    	type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
-	    	, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
+			}).done(function (resp) {
+				console.log(resp);
+			});
+			$.ajax({
+				type:"GET", url:`https://www.googleapis.com/auth/userinfo.profile?access_token=${params['access_token']}`
+				, contentType:"application/x-www-form-urlencoded; charset=UTF-8"
 				, dataType:"jsonp"
-	    }).done(function (resp) {
-	    	console.log(resp);
-	    });
-	  } else {
-	    m.logInWithGoogle();
-	  }
+			}).done(function (resp) {
+				console.log(resp);
+			});
+		} else {
+			m.logInWithGoogle();
+		}
 	}
 });
 
