@@ -859,11 +859,11 @@ private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELE
 			PreparedStatement pstmtDelLogInLogs=con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
 			pstmtDelLogInLogs.setLong(1, user_me);
 			pstmtDelLogInLogs.executeUpdate();
-			vertx.setTimer(2048, id -> {
+			vertx.setTimer(1024, id -> {
 				try {
+					con.setAutoCommit(true);
 					pstmtDeleteUser.setString(1, userEmail);
 					pstmtDeleteUser.executeUpdate();
-					con.commit();
 				}
 				catch (SQLException e) {
 					err(e);
