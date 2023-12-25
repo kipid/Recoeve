@@ -11,6 +11,7 @@ public Vertx vertx;
 public FileMap fileMap;
 public FileMapWithVar fileMapWithVar;
 public RecoeveWebClient recoeveWebClient;
+public RecoeveDB db;
 
 @Override
 public void start() {
@@ -18,7 +19,9 @@ public void start() {
 	fileMap=new FileMap(vertx);
 	fileMapWithVar=new FileMapWithVar();
 	recoeveWebClient=new RecoeveWebClient(vertx);
-	vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient));
+	db=new RecoeveDB(vertx);
+	vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db));
+	// vertx.deployVerticle(new UnderConstruction(vertx, db));
 }
 
 public static void main(String... args) {

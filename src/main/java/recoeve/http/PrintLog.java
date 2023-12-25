@@ -21,7 +21,7 @@ import recoeve.db.FileMap;
 
 public class PrintLog implements Handler<RoutingContext> {
 private static long numberOfClients=0;
-public static final RecoeveDB db=new RecoeveDB();
+public RecoeveDB db;
 public HttpServerRequest req;
 public String lang="df";
 public boolean refererAllowed=false;
@@ -37,7 +37,9 @@ public String ip;
 public String userAgent;
 public String absoluteURI;
 
-public PrintLog() {}
+public PrintLog(RecoeveDB db) {
+	this.db=db;
+}
 
 public void printLog(RoutingContext ctx) {
 	req=ctx.request();

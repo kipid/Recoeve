@@ -7,6 +7,7 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 	// http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlConnectionPoolDataSource.html
 
 import io.vertx.core.MultiMap;
+import io.vertx.core.Vertx;
 
 import java.lang.StringBuilder;
 
@@ -117,6 +118,8 @@ static {
 	ds.setPassword("$repakeoco#eve");
 }
 
+public Vertx vertx;
+
 private Connection con;
 
 private PreparedStatement pstmtNow;
@@ -206,7 +209,8 @@ private PreparedStatement pstmtGetRecoStatDefTitleSet;
 private PreparedStatement pstmtPutRecoStatDefDescSet;
 private PreparedStatement pstmtGetRecoStatDefDescSet;
 
-public RecoeveDB() {
+public RecoeveDB(Vertx vertx) {
+	this.vertx=vertx;
 	try {
 		ds.setServerTimezone("UTC");
 		con=ds.getConnection();
@@ -833,9 +837,9 @@ private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELE
 			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
 			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
 			pstmtDeleteUserCatList.executeUpdate();
-			PreparedStatement pstmtGetAllRecosUser=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtGetAllRecosUser.setLong(1, user_me);
-			ResultSet rs=pstmtGetAllRecosUser.executeQuery();
+			PreparedStatement pstmtGetAllRecosOfUser=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			pstmtGetAllRecosOfUser.setLong(1, user_me);
+			ResultSet rs=pstmtGetAllRecosOfUser.executeQuery();
 			while (rs.next()) {
 				String uri=rs.getString("uri");
 				String title=rs.getString("title");
@@ -855,8 +859,17 @@ private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELE
 			PreparedStatement pstmtDelLogInLogs=con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
 			pstmtDelLogInLogs.setLong(1, user_me);
 			pstmtDelLogInLogs.executeUpdate();
-			pstmtDeleteUser.setString(1, userEmail);
-			done=pstmtDeleteUser.executeUpdate()>0;
+			vertx.setTimer(2048, id -> {
+				try {
+					pstmtDeleteUser.setString(1, userEmail);
+					pstmtDeleteUser.executeUpdate();
+					con.commit();
+				}
+				catch (SQLException e) {
+					err(e);
+				}
+			});
+			done=true;
 		}
 	}
 	catch (SQLException e) {
@@ -3585,10 +3598,11 @@ public static void main(String... args) {
 
 
 
-	RecoeveDB db=new RecoeveDB();
+	RecoeveDB db=new RecoeveDB(Vertx.vertx());
 	System.out.println(db.delBlogVisitor());
+	db.deleteUser("kepacti@gmail.com");
+	db.deleteUser("kipacti@gmail.com");
 	// db.moveRecosToRecos1();
-	// db.deleteUser("kipacti@gmail.com");
 	// System.out.println(longToHexString(0L));
 	// System.out.println(hexStringToLong(longToHexString(0L)));
 	// System.out.println(longToHexString(100000000000000L));

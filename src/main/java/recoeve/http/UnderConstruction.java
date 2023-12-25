@@ -49,15 +49,17 @@ public static final String HOST
 	// ="localhost";
 public static final String ENCODING="UTF-8";
 public static final String INVALID_ACCESS="INVALID ACCESS";
-private static final RecoeveDB db=PrintLog.db;
+
+public Vertx vertx;
+public RecoeveDB db;
+
+public UnderConstruction(Vertx vertx, RecoeveDB db) {
+	this.vertx=vertx;
+	this.db=db;
+}
 
 @Override
 public void start() {
-} // public void start()
-
-public static void main(String... args) {
-	Vertx vertx=Vertx.vertx();
-
 	Router router=Router.router(vertx);
 
 	CorsHandler corsHandler=CorsHandler.create()
@@ -73,7 +75,7 @@ public static void main(String... args) {
 	router.route().handler(corsHandler);
 
 	router.routeWithRegex(".*").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		String res=FileMap.replaceStr("<h1>Recoeve.net is Under Construction.</h1>", pl.lang);
@@ -109,7 +111,8 @@ public static void main(String... args) {
 	// 호스트 이름 유형 - IP 이름: "ip-172-31-35-249.ap-northeast-2.compute.internal"
 	// 퍼블릭 DNS : "ec2-43-200-166-14.ap-northeast-2.compute.amazonaws.com"
 	// 역방향 DNS 레코드 : "recoeve.net."
+} // public void start()
 
-	// vertx.createHttpServer()
-	// 	.requestHandler(router).listen(80);
+public static void main(String... args) {
+	// Do nothing.
 }} // public class UnderConstruction extends AbstractVerticle

@@ -66,12 +66,14 @@ public Vertx vertx;
 public FileMap fileMap;
 public FileMapWithVar fileMapWithVar;
 public RecoeveWebClient recoeveWebClient;
+public RecoeveDB db;
 
-public Recoeve(Vertx vertx, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient) {
+public Recoeve(Vertx vertx, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient, RecoeveDB db) {
 	this.vertx=vertx;
 	this.fileMap=fileMap;
 	this.fileMapWithVar=fileMapWithVar;
 	this.recoeveWebClient=recoeveWebClient;
+	this.db=db;
 }
 
 @Override
@@ -110,11 +112,11 @@ public void start() {
 	// router2.route("/account/log-in/with/google").handler(oauth2Handler);
 
 	router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 		if (pl.sessionPassed) {
-			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 			System.out.println("Sended user-page.html. (already logged-in)");
 		}
 		else if (pl.cookie.get("rmbdI")!=null) {
@@ -127,7 +129,7 @@ public void start() {
 			case "pre-google":
 				pl.req.bodyHandler((Buffer data) -> {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						.end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
+						.end(db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
 					System.out.println("Sended pre-google saved or not. state and goto:\n"+data.toString());
 				});
 				break;
@@ -150,9 +152,9 @@ public void start() {
 				// 		}
 				// 	}
 				// 	System.out.println("state:"+dataMap.get("state"));
-				// 	if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
+				// 	if (db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
 				// 		System.out.println("State is matched!");
-				// 		String redirect=pl.db.getDataPreGoogle(dataMap.get("state"), pl.ip);
+				// 		String redirect=db.getDataPreGoogle(dataMap.get("state"), pl.ip);
 				// 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 				// 			.end(redirect, ENCODING);
 				// 		System.out.println("Sended redirect goto=?.");
@@ -166,9 +168,9 @@ public void start() {
 			case "google.do":
 				pl.req.bodyHandler((Buffer data) -> {
 					StrArray inputs=new StrArray(data.toString());
-					if (pl.db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
-						String gotoStr=pl.db.getDataPreGoogle(inputs.get(1, "state"), pl.ip);
-						List<io.vertx.core.http.Cookie> setCookieSSN=pl.db.authUserWithGoogle(inputs, pl.ip, pl.userAgent, pl.tNow);
+					if (db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
+						String gotoStr=db.getDataPreGoogle(inputs.get(1, "state"), pl.ip);
+						List<io.vertx.core.http.Cookie> setCookieSSN=db.authUserWithGoogle(inputs, pl.ip, pl.userAgent, pl.tNow);
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
@@ -204,30 +206,30 @@ public void start() {
 	router0.route().handler(corsHandler0);
 
 	router0.post("/BlogStat").handler(ctx -> { // e.g. path=/BlogStat
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-				.end(""+pl.db.putBlogVisitor(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+				.end(""+db.putBlogVisitor(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
 			System.out.println("Recorded:\n"+inputs.toStringDecoded());
 		});
 	});
 
 	router0.post("/BlogStat/Get").handler(ctx -> { // e.g. path=/BlogStat/Get
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			System.out.println(inputs);
 			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-				.end(pl.db.getBlogVisitor(inputs), ENCODING);
+				.end(db.getBlogVisitor(inputs), ENCODING);
 			System.out.println("Sended /BlogStat/Get.");
 		});
 	});
 
 	router0.post("/BlogStat/getFullURI").handler(ctx -> { // e.g. path=/getFullURI
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.bodyHandler((Buffer data) -> {
 			String shortURI=data.toString();
@@ -273,7 +275,7 @@ public void start() {
 							});
 					}
 					catch (URISyntaxException e) {
-						pl.db.err(e);
+						db.err(e);
 					}
 				}
 				else {
@@ -305,7 +307,7 @@ public void start() {
 	router1.route().handler(staticHandler);
 
 	router1.get("/CDN/:fileName").handler(ctx -> { // e.g. path=/CDN/icon-Recoeve.png
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		if (pl.refererAllowed) { // referer check.
 			String fileName=null;
@@ -388,11 +390,11 @@ public void start() {
 
 	// String[] pathSplit=path.split("/");
 	router.get("/").handler(ctx -> { // path=/
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 		if (pl.cookie.get("I")!=null||pl.cookie.get("rmbdI")!=null) {
-			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
+			pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING); // to "/user/:userId". (Cookie owner's page)
 			System.out.println("Sended user-page.html");
 		}
 		else {
@@ -402,26 +404,26 @@ public void start() {
 	});
 
 	router.get("/redirect/:hashpath").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		String hashpath=ctx.pathParam("hashpath");
-		String originalURI=pl.db.getRedirectURI(pl.db.hexStringToLong(hashpath));
+		String originalURI=db.getRedirectURI(db.hexStringToLong(hashpath));
 		System.out.println("originalURI: "+Encoder.decodeURIComponent(originalURI));
 		pl.req.response().setStatusCode(302) // Set the HTTP status code for redirection
 			.putHeader("Location", originalURI) // Set the new location
 			.end();
 	});
 	router.post("/get-redirect-hashpath").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.bodyHandler((Buffer data) -> {
-			pl.req.response().end("https://"+HOST+"/redirect/"+pl.db.getRedirectHashpath(data.toString()), ENCODING);
+			pl.req.response().end("https://"+HOST+"/redirect/"+db.getRedirectHashpath(data.toString()), ENCODING);
 			System.out.println("Sended recos.");
 		});
 	});
 
 	router.get("/admin/:query").handler(ctx -> { // path=/admin/...
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		if (pl.cookie.get("I").equals("5f5e100")) {
 			String query=ctx.pathParam("query");
@@ -434,7 +436,7 @@ public void start() {
 			case "printLogs":
 				if (pl.sessionPassed) {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						.end(pl.db.printLogs());
+						.end(db.printLogs());
 					System.out.println("Sended printLogs.");
 				}
 				else {
@@ -453,7 +455,7 @@ public void start() {
 	});
 
 	router.get("/:fileName").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		if (pl.refererAllowed) { // referer check.
 			String fileName=null;
@@ -477,7 +479,7 @@ public void start() {
 						break;
 					case "multireco": // e.g. path=/multireco
 						pl.req.response().putHeader("Content-Type","text/html")
-							.end(fileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 						break;
 					case "jquery.js": // e.g. path=/jquery.js
 						pl.req.response().putHeader("Content-Type","text/javascript")
@@ -490,19 +492,19 @@ public void start() {
 						System.out.println("Sended prepare.js.");
 						break;
 					case "sessionIter": // e.g. path=/sessionIter
-						String iter=pl.db.sessionIter(pl.cookie, pl.tNow);
+						String iter=db.sessionIter(pl.cookie, pl.tNow);
 						pl.req.response().putHeader("Content-Type", "text/plain")
 							.end(iter);
 						System.out.println("iter: "+iter);
 						break;
 					case "reco": // e.g. path=/reco
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. URI [?search] will be handled by javascript.");
 						break;
 					case "recostat": // e.g. path=/recostat?uri=...
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-							.end(fileMapWithVar.getFileWithLangAndVars("recostat.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+							.end(fileMapWithVar.getFileWithLangAndVars("recostat.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended recostat.html.");
 						break;
 					case "robots.txt": // e.g. path=/robots.txt
@@ -535,7 +537,7 @@ public void start() {
 	});
 
 	router.getWithRegex("\\/user\\/([^\\/]+)(?:\\/mode\\/[^\\/]+)?").handler(ctx -> { // e.g. path=/user/kipid[/mode/multireco]?cat=...
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 		if (pl.refererAllowed) { // referer check.
@@ -548,8 +550,8 @@ public void start() {
 				System.out.println(e);
 				userId=ctx.pathParam("userId");
 			}
-			if (userId!=null&&!userId.isEmpty()&&pl.db.idExists(userId)) {
-				pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapUserPage(pl.cookie, userId)), ENCODING);
+			if (userId!=null&&!userId.isEmpty()&&db.idExists(userId)) {
+				pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapUserPage(pl.cookie, userId)), ENCODING);
 				System.out.println("Sended user-page.html");
 			}
 			else {
@@ -565,7 +567,7 @@ public void start() {
 	});
 
 	router.postWithRegex("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+)").handler(ctx -> { // e.g. path=/user/kipid/get-Recos
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		if (pl.refererAllowed) { // referer check.
@@ -579,20 +581,20 @@ public void start() {
 				userId=ctx.pathParam("userId");
 			}
 			final String finalUserId=userId;
-			if (finalUserId!=null&&!finalUserId.isEmpty()&&pl.db.idExists(finalUserId)) {
+			if (finalUserId!=null&&!finalUserId.isEmpty()&&db.idExists(finalUserId)) {
 				String wildcard=pl.req.getParam("param1");
 				System.out.println("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param1="+wildcard);
 				if (wildcard!=null) {
 				switch (wildcard) {
 					case "get-Recos": // e.g. path=/user/kipid/get-Recos
 						pl.req.bodyHandler((Buffer data) -> {
-							pl.req.response().end(pl.db.getRecos(finalUserId, new StrArray(data.toString())), ENCODING);
+							pl.req.response().end(db.getRecos(finalUserId, new StrArray(data.toString())), ENCODING);
 							System.out.println("Sended recos.");
 						});
 						break;
 					case "get-UriList": // e.g. path=/user/kipid/get-UriList
 						pl.req.bodyHandler((Buffer data) -> {
-							pl.req.response().end(pl.db.getStringCatUriList(finalUserId, new StrArray(data.toString())), ENCODING);
+							pl.req.response().end(db.getStringCatUriList(finalUserId, new StrArray(data.toString())), ENCODING);
 							System.out.println("Sended uriLists.\n"+data.toString());
 						});
 						break;
@@ -601,7 +603,7 @@ public void start() {
 							final String cat=Encoder.decodeURIComponent(pl.req.getParam("cat"));
 							System.out.println("cat: "+cat);
 							pl.req.bodyHandler((Buffer data) -> {
-								boolean result=pl.db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n"));
+								boolean result=db.changeOrderOfUriList(pl.cookie.get("I"), finalUserId, cat, ("\n"+data.toString().trim()+"\n"));
 								pl.req.response().end(""+result, ENCODING);
 								System.out.println("Sended result: "+result+" of change-order-of-UriList.");
 							});
@@ -613,14 +615,14 @@ public void start() {
 						break;
 					case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
 						pl.req.bodyHandler((Buffer data) -> {
-							pl.req.response().end(pl.db.getStrOfNeighbors(finalUserId, data.toString(), pl.tNow), ENCODING);
+							pl.req.response().end(db.getStrOfNeighbors(finalUserId, data.toString(), pl.tNow), ENCODING);
 							System.out.println("Sended neighbors.");
 						});
 						break;
 					case "cut-Neighbors": // e.g. path=/user/kipid/cut-Neighbors
 						if (pl.sessionPassed) {
 							pl.req.bodyHandler((Buffer data) -> {
-								pl.req.response().end(pl.db.cutNeighbors(finalUserId, Long.parseLong(pl.cookie.get("I"), 16), data.toString(), pl.tNow), ENCODING);
+								pl.req.response().end(db.cutNeighbors(finalUserId, Long.parseLong(pl.cookie.get("I"), 16), data.toString(), pl.tNow), ENCODING);
 								System.out.println("Sended neighbors.");
 							});
 						}
@@ -631,7 +633,7 @@ public void start() {
 						break;
 					case "get-Recoms": // e.g. path=/user/kipid/get-Recoms
 						pl.req.bodyHandler((Buffer data) -> {
-							pl.req.response().end(pl.db.getRecoms(finalUserId, data.toString()), ENCODING);
+							pl.req.response().end(db.getRecoms(finalUserId, data.toString()), ENCODING);
 							System.out.println("Sended recoms.");
 						});
 						break;
@@ -657,7 +659,7 @@ public void start() {
 	});
 
 	router.post("/reco/:toDo").handler(ctx -> {
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		if (pl.refererAllowed) { // referer check.
@@ -695,7 +697,7 @@ public void start() {
 										});
 								}
 								catch (URISyntaxException e) {
-									pl.db.err(e);
+									db.err(e);
 								}
 							}
 							else {
@@ -712,14 +714,14 @@ public void start() {
 				case "defs": // path=/reco/defs
 					pl.req.bodyHandler((Buffer data) -> {
 						final String uri=data.toString();
-						String res=pl.db.recoDefs(uri);
+						String res=db.recoDefs(uri);
 						pl.req.response().end(res);
 						System.out.println("Sended defs of uri="+uri+".");
 					});
 					break;
 				case "multidefs": // path=/reco/multidefs
 					pl.req.bodyHandler((Buffer data) -> {
-						String res=pl.db.recoDefs(new StrArray(data.toString().trim(), false, false));
+						String res=db.recoDefs(new StrArray(data.toString().trim(), false, false));
 						pl.req.response().end(res);
 						System.out.println("Sended defs of uris.");
 					});
@@ -728,7 +730,7 @@ public void start() {
 					if (pl.sessionPassed) {
 						pl.req.bodyHandler((Buffer data) -> {
 							final String recoStr=data.toString();
-							String res=pl.db.recoDo(Long.parseLong(pl.cookie.get("I"), 16), recoStr, pl.tNow);
+							String res=db.recoDo(Long.parseLong(pl.cookie.get("I"), 16), recoStr, pl.tNow);
 							pl.req.response().end(fileMap.replaceStr(res, pl.lang));
 							System.out.println("Do reco:\n"+recoStr);
 						});
@@ -741,7 +743,7 @@ public void start() {
 				case "stat": // path=/reco/stat
 					pl.req.bodyHandler((Buffer data) -> {
 						final String uri=data.toString();
-						pl.req.response().end(pl.db.getFullRecoStat(uri));
+						pl.req.response().end(db.getFullRecoStat(uri));
 					});
 					break;
 				default:
@@ -756,7 +758,7 @@ public void start() {
 	});
 
 	router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").handler(ctx -> { // e.g. path=/account/...
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		if (pl.refererAllowed) { // referer check.
 			String param0=ctx.pathParam("param0");
@@ -777,7 +779,7 @@ public void start() {
 						catch (UnsupportedEncodingException e) {
 							System.out.println(e);
 						}
-						boolean verified=pl.db.verifyUser(pl.cookie.get("I"), userId, token, pl.ip, pl.tNow);
+						boolean verified=db.verifyUser(pl.cookie.get("I"), userId, token, pl.ip, pl.tNow);
 						System.out.println("Verified:"+verified);
 						if (verified) {
 							// User is verified.
@@ -803,7 +805,7 @@ public void start() {
 					break;
 				case "changePwd": // path=/account/changePwd
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
-					if (pl.db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
+					if (db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
 						pl.req.response().end(fileMap.getFileWithLang("changePwd.html", pl.lang), ENCODING);
 						System.out.println("Sended changePwd.html.");
 					}
@@ -821,10 +823,10 @@ public void start() {
 							if (i>0) {
 								String id=dataStr.substring(0,i);
 								String token=dataStr.substring(i+1);
-								boolean tokenChecked=pl.db.checkChangePwdToken(id, token, pl.tNow);
+								boolean tokenChecked=db.checkChangePwdToken(id, token, pl.tNow);
 								System.out.println("tokenChecked: "+tokenChecked);
 								if (tokenChecked) {
-									String new_salt=pl.db.getNewPwdSalt("id", id);
+									String new_salt=db.getNewPwdSalt("id", id);
 									pl.req.response().end(new_salt, ENCODING);
 									System.out.println("Sended new password_salt: "+new_salt+".");
 								}
@@ -850,9 +852,9 @@ public void start() {
 						pl.req.bodyHandler((Buffer data) -> {
 							BodyData inputs=new BodyData(data.toString());
 							System.out.println("data:\n"+inputs);
-							if (pl.db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), pl.tNow)) {
+							if (db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), pl.tNow)) {
 								System.out.println("Token is verified. User ID: "+inputs.get("userId"));
-								if (pl.db.changePwd(inputs, pl.ip, pl.tNow)) {
+								if (db.changePwd(inputs, pl.ip, pl.tNow)) {
 									final String res=fileMap.replaceStr("[--Your password is changed.--]", pl.lang);
 									pl.req.response().end(res, ENCODING);
 									System.out.println("Sended "+res);
@@ -878,7 +880,7 @@ public void start() {
 				case "log-in": // path=/account/log-in
 					pl.req.response().putHeader("Content-Type","text/html; charset=utf-8");
 					if (pl.sessionPassed) {
-						pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, pl.db.varMapMyPage(pl.cookie)), ENCODING);
+						pl.req.response().end(fileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 						System.out.println("Sended user-page.html. (already logged-in)");
 					}
 					else if (pl.cookie.get("rmbdI")!=null) {
@@ -899,7 +901,7 @@ public void start() {
 							if (i>0) {
 								String idType=dataStr.substring(0,i);
 								String id=dataStr.substring(i+1);
-								String iter=pl.db.getPwdIteration(idType, id);
+								String iter=db.getPwdIteration(idType, id);
 								pl.req.response().end(iter, ENCODING);
 								System.out.println("Sended pwd_iteration for "+idType+" "+id+": "+iter);
 							}
@@ -919,7 +921,7 @@ public void start() {
 					if (pl.method==HttpMethod.POST) {
 						pl.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							List<io.vertx.core.http.Cookie> setCookieSSN=pl.db.authUser(inputs, pl.ip, pl.userAgent, pl.tNow);
+							List<io.vertx.core.http.Cookie> setCookieSSN=db.authUser(inputs, pl.ip, pl.userAgent, pl.tNow);
 							if (setCookieSSN!=null) {
 								// Log-in success!
 								for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
@@ -947,7 +949,7 @@ public void start() {
 					break;
 				case "log-out.do": // path=/account/log-out.do
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-					List<io.vertx.core.http.Cookie> setDelCookie1=pl.db.logout(pl.cookie, pl.sessionPassed);
+					List<io.vertx.core.http.Cookie> setDelCookie1=db.logout(pl.cookie, pl.sessionPassed);
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie1) {
 						pl.req.response().addCookie(singleCookie);
 					}
@@ -956,7 +958,7 @@ public void start() {
 					break;
 				case "log-out-from-all.do": // path=/account/log-out-from-all.do
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
-					List<io.vertx.core.http.Cookie> setDelCookie2=pl.db.logoutFromAll(pl.cookie, pl.sessionPassed);
+					List<io.vertx.core.http.Cookie> setDelCookie2=db.logoutFromAll(pl.cookie, pl.sessionPassed);
 					for (io.vertx.core.http.Cookie singleCookie: setDelCookie2) {
 						pl.req.response().addCookie(singleCookie);
 					}
@@ -971,20 +973,20 @@ public void start() {
 							int i=dataStr.indexOf("\t");
 							String id=dataStr.substring(0,i);
 							String email=dataStr.substring(i+1);
-							boolean idAvailable=pl.db.idAvailable(id);
-							boolean emailAvailable=pl.db.emailAvailable(email);
+							boolean idAvailable=db.idAvailable(id);
+							boolean emailAvailable=db.emailAvailable(email);
 							System.out.println("Checking: "+id+" and "+email);
 							System.out.println("Availability: "+idAvailable+"\t"+emailAvailable);
 							if (idAvailable&&emailAvailable) {
-								byte[] token=pl.db.randomBytes(128);
+								byte[] token=db.randomBytes(128);
 								pl.req.response().end(
-									idAvailable+"\t"+emailAvailable+"\t"+(pl.db.createAuthToken(pl.tNow, pl.ip, token)?pl.tNow+"\t"+pl.db.bytesToHexString(token):"Token is not created.")
+									idAvailable+"\t"+emailAvailable+"\t"+(db.createAuthToken(pl.tNow, pl.ip, token)?pl.tNow+"\t"+db.bytesToHexString(token):"Token is not created.")
 								, ENCODING);
 								System.out.println("Both ID: "+id+" and email: "+email+" are available. So a token is created.");
-								System.out.println("tNow: "+pl.tNow+"\n"+"token: "+pl.db.bytesToHexString(token));
+								System.out.println("tNow: "+pl.tNow+"\n"+"token: "+db.bytesToHexString(token));
 							}
 							else {
-								pl.db.logsCommit(1 // `user_i`=1 for anonymous.
+								db.logsCommit(1 // `user_i`=1 for anonymous.
 									, pl.tNow, pl.ip, "chk", false, "ID: "+id+" ["+idAvailable+"] and E-mail: "+email+" ["+emailAvailable+"] availability check.");
 								pl.req.response().end(
 									idAvailable+"\t"+emailAvailable
@@ -1003,7 +1005,7 @@ public void start() {
 					if (pl.method==HttpMethod.POST) {
 						pl.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							String forgotPwd=pl.db.forgotPwd(inputs, pl.lang, pl.tNow);
+							String forgotPwd=db.forgotPwd(inputs, pl.lang, pl.tNow);
 							pl.req.response().end(forgotPwd, ENCODING);
 							System.out.println("Sended forgotPwd: "+forgotPwd);
 						});
@@ -1018,9 +1020,9 @@ public void start() {
 					if (pl.method==HttpMethod.POST) {
 						pl.req.bodyHandler((Buffer data) -> {
 							StrArray inputs=new StrArray(data.toString());
-							if (pl.db.checkAuthToken(inputs, pl.ip, pl.tNow)) {
+							if (db.checkAuthToken(inputs, pl.ip, pl.tNow)) {
 								System.out.println("Token is verified.");
-								if (pl.db.createUser(inputs, pl.ip, pl.tNow)) {
+								if (db.createUser(inputs, pl.ip, pl.tNow)) {
 									Map<String,String> varMap=new HashMap<String,String>();
 									varMap.put("{--user id--}", inputs.get(1, "userId"));
 									varMap.put("{--user email--}", inputs.get(1, "userEmail"));
@@ -1058,12 +1060,12 @@ public void start() {
 	});
 
 	router.post("/account/log-in/remember-me.do").handler(ctx -> { // path=/account/log-in/remember-me.do
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
-			List<io.vertx.core.http.Cookie> setCookieRMB=pl.db.authUserFromRmbd(pl.cookie, inputs, pl.ip, pl.userAgent, pl.tNow);
+			List<io.vertx.core.http.Cookie> setCookieRMB=db.authUserFromRmbd(pl.cookie, inputs, pl.ip, pl.userAgent, pl.tNow);
 			for (io.vertx.core.http.Cookie singleCookie: setCookieRMB) {
 				pl.req.response().addCookie(singleCookie);
 				System.out.println(singleCookie.getName()+": "+singleCookie.getValue());
@@ -1082,11 +1084,11 @@ public void start() {
 	});
 
 	router.post("/changeOrders/CatList").handler(ctx -> { // e.g. path=/changeOrders/CatList
-		PrintLog pl=new PrintLog();
+		PrintLog pl=new PrintLog(db);
 		pl.printLog(ctx);
 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8");
 		pl.req.bodyHandler((Buffer data) -> {
-			final boolean res=pl.db.changeOrdersCatList(Long.parseLong(pl.cookie.get("I"), 16), data.toString());
+			final boolean res=db.changeOrdersCatList(Long.parseLong(pl.cookie.get("I"), 16), data.toString());
 			pl.req.response().end(""+res);
 			System.out.println("Result: "+res);
 		});
