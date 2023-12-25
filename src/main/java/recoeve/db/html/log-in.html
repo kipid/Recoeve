@@ -219,16 +219,16 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
 							if (res[1]&&res[1].goto) {
-								// window.location.pathname=res[1].goto;
-								window.open(res[1].goto, "_blank");
+								window.location.pathname=res[1].goto;
+								// window.open(res[1].goto, "_blank");
 							}
 							else if (m.searchVars.goto?.val) {
-								// window.location.href=m.searchVars.goto.val;
-								window.open(m.searchVars.goto.val, "_blank");
+								window.location.href=m.searchVars.goto.val;
+								// window.open(m.searchVars.goto.val, "_blank");
 							}
 							else {
-								// window.location.href="/";
-								window.open("/", "_blank");
+								window.location.href="/";
+								// window.open("/", "_blank");
 							}
 						}, 1024);
 					}
@@ -322,7 +322,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
 							if (resp.startsWith("log-in success")) {
-								if (m.searchVars.goto!==undefined) {
+								if (m.searchVars.goto?.val) {
 									window.location.href=m.searchVars.goto.val;
 								}
 								else {
