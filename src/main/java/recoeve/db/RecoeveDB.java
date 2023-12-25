@@ -679,12 +679,13 @@ public void updateEmailStat(String emailHost, int increment)
 		pstmtCreateEmailStat.executeUpdate();
 	}
 }
-public String putPreGoogle(String state, String ip, Timestamp tNow, String gotoStr) {
+public String putPreGoogle(String dataStr, String ip, Timestamp tNow) {
+	StrArray sa=new StrArray(dataStr);
 	try {
 		pstmtPutPreGoogle.setTimestamp(1, tNow);
 		pstmtPutPreGoogle.setString(2, ip.split(":")[0]);
-		pstmtPutPreGoogle.setString(3, state);
-		pstmtPutPreGoogle.setString(4, gotoStr);
+		pstmtPutPreGoogle.setString(3, sa.get(1, "state"));
+		pstmtPutPreGoogle.setString(4, sa.get(1, "goto"));
 		pstmtPutPreGoogle.executeUpdate();
 		return "IP and state are saved.";
 	}

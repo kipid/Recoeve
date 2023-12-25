@@ -493,21 +493,14 @@ m.paramsSearch="?"+m.paramsSearch.substring(1);
 m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
 
 m.logInWithGoogle=function (elem) {
-	$.ajax("/account/check", {
-		type: "POST"
-		, data: "[idAvailable]\t[emailAvailable@recoeve.net]"
+	$.ajax({
+		type:"POST", url:"/account/log-in/with/pre-google", data:`state\tgoto\n${m.state}\t${m.searchVars.goto.val}` // Decoded goto.
+		, dataType:"text"
 	}).done(function (resp) {
-		let res=resp.split('\t');
-		m.authToken=res[3];
-		$.ajax({
-			type:"POST", url:"/account/log-in/with/pre-google", data:m.state
-			, dataType:"text"
-		}).done(function (resp) {
-			console.log(resp);
-			$(elem).before( m.encloseErr(resp) );
-			// Add form to page and submit it to open the OAuth 2.0 endpoint.
-			window.open(m.authGoogleURL, "_blank");
-		});
+		console.log(resp);
+		$(elem).before( m.encloseErr(resp) );
+		// Add form to page and submit it to open the OAuth 2.0 endpoint.
+		window.open(m.authGoogleURL, "_blank");
 	});
 }
 

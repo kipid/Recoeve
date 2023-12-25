@@ -127,7 +127,7 @@ public void start() {
 			case "pre-google":
 				pl.req.bodyHandler((Buffer data) -> {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						.end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow, pl.req.getParam("goto")), ENCODING);
+						.end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
 					System.out.println("Sended pre-google saved or not. state:"+data.toString());
 				});
 				break;
