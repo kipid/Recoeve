@@ -527,7 +527,7 @@ m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
 m.logInWithGoogle=function (elem) {
 	if ($input_su_userId[0].value===""||m.regExId.test($input_su_userId[0].value)) {
 		$.ajax({
-			type:"POST", url:"/account/log-in/with/pre-google", data:`state\tgoto\tid\n${m.state}\t${m.searchVars.goto.val}\t${$input_su_userId[0].value}` // Decoded goto.
+			type:"POST", url:"/account/log-in/with/pre-google", data:`state\tgoto\tid\n${m.state}\t${m.searchVars.goto?.val?m.searchVars.goto.val:""}\t${$input_su_userId[0].value}` // Decoded goto.
 			, dataType:"text"
 		}).done(function (resp) {
 			console.log(resp);
