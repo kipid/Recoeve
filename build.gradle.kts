@@ -4,7 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 plugins {
 	java
 	application
-	id("com.github.johnrengelman.shadow") version "7.1.2"
+	id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "net.recoeve"
@@ -49,7 +49,7 @@ dependencies {
 	implementation("io.vertx:vertx-http-service-factory")
 	implementation("io.vertx:vertx-json-schema")
 	implementation("io.vertx:vertx-web-api-contract")
-	implementation("io.vertx:vertx-rx-java3")
+	implementation("io.vertx:vertx-rx-java3-gen")
 	implementation("io.vertx:vertx-auth-oauth2:$vertxVersion")
 	implementation("io.vertx:vertx-jdbc-client")
 	implementation("io.vertx:vertx-config")
