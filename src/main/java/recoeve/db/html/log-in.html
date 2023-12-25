@@ -218,13 +218,16 @@ if (m.initialHash) {
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
 							if (res[1]&&res[1].goto) {
-								window.location.pathname=res[1].goto;
+								// window.location.pathname=res[1].goto;
+								window.open(res[1].goto, "_blank");
 							}
 							else if (m.searchVars.goto?.val) {
-								window.location.href=m.searchVars.goto.val;
+								// window.location.href=m.searchVars.goto.val;
+								window.open(m.searchVars.goto.val, "_blank");
 							}
 							else {
-								window.location.href="/";
+								// window.location.href="/";
+								window.open("/", "_blank");
 							}
 						}, 1024);
 					}
