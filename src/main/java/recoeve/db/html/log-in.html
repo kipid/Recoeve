@@ -575,9 +575,9 @@ ${window.location.href}	${document.referrer}	guest`;
 	$.ajax({
 		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
-		console.log(resp);
+		console.log("BlogStat:", resp);
 	}).done(function (resp) {
-		console.log(resp);
+		console.log("BlogStat:", resp);
 	});
 });
 
