@@ -176,6 +176,13 @@ for (let i=0;i<dataLang[0].length;i++) {
 htmlLang+=`</div>`;
 $dataLang.after(htmlLang);
 
+let sW=screen.width;
+let sH=screen.height;
+if (sW<sH) {
+	sW=screen.height;
+	sH=screen.width;
+}
+
 ////////////////////////////////////////
 // Try Log-in or Sign-up with google.
 ////////////////////////////////////////
@@ -200,7 +207,7 @@ if (m.initialHash) {
 			if (resp.verified_email&&resp.email) {
 				// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
 				$.ajax({
-					type:"POST", url:`/account/log-in/with/google.do`, data:`state\temail\n${m.hashMap.state}\t${resp.email}`
+					type:"POST", url:`/account/log-in/with/google.do`, data:`iehack\tscreenWidth\tscreenHeight\tstate\temail\n&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 					, dataType:"text"
 				}).done(async function (resp) {
 					console.log(resp);
@@ -234,13 +241,6 @@ if (m.initialHash) {
 //////////////////////////////////////////////////////////
 // Form handling. (Validity check, encrypt, and submit)
 //////////////////////////////////////////////////////////
-let sW=screen.width;
-let sH=screen.height;
-if (sW<sH) {
-	sW=screen.height;
-	sH=screen.width;
-}
-
 m.errCount=0;
 m.encloseErr=function (msg) {
 	let $old=$(`#error-msg-${m.errCount-8}`);
