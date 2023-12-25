@@ -207,7 +207,8 @@ if (m.initialHash) {
 			if (resp.verified_email&&resp.email) {
 				// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
 				$.ajax({
-					type:"POST", url:`/account/log-in/with/google.do`, data:`iehack\tscreenWidth\tscreenHeight\tstate\temail\n&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
+					type:"POST", url:`/account/log-in/with/google.do`, data:`log\tiehack\tscreenWidth\tscreenHeight\tstate\temail
+web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 					, dataType:"text"
 				}).done(async function (resp) {
 					console.log(resp);

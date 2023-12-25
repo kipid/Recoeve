@@ -3588,7 +3588,7 @@ public static void main(String... args) {
 	RecoeveDB db=new RecoeveDB();
 	System.out.println(db.delBlogVisitor());
 	// db.moveRecosToRecos1();
-	// db.deleteUser("jwj0405@nav");
+	db.deleteUser("kipacti@gmail.com");
 	// System.out.println(longToHexString(0L));
 	// System.out.println(hexStringToLong(longToHexString(0L)));
 	// System.out.println(longToHexString(100000000000000L));
