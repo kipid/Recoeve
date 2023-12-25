@@ -128,40 +128,60 @@ public void start() {
 				pl.req.bodyHandler((Buffer data) -> {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 						.end(pl.db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
-					System.out.println("Sended pre-google saved or not. state:"+data.toString());
+					System.out.println("Sended pre-google saved or not. state and goto:\n"+data.toString());
 				});
 				break;
 			case "google":
-				pl.req.bodyHandler((Buffer data) -> {
-					String dataStr=data.toString();
-					System.out.println("dataStr: "+dataStr);
-					Map<String, String> dataMap=new HashMap<String, String>();
-					if (dataStr!=null&&dataStr.length()>0) {
-						System.out.println(dataStr);
-						String[] dataSplit=dataStr.split("&");
-						for (String dataI: dataSplit) {
-							String[] dataISplit=dataI.split("=");
-							if (dataISplit.length>=2) {
-								dataMap.put(dataISplit[0], dataISplit[1]);
-							}
-							else {
-								dataMap.put(dataISplit[0], "");
-							}
-						}
-					}
-					System.out.println("state:"+dataMap.get("state"));
-					if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
-						System.out.println("State is matched!");
-						String redirect=pl.db.getGotoPreGoogle(dataMap.get("state"), pl.ip);
-						pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-							.end(redirect, ENCODING);
-						System.out.println("Sended redirect goto=?.");
-					}
-					else {
-						Map<String, String> varMap=new HashMap<String, String>();
-						varMap.put("{--m.authToken--}", someToken);
+				// pl.req.bodyHandler((Buffer data) -> {
+				// 	String dataStr=data.toString();
+				// 	System.out.println("dataStr: "+dataStr);
+				// 	Map<String, String> dataMap=new HashMap<String, String>();
+				// 	if (dataStr!=null&&dataStr.length()>0) {
+				// 		System.out.println(dataStr);
+				// 		String[] dataSplit=dataStr.split("&");
+				// 		for (String dataI: dataSplit) {
+				// 			String[] dataISplit=dataI.split("=");
+				// 			if (dataISplit.length>=2) {
+				// 				dataMap.put(dataISplit[0], dataISplit[1]);
+				// 			}
+				// 			else {
+				// 				dataMap.put(dataISplit[0], "");
+				// 			}
+				// 		}
+				// 	}
+				// 	System.out.println("state:"+dataMap.get("state"));
+				// 	if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
+				// 		System.out.println("State is matched!");
+				// 		String redirect=pl.db.getGotoPreGoogle(dataMap.get("state"), pl.ip);
+				// 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
+				// 			.end(redirect, ENCODING);
+				// 		System.out.println("Sended redirect goto=?.");
+				// 	}
+				// 	else {
 						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // To send #hash data with POST method.
 						System.out.println("Sended log-in.html");
+				// 	}
+				// });
+				break;
+			case "google.do":
+				pl.req.bodyHandler((Buffer data) -> {
+					StrArray inputs=new StrArray(data.toString());
+					if (pl.db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
+						String gotoStr=pl.db.getGotoPreGoogle(inputs.get(1, "state"), pl.ip);
+						List<io.vertx.core.http.Cookie> setCookieSSN=pl.db.authUserWithGoogle(inputs, pl.ip, pl.userAgent, pl.tNow);
+						if (setCookieSSN!=null) {
+							// Log-in success!
+							for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
+								pl.req.response().addCookie(singleCookie);
+							}
+							pl.req.response().end("log-in success\t"+gotoStr, ENCODING);
+							System.out.println("Sended log-in success: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
+						}
+						else {
+							// Log-in failed.
+							pl.req.response().end("log-in fail", ENCODING);
+							System.out.println("log-in fail: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
+						}
 					}
 				});
 				break;

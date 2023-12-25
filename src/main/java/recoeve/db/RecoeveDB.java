@@ -1200,6 +1200,44 @@ public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 	}
 	return false;
 }
+public List<io.vertx.core.http.Cookie> authUserWithGoogle(StrArray inputs, String ip, String userAgent, Timestamp tNow) {
+	boolean done=false;
+	long user_me=1; // anonymous
+	List<io.vertx.core.http.Cookie> setCookie=null;
+	try {
+		con.setAutoCommit(false);
+		ResultSet user=findUserByEmail(inputs.get(1, "email"));
+		if (user!=null&&user.next()) {
+			user_me=user.getLong("i");
+			byte[] session=randomBytes(32);
+			byte[] saltSSN=randomBytes(32);
+			setCookie=createUserSession(user_me, tNow, session, saltSSN, ip, userAgent);
+			byte[] rmbdAuth=randomBytes(32);
+			byte[] rmbdToken=randomBytes(32);
+			setCookie.addAll(createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
+			logsCommit(user_me, tNow, ip, "lgi", true, "Remembered with Google"); // log-in success
+		}
+		else {
+			logsCommit(user_me, tNow, ip, "lgi", false, "User does not exist. Email:"+inputs.get(1, "email")); // log-in fail
+		}
+		done=true;
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	try {
+		if (done) {
+			con.commit();
+		}
+		else {
+			con.rollback();
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return setCookie;
+}
 public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, String userAgent, Timestamp tNow) {
 	boolean done=false;
 	long user_me=1; // anonymous
@@ -1215,7 +1253,7 @@ public List<io.vertx.core.http.Cookie> authUser(StrArray inputs, String ip, Stri
 				user=findUserByEmail(inputs.get(1, "userId"));
 				break;
 		}
-		if ( user!=null&&user.next() ) {
+		if (user!=null&&user.next()) {
 			user_me=user.getLong("i");
 			byte[] salt=user.getBytes("pwd_salt");
 			int iter=user.getInt("pwd_iteration");
