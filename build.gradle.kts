@@ -49,7 +49,7 @@ dependencies {
 	implementation("io.vertx:vertx-http-service-factory")
 	implementation("io.vertx:vertx-json-schema")
 	implementation("io.vertx:vertx-web-api-contract")
-	implementation("io.vertx:vertx-rx-java3-gen")
+	implementation("io.vertx:vertx-rx-java3")
 	implementation("io.vertx:vertx-auth-oauth2:$vertxVersion")
 	implementation("io.vertx:vertx-jdbc-client")
 	implementation("io.vertx:vertx-config")
