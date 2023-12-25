@@ -577,11 +577,12 @@ CREATE TABLE `PreGoogle` (
 	`ip` char(15) NOT NULL
 	, `state` char(13) NOT NULL
 	, `t` datetime NOT NULL
-	, `search` varchar(2048)
+	, `data` text
 	, primary key (`ip`, `state`)
 );
 
 ALTER TABLE `PreGoogle` ADD `search` varchar(2048);
+ALTER TABLE `PreGoogle` CHANGE `search` `data` text;
 ```/
 
 </div>
