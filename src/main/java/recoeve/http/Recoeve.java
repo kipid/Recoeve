@@ -152,7 +152,7 @@ public void start() {
 				// 	System.out.println("state:"+dataMap.get("state"));
 				// 	if (pl.db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
 				// 		System.out.println("State is matched!");
-				// 		String redirect=pl.db.getGotoPreGoogle(dataMap.get("state"), pl.ip);
+				// 		String redirect=pl.db.getDataPreGoogle(dataMap.get("state"), pl.ip);
 				// 		pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 				// 			.end(redirect, ENCODING);
 				// 		System.out.println("Sended redirect goto=?.");
@@ -167,20 +167,20 @@ public void start() {
 				pl.req.bodyHandler((Buffer data) -> {
 					StrArray inputs=new StrArray(data.toString());
 					if (pl.db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
-						String gotoStr=pl.db.getGotoPreGoogle(inputs.get(1, "state"), pl.ip);
+						String gotoStr=pl.db.getDataPreGoogle(inputs.get(1, "state"), pl.ip);
 						List<io.vertx.core.http.Cookie> setCookieSSN=pl.db.authUserWithGoogle(inputs, pl.ip, pl.userAgent, pl.tNow);
 						if (setCookieSSN!=null) {
 							// Log-in success!
 							for (io.vertx.core.http.Cookie singleCookie: setCookieSSN) {
 								pl.req.response().addCookie(singleCookie);
 							}
-							pl.req.response().end("log-in success\t"+gotoStr, ENCODING);
-							System.out.println("Sended log-in success: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
+							pl.req.response().end("log-in success\n"+gotoStr, ENCODING);
+							System.out.println("Sended log-in success: "+inputs.get(1, "email"));
 						}
 						else {
 							// Log-in failed.
-							pl.req.response().end("log-in fail", ENCODING);
-							System.out.println("log-in fail: "+inputs.get(1, "idType")+": "+inputs.get(1, "userId"));
+							pl.req.response().end(fileMap.replaceStr("[--Log-in failed.--] [--User of email--]:"+inputs.get(1, "email")+" [--does not exist.--]", pl.lang), ENCODING);
+							System.out.println("log-in fail: "+inputs.get(1, "email"));
 						}
 					}
 				});

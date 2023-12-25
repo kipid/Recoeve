@@ -224,7 +224,7 @@ public RecoeveDB() {
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
 		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?;");
 
-		pstmtPutPreGoogle=con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `search`) VALUES (?, ?, ?, ?);");
+		pstmtPutPreGoogle=con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
 		pstmtGetPreGoogle=con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
 
 		pstmtSession=con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -685,7 +685,7 @@ public String putPreGoogle(String dataStr, String ip, Timestamp tNow) {
 		pstmtPutPreGoogle.setTimestamp(1, tNow);
 		pstmtPutPreGoogle.setString(2, ip.split(":")[0]);
 		pstmtPutPreGoogle.setString(3, sa.get(1, "state"));
-		pstmtPutPreGoogle.setString(4, sa.get(1, "goto"));
+		pstmtPutPreGoogle.setString(4, dataStr);
 		pstmtPutPreGoogle.executeUpdate();
 		return "IP and state are saved.";
 	}
@@ -694,13 +694,13 @@ public String putPreGoogle(String dataStr, String ip, Timestamp tNow) {
 	}
 	return "Not saved.";
 }
-public String getGotoPreGoogle(String state, String ip) {
+public String getDataPreGoogle(String state, String ip) {
 	try {
 		pstmtGetPreGoogle.setString(1, ip.split(":")[0]);
 		pstmtGetPreGoogle.setString(2, state);
 		ResultSet rs=pstmtGetPreGoogle.executeQuery();
 		if (rs.next()) {
-			return rs.getString("search");
+			return rs.getString("data");
 		}
 	}
 	catch (SQLException e) {
@@ -721,6 +721,54 @@ public boolean getPreGoogle(String state, String ip, Timestamp tNow) {
 		err(e);
 	}
 	return false;
+}
+public boolean createUserWithGoogle(StrArray preInputs, StrArray inputs, String ip, Timestamp tNow) {
+	boolean done=false;
+	String id=preInputs.get(1, "id");
+	String email=inputs.get(1, "email");
+	ResultSet user=null;
+	String veriKey=bytesToHexString(randomBytes(32));
+	try {
+		con.setAutoCommit(false);
+		pstmtCreateUser.setLong(1, getUserIndexToPut());
+		pstmtCreateUser.setString(2, id);
+		pstmtCreateUser.setString(3, email);
+		pstmtCreateUser.setBytes(4, randomBytes(128));
+		pstmtCreateUser.setBytes(5, randomBytes(64));
+		pstmtCreateUser.setString(6, veriKey);
+		pstmtCreateUser.setString(7, ip);
+		pstmtCreateUser.setTimestamp(8, tNow);
+		pstmtCreateUser.setTimestamp(9, tNow);
+		if (pstmtCreateUser.executeUpdate()>0) {
+			user=findUserById(id);
+			if (user.next()) {
+				Gmail.sendVeriKey(email, id, veriKey);
+				updateUserClass(0, 1); // 0: Not verified yet
+				updateEmailStat(email.substring(email.indexOf("@")+1), 1);
+				logsCommit(user.getLong("i"), tNow, ip, "snu", true, "With Google :: ID: "+id+", E-mail: "+email); // sign-up
+				done=true;
+			}
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	catch (Exception e) {
+		System.out.println(e);
+	}
+	try {
+		System.out.println("createUser done : "+done);
+		if (done) {
+			con.commit();
+		}
+		else {
+			con.rollback();
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	return done;
 }
 public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	boolean done=false;
@@ -749,7 +797,6 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 				updateEmailStat(email.substring(email.indexOf("@")+1), 1);
 				logsCommit(user.getLong("i"), tNow, ip, "snu", true, "ID: "+id+", E-mail: "+email); // sign-up
 				done=true;
-				con.commit();
 			}
 		}
 	}
@@ -1216,11 +1263,34 @@ public List<io.vertx.core.http.Cookie> authUserWithGoogle(StrArray inputs, Strin
 			byte[] rmbdToken=randomBytes(32);
 			setCookie.addAll(createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
 			logsCommit(user_me, tNow, ip, "lgi", true, "Remembered with Google"); // log-in success
+			done=true;
 		}
 		else {
-			logsCommit(user_me, tNow, ip, "lgi", false, "User does not exist. Email:"+inputs.get(1, "email")); // log-in fail
+			StrArray data=new StrArray(getDataPreGoogle(inputs.get(1, "state"), ip));
+			if (!data.get(1, "id").isEmpty()) {
+				if (createUserWithGoogle(data, inputs, ip, tNow)) {
+					user=findUserByEmail(inputs.get(1, "email"));
+					if (user!=null&&user.next()) {
+						user_me=user.getLong("i");
+						byte[] session=randomBytes(32);
+						byte[] saltSSN=randomBytes(32);
+						setCookie=createUserSession(user_me, tNow, session, saltSSN, ip, userAgent);
+						byte[] rmbdAuth=randomBytes(32);
+						byte[] rmbdToken=randomBytes(32);
+						setCookie.addAll(createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
+						logsCommit(user_me, tNow, ip, "lgi", true, "Remembered with Google"); // log-in success
+						done=true;
+					}
+					else {
+						logsCommit(user_me, tNow, ip, "lgi", false, "User does not exist. Email:"+inputs.get(1, "email")); // log-in fail
+						done=true;
+					}
+				}
+			}
+			else {
+				done=false;
+			}
 		}
-		done=true;
 	}
 	catch (SQLException e) {
 		err(e);
