@@ -67,6 +67,21 @@ TRUNCATE `RecoStatDefDesc`;
 TRUNCATE `RecoStatDefCatSet`;
 TRUNCATE `RecoStatDefTitleSet`;
 TRUNCATE `RecoStatDefDescSet`;
+
+ALTER TABLE `Recos1` DROP FOREIGN KEY `recos_ibfk_2`;
+ALTER TABLE `urilist` DROP FOREIGN KEY `urilist_ibfk_1`;
+
+ALTER TABLE `Recos1` ADD CONSTRAINT `fk_recos1_user_i` FOREIGN KEY (`user_i`) REFERENCES `Users`(`i`);
+ALTER TABLE `urilist` ADD CONSTRAINT `fk_urilist_user_i` FOREIGN KEY (`user_i`) REFERENCES `Users`(`i`);
+
+SELECT * FROM `Recos1` WHERE user_i=100000004;
+SELECT * FROM `Recos1` WHERE user_i=100000029;
+
+DELETE FROM `Recos1` WHERE user_i=100000004;
+DELETE FROM `Recos1` WHERE user_i=100000029;
+
+DELETE FROM `urilist` WHERE user_i=100000004;
+DELETE FROM `urilist` WHERE user_i=100000029;
 ```/
 
 ```[.lang-java]
@@ -1295,6 +1310,8 @@ CREATE TABLE `Recos1` (
 	, `desc` text
 	, `cmt` text
 	, `val` varchar(10)
+	, PRIMARY KEY (`user_i`, `uri`(255))
+	, CONSTRAINT `fk_recos1_user_i` FOREIGN KEY (`Users`) REFERENCES `Users`(`i`)
 );
 
 #, PRIMARY KEY (`user_i`, `uri`(255))
