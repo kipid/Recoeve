@@ -3551,13 +3551,14 @@ private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELE
 			// vertx.setTimer(1024, id -> {
 			// 	try {
 			// 		con.setAutoCommit(true);
-					pstmtDeleteUser.setString(1, userEmail);
-					pstmtDeleteUser.executeUpdate();
+					// pstmtDeleteUser.setString(1, userEmail);
+					// pstmtDeleteUser.executeUpdate();
 			// 	}
 			// 	catch (SQLException e) {
 			// 		err(e);
 			// 	}
 			// });
+			rsUser.deleteRow();
 			done=true;
 		}
 	}
