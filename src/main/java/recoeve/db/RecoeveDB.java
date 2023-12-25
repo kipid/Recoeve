@@ -824,74 +824,6 @@ public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
 	}
 	return done;
 }
-private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
-	Timestamp tNow=Timestamp.valueOf(this.now());
-	boolean done=false;
-	ResultSet user=null;
-	try {
-		con.setAutoCommit(false);
-		ResultSet rsUser=findUserByEmail(userEmail);
-		if (rsUser.next()) {
-			long user_me=rsUser.getLong("i");
-			updateUserClass(rsUser.getInt("class"), -1);
-			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
-			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
-			pstmtDeleteUserCatList.executeUpdate();
-			PreparedStatement pstmtGetAllRecosOfUser=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtGetAllRecosOfUser.setLong(1, user_me);
-			ResultSet rs=pstmtGetAllRecosOfUser.executeQuery();
-			while (rs.next()) {
-				String uri=rs.getString("uri");
-				String title=rs.getString("title");
-				String catsStr=rs.getString("cats");
-				Categories cats=new Categories(catsStr);
-				String desc=rs.getString("desc");
-				Points pts=new Points(rs.getString("val"));
-				updateDefCat(uri, cats, -1);
-				updateDefTitle(uri, title, -1);
-				updateDefDesc(uri, desc, -1);
-				updateRecoStat(user_me, uri, pts, tNow, -1);
-			}
-			pstmtDelUserRemember.setLong(1, user_me);
-			pstmtDelUserRemember.executeUpdate();
-			pstmtDelUserSession1.setLong(1, user_me);
-			pstmtDelUserSession1.executeUpdate();
-			PreparedStatement pstmtDelLogInLogs=con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
-			pstmtDelLogInLogs.setLong(1, user_me);
-			pstmtDelLogInLogs.executeUpdate();
-			vertx.setTimer(1024, id -> {
-				try {
-					con.setAutoCommit(true);
-					pstmtDeleteUser.setString(1, userEmail);
-					pstmtDeleteUser.executeUpdate();
-				}
-				catch (SQLException e) {
-					err(e);
-				}
-			});
-			done=true;
-		}
-	}
-	catch (SQLException e) {
-		err(e);
-	}
-	catch (Exception e) {
-		System.out.println(e);
-	}
-	try {
-		System.out.println("User with email:"+userEmail+" is deleted successfully. : "+done);
-		if (done) {
-			con.commit();
-		}
-		else {
-			con.rollback();
-		}
-	}
-	catch (SQLException e) {
-		err(e);
-	}
-	return done;
-}
 public boolean changePwd(BodyData inputs, String ip, Timestamp tNow) {
 	boolean done=false;
 	String id=inputs.get("userId");
@@ -3581,7 +3513,74 @@ public void sendEmailAll() {
 		err(e);
 	}
 }
-
+private boolean deleteUser(String userEmail) { // TODO: DELETE `User` after DELETE TABLES which references `User`.
+	Timestamp tNow=Timestamp.valueOf(this.now());
+	boolean done=false;
+	ResultSet user=null;
+	try {
+		con.setAutoCommit(true);
+		ResultSet rsUser=findUserByEmail(userEmail);
+		if (rsUser.next()) {
+			long user_me=rsUser.getLong("i");
+			updateUserClass(rsUser.getInt("class"), -1);
+			updateEmailStat(userEmail.substring(userEmail.indexOf("@")+1), -1);
+			pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
+			pstmtDeleteUserCatList.executeUpdate();
+			PreparedStatement pstmtGetAllRecosOfUser=con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			pstmtGetAllRecosOfUser.setLong(1, user_me);
+			ResultSet rs=pstmtGetAllRecosOfUser.executeQuery();
+			while (rs.next()) {
+				String uri=rs.getString("uri");
+				String title=rs.getString("title");
+				String catsStr=rs.getString("cats");
+				Categories cats=new Categories(catsStr);
+				String desc=rs.getString("desc");
+				Points pts=new Points(rs.getString("val"));
+				updateDefCat(uri, cats, -1);
+				updateDefTitle(uri, title, -1);
+				updateDefDesc(uri, desc, -1);
+				updateRecoStat(user_me, uri, pts, tNow, -1);
+			}
+			pstmtDelUserRemember.setLong(1, user_me);
+			pstmtDelUserRemember.executeUpdate();
+			pstmtDelUserSession1.setLong(1, user_me);
+			pstmtDelUserSession1.executeUpdate();
+			PreparedStatement pstmtDelLogInLogs=con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
+			pstmtDelLogInLogs.setLong(1, user_me);
+			pstmtDelLogInLogs.executeUpdate();
+			// vertx.setTimer(1024, id -> {
+			// 	try {
+			// 		con.setAutoCommit(true);
+					pstmtDeleteUser.setString(1, userEmail);
+					pstmtDeleteUser.executeUpdate();
+			// 	}
+			// 	catch (SQLException e) {
+			// 		err(e);
+			// 	}
+			// });
+			done=true;
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+	catch (Exception e) {
+		System.out.println(e);
+	}
+	// try {
+		System.out.println("User with email:"+userEmail+" is deleted successfully. : "+done);
+	// 	if (done) {
+	// 		con.commit();
+	// 	}
+	// 	else {
+	// 		con.rollback();
+	// 	}
+	// }
+	// catch (SQLException e) {
+	// 	err(e);
+	// }
+	return done;
+}
 public static void main(String... args) {
 
 	// RecoeveDB db=new RecoeveDB();
