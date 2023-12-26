@@ -456,12 +456,12 @@ public boolean changeOrderOfUriList(String cookieI, String user_id, String cat, 
 	return false;
 }
 
-public boolean putBlogVisitor(Timestamp tNow, String ip, String URI, String referer, String REACTION_GUEST) {
+public boolean putBlogVisitor(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST) {
 	try {
 		con.setAutoCommit(true);
 		pstmtPutBlogVisitor.setTimestamp(1, tNow);
 		pstmtPutBlogVisitor.setString(2, ip);
-		pstmtPutBlogVisitor.setString(3, URI);
+		pstmtPutBlogVisitor.setString(3, uri);
 		pstmtPutBlogVisitor.setString(4, referer);
 		pstmtPutBlogVisitor.setString(5, REACTION_GUEST);
 		return pstmtPutBlogVisitor.executeUpdate()==1;
