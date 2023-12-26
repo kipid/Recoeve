@@ -1,6 +1,7 @@
 package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Context;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
