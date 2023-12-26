@@ -33,7 +33,7 @@ private static final String[] referersAllowed={
 		, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
 
-private static final String filePath="C:\\Recoeve\\CDN\\";
+private static final String filePath="C:\\Recoeve\\src\\main\\java\\recoeve\\db\\CDN\\";
 private static final String[] fileNames={
 		"favicon.ico"
 		, "jquery.js", "recoeve-style.css"
