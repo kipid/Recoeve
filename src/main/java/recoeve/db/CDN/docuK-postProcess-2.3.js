@@ -505,14 +505,14 @@ window.MathJax={
 			case 75: // K=75
 				event.preventDefault();
 				if (m.$log.is(":visible")) {
-					m.$log.hide();
+					m.$logAll.hide();
 					$out_focus.focus();
 					$button_log.removeClass("enabled");
 					m.logOn=false;
 					window.history.pushState({goOn:m.goOn, logOn:m.logOn}, "");
 				}
 				else {
-					m.$log.show();
+					m.$logAll.show();
 					$button_log.addClass("enabled");
 					m.logOn=true;
 					window.history.pushState({goOn:m.goOn, logOn:m.logOn}, "");

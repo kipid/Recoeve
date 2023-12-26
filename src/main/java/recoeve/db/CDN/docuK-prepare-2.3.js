@@ -717,7 +717,8 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 // logPrint function.
 m.$log=$("#docuK-log");
 m.$log.addClass("fixed");
-m.$log.html(`<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+m.$log.before(`<div class="docuK-log exit" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+m.$logAll=$("#docuK-log, .docuK-log.exit");
 m.logPrint=function (str) {
 	m.$log.append(str);
 	m.$log.scrollTop(m.$log[0].scrollHeight);
