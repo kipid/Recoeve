@@ -31,7 +31,7 @@ codeprint.SEE {display:none}
 #SNS-floating {width:100%; text-align:center; margin-top:-3px; padding:0}
 #SNS-floating .SNS-img {box-sizing:border-box; width:1.5em; height:1.5em; border:1px gray solid; border-left:0; cursor:pointer}
 	#SNS-floating .SNS-img:first-child {border-left:1px gray solid}
-.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.4em; color:wheat; z-index:20000; position:fixed; right:.2em;}
+.docuK #floating-key, .docuK #toggle-floating-key {font-size:1.4em; color:wheat; z-index:19000; position:fixed; right:.2em;}
 .docuK.bright #floating-key, .docuK.bright #toggle-floating-key {color:black}
 
 .docuK ::selection, .docuK ::-moz-selection {background:#aa0000; color:white}
