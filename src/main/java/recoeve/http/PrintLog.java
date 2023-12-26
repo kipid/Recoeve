@@ -78,15 +78,19 @@ public void printLog(RoutingContext ctx) {
 		}
 		if (referer.startsWith("://",k)) {
 			k+=3;
-			try {
-				URI refererURI=new URI(referer);
-				String refererHost=refererURI.getHost();
-				refererAllowed=FileMap.refererAllowed(refererHost);
-				System.out.println("Referer Host: "+refererHost);
+			int l=uri.indexOf("/",k);
+			String refererHost=null;
+			if (l>0) {
+				refererHost=uri.substring(k,l);
 			}
-			catch (URISyntaxException e) {
-				db.err(e);
+			else {
+				refererHost=uri.substring(k);
 			}
+			if (refererHost.equals("www.recoeve.net")) {
+				refererHost="recoeve.net";
+			}
+			refererAllowed=FileMap.refererAllowed(refererHost);
+			System.out.println("Referer Host: "+refererHost);
 		}
 	}
 	System.out.println("Referer Allowed: "+refererAllowed);
