@@ -22,6 +22,8 @@ import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.h
 
 import java.math.BigInteger;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 // import java.net.URLDecoder;
 
 import java.text.Normalizer;
@@ -220,7 +222,7 @@ public RecoeveDB(Vertx vertx) {
 		pstmtGetRedirectHashpath=con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
 		pstmtPutRedirect=con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
-		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`) VALUES (?, ?, ?, ?, ?);");
+		pstmtPutBlogVisitor=con.prepareStatement("INSERT INTO `BlogStat` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
 		pstmtGetBlogVisitor=con.prepareStatement("SELECT * FROM `BlogStat` WHERE `t`>=? AND `t`<?;");
 		pstmtDelBlogVisitor=con.prepareStatement("DELETE FROM `BlogStat` WHERE `t`<?;");
 
@@ -456,6 +458,28 @@ public boolean changeOrderOfUriList(String cookieI, String user_id, String cat, 
 	return false;
 }
 
+public void putHostInBlogStat() {
+	try {
+		PreparedStatement pstmtGetAllBlogStat=con.prepareStatement("SELECT * FROM `BlogStat`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs=pstmtGetAllBlogStat.executeQuery();
+		while (rs.next()) {
+			try {
+				String host=(new URI(rs.getString("URI"))).getHost();
+				if (host.equals("www.recoeve.net")) {
+					host="recoeve.net";
+				}
+				rs.updateString("host", host);
+				rs.updateRow();
+			}
+			catch (URISyntaxException e) {
+				err(e);
+			}
+		}
+	}
+	catch (SQLException e) {
+		err(e);
+	}
+}
 public boolean putBlogVisitor(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST) {
 	try {
 		con.setAutoCommit(true);
@@ -464,6 +488,17 @@ public boolean putBlogVisitor(Timestamp tNow, String ip, String uri, String refe
 		pstmtPutBlogVisitor.setString(3, uri);
 		pstmtPutBlogVisitor.setString(4, referer);
 		pstmtPutBlogVisitor.setString(5, REACTION_GUEST);
+		String host=null;
+		try {
+			host=(new URI(uri)).getHost();
+			if (host.equals("www.recoeve.net")) {
+				host="recoeve.net";
+			}
+		}
+		catch (URISyntaxException e) {
+			err(e);
+		}
+		pstmtPutBlogVisitor.setString(6, host);
 		return pstmtPutBlogVisitor.executeUpdate()==1;
 	}
 	catch (SQLException e) {
@@ -3596,8 +3631,9 @@ public static void main(String... args) {
 
 	RecoeveDB db=new RecoeveDB(Vertx.vertx());
 	System.out.println(db.delBlogVisitor());
-	db.deleteUser("kepacti@gmail.com");
-	db.deleteUser("kipacti@gmail.com");
+	db.putHostInBlogStat();
+	// db.deleteUser("kepacti@gmail.com");
+	// db.deleteUser("kipacti@gmail.com");
 	// db.moveRecosToRecos1();
 	// System.out.println(longToHexString(0L));
 	// System.out.println(hexStringToLong(longToHexString(0L)));
@@ -3606,7 +3642,7 @@ public static void main(String... args) {
 	// System.out.println(longToHexString(-1L));
 	// System.out.println(hexStringToLong(longToHexString(-1L)));
 
-	getutf8mb4Length("F".repeat(1024));
+	// getutf8mb4Length("F".repeat(1024));
 }
 }// public class RecoeveDB
 // UPDATE `Users` SET `id`="jwj0405" WHERE `email`="jwj0405@naver.com";
