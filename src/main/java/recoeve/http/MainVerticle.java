@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import recoeve.db.*;
 
 public class MainVerticle extends AbstractVerticle {
+public Context context;
 public Vertx vertx;
 public FileMap fileMap;
 public FileMapWithVar fileMapWithVar;
