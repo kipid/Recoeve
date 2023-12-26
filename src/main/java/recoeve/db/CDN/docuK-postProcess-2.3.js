@@ -142,7 +142,7 @@ ${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GU
 
 	$title.html($title.html()+` at ${window.location.host}`);
 
-	m.$log.before(`<div id="floating-key">
+	m.$log.after(`<div id="floating-key">
 <div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
 <div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
 	<span class="bold underline">G</span>o (FS)
@@ -694,6 +694,6 @@ window.MathJax={
 
 	// Closing docuK Log.
 	m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
-	setTimeout(function () {m.$log.hide();}, 2048);
+	setTimeout(function () {m.$logAll.hide();}, 2048);
 });
 })(window.m, jQuery);
