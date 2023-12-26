@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.net.URISyntaxException;
 	// deprecated API?
 
 import java.io.UnsupportedEncodingException;
@@ -211,7 +211,7 @@ public void start() {
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-				.end(""+db.putBlogVisitor(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+				.end(""+db.putBlogStat1(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
 			System.out.println("Recorded:\n"+inputs.toStringDecoded());
 		});
 	});
@@ -223,7 +223,7 @@ public void start() {
 			StrArray inputs=new StrArray(data.toString());
 			System.out.println(inputs);
 			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-				.end(db.getBlogVisitor(inputs), ENCODING);
+				.end(db.getBlogStat1(inputs), ENCODING);
 			System.out.println("Sended /BlogStat/Get.");
 		});
 	});
@@ -281,7 +281,7 @@ public void start() {
 				else {
 					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
 						.end(shortURI, ENCODING);
-					System.out.println("Sended \"No http-URI.\".");
+					System.out.println("Sended shortURI. No http-URI.");
 				}
 			}
 			else {
