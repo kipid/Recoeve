@@ -7390,7 +7390,9 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 	$.ajax({
 		type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
+		console.log("BlogStat: ", resp);
 	}).done(function (resp) {
+		console.log("BlogStat: ", resp);
 	});
 
 	m.browserWidth=window.innerWidth;

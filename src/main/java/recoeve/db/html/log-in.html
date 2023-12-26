@@ -570,14 +570,13 @@ $("input.go-next").on("keydown", function (e) {
 });
 
 $(document).ready(function () {
-	let blogStat=`URI	referer	REACTION_GUEST
-${window.location.href}	${document.referrer}	guest`;
+	let blogStat=`URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\tlog-in guest`;
 	$.ajax({
 		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 	}).fail(function (resp) {
-		console.log("BlogStat:", resp);
+		console.log("BlogStat: ", resp);
 	}).done(function (resp) {
-		console.log("BlogStat:", resp);
+		console.log("BlogStat: ", resp);
 	});
 });
 
