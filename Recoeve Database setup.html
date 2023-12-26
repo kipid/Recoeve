@@ -124,7 +124,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 TABLE <refer class="table-UserClass"></refer>, <refer class="table-PreGoogle"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
 
-E-mail stat 좀 확인하고 싶어서 <refer class="table-EmailStat"></refer>.
+BlogStat, RecoeveStat 확인하고 싶어서 <refer class="table-BlogStat"></refer>. E-mail stat 좀 확인하고 싶어서 <refer class="table-EmailStat"></refer>.
 
 FinTech 관련된 <refer class="table-Fin"></refer>, <refer class="table-DailyPoints"></refer>.
 
@@ -823,6 +823,32 @@ CREATE TABLE `DailyPoints` (
 	, FOREIGN KEY (`user`) REFERENCES `Users` (`i`)
 	, FOREIGN KEY (`cmter`) REFERENCES `Users` (`i`)
 );
+```/
+
+</div>
+
+
+
+#### TABLE `BlogStat`
+
+<div id="table-BlogStat"><span class="number none">BlogStat</span>
+
+```[.linenums.lang-sql]
+CREATE TABLE `BlogStat` (
+  `t` datetime NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `URI` varchar(1000) NOT NULL,
+  `referer` varchar(1000) DEFAULT NULL,
+  `REACTION_GUEST` char(40) DEFAULT NULL,
+  `host` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`t`,`ip`),
+  KEY `t_desc` (`t` DESC),
+  KEY `k_host` (`host`)
+);
+
+CREATE INDEX `t_desc` ON `BlogStat` (`t` DESC);
+ALTER TABLE `BlogStat` ADD `host` varchar(15);
+CREATE INDEX `k_host` ON `BlogStat` (`host`);
 ```/
 
 </div>
