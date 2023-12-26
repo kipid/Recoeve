@@ -107,20 +107,9 @@ public static int getutf8mb4Length(String uri) {
 	return utf8mb4Length;
 }
 
-private static final MysqlConnectionPoolDataSource ds;
-static {
-	ds=new MysqlConnectionPoolDataSource();
-	ds.setServerName("localhost");
-	ds.setPort(3306);
-	ds.setDatabaseName("recoeve0.1");
-	// ds.setURL("localhost:3306/recoeve0.1?serverTimezone=UTC");
-	ds.setUser("eve");
-	ds.setPassword("$repakeoco#eve");
-}
-
-public Vertx vertx;
-
+private MysqlConnectionPoolDataSource ds;
 private Connection con;
+public Vertx vertx;
 
 private PreparedStatement pstmtNow;
 private PreparedStatement pstmtTimeDiff;
@@ -212,6 +201,13 @@ private PreparedStatement pstmtGetRecoStatDefDescSet;
 public RecoeveDB(Vertx vertx) {
 	this.vertx=vertx;
 	try {
+		ds=new MysqlConnectionPoolDataSource();
+		ds.setServerName("localhost");
+		ds.setPort(3306);
+		ds.setDatabaseName("recoeve0.1");
+		// ds.setURL("localhost:3306/recoeve0.1?serverTimezone=UTC");
+		ds.setUser("eve");
+		ds.setPassword("$repakeoco#eve");
 		ds.setServerTimezone("UTC");
 		con=ds.getConnection();
 		pstmtNow=con.prepareStatement("SELECT utc_timestamp();");
