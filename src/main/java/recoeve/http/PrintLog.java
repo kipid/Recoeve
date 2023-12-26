@@ -78,13 +78,13 @@ public void printLog(RoutingContext ctx) {
 		}
 		if (referer.startsWith("://",k)) {
 			k+=3;
-			int l=uri.indexOf("/",k);
+			int l=referer.indexOf("/",k);
 			String refererHost=null;
 			if (l>0) {
-				refererHost=uri.substring(k,l);
+				refererHost=referer.substring(k,l);
 			}
 			else {
-				refererHost=uri.substring(k);
+				refererHost=referer.substring(k);
 			}
 			if (refererHost.equals("www.recoeve.net")) {
 				refererHost="recoeve.net";

@@ -564,7 +564,7 @@ public String getBlogStat1(StrArray fromTo) {
 			else {
 				pstmtGetBlogStat1WithHost.setTimestamp(1, Timestamp.valueOf(from));
 				pstmtGetBlogStat1WithHost.setTimestamp(2, Timestamp.valueOf(to));
-				pstmtGetBlogStat1WithHost.setTimestamp(3, host);
+				pstmtGetBlogStat1WithHost.setString(3, host);
 				ResultSet rs=pstmtGetBlogStat1WithHost.executeQuery();
 				while (rs.next()) {
 					stats+="\n"+rs.getString("t")+"\t"+rs.getString("ip")+"\t"+rs.getString("URI")+"\t"+rs.getString("referer")+"\t"+rs.getString("REACTION_GUEST");
