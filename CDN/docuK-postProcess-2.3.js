@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".7";
+m.version1=".8";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -112,7 +112,21 @@ window.onpopstate=function (e) {
 
 // On ready.
 $document.ready(function () {
-	let parsedHref=m.analysisURL(window.location.href);
+	// Disqus js script, and Redirect to the canonical URL.
+	if (window.disqus_config) {
+		m.disqusVars={page:{}};
+		window.disqus_config.apply(m.disqusVars);
+		let url=m.canonicalURI=m.disqusVars.page.url;
+		$('link[rel="canonical"]').remove();
+		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
+		let hrefAnalyzed=new URL(window.location.href);
+		let urlAnalyzed=new URL(url);
+		if (hrefAnalyzed.protocol.toLowerCase()===urlAnalyzed.protocol.toLowerCase()&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
+			window.location.pathname=urlAnalyzed.pathname;
+		}
+	}
+
+	let parsedHref=new URL(window.location.href);
 	let origin=parsedHref.origin.toLowerCase();
 	if (origin==="https://kipid.tistory.com"||origin==="https://localhost"||origin==="https://recoeve.net") {
 		let blogStat=`URI	referer	REACTION_GUEST
@@ -227,19 +241,6 @@ if (!m.printMode) {
 		m.logPrint(`<br>Line-height ${(Number(cookieItem)/10).toFixed(1)} is set from cookie.`);
 	}
 
-	// Disqus js script
-	if (window.disqus_config) {
-		m.disqusVars={page:{}};
-		window.disqus_config.apply(m.disqusVars);
-		let url=m.canonicalURI=m.disqusVars.page.url;
-		$('link[rel="canonical"]').remove();
-		($("head")||$("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
-		let hrefAnalyzed=m.analysisURL(window.location.href);
-		let urlAnalyzed=m.analysisURL(url);
-		if (hrefAnalyzed.protocol.toLowerCase()===urlAnalyzed.protocol.toLowerCase()&&decodeURIComponent(hrefAnalyzed.pathname)!==decodeURIComponent(urlAnalyzed.pathname)) {
-			window.location.pathname=urlAnalyzed.pathname;
-		}
-	}
 	m.plink=$('meta[property="dg:plink"]').attr('content');
 	m.logPrint(`<br><br>Current styles (dark/bright mode, font-family, font-size, line-height) are shown.`);
 	m.printDeviceInfo();
