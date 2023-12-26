@@ -5309,6 +5309,7 @@ return new Promise(function (resolve, reject) {
 });
 }
 m.showDefs=async function (uri) {
+return new Promise(async function (resolve, reject) {
 	let recoDefs=m.recoDefs[uri];
 	if (!recoDefs) { recoDefs=m.recoDefs[uri]={uri, defTitles:[[""]], defCats:[[""]], defDescs:[[""]], down:false, h1:undefined}; }
 	let defTitles=recoDefs.defTitles;
@@ -5415,6 +5416,8 @@ m.showDefs=async function (uri) {
 		$this.addClass("selected");
 		$input_desc[0].value=m.unescapeHTML($this.find("data.none").html());
 	});
+	resolve();
+});
 };
 $def_cmd=$("#def-cmds").find(".def-cmd");
 $def_cmd.on("click", function (e) {
@@ -5506,14 +5509,14 @@ return new Promise(function (resolve, reject) {
 });
 };
 m.getAndFillDefsInNewReco=function (r, fillDefs) {
-return new Promise(function (resolve, reject) {
+return new Promise(async function (resolve, reject) {
 	let uri=r?.uri;
 	if (m.recoDefs[uri]?.down) {
-		m.showDefs(uri);
+		await m.showDefs(uri);
 		resolve();
 	}
 	else {
-		m.showDefs("");
+		await m.showDefs("");
 		$.ajax({
 			type:"POST", url:"/reco/defs", data:uri
 			, dataType:"text"
@@ -5526,7 +5529,7 @@ return new Promise(function (resolve, reject) {
 				recoDefs.defCats=await m.strToJSON(defs[1]["def-cats"], false);
 				recoDefs.defTitles=await m.strToJSON(defs[1]["def-titles"], false);
 				recoDefs.defDescs=await m.strToJSON(defs[1]["def-descs"], false);
-				m.showDefs(uri);
+				await m.showDefs(uri);
 			}
 			resolve();
 		});
