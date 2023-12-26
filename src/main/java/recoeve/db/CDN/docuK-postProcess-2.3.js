@@ -279,12 +279,12 @@ if (!m.printMode) {
 	m.blogStatRes=[];
 	m.getBlogStat=function () {
 	return new Promise(function (resolve, reject) {
-		let reqTime=`from\tto`;
+		let reqTimes=`host\tfrom\tto`;
 		for (let i=0;i<m.daysToPlotPageViewsChart;i++) {
-			reqTime+=`\n${m.from[i].date} 15:00:00\t${m.to[i].date} 15:00:00`; // until 24:00:00 of today. UTC+09:00.
+			reqTimes+=`\nkipid.tistory.com\t${m.from[i].date} 15:00:00\t${m.to[i].date} 15:00:00`; // until 24:00:00 of today. UTC+09:00.
 		}
 		$.ajax({
-			type:"POST", url:"https://recoeve.net/BlogStat/Get", data:reqTime, dataType:"text"
+			type:"POST", url:"https://recoeve.net/BlogStat/Get", data:reqTimes, dataType:"text"
 		}).fail(function (resp) {
 			m.logPrint("<br><br>BlogStat is failed to be got.");
 			reject();
