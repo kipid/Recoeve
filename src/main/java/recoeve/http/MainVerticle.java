@@ -26,6 +26,7 @@ public void start() {
 
 public static void main(String... args) {
 	MainVerticle verticle=new MainVerticle();
+	verticle.init(verticle.vertx, verticle.context);
 	verticle.start();
 }
 }
