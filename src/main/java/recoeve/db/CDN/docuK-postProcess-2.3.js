@@ -74,13 +74,13 @@ for (let i=0;i<$list.length;i++) {
 	let $sec=$listI.parents(".docuK>.sec");
 	let txt="";
 	let html="";
-	if ($sec.exists()) {
+	if ($sec.length) {
 		let cat=$sec.find("h2:first-child .head-txt").text();
 		let $subSec=$listI.parents(".subsec");
-		if ($subSec.exists()) {
+		if ($subSec.length) {
 			cat+="\n&nbsp; -- "+$subSec.find("h3:first-child .head-txt").text();
 			let $subSubSec=$listI.parents(".subsubsec");
-			if ($subSubSec.exists()) {
+			if ($subSubSec.length) {
 				cat+="\n&nbsp; &nbsp; -- "+$subSubSec.find("h4:first-child .head-txt").text();
 			}
 		}
@@ -250,7 +250,7 @@ if (!m.printMode) {
 
 if (!m.printMode) {
 	$disqus_thread=$("#disqus_thread");
-	if (!($disqus_thread.exists())) {
+	if (!($disqus_thread.length)) {
 		($("#docuK-script")||$("body")).append(`<div id="disqus_thread"></div>`);
 		$disqus_thread=$("#disqus_thread");
 	}
@@ -378,7 +378,7 @@ if (!m.printMode) {
 		}, 512);
 	};
 	$page_views_chart=$("#page-views-chart");
-	if (!($page_views_chart.exists())) {
+	if (!($page_views_chart.length)) {
 		$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed" onclick="m.loadPageViewsStat()">Get page views</div>`);
 		$page_views_chart=$("#page-views-chart");
 	}
@@ -420,14 +420,14 @@ if (!m.printMode) {
 	};
 
 	// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-	if ($docuK.find('.prettyprint').exists()) {
+	if ($docuK.find('.prettyprint').length) {
 		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
 		$headOrBody.append($gcp);
 		m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
 	}
 
 	// MathJax js script (from cdn.mathjax.org) is added.
-	if ($docuK.find('eq, eqq').exists()) {
+	if ($docuK.find('eq, eqq').length) {
 		let $mjxConfig=$(`<script>
 window.MathJax={
 	startup: {
@@ -590,13 +590,13 @@ window.MathJax={
 				}
 				break;
 			case 90: // Z=90
-				if ($("div.comments").exists()) $window.scrollTop($("div.comments").offset().top);
+				if ($("div.comments").length) $window.scrollTop($("div.comments").offset().top);
 				break;
 			case 72: // H=72
 				m.handleAhrefInComment();
 				break;
 			case 88: // X=88
-				if ($("#disqus_thread").exists()) $window.scrollTop($("#disqus_thread").offset().top);
+				if ($("#disqus_thread").length) $window.scrollTop($("#disqus_thread").offset().top);
 				break;
 			case 73: // I=73
 				m.docCookies.removeItem("REACTION_GUEST", "/");

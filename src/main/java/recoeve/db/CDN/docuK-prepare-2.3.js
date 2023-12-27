@@ -7,7 +7,7 @@ $html=$("html");
 $title=$("title");
 m.fsToRs=[];
 
-$.fn.exists=function () { return this.length!==0; };
+$.fn.exists=function () { return this.length; };
 m.browserWidth=window.innerWidth;
 const $docuK=$(".docuK");
 m.$docuK=$docuK;
@@ -39,7 +39,7 @@ m.getUTF8Length=function (s) {
 
 m.getSearchVars=function (searchStr) {
 	let vars=[];
-	if (searchStr!==null&&searchStr!==undefined&&searchStr.length!==0) {
+	if (searchStr!==null&&searchStr!==undefined&&searchStr.length) {
 		if (searchStr.startsWith("?")) { searchStr=searchStr.substring(1); }
 		let j=searchStr.indexOf("#");
 		if (j!==-1) { searchStr=searchStr.substring(0,j); }
@@ -1102,14 +1102,14 @@ $fuzzy_search.on("keydown", function(e) {
 		let $lis=$fsl.find(".list-item");
 		let $liSelected=$fsl.find(".list-item.selected").eq(0);
 		let $liTo=null;
-		if ($liSelected.exists()) {
+		if ($liSelected.length) {
 			if (e.keyCode===38) {
 				$liTo=$liSelected.prev();
 			}
 			else {
 				$liTo=$liSelected.next();
 			}
-			if ($liTo.exists()) {
+			if ($liTo.length) {
 				$liTo.eq(0).trigger("click");
 				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
@@ -1120,7 +1120,7 @@ $fuzzy_search.on("keydown", function(e) {
 			}
 		}
 		else {
-			if ($lis.exists()) {
+			if ($lis.length) {
 				if (e.keyCode===38) {
 					$liTo=$lis.last();
 					$fsl.scrollTop($fsl[0].scrollHeight);
@@ -1594,7 +1594,7 @@ m.escapeEncodePctg=function (str) {
 m.printCode=function (codeId) {
 	const $pre=$("pre#pre-"+codeId);
 	const $code=$("#"+codeId);
-	if ($pre.exists()) {
+	if ($pre.length) {
 		let html=m.indentsRemove($code.html()).trim();
 		if (!$code.is(".noEscapeHTML")) {
 			html=m.escapeOnlyTag(html);
@@ -2094,7 +2094,7 @@ if (!m.printMode) {
 	for (let i=0;i<$secs.length;i++) {
 		$secI=$secs.eq(i);
 		$secIH2=$secI.find("h2:first-child");
-		if ($secIH2&&$secIH2.length!==0&&!$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
+		if ($secIH2&&$secIH2.length&&!$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
 			hN="2"; txt=$secIH2.html();
 			if ($secIH2.is(".no-sec-N")||$secI.is(".no-sec-N")) {
 				secPreTxt=secId=secITxt=($secIH2.is("[id]"))?$secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):`secPreTxt${docuKI}-${i}`;
@@ -2177,7 +2177,7 @@ if (!m.printMode) {
 		if (citeI.is("[class]")) {
 			if (citeI.html()!=="") {
 				refered=$docuK.find("#"+citeI.attr("class")+postId);
-				if (refered.exists()) {
+				if (refered.length) {
 					let refNHtml=refered.find(".refN").html();
 					refered.html(`<span class="refN">${refNHtml}</span>${citeI.html()}`);
 				}
@@ -2187,7 +2187,7 @@ if (!m.printMode) {
 				}
 			}
 			refered=$docuK.find("#"+citeI.attr("class")+postId);
-			if (refered.exists()) {
+			if (refered.length) {
 				citeN=(i+1).toString()+"-"+citeI.attr("class")+postId;
 				refHtml=refered.html().trim().replace(/\bid\s*=/gi,'psudoId=');
 				refN=refered.find(".number").html();
@@ -2204,7 +2204,7 @@ if (!m.printMode) {
 		referI=refers.eq(i);
 		if (referI.is("[class]")) {
 			refered=$docuK.find(`#${referI.attr("class")}${postId}`);
-			if (refered.exists()) {
+			if (refered.length) {
 				citeN=(i+1).toString()+"-"+referI.attr("class")+postId;
 				refHtml=refered.html().trim().replace(/\bid\s*=/gi,'psudoId=');
 				refN=refered.find(".number").html();
