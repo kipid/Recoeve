@@ -9,8 +9,8 @@ m.fsToRs=[];
 
 $.fn.exists=function () { return this.length!==0; };
 m.browserWidth=window.innerWidth;
-const docuK=$(".docuK");
-m.docuK=docuK;
+const $docuK=$(".docuK");
+m.$docuK=$docuK;
 
 m.getUTF8Length=function (s) {
 	let len=0;
@@ -1700,10 +1700,10 @@ m.resetStyle=function () {
 }
 m.Cmode=function (modeI) {
 	if (modeI=="Dark") {
-		m.docuK.removeClass("bright");
+		m.$docuK.removeClass("bright");
 	}
 	else if (modeI=="Bright") {
-		m.docuK.addClass("bright");
+		m.$docuK.addClass("bright");
 	}
 	else {
 		return false;
@@ -1719,7 +1719,7 @@ m.Cmode=function (modeI) {
 	return true;
 };
 m.CfontFamily=function (font) {
-	m.docuK.css({fontFamily:font});
+	m.$docuK.css({fontFamily:font});
 	m.fontFamily=font;
 	m.printDeviceInfo();
 	if (m.fontFamily===m.defaultStyles.fontFamily) {
@@ -1739,7 +1739,7 @@ m.CfontSize=function (increment) {
 		else if (m.fontSize>33) {
 			m.fontSize=33;
 		}
-		m.docuK.css({"font-size":m.fontSize.toFixed(1)+"px"});
+		m.$docuK.css({"font-size":m.fontSize.toFixed(1)+"px"});
 		m.printDeviceInfo();
 		if (m.fontSize===m.defaultStyles.fontSize) {
 			m.docCookies.removeItem("m.fontSize", "/");
@@ -1762,7 +1762,7 @@ m.ClineHeight=function (increment) {
 			m.lineHeight10=25;
 			return false;
 		}
-		m.docuK.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)} !important`);
+		m.$docuK.attr("style", `line-height:${(m.lineHeight10/10).toFixed(1)} !important`);
 		m.printDeviceInfo();
 		if (m.lineHeight10===m.defaultStyles.lineHeight10) {
 			m.docCookies.removeItem("m.lineHeight10", "/");
@@ -1777,7 +1777,7 @@ m.ClineHeight=function (increment) {
 $window.on("resize.deviceInfo", function () {
 	if (window.innerWidth!==m.browserWidth) {
 		m.browserWidth=window.innerWidth;
-		m.fontSize=parseInt(m.docuK.css("font-size"));
+		m.fontSize=parseInt(m.$docuK.css("font-size"));
 		m.printDeviceInfo();
 	}
 });
@@ -1974,20 +1974,20 @@ m.toggleAMess=function (elem) {
 m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 	// Possible duplicate id is handled.
 	docuKI=(isNaN(docuKI)||docuKI<0)?0:parseInt(docuKI);
-	m.logPrint(`<br><br>docuK-${docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
-	let docuK=$(".docuK").eq(docuKI);
-	if (docuK.is(".rendered")) {
+	m.logPrint(`<br><br>docuK-${$docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
+	let $docuK=$(".docuK").eq(docuKI);
+	if ($docuK.is(".rendered")) {
 		m.logPrint(`<br><br>docuK-${docuKI} is already rendered.`);
 		return;
 	}
 
 	let postId="-in-docuK"+docuKI;
 	let postIdRegEx=new RegExp(postId+"$");
-	if (docuK.is(".noDIdHandle")) {
+	if ($docuK.is(".noDIdHandle")) {
 		postId="";
 	}
 	else {
-		docuK.find("[id]").each(function () {
+		$docuK.find("[id]").each(function () {
 			let $this=$(this);
 			$this[0].id+=postId;
 		});
@@ -1995,7 +1995,7 @@ m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 
 if (!m.printMode) {
 	// Copyright and Short Keys announcement.
-	docuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+	$docuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
@@ -2025,7 +2025,7 @@ if (!m.printMode) {
 		<li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
-	docuK.after(`<div class="copyright order"><ul>
+	$docuK.after(`<div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
 	<li class="license by"><span class="bold">저작자표시</span> - 적절한 출처와, 해당 라이센스 링크를 표시하고, 변경이 있는 경우 공지해야 합니다. 합리적인 방식으로 이렇게 하면 되지만, 이용 허락권자가 귀하에게 권리를 부여한다거나 귀하의 사용을 허가한다는 내용을 나타내서는 안 됩니다.</li>
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
@@ -2036,7 +2036,7 @@ if (!m.printMode) {
 }
 
 	// Style change widget, and SNS widget.
-	docuK.prepend(`<div class="change-docuK-style">
+	$docuK.prepend(`<div class="change-docuK-style">
 	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
 	<form><input id="button${docuKI}-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
 	</input><input id="button${docuKI}-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
@@ -2050,17 +2050,33 @@ if (!m.printMode) {
 	</div>
 <div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"></div><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
 	);
-	docuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"></div><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
+	$docuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"></div><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
 
 	// Scrollable switching of 'pre.prettyprint'.
-	docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
+	$docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
 	m.logPrint(`<br><br>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 	// Numbering section, making table of contents, and numbering eqq (formatting to MathJax also) and figure tags
-	let secs=docuK.find(">.sec"), subsecs, subsubsecs, secContentsId="";
-	let secI, secIH2, subsecJH3, subsubsecKH4;
-	let secN=0, secITxt="", subsecI=0, subsubsecI=0, tocHtml="", txt="", secId="", secPreTxt="";
-	let eqqs, eqN="", eqC="", figs;
+	let $secs=$docuK.find(">.sec");
+	let $subSecs;
+	let $subSubSecs;
+	let secContentsId="";
+	let secI;
+	let secIH2;
+	let subsecJH3;
+	let subsubsecKH4;
+	let secN=0
+	let secITxt="";
+	let subsecI=0;
+	let subsubsecI=0;
+	let tocHtml="";
+	let txt="";
+	let secId="";
+	let secPreTxt="";
+	let eqqs;
+	let eqN="";
+	let eqC="";
+	let figs;
 	function fTocHtml(numbering) {
 		let secN=(numbering===undefined||numbering)?"secN":"none";
 		return `<h${hN}><a class="jump" id="toc${docuKI}-${secId}" href="#secId${docuKI}-${secId}"><span class="${secN}"><span class="number">${secPreTxt}</span>.</span>${txt}</a></h${hN}>`;
@@ -2075,8 +2091,8 @@ if (!m.printMode) {
 	function fEqqHtml() {
 		return `<div class="eqCC"><div class="eqN"><span class="number">(${eqN})</span></div><div class="eqC">${eqC}</div></div>`;
 	}
-	for (let i=0;i<secs.length;i++) {
-		secI=secs.eq(i);
+	for (let i=0;i<$secs.length;i++) {
+		secI=$secs.eq(i);
 		secIH2=secI.find("h2:first-child");
 		if (secIH2.exists() && !secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
 			hN="2"; txt=secIH2.html();
@@ -2100,16 +2116,16 @@ if (!m.printMode) {
 				secI.append(`<div class="cBoth"></div>`);
 			}
 
-			subsecs=secI.find(".subsec"); subsecI=0;
-			for (let j=0;j<subsecs.length;j++) {
-				subsecJH3=subsecs.eq(j).find("h3:first-child");
+			$subSecs=secI.find(".subsec"); subsecI=0;
+			for (let j=0;j<$subSecs.length;j++) {
+				subsecJH3=$subSecs.eq(j).find("h3:first-child");
 				hN="3"; subsecI++; secId=secITxt+"-"+subsecI; secPreTxt=secITxt+"."+subsecI; txt=subsecJH3.html();
 				tocHtml+=fTocHtml();
 				subsecJH3.html(fSecHtml());
 
-				subsubsecs=subsecs.eq(j).find(".subsubsec"); subsubsecI=0;
-				for (let k=0;k<subsubsecs.length;k++) {
-					subsubsecKH4=subsubsecs.eq(k).find("h4:first-child");
+				$subSubSecs=$subSecs.eq(j).find(".subsubsec"); subsubsecI=0;
+				for (let k=0;k<$subSubSecs.length;k++) {
+					subsubsecKH4=$subSubSecs.eq(k).find("h4:first-child");
 					hN="4"; subsubsecI++; secId=secITxt+"-"+subsecI+"-"+subsubsecI; secPreTxt=secITxt+"."+subsecI+"."+subsubsecI; txt=subsubsecKH4.html();
 					tocHtml+=fTocHtml();
 					subsubsecKH4.html(fSecHtml());
@@ -2131,7 +2147,7 @@ if (!m.printMode) {
 			figs.eq(j).find(".caption").html(function (ith,orgTxt) {return `Fig. <span class="number">(${figN})</span>: ${orgTxt.trim()}`;});
 		}
 	}
-	secs.find(".toc").html(tocHtml);
+	$secs.find(".toc").html(tocHtml);
 	m.logPrint(`<br><br>Table of Contents is filled out.<br><br>Auto numberings of sections (div.sec>h2, div.subsec>h3, div.subsubsec>h4), &lt;eqq&gt; tags, and &lt;figure&gt; tags are done.`);
 
 	// Make 'cite' tags bubble-refer references in ".docuK ol.refs>li".
@@ -2148,19 +2164,19 @@ if (!m.printMode) {
 		}
 		return str;
 	}
-	let olRefs=docuK.find("ol.refs");
+	let olRefs=$docuK.find("ol.refs");
 	olRefs=olRefs.eq(olRefs.length-1);
-	let refs=docuK.find("ol.refs>li");
+	let refs=$docuK.find("ol.refs>li");
 	let refsN=refs.length;
 	for (i=0;i<refsN;i++) { // ref [i+1] with id
 		refs.eq(i).prepend(`<span class="refN">Ref. <span class="number">[${pad(i+1,2)}]</span> </span>`);
 	}
-	let cites=docuK.find("cite"), citeI, refered;
+	let cites=$docuK.find("cite"), citeI, refered;
 	for (i=0;i<cites.length;i++) {
 		citeI=cites.eq(i);
 		if (citeI.is("[class]")) {
 			if (citeI.html()!=="") {
-				refered=docuK.find("#"+citeI.attr("class")+postId);
+				refered=$docuK.find("#"+citeI.attr("class")+postId);
 				if (refered.exists()) {
 					let refNHtml=refered.find(".refN").html();
 					refered.html(`<span class="refN">${refNHtml}</span>${citeI.html()}`);
@@ -2170,7 +2186,7 @@ if (!m.printMode) {
 					olRefs.append(`<li id="${citeI.attr("class")}${postId}"><span class="refN">Ref. <span class="number">[${pad(refsN,2)}]</span> </span>${citeI.html()}</li>`);
 				}
 			}
-			refered=docuK.find("#"+citeI.attr("class")+postId);
+			refered=$docuK.find("#"+citeI.attr("class")+postId);
 			if (refered.exists()) {
 				citeN=(i+1).toString()+"-"+citeI.attr("class")+postId;
 				refHtml=refered.html().trim().replace(/\bid\s*=/gi,'psudoId=');
@@ -2182,12 +2198,12 @@ if (!m.printMode) {
 			}
 		}
 	}
-	let refers=docuK.find("refer"), referI;
+	let refers=$docuK.find("refer"), referI;
 	refers.html(`<span class="emph">( No refer. )</span>`);
 	for (i=0;i<refers.length;i++) {
 		referI=refers.eq(i);
 		if (referI.is("[class]")) {
-			refered=docuK.find(`#${referI.attr("class")}${postId}`);
+			refered=$docuK.find(`#${referI.attr("class")}${postId}`);
 			if (refered.exists()) {
 				citeN=(i+1).toString()+"-"+referI.attr("class")+postId;
 				refHtml=refered.html().trim().replace(/\bid\s*=/gi,'psudoId=');
@@ -2198,6 +2214,6 @@ if (!m.printMode) {
 	}
 	m.logPrint(`<br><br>&lt;cite&gt; and &lt;refer&gt; tags are rendered to show bubble reference.`);
 
-	docuK.addClass("rendered");
+	$docuK.addClass("rendered");
 };
 })(window.m, jQuery);

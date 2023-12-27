@@ -17,12 +17,12 @@ for (let i=0;i<$SEE.length;i++) {
 }
 $("pre.prettyprint.scrollable").addClass("linenums");
 
-let docuK=$(".docuK");
-m.docuK=docuK;
+let $docuK=$(".docuK");
+m.$docuK=$docuK;
 
 // Showing disableQ0 only in width>321.
 if (m.browserWidth>321) {
-	docuK.find(".disableQ0").html(function(ith,orgText) {
+	$docuK.find(".disableQ0").html(function(ith,orgText) {
 		m.logPrint(`<br><br>".disableQ0"s are enabled at vertical position of ${(100*$(this).offset().top/$document.height()).toPrecision(3)}% of document.`);
 		return orgText.replace(/<!--/g,'').replace(/-->/g,'');
 	});
@@ -40,15 +40,15 @@ for (let i=0;i<eqqs.length;i++) {
 m.logPrint(`<br><br>&lt;eq&gt; and &lt;eqq&gt; tags are rendered to MathJax format, being enclosed by \\ ( and \\ ).`);
 
 // docuK process.
-docuK.has("script").addClass("noDIdHandle");
-let k=docuK.length;
+$docuK.has("script").addClass("noDIdHandle");
+let k=$docuK.length;
 for(let i=1;i<k;i++) {
 	m.docuKProcess(m, jQuery, i);
 }
 
-m.bubbleRefs=docuK.find(".bubbleRef"); // for function m.ShowBR
+m.bubbleRefs=$docuK.find(".bubbleRef"); // for function m.ShowBR
 
-let $inRefs=docuK.find(".inRef");
+let $inRefs=$docuK.find(".inRef");
 // Centering arrow.
 $inRefs.each(function () {
 	let $elem=$(this);
@@ -76,12 +76,12 @@ for (let i=0;i<$list.length;i++) {
 	let html="";
 	if ($sec.exists()) {
 		let cat=$sec.find("h2:first-child .head-txt").text();
-		let $subsec=$listI.parents(".subsec");
-		if ($subsec.exists()) {
-			cat+="\n&nbsp; -- "+$subsec.find("h3:first-child .head-txt").text();
-			let $subsubsec=$listI.parents(".subsubsec");
-			if ($subsubsec.exists()) {
-				cat+="\n&nbsp; &nbsp; -- "+$subsubsec.find("h4:first-child .head-txt").text();
+		let $subSec=$listI.parents(".subsec");
+		if ($subSec.exists()) {
+			cat+="\n&nbsp; -- "+$subSec.find("h3:first-child .head-txt").text();
+			let $subSubSec=$listI.parents(".subsubsec");
+			if ($subSubSec.exists()) {
+				cat+="\n&nbsp; &nbsp; -- "+$subSubSec.find("h4:first-child .head-txt").text();
 			}
 		}
 		txt=cat.replace(/\n&nbsp; &nbsp;/g,"").replace(/\n&nbsp;/g,"")+"\n";
@@ -186,9 +186,9 @@ ${m.docCookies.hasItem("REACTION_GUEST")?`<div class="button" onclick="$window.t
 		$floating_key.hide();
 	}
 if (!m.printMode) {
-	for (let i=1;i<m.docuK.length;i++) {
-		m.docuK.eq(i).before(m.promoting(`promoting-${i}-0`));
-		m.docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
+	for (let i=1;i<m.$docuK.length;i++) {
+		m.$docuK.eq(i).before(m.promoting(`promoting-${i}-0`));
+		m.$docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
 	}
 }
 	// Printing codes in <codeprint> with id (which starts with "code-") into <pre id="pre-code-...">.
@@ -201,10 +201,10 @@ if (!m.printMode) {
 	}
 
 	// Hiding hiden sections.
-	docuK.find(".sec.hiden").find(">.sec-contents").css({display:"none"});
+	$docuK.find(".sec.hiden").find(">.sec-contents").css({display:"none"});
 
 	// Setting and Printing Styles
-	m.$deviceInfo=docuK.find(".deviceInfo");
+	m.$deviceInfo=$docuK.find(".deviceInfo");
 
 	let cookieItem;
 	m.logPrint(`<br>`);
@@ -217,7 +217,7 @@ if (!m.printMode) {
 	else {
 		m.Cmode("Dark");
 	}
-	for(let i=1;i<m.docuK.length;i++) {
+	for(let i=1;i<m.$docuK.length;i++) {
 		$(`#button${i}-${m.mode}`).prop('checked', true);
 	}
 
@@ -225,7 +225,7 @@ if (!m.printMode) {
 	if (cookieItem!==null) {
 		m.CfontFamily(cookieItem);
 		m.logPrint(`<br>Font ${cookieItem} is set from cookie.`);
-		for(let i=1;i<m.docuK.length;i++) {
+		for(let i=1;i<m.$docuK.length;i++) {
 			$(`#input${i}-font-family`)[0].value=m.fontFamily;
 		}
 	}
@@ -418,14 +418,14 @@ if (!m.printMode) {
 	};
 
 	// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-	if (docuK.find('.prettyprint').exists()) {
+	if ($docuK.find('.prettyprint').exists()) {
 		let $gcp=$(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></`+`script>`); // Avoid closing script
 		$headOrBody.append($gcp);
 		m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
 	}
 
 	// MathJax js script (from cdn.mathjax.org) is added.
-	if (docuK.find('eq, eqq').exists()) {
+	if ($docuK.find('eq, eqq').exists()) {
 		let $mjxConfig=$(`<script>
 window.MathJax={
 	startup: {
