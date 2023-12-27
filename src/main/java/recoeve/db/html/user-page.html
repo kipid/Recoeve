@@ -2796,7 +2796,7 @@ m.refreshFSToRs=async function (cat) {
 		uris=m.catUriList[cat].uris;
 	}
 	for (let i=0;i<uris.length;i++) {
-		let uri=uris[i];
+		let uri=String(uris[i]);
 		let r=m.userRecos[uri];
 		let catsSplit=m.catsToString(r?.cats).split(";");
 		fsFL[fsFL.length]=fsFL[uri]={i:fsFL.length, catsSplit, uri, r, txt:m.splitHangul(r?.title), html:m.escapeOnlyTag(r?.title)};
@@ -5107,7 +5107,7 @@ m.ExpCol=function (elem, catEC) {
 m.openCat=async function (cat) {
 	cat=cat??"";
 	$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
-	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of `:"[--Uncategorized--] of "}${m.userId}'s recoeve.net`);
+	$title.html(`${cat?`${m.escapeOnlyTag(cat)} of`:"[--Uncategorized--] of"} ${m.userId}'s recoeve.net`);
 	if (!m.catUriList[cat]?.has) {
 		await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 	}
@@ -5117,7 +5117,7 @@ m.openCat=async function (cat) {
 	let fsFL=fs.fullList;
 	let fs1FL=fs1.fullList;
 	for (let k=0;k<uris.length;k++) {
-		let uri=uris[k];
+		let uri=String(uris[k]);
 		let r=m.userRecos[uri];
 		if (!r) { // Must have recos on these uris. But it can be not downloaded yet.
 			r=m.userRecos[uri]={i:k, uri, down:false, has:false}; // Newest has the maximum index i.
@@ -5131,7 +5131,7 @@ m.openCat=async function (cat) {
 		}
 		let fsFLUri=fsFL[uri];
 		if (!fsFLUri) {
-			fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}};
+			fsFLUri=fsFL[fsFL.length]=fsFL[uri]={uri, r, i:fsFL.length, catsSplit:m.catsToString(r?.cats).split(";"), txt:m.splitHangul(`${r?.cats} :: ${r?.title}`), html:m.escapeOnlyTag(r?.title), catAndI:{}}; // Put to the lastest/maximum index.
 		}
 		if (!fsFLUri.catAndI) { // Preserve canAndI.
 			fsFLUri.catAndI={};
@@ -6115,7 +6115,8 @@ m.completeCatAndOpenCat=async function (event) {
 		}
 	}
 	if (m.recoMode===""||m.recoMode==="multireco"||m.recoMode==="daily-mix") {
-		fs2.fullList[fsGotoCatsFLCat.i].down=fsGotoCatsFLCat.down=true;
+		// fs2.fullList[fsGotoCatsFLCat.i].down= // 없이 테스트 좀 합시다.
+		fsGotoCatsFLCat.down=true; // TODO: 두개가 왜 다른지/다르게 저장되어 있는지 알아내서 고치기. Manual test 론 두개가 같긴한데...
 		$elem.addClass("down");
 	}
 	// let k=fs2.k; // index of cat on sEnd.
@@ -6132,7 +6133,8 @@ m.completeCatAndOpenCat=async function (event) {
 	for (let i=0;i<fs2.fullList.length;i++) {
 		fs2.fullList[i].selected=false;
 	}
-	fs2.fullList[fsGotoCatsFLCat.i].selected=fsGotoCatsFLCat.selected=true;
+	// fs2.fullList[fsGotoCatsFLCat.i].selected= // 없이 테스트 중.
+	fsGotoCatsFLCat.selected=true;
 	fs2.$fsLis=fs2.$fsl.find(".list-item");
 	fs2.$fsLis.removeClass("selected");
 	$elem.addClass("selected");
@@ -6149,14 +6151,6 @@ m.completeCatAndOpenCat=async function (event) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
-	}
-	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="daily-mix")||(m.lastRecoMode===""&&m.recoMode==="daily-mix")) {
-		$contents.removeClass("multireco");
-		if (!m.doNotPushHistory) {
-			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-		}
-		m.doNotPushHistory=false;
-		await m.openCat(cat);
 	}
 	else {
 		if (!m.doNotPushHistory) {
@@ -6599,7 +6593,7 @@ return new Promise(async function (resolve, reject) {
 			let k=m.recomsPlusRandomSorted[cat][i];
 			let uri=m.recoms[cat][k].uri;
 			let recoDef=m.recoDefs[uri];
-			fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
+			fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms${`from-recoms-${k}`===fs.currentIndex?" selected":""}" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
 		}
 	}
 	let $li0=fs.$fsLis.eq(0);
@@ -6896,8 +6890,9 @@ m.shareSNS=function (elem, service) {
 // ShortKeys
 ////////////////////////////////////////////////////
 m.intervalCount={};
+m.intervalMaxCount=8;
 m.intervalOpenCat=function (intervalId) {
-	if (m.intervalCount[intervalId]===undefined) {
+	if (m.intervalCount[intervalId]===undefined||m.intervalCount[intervalId]>m.intervalMaxCount) {
 		m.intervalCount[intervalId]=0;
 	}
 	m.intervalCount[intervalId]++;
@@ -6906,17 +6901,20 @@ m.intervalOpenCat=function (intervalId) {
 	let fsGotoCatsFLCat=fs.fullList[m.currentCat];
 	if (fsGotoCatsFLCat?.i||fsGotoCatsFLCat?.i===0) {
 		let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-		if (m.intervalCount[intervalId]>8) {
+		if (m.intervalCount[intervalId]>m.intervalMaxCount) {
 			clearInterval(intervalId);
+			m.intervalCount[intervalId]=0;
 			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
 			if (!m.doNotPushHistory) {
-				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
 			m.doNotPushHistory=false;
+			return;
 		}
 		if ($gotoCatsI.exists()) {
 			clearInterval(intervalId);
+			m.intervalCount[intervalId]=0;
 			$gotoCatsI.trigger("click");
 			console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
 			console.log(`m.currentCat: `, m.currentCat);
@@ -6925,7 +6923,7 @@ m.intervalOpenCat=function (intervalId) {
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 			}
 			m.doNotPushHistory=false;
-			if (m.searchVars.ToR?.val===""||m.searchVars.ToR?.val) {
+			if (m.initialOpen&&m.searchVars.ToR?.val||m.searchVars.ToR?.val==="") {
 				$table_of_recos[0].value=m.searchVars.ToR.val;
 				if (!$table_of_recos_container.is(":visible")) {
 					$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
@@ -6933,8 +6931,9 @@ m.intervalOpenCat=function (intervalId) {
 				}
 			}
 		}
-		else if (m.intervalCount[intervalId]>4) {
+		else if (m.intervalCount[intervalId]>m.intervalMaxCount) {
 			clearInterval(intervalId);
+			m.intervalCount[intervalId]=0;
 			fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down?" down":""}${fsGotoCatsFLCat?.deleted?" deleted":""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
 			$gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
 			$gotoCatsI.trigger("click");
@@ -6945,7 +6944,7 @@ m.intervalOpenCat=function (intervalId) {
 				window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 			}
 			m.doNotPushHistory=false;
-			if (m.searchVars.ToR?.val===""||m.searchVars.ToR?.val) {
+			if (m.initialOpen&&m.searchVars.ToR?.val||m.searchVars.ToR?.val==="") {
 				$table_of_recos[0].value=m.searchVars.ToR.val;
 				if (!$table_of_recos_container.is(":visible")) {
 					$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)});
@@ -6955,8 +6954,9 @@ m.intervalOpenCat=function (intervalId) {
 		}
 	}
 	else {
-		if (m.intervalCount[intervalId]>4) {
+		if (m.intervalCount[intervalId]>m.intervalMaxCount) {
 			clearInterval(intervalId);
+			m.intervalCount[intervalId]=0;
 			$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`)
 		}
 	}
