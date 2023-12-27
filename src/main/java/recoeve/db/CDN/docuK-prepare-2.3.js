@@ -1,6 +1,6 @@
 window.m={};
 (function (m, $, undefined) {
-m.version0="2.6";
+m.version0="2.7";
 $window=$(window);
 $document=$(document);
 $html=$("html");
@@ -97,7 +97,7 @@ m.togglePosition=function (elem) {
 	}
 };
 m.rC=function (elemStr, option, id, noPc) {
-	return `<div class="rC${(option?` ${option}`:'')}"${!!id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
+	return `<div class="rC${(option?` ${option}`:'')}"${id?` id="${id}"`:""}><div class="rSC">${elemStr}</div>${noPc?"":`<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 };
 m.YTiframe=function (v, inListPlay) {
 	return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay&&m.fsToRs.fixed?"fixed":null));
@@ -2061,10 +2061,10 @@ if (!m.printMode) {
 	let $subSecs;
 	let $subSubSecs;
 	let secContentsId="";
-	let secI;
-	let secIH2;
-	let subsecJH3;
-	let subsubsecKH4;
+	let $secI;
+	let $secIH2;
+	let $subsecJH3;
+	let $subsubsecKH4;
 	let secN=0
 	let secITxt="";
 	let subsecI=0;
@@ -2073,7 +2073,7 @@ if (!m.printMode) {
 	let txt="";
 	let secId="";
 	let secPreTxt="";
-	let eqqs;
+	let $eqqs;
 	let eqN="";
 	let eqC="";
 	let figs;
@@ -2092,56 +2092,56 @@ if (!m.printMode) {
 		return `<div class="eqCC"><div class="eqN"><span class="number">(${eqN})</span></div><div class="eqC">${eqC}</div></div>`;
 	}
 	for (let i=0;i<$secs.length;i++) {
-		secI=$secs.eq(i);
-		secIH2=secI.find("h2:first-child");
-		if (secIH2.exists() && !secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
-			hN="2"; txt=secIH2.html();
-			if (secIH2.is(".no-sec-N")||secI.is(".no-sec-N")) {
-				secPreTxt=secId=secITxt=(secIH2.is("[id]"))?secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):`secPreTxt${docuKI}-${i}`;
+		$secI=$secs.eq(i);
+		$secIH2=$secI.find("h2:first-child");
+		if ($secIH2&&$secIH2.exists()&&!$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
+			hN="2"; txt=$secIH2.html();
+			if ($secIH2.is(".no-sec-N")||$secI.is(".no-sec-N")) {
+				secPreTxt=secId=secITxt=($secIH2.is("[id]"))?$secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):`secPreTxt${docuKI}-${i}`;
 				tocHtml+=fTocHtml(false);
-				secIH2.html(fSecHtml(false));
+				$secIH2.html(fSecHtml(false));
 			}
 			else {
 				secN++;
 				secPreTxt=secId=secITxt=secN.toString();
 				tocHtml+=fTocHtml();
-				secIH2.html(fSecHtml());
+				$secIH2.html(fSecHtml());
 			}
 
-			if (!secI.is(".noToggleUI")) {
+			if (!$secI.is(".noToggleUI")) {
 				secContentsId=`sec${docuKI}-${secITxt}-contents`;
-				secI.append(`<div class="cBoth"></div><div class="Hide" onclick="m.Hide(this)">▲ Hide</div><div class="cBoth"></div>`);
-				secI.contents().slice(1).wrapAll(`<div class="sec-contents" id="${secContentsId}"></div>`);
-				secIH2.after(`<div class="ShowHide" onclick="m.ShowHide(this)">▼ Show/Hide</div>`);
-				secI.append(`<div class="cBoth"></div>`);
+				$secI.append(`<div class="cBoth"></div><div class="Hide" onclick="m.Hide(this)">▲ Hide</div><div class="cBoth"></div>`);
+				$secI.contents().slice(1).wrapAll(`<div class="sec-contents" id="${secContentsId}"></div>`);
+				$secIH2.after(`<div class="ShowHide" onclick="m.ShowHide(this)">▼ Show/Hide</div>`);
+				$secI.append(`<div class="cBoth"></div>`);
 			}
 
-			$subSecs=secI.find(".subsec"); subsecI=0;
+			$subSecs=$secI.find(".subsec"); subsecI=0;
 			for (let j=0;j<$subSecs.length;j++) {
-				subsecJH3=$subSecs.eq(j).find("h3:first-child");
-				hN="3"; subsecI++; secId=secITxt+"-"+subsecI; secPreTxt=secITxt+"."+subsecI; txt=subsecJH3.html();
+				$subsecJH3=$subSecs.eq(j).find("h3:first-child");
+				hN="3"; subsecI++; secId=secITxt+"-"+subsecI; secPreTxt=secITxt+"."+subsecI; txt=$subsecJH3.html();
 				tocHtml+=fTocHtml();
-				subsecJH3.html(fSecHtml());
+				$subsecJH3.html(fSecHtml());
 
 				$subSubSecs=$subSecs.eq(j).find(".subsubsec"); subsubsecI=0;
 				for (let k=0;k<$subSubSecs.length;k++) {
-					subsubsecKH4=$subSubSecs.eq(k).find("h4:first-child");
-					hN="4"; subsubsecI++; secId=secITxt+"-"+subsecI+"-"+subsubsecI; secPreTxt=secITxt+"."+subsecI+"."+subsubsecI; txt=subsubsecKH4.html();
+					$subsubsecKH4=$subSubSecs.eq(k).find("h4:first-child");
+					hN="4"; subsubsecI++; secId=secITxt+"-"+subsecI+"-"+subsubsecI; secPreTxt=secITxt+"."+subsecI+"."+subsubsecI; txt=$subsubsecKH4.html();
 					tocHtml+=fTocHtml();
-					subsubsecKH4.html(fSecHtml());
+					$subsubsecKH4.html(fSecHtml());
 				}
 			}
 		}
 		else {
 			secITxt="x";
 		}
-		eqqs=secI.find("eqq");
-		for (j=0;j<eqqs.length;j++) {
+		$eqqs=$secI.find("eqq");
+		for (j=0;j<$eqqs.length;j++) {
 			eqN=secITxt+"-"+(j+1).toString();
-			eqC=eqqs.eq(j).html().trim();
-			eqqs.eq(j).html(fEqqHtml());
+			eqC=$eqqs.eq(j).html().trim();
+			$eqqs.eq(j).html(fEqqHtml());
 		}
-		figs=secI.find("figure");
+		figs=$secI.find("figure");
 		for (j=0;j<figs.length;j++) {
 			figN=secITxt+"-"+(j+1).toString();
 			figs.eq(j).find(".caption").html(function (ith,orgTxt) {return `Fig. <span class="number">(${figN})</span>: ${orgTxt.trim()}`;});

@@ -1,5 +1,5 @@
 (function(m, $, undefined) {
-m.version1=".8";
+m.version1=".9";
 // SEE (Super Easy Edit)
 let $SEE=$("codeprint.SEE");
 m.SEEHTMLs=m.SEEHTMLs||[];
@@ -29,13 +29,13 @@ if (m.browserWidth>321) {
 }
 
 // <eq> and <eqq> tags to MathJax format
-let eqs=$("eq");
-for (let i=0;i<eqs.length;i++) {
-	eqs.eq(i).html(function(ith,orgTxt) {return "\\( "+orgTxt.trim()+" \\)";});
+let $eqs=$("eq");
+for (let i=0;i<$eqs.length;i++) {
+	$eqs.eq(i).html(function(ith,orgTxt) {return "\\( "+orgTxt.trim()+" \\)";});
 }
-let eqqs=$("eqq");
-for (let i=0;i<eqqs.length;i++) {
-	eqqs.eq(i).html(function(ith,orgTxt) {return "\\[ "+orgTxt.trim()+" \\]";});
+let $eqqs=$("eqq");
+for (let i=0;i<$eqqs.length;i++) {
+	$eqqs.eq(i).html(function(ith,orgTxt) {return "\\[ "+orgTxt.trim()+" \\]";});
 }
 m.logPrint(`<br><br>&lt;eq&gt; and &lt;eqq&gt; tags are rendered to MathJax format, being enclosed by \\ ( and \\ ).`);
 
@@ -134,9 +134,11 @@ $document.ready(function () {
 			$.ajax({
 				type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
 			}).fail(function (resp) {
-				m.logPrint("<br><br>BlogStat timeout. "+resp);
+				m.logPrint("<br><br>BlogStat failed. "+resp);
+				console.log("BlogStat failed. ", resp)
 			}).done(function (resp) {
 				m.logPrint("<br><br>BlogStat is logged. "+resp);
+				console.log("BlogStat is logged. ", resp)
 			});
 		}
 	}, 4*m.wait);
@@ -192,9 +194,9 @@ if (!m.printMode) {
 	}
 }
 	// Printing codes in <codeprint> with id (which starts with "code-") into <pre id="pre-code-...">.
-	let codeprints=$("codeprint");
-	for (let i=0;i<codeprints.length;i++) {
-		let codeId=codeprints.eq(i).attr('id');
+	let $codeprints=$("codeprint");
+	for (let i=0;i<$codeprints.length;i++) {
+		let codeId=$codeprints.eq(i).attr('id');
 		if (codeId!==null&&codeId!==undefined&&codeId.startsWith("code-")) {
 			m.printCode(codeId);
 		}
