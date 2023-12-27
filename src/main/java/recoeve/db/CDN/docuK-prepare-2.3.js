@@ -2094,7 +2094,7 @@ if (!m.printMode) {
 	for (let i=0;i<$secs.length;i++) {
 		$secI=$secs.eq(i);
 		$secIH2=$secI.find("h2:first-child");
-		if ($secIH2&&$secIH2.exists()&&!$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
+		if ($secIH2&&$secIH2.length!==0&&!$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
 			hN="2"; txt=$secIH2.html();
 			if ($secIH2.is(".no-sec-N")||$secI.is(".no-sec-N")) {
 				secPreTxt=secId=secITxt=($secIH2.is("[id]"))?$secIH2.attr('id').replace(/^sec-/i,'').replace(postIdRegEx,''):`secPreTxt${docuKI}-${i}`;
