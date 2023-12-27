@@ -5144,23 +5144,27 @@ m.openCat=async function (cat) {
 	}
 	await m.getUriListAndShowRecosOnCat(cat, true);
 	m.refreshFSToRs(cat);
-	if (!m.initialOpen) {
+	if (m.initialOpen) {
+		m.gotoHash(m.initialHashURI);
 		if (!m.doNotPushHistory) {
-			if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
-				$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
-			}
-			else if ($button_get_recoms.hasClass("enabled")) {
-				m.hashURI="button-get-recoms";
-				window.location.hash=`#${m.hashURI}`;
-				$window.scrollTop($button_get_recoms.offset().top);
-				window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-			}
-			else {
-				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
-			}
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.initialHashURI, m.args));
 		}
-		m.doNotPushHistory=false;
 	}
+	else if (!m.doNotPushHistory) {
+		if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
+		}
+		else if ($button_get_recoms.hasClass("enabled")) {
+			m.hashURI="button-get-recoms";
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($button_get_recoms.offset().top);
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+		}
+		else {
+			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+		}
+	}
+	m.doNotPushHistory=false;
 	m.currentCat=cat;
 	return false;
 };
@@ -6374,26 +6378,15 @@ m.gotoLi=async function (event) {
 	let $recoElem=$(`#reco-${l}`);
 	if ($recoElem.length) {
 		m.showAndScrollTo($recoElem);
-		m.setIntervalSelfGotoLiCount=0;
 	}
 	else {
-		m.setIntervalSelfGotoLiCount=0;
-		m.setIntervalSelfGotoLi=setInterval(function (setIntervalSelfGotoLi=m.setIntervalSelfGotoLi) {
-			m.setIntervalSelfGotoLiCount++;
-			if (m.setIntervalSelfGotoLiCount>7) {
-				clearInterval(setIntervalSelfGotoLi);
-				console.log(`GotoLi to $(\`#reco-${l}\`) has failed.`);
-				return;
-			}
-			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
-			$(`#load-recos-${i}`).trigger("click");
-			let $recoElem=$(`#reco-${l}`);
-			if ($recoElem.length) {
-				clearInterval(setIntervalSelfGotoLi);
-				m.showAndScrollTo($recoElem);
-				console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
-			}
-		}, m.wait);
+		let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
+		$(`#load-recos-${i}`).trigger("click");
+		let $recoElem=$(`#reco-${l}`);
+		if ($recoElem.length) {
+			m.showAndScrollTo($recoElem);
+			console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
+		}
 	}
 };
 m.doFSGo=async function () {
@@ -6448,6 +6441,41 @@ m.fsGoOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
+m.gotoHash=function (hashURI) {
+	if (hashURI) {
+		if (m.userIndex) {
+			m.fsGo.tryN=0;
+			m.setIntervalFsGo=setInterval(function () {
+				if (m.fsGo.fullList[hashURI]||m.fsGo.tryN++>15) {
+					let k=m.fsGo.fullList[hashURI]?.i;
+					let $liK=$(`#li-${k}`);
+					if ($liK.length) {
+						clearInterval(m.setIntervalFsGo);
+						console.log(`$(\`#li-${k}\`).trigger("click");`)
+						$(`#li-${k}`).trigger("click");
+					}
+				}
+			}, m.wait);
+		}
+		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
+		if ($elem.length) {
+			clearInterval(m.setIntervalFsGo);
+			m.setIntervalFsGo1N=0;
+			m.setIntervalFsGo1=setInterval(function () {
+				m.hashURI=hashURI;
+				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
+				if ($elem.length) {
+					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
+					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+					$window.scrollTop($elem.offset().top);
+				}
+				if (m.setIntervalFsGo1N++>4) {
+					clearInterval(m.setIntervalFsGo1);
+				}
+			}, m.wait);
+		}
+	}
+}
 // $fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 // $fuzzy_search.trigger("keyup.fs");
 
@@ -6939,6 +6967,7 @@ m.intervalOpenCat=function (intervalId) {
 					$table_of_recos.trigger("keyup.fs");
 				}
 			}
+			m.gotoHash(m.initialHashURI);
 		}
 		else if (m.intervalCount[intervalId]>m.intervalMaxCount) {
 			clearInterval(intervalId);
@@ -6989,16 +7018,20 @@ m.processShortKey=function (e) {
 	}
 	switch (e.keyCode) {
 	case 90: // Z=90 To List Play
-		m.hashURI="headPlay";
-		window.location.hash=`#${m.hashURI}`;
-		$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		if (!m.initialOpen||!m.initialHashURI) {
+			m.hashURI="headPlay";
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
 		break;
 	case 88: // X=88 To contents
-		m.hashURI="numbers-of-recos";
-		window.location.hash=`#${m.hashURI}`;
-		$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
-		window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		if (!m.initialOpen||!m.initialHashURI) {
+			m.hashURI="numbers-of-recos";
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		}
 		break;
 	case 81: // Q=81 Preceding
 		m.fsToRs.playNext(1);
@@ -7141,13 +7174,15 @@ m.processShortKey=function (e) {
 		$contents.removeClass("multireco");
 		$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 		if ($button_neighbors_mode.hasClass("enabled")) {
-			if ($playlist_container.is(":visible")) {
-				let pHeight=$playlist_container.height();
-				if (m.fsToRs.fixed) {
-					$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
-				}
-				else {
-					$window.scrollTop($playlist_container.offset().top);
+			if (!m.initialOpen||!m.initialHashURI) {
+				if ($playlist_container.is(":visible")) {
+					let pHeight=$playlist_container.height();
+					if (m.fsToRs.fixed) {
+						$window.scrollTop($playlist_container.offset().top-m.fsToRs.$playing.outerHeight());
+					}
+					else {
+						$window.scrollTop($playlist_container.offset().top);
+					}
 				}
 			}
 			m.recoMode="";
@@ -7233,10 +7268,12 @@ m.processShortKey=function (e) {
 				$button_get_recoms.addClass("enabled");
 				$contents_recoms.show();
 				$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
-				m.hashURI="button-get-recoms";
-				window.location.hash=`#${m.hashURI}`;
-				$window.scrollTop($(`#${m.hashURI}`).offset().top);
-				window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+				if (!m.initialOpen||!m.initialHashURI) {
+					m.hashURI="button-get-recoms";
+					window.location.hash=`#${m.hashURI}`;
+					$window.scrollTop($(`#${m.hashURI}`).offset().top);
+					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+				}
 			}
 			clearInterval(m.initialFsGotoCats3);
 			m.initialFsGotoCats3=setInterval(function () {
@@ -7483,7 +7520,7 @@ $document.ready(async function () {
 			m.initialFillFromLocalStorageN++;
 		}
 		console.log("m.initialFillFromLocalStorageN: ", m.initialFillFromLocalStorageN);
-		if (!changed&&m.initialFillFromLocalStorageN>7) {
+		if (!changed&&m.initialFillFromLocalStorageN>3) {
 			clearInterval(m.initialFillFromLocalStorage);
 		}
 	}, m.wait);
@@ -7562,17 +7599,14 @@ $document.ready(async function () {
 	m.doNotPushHistory=false;
 	$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
-	if (m.userIndex&&m.recoMode===""||m.recoMode==="multireco") {
+	if (m.recoMode==="") {
+		$button_mode.removeClass("enabled");
+		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 		await m.getAndShowRecosOnCat(m.currentCat);
 		clearInterval(m.initialFsGotoCats0);
 		m.initialFsGotoCats0=setInterval(function () {
 			m.intervalOpenCat(m.initialFsGotoCats0);
 		}, m.wait);
-	}
-
-	if (m.recoMode==="") {
-		$button_mode.removeClass("enabled");
-		// $window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
 	else if (m.recoMode==="multireco") {
 		$window.trigger({type:'keydown', keyCode:'M'.charCodeAt(0)});
@@ -7625,39 +7659,7 @@ $document.ready(async function () {
 		m.doNotPushHistory=false;
 	}
 	$title.html(`${m.userId}'s recoeve.net`);
-	if (m.initialHashURI) {
-		if (m.userIndex) {
-			m.fsGo.tryN=0;
-			m.setIntervalFsGo=setInterval(function () {
-				if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>25) {
-					let k=m.fsGo.fullList[m.initialHashURI]?.i;
-					let $liK=$(`#li-${k}`);
-					if ($liK.length) {
-						clearInterval(m.setIntervalFsGo);
-						console.log(`$(\`#li-${k}\`).trigger("click");`)
-						$(`#li-${k}`).trigger("click");
-					}
-				}
-			}, m.wait);
-		}
-		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
-		if ($elem.length) {
-			clearInterval(m.setIntervalFsGo);
-			m.setIntervalFsGo1N=0;
-			m.setIntervalFsGo1=setInterval(function () {
-				m.hashURI=m.initialHashURI;
-				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
-				if ($elem.length) {
-					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
-					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-					$window.scrollTop($elem.offset().top);
-				}
-				if (m.setIntervalFsGo1N++>4) {
-					clearInterval(m.setIntervalFsGo1);
-				}
-			}, m.wait);
-		}
-	}
+	m.gotoHash(m.initialHashURI);
 	$goto_cats_container.hide();
 	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
@@ -7687,7 +7689,7 @@ $document.ready(async function () {
 		await m.reTriggerFS(m.fsTimezone);
 		await m.reTriggerFS(m.fsGo);
 		m.initialOpen=false;
-	}, 4*m.wait);
+	}, 12*m.wait);
 });
 
 ////////////////////////////////////////////////////
