@@ -6441,41 +6441,37 @@ m.fsGoOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
-m.gotoHash=function (hashURI) {
-	if (hashURI) {
-		if (m.userIndex) {
-			m.fsGo.tryN=0;
-			m.setIntervalFsGo=setInterval(function () {
-				if (m.fsGo.fullList[hashURI]||m.fsGo.tryN++>15) {
-					let k=m.fsGo.fullList[hashURI]?.i;
-					let $liK=$(`#li-${k}`);
-					if ($liK.length) {
-						clearInterval(m.setIntervalFsGo);
-						console.log(`$(\`#li-${k}\`).trigger("click");`)
-						$(`#li-${k}`).trigger("click");
-					}
+m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
+	if (hashURI&&m.userIndex) {
+		m.fsGo.tryN=0;
+		m.setIntervalFsGo=setInterval(function () {
+			console.log(`m.setIntervalFsGo triggered!: `, m.fsGo.tryN);
+			if (m.fsGo.fullList[hashURI]) {
+				let k=m.fsGo.fullList[hashURI]?.i;
+				let $liK=$(`#li-${k}`);
+				if ($liK.length) {
+					clearInterval(m.setIntervalFsGo);
+					console.log(`$(\`#li-${k}\`).trigger("click");`)
+					$(`#li-${k}`).trigger("click");
+					m.hashURI=hashURI;
 				}
-			}, m.wait);
-		}
-		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
-		if ($elem.length) {
-			clearInterval(m.setIntervalFsGo);
-			m.setIntervalFsGo1N=0;
-			m.setIntervalFsGo1=setInterval(function () {
-				m.hashURI=hashURI;
-				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
+			}
+			else if (m.fsGo.tryN++<15) {
+				let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
 				if ($elem.length) {
+					clearInterval(m.setIntervalFsGo);
+					m.hashURI=hashURI;
 					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
 					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 					$window.scrollTop($elem.offset().top);
 				}
-				if (m.setIntervalFsGo1N++>4) {
-					clearInterval(m.setIntervalFsGo1);
-				}
-			}, m.wait);
-		}
+			} else {
+				clearInterval(m.setIntervalFsGo);
+				console.log(`gotoHash has failed!: `, hashURI);
+			}
+		}, m.wait);
 	}
-}
+};
 // $fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
 // $fuzzy_search.trigger("keyup.fs");
 
