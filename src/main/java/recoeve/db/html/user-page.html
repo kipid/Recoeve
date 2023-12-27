@@ -3928,24 +3928,26 @@ return new Promise(async function (resolve, reject) {
 		let val=r?.val?.val;
 		fsFLk.txt=m.splitHangul(r?.title);
 		fsFLk.html=m.escapeOnlyTag(r?.title);
-		if (val===undefined||val===-1) {
-			if (m.showRWOP) {
-				fsFLk.inRange=true;
-				nShown++;
+		if (!fsFLk.deleted) {
+			if (val===undefined||val===-1) {
+				if (m.showRWOP) {
+					fsFLk.inRange=true;
+					nShown++;
+				}
+				else {
+					fsFLk.inRange=false;
+					nHiden++
+				}
 			}
 			else {
-				fsFLk.inRange=false;
-				nHiden++
-			}
-		}
-		else {
-			if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
-				fsFLk.inRange=true;
-				nShown++;
-			}
-			else {
-				fsFLk.inRange=false;
-				nHiden++;
+				if (m.ptsRangeFrom<=val&&val<=m.ptsRangeTo) {
+					fsFLk.inRange=true;
+					nShown++;
+				}
+				else {
+					fsFLk.inRange=false;
+					nHiden++;
+				}
 			}
 		}
 	}
@@ -3954,15 +3956,17 @@ return new Promise(async function (resolve, reject) {
 		for (let k=0;k<l;k++) {
 			let fsFLk=fs.fullList[k];
 			let uri=fsFLk.uri;
-			if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
-				if (fsFLk.inRange) {
-					nShown--;
-					nHiden++;
+			if (!fsFLk.deleted) {
+				if (m.showOnlyUnrecoed&&m.myRecos[uri].has) {
+					if (fsFLk.inRange) {
+						nShown--;
+						nHiden++;
+					}
+					fsFLk.inRange=false;
 				}
-				fsFLk.inRange=false;
-			}
-			if (!m.myRecos[uri].has) {
-				nUnrecoed++;
+				if (!m.myRecos[uri].has) {
+					nUnrecoed++;
+				}
 			}
 		}
 	}
@@ -4131,17 +4135,17 @@ return new Promise(async function (resolve, reject) {
 				}
 			}
 		}
-		// if (cat!==""&&!cat) { // If (cat!==""&&!cat), only resp[1] is there in most cases.
-		// 	let catsSplit=m.catsToString(resp[1]?.cats).split(";");
-		// 	for (let i=catsSplit.length-1;i>=0;i--) {
-		// 		let catI=catsSplit[i];
-		// 		if (catI===m.currentCat) {
-		// 			m.beInCurrentCat=true;
-		// 			break;
-		// 		}
-		// 	}
-		// 	cat=m.beInCurrentCat?m.currentCat:catsSplit[0];
-		// }
+		if (!cat&&cat!=="") { // If (!cat&&cat!==""), only resp[1] is there in most cases.
+			let catsSplit=m.catsToString(resp[1]?.cats).split(";");
+			for (let i=catsSplit.length-1;i>=0;i--) {
+				let catI=catsSplit[i];
+				if (catI===m.currentCat) {
+					m.beInCurrentCat=true;
+					break;
+				}
+			}
+			// cat=m.beInCurrentCat?m.currentCat:catsSplit[0]; // Must not asign!
+		}
 		if (cat||cat==="") {
 			// TODO: Delete? or Preserve the below?
 			if (!m.catUriList[cat]?.has) {
@@ -4153,14 +4157,14 @@ return new Promise(async function (resolve, reject) {
 				let r=recos[uri];
 				fsFL[uri].catAndI[cat]={cat, i:m.catUriList[cat].uris[uri]?.i};
 			}
-			fs.shuffledOnce=true;
-			await m.reTriggerFS(fs);
+			// fs.shuffledOnce=true;
+			// await m.reTriggerFS(fs);
 		}
 	}
-	if ((cat===""||cat)&&m.catUriList[cat]?.uris) {
+	if ((cat||cat==="")&&m.catUriList[cat]?.uris) {
 		let uris=m.catUriList[cat].uris;
 		for (k=0;k<uris.length;k++) {
-			let uri=uris[k];
+			let uri=String(uris[k]);
 			let r=recos[uri];
 			if (!r) {
 				r=recos[uri]={uri, down:true, has:false};
@@ -6403,33 +6407,30 @@ m.doFSGo=async function () {
 		let uris=m.catUriList[cat].uris;
 		let fsFL=fs.fullList;
 		for (let k=0;k<uris.length;k++) {
-			let uri=uris[k];
-			m.catUriList[cat].uris[uri].i=k; // Because shuffledOnce.
+			let uri=String(uris[k]);
+			m.catUriList[cat].uris[uri].i=k; // TODO: Because shuffledOnce. But when only saved???
 			fsFL[uri].catAndI[cat]={cat, i:k};
 		}
 	}
-	fs.shuffledOnce=false;
 	let fsPtnSH=m.splitHangul(fs.$fs[0].value);
-	if (fs[0].ptnSH.splitted!==fsPtnSH.splitted) {
-		let fsRes=m.fuzzySearch(fsPtnSH, fs);
-		let sorted=fsRes.sorted;
-		let str="";
-		for (let i=0;i<sorted.length;i++) {
-			let k=fsRes[sorted[i]].i;
-			let fsFLk=fs.fullList[k];
-			if (fsFLk) {
-				str+=`<div id="li-${k}" class="list-item${fsFLk.selected?" selected":""}${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
-			}
+	let fsRes=m.fuzzySearch(fsPtnSH, fs);
+	let sorted=fsRes.sorted;
+	let str="";
+	for (let i=0;i<sorted.length;i++) {
+		let k=fsRes[sorted[i]].i;
+		let fsFLk=fs.fullList[k];
+		if (fsFLk) {
+			str+=`<div id="li-${k}" class="list-item${fsFLk.selected?" selected":""}${fsFLk.r?.deleted?" deleted":""}" onclick="m.gotoLi(event)"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}${fsRes[sorted[i]].highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>`:''}</div>`;
 		}
-		fs.$fsl.html(str);
-		fs.$fsLis=fs.$fsl.find(".list-item");
-		$selected=fs.$fsLis.filter(".selected");
-		if ($selected.exists()) {
-			fs.$fsl.scrollTop($selected.offset().top-fs.$fsl.offset().top-52);
-		}
-		else {
-			fs.$fsl.scrollTop(0);
-		}
+	}
+	fs.$fsl.html(str);
+	fs.$fsLis=fs.$fsl.find(".list-item");
+	$selected=fs.$fsLis.filter(".selected");
+	if ($selected.exists()) {
+		fs.$fsl.scrollTop($selected.offset().top-fs.$fsl.offset().top-52);
+	}
+	else {
+		fs.$fsl.scrollTop(0);
 	}
 };
 m.fsGoOn=async function () {
