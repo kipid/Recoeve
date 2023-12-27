@@ -6610,12 +6610,12 @@ return new Promise(async function (resolve, reject) {
 			fs.playNext(-1, true, true);
 		}
 		else {
-			if (m.setTimeoutPlayNextFirstCount===undefined||m.setTimeoutPlayNextFirstCount>7) {
-				m.setTimeoutPlayNextFirstCount=0;
-			}
-			setTimeout(function selfPlayNextFirst() {
-				console.log("selfPlayNextFirst()");
-				m.setTimeoutPlayNextFirstCount++;
+			// if (m.setTimeoutPlayNextFirstCount===undefined||m.setTimeoutPlayNextFirstCount>7) {
+			// 	m.setTimeoutPlayNextFirstCount=0;
+			// }
+			// setTimeout(function selfPlayNextFirst() {
+			// 	console.log("selfPlayNextFirst()");
+				// m.setTimeoutPlayNextFirstCount++;
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
 				if ($li0.exists()) {
@@ -6625,14 +6625,14 @@ return new Promise(async function (resolve, reject) {
 					fs.playNext(-1, true, true);
 					console.log("fs.playNext(-1, true, true); PlayNextFirst.");
 				}
-				else if (m.setTimeoutPlayNextFirstCount<7) {
-					setTimeout(selfPlayNextFirst, 2*wait);
-				}
+				// else if (m.setTimeoutPlayNextFirstCount<7) {
+				// 	setTimeout(selfPlayNextFirst, 2*wait);
+				// }
 				else {
 					console.log("PlayNextFirst has failed.");
-					return;
+					// return;
 				}
-			}, 2*m.wait);
+			// }, 2*m.wait);
 		}
 	}
 	if (fs===m.fsToRs&&$table_of_recos_container.is(":visible")) {
