@@ -6444,13 +6444,14 @@ m.fsGoOn=async function () {
 m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 	if (hashURI&&m.userIndex) {
 		m.fsGo.tryN=0;
-		m.setIntervalFsGo=setInterval(function () {
+		m.setIntervalFsGo=setInterval(function (setIntervalFsGo=m.setIntervalFsGo) {
 			console.log(`m.setIntervalFsGo triggered!: `, m.fsGo.tryN);
 			if (m.fsGo.fullList[hashURI]) {
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
 				if ($liK.length) {
-					clearInterval(m.setIntervalFsGo);
+					clearInterval(setIntervalFsGo);
+					m.fsGo.tryN=0;
 					console.log(`$(\`#li-${k}\`).trigger("click");`)
 					$(`#li-${k}`).trigger("click");
 					m.hashURI=hashURI;
@@ -6459,14 +6460,16 @@ m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 			else if (m.fsGo.tryN++<15) {
 				let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
 				if ($elem.length) {
-					clearInterval(m.setIntervalFsGo);
+					clearInterval(setIntervalFsGo);
+					m.fsGo.tryN=0;
 					m.hashURI=hashURI;
 					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
 					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 					$window.scrollTop($elem.offset().top);
 				}
 			} else {
-				clearInterval(m.setIntervalFsGo);
+				clearInterval(setIntervalFsGo);
+				m.fsGo.tryN=0;
 				console.log(`gotoHash has failed!: `, hashURI);
 			}
 		}, m.wait);
