@@ -248,7 +248,7 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 m.errCount=0;
 m.encloseErr=function (msg) {
 	let $old=$(`#error-msg-${m.errCount-8}`);
-	if ($old.exists()) {
+	if ($old.length) {
 		$old.hide();
 	}
 	return `<div id="error-msg-${m.errCount++}" class="error-msg">${msg}</div>`;

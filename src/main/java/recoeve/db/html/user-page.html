@@ -1369,10 +1369,10 @@ m.maxShowReco=20;
 m.fsViewAndScroll=function (fs, $next) {
 	let $fsl=fs.$fsl;
 	let $fs_container=fs.$fs_container;
-	if (!$next?.exists()) {
+	if (!$next?.length) {
 		$next=$fsl.find(".selected");
 	}
-	if ($next.exists()) {
+	if ($next.length) {
 		$fsl.scrollTop($fsl.scrollTop()+$next.offset().top-$fsl.offset().top-100);
 	}
 };
@@ -2015,19 +2015,19 @@ $change_catList_order.on("click", function (e) {
 			$catM=$catM.parents(".cat"); // cat-moving
 		}
 		let $catSiblings=$catM.siblings(".cat").not(`#cat-`);
-		if ($catSiblings.exists()) {
+		if ($catSiblings.length) {
 			let touch0=(e.type==='touchstart')?e.originalEvent.touches[0]:e;
 			let relativeX=touch0.clientX-Math.round($catM.offset().left)+$window.scrollLeft();
 			let relativeY=touch0.clientY-Math.round($catM.offset().top)+$window.scrollTop();
 			let $subCat=$catM.next(".subCat");
 			let subCatIsVisible=false;
-			if ($subCat.exists()&&$subCat.is(":visible")) {
+			if ($subCat.length&&$subCat.is(":visible")) {
 				$subCat.hide();
 				subCatIsVisible=true;
 			}
 			let $lastSibling=$catSiblings.last();
 			let $lastSubCat=$lastSibling.next(".subCat");
-			if ($lastSubCat.exists()&&$lastSubCat.is(":visible")) { $lastSibling=$lastSubCat; }
+			if ($lastSubCat.length&&$lastSubCat.is(":visible")) { $lastSibling=$lastSubCat; }
 			$catM.css({width:$catM.outerWidth()});
 			$catM.addClass("move");
 			let cat=decodeURIComponent($catM.attr("id").substring(4));
@@ -2084,7 +2084,7 @@ $change_catList_order.on("click", function (e) {
 				$catM.removeClass("move");
 				$catM.css({width:'', left:'', top:''});
 				$catTo.replaceWith($catM);
-				if ($subCat.exists()) {
+				if ($subCat.length) {
 					$catM.after($subCat);
 					if (subCatIsVisible) { $subCat.show(); }
 				}
@@ -2167,7 +2167,7 @@ $change_catList_order_cancel.on("click", async function (e) {
 	if (catListChanged!==catList) {
 		let $catSelected=$catList.find(".cat.selected").eq(0);
 		let selectedCat=null;
-		if ($catSelected.exists()) {
+		if ($catSelected.length) {
 			selectedCat=m.unescapeHTML($catSelected.find(".list-index-id").html());
 		}
 		await m.strCatListToJSON(catList, m.catList);
@@ -2394,7 +2394,7 @@ return new Promise(function (resolve, reject) {
 			fsFLk=fs.fullList[k]=fs.fullList[fsFLk?.cat];
 			str+=`<div class="list-item${fsFLk?.cat===m.currentCat?" selected":""}${fsFLk?.down?" down":""}${fsFLk?.deleted?" deleted":""}" id="gotoCats-${k}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${(fsSortedI.highlight!==undefined?`<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>`:'')}</div>`;
 			let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
-			if ($catI.exists()) {
+			if ($catI.length) {
 				if (fsFLk?.down) {
 					$catI.find(".baseCat").addClass("down");
 				}
@@ -2423,7 +2423,7 @@ return new Promise(function (resolve, reject) {
 			let fsSortedI=fsRes[fsRes.sorted[i]];
 			let fsFLk=fs.fullList[fsSortedI.i];
 			let $gotoCatI=$(`#gotoCats-${fsFLk.i}`);
-			if ($gotoCatI.exists()) {
+			if ($gotoCatI.length) {
 				if (fsFLk?.down) {
 					$gotoCatI.addClass("down");
 				}
@@ -2634,14 +2634,14 @@ m.onKeydownInFS=function (e, fs) {
 			e.preventDefault();
 			$target.off("keyup.fs cut.fs paste.fs click.fs");
 			let $liTo=null;
-			if ($liSelected.exists()) {
+			if ($liSelected.length) {
 				if (e.keyCode===38) {
 					$liTo=$liSelected.prev();
 				}
 				else {
 					$liTo=$liSelected.next();
 				}
-				if ($liTo.exists()) {
+				if ($liTo.length) {
 					$liTo.eq(0).trigger("click");
 					if ($liTo.offset().top<$fsl.offset().top+52) { // $liTo at upside of scroll.
 						$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-52);
@@ -2652,7 +2652,7 @@ m.onKeydownInFS=function (e, fs) {
 				}
 			}
 			else {
-				if ($fsLis.exists()) {
+				if ($fsLis.length) {
 					if (e.keyCode===38) {
 						$liTo=$fsLis.last();
 						$fsl.scrollTop($fsl[0].scrollHeight);
@@ -4518,7 +4518,7 @@ return new Promise(async function (resolve, reject) {
 	if (m.catList[cat]) {
 		$("#catList").find(".cat").removeClass("selected");
 		let $cat=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-		if ($cat.exists()) {
+		if ($cat.length) {
 			$cat.addClass("selected");
 			let $parents=$cat.parents(".subCat");
 			for (let i=0;i<$parents.length;i++) {
@@ -4912,7 +4912,7 @@ if (m.myPage) {
 			let fsGotoCatsFLCat=m.fsGotoCats.fullList[m.currentCat];
 			if (fsGotoCatsFLCat) {
 				let $gotoCatsI=$(`#gotoCats-${fsGotoCatsFLCat.i}`);
-				if ($gotoCatsI.exists()) {
+				if ($gotoCatsI.length) {
 					$gotoCatsI.trigger("click");
 				}
 				else {
@@ -6111,7 +6111,7 @@ m.completeCatAndOpenCat=async function (event) {
 		fsGotoCatsFLCat=fs2.fullList[i]=fs2.fullList[cat]={cat, i, txt:m.splitHangul(cat), html:m.escapeOnlyTag(cat)};
 	}
 	let $catI=$(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
-	if ($catI.exists()) {
+	if ($catI.length) {
 		$("#catList").find(".cat").removeClass("selected");
 		$catI.addClass("selected");
 		if (m.recoMode===""||m.recoMode==="multireco"||m.recoMode==="daily-mix") {
@@ -6192,7 +6192,7 @@ m.triggerOpenCat=async function (event) {
 		}
 		let k=fsFLCat.i;
 		let $gotoCatsK=$(`#gotoCats-${k}`);
-		if ($gotoCatsK.exists()) {
+		if ($gotoCatsK.length) {
 			$gotoCatsK.trigger("click");
 			return false;
 		}
@@ -6246,14 +6246,14 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 		$target.off("keyup.fs cut.fs paste.fs click.fs");
 		let $liSelected=$fsl.find(".list-item.selected").eq(0);
 		let $liTo=null;
-		if ($liSelected.exists()) {
+		if ($liSelected.length) {
 			if (e.keyCode===38) {
 				$liTo=$liSelected.prev();
 			}
 			else {
 				$liTo=$liSelected.next();
 			}
-			if ($liTo.exists()) {
+			if ($liTo.length) {
 				$liTo.eq(0).trigger("click");
 				if ($liTo.offset().top<$fsl.offset().top+2) { // $liTo at upside of scroll.
 					$fsl.scrollTop($fsl.scrollTop()+$liTo.offset().top-$fsl.offset().top-2);
@@ -6264,7 +6264,7 @@ m.onKeydownInFS0=function (e, shortKey, fs) {
 			}
 		}
 		else {
-			if ($fsLis.exists()) {
+			if ($fsLis.length) {
 				if (e.keyCode===38) {
 					$liTo=$fsLis.last();
 					$fsl.scrollTop($fsl[0].scrollHeight);
@@ -6289,7 +6289,7 @@ $fuzzy_search.on("keydown.fs", function (e) {
 	m.onKeydownInFS0(e, 'G', m.fsGo);
 });
 m.showAndScrollTo=function ($recoElem) {
-if ($recoElem?.exists()) {
+if ($recoElem?.length) {
 	if (!$recoElem.is(":visible")) {
 		$recoElem.removeClass("none");
 		$recoElem.show();
@@ -6372,7 +6372,7 @@ m.gotoLi=async function (event) {
 	}
 	let l=fsFLUri.catAndI[m.currentCat]?.i??fs1.fullList.length-1;
 	let $recoElem=$(`#reco-${l}`);
-	if ($recoElem.exists()) {
+	if ($recoElem.length) {
 		m.showAndScrollTo($recoElem);
 		m.setIntervalSelfGotoLiCount=0;
 	}
@@ -6388,7 +6388,7 @@ m.gotoLi=async function (event) {
 			let i=Math.floor((m.catUriList[m.currentCat].uris.length-1-l)/m.maxShowReco);
 			$(`#load-recos-${i}`).trigger("click");
 			let $recoElem=$(`#reco-${l}`);
-			if ($recoElem.exists()) {
+			if ($recoElem.length) {
 				clearInterval(setIntervalSelfGotoLi);
 				m.showAndScrollTo($recoElem);
 				console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
@@ -6425,7 +6425,7 @@ m.doFSGo=async function () {
 	fs.$fsl.html(str);
 	fs.$fsLis=fs.$fsl.find(".list-item");
 	$selected=fs.$fsLis.filter(".selected");
-	if ($selected.exists()) {
+	if ($selected.length) {
 		fs.$fsl.scrollTop($selected.offset().top-fs.$fsl.offset().top-52);
 	}
 	else {
@@ -6603,7 +6603,7 @@ return new Promise(async function (resolve, reject) {
 	}
 	if (fs.shuffledOnce||m.lastCat!==m.currentCat||fs.lastIndex!==fs.currentIndex) {
 		fs.lastIndex=-2;
-		if ($li0.exists()) {
+		if ($li0.length) {
 			console.log("fs.playNext(-1, true, true);");
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			m.fsViewAndScroll(fs, $li0);
@@ -6618,7 +6618,7 @@ return new Promise(async function (resolve, reject) {
 				// m.setTimeoutPlayNextFirstCount++;
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
-				if ($li0.exists()) {
+				if ($li0.length) {
 					let idIndex=$li0.attr("id").substring(4);
 					fs.currentIndex=Number(idIndex)===NaN?idIndex:Number(idIndex);
 					m.fsViewAndScroll(fs, $li0);
@@ -6921,7 +6921,7 @@ m.intervalOpenCat=function (intervalId) {
 			m.doNotPushHistory=false;
 			return;
 		}
-		if ($gotoCatsI.exists()) {
+		if ($gotoCatsI.length) {
 			clearInterval(intervalId);
 			m.intervalCount[intervalId]=0;
 			$gotoCatsI.trigger("click");
@@ -7308,7 +7308,7 @@ m.processShortKey=function (e) {
 $window.on("keydown.sk", m.processShortKey);
 
 $shortkeyDesc=$("ul#shortkeys");
-if ($shortkeyDesc.exists()) {
+if ($shortkeyDesc.length) {
 	$shortkeyDesc.html(
 `<li><span onclick="$window.trigger({type:'keydown', keyCode:'C'.charCodeAt(0)})"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
 <li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
@@ -7632,7 +7632,7 @@ $document.ready(async function () {
 				if (m.fsGo.fullList[m.initialHashURI]||m.fsGo.tryN++>25) {
 					let k=m.fsGo.fullList[m.initialHashURI]?.i;
 					let $liK=$(`#li-${k}`);
-					if ($liK.exists()) {
+					if ($liK.length) {
 						clearInterval(m.setIntervalFsGo);
 						console.log(`$(\`#li-${k}\`).trigger("click");`)
 						$(`#li-${k}`).trigger("click");
@@ -7641,13 +7641,13 @@ $document.ready(async function () {
 			}, m.wait);
 		}
 		let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
-		if ($elem.exists()) {
+		if ($elem.length) {
 			clearInterval(m.setIntervalFsGo);
 			m.setIntervalFsGo1N=0;
 			m.setIntervalFsGo1=setInterval(function () {
 				m.hashURI=m.initialHashURI;
 				$elem=$(`#${m.escapeEncodePctg(encodeURIComponent(m.initialHashURI))}`);
-				if ($elem.exists()) {
+				if ($elem.length) {
 					window.location.hash=`#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
 					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 					$window.scrollTop($elem.offset().top);
@@ -7860,7 +7860,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	if (increment===undefined||increment===null||increment.constructor!==Number) { increment=-1; }
 	if (first) {
 		let $li0=fs.$fsLis.eq(0);
-		if ($li0.exists()) {
+		if ($li0.length) {
 			fs.lastIndex=-2;
 			fs.currentIndex=Number($li0.attr("id").substring(4));
 			if (fs.fullList[fs.currentIndex]?.r?.has) {
@@ -7901,16 +7901,16 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	}
 	let $selected=fs.$fsLis.filter(".selected");
 	let $next=null;
-	if ($selected.exists()) {
+	if ($selected.length) {
 		if (increment<0) {
 			$next=$selected.next();
-			if ((!$next.exists())&&fs.loop) {
+			if ((!$next.length)&&fs.loop) {
 				$next=fs.$fsLis.eq(0);
 			}
 		}
 		else {
 			$next=$selected.prev();
-			if ((!$next.exists())&&fs.loop) {
+			if ((!$next.length)&&fs.loop) {
 				$next=fs.$fsLis.last();
 			}
 		}
@@ -7918,7 +7918,7 @@ m.fsToRs.playNext=async function (increment, cue, first) {
 	else {
 		$next=fs.$fsLis.eq(0);
 	}
-	if ($next?.exists()) {
+	if ($next?.length) {
 		$next.trigger("click");
 		m.fsViewAndScroll(fs, $next);
 	}
