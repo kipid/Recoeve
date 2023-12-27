@@ -6378,10 +6378,10 @@ m.gotoLi=async function (event) {
 	}
 	else {
 		m.setIntervalSelfGotoLiCount=0;
-		m.setIntervalSelfGotoLi=setInterval(function () {
+		m.setIntervalSelfGotoLi=setInterval(function (setIntervalSelfGotoLi=m.setIntervalSelfGotoLi) {
 			m.setIntervalSelfGotoLiCount++;
 			if (m.setIntervalSelfGotoLiCount>7) {
-				clearInterval(m.setIntervalSelfGotoLi);
+				clearInterval(setIntervalSelfGotoLi);
 				console.log(`GotoLi to $(\`#reco-${l}\`) has failed.`);
 				return;
 			}
@@ -6389,7 +6389,7 @@ m.gotoLi=async function (event) {
 			$(`#load-recos-${i}`).trigger("click");
 			let $recoElem=$(`#reco-${l}`);
 			if ($recoElem.exists()) {
-				clearInterval(m.setIntervalSelfGotoLi);
+				clearInterval(setIntervalSelfGotoLi);
 				m.showAndScrollTo($recoElem);
 				console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
 			}
