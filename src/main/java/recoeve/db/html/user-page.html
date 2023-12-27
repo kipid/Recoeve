@@ -4368,20 +4368,24 @@ return new Promise(async function (resolve, reject) {
 				recoms.push(recoms[uri]);
 			}
 			let val={user:respJSONi.user, user_id:respJSONi.user_id, val:respJSONi.val, cmt:respJSONi.cmt};
-			let catsSplit=respJSONi.cats.split(";");
-			let simAvg100=0;
-			let maxCat=null;
-			for (let j=0;j<catsSplit.length;j++) {
-				let sim=m.neighbors[cat][`${val.user}\t${catsSplit[j]}`];
-				if (sim?.simAvg100>simAvg100) {
-					simAvg100=sim.simAvg100; // Get the largest sim of user cats.
-					maxCat=catsSplit[j];
+			if (!recoms[uri].vals[`user_${respJSONi.user}`]) {
+
+				let catsSplit=respJSONi.cats.split(";");
+				let simAvg100=0;
+				let maxCat=null;
+				for (let j=0;j<catsSplit.length;j++) {
+					let sim=m.neighbors[cat][`${val.user}\t${catsSplit[j]}`];
+					if (sim?.simAvg100>simAvg100) {
+						simAvg100=sim.simAvg100; // Get the largest sim of user cats.
+						maxCat=catsSplit[j];
+					}
 				}
+				val.simAvg100=simAvg100;
+				val.maxCat=maxCat;
+				recoms[uri].vals[`user_${respJSONi.user}`]=val;
+				recoms[uri].vals.push(val);
+				recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
 			}
-			val.simAvg100=simAvg100;
-			val.maxCat=maxCat;
-			recoms[uri].vals.push(val);
-			recoms[uri].valsStat[Math.round(val.val*m.valsStatN)]+=simAvg100;
 		}
 	}
 	for (let i=0;i<recoms.length;i++) {
