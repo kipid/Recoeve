@@ -1974,7 +1974,7 @@ m.toggleAMess=function (elem) {
 m.docuKProcess=function docuK(m, $, docuKI, undefined) {
 	// Possible duplicate id is handled.
 	docuKI=(isNaN(docuKI)||docuKI<0)?0:parseInt(docuKI);
-	m.logPrint(`<br><br>docuK-${$docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
+	m.logPrint(`<br><br>docuK-${docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
 	let $docuK=$(".docuK").eq(docuKI);
 	if ($docuK.is(".rendered")) {
 		m.logPrint(`<br><br>docuK-${docuKI} is already rendered.`);
