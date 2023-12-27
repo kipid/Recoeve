@@ -7398,15 +7398,16 @@ $choose_timezone.on("click", function (e) {
 $document.ready(async function () {
 	await m.reNewfsCatsOn();
 
-	let blogStat=`URI	referer	REACTION_GUEST
-${window.location.href}	${document.referrer}	${m.myId}`;
-	$.ajax({
-		type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
-	}).fail(function (resp) {
-		console.log("BlogStat: ", resp);
-	}).done(function (resp) {
-		console.log("BlogStat: ", resp);
-	});
+	setTimeout(function () {
+		let blogStat=`URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\t${m.myId}`;
+		$.ajax({
+			type:"POST", url:"/BlogStat", data:blogStat, dataType:"text"
+		}).fail(function (resp) {
+			console.log("BlogStat: ", resp);
+		}).done(function (resp) {
+			console.log("BlogStat: ", resp);
+		});
+	}, 4*m.wait);
 
 	m.browserWidth=window.innerWidth;
 	if (m.browserWidth<701) {

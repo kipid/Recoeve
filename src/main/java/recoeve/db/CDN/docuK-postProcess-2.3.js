@@ -126,19 +126,20 @@ $document.ready(function () {
 		}
 	}
 
-	let parsedHref=new URL(window.location.href);
-	let origin=parsedHref.origin.toLowerCase();
-	if (origin==="https://kipid.tistory.com"||origin==="https://localhost"||origin==="https://recoeve.net") {
-		let blogStat=`URI	referer	REACTION_GUEST
-${window.location.href}	${document.referrer}	${m.docCookies.getItem("REACTION_GUEST")}`;
-		$.ajax({
-			type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
-		}).fail(function (resp) {
-			m.logPrint("<br><br>BlogStat timeout. "+resp);
-		}).done(function (resp) {
-			m.logPrint("<br><br>BlogStat is logged. "+resp);
-		});
-	}
+	setTimeout(function () {
+		let parsedHref=new URL(window.location.href);
+		let origin=parsedHref.origin.toLowerCase();
+		if (origin==="https://kipid.tistory.com"||origin==="https://localhost"||origin==="https://recoeve.net") {
+			let blogStat=`URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\t${m.docCookies.getItem("REACTION_GUEST")}`;
+			$.ajax({
+				type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
+			}).fail(function (resp) {
+				m.logPrint("<br><br>BlogStat timeout. "+resp);
+			}).done(function (resp) {
+				m.logPrint("<br><br>BlogStat is logged. "+resp);
+			});
+		}
+	}, 4*m.wait);
 
 	$title.html($title.html()+` at ${window.location.host}`);
 
