@@ -6610,24 +6610,27 @@ return new Promise(async function (resolve, reject) {
 			fs.playNext(-1, true, true);
 		}
 		else {
-			m.setIntervalPlayNextFirstCount=0;
-			m.setIntervalPlayNextFirst=setInterval(function () {
-				console.log("m.setIntervalPlayNextFirst: ", m.setIntervalPlayNextFirst);
-				m.setIntervalPlayNextFirstCount++;
-				if (m.setIntervalPlayNextFirstCount>7) {
-					clearInterval(m.setIntervalPlayNextFirst);
-					console.log("PlayNextFirst has failed.");
-					return;
-				}
+			if (m.setTimeoutPlayNextFirstCount===undefined||m.setTimeoutPlayNextFirstCount>7) {
+				m.setTimeoutPlayNextFirstCount=0;
+			}
+			setTimeout(function selfPlayNextFirst() {
+				console.log("selfPlayNextFirst()");
+				m.setTimeoutPlayNextFirstCount++;
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
 				if ($li0.exists()) {
-					clearInterval(m.setIntervalPlayNextFirst);
 					let idIndex=$li0.attr("id").substring(4);
 					fs.currentIndex=Number(idIndex)===NaN?idIndex:Number(idIndex);
 					m.fsViewAndScroll(fs, $li0);
 					fs.playNext(-1, true, true);
 					console.log("fs.playNext(-1, true, true); PlayNextFirst.");
+				}
+				else if (m.setTimeoutPlayNextFirstCount<7) {
+					setTimeout(selfPlayNextFirst, 2*wait);
+				}
+				else {
+					console.log("PlayNextFirst has failed.");
+					return;
 				}
 			}, 2*m.wait);
 		}
