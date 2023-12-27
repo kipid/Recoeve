@@ -6612,6 +6612,7 @@ return new Promise(async function (resolve, reject) {
 		else {
 			m.setIntervalPlayNextFirstCount=0;
 			m.setIntervalPlayNextFirst=setInterval(function () {
+				console.log("m.setIntervalPlayNextFirst: ", m.setIntervalPlayNextFirst);
 				m.setIntervalPlayNextFirstCount++;
 				if (m.setIntervalPlayNextFirstCount>7) {
 					clearInterval(m.setIntervalPlayNextFirst);
