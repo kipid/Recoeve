@@ -6614,14 +6614,14 @@ return new Promise(async function (resolve, reject) {
 			m.setIntervalPlayNextFirst=setInterval(function () {
 				m.setIntervalPlayNextFirstCount++;
 				if (m.setIntervalPlayNextFirstCount>7) {
-					clearTimeout(m.setIntervalPlayNextFirst);
+					clearInterval(m.setIntervalPlayNextFirst);
 					console.log("PlayNextFirst has failed.");
 					return;
 				}
 				fs.$fsLis=fs.$fsl.find(".list-item");
 				let $li0=fs.$fsLis.eq(0);
 				if ($li0.exists()) {
-					clearTimeout(m.setIntervalPlayNextFirst);
+					clearInterval(m.setIntervalPlayNextFirst);
 					let idIndex=$li0.attr("id").substring(4);
 					fs.currentIndex=Number(idIndex)===NaN?idIndex:Number(idIndex);
 					m.fsViewAndScroll(fs, $li0);
