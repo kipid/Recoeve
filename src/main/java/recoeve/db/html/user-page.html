@@ -6460,9 +6460,9 @@ m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 				if ($liK.length) {
 					clearInterval(setIntervalFsGo);
 					m.fsGo.tryN=0;
+					m.hashURI=hashURI;
 					console.log(`$(\`#li-${k}\`).trigger("click");`)
 					$(`#li-${k}`).trigger("click");
-					m.hashURI=hashURI;
 				}
 			}
 			else if (m.fsGo.tryN<7) {
@@ -7027,18 +7027,20 @@ m.processShortKey=function (e) {
 	switch (e.keyCode) {
 	case 90: // Z=90 To List Play
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.hashURI="headPlay";
-			window.location.hash=`#${m.hashURI}`;
-			$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
-			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.gotoHash("headPlay");
+			// m.hashURI="headPlay";
+			// window.location.hash=`#${m.hashURI}`;
+			// $window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+			// window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
 	case 88: // X=88 To contents
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.hashURI="numbers-of-recos";
-			window.location.hash=`#${m.hashURI}`;
-			$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
-			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.gotoHash("numbers-of-recos");
+			// m.hashURI="numbers-of-recos";
+			// window.location.hash=`#${m.hashURI}`;
+			// $window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
+			// window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
 	case 81: // Q=81 Preceding
