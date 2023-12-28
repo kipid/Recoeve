@@ -319,6 +319,8 @@ else if (m.docCookies.hasItem("lang")) {
 	<label for="input-title">[--Title--] <span class="desc"><code>Ctrl+Enter</code> to Reco/Edit directly</span></label>
 		<div id="def-titles"></div>
 		<textarea class="single-line" id="input-title" name="title" placeholder="[--placeholder Title--]" type="text" tabindex="2"></textarea>
+		<div id="lyrics-search" class="button fRight">Lyrics Search in genius.com</div>
+		<div class="cBoth"></div>
 	<label for="input-cats">[--Categories--]</label>
 		<div id="def-cats"><div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div></div>
 		<textarea class="single-line" id="input-cats" name="cats" placeholder="[--placeholder Category--]" type="text" tabindex="3"></textarea>
@@ -969,6 +971,10 @@ $input_uri=$("#input-uri");
 $show_URI=$("#show-URI");
 $def_titles=$("#def-titles");
 $input_title=$("#input-title");
+$lyrics_search=$("#lyrics-search");
+$lyrics_search.on("click", function (e) {
+	window.open(`http://www.google.com/search?q=${encodeURIComponent($input_title[0].value+" lyrics genius")}`, "_blank");
+});
 $def_cats=$("#def-cats");
 $input_cats=$("#input-cats");
 $input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
