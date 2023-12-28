@@ -7702,8 +7702,7 @@ m.cueOrLoadUri=function (cue, uriRendered, inListPlay) {
 		$eveElse_uri_rendered.hide();
 		$rC_youtube_uri_rendered.show();
 		fs.$playing=$rC_youtube_uri_rendered;
-		console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}`);
-		console.log(`m.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}`);
+		console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 		if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
 			if (inListPlay&&m.YtPlayer) {
 				if (cue&&m.YtPlayer.cueVideoById) {
