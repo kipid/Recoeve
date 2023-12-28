@@ -6444,7 +6444,9 @@ m.fsGoOn=async function () {
 m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 	if (hashURI&&m.userIndex) {
 		m.fsGo.tryN=0;
+		clearInterval(m.setIntervalFsGo);
 		m.setIntervalFsGo=setInterval(function (setIntervalFsGo=m.setIntervalFsGo) {
+			m.fsGo.tryN++;
 			console.log(`m.setIntervalFsGo triggered!: `, m.fsGo.tryN);
 			if (m.fsGo.fullList[hashURI]) {
 				let k=m.fsGo.fullList[hashURI]?.i;
@@ -6457,7 +6459,7 @@ m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 					m.hashURI=hashURI;
 				}
 			}
-			else if (m.fsGo.tryN++<15) {
+			else if (m.fsGo.tryN<7) {
 				let $elem=$(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
 				if ($elem.length) {
 					clearInterval(setIntervalFsGo);
@@ -6967,6 +6969,7 @@ m.intervalOpenCat=function (intervalId) {
 				}
 			}
 			m.gotoHash(m.initialHashURI);
+			return;
 		}
 		else if (m.intervalCount[intervalId]>m.intervalMaxCount) {
 			clearInterval(intervalId);
