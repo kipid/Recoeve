@@ -4538,7 +4538,7 @@ return new Promise(async function (resolve, reject) {
 		return reject();
 	}
 	switch (m.recoMode) {
-		case "multireco": case "": default:
+		case "multireco": case "": default: {
 			$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
 			if (m.recoMode==="multireco") {
 				$button_mode.removeClass("enabled");
@@ -4578,7 +4578,8 @@ return new Promise(async function (resolve, reject) {
 			m.recosShown=true;
 			resolve();
 			break;
-		case "daily-mix": {
+		}
+		case "daily-mix": case "recoms": {
 			$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
 			$button_mode.removeClass("enabled");
 			$button_daily_mix.addClass("enabled");
@@ -4611,27 +4612,28 @@ return new Promise(async function (resolve, reject) {
 					else if (m.recoms[cat]?.length>0) {
 						strHTML=`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`;
 						let fs=m.fsToRs;
-						fs.$fsLis=fs.$fsl.find(".list-item");
-						for (let i=m.recoms[cat].length-1, j=2;i>=recomsPlusRandomUntil&&j<fs.$fsLis.length;i--, j+=m.dailyMixPer) {
-							let k=m.recomsPlusRandomSorted[cat][i];
-							let uri=m.recoms[cat][k].uri;
-							let recoDef=m.recoDefs[uri];
-							fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0]&&recoDef.defTitles[0][0])}</div>`);
+						await m.reTriggerFS(fs);
+						if (m.recoMode==="recoms") {
+							let recomsUntil=m.recomsSorted[cat].sortedUntil;
+							for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+								let k=m.recomsSorted[cat][i];
+								let uri=m.recoms[cat][k].uri;
+								let recomHTML=await m.recomHTML(m.userRecos[uri])
+								strHTML+=String(recomHTML);
+							}
+							if (recomsUntil>0) {
+								strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+							}
 						}
-						// let recomsUntil=m.recomsSorted[cat].sortedUntil;
-						// for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
-						// 	let k=m.recomsSorted[cat][i];
-						// 	let uri=m.recoms[cat][k].uri;
-						// 	let recomHTML=await m.recomHTML(m.userRecos[uri])
-						// 	strHTML+=String(recomHTML);
-						// }
-						// if (recomsUntil>0) {
-						// 	strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-						// }
 					}
 					$contents_recoms.html(strHTML);
 					m.reNewAndReOn();
-					$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+					if (m.recoMode==="daily-mix") {
+						$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+					}
+					else {
+						m.goDirectlyToHash("button-get-recoms");
+					}
 					resolve();
 				}
 				else {
@@ -4662,7 +4664,12 @@ return new Promise(async function (resolve, reject) {
 							respJSON.splice(0, 1);
 							m.neighborsRecos[cat]=respJSON;
 							await m.showRecoms(m.neighborsRecos[cat], cat, true);
-							$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+							if (m.recoMode==="daily-mix") {
+								$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+							}
+							else {
+								m.goDirectlyToHash("button-get-recoms");
+							}
 							resolve();
 						});
 					}
@@ -5161,10 +5168,7 @@ m.openCat=async function (cat) {
 			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 		}
 		else if ($button_get_recoms.hasClass("enabled")) {
-			m.hashURI="button-get-recoms";
-			window.location.hash=`#${m.hashURI}`;
-			$window.scrollTop($button_get_recoms.offset().top);
-			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+			m.goDirectlyToHash("button-get-recoms");
 		}
 		else {
 			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
@@ -6449,6 +6453,12 @@ m.fsGoOn=async function () {
 		}, m.wait*1.5-passed);
 	}
 };
+m.goDirectlyToHash=function (hashURI) { // Decoded hashURI without "#".
+	m.hashURI=hashURI;
+	window.location.hash=`#${m.hashURI}`;
+	$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+};
 m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 	if (hashURI&&m.userIndex) {
 		m.fsGo.tryN=0;
@@ -7029,18 +7039,12 @@ m.processShortKey=function (e) {
 	switch (e.keyCode) {
 	case 90: // Z=90 To List Play
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.hashURI="headPlay";
-			window.location.hash=`#${m.hashURI}`;
-			$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
-			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.goDirectlyToHash("headPlay");
 		}
 		break;
 	case 88: // X=88 To contents
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.hashURI="numbers-of-recos";
-			window.location.hash=`#${m.hashURI}`;
-			$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
-			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.goDirectlyToHash("numbers-of-recos");
 		}
 		break;
 	case 81: // Q=81 Preceding
@@ -7279,10 +7283,7 @@ m.processShortKey=function (e) {
 				$contents_recoms.show();
 				$contents_recoms.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 				if (!m.initialOpen||!m.initialHashURI) {
-					m.hashURI="button-get-recoms";
-					window.location.hash=`#${m.hashURI}`;
-					$window.scrollTop($(`#${m.hashURI}`).offset().top);
-					window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+					m.goDirectlyToHash("button-get-recoms");
 				}
 			}
 			clearInterval(m.initialFsGotoCats3);
