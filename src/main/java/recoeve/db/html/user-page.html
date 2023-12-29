@@ -4637,7 +4637,7 @@ return new Promise(async function (resolve, reject) {
 					resolve();
 				}
 				else {
-					if (!m.neighborsRecos[cat]) {
+					if (!m.neighborsRecos[cat]||!m.recomsSorted[cat]) {
 						let req=`user\tcat`;
 						let n=m.neighbors[cat].length;
 						let until=n<m.neighborUpto?0:n-m.neighborUpto;
@@ -4676,7 +4676,12 @@ return new Promise(async function (resolve, reject) {
 					else if (m.lastTLIndex!==m.TLIndex||!m.recomsPlusRandomSorted[cat]) {
 						await m.showRecoms(m.neighborsRecos[cat], cat, true);
 						m.lastTLIndex=m.TLIndex;
-						$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+						if (m.recoMode==="daily-mix") {
+							$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+						}
+						else {
+							m.goDirectlyToHash("button-get-recoms");
+						}
 						resolve();
 					}
 				}
@@ -4792,112 +4797,112 @@ return new Promise(async function (resolve, reject) {
 				resolve();
 			});
 			break;
-		case "recoms":
-			if (m.neighbors[cat]) {
-				if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) { // TL for Time Limit.
-					let recomsUntil=m.recomsSorted[cat].sortedUntil;
-					let strHTML="";
-					if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-						strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`);
-					}
-					else {
-						strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
-						for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
-							let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-							let recomHTML=await m.recomHTML(m.userRecos[uri])
-							strHTML+=String(recomHTML);
-						}
-						if (recomsUntil>0) {
-							strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-						}
-					}
-					$contents_recoms.html(strHTML);
-					m.reNewAndReOn();
-					if (scroll) {
-						$window.scrollTop($contents_recoms.offset().top);
-					}
-					resolve();
-				}
-				else {
-					if (!(m.neighborsRecos[cat]&&m.recomsSorted[cat])) {
-						let req=`user\tcat`;
-						let n=m.neighbors[cat].length;
-						let until=n<m.neighborUpto?0:n-m.neighborUpto;
-						let sorted=m.neighbors[cat].sorted;
-						for (let i=n-1;i>=until;i--) {
-							let neighborI=m.neighbors[cat][sorted[i]];
-							req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
-						}
-						$.ajax({
-							type:"POST", url:m.userPath+"/get-Recoms", data:req
-							, dataType:"text"
-						}).done(async function (resp) {
-							let respJSON=await m.strToJSON(resp);
-							for (let i=1;i<respJSON.length;i++) {
-								let val=m.val(respJSON[i].val);
-								if (val.valid) {
-									respJSON[i].val=val.val;
-								}
-								else {
-									respJSON.splice(i, 1);
-									i--;
-								}
-							}
-							respJSON.splice(0, 1);
-							m.neighborsRecos[cat]=respJSON;
-							await m.showRecoms(m.neighborsRecos[cat], cat);
-							if (scroll) {
-								$window.scrollTop($contents_recoms.offset().top);
-							}
-							resolve();
-						});
-					}
-					else if (m.lastTLIndex!==m.TLIndex) {
-						await m.showRecoms(m.neighborsRecos[cat], cat);
-						m.lastTLIndex=m.TLIndex;
-						if (scroll) {
-							$window.scrollTop($contents_recoms.offset().top);
-						}
-						resolve();
-					}
-				}
-			}
-			else {
-				$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
-				let cat_from=m.currentCat=cat;
-				$.ajax({
-					type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
-					, dataType:"text"
-				}).fail(function (resp) {
-					$numbers_of_recos.html(resp);
-					resolve();
-				}).done(async function (resp) {
-					let respJSON=await m.strToJSON(resp);
-					let neighbors=[];
-					let sorted=neighbors.sorted=[];
-					let n=0;
-					for (let i=1;i<respJSON.length;i++) {
-						let neighborI=respJSON[i];
-						neighborI.cat_from=cat_from;
-						let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
-						let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
-						neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
-						if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
-							neighbors[n]=neighborI
-							neighbors[n].i=n;
-							sorted[n]=n;
-							neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighbors[n];
-							n++;
-						}
-					}
-					let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-					$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".`);
-					m.neighbors[cat_from]=neighbors;
-					await m.getUriListAndShowRecosOnCat(cat, scroll);
-					resolve();
-				});
-			}
-			break;
+		// case "recoms":
+			// if (m.neighbors[cat]) {
+			// 	if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) { // TL for Time Limit.
+			// 		let recomsUntil=m.recomsSorted[cat].sortedUntil;
+			// 		let strHTML="";
+			// 		if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
+			// 			strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`);
+			// 		}
+			// 		else {
+			// 			strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
+			// 			for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
+			// 				let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
+			// 				let recomHTML=await m.recomHTML(m.userRecos[uri])
+			// 				strHTML+=String(recomHTML);
+			// 			}
+			// 			if (recomsUntil>0) {
+			// 				strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+			// 			}
+			// 		}
+			// 		$contents_recoms.html(strHTML);
+			// 		m.reNewAndReOn();
+			// 		if (scroll) {
+			// 			$window.scrollTop($contents_recoms.offset().top);
+			// 		}
+			// 		resolve();
+			// 	}
+			// 	else {
+			// 		if (!(m.neighborsRecos[cat]&&m.recomsSorted[cat])) {
+			// 			let req=`user\tcat`;
+			// 			let n=m.neighbors[cat].length;
+			// 			let until=n<m.neighborUpto?0:n-m.neighborUpto;
+			// 			let sorted=m.neighbors[cat].sorted;
+			// 			for (let i=n-1;i>=until;i--) {
+			// 				let neighborI=m.neighbors[cat][sorted[i]];
+			// 				req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
+			// 			}
+			// 			$.ajax({
+			// 				type:"POST", url:m.userPath+"/get-Recoms", data:req
+			// 				, dataType:"text"
+			// 			}).done(async function (resp) {
+			// 				let respJSON=await m.strToJSON(resp);
+			// 				for (let i=1;i<respJSON.length;i++) {
+			// 					let val=m.val(respJSON[i].val);
+			// 					if (val.valid) {
+			// 						respJSON[i].val=val.val;
+			// 					}
+			// 					else {
+			// 						respJSON.splice(i, 1);
+			// 						i--;
+			// 					}
+			// 				}
+			// 				respJSON.splice(0, 1);
+			// 				m.neighborsRecos[cat]=respJSON;
+			// 				await m.showRecoms(m.neighborsRecos[cat], cat);
+			// 				if (scroll) {
+			// 					$window.scrollTop($contents_recoms.offset().top);
+			// 				}
+			// 				resolve();
+			// 			});
+			// 		}
+			// 		else if (m.lastTLIndex!==m.TLIndex) {
+			// 			await m.showRecoms(m.neighborsRecos[cat], cat);
+			// 			m.lastTLIndex=m.TLIndex;
+			// 			if (scroll) {
+			// 				$window.scrollTop($contents_recoms.offset().top);
+			// 			}
+			// 			resolve();
+			// 		}
+			// 	}
+			// }
+			// else {
+			// 	$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
+			// 	let cat_from=m.currentCat=cat;
+			// 	$.ajax({
+			// 		type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
+			// 		, dataType:"text"
+			// 	}).fail(function (resp) {
+			// 		$numbers_of_recos.html(resp);
+			// 		resolve();
+			// 	}).done(async function (resp) {
+			// 		let respJSON=await m.strToJSON(resp);
+			// 		let neighbors=[];
+			// 		let sorted=neighbors.sorted=[];
+			// 		let n=0;
+			// 		for (let i=1;i<respJSON.length;i++) {
+			// 			let neighborI=respJSON[i];
+			// 			neighborI.cat_from=cat_from;
+			// 			let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
+			// 			let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
+			// 			neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
+			// 			if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
+			// 				neighbors[n]=neighborI
+			// 				neighbors[n].i=n;
+			// 				sorted[n]=n;
+			// 				neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighbors[n];
+			// 				n++;
+			// 			}
+			// 		}
+			// 		let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
+			// 		$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".`);
+			// 		m.neighbors[cat_from]=neighbors;
+			// 		await m.getUriListAndShowRecosOnCat(cat, scroll);
+			// 		resolve();
+			// 	});
+			// }
+			// break;
 	}
 });
 };
