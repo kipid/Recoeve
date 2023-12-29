@@ -6474,7 +6474,7 @@ m.fsGoOn=async function () {
 m.goDirectlyToHash=function (hashURI) { // Decoded hashURI without "#".
 	m.hashURI=hashURI;
 	window.location.hash=`#${m.hashURI}`;
-	$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+	$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
 	window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 };
 m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
