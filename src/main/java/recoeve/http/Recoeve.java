@@ -211,7 +211,7 @@ public void start() {
 		pl.req.bodyHandler((Buffer data) -> {
 			StrArray inputs=new StrArray(data.toString());
 			pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-				.end(""+db.putBlogStat1(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST")), ENCODING);
+				.end(""+db.putBlogStat1(pl.tNow, pl.ip, inputs.get(1, "URI"), inputs.get(1, "referer"), inputs.get(1, "REACTION_GUEST"), pl.referer), ENCODING);
 			System.out.println("Recorded:\n"+inputs.toStringDecoded());
 		});
 	});

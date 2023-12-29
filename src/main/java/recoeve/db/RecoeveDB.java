@@ -505,13 +505,18 @@ public boolean changeOrderOfUriList(String cookieI, String user_id, String cat, 
 // 		err(e);
 // 	}
 // }
-public boolean putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST) {
+public boolean putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST, String refererFromServer) {
 	try {
 		con.setAutoCommit(true);
 		pstmtPutBlogStat1.setTimestamp(1, tNow);
 		pstmtPutBlogStat1.setString(2, ip);
 		pstmtPutBlogStat1.setString(3, uri);
-		pstmtPutBlogStat1.setString(4, referer);
+		if (referer==null||referer.isEmpty()) {
+			pstmtPutBlogStat1.setString(4, refererFromServer);
+		}
+		else {
+			pstmtPutBlogStat1.setString(4, referer);
+		}
 		pstmtPutBlogStat1.setString(5, REACTION_GUEST);
 		String host=null;
 		if (uri.substring(0,4).toLowerCase().equals("http")) {
