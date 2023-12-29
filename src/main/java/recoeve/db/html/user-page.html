@@ -5179,10 +5179,10 @@ m.openCat=async function (cat) {
 		}
 	}
 	else if (!m.doNotPushHistory) {
-		if ($button_neighbors_mode.hasClass("enabled")||$button_multireco_mode.hasClass("enabled")) {
+		if (m.recoMode==="neighbors"||m.recoMode==="multireco") {
 			$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 		}
-		else if ($button_get_recoms.hasClass("enabled")) {
+		else if (m.recoMode==="recoms") {
 			m.goDirectlyToHash("button-get-recoms");
 		}
 		else {
@@ -5230,6 +5230,9 @@ window.onpopstate=function (e) {
 		}
 		else if (e.state.recoMode==="neighbors"&&(!$button_neighbors_mode.hasClass("enabled"))) {
 			$window.trigger({type:'keydown', keyCode:'B'.charCodeAt(0)});
+		}
+		else if (e.state.recoMode==="daily-mix"&&!$button_daily_mix.hasClass("enabled")) {
+			$window.trigger({type:'keydown', keyCode:'Y'.charCodeAt(0)});
 		}
 
 		if (e.state.cat) {
@@ -7687,7 +7690,7 @@ $document.ready(async function () {
 	$title.html(`${m.userId}'s recoeve.net`);
 	m.gotoHash(m.initialHashURI);
 	$goto_cats_container.hide();
-	if (!m.initialHashURI||m.initialHashURI==="headPlay") {
+	if (!m.initialHashURI) {
 		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
 	if (m.docCookies.getItem("hideFK")==="y") {
