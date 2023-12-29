@@ -6158,6 +6158,7 @@ m.completeCatAndOpenCat=async function (event) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
+		$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)});
 	}
 	else if ((m.lastRecoMode==="multireco"&&m.recoMode==="")||(m.lastRecoMode==="daily-mix"&&m.recoMode==="")) {
 		$contents.removeClass("multireco");
@@ -6165,6 +6166,7 @@ m.completeCatAndOpenCat=async function (event) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
+		$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
 	}
 	else {
 		if (!m.doNotPushHistory) {
@@ -6453,7 +6455,7 @@ m.gotoHash=function (hashURI) { // Decoded hashURI without "#".
 		clearInterval(m.setIntervalFsGo);
 		m.setIntervalFsGo=setInterval(function (setIntervalFsGo=m.setIntervalFsGo) {
 			m.fsGo.tryN++;
-			console.log(`m.setIntervalFsGo triggered!: `, m.fsGo.tryN);
+			console.log(`m.setIntervalFsGo triggered!: `, setIntervalFsGo, m.fsGo.tryN);
 			if (m.fsGo.fullList[hashURI]) {
 				let k=m.fsGo.fullList[hashURI]?.i;
 				let $liK=$(`#li-${k}`);
@@ -7027,20 +7029,18 @@ m.processShortKey=function (e) {
 	switch (e.keyCode) {
 	case 90: // Z=90 To List Play
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.gotoHash("headPlay");
-			// m.hashURI="headPlay";
-			// window.location.hash=`#${m.hashURI}`;
-			// $window.scrollTop($headPlay.offset().top); // For when hash is not changed.
-			// window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.hashURI="headPlay";
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($headPlay.offset().top); // For when hash is not changed.
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
 	case 88: // X=88 To contents
 		if (!m.initialOpen||!m.initialHashURI) {
-			m.gotoHash("numbers-of-recos");
-			// m.hashURI="numbers-of-recos";
-			// window.location.hash=`#${m.hashURI}`;
-			// $window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
-			// window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+			m.hashURI="numbers-of-recos";
+			window.location.hash=`#${m.hashURI}`;
+			$window.scrollTop($numbers_of_recos0.offset().top); // For when hash is not changed.
+			window.history.replaceState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		break;
 	case 81: // Q=81 Preceding
