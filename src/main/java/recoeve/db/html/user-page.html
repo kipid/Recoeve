@@ -4582,7 +4582,12 @@ return new Promise(async function (resolve, reject) {
 		case "daily-mix": case "recoms": {
 			$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
 			$button_mode.removeClass("enabled");
-			$button_daily_mix.addClass("enabled");
+			if (m.recoMode==="daily-mix") {
+				$button_daily_mix.addClass("enabled");
+			}
+			else {
+				$button_get_recoms.addClass("enabled");
+			}
 			$contents.removeClass("multireco");
 			let catListCat=m.catList[cat];
 			if (catListCat) {
@@ -4601,7 +4606,12 @@ return new Promise(async function (resolve, reject) {
 				$contents.html("");
 				m.lastRecoMode=m.recoMode;
 			}
-			$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+			if (m.recoMode==="daily-mix") {
+				$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)});
+			}
+			else {
+				m.goDirectlyToHash("button-get-recoms");
+			}
 			if (m.neighbors[cat]) {
 				if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) { // TL for Time Limit.
 					let recomsPlusRandomUntil=m.recomsPlusRandomSorted[cat]?.sortedUntil;
