@@ -210,7 +210,7 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 					let res=resp.substring(15);
 					res=await m.strToJSON(res);
 					if (resp.startsWith("log-in success")) {
-						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
+						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
 						$log_in_with_google.before( m.encloseErr("log-in success") );
 						// wait until saving session/rmb cookies. And conversion.
 						setTimeout(function () {
@@ -311,7 +311,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
-						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
+						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
 						$elem.before( m.encloseErr(resp) );
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
@@ -467,7 +467,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					$.ajax("/account/sign-up", {
 						type:"POST", data:form_data
 					}).done(function (resp) {
-						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
+						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
 					});
