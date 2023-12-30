@@ -210,23 +210,20 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 					let res=resp.substring(15);
 					res=await m.strToJSON(res);
 					if (resp.startsWith("log-in success")) {
-						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
+						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
 						$log_in_with_google.before( m.encloseErr("log-in success") );
-						// wait until saving session/rmb cookies.
+						// wait until saving session/rmb cookies. And conversion.
 						setTimeout(function () {
 							if (res[1]&&res[1].goto) {
 								window.location.pathname=res[1].goto;
-								// window.open(res[1].goto, "_blank");
 							}
 							else if (m.searchVars.goto?.val) {
 								window.location.href=m.searchVars.goto.val;
-								// window.open(m.searchVars.goto.val, "_blank");
 							}
 							else {
 								window.location.href="/";
-								// window.open("/", "_blank");
 							}
-						}, 1024);
+						}, m.wait);
 					}
 					else {
 						$log_in_with_google.before( m.encloseErr(resp) );
@@ -314,7 +311,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
-						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
+						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
 						$elem.before( m.encloseErr(resp) );
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
@@ -329,7 +326,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 							else {
 								$elem[0].disabled=false;
 							}
-						}, 1024);
+						}, m.wait);
 					});
 				}, 8);
 			}
@@ -470,7 +467,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					$.ajax("/account/sign-up", {
 						type:"POST", data:form_data
 					}).done(function (resp) {
-						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
+						$scripts.append(`<!-- Event snippet for Page views, and Sign-up. conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' }); </`+`script>`);
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
 					});
