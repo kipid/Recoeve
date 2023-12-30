@@ -18,17 +18,17 @@ import java.security.MessageDigest;
 import java.sql.*;
 	// java.sql.Timestamp;
 	// java.sql.PreparedStatement
-import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.html
+// import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.html
 
 import java.math.BigInteger;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
+// import java.net.URI;
+// import java.net.URISyntaxException;
+// import java.net.URL;
+// import java.net.URLDecoder;
 // import java.net.URLDecoder;
 
-import java.io.UnsupportedEncodingException;
+// import java.io.UnsupportedEncodingException;
 
 import java.text.Normalizer;
 
@@ -38,14 +38,14 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.HexFormat;
+// import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+// import java.util.regex.Pattern;
+// import java.util.regex.Matcher;
 
 import recoeve.http.Gmail;
 import recoeve.http.Cookie;

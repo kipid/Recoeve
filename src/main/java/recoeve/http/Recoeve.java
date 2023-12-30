@@ -1,35 +1,35 @@
 package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Handler;
-import io.vertx.core.Launcher;
+// import io.vertx.core.Handler;
+// import io.vertx.core.Launcher;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+// import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.metrics.MetricsOptions;
+// import io.vertx.core.http.HttpServerRequest;
+// import io.vertx.core.json.JsonObject;
+// import io.vertx.core.metrics.MetricsOptions;
 import io.vertx.core.net.JksOptions;
-import io.vertx.core.net.TCPSSLOptions;
-import io.vertx.ext.auth.User;
+// import io.vertx.core.net.TCPSSLOptions;
+// import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.auth.oauth2.Oauth2Credentials;
+// import io.vertx.ext.auth.oauth2.Oauth2Credentials;
 // import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 // import io.vertx.ext.auth.oauth2.OAuth2Options;
 import io.vertx.ext.auth.oauth2.providers.GoogleAuth;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.WebClient;
+// import io.vertx.ext.web.RoutingContext;
+// import io.vertx.ext.web.client.HttpResponse;
+// import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.CorsHandler;
-import io.vertx.ext.web.handler.OAuth2AuthHandler;
+// import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.micrometer.MicrometerMetricsOptions;
-import io.vertx.micrometer.VertxPrometheusOptions;
+// import io.vertx.micrometer.MicrometerMetricsOptions;
+// import io.vertx.micrometer.VertxPrometheusOptions;
 
-import java.sql.*;
+// import java.sql.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +42,10 @@ import java.net.URISyntaxException;
 
 import java.io.UnsupportedEncodingException;
 
-import java.lang.StringBuilder;
+// import java.lang.StringBuilder;
 
-import recoeve.http.Cookie;
-import recoeve.http.BodyData;
+// import recoeve.http.Cookie;
+// import recoeve.http.BodyData;
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
 import recoeve.db.RecoeveDB;
@@ -321,7 +321,7 @@ public void start() {
 			}
 			if (fileName!=null&&!fileName.isEmpty()) {
 				pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
-				pl.req.response().putHeader("ETag", "1.5.21");
+				pl.req.response().putHeader("ETag", "1.5.22");
 				String[] fileNameSplit=fileName.split("\\.");
 				switch (fileNameSplit[fileNameSplit.length-1]) {
 					case "ico":
