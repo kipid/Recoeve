@@ -3937,6 +3937,7 @@ return new Promise(async function (resolve, reject) {
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					await m.getAndShowRecosOnCat(cat);
 				}
+				m.lastRecoMode=m.recoMode;
 			}
 			else {
 				$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
@@ -3976,6 +3977,7 @@ return new Promise(async function (resolve, reject) {
 					await m.getUriList("cat\n"+(cat===""?"\tp":cat));
 					await m.getAndShowRecosOnCat(cat);
 				}
+				m.lastRecoMode=m.recoMode;
 			}
 			else {
 				$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
