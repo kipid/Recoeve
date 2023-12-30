@@ -53,6 +53,10 @@ a:hover {color:rgb(170,215,170); text-decoration:underline}
 	.bright a:hover {color:rgb(40,140,40)}
 	.pink a:hover {color:rgb(70,170,70)}
 
+a.seekTo {color:rgb(170,215,170); text-decoration:underline}
+	.bright a.seekTo {color:rgb(40,140,40)}
+	.pink a.seekTo {color:rgb(70,170,70)}
+
 ::-webkit-scrollbar {width:7px; height:7px}
 ::-webkit-scrollbar-track {-webkit-border-radius:5px; border-radius:5px}
 ::-webkit-scrollbar-thumb {-webkit-border-radius:5px; border-radius:5px; background:rgb(0,120,120); -webkit-box-shadow:inset 0 0 3px rgb(0,0,0)}
