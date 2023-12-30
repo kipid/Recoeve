@@ -3312,7 +3312,7 @@ m.renderStrDescCmt=function (str) {
 	let res=[];
 	let strSplitted=str.trim().split(/\n/g);
 	for (let i=0;i<strSplitted.length;i++) {
-		strSplitted[i]=strSplitted[i].replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo($1,$2,$3)">$&</a>`);
+		strSplitted[i]=strSplitted[i];
 	}
 	let trimedStr=strSplitted.join("\n").trim();
 	let trimedStrSplitted=trimedStr.split(/\n\n+/g);
@@ -3427,8 +3427,8 @@ m.recomHTML=async function (r, inListPlay) {
 			let key=m.escapeOnlyTag( descR[l].key );
 			let value=m.escapeOnlyTag( descR[l].value );
 			switch (key.toLowerCase()) {
-			case "#": case "":
-				res+=`<div class="value">${key} ${value.replace(/\n/g,"<br>")}</div>`;
+			case "#start": case "#end": case "#": case "": default :
+				res+=`<div class="value">${key} ${value.replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>`;
 				break;
 			case "#lyrics": case "#lyrics:":
 			case "#lyric": case "#lyric:":
@@ -3437,7 +3437,7 @@ m.recomHTML=async function (r, inListPlay) {
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.trim().replace(/\n/g,"<br>")}</div>
+	<div class="lyrics">${value.trim().replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
@@ -3453,8 +3453,6 @@ m.recomHTML=async function (r, inListPlay) {
 				}
 				res+=`</div>`;
 				break;
-			default :
-				res+=`<div class="value"><span class="key">${key}: </span>${value.replace(/\n/g,"<br>")}</div>`;
 			}
 		}
 		res+=`</div>`;
@@ -3514,8 +3512,8 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 				let key=m.escapeOnlyTag( descR[l].key );
 				let value=m.escapeOnlyTag( descR[l].value );
 				switch (key.toLowerCase()) {
-				case "#": case "":
-					res+=`<div class="value">${key} ${value.replace(/\n/g,"<br>")}</div>`;
+				case "#start": case "#end": case "#": case "": default :
+					res+=`<div class="value">${key} ${value.replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>`;
 					break;
 				case "#lyrics": case "#lyrics:":
 				case "#lyric": case "#lyric:":
@@ -3524,7 +3522,7 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.trim().replace(/\n/g,"<br>")}</div>
+	<div class="lyrics">${value.trim().replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
@@ -3540,8 +3538,6 @@ ${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="
 					}
 					res+=`</div>`;
 					break;
-				default :
-					res+=`<div class="value"><span class="key">${key}: </span>${value.replace(/\n/g,"<br>")}</div>`;
 				}
 			}
 			res+=`</div>`;
