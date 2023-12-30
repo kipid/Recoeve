@@ -1148,6 +1148,10 @@ m.formatCats=function (cats) {
 		let levels=catsSplit[i].split("--");
 		for (let j=0;j<levels.length;j++) {
 			levels[j]=levels[j].replace(/^[\s\-]+/,"").replace(/[\s\-]+$/,"");
+			if (levels[j].length===0) {
+				levels.splice(j, 1);
+				j--;
+			}
 		}
 		catsSplit[i]="";
 		let k=0;
@@ -1168,6 +1172,7 @@ m.formatCats=function (cats) {
 	cats=catsSplit[0];
 	for (let i=1;i<catsSplit.length;i++) {
 		if (catsMap[catsSplit[i]]) {
+			continue;
 		}
 		else {
 			catsMap[catsSplit[i]]=true;
