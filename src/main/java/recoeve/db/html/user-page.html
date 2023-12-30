@@ -3312,7 +3312,7 @@ m.renderStrDescCmt=function (str) {
 	let res=[];
 	let strSplitted=str.trim().split(/\n/g);
 	for (let i=0;i<strSplitted.length;i++) {
-		strSplitted[i]=strSplitted[i].replace(/\s+/g, " ").trim();
+		strSplitted[i]=strSplitted[i].replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a onclick="m.seekToVideo($1,$2,$3)">$&</a>`);
 	}
 	let trimedStr=strSplitted.join("\n").trim();
 	let trimedStrSplitted=trimedStr.split(/\n\n+/g);
@@ -7724,9 +7724,29 @@ $document.ready(async function () {
 ////////////////////////////////////////////////////
 // YouTube API
 ////////////////////////////////////////////////////
+m.seekToVideo=function (hour, minute, second) {
+	let secondToSeek=0;
+	if (hour&&!isNaN(hour)) {
+		secondToSeek+=hour*3600;
+	}
+	if (minute&&!isNaN(minute)) {
+		secondToSeek+=minute*60;
+	}
+	if (second&&!isNaN(second)) {
+		secondToSeek+=second;
+	}
+	if (m.listPlayFrom==="youtube") {
+		m.YtPlayer.seekTo(secondToSeek, true);
+	}
+	else if (m.listPlayFrom==="video") {
+		$("#video").fastSeek(secondToSeek);
+	}
+}
 m.cueOrLoadUri=function (cue, uriRendered, inListPlay) {
+if (inListPlay) {
 	let fs=m.fsToRs;
 	let from=String(uriRendered.from);
+	m.listPlayFrom=from;
 	if (from==="youtube") {
 		$eveElse.html('');
 		$eveElse_uri_rendered.hide();
@@ -7734,7 +7754,7 @@ m.cueOrLoadUri=function (cue, uriRendered, inListPlay) {
 		fs.$playing=$rC_youtube_uri_rendered;
 		console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 		if (fs.lastIndex!==fs.currentIndex||m.lastCat!==m.currentCat) {
-			if (inListPlay&&m.YtPlayer) {
+			if (m.YtPlayer) {
 				if (cue&&m.YtPlayer.cueVideoById) {
 					m.YtPlayer.cueVideoById(uriRendered.videoId);
 					fs.lastIndex=fs.currentIndex;
@@ -7829,6 +7849,7 @@ m.cueOrLoadUri=function (cue, uriRendered, inListPlay) {
 		}
 	}
 }
+};
 m.fsToRs.getAndPlayVideo=async function (cue, inListPlay=true) {
 return new Promise(async function (resolve, reject) {
 	clearTimeout(m.setTimeoutPlayListYT);
