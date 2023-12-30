@@ -1742,4 +1742,619 @@ m.slideUp=function (elem) {
 	// window.scrollBy(0,-$elem.outerHeight());
 	window.scrollBy({left:0, top:-$elem.outerHeight(), behavior:"smooth"});
 };
+
+////////////////////////////////////////////////////
+// Show recos
+////////////////////////////////////////////////////
+m.ptnDescCmt=/^#\S+/; // \w=[A-Za-z0-9_]
+m.renderStrDescCmt=function (str) {
+	let res=[];
+	let strSplitted=str.trim().split(/\n/g);
+	for (let i=0;i<strSplitted.length;i++) {
+		strSplitted[i]=strSplitted[i];
+	}
+	let trimedStr=strSplitted.join("\n").trim();
+	let trimedStrSplitted=trimedStr.split(/\n\n+/g);
+	let k=0;
+	let key="";
+	let listOfValues=[];
+	for (let i=0;i<trimedStrSplitted.length;i++) {
+		let match=trimedStrSplitted[i].match(/^#\S*/);
+		if (match===null) {
+			listOfValues.push(trimedStrSplitted[i]);
+		}
+		else {
+			res[k]=res[key]={i:k, key, value:listOfValues.join("\n\n")};
+			k++;
+			key=match[0]
+			listOfValues=[];
+			let value0=trimedStrSplitted[i].substring(match[0].length);
+			if (value0) {
+				listOfValues[0]=value0;
+			}
+		}
+	}
+	res[k]=res[key]={i:k, key, value:listOfValues.join("\n\n")};
+	return res;
+};
+m.stashReco=function (event) {
+	let $target=$(event.target);
+	let $reco=$target.parents(".reco");
+	let $result=$reco.find(".result");
+	if (!m.myIndex) {
+		m.delayedLogOut("You are not logged-in.", 60*60*24, $result);
+		return;
+	}
+	else {
+		let inRecoms=true;
+		let valStr=""; // $reco.find(".str").html();
+		let uri=m.unescapeHTML($reco.find(".textURI").html());
+		let strHeads="uri\tdo\tval";
+		let strContents=`${m.encloseStr(uri)}\toverwrite\t`; // Empty val.
+		let r=m.myRecos[uri];
+		let recoDef=m.recoDefs[uri];
+		if (!r) {
+			if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+				strHeads+="\ttitle";
+				strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
+			}
+			if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+				strHeads+="\tdesc";
+				strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
+			}
+		}
+		let cats="[--Stashed--]";
+		strHeads+="\tcats";
+		strContents+=`\t${cats}`;
+		$result?.html(`Stashing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
+		m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
+	}
+};
+m.recomHTML=async function (r, inListPlay) {
+	if (r?.has) {
+		let recoHTML=await m.recoHTML(r, inListPlay, true, true);
+		return String(recoHTML);
+	}
+	let recoDef=m.recoDefs[r?.uri];
+	if (!recoDef) {
+		await m.getMultiDefs(r?.uri);
+	}
+	let res=`<div class="reco recom"${inListPlay?``:` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
+<div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
+<div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
+<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>`;
+	if (recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+		res+=`<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
+	}
+	res+=`<div class="cats">${m.catsToA(m.currentCat)}</div>`;
+	if (!inListPlay) {
+		let uriRendered=await uriRendering(r?.uri, false, inListPlay);
+		res+=String(uriRendered.html);
+	}
+	let recomsI=m.recoms[m.currentCat][r?.uri];
+	if (recomsI?.valsStat) {
+		let valsStat=recomsI.valsStat;
+		let dx=100.0/(m.valsStatN+2);
+		res+=`<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+		for (let k=0;k<=m.valsStatN;k++) {
+			let h=79.0*valsStat[k]/valsStat.max;
+			res+=`<rect class="column" x="${dx*(k+0.5)}%" y="${80-h}%" width="${dx}%" height="${h}%"></rect>`;
+		}
+		res+=`<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
+		for (let k=0;k<=m.valsStatN;k++) {
+			let x=dx*(k+1);
+			res+=`<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
+		}
+		res+=`<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`
+		for (let k=2;k<=m.valsStatN;k+=2) {
+			res+=`<tspan text-anchor="middle" x="${dx*(k+1)}%" y="90%">${k/2}</tspan>`;
+		}
+		res+=`</text>`;
+		res+=`<text class="max-simSum" x="0%" y="10%">${(valsStat.max/10000.0).toFixed(2)}</text>`;
+		let x_expected=(2.0*recomsI.avgVal+1.0)*dx;
+		res+=`<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
+	}
+	if (m.myPage) {
+		res+=`<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>
+<div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
+	}
+	res+=`<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+	if (recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+		let descR=m.renderStrDescCmt(recoDef.defDescs[0][0]);
+		res+=`<div class="desc">`;
+		for (let l=0;l<descR.length;l++) {
+			let key=m.escapeOnlyTag( descR[l].key );
+			let value=m.escapeOnlyTag( descR[l].value );
+			switch (key.toLowerCase()) {
+			case "#start": case "#end": case "#": case "": default :
+				res+=`<div class="value">${key} ${value.replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>`;
+				break;
+			case "#lyrics": case "#lyrics:":
+			case "#lyric": case "#lyric:":
+			case "#가사": case "#가사:":
+				res+=`<div class="value">
+<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
+<div class="lyricsC" style="display:none">
+	<div class="lyricsArrow"></div>
+	<div class="lyrics">${value.trim().replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>
+	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+</div>
+</div>`;
+				break;
+			case "#related": case "#related:":
+			case "#originaluri": case "#originaluri:":
+				res+=`<div class="value"><span class="key">${key}</span>:`;
+				let relateds=value.trim().split("\n");
+				for (let p=0;p<relateds.length;p++) {
+					res+='<br>';
+					let uriRendered=await uriRendering(m.formatURI(relateds[p]), true);
+					res+=String(uriRendered.html);
+				}
+				res+=`</div>`;
+				break;
+			}
+		}
+		res+=`</div>`;
+	}
+	if (recomsI?.cmtsHTML) {
+		res+=recomsI.cmtsHTML;
+	}
+	res+=`</div>`;
+	return res;
+};
+m.recoHTML=async function (r, inListPlay, inRange, inRecoms) {
+	let res="";
+	if (r?.has) {
+		res+=`<div class="reco${inRange&&!r.deleted?'':' none'}"${inListPlay?``:` id="reco${inRecoms?`m-${m.recoms[m.currentCat][r?.uri]?.i}"`:`-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+${m.myIndex?`<div class="button edit fRight${r.deleted?" deleted":""}" onclick="m.editOrRecoToMine(this)">${m.myPage?'[--Edit--]':'[--Reco to mine--]'}</div>`:''}
+<div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
+<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
+<div class="title">${m.escapeOnlyTag(r?.title)}</div>
+<div class="cats">${m.catsToA(r.cats)}</div>`
+		if (!inListPlay) {
+			let uriRendered=await uriRendering(r?.uri, false, inListPlay);
+			res+=String(uriRendered.html);
+		}
+		res+=`<div class="cBoth"></div>`;
+		if (r.val?.str) {
+			res+=`<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+		}
+		else {
+			res+=`<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
+		}
+		res+=`<div class="cBoth"></div>`;
+		if (m.myPage) {
+			if (r.val?.str) {
+				res+=`<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+			}
+		}
+		else if (m.myRecos[r?.uri]) {
+			let mR=m.myRecos[r?.uri];
+			if (mR.has) {
+				res+=`<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
+			}
+			else {
+				res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+			}
+		}
+		else {
+			res+=`<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+		}
+		res+=`<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+		if (r.desc) {
+			let descR=r.descR;
+			res+=`<div class="desc">`;
+			for (let l=0;l<descR.length;l++) {
+				let key=m.escapeOnlyTag( descR[l].key );
+				let value=m.escapeOnlyTag( descR[l].value );
+				switch (key.toLowerCase()) {
+				case "#start": case "#end": case "#": case "": default :
+					res+=`<div class="value">${key} ${value.replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>`;
+					break;
+				case "#lyrics": case "#lyrics:":
+				case "#lyric": case "#lyric:":
+				case "#가사": case "#가사:":
+					res+=`<div class="value">
+<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
+<div class="lyricsC" style="display:none">
+	<div class="lyricsArrow"></div>
+	<div class="lyrics">${value.trim().replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo(${`$1`?`$1`:`""`},$2,$3)">$&</a>`).replace(/\n/g,"<br>")}</div>
+	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+</div>
+</div>`;
+					break;
+				case "#related": case "#related:":
+				case "#originaluri": case "#originaluri:":
+					res+=`<div class="value"><span class="key">${key}</span>:`;
+					let relateds=value.trim().split("\n");
+					for (let p=0;p<relateds.length;p++) {
+						res+='<br>';
+						let uriRendered=await uriRendering(m.formatURI(relateds[p]), true);
+						res+=String(uriRendered.html);
+					}
+					res+=`</div>`;
+					break;
+				}
+			}
+			res+=`</div>`;
+		}
+		res+=(r.cmt&&r.cmt.length!==0?(`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g,"<br>")}</div>`):"");
+		res+=`<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+		if (r.tFirst!==r.tLast) {
+			res+=`<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
+		}
+		res+=`</div>`;
+	}
+	else {
+		res+=`<div class="reco">No Reco</div>`;
+	}
+	return res;
+};
+m.reco_pointChange_do=function (args, err) { // args : {strHeads, strContents, $result, uri, cats, valStr, inRecoms}
+	if (err) {
+		m.delayedLogOut(err, 60*60*24, args.$result);
+		return;
+	}
+	let fs=m.fsGo;
+	let uri=args.uri;
+	$.ajax({
+		type:"POST", url:"/reco/do", data:args.strHeads+"\n"+args.strContents
+		, dataType:"text"
+	}).fail(function (resp) {
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
+		if (args.inRecoms) {
+			args.$result?.html(`[--Reco failed.--]: ${resp}`);
+		}
+		else {
+			args.$result?.html(`[--Failed change.--]: ${resp}`);
+		}
+	}).done(async function (resp) {
+		clearInterval(m.setIntervalDeleyedLogOut);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
+		let res=await m.strToJSON(resp);
+		let result=String(res[1]?.result);
+		let uri=res[1]?.uri;
+		if (result.startsWith("changed")) {
+			m.myRecos[uri].val=m.val(args.valStr);
+			m.changeCats_UriList(m.myRecos[uri].cats, args.cats, uri);
+			if (m.myRecos[uri].cats!==args.cats) {
+				m.myRecos[uri].cats=args.cats;
+			}
+			m.myRecos[uri].tLast=res[1]?.tLast;
+			args.$result?.html(res[1].result);
+			// m.refreshFSToRs(m.currentCat);
+			m.refresh(args.cats, "changed", uri);
+		}
+		else if (result.startsWith("recoed")) {
+			let r=m.myRecos[uri];
+			let recoDef=m.recoDefs[uri];
+			if (!r) {
+				r=m.myRecos[uri]={uri:uri, has:true, down:true, val:m.val(args.valStr)};
+			}
+			r.uri=uri;
+			r.has=true;
+			r.down=true;
+			r.val=m.val(args.valStr);
+			r.tFirst=res[1]?.tLast;
+			r.tLast=res[1]?.tLast;
+			if (recoDef.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+				r.title=recoDef.defTitles[0][0];
+			}
+			else {
+				r.title="";
+			}
+			r.cats=args.cats;
+			if (recoDef.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+				r.desc=recoDef.defDescs[0][0];
+			}
+			else {
+				r.desc="";
+			}
+			r.descR=m.renderStrDescCmt(r.desc);
+			m.putCats_UriToLists(r.cats, uri);
+			m.refresh(r.cats, "recoed", uri);
+			m.refreshFSToRs(m.currentCat);
+		}
+		else {
+			m.delayedLogOut(result, 60*60*24, args.$result);
+		}
+	});
+};
+m.recoByOnlyStars=function ($str, uri, $result, inRecoms) {
+	if (!m.myIndex) {
+		m.delayedLogOut("You are not logged-in.", 60*60*24, $result);
+		return;
+	}
+	let valStr=$str.html();
+	if (m.myPage) {
+		if (inRecoms) {
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\treco\t${m.encloseStr(valStr)}`;
+			let r=m.myRecos[uri];
+			let recoDef=m.recoDefs[uri];
+			if (recoDef?.defTitles&&recoDef.defTitles[0]&&recoDef.defTitles[0][0]) {
+				strHeads+="\ttitle";
+				strContents+=`\t${m.encloseStr(recoDef.defTitles[0][0])}`;
+			}
+			if (recoDef?.defDescs&&recoDef.defDescs[0]&&recoDef.defDescs[0][0]) {
+				strHeads+="\tdesc";
+				strContents+=`\t${m.encloseStr(recoDef.defDescs[0][0])}`;
+			}
+			strHeads+="\tcats";
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=$multireco_input_cats[0].value=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			strContents+=`\t${m.encloseStr(cats)}`;
+			$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
+		}
+		else if (valStr!==m.myRecos[uri].val?.str) {
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\tchange\t${m.encloseStr(valStr)}`;
+			let cats="";
+			let catsChanged=true;
+			if (m.recoMode==="multireco") {
+				cats=$multireco_input_cats[0].value=m.formatCats($multireco_input_cats[0].value);
+				if (m.myRecos[uri].cats&&m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+					cats=m.formatCats(m.myRecos[uri].cats);
+					catsChanged=false;
+				}
+			}
+			else if (m.myRecos[uri].cats||m.myRecos[uri].cats==="") {
+				cats=m.formatCats(m.myRecos[uri].cats);
+				catsChanged=false;
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			if (catsChanged) {
+				strHeads+="\tcats";
+				strContents+=`\t${m.encloseStr(cats)}`;
+			}
+			$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is "${m.escapeOnlyTag(cats)}".`:""}`);
+			m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
+		}
+	}
+	else {
+		if (m.myRecos[uri].has) {
+			if (m.myRecos[uri].val?.str!==valStr) {
+				let strHeads="uri\tdo\tval";
+				let strContents=`${m.encloseStr(uri)}\tchange\t${m.encloseStr(valStr)}`;
+				let cats="";
+				let catsChanged=true;
+				if (m.recoMode==="multireco") {
+					cats=$multireco_input_cats[0].value=m.formatCats($multireco_input_cats[0].value);
+					if (m.myRecos[uri].cats&&m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
+						cats=m.formatCats(m.myRecos[uri].cats);
+						catsChanged=false;
+					}
+				}
+				else if (m.myRecos[uri].cats) {
+					cats=m.formatCats(m.myRecos[uri].cats);
+					catsChanged=false;
+				}
+				else {
+					cats=m.formatCats(m.currentCat);
+				}
+				if (catsChanged) {
+					strHeads+="\tcats";
+					strContents+=`\t${m.encloseStr(cats)}`;
+				}
+				$result.html(`[--Changing your points.--]${catsChanged?` The cats on this URI is changed to "${m.escapeOnlyTag(cats)}".`:""}`);
+				m.rmb_me(m.reco_pointChange_do, {strHeads, strContents, $result, uri, cats, valStr, inRecoms});
+			}
+		}
+		else {
+			let strHeads="uri\tdo\tval";
+			let strContents=`${m.encloseStr(uri)}\treco\t${m.encloseStr(valStr)}`;
+			let uR=m.userRecos[uri];
+			if (uR) {
+				if (uR.title) {
+					strHeads+="\ttitle";
+					strContents+="\t"+m.encloseStr(uR.title);
+				}
+				if (uR.desc) {
+					strHeads+="\tdesc";
+					strContents+="\t"+m.encloseStr(uR.desc);
+				}
+			}
+			let cats="";
+			if (m.recoMode==="multireco") {
+				cats=$multireco_input_cats[0].value=m.formatCats($multireco_input_cats[0].value);
+			}
+			else {
+				cats=m.formatCats(m.currentCat);
+			}
+			strHeads+="\tcats";
+			strContents+=`\t${m.encloseStr(cats)}`;
+			let strRecoDo=strHeads+"\n"+strContents;
+			$result.html("[--Recoing to your recoeve.net.--]");
+			m.rmb_me(m.reco_do, {strRecoDo, cats, uri, $result}, true);
+		}
+	}
+};
+m.starsOnClick=function (e) {
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	if (!$target.hasClass("stars-container")) {
+		$target=$target.parents(".stars-container");
+	}
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $bar=$target.find(".bar");
+	let barW=$bar.width();
+	let $str=$target.siblings(".str");
+	let w=e.clientX-$bar.offset().left+$window.scrollLeft();
+	if (w<-15) {
+		w=-1;
+	}
+	else if (w<0) {
+		w=0;
+	}
+	else if (w>m.starsWidth) {
+		w=m.starsWidth;
+	}
+	if (w!==barW) {
+		barW=w;
+		if (w<0) {
+			$str.html("");
+			w=0;
+		}
+		else {
+			$str.html(m.escapeOnlyTag((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts));
+		}
+		$bar.css({width:w});
+	}
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2*m.wait);
+};
+m.starsOnTouchMove=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let $target=$(e.target);
+	if (!$target.hasClass("stars-container")) {
+		$target=$target.parents(".stars-container");
+	}
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $bar=$target.find(".bar");
+	let barW=$bar.width();
+	let $str=$target.siblings(".str");
+	$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+		window.getSelection().removeAllRanges();
+		e.preventDefault();
+		e.stopPropagation();
+		let x=(e.type==='touchmove')?e.originalEvent.touches[0].clientX:e.clientX;
+		let w=x-$bar.offset().left+$window.scrollLeft();
+		if (w<-15) {
+			w=-1;
+		}
+		else if (w<0) {
+			w=0;
+		}
+		else if (w>m.starsWidth) {
+			w=m.starsWidth;
+		}
+		if (w!==barW) {
+			barW=w;
+			if (w<0) {
+				$str.html("");
+				w=0;
+			}
+			else {
+				$str.html((w/m.starsWidth*m.fullPts).toFixed(1)+"/"+m.fullPts);
+			}
+			$bar.css({width:w});
+		}
+	});
+	return {$str, uri, $result, $reco};
+};
+m.starsOnUpClick=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("10.0/10");
+		}
+		else {
+			val.num+=0.1;
+			if (val.num>val.divisor) {
+				val.num=val.divisor;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("10.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2*m.wait);
+};
+m.starsOnDownClick=function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	let $target=$(e.target);
+	let $reco=$target.parents(".reco");
+	let uri=m.unescapeHTML($reco.find(".textURI").html());
+	clearTimeout(m.timeout[uri]);
+	let $result=$reco.find(".result");
+	$result.html("");
+	let $str=$target.siblings(".str");
+	let $star=$reco.find(".my-point>.stars-container");
+	let val=m.val($str.html());
+	if (val.valid) {
+		if (val.val===-1) {
+			$str.html("0.0/10");
+		}
+		else {
+			val.num-=0.1;
+			if (val.num<0) {
+				val.num=0;
+			}
+			$str.html(`${val.num.toFixed(1)}/${val.divisor}`);
+		}
+	} else {
+		$str.html("0.0/10");
+	}
+	val=m.val($str.html());
+	$star.find(".bar").css({width:m.starsWidth*val.val});
+	m.timeout[uri]=setTimeout(function () {
+		m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+	}, 2*m.wait);
+};
+m.reNewAndReOn=async function () {
+	m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
+	$window.off("scroll.delayedLoad");
+	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	$window.trigger("scroll.delayedLoad");
+	m.$fdList=$("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed");
+	let $stars=$(".my-point>.stars-container");
+	$stars.off("click.mdInStars");
+	$stars.on("click.mdInStars", m.starsOnClick);
+	$stars.off("mousedown.mdInStars touchstart.mdInStars");
+	$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+	$stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+		let {$str, uri, $result, $reco}=m.starsOnTouchMove(e);
+		$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+			m.timeout[uri]=setTimeout(function () {
+				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
+			}, 2*m.wait);
+		});
+	});
+	let $ups=$(".my-point>.up");
+	let $downs=$(".my-point>.down");
+	$ups.off("click.ud");
+	$downs.off("click.ud");
+	$ups.on("click.ud", m.starsOnUpClick);
+	$downs.on("click.ud", m.starsOnDownClick);
+	m.reNewfsCatsOn();
+};
 })(window.m, jQuery);
