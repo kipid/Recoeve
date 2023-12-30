@@ -5571,6 +5571,7 @@ m.completeCatAndOpenCat=async function (event) {
 			window.history.pushState({cat:m.currentCat, mode:m.recoMode, gotoCatsOn:m.gotoCatsOn, goOn:m.goOn, ToRsOn:m.ToRsOn, newRecoOn:m.newRecoOn}, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		}
 		m.doNotPushHistory=false;
+		console.log(`await m.openCat(${cat});`);
 		await m.openCat(cat);
 	}
 	m.fsViewAndScroll(fs2, $elem);
