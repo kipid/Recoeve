@@ -25,6 +25,7 @@ import java.io.IOException;
 
 
 public class FileMap {
+public static final String version="1.0.0";
 private static final String[] referersAllowed={
 		"localhost"
 		, "recoeve.net", "www.recoeve.net"
