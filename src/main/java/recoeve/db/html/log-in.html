@@ -140,6 +140,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
 </div></div>
 </div><!-- #recoeve-container -->
+<div id="scripts"></div>
 </body>
 <script>
 (async function (m, $, undefined) {
@@ -148,6 +149,7 @@ $button_forgot_pwd=$("#button-forgot-pwd");
 $button_sign_up=$("#button-sign-up");
 $log_in_with_google=$("#log-in-with-google");
 $input_su_userId=$("#input-su-userId");
+$scripts=$("#scripts");
 
 $(".replace-reco-eve").html(function (i, orgHtml) {
 	return orgHtml
@@ -208,6 +210,7 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 					let res=resp.substring(15);
 					res=await m.strToJSON(res);
 					if (resp.startsWith("log-in success")) {
+						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
 						$log_in_with_google.before( m.encloseErr("log-in success") );
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
@@ -311,6 +314,7 @@ web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"ye
 						type: "POST"
 						, data: form_data
 					}).done(function (resp) {
+						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
 						$elem.before( m.encloseErr(resp) );
 						// wait until saving session/rmb cookies.
 						setTimeout(function () {
@@ -466,6 +470,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 					$.ajax("/account/sign-up", {
 						type:"POST", data:form_data
 					}).done(function (resp) {
+						$scripts.append(`<!-- Google tag (gtag.js) --> <amp-analytics type="gtag" data-credentials="include"> <script type="application/json"> { "vars": { "gtag_id": "AW-11407455434", "config": { "AW-11407455434": { "groups": "default" } } }, "triggers": { } } </`+`script> </amp-analytics>`);
 						$elem.before( m.encloseErr(resp) );
 						$elem[0].disabled=false;
 					});
@@ -488,10 +493,6 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 		$elem.before( m.encloseErr(err) );
 		$elem[0].disabled=false;
 	}
-	// TODO: delete the below.
-	// for (i=m.errCount-7;i>=0;i--) {
-	// 	$("#error-msg-"+i).hide();
-	// }
 };
 
 m.state=Math.random().toString(16).substring(2);
@@ -534,7 +535,6 @@ m.logInWithGoogle=function (elem) {
 	}
 }
 
-// TODO: Press <code>Enter</code> to go to the next input.
 $("#input-userPwd").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
@@ -554,6 +554,7 @@ $("#input-su-userPwdCfm").on("keydown", function (e) {
 		$("#button-sign-up").trigger("click");
 	}
 });
+// TODO: Press <code>Enter</code> to go to the next input.
 $("input.go-next").on("keydown", function (e) {
 	if (e.keyCode===13) { // Enter
 		e.preventDefault();
