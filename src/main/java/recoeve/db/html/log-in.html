@@ -215,7 +215,7 @@ web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 						// wait until saving session/rmb cookies. And conversion.
 						setTimeout(function () {
 							if (res[1]&&res[1].goto) {
-								window.location.pathname=res[1].goto;
+								window.location.pathname=decodeURIComponent(res[1].goto);
 							}
 							else if (m.searchVars.goto?.val) {
 								window.location.href=m.searchVars.goto.val;
