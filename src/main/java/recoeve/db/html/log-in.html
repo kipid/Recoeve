@@ -1,578 +1,787 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<script>
-window.m={
-	initialPathname:window.location.pathname
-	, initialSearch:window.location.search
-	, initialHash:window.location.hash
-	, hashMap:{}
-	, authToken:"{--m.authToken--}"
-	, regExId:/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+$/
-	, regExEmail:/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/
-	, minIdLength:1
-	, maxIdLength:128
-	, minPwdLength:4
-	, maxPwdLength:128
-}
-</script>
-<!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=AW-11407455434"></script><script> window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-11407455434');</script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-<meta name="keywords" content="Recoeve.net"/>
-<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
-<script src="/CDN/jquery.js"></script>
-<script src="/prepare.js"></script>
-<script>
-(function (m, undefined) {
-let fullPath=m.initialPathname+m.initialSearch+m.initialHash;
-let path="/account/log-in";
-if (!m.initialPathname.startsWith(path)) {
-	window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
-}
-})(window.m);
-</script>
-<style>
-* {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box}
-body {width:100%; max-width:1000px; margin:0 auto; padding:5px 0}
-#recoeve-container {font-size:10px; line-height:1.5; padding:0 .7em; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif; background:rgb(40,40,55); color:white}
-h1 {display:block; font:inherit; font-size:3em; font-weight:bold; margin:0 0 .5em; padding:.6em .5em; border-bottom:5px solid rgb(140,140,150)}
-.form-login {width:20em; max-width:100%; margin:0 auto 1em; padding:1em; font-size:16px; color:white; line-height:1; background:black; border:3px solid rgb(120,120,130)}
-.form-login>h2 {margin:0 0 1em; font:inherit; font-size:1.3em; line-height:1.3; font-weight:bold}
-.form-login>label {display:block; color:white; font-size:1em; font-weight:bold; margin:.9em 0 .4em}
-.form-login>label:first-of-type {margin-top:0}
-.form-login>label.checkbox {font-weight:normal}
-.form-login>input {display:block; width:100%; height:auto; overflow:hidden; padding:.3em .5em; font-family:inherit; font-weight:normal; font-size:1em; line-height:1.5; background:white; color:rgb(50,50,50)}
-.form-login>input:focus {background:rgb(240,240,255)}
-.form-login>button {width:100%; font:inherit; font-weight:bold; padding:.3em .3em .5em; text-align:center; margin-top:1.3em} .form-login>button:disabled {background:rgb(70,70,70)}
-div.form-login>button {margin-top:0}
-.form-login>.error-msg {border:1px solid gray; padding:.3em .5em; margin:.5em 0 0; color:rgb(255,200,200); line-height:1.3}
+	<script>
+		window.m = {
+			initialPathname: window.location.pathname
+			, initialSearch: window.location.search
+			, initialHash: window.location.hash
+			, hashMap: {}
+			, authToken: "{--m.authToken--}"
+			, regExId: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+$/
+			, regExEmail: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/
+			, minIdLength: 1
+			, maxIdLength: 128
+			, minPwdLength: 4
+			, maxPwdLength: 128
+		}
+	</script>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=AW-11407455434"></script>
+	<script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-11407455434');</script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes" />
+	<meta name="keywords" content="Recoeve.net" />
+	<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
+	<script src="/CDN/jquery.js"></script>
+	<script src="/prepare.js"></script>
+	<script>
+		(function (m, undefined) {
+			let fullPath = m.initialPathname + m.initialSearch + m.initialHash;
+			let path = "/account/log-in";
+			if (!m.initialPathname.startsWith(path)) {
+				window.history.replaceState({}, "", `${path}?goto=${encodeURIComponent(fullPath)}`);
+			}
+		})(window.m);
+	</script>
+	<style>
+		* {
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box
+		}
 
-.g_id_signin>div>iframe {margin:-2px auto !important}
+		body {
+			width: 100%;
+			max-width: 1000px;
+			margin: 0 auto;
+			padding: 5px 0
+		}
 
-.desc {padding:.5em}
-data {display:none}
-.lang {padding:.5em}
-.p {font-size:1.6em; padding-bottom:1em}
-.rC {}
-.rC>.rSC {position:relative; height:3em; padding-bottom:63%}
-.rC>.rSC>* {position:absolute; width:100%; height:100%; left:0; top:0}
-.bold {font-weight:bold}
-.reco {color:rgb(200,130,130)}
-.eve {color:rgb(130,130,200)}
+		#recoeve-container {
+			font-size: 10px;
+			line-height: 1.5;
+			padding: 0 .7em;
+			font-family: 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif;
+			background: rgb(40, 40, 55);
+			color: white
+		}
 
-a {text-decoration:none}
-a:link {color:rgb(190,190,235)}
-a:visited {color:rgb(170,170,215)}
-a:active {color:rgb(100,215,215)}
-a:hover {color:rgb(170,215,170); text-decoration:underline}
+		h1 {
+			display: block;
+			font: inherit;
+			font-size: 3em;
+			font-weight: bold;
+			margin: 0 0 .5em;
+			padding: .6em .5em;
+			border-bottom: 5px solid rgb(140, 140, 150)
+		}
 
-#foot {clear:both; border-top:2px solid white; padding:1em .5em; font-size:1.5em;}
+		.form-login {
+			width: 20em;
+			max-width: 100%;
+			margin: 0 auto 1em;
+			padding: 1em;
+			font-size: 16px;
+			color: white;
+			line-height: 1;
+			background: black;
+			border: 3px solid rgb(120, 120, 130)
+		}
 
-@media all and (min-width:640px) {
-	.form-login {margin:0 .6em 1em 1em; float:right; clear:right}
-}
-</style>
+		.form-login>h2 {
+			margin: 0 0 1em;
+			font: inherit;
+			font-size: 1.3em;
+			line-height: 1.3;
+			font-weight: bold
+		}
+
+		.form-login>label {
+			display: block;
+			color: white;
+			font-size: 1em;
+			font-weight: bold;
+			margin: .9em 0 .4em
+		}
+
+		.form-login>label:first-of-type {
+			margin-top: 0
+		}
+
+		.form-login>label.checkbox {
+			font-weight: normal
+		}
+
+		.form-login>input {
+			display: block;
+			width: 100%;
+			height: auto;
+			overflow: hidden;
+			padding: .3em .5em;
+			font-family: inherit;
+			font-weight: normal;
+			font-size: 1em;
+			line-height: 1.5;
+			background: white;
+			color: rgb(50, 50, 50)
+		}
+
+		.form-login>input:focus {
+			background: rgb(240, 240, 255)
+		}
+
+		.form-login>button {
+			width: 100%;
+			font: inherit;
+			font-weight: bold;
+			padding: .3em .3em .5em;
+			text-align: center;
+			margin-top: 1.3em
+		}
+
+		.form-login>button:disabled {
+			background: rgb(70, 70, 70)
+		}
+
+		div.form-login>button {
+			margin-top: 0
+		}
+
+		.form-login>.error-msg {
+			border: 1px solid gray;
+			padding: .3em .5em;
+			margin: .5em 0 0;
+			color: rgb(255, 200, 200);
+			line-height: 1.3
+		}
+
+		.g_id_signin>div>iframe {
+			margin: -2px auto !important
+		}
+
+		.desc {
+			padding: .5em
+		}
+
+		data {
+			display: none
+		}
+
+		.lang {
+			padding: .5em
+		}
+
+		.p {
+			font-size: 1.6em;
+			padding-bottom: 1em
+		}
+
+		.rC>.rSC {
+			position: relative;
+			height: 3em;
+			padding-bottom: 63%
+		}
+
+		.rC>.rSC>* {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0
+		}
+
+		.bold {
+			font-weight: bold
+		}
+
+		.reco {
+			color: rgb(200, 130, 130)
+		}
+
+		.eve {
+			color: rgb(130, 130, 200)
+		}
+
+		a {
+			text-decoration: none
+		}
+
+		a:link {
+			color: rgb(190, 190, 235)
+		}
+
+		a:visited {
+			color: rgb(170, 170, 215)
+		}
+
+		a:active {
+			color: rgb(100, 215, 215)
+		}
+
+		a:hover {
+			color: rgb(170, 215, 170);
+			text-decoration: underline
+		}
+
+		#foot {
+			clear: both;
+			border-top: 2px solid white;
+			padding: 1em .5em;
+			font-size: 1.5em;
+		}
+
+		@media all and (min-width:640px) {
+			.form-login {
+				margin: 0 .6em 1em 1em;
+				float: right;
+				clear: right
+			}
+		}
+	</style>
 	<title>Recoeve.net (3S|Slow/Sexy/Sincere SNS)</title>
 </head>
+
 <body>
-<div id="recoeve-container">
-<h1>[--welcome--]</h1>
+	<div id="recoeve-container">
+		<h1>[--welcome--]</h1>
 
-<form id="form-log-in" class="form-login">
-<!-- <h2>[--Sign in--]</h2> -->
-	<input id="input-idType" type="hidden" name="idType" value="id"/>
-	<label for="input-userId">[--ID--] or [--E-mail--]</label>
-	<input id="input-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--] or [--E-mail--]" type="text" minlength="1" maxlength="255" tabindex="1"/>
-	<label for="input-userPwd">[--Password--]</label>
-	<input id="input-userPwd" class="user-pwd" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="2"/>
-	<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox" tabindex="3" checked/> <span>[--Remember me--]</span></label>
-	<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
-	<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot password--]</button>
-</form>
-<div class="form-login">
-	<div class="error-msg">[--For sign-up with Google, fill ID of sign-up and click the below button.--]</div>
-	<button id="log-in-with-google" class="button" onclick="m.logInWithGoogle(this)" tabindex="6"><div class="logo-google" style="width:21px; display:inline-block; margin-right:1em; vertical-align:sub"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="LgbsSe-Bz112c"><g><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></g></svg></div>Log in with Google</button>
-</div>
-<script>
+		<form id="form-log-in" class="form-login">
+			<!-- <h2>[--Sign in--]</h2> -->
+			<input id="input-idType" type="hidden" name="idType" value="id" />
+			<label for="input-userId">[--ID--] or [--E-mail--]</label>
+			<input id="input-userId" class="user-id go-next" name="userId" value=""
+				placeholder="[--ID--] or [--E-mail--]" type="text" minlength="1" maxlength="255" tabindex="1" />
+			<label for="input-userPwd">[--Password--]</label>
+			<input id="input-userPwd" class="user-pwd" name="userPwd" value="" placeholder="[--Password--]"
+				type="password" minlength="6" maxlength="255" tabindex="2" />
+			<label class="checkbox"><input id="checkbox" class="checkbox" name="rememberMe" value="yes" type="checkbox"
+					tabindex="3" checked /> <span>[--Remember me--]</span></label>
+			<button id="button-log-in" type="button" onclick="m.logIn(this)" tabindex="4">[--Log in--]</button>
+			<button id="button-forgot-pwd" type="button" onclick="m.forgotPwd(this)" tabindex="5">[--Forgot
+				password--]</button>
+		</form>
+		<div class="form-login">
+			<div class="error-msg">[--For sign-up with Google, fill ID of sign-up and click the below button.--]</div>
+			<button id="log-in-with-google" class="button" onclick="m.logInWithGoogle(this)" tabindex="6">
+				<div class="logo-google" style="width:21px; display:inline-block; margin-right:1em; vertical-align:sub">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="LgbsSe-Bz112c">
+						<g>
+							<path fill="#EA4335"
+								d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z">
+							</path>
+							<path fill="#4285F4"
+								d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z">
+							</path>
+							<path fill="#FBBC05"
+								d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z">
+							</path>
+							<path fill="#34A853"
+								d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z">
+							</path>
+							<path fill="none" d="M0 0h48v48H0z"></path>
+						</g>
+					</svg>
+				</div>Log in with Google
+			</button>
+		</div>
+		<script>
 
-</script>
-<form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
-<h2>[--Sign up for Recoeve--]</h2>
-	<label for="input-su-userId">[--ID--]</label>
-	<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]" type="text" minlength="1" maxlength="255" tabindex="7"/>
-	<label for="input-su-userEmail">[--E-mail--]</label>
-	<input id="input-su-userEmail" class="user-Email go-next" name="userEmail" value="" placeholder="[--E-mail--]" type="text" tabindex="8"/>
-	<label for="input-su-userPwd">[--Password--]</label>
-	<input id="input-su-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]" type="password" minlength="6" maxlength="255" tabindex="9"/>
-	<label for="input-su-userPwdCfm">[--Password confirm--]</label>
-	<input id="input-su-userPwdCfm" class="user-pwd" name="userPwdCfm" value="" placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="10"/>
-	<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="11">[--Sign up for Recoeve--]</button>
-</form>
+		</script>
+		<form id="form-sign-up" class="form-login" action="/account/sign-up" accept-charset="UTF-8" method="post">
+			<h2>[--Sign up for Recoeve--]</h2>
+			<label for="input-su-userId">[--ID--]</label>
+			<input id="input-su-userId" class="user-id go-next" name="userId" value="" placeholder="[--ID--]"
+				type="text" minlength="1" maxlength="255" tabindex="7" />
+			<label for="input-su-userEmail">[--E-mail--]</label>
+			<input id="input-su-userEmail" class="user-Email go-next" name="userEmail" value=""
+				placeholder="[--E-mail--]" type="text" tabindex="8" />
+			<label for="input-su-userPwd">[--Password--]</label>
+			<input id="input-su-userPwd" class="user-pwd go-next" name="userPwd" value="" placeholder="[--Password--]"
+				type="password" minlength="6" maxlength="255" tabindex="9" />
+			<label for="input-su-userPwdCfm">[--Password confirm--]</label>
+			<input id="input-su-userPwdCfm" class="user-pwd" name="userPwdCfm" value=""
+				placeholder="[--Password confirm--]" type="password" minlength="6" maxlength="255" tabindex="10" />
+			<button id="button-sign-up" type="button" onclick="m.signUp(this)" tabindex="11">[--Sign up for
+				Recoeve--]</button>
+		</form>
 
-<div class="desc">
-[--desc--]
-</div>
-<div class="desc">
-<div class="p">
-For the usage examples, visit my page (예제를 보시려면 제 페이지를 방문해 주세요.)
-<ul>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리 | Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00">[Physics/Math/Science]--Physics of kipid's Recoeve.net</a></li>
-<li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00">[음식/요리/건강]--건강 of kipid's Recoeve.net</a></li>
-</ul>
-</div>
-</div>
+		<div class="desc">
+			[--desc--]
+		</div>
+		<div class="desc">
+			<div class="p">
+				For the usage examples, visit my page (예제를 보시려면 제 페이지를 방문해 주세요.)
+				<ul>
+					<li><a target="_blank"
+							href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop">[Music/Break]--K-Pop of
+							kipid's Recoeve.net (Multireco mode)</a></li>
+					<li><a target="_blank"
+							href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop">[Music/Break]--Pop of kipid's
+							Recoeve.net (Multireco mode)</a></li>
+					<li><a target="_blank"
+							href="/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84">[My
+							Blog]--[Music/Break]--츄츄 (My Pet) of kipid's Recoeve.net (Multireco mode)</a></li>
+					<li><a target="_blank"
+							href="/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--%EB%82%A8%EA%B7%9C%EB%A6%AC">[Music/Break]--남규리
+							| Nam Gyuri (Actor of Korea) of kipid's Recoeve.net (Multireco mode)</a></li>
+					<li><a target="_blank"
+							href="https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00">[Physics/Math/Science]--Physics
+							of kipid's Recoeve.net</a></li>
+					<li><a target="_blank"
+							href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00">[음식/요리/건강]--건강
+							of kipid's Recoeve.net</a></li>
+				</ul>
+			</div>
+		</div>
 
-<div class="lang">
-	<div class="p">Language/언어/語言</div>
-<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	pt	ru
-English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Português/Portuguese/포르투갈어/葡萄牙語/pt	Русский/Russian/러시아어/俄語/ru</data>
-</div>
+		<div class="lang">
+			<div class="p">Language/언어/語言</div>
+			<data id="data-lang">en ko zh ja de fr es hi ar pt ru
+				English/영어/英語/en Korean/한국어/韓語/ko Chinese/중국어(번체)/中文/zh Japanese/일본어/日語/ja deutsche
+				Sprache/독일어/Deutsch/de Français/French/프랑스어/佛語/fr Español/Spanish/스페인어/西班牙語/es हिन्दी/Hindi/힌디어/印地语/hi
+				اللغة العربية/ar Português/Portuguese/포르투갈어/葡萄牙語/pt Русский/Russian/러시아어/俄語/ru</data>
+		</div>
 
-<div id="foot">[--version--] [--foot--]<br><a href="https://kipid.tistory.com/entry/Recoeve-net-3S-Slow-Sexy-Sincere-SNS-%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C-Manual">Introducing what we are making: Recoeve.net (3S|Slow/Sexy/Sincere SNS) 사용설명서/Manual</a></div>
-<div class="p">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C#headPlay">[Recoeve]--Manual/설명서 of kipid's Recoeve.net</a></div>
-<div class="caption p cmt">How to use Recoeve.net and How to reco (레코이브 사용법)</div>
-<div class="p rC"><div class="rSC">
-	<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
-</div></div>
-</div><!-- #recoeve-container -->
-<div id="scripts"></div>
+		<div id="foot">[--version--] [--foot--]<br><a
+				href="https://kipid.tistory.com/entry/Recoeve-net-3S-Slow-Sexy-Sincere-SNS-%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C-Manual">Introducing
+				what we are making: Recoeve.net (3S|Slow/Sexy/Sincere SNS) 사용설명서/Manual</a></div>
+		<div class="p">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank"
+				href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C#headPlay">[Recoeve]--Manual/설명서
+				of kipid's Recoeve.net</a></div>
+		<div class="caption p cmt">How to use Recoeve.net and How to reco (레코이브 사용법)</div>
+		<div class="p rC">
+			<div class="rSC">
+				<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
+			</div>
+		</div>
+	</div><!-- #recoeve-container -->
+	<div id="scripts"></div>
 </body>
 <script>
-(async function (m, $, undefined) {
-$button_log_in=$("#button-log-in");
-$button_forgot_pwd=$("#button-forgot-pwd");
-$button_sign_up=$("#button-sign-up");
-$log_in_with_google=$("#log-in-with-google");
-$input_su_userId=$("#input-su-userId");
-$scripts=$("#scripts");
+	(async function (m, $, undefined) {
+		$button_log_in = $("#button-log-in");
+		$button_forgot_pwd = $("#button-forgot-pwd");
+		$button_sign_up = $("#button-sign-up");
+		$log_in_with_google = $("#log-in-with-google");
+		$input_su_userId = $("#input-su-userId");
+		$scripts = $("#scripts");
 
-$(".replace-reco-eve").html(function (i, orgHtml) {
-	return orgHtml
-		.replace(/reco/ig,'<span class="reco bold">$&</span>')
-		.replace(/eve/ig,'<span class="eve bold">$&</span>');
-});
+		$(".replace-reco-eve").html(function (i, orgHtml) {
+			return orgHtml
+				.replace(/reco/ig, '<span class="reco bold">$&</span>')
+				.replace(/eve/ig, '<span class="eve bold">$&</span>');
+		});
 
-m.searchVars=m.getSearchVars(window.location.search);
-if (m.searchVars.lang!==undefined) {
-	m.docCookies.setItem("lang", m.searchVars.lang.val, Infinity, "/");
-}
-
-let $dataLang=$("#data-lang");
-let dataLang=await m.strToJSON( $dataLang.html().trim() );
-let htmlLang=`<div class="p">`;
-for (let i=0;i<dataLang[0].length;i++) {
-	htmlLang+=`<a href="?lang=${dataLang[0][i]}">${dataLang[1][i]}</a><br>`;
-}
-htmlLang+=`</div>`;
-$dataLang.after(htmlLang);
-
-let sW=screen.width;
-let sH=screen.height;
-if (sW<sH) {
-	sW=screen.height;
-	sH=screen.width;
-}
-
-////////////////////////////////////////
-// Try Log-in or Sign-up with google.
-////////////////////////////////////////
-if (m.initialHash) {
-	let hashSplit=m.initialHash.substring(1).split("&");
-	for (let i=0;i<hashSplit.length;i++) {
-		let hashISplit=hashSplit[i].split("=");
-		if (hashISplit.length>=2) {
-			m.hashMap[hashISplit[0]]=hashISplit[1];
+		m.searchVars = m.getSearchVars(window.location.search);
+		if (m.searchVars.lang !== undefined) {
+			m.docCookies.setItem("lang", m.searchVars.lang.val, Infinity, "/");
 		}
-		else {
-			m.hashMap[hashISplit[0]]="";
+
+		let $dataLang = $("#data-lang");
+		let dataLang = await m.strToJSON($dataLang.html().trim());
+		let htmlLang = `<div class="p">`;
+		for (let i = 0; i < dataLang[0].length; i++) {
+			htmlLang += `<a href="?lang=${dataLang[0][i]}">${dataLang[1][i]}</a><br>`;
 		}
-	}
-	if (m.hashMap.state&&m.hashMap.access_token&&m.hashMap.token_type) {
-		$log_in_with_google[0].disabled=true;
-		$.ajax({
-			type:"GET", url:`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token}&token_type=${m.hashMap.token_type}`
-			, dataType:"json"
-		}).done(function (resp) {
-			console.log(resp);
-			if (resp.verified_email&&resp.email) {
-				// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
+		htmlLang += `</div>`;
+		$dataLang.after(htmlLang);
+
+		let sW = screen.width;
+		let sH = screen.height;
+		if (sW < sH) {
+			sW = screen.height;
+			sH = screen.width;
+		}
+
+		////////////////////////////////////////
+		// Try Log-in or Sign-up with google.
+		////////////////////////////////////////
+		if (m.initialHash) {
+			let hashSplit = m.initialHash.substring(1).split("&");
+			for (let i = 0; i < hashSplit.length; i++) {
+				let hashISplit = hashSplit[i].split("=");
+				if (hashISplit.length >= 2) {
+					m.hashMap[hashISplit[0]] = hashISplit[1];
+				}
+				else {
+					m.hashMap[hashISplit[0]] = "";
+				}
+			}
+			if (m.hashMap.state && m.hashMap.access_token && m.hashMap.token_type) {
+				$log_in_with_google[0].disabled = true;
 				$.ajax({
-					type:"POST", url:`/account/log-in/with/google.do`, data:`log\tiehack\tscreenWidth\tscreenHeight\tstate\temail
-web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
-					, dataType:"text"
-				}).done(async function (resp) {
+					type: "GET", url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token}&token_type=${m.hashMap.token_type}`
+					, dataType: "json"
+				}).done(function (resp) {
 					console.log(resp);
-					let res=resp.substring(15);
-					res=await m.strToJSON(res);
-					if (resp.startsWith("log-in success")) {
-						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
-						$log_in_with_google.before( m.encloseErr("log-in success") );
-						// wait until saving session/rmb cookies. And conversion.
-						setTimeout(function () {
-							if (res[1]&&res[1].goto) {
-								window.location.pathname=decodeURIComponent(res[1].goto);
-							}
-							else if (m.searchVars.goto?.val) {
-								window.location.href=m.searchVars.goto.val;
+					if (resp.verified_email && resp.email) {
+						// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
+						$.ajax({
+							type: "POST", url: `/account/log-in/with/google.do`, data: `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail
+web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
+							, dataType: "text"
+						}).done(async function (resp) {
+							console.log(resp);
+							let res = resp.substring(15);
+							res = await m.strToJSON(res);
+							if (resp.startsWith("log-in success")) {
+								gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
+								$log_in_with_google.before(m.encloseErr("log-in success"));
+								// wait until saving session/rmb cookies. And conversion.
+								setTimeout(function () {
+									if (res[1] && res[1].goto) {
+										window.location.pathname = decodeURIComponent(res[1].goto);
+									}
+									else if (m.searchVars.goto?.val) {
+										window.location.href = m.searchVars.goto.val;
+									}
+									else {
+										window.location.href = "/";
+									}
+								}, m.wait);
 							}
 							else {
-								window.location.href="/";
+								$log_in_with_google.before(m.encloseErr(resp));
 							}
-						}, m.wait);
+						});
+					}
+					$log_in_with_google[0].disabled = false;
+				});
+			}
+		}
+
+		//////////////////////////////////////////////////////////
+		// Form handling. (Validity check, encrypt, and submit)
+		//////////////////////////////////////////////////////////
+		m.errCount = 0;
+		m.encloseErr = function (msg) {
+			let $old = $(`#error-msg-${m.errCount - 8}`);
+			if ($old.length) {
+				$old.hide();
+			}
+			return `<div id="error-msg-${m.errCount++}" class="error-msg">${msg}</div>`;
+		};
+		m.byteCount = function (str) {
+			return encodeURI(str).split(/%..|./).length - 1;
+		};
+
+		m.logIn = function (elem) {
+			let $elem = $(elem).eq(0);
+			$elem[0].disabled = true;
+			let $form = $elem.parent("form").eq(0);
+			let idType = "id";
+			let userId = $("#input-userId")[0].value.trim();
+			let userIdLength = m.byteCount(userId);
+			let userPwd = $("#input-userPwd")[0].value;
+			let err = "";
+			let valid = false;
+
+			if (userIdLength == 0) {
+				err += "[--ID or E-mail is empty.--]";
+			}
+			else if (userIdLength < m.minIdLength) {
+				err += "[--ID or E-mail is too short.--]";
+			}
+			else if (userPwd.length == 0) {
+				err += "[--Password is empty.--]";
+			}
+			else if (userPwd.length < m.minPwdLength) {
+				err += "[--Password is too short.--]";
+			}
+			else {
+				if (m.regExId.test(userId)) {
+					$("#input-idType")[0].value = idType = "id"; valid = true;
+				}
+				else if (m.regExEmail.test(userId)) {
+					$("#input-idType")[0].value = idType = "email"; valid = true;
+				}
+				else {
+					err += "[--ID--]/[--E-mail--] '" + userId + "' [--is of invalid form.--]";
+				}
+			}
+
+			if (valid) {
+				let form_data = `log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
+web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked") ? "yes" : "no")}	`;
+				$elem.before(m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]"));
+				$.ajax("/account/pwd_iteration", {
+					type: "POST"
+					, data: idType + "\t" + userId
+				}).fail(function () {
+					$elem.before(m.encloseErr("[--Request times out.--] [--Please click the Log-in button again.--]"));
+					$elem[0].disabled = false;
+				}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
+					let res = resp.split('\t');
+					let iter = Number(res[0]);
+					if (isNaN(iter)) {
+						$elem.before(m.encloseErr("Error: " + res[0]));
+						$elem[0].disabled = false;
 					}
 					else {
-						$log_in_with_google.before( m.encloseErr(resp) );
+						$elem.before(m.encloseErr("[--Password is being encrypted.--]"));
+						setTimeout(function () {
+							form_data += m.encrypt(res[1], userPwd, iter); userPwd = "";
+							$elem.before(m.encloseErr("[--Logging in--]: [--Please wait.--]"));
+							$.ajax("/account/log-in.do", {
+								type: "POST"
+								, data: form_data
+							}).done(function (resp) {
+								gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
+								$elem.before(m.encloseErr(resp));
+								// wait until saving session/rmb cookies.
+								setTimeout(function () {
+									if (resp.startsWith("log-in success")) {
+										if (m.searchVars.goto?.val) {
+											window.location.href = m.searchVars.goto.val;
+										}
+										else {
+											window.location.pathname = "/";
+										}
+									}
+									else {
+										$elem[0].disabled = false;
+									}
+								}, m.wait);
+							});
+						}, 8);
 					}
 				});
 			}
-			$log_in_with_google[0].disabled=false;
-		});
-	}
-}
+			else {
+				$elem.before(m.encloseErr(err));
+				$elem[0].disabled = false;
+			}
+		};
 
-//////////////////////////////////////////////////////////
-// Form handling. (Validity check, encrypt, and submit)
-//////////////////////////////////////////////////////////
-m.errCount=0;
-m.encloseErr=function (msg) {
-	let $old=$(`#error-msg-${m.errCount-8}`);
-	if ($old.length) {
-		$old.hide();
-	}
-	return `<div id="error-msg-${m.errCount++}" class="error-msg">${msg}</div>`;
-};
-m.byteCount=function (str) {
-	return encodeURI(str).split(/%..|./).length-1;
-};
+		m.forgotPwd = function (elem) {
+			let $elem = $(elem).eq(0);
+			$elem[0].disabled = true;
+			let $form = $elem.parent("form").eq(0);
+			let idType = "id";
+			let userId = $("#input-userId")[0].value.trim();
+			let userIdLength = m.byteCount(userId);
+			let err = "";
+			let valid = false;
 
-m.logIn=function (elem) {
-	let $elem=$(elem).eq(0);
-	$elem[0].disabled=true;
-	let $form=$elem.parent("form").eq(0);
-	let idType="id";
-	let userId=$("#input-userId")[0].value.trim();
-	let userIdLength=m.byteCount(userId);
-	let userPwd=$("#input-userPwd")[0].value;
-	let err="";
-	let valid=false;
-	
-	if (userIdLength==0) {
-		err+="[--ID or E-mail is empty.--]";
-	}
-	else if (userIdLength<m.minIdLength) {
-		err+="[--ID or E-mail is too short.--]";
-	}
-	else if (userPwd.length==0) {
-		err+="[--Password is empty.--]";
-	}
-	else if (userPwd.length<m.minPwdLength) {
-		err+="[--Password is too short.--]";
-	}
-	else {
-		if (m.regExId.test(userId)) {
-			$("#input-idType")[0].value=idType="id"; valid=true;
-		}
-		else if (m.regExEmail.test(userId)) {
-			$("#input-idType")[0].value=idType="email"; valid=true;
-		}
-		else {
-			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
-		}
-	}
-	
-	if (valid) {
-		let form_data=`log	iehack	screenWidth	screenHeight	idType	userId	rememberMe	userPwd
-web	&#9760;	${sW}	${sH}	${idType}	${userId}	${($("#checkbox").is(":checked")?"yes":"no")}	`;
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
-		$.ajax("/account/pwd_iteration", {
-			type: "POST"
-			, data: idType+"\t"+userId
-		}).fail(function () {
-			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Log-in button again.--]") );
-			$elem[0].disabled=false;
-		}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
-			let res=resp.split('\t');
-			let iter=Number(res[0]);
-			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error: "+res[0]) );
-				$elem[0].disabled=false;
+			if (userIdLength == 0) {
+				err += "[--ID or E-mail is empty.--]";
+			}
+			else if (userIdLength < m.minIdLength) {
+				err += "[--ID or E-mail is too short.--]";
 			}
 			else {
-				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function () {
-					form_data+=m.encrypt(res[1], userPwd, iter); userPwd="";
-					$elem.before( m.encloseErr("[--Logging in--]: [--Please wait.--]") );
-					$.ajax("/account/log-in.do", {
-						type: "POST"
-						, data: form_data
-					}).done(function (resp) {
-						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
-						$elem.before( m.encloseErr(resp) );
-						// wait until saving session/rmb cookies.
-						setTimeout(function () {
-							if (resp.startsWith("log-in success")) {
-								if (m.searchVars.goto?.val) {
-									window.location.href=m.searchVars.goto.val;
-								}
-								else {
-									window.location.pathname="/";
-								}
-							}
-							else {
-								$elem[0].disabled=false;
-							}
-						}, m.wait);
-					});
-				}, 8);
+				if (m.regExId.test(userId)) {
+					$("#input-idType")[0].value = idType = "id"; valid = true;
+				}
+				else if (m.regExEmail.test(userId)) {
+					$("#input-idType")[0].value = idType = "email"; valid = true;
+				}
+				else {
+					err += "[--ID--]/[--E-mail--] '" + userId + "' [--is of invalid form.--]";
+				}
 			}
-		});
-	}
-	else {
-		$elem.before( m.encloseErr(err) );
-		$elem[0].disabled=false;
-	}
-};
 
-m.forgotPwd=function (elem) {
-	let $elem=$(elem).eq(0);
-	$elem[0].disabled=true;
-	let $form=$elem.parent("form").eq(0);
-	let idType="id";
-	let userId=$("#input-userId")[0].value.trim();
-	let userIdLength=m.byteCount(userId);
-	let err="";
-	let valid=false;
-	
-	if (userIdLength==0) {
-		err+="[--ID or E-mail is empty.--]";
-	}
-	else if (userIdLength<m.minIdLength) {
-		err+="[--ID or E-mail is too short.--]";
-	}
-	else {
-		if (m.regExId.test(userId)) {
-			$("#input-idType")[0].value=idType="id"; valid=true;
-		}
-		else if (m.regExEmail.test(userId)) {
-			$("#input-idType")[0].value=idType="email"; valid=true;
-		}
-		else {
-			err+="[--ID--]/[--E-mail--] '"+userId+"' [--is of invalid form.--]";
-		}
-	}
-	
-	if (valid) {
-		let form_data="log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
-			+"web\t&#9760;\t"+sW+"\t"+sH+"\t"+idType+"\t"+userId;
-		$elem.before( m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]") );
-		$.ajax("/account/pwd_iteration", {
-			type: "POST"
-			, data: idType+"\t"+userId
-		}).fail(function () {
-			$elem.before( m.encloseErr("[--Request times out.--] [--Please click the Forgot password button again.--]") );
-			$elem[0].disabled=false;
-		}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
-			let res=resp.split('\t');
-			let iter=Number(res[0]);
-			if (isNaN(iter)) {
-				$elem.before( m.encloseErr("Error: "+res[0]) );
-				$elem[0].disabled=false;
-			}
-			else {
-				$elem.before( m.encloseErr("[--Sending an email--]: [--Please wait.--]") );
-				$.ajax("/account/forgotPwd", {
+			if (valid) {
+				let form_data = "log\tiehack\tscreenWidth\tscreenHeight\tidType\tuserId\n"
+					+ "web\t&#9760;\t" + sW + "\t" + sH + "\t" + idType + "\t" + userId;
+				$elem.before(m.encloseErr("[--Checking ID/E-mail--]: [--Please wait.--]"));
+				$.ajax("/account/pwd_iteration", {
 					type: "POST"
-					, data: form_data
-				}).done(function (resp) {
-					$elem.before( m.encloseErr(resp) );
-					$elem[0].disabled=false;
+					, data: idType + "\t" + userId
+				}).fail(function () {
+					$elem.before(m.encloseErr("[--Request times out.--] [--Please click the Forgot password button again.--]"));
+					$elem[0].disabled = false;
+				}).done(function (resp) { // resp: pwd_iteration or "No such id"	salt
+					let res = resp.split('\t');
+					let iter = Number(res[0]);
+					if (isNaN(iter)) {
+						$elem.before(m.encloseErr("Error: " + res[0]));
+						$elem[0].disabled = false;
+					}
+					else {
+						$elem.before(m.encloseErr("[--Sending an email--]: [--Please wait.--]"));
+						$.ajax("/account/forgotPwd", {
+							type: "POST"
+							, data: form_data
+						}).done(function (resp) {
+							$elem.before(m.encloseErr(resp));
+							$elem[0].disabled = false;
+						});
+					}
 				});
 			}
-		});
-	}
-	else {
-		$elem.before( m.encloseErr(err) );
-		$elem[0].disabled=false;
-	}
-};
+			else {
+				$elem.before(m.encloseErr(err));
+				$elem[0].disabled = false;
+			}
+		};
 
-m.signUp=function (elem) {
-	let $elem=$(elem).eq(0);
-	$elem[0].disabled=true;
-	let $form=$elem.parent("form").eq(0);
-	let userId=$("#input-su-userId")[0].value.trim();
-	let userIdLength=m.byteCount(userId);
-	let userEmail=$("#input-su-userEmail")[0].value.trim();
-	let userPwd=$("#input-su-userPwd")[0].value;
-	let userPwdCfm=$("#input-su-userPwdCfm")[0].value;
-	let err="";
-	let valid=false;
-	
-	if (userIdLength==0) {
-		err+="[--ID is empty.--]";
-	}
-	else if (userIdLength<m.minIdLength||userIdLength>m.maxIdLength) {
-		err+=`${(userIdLength<m.minIdLength?"[--ID is too short.--]":"[--ID is too long.--]")}<br>
+		m.signUp = function (elem) {
+			let $elem = $(elem).eq(0);
+			$elem[0].disabled = true;
+			let $form = $elem.parent("form").eq(0);
+			let userId = $("#input-su-userId")[0].value.trim();
+			let userIdLength = m.byteCount(userId);
+			let userEmail = $("#input-su-userEmail")[0].value.trim();
+			let userPwd = $("#input-su-userPwd")[0].value;
+			let userPwdCfm = $("#input-su-userPwdCfm")[0].value;
+			let err = "";
+			let valid = false;
+
+			if (userIdLength == 0) {
+				err += "[--ID is empty.--]";
+			}
+			else if (userIdLength < m.minIdLength || userIdLength > m.maxIdLength) {
+				err += `${(userIdLength < m.minIdLength ? "[--ID is too short.--]" : "[--ID is too long.--]")}<br>
 '${userId}':${userIdLength} ([--ID--].[--length--]: ${m.minIdLength}~${m.maxIdLength})`;
-	}
-	else if (!m.regExId.test(userId)) {
-		err+="[--ID--] '"+userId+"' [--is of invalid form.--]";
-	}
-	else if (userEmail.length==0) {
-		err+="[--E-mail is empty.--]";
-	}
-	else if (!m.regExEmail.test(userEmail)) {
-		err+="[--E-mail--] '"+userEmail+"' [--is of invalid form.--]";
-	}
-	else if (userPwd.length==0) {
-		err+="[--Password is empty.--]";
-	}
-	else if (userPwd.length<m.minPwdLength||userPwd.length>m.maxPwdLength) {
-		err+=`${(userPwd.length<m.minPwdLength?"[--Password is too short.--]":"[--Password is too long.--]")}<br>
+			}
+			else if (!m.regExId.test(userId)) {
+				err += "[--ID--] '" + userId + "' [--is of invalid form.--]";
+			}
+			else if (userEmail.length == 0) {
+				err += "[--E-mail is empty.--]";
+			}
+			else if (!m.regExEmail.test(userEmail)) {
+				err += "[--E-mail--] '" + userEmail + "' [--is of invalid form.--]";
+			}
+			else if (userPwd.length == 0) {
+				err += "[--Password is empty.--]";
+			}
+			else if (userPwd.length < m.minPwdLength || userPwd.length > m.maxPwdLength) {
+				err += `${(userPwd.length < m.minPwdLength ? "[--Password is too short.--]" : "[--Password is too long.--]")}<br>
 ([--Password--].[--length--]: ${m.minPwdLength}~${m.maxPwdLength})`;
-	}
-	else if (userPwd!==userPwdCfm) {
-		err+="[--Confirm your password correctly.--]";
-	}
-	else {
-		valid=true;
-	}
-	
-	if (valid) {
-		$elem.before( m.encloseErr("[--Checking ID and E-mail--]: [--Please wait.--]") );
-		$.ajax("/account/check", {
-			type: "POST"
-			, data: userId+"\t"+userEmail
-		}).fail(function () {
-			$elem.before( m.encloseErr("[--Request time out.--] [--Please click the Sign-up button again.--]") );
-			$elem[0].disabled=false;
-		}).done(function (resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
-			let res=resp.split('\t');
-			if (res&&res.length>2&&res[0]=="true"&&res[1]=="true") {
-				$elem.before( m.encloseErr("[--Password is being encrypted.--]") );
-				setTimeout(function () {
-					userPwd=m.encrypt(res[3], userPwd, m.iterFull);
-					userPwdCfm="confirmed";
-					$("#input-su-userPwd")[0].value="";
-					$("#input-su-userPwdCfm")[0].value="";
-					$elem.before( m.encloseErr("[--Signing up--]: [--Please wait.--]") );
-					let form_data=`userId	userEmail	tToken	authToken	userPwd	userPwdCfm
-${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
-					userPwd=null; userPwdCfm=null;
-					$.ajax("/account/sign-up", {
-						type:"POST", data:form_data
-					}).done(function (resp) {
-						gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
-						$elem.before( m.encloseErr(resp) );
-						$elem[0].disabled=false;
-					});
-				}, 2048);
+			}
+			else if (userPwd !== userPwdCfm) {
+				err += "[--Confirm your password correctly.--]";
 			}
 			else {
-				let errStr="";
-				if (res[0]=="false") {
-					errStr+=`[--ID is already in use. Please try another ID.--]<br>`; // userId is handled.
-				}
-				if (res[1]=="false") {
-					errStr+=`[--E-mail is already registered. Please try another e-mail.--]<br>`; // userEmail is handled.
-				}
-				$elem.before( m.encloseErr(errStr) );
-				$elem[0].disabled=false;
+				valid = true;
+			}
+
+			if (valid) {
+				$elem.before(m.encloseErr("[--Checking ID and E-mail--]: [--Please wait.--]"));
+				$.ajax("/account/check", {
+					type: "POST"
+					, data: userId + "\t" + userEmail
+				}).fail(function () {
+					$elem.before(m.encloseErr("[--Request time out.--] [--Please click the Sign-up button again.--]"));
+					$elem[0].disabled = false;
+				}).done(function (resp) { // resp: idAvailable	emailAvailable	tToken	authToken(char(64))
+					let res = resp.split('\t');
+					if (res && res.length > 2 && res[0] == "true" && res[1] == "true") {
+						$elem.before(m.encloseErr("[--Password is being encrypted.--]"));
+						setTimeout(function () {
+							userPwd = m.encrypt(res[3], userPwd, m.iterFull);
+							userPwdCfm = "confirmed";
+							$("#input-su-userPwd")[0].value = "";
+							$("#input-su-userPwdCfm")[0].value = "";
+							$elem.before(m.encloseErr("[--Signing up--]: [--Please wait.--]"));
+							let form_data = `userId	userEmail	tToken	authToken	userPwd	userPwdCfm
+${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
+							userPwd = null; userPwdCfm = null;
+							$.ajax("/account/sign-up", {
+								type: "POST", data: form_data
+							}).done(function (resp) {
+								gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
+								$elem.before(m.encloseErr(resp));
+								$elem[0].disabled = false;
+							});
+						}, 2048);
+					}
+					else {
+						let errStr = "";
+						if (res[0] == "false") {
+							errStr += `[--ID is already in use. Please try another ID.--]<br>`; // userId is handled.
+						}
+						if (res[1] == "false") {
+							errStr += `[--E-mail is already registered. Please try another e-mail.--]<br>`; // userEmail is handled.
+						}
+						$elem.before(m.encloseErr(errStr));
+						$elem[0].disabled = false;
+					}
+				});
+			}
+			else {
+				$elem.before(m.encloseErr(err));
+				$elem[0].disabled = false;
+			}
+		};
+
+		m.state = Math.random().toString(16).substring(2);
+		// Google's OAuth 2.0 endpoint for requesting an access token
+		m.oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+
+		// Parameters to pass to OAuth 2.0 endpoint.
+		m.params = {
+			client_id: '964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
+			redirect_uri: 'https://recoeve.net/account/log-in/with/google',
+			response_type: 'token',
+			scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+			// scope:'email profile',
+			state: m.state,
+			login_hint: $("#input-userId")[0].value,
+			prompt: "consent"
+		};
+		m.paramsSearch = "";
+		// Add form parameters as hidden input values.
+		for (let p in m.params) {
+			m.paramsSearch += `&${p}=${escape(m.params[p])}`;
+		}
+		m.paramsSearch = "?" + m.paramsSearch.substring(1);
+		m.authGoogleURL = m.oauth2Endpoint + m.paramsSearch;
+
+		m.logInWithGoogle = function (elem) {
+			if ($input_su_userId[0].value === "" || m.regExId.test($input_su_userId[0].value)) {
+				$.ajax({
+					type: "POST", url: "/account/log-in/with/pre-google", data: `state\tgoto\tid\n${m.state}\t${m.searchVars.goto?.val ? m.searchVars.goto.val : ""}\t${$input_su_userId[0].value}` // Decoded goto.
+					, dataType: "text"
+				}).done(function (resp) {
+					console.log(resp);
+					$(elem).before(m.encloseErr(resp));
+					// Add form to page and submit it to open the OAuth 2.0 endpoint.
+					window.open(m.authGoogleURL, "_blank");
+				});
+			}
+			else {
+				$(elem).before(m.encloseErr(`[--ID:${$input_su_userId[0].value} is in invalid form.--]`));
+			}
+		}
+
+		$("#input-userPwd").on("keydown", function (e) {
+			if (e.keyCode === 13) { // Enter
+				e.preventDefault();
+				e.stopPropagation();
+				$("#button-log-in").trigger("click");
 			}
 		});
-	}
-	else {
-		$elem.before( m.encloseErr(err) );
-		$elem[0].disabled=false;
-	}
-};
-
-m.state=Math.random().toString(16).substring(2);
-// Google's OAuth 2.0 endpoint for requesting an access token
-m.oauth2Endpoint='https://accounts.google.com/o/oauth2/v2/auth';
-
-// Parameters to pass to OAuth 2.0 endpoint.
-m.params={
-	client_id:'964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com',
-	redirect_uri:'https://recoeve.net/account/log-in/with/google',
-	response_type:'token',
-	scope:'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-	// scope:'email profile',
-	state:m.state,
-	login_hint:$("#input-userId")[0].value,
-	prompt:"consent"
-};
-m.paramsSearch="";
-// Add form parameters as hidden input values.
-for (let p in m.params) {
-	m.paramsSearch+=`&${p}=${escape(m.params[p])}`;
-}
-m.paramsSearch="?"+m.paramsSearch.substring(1);
-m.authGoogleURL=m.oauth2Endpoint+m.paramsSearch;
-
-m.logInWithGoogle=function (elem) {
-	if ($input_su_userId[0].value===""||m.regExId.test($input_su_userId[0].value)) {
-		$.ajax({
-			type:"POST", url:"/account/log-in/with/pre-google", data:`state\tgoto\tid\n${m.state}\t${m.searchVars.goto?.val?m.searchVars.goto.val:""}\t${$input_su_userId[0].value}` // Decoded goto.
-			, dataType:"text"
-		}).done(function (resp) {
-			console.log(resp);
-			$(elem).before( m.encloseErr(resp) );
-			// Add form to page and submit it to open the OAuth 2.0 endpoint.
-			window.open(m.authGoogleURL, "_blank");
+		$("#input-userPwd").on("blur", function (e) {
+			setTimeout(function () {
+				$("#button-log-in").trigger("click");
+			}, 512);
 		});
-	}
-	else {
-		$(elem).before( m.encloseErr(`[--ID:${$input_su_userId[0].value} is in invalid form.--]`) );
-	}
-}
+		$("#input-su-userPwdCfm").on("keydown", function (e) {
+			if (e.keyCode === 13) { // Enter
+				e.preventDefault();
+				e.stopPropagation();
+				$("#button-sign-up").trigger("click");
+			}
+		});
+		// TODO: Press <code>Enter</code> to go to the next input.
+		$("input.go-next").on("keydown", function (e) {
+			if (e.keyCode === 13) { // Enter
+				e.preventDefault();
+				e.stopPropagation();
+				$(e.target).next("input").focus();
+			}
+		});
 
-$("#input-userPwd").on("keydown", function (e) {
-	if (e.keyCode===13) { // Enter
-		e.preventDefault();
-		e.stopPropagation();
-		$("#button-log-in").trigger("click");
-	}
-});
-$("#input-userPwd").on("blur", function (e) {
-	setTimeout(function () {
-		$("#button-log-in").trigger("click");
-	}, 512);
-});
-$("#input-su-userPwdCfm").on("keydown", function (e) {
-	if (e.keyCode===13) { // Enter
-		e.preventDefault();
-		e.stopPropagation();
-		$("#button-sign-up").trigger("click");
-	}
-});
-// TODO: Press <code>Enter</code> to go to the next input.
-$("input.go-next").on("keydown", function (e) {
-	if (e.keyCode===13) { // Enter
-		e.preventDefault();
-		e.stopPropagation();
-		$(e.target).next("input").focus();
-	}
-});
+		$(document).ready(function () {
+			let blogStat = `URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\tlog-in guest`;
+			$.ajax({
+				type: "POST", url: "https://recoeve.net/BlogStat", data: blogStat, dataType: "text"
+			}).fail(function (resp) {
+				console.log("BlogStat: ", resp);
+			}).done(function (resp) {
+				console.log("BlogStat: ", resp);
+			});
+		});
 
-$(document).ready(function () {
-	let blogStat=`URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\tlog-in guest`;
-	$.ajax({
-		type:"POST", url:"https://recoeve.net/BlogStat", data:blogStat, dataType:"text"
-	}).fail(function (resp) {
-		console.log("BlogStat: ", resp);
-	}).done(function (resp) {
-		console.log("BlogStat: ", resp);
-	});
-});
-
-m.$delayedElems=$("[delayed-src], [delayed-bgimage], .to-be-executed");
-gtag('config', 'AW-11407455434');
-})(window.m, jQuery);
+		m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
+		gtag('config', 'AW-11407455434');
+	})(window.m, jQuery);
 </script>
+
 </html>

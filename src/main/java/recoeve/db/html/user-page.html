@@ -244,6 +244,17 @@
 			color: rgb(250, 150, 100)
 		}
 
+		#textarea-gs {
+			display: flex;
+			font-size: 1em;
+			background: white;
+			color: black;
+			width: auto;
+			max-width: 100%;
+			min-width: 50%;
+			height: 2em;
+		}
+
 		#sort-list .button {
 			display: table;
 			margin: 0
@@ -3096,9 +3107,9 @@
 			<ul id="shortkeys"></ul>
 		</div>
 		<div class="side2" id="google-search">
-			<div class="gcse-search"></div>
+			<textarea id="textarea-gs"></textarea>
+			<div class="button fRight">Google Search</div>
 		</div>
-		<script async src="https://cse.google.com/cse.js?cx=6305e99769f4b47dd"></script>
 		<div class="side2" id="head">
 			<div class="button button-Go" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
 				[--Fuzzy Search--] [--_G_o (FS)--]</div>
@@ -5881,7 +5892,7 @@
 							r[prop] = String(respK[prop]);
 						}
 					}
-					if (toDo==="delete") {
+					if (toDo === "delete") {
 						r.deleted = true;
 					}
 					else {
@@ -6835,7 +6846,7 @@
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
 								if (!fsFLk) {
-									fsFLk = fs.fullList[uri] = { uri, i:fs.fullList.length, down: false };
+									fsFLk = fs.fullList[uri] = { uri, i: fs.fullList.length, down: false };
 									fs.fullList.push(fs.fullList[uri]);
 								}
 								fsFLk.txt = m.splitHangul(`${r?.cats} :: ${r?.title}`);
@@ -7782,7 +7793,7 @@
 					if (args.val.str !== args.r.val.str) { args.r.val = args.val; }
 					args.r.tLast = res[1]?.tLast;
 					await m.changeCats_UriList(args.r.cats, args.cats, uri);
-					args.r.cats=args.cats;
+					args.r.cats = args.cats;
 					setTimeout(function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
