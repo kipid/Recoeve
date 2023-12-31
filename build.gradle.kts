@@ -23,8 +23,6 @@ val launcherClassName = "io.vertx.core.Launcher"
 val watchForChange = "src/**/*"
 val doOnChange = "${projectDir}/gradlew classes"
 
-org.gradle.caching=false
-
 application {
 	mainClass.set(launcherClassName)
 }
