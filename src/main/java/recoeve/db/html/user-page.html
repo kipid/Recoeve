@@ -3109,7 +3109,7 @@
 		</div>
 		<div class="side2" id="google-search">
 			<textarea id="textarea-gs" class="fLeft"></textarea>
-			<div class="button fRight">Google Search</div>
+			<div id="button-gs" class="button fRight">Google Search</div>
 			<div class="cBoth" style="padding:.5em"></div>
 		</div>
 		<div class="side2" id="head">
@@ -3343,6 +3343,18 @@
 		});
 		$log_out_do.on("click", function (e) {
 			e.stopPropagation();
+		});
+
+		$textarea_gs=$("#textarea-gs");
+		$button_gs=$("#button-gs");
+		$button_gs.on("click.gs", function (e) {
+			window.open(`http://www.google.com/search?q=${encodeURIComponent(`site:recoeve.net${m.userPath} `+$textarea_gs[0].value)}`, "_blank");
+		});
+		$textarea_gs.on("keydown.gs", function (e) {
+			if (e.altKey || e.ctrlKey || e.metaKey) { return; }
+			if (e.keyCode===13) { // Enter=13
+				$button_gs.trigger("click.gs");
+			}
 		});
 
 		$headPlay = $("#headPlay");
