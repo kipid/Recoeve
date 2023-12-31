@@ -1258,7 +1258,6 @@ web	${m.sW}	${m.sH}`;
 	ptnURI.regEx = /^(?:watch|embed|live)?\/?([\w\-]+)?(\?\S+)?/i;
 	ptnURI.regEx1 = /^shorts\/([\w\-]+)/i;
 	ptnURI.regEx2 = /^([\w\-]+)(\?\S+)?/i;
-	ptnURI.regEx3 = /^watch(\?\S+)/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
@@ -1290,22 +1289,17 @@ web	${m.sW}	${m.sH}`;
 					if (exec !== null) {
 						let v = exec[1];
 						let vars = null;
+						let list = null;
 						if (exec[2]) {
 							vars = m.getSearchVars(exec[2]);
-						}
-						let list = vars?.list?.val;
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
-					}
-					else {
-						exec = m.ptnURI["m.youtube.com"].regEx3.exec(uriRest);
-						if (exec !== null) {
-							let vars = m.getSearchVars(exec[1]);
-							let v = vars?.v?.val;
-							if (v) {
-								let list = vars?.list?.val;
-								return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v });
+							if (vars?.list?.val) {
+								list = vars.list.val;
+							}
+							if (vars?.v?.val) {
+								v = vars.v.val;
 							}
 						}
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
 					}
 				}
 			}

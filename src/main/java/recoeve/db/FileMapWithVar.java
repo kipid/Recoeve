@@ -13,7 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileMapWithVar {
-	public static final String version = "1.0.2";
+	public static final String version = "1.0.3";
 	private static String filePath = "C:\\Recoeve\\src\\main\\java\\recoeve\\db\\html\\";
 	private static final String[] fileNames = {
 			"user-page.html", "recostat.html", "log-in.html", "signed-up.html", "reco.html", "multireco.html"
