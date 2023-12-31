@@ -410,7 +410,7 @@
 					console.log("Google data: ", resp);
 					if (resp.verified_email && resp.email) {
 						// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
-						let dataToBeSent = `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail\nweb\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`;
+						let dataToBeSent = `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail\nweb\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state.val}\t${resp.email}`;
 						console.log("Do POST to google.do!: ", dataToBeSent);
 						$.ajax({
 							type: "POST", url: `/account/log-in/with/google.do`, data: dataToBeSent
