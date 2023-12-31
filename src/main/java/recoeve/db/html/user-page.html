@@ -32,6 +32,7 @@
 			, lastCat: "i8@ㅏ%자DKW2!"
 			, args: {}
 			, dailyMixPer: 4
+			, recoedFromRecoms: 0
 		};
 	</script>
 	<script src="/CDN/jquery.js"></script>
@@ -5185,190 +5186,198 @@
 			await m.fsToRsInRangeCheck();
 		};
 		m.putCats_UriToLists = async function (cats, uri) {
-			// uri
-			// A	uri[0]=A
-			// B	uri[1]=B
-			// C	uri[2]=C
-			// No reverse() is needed.
-			let catsSplit = cats.split(";");
-			let catIsPut = false;
-			for (let i = 0; i < catsSplit.length; i++) {
-				let cat = catsSplit[i];
-				if (m.myPage) {
-					if (m.catUriList[cat]?.has) {
-						if (uri?.constructor === String) {
-							m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri;
-							m.catUriList[cat].uris[uri] = { i: m.catUriList[cat].uris.length, uri };
-							m.catUriList[cat].uris.push(uri);
-						}
-						else if (uri?.constructor === Array) {
-							m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri.join("\n");
-							for (let i = m.catUriList[cat].uris.length, k = 0; k < uri.length; k++) {
-								let uriK = uri[k];
-								m.catUriList[cat].uris[uriK] = { uri: uriK, i: i + k };
-								m.catUriList[cat].uris.push(uriK);
-							}
-						}
-					}
-					else if (m.catUriList[cat]) {
-						// TODO: DO NOT load uriList of every cat of catsSplit.
-						$numbers_of_recos.html(`Getting UriList of cat="${m.escapeOnlyTag(cat)}".`);
-						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-						if (uri?.constructor === String) {
-							if (!m.catUriList[cat].uris[uri]) {
+			return new Promise(async function (resolve, reject) {
+				// uri
+				// A	uri[0]=A
+				// B	uri[1]=B
+				// C	uri[2]=C
+				// No reverse() is needed.
+				let catsSplit = cats.split(";");
+				let catIsPut = false;
+				for (let i = 0; i < catsSplit.length; i++) {
+					let cat = catsSplit[i];
+					if (m.myPage) {
+						if (m.catUriList[cat]?.has) {
+							if (uri?.constructor === String) {
 								m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri;
 								m.catUriList[cat].uris[uri] = { i: m.catUriList[cat].uris.length, uri };
 								m.catUriList[cat].uris.push(uri);
 							}
-							else {
-								let { k } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
-								if (k === -1) {
+							else if (uri?.constructor === Array) {
+								m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri.join("\n");
+								for (let i = m.catUriList[cat].uris.length, k = 0; k < uri.length; k++) {
+									let uriK = uri[k];
+									m.catUriList[cat].uris[uriK] = { uri: uriK, i: i + k };
+									m.catUriList[cat].uris.push(uriK);
+								}
+							}
+						}
+						else if (m.catUriList[cat]) {
+							// TODO: DO NOT load uriList of every cat of catsSplit.
+							$numbers_of_recos.html(`Getting UriList of cat="${m.escapeOnlyTag(cat)}".`);
+							await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+							if (uri?.constructor === String) {
+								if (!m.catUriList[cat].uris[uri]) {
 									m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri;
 									m.catUriList[cat].uris[uri] = { i: m.catUriList[cat].uris.length, uri };
 									m.catUriList[cat].uris.push(uri);
 								}
-							}
-						}
-						else if (uri?.constructor === Array) {
-							for (let j = 0; j < uri.length; j++) {
-								let uriJ = uri[j];
-								if (!m.catUriList[cat].uris[uriJ]) {
-									m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uriJ;
-									m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uri: uriJ };
-									m.catUriList[cat].uris.push(uriJ);
-								}
 								else {
-									let { k } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uriJ);
+									let { k } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
 									if (k === -1) {
-										m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uriJ;
-										m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uriJ };
-										m.catUriList[cat].uris.push(uriJ);
+										m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri;
+										m.catUriList[cat].uris[uri] = { i: m.catUriList[cat].uris.length, uri };
+										m.catUriList[cat].uris.push(uri);
 									}
 								}
 							}
-							m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim();
+							else if (uri?.constructor === Array) {
+								for (let j = 0; j < uri.length; j++) {
+									let uriJ = uri[j];
+									if (!m.catUriList[cat].uris[uriJ]) {
+										m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uriJ;
+										m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uri: uriJ };
+										m.catUriList[cat].uris.push(uriJ);
+									}
+									else {
+										let { k } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uriJ);
+										if (k === -1) {
+											m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uriJ;
+											m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uriJ };
+											m.catUriList[cat].uris.push(uriJ);
+										}
+									}
+								}
+								m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim();
+							}
+						}
+						else {
+							catIsPut = m.putCat(cat) || catIsPut;
+							if (uri?.constructor === String) {
+								m.catUriList[cat] = { cat, down: true, has: true, UriList: uri, uris: [uri] };
+							}
+							else if (uri?.constructor === Array) {
+								m.catUriList[cat] = { cat, down: true, has: true, UriList: uri.join("\n"), uris: [] };
+								for (let j = 0; j < uri.length; j++) {
+									m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uriJ };
+									m.catUriList[cat].uris.push(uriJ);
+								}
+							}
 						}
 					}
 					else {
 						catIsPut = m.putCat(cat) || catIsPut;
-						if (uri?.constructor === String) {
-							m.catUriList[cat] = { cat, down: true, has: true, UriList: uri, uris: [uri] };
-						}
-						else if (uri?.constructor === Array) {
-							m.catUriList[cat] = { cat, down: true, has: true, UriList: uri.join("\n"), uris: [] };
-							for (let j = 0; j < uri.length; j++) {
-								m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uriJ };
-								m.catUriList[cat].uris.push(uriJ);
-							}
-						}
 					}
 				}
-				else {
-					catIsPut = m.putCat(cat) || catIsPut;
+				if (catIsPut) {
+					// TODO: update m.currentCat;
+					$change_catList_order_cancel.trigger("click");
+					await m.reTriggerFS(m.fsGotoCats);
+					m.fsToRs.shuffledOnce = true;
+					m.fsGo.shuffledOnce = true;
+					await m.reTriggerFS(m.fsToRs);
+					await m.reTriggerFS(m.fsGo);
 				}
-			}
-			if (catIsPut) {
-				// TODO: update m.currentCat;
-				$change_catList_order_cancel.trigger("click");
-				await m.reTriggerFS(m.fsGotoCats);
-				m.fsToRs.shuffledOnce = true;
-				m.fsGo.shuffledOnce = true;
-				await m.reTriggerFS(m.fsToRs);
-				await m.reTriggerFS(m.fsGo);
-			}
+				resolve();
+			});
 		};
 		m.indexOfUriOnCatUriListCat = function (catUriListCat, uri) {
 			let fullURIs = "\n" + catUriListCat.UriList.trim() + "\n";
 			return { k: fullURIs.indexOf("\n" + uri + "\n"), fullURIs };
 		};
 		m.delCats_UriFromLists = async function (cats, uri) {
-			if (m.myPage) {
-				let catsSplit = cats.split(";");
-				let superCatIsDeleted = false;
-				for (let i = 0; i < catsSplit.length; i++) {
-					let cat = catsSplit[i];
-					if (!m.catUriList[cat]?.has) {
-						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-					}
-					let { k, fullURIs } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
-					if (k !== -1) {
-						m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
-						// Intentionally no change on m.catUriList[cat].uris;
-						// if (m.catUriList[cat].uris[uri]) {
-						// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
-						// 	delete m.catUriList[cat].uris[uri];
-						// 	m.refreshFSToRs(cat);
-						// }
-					}
-					if (m.catUriList[cat].UriList.trim().length === 0) {
-						let catIsDeleted = true;
-						while (cat !== null && catIsDeleted) {
-							catIsDeleted = false;
-							if (m.catUriList[cat].has) {
-								if (m.catUriList[cat].UriList.trim().length === 0) {
-									catIsDeleted = m.deleteCat(cat);
-									superCatIsDeleted = superCatIsDeleted || catIsDeleted;
+			return new Promise(async function (resolve, reject) {
+				if (m.myPage) {
+					let catsSplit = cats.split(";");
+					let superCatIsDeleted = false;
+					for (let i = 0; i < catsSplit.length; i++) {
+						let cat = catsSplit[i];
+						if (!m.catUriList[cat]?.has) {
+							await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+						}
+						let { k, fullURIs } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
+						if (k !== -1) {
+							m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
+							// Intentionally no change on m.catUriList[cat].uris;
+							// if (m.catUriList[cat].uris[uri]) {
+							// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
+							// 	delete m.catUriList[cat].uris[uri];
+							// 	m.refreshFSToRs(cat);
+							// }
+						}
+						if (m.catUriList[cat].UriList.trim().length === 0) {
+							let catIsDeleted = true;
+							while (cat !== null && catIsDeleted) {
+								catIsDeleted = false;
+								if (m.catUriList[cat].has) {
+									if (m.catUriList[cat].UriList.trim().length === 0) {
+										catIsDeleted = m.deleteCat(cat);
+										superCatIsDeleted = superCatIsDeleted || catIsDeleted;
+									}
 								}
+								else {
+									await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+									catIsDeleted = true;
+									continue;
+								}
+								cat = m.getSuperCat(cat);
 							}
-							else {
-								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-								catIsDeleted = true;
-								continue;
-							}
-							cat = m.getSuperCat(cat);
 						}
 					}
+					if (superCatIsDeleted) {
+						$change_catList_order_cancel.trigger("click");
+						// Intentionally no m.updateCatFS(); and m.updateGotoCatsFS();
+					}
 				}
-				if (superCatIsDeleted) {
-					$change_catList_order_cancel.trigger("click");
-					// Intentionally no m.updateCatFS(); and m.updateGotoCatsFS();
-				}
-			}
+				resolve();
+			});
 		};
 		m.changeCats_UriList = function (oldCats, newCats, uri) {
-			if (oldCats !== null && oldCats !== undefined && oldCats.constructor === String && newCats !== null && newCats !== undefined && newCats.constructor === String) {
-				let oldCatSplit = oldCats.split(";");
-				let newCatSplit = newCats.split(";");
-				let o = [];
-				let n = [];
-				for (let i = 0; i < oldCatSplit.length; i++) {
-					o[oldCatSplit[i]] = true;
-				}
-				newCats = "";
-				for (let i = 0; i < newCatSplit.length; i++) {
-					if (o[newCatSplit[i]]) {
-						o[newCatSplit[i]] = false;
-						n[newCatSplit[i]] = false;
+			return new Promise(async function (resolve, reject) {
+				if (oldCats !== null && oldCats !== undefined && oldCats.constructor === String && newCats !== null && newCats !== undefined && newCats.constructor === String) {
+					let oldCatSplit = oldCats.split(";");
+					let newCatSplit = newCats.split(";");
+					let o = [];
+					let n = [];
+					for (let i = 0; i < oldCatSplit.length; i++) {
+						o[oldCatSplit[i]] = true;
 					}
-					else {
-						newCats += newCatSplit[i] + ";";
-						n[newCatSplit[i]] = true;
-					}
-				}
-				oldCats = "";
-				for (let p in o) {
-					if (o[p]) { oldCats += p + ";"; }
-				}
-				if (uri && uri.constructor === String) {
-					if (oldCats.length > 0) {
-						m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uri);
-					}
-					if (newCats.length > 0) {
-						m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uri);
-					}
-				}
-				else if (uri && uri.constructor === Array) {
-					if (oldCats.length > 0) {
-						for (j = 0; j < uri.length; j++) {
-							let uriJ = uri[j];
-							m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uriJ);
+					newCats = "";
+					for (let i = 0; i < newCatSplit.length; i++) {
+						if (o[newCatSplit[i]]) {
+							o[newCatSplit[i]] = false;
+							n[newCatSplit[i]] = false;
+						}
+						else {
+							newCats += newCatSplit[i] + ";";
+							n[newCatSplit[i]] = true;
 						}
 					}
-					if (newCats.length > 0) {
-						m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uri);
+					oldCats = "";
+					for (let p in o) {
+						if (o[p]) { oldCats += p + ";"; }
+					}
+					if (uri && uri.constructor === String) {
+						if (oldCats.length > 0) {
+							await m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uri);
+						}
+						if (newCats.length > 0) {
+							await m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uri);
+						}
+					}
+					else if (uri && uri.constructor === Array) {
+						if (oldCats.length > 0) {
+							for (j = 0; j < uri.length; j++) {
+								let uriJ = uri[j];
+								await m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uriJ);
+							}
+						}
+						if (newCats.length > 0) {
+							await m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uri);
+						}
 					}
 				}
-			}
+			});
 		};
 
 		/* Points */
@@ -6016,6 +6025,9 @@
 					let r = m.userRecos[uri];
 					fsFL[uri] = { i, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
 					fsFL.push(fsFL[uri]);
+				}
+				if (m.lastCat !== cat) {
+					m.recoedFromRecoms = 0;
 				}
 				await m.reTriggerFS(fs);
 				await m.showRecosOnCat();
@@ -6722,6 +6734,12 @@
 				switch (option) {
 					case "recoed":
 						if (m.myPage) {
+							if (m.beInCurrentCat) {
+								m.recoedFromRecoms++;
+							}
+							else if (openCat) {
+								m.recoedFromRecoms = 0;
+							}
 							let fsGoFLUri = m.fsGo.fullList[uri];
 							let r = m.userRecos[uri]; // Must be there, because it is recoed.
 							if (!fsGoFLUri) {
@@ -7607,53 +7625,59 @@
 						if (uriI !== res[i]?.originalURI) {
 							m.myRecos[uriI].desc = (`#originalURI\n${res[i]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
-						m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[i].cats), uriI);
+						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[i].cats), uriI);
 					}
 					await m.recoToEve(args.strRecoDo, m.myRecos);
 					m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
 					m.refreshFSToRs(m.currentCat);
 				}
-				else if (result.startsWith("recoed")) {
+				else {
 					$error.html(result);
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
 					await m.recoToEve(args.strRecoDo, m.myRecos);
-					m.myRecos[uri].tFirst = m.myRecos[uri].tLast = res[1]?.tLast;
-					let desc = String(m.myRecos[uri].desc);
-					if (uri !== res[1]?.originalURI) {
-						m.myRecos[uri].desc = (`#originalURI\n${res[1]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
-					}
 					let cats = String(m.myRecos[uri].cats);
-					setTimeout(function () {
-						m.emptifyRecoInNewReco();
-						$button_close.trigger("click");
-						m.putCats_UriToLists(cats, uri);
-						m.refresh(cats, "recoed", uri, true);
-						m.refreshFSToRs(m.currentCat);
-					}, m.wait);
-				}
-				else if (result.startsWith("changed")) {
-					$error.html(result);
-					args.$result?.html(result);
-					m.recoDowned(args.uri, m.myRecos);
-					m.changeCats_UriList(m.myRecos[uri].cats, String(strRecoDoJSON[1].cats), uri);
-					await m.recoToEve(args.strRecoDo, m.myRecos);
-					m.myRecos[args.uri].tLast = res[1]?.tLast;
-					let cats = String(m.myRecos[args.uri].cats);
-					setTimeout(function () {
-						m.emptifyRecoInNewReco();
-						$button_close.trigger("click");
-						m.refresh(cats, "changed", args.uri);
-						m.refreshFSToRs(m.currentCat);
-					}, m.wait);
-				}
-				else {
-					m.delayedLogOut(result, 60 * 60 * 24, args.$result);
-					args.$result?.html(m.arrayToTableHTML(res));
-					let uri = res[1]?.uri;
-					if (uri !== res[1]?.originalURI) {
-						$input_uri[0].value = uri;
-						$input_uri.trigger("keyup");
+					if (result.startsWith("recoed")) {
+						await m.putCats_UriToLists(cats, uri);
+						m.myRecos[uri].tFirst = m.myRecos[uri].tLast = res[1]?.tLast;
+						let desc = String(m.myRecos[uri].desc);
+						if (uri !== res[1]?.originalURI) {
+							m.myRecos[uri].desc = (`#originalURI\n${res[1]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
+						}
+						setTimeout(function () {
+							m.emptifyRecoInNewReco();
+							$button_close.trigger("click");
+							m.refresh(cats, "recoed", uri, true);
+							m.refreshFSToRs(m.currentCat);
+						}, m.wait);
+					}
+					else if (result.startsWith("changed")) {
+						await m.changeCats_UriList(cats, String(strRecoDoJSON[1].cats), uri);
+						m.myRecos[uri].tLast = res[1]?.tLast;
+						setTimeout(function () {
+							m.emptifyRecoInNewReco();
+							$button_close.trigger("click");
+							m.refresh(cats, "changed", uri);
+							m.refreshFSToRs(m.currentCat);
+						}, m.wait);
+					}
+					else if (result.startsWith("deleted")) {
+						await m.delCats_UriFromLists(cats, uri);
+						setTimeout(function () {
+							m.emptifyRecoInNewReco();
+							$button_close.trigger("click");
+							m.refresh(cats, "deleted", uri);
+							m.refreshFSToRs(m.currentCat);
+						}, m.wait);
+					}
+					else {
+						m.delayedLogOut(result, 60 * 60 * 24, args.$result);
+						args.$result?.html(m.arrayToTableHTML(res));
+						let uri = res[1]?.uri;
+						if (uri !== res[1]?.originalURI) {
+							$input_uri[0].value = uri;
+							$input_uri.trigger("keyup");
+						}
 					}
 				}
 			}).always(function () {
@@ -7725,7 +7749,8 @@
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
 				let res = await m.strToJSON(resp);
-				let result = String(res[1]?.result)
+				let result = String(res[1]?.result);
+				let uri = String(res[1]?.uri);
 				if (result.startsWith("changed")) {
 					$error.html(m.escapeOnlyTag(res[1].result));
 					if (args.cats !== args.r.cats) {
@@ -7745,8 +7770,9 @@
 					setTimeout(function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
-						m.changeCats_UriList(args.r.cats, args.cats, args.uri);
-						m.refresh(args.cats, "changed", args.uri);
+						await m.changeCats_UriList(args.r.cats, args.cats, uri);
+						args.r.cats=args.cats;
+						m.refresh(args.cats, "changed", uri);
 						m.refreshFSToRs(m.currentCat);
 					}, m.wait);
 				}
@@ -7845,16 +7871,17 @@
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
 				let res = await m.strToJSON(resp);
+				let uri = String(res[1].uri);
 				if (res[1]?.result.startsWith("deleted")) {
 					$error.html("[--Deleted.--]");
 					let cats = String(args.r.cats);
-					m.myRecos[args.uri].deleted = true;
-					m.myRecos[args.uri].has = false;
-					m.delCats_UriFromLists(cats, args.uri);
+					m.myRecos[uri].deleted = true;
+					m.myRecos[uri].has = false;
+					await m.delCats_UriFromLists(cats, uri);
 					if (m.myPage) {
 						$numbers_of_recos.html(`[--Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.--]`);
 					}
-					m.refresh(cats, "deleted", args.uri);
+					m.refresh(cats, "deleted", uri);
 					setTimeout(function () {
 						$button_close.trigger("click");
 					}, m.wait);
@@ -8422,7 +8449,7 @@
 				fs.$fsLis = fs.$fsl.find(".list-item");
 				let cat = m.currentCat;
 				if (m.recoMode === "daily-mix" && m.recoms[cat] && m.recomsPlusRandomSorted[cat]) {
-					for (let j = 2, i = m.recoms[cat].length - 1; j < fs.$fsLis.length && i >= 0; j += m.dailyMixPer, i--) {
+					for (let j = 2 + m.recoedFromRecoms, i = m.recoms[cat].length - 1; j < fs.$fsLis.length && i >= 0; j += m.dailyMixPer, i--) {
 						let k = m.recomsPlusRandomSorted[cat][i];
 						let uri = m.recoms[cat][k].uri;
 						let recoDef = m.recoDefs[uri];
