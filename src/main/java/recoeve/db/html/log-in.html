@@ -736,7 +736,7 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 				});
 			}
 			else {
-				$(elem).before(m.encloseErr(`[--ID:${$input_su_userId[0].value} is in invalid form.--]`));
+				$(elem).before(m.encloseErr(`[--ID:${m.escapeOnlyTag($input_su_userId[0].value)} is in invalid form.--]`));
 			}
 		}
 
