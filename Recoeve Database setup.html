@@ -1241,8 +1241,11 @@ CREATE TABLE `LogInLogs` (
 	, `success` boolean NOT NULL
 	, `desc` varchar(255)
 	, PRIMARY KEY (`user_i`, `t`)
+	, KEY `t_desc_loginlogs` (`t` DESC)
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 );
+
+CREATE INDEX `t_desc_loginlogs` ON `LogInLogs` (`t` DESC);
 
 `user_i`: User index, bigint, NOT NULL, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
 
