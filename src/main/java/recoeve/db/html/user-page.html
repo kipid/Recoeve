@@ -6699,7 +6699,7 @@
 		};
 		m.refresh = async function (cats, option, uri, openCat) {
 			if (m.myPage) {
-				cats = String(cats);
+				cats = m.catsToString(cats);
 				option = String(option);
 				uri = String(uri);
 				let catsSplit = cats.split(";");
@@ -6790,7 +6790,7 @@
 							m.reNewAndReOn();
 							m.fsToRs.shuffledOnce = true;
 							m.fsGo.shuffledOnce = true;
-							await m.reTriggerFS(m.fsToRs);
+							// await m.reTriggerFS(m.fsToRs);
 							await m.reTriggerFS(m.fsGo);
 						}
 						break;
@@ -6832,17 +6832,21 @@
 							}
 							if (option === "changed") {
 								m.reNewAndReOn();
-
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
-								if (!fsFLk) { fsFLk = fs.fullList[uri] = { uri, down: false }; }
+								if (!fsFLk) {
+									fsFLk = fs.fullList[uri] = { uri, i:fs.fullList.length, down: false };
+									fs.fullList.push(fs.fullList[uri]);
+								}
 								fsFLk.txt = m.splitHangul(`${r?.cats} :: ${r?.title}`);
 								fsFLk.html = m.escapeOnlyTag(r?.title);
 								await m.reTriggerFS(fs);
 
 								fs = m.fsToRs;
 								fsFLk = fs.fullList[uri];
-								if (!fsFLk) { fsFLk = fs.fullList[uri] = { uri, down: false }; }
+								if (!fsFLk) {
+									fsFLk = fs.fullList[uri] = { uri, down: false };
+								}
 								fsFLk.txt = m.splitHangul(r?.title);
 								fsFLk.html = m.escapeOnlyTag(r?.title);
 								fsFLk.inRange = true;
@@ -7631,11 +7635,15 @@
 						if (uriI !== res[i]?.originalURI) {
 							m.myRecos[uriI].desc = (`#originalURI\n${res[i]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
-						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[i].cats), uriI);
+						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(strRecoDoJSON[uriI].cats), uriI);
 					}
 					await m.recoToEve(args.strRecoDo, m.myRecos);
-					m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
-					m.refreshFSToRs(m.currentCat);
+					setTimeout(function () {
+						m.emptifyRecoInNewReco();
+						$button_close.trigger("click");
+						m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
+						m.refreshFSToRs(m.currentCat);
+					}, m.wait);
 				}
 				else {
 					$error.html(result);
