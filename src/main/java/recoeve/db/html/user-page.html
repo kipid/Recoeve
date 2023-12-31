@@ -7767,11 +7767,11 @@
 					}
 					if (args.val.str !== args.r.val.str) { args.r.val = args.val; }
 					args.r.tLast = res[1]?.tLast;
+					await m.changeCats_UriList(args.r.cats, args.cats, uri);
+					args.r.cats=args.cats;
 					setTimeout(function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
-						await m.changeCats_UriList(args.r.cats, args.cats, uri);
-						args.r.cats=args.cats;
 						m.refresh(args.cats, "changed", uri);
 						m.refreshFSToRs(m.currentCat);
 					}, m.wait);
