@@ -1255,7 +1255,6 @@ web	${m.sW}	${m.sH}`;
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	// https://www.youtube.com/live/Y9t7YXbOH-Q?si=TmSi-S0BKarGoTzk
 	ptnURI.regEx = /^(?:watch|embed|live)\/([\w\-]+)(\?\S+)?/i;
 	ptnURI.regEx1 = /^shorts\/([\w\-]+)/i;
 	ptnURI.regEx2 = /^([\w\-]+)(\?\S+)?/i;

@@ -105,9 +105,9 @@ window.m = {};
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live)\/([\w-]+)(\?\S+)?/i;
-	ptnURI.regEx1 = /^shorts\/([\w-]+)/i;
-	ptnURI.regEx2 = /^([\w-]+)(\?\S+)?/i;
+	ptnURI.regEx = /^(?:watch|embed|live)\/([\w\-]+)(\?\S+)?/i;
+	ptnURI.regEx1 = /^shorts\/([\w\-]+)/i;
+	ptnURI.regEx2 = /^([\w\-]+)(\?\S+)?/i;
 	ptnURI.regEx3 = /^watch(\?\S+)/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
@@ -164,7 +164,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI["docs.google.com"] = {};
-	ptnURI.regEx = /^spreadsheets\/d\/e\/([\w-]+)\/pubhtml/i;
+	ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-]+)\/pubhtml/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
@@ -178,7 +178,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI["instagram.com"] = m.ptnURI["www.instagram.com"] = {};
-	ptnURI.regEx = /^(?:p|tv|reel)\/([\w-]+)/i;
+	ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-]+)/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
@@ -192,7 +192,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI["imgur.com"] = m.ptnURI["www.imgur.com"] = {};
-	ptnURI.regEx = /^a\/([\w-]+)/i;
+	ptnURI.regEx = /^a\/([\w\-]+)/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
@@ -304,7 +304,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI["tvpot.daum.net"] = {};
-	ptnURI.regEx = /^v\/([\w-]+)/i;
+	ptnURI.regEx = /^v\/([\w\-]+)/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
