@@ -428,10 +428,12 @@
 								// wait until saving session/rmb cookies. And conversion.
 								setTimeout(function () {
 									if (res[1]?.goto) {
-										window.location.pathname = res[1].goto.replace(/\%3F/g, "?").replace(/\%23/g, "#");
+										// window.location.pathname = unescape(res[1].goto);
+										console.log(res[1].goto);
+										window.open(unescape(res[1].goto), "_blank");
 									}
 									else if (m.searchVars.goto?.val) {
-										window.location.href = m.searchVars.goto.val.replace(/\%3F/g, "?").replace(/\%23/g, "#");
+										window.location.href = m.searchVars.goto.val;
 									}
 									else {
 										window.location.href = "/";
