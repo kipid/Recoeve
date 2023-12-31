@@ -136,40 +136,9 @@ public class Recoeve extends AbstractVerticle {
 						});
 						break;
 					case "google":
-						// pl.req.bodyHandler((Buffer data) -> {
-						// String dataStr=data.toString();
-						// System.out.println("dataStr: "+dataStr);
-						// Map<String, String> dataMap=new HashMap<String, String>();
-						// if (dataStr!=null&&dataStr.length()>0) {
-						// System.out.println(dataStr);
-						// String[] dataSplit=dataStr.split("&");
-						// for (String dataI: dataSplit) {
-						// String[] dataISplit=dataI.split("=");
-						// if (dataISplit.length>=2) {
-						// dataMap.put(dataISplit[0], dataISplit[1]);
-						// }
-						// else {
-						// dataMap.put(dataISplit[0], "");
-						// }
-						// }
-						// }
-						// System.out.println("state:"+dataMap.get("state"));
-						// if (db.getPreGoogle(dataMap.get("state"), pl.ip, pl.tNow)) {
-						// System.out.println("State is matched!");
-						// String redirect=db.getDataPreGoogle(dataMap.get("state"), pl.ip);
-						// pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						// .end(redirect, ENCODING);
-						// System.out.println("Sended redirect goto=?.");
-						// }
-						// else {
-						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // To send
-																											// #hash
-																											// data with
-																											// POST
-																											// method.
+						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
+							// To send #hash data with POST method.
 						System.out.println("Sended log-in.html");
-						// }
-						// });
 						break;
 					case "google.do":
 						pl.req.bodyHandler((Buffer data) -> {
