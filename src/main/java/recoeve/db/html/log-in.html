@@ -7,7 +7,7 @@
 			initialPathname: window.location.pathname
 			, initialSearch: window.location.search
 			, initialHash: window.location.hash
-			, hashMap: {}
+			, hashMap: []
 			, authToken: "{--m.authToken--}"
 			, regExId: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+$/
 			, regExEmail: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/
@@ -390,40 +390,40 @@
 		// Try Log-in or Sign-up with google.
 		////////////////////////////////////////
 		if (m.initialHash) {
-			let hashSplit = m.initialHash.substring(1).split("&");
+			let hashSplit = m.initialHash.substring(1).replace(/&amp;/ig, "&").replace(/\+/g, "%20").split("&");
 			for (let i = 0; i < hashSplit.length; i++) {
 				let hashISplit = hashSplit[i].split("=");
 				if (hashISplit.length >= 2) {
-					m.hashMap[hashISplit[0]] = hashISplit[1];
+					m.hashMap[hashISplit[0]] = { key:hashISplit[0], val:hashISplit[1] };
 				}
 				else {
-					m.hashMap[hashISplit[0]] = "";
+					m.hashMap[hashISplit[0]] = { key:hashISplit[0], val:"" };
 				}
+				m.hashMap.push(m.hashMap[hashISplit[0]]);
 			}
-			if (m.hashMap.state && m.hashMap.access_token && m.hashMap.token_type) {
+			if (m.hashMap.state?.val && m.hashMap.access_token?.val && m.hashMap.token_type?.val) {
 				$log_in_with_google[0].disabled = true;
 				$.ajax({
-					type: "GET", url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token}&token_type=${m.hashMap.token_type}`
+					type: "GET", url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token.val}&token_type=${m.hashMap.token_type.val}`
 					, dataType: "json"
 				}).done(function (resp) {
 					console.log(resp);
 					if (resp.verified_email && resp.email) {
 						// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
 						$.ajax({
-							type: "POST", url: `/account/log-in/with/google.do`, data: `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail
-web\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
+							type: "POST", url: `/account/log-in/with/google.do`, data: `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail\nweb\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 							, dataType: "text"
 						}).done(async function (resp) {
 							console.log(resp);
 							let res = resp.substring(15);
 							res = await m.strToJSON(res);
-							if (resp.startsWith("log-in success")) {
+							if (resp.startsWith("log-in success")&&m.hashMap.state.val===String(res[1]?.state)) {
 								gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
 								$log_in_with_google.before(m.encloseErr("log-in success"));
 								// wait until saving session/rmb cookies. And conversion.
 								setTimeout(function () {
-									if (res[1] && res[1].goto) {
-										window.location.pathname = decodeURIComponent(res[1].goto);
+									if (res[1]?.goto) {
+										window.location.pathname = res[1].goto;
 									}
 									else if (m.searchVars.goto?.val) {
 										window.location.href = m.searchVars.goto.val;
