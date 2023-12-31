@@ -431,7 +431,7 @@
 										window.location.pathname = res[1].goto.replace(/\%3F/g, "?").replace(/\%23/g, "#");
 									}
 									else if (m.searchVars.goto?.val) {
-										window.location.href = m.searchVars.goto.val;
+										window.location.href = m.searchVars.goto.val.replace(/\%3F/g, "?").replace(/\%23/g, "#");
 									}
 									else {
 										window.location.href = "/";
