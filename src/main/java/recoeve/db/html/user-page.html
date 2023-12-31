@@ -245,11 +245,12 @@
 		}
 
 		#textarea-gs {
-			display: flex;
+			padding: .3em;
 			font-size: 1em;
+			font-family: '맑은 고딕', 'Malgun Gothic', 'Coutier New';
 			background: white;
 			color: black;
-			width: auto;
+			width: 100%;
 			max-width: 100%;
 			min-width: 50%;
 			height: 2em;
@@ -3107,8 +3108,9 @@
 			<ul id="shortkeys"></ul>
 		</div>
 		<div class="side2" id="google-search">
-			<textarea id="textarea-gs"></textarea>
+			<textarea id="textarea-gs" class="fLeft"></textarea>
 			<div class="button fRight">Google Search</div>
+			<div class="cBoth" style="padding:.5em"></div>
 		</div>
 		<div class="side2" id="head">
 			<div class="button button-Go" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
