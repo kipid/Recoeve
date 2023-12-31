@@ -1954,21 +1954,25 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 					let key = m.escapeOnlyTag(descR[l].key);
 					let value = m.escapeOnlyTag(descR[l].value);
 					switch (key.toLowerCase()) {
-						case "#start": case "#end": case "#": case "": default:
-							res += `<div class="value">${key} ${value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+						case "#start": case "#end": case "#": case "": default: {
+							let valBrTrimed=value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
+							res += `<div class="value">${key} ${valBrTrimed&&inListPlay?valBrTrimed.replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valBrTrimed}</div>`;
 							break;
+						}
 						case "#lyrics": case "#lyrics:":
 						case "#lyric": case "#lyric:":
-						case "#가사": case "#가사:":
+						case "#가사": case "#가사:": {
+							let valTrimedBr=value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
 							res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
+	<div class="lyrics">${valTrimedBr&&inListPlay?valTrimedBr.replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valTrimedBr}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
 							break;
+						}
 						case "#related": case "#related:":
 						case "#originaluri": case "#originaluri:":
 							res += `<div class="value"><span class="key">${key}</span>:`;
