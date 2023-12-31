@@ -3353,6 +3353,7 @@
 		$textarea_gs.on("keydown.gs", function (e) {
 			if (e.altKey || e.ctrlKey || e.metaKey) { return; }
 			if (e.keyCode===13) { // Enter=13
+				e.preventDefault();
 				$button_gs.trigger("click.gs");
 			}
 		});
