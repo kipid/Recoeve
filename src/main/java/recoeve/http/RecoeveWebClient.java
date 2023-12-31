@@ -1,6 +1,6 @@
 package recoeve.http;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
@@ -11,53 +11,51 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-
-
 public class RecoeveWebClient {
-public static final WebClientOptions options=new WebClientOptions().setMaxHeaderSize(16384).setFollowRedirects(true);
+	public static final WebClientOptions options = new WebClientOptions().setMaxHeaderSize(16384)
+			.setFollowRedirects(true);
 
-public Vertx vertx;
-public WebClient webClient;
-public long timerId;
-public int timerN;
+	public Vertx vertx;
+	public WebClient webClient;
+	public long timerId;
+	public int timerN;
 
-public RecoeveWebClient(Vertx vertx) {
-	this.vertx=vertx;
-	webClient=WebClient.create(vertx, options);
-	timerN=0;
-}
-public void doUntilH1IsFound(HttpResponse response, PrintLog pl, int delay) {
-	timerId=vertx.setTimer(delay, timerHandler -> {
-		timerN++;
-		if (response.statusCode()==200) {
-			String body=response.bodyAsString();
-			Document document=Jsoup.parse(body);
+	public RecoeveWebClient(Vertx vertx) {
+		this.vertx = vertx;
+		webClient = WebClient.create(vertx, options);
+		timerN = 0;
+	}
 
-			// Select the first <h1> element and extract its text content
-			Elements h1Elements=document.select("title, h1, .se-fs-");
-			if (h1Elements.isEmpty()&&timerN<7) {
-				doUntilH1IsFound(response, pl, delay+512);
-			}
-			else {
-				if (!h1Elements.isEmpty()) {
-					Element firstH1Element=h1Elements.first();
-					String h1Text=firstH1Element.text();
-					System.out.println("Content of the first <h1> tag: "+h1Text);
-					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						.end(h1Text, Recoeve.ENCODING);
+	public void doUntilH1IsFound(HttpResponse<Buffer> response, PrintLog pl, int delay) {
+		timerId = vertx.setTimer(delay, timerHandler -> {
+			timerN++;
+			if (response.statusCode() == 200) {
+				String body = response.bodyAsString();
+				Document document = Jsoup.parse(body);
+
+				// Select the first <h1> element and extract its text content
+				Elements h1Elements = document.select("title, h1, .se-fs-");
+				if (h1Elements.isEmpty() && timerN < 7) {
+					doUntilH1IsFound(response, pl, delay + 512);
+				} else {
+					if (!h1Elements.isEmpty()) {
+						Element firstH1Element = h1Elements.first();
+						String h1Text = firstH1Element.text();
+						System.out.println("Content of the first <h1> tag: " + h1Text);
+						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+								.end(h1Text, Recoeve.ENCODING);
+					} else {
+						System.out.println("No <h1> tags found on the page.");
+						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+								.end("No <h1> tag.", Recoeve.ENCODING);
+					}
+					// webClient.close();
 				}
-				else {
-					System.out.println("No <h1> tags found on the page.");
-					pl.req.response().putHeader("Content-Type","text/plain; charset=utf-8")
-						.end("No <h1> tag.", Recoeve.ENCODING);
-				}
-				// webClient.close();
 			}
-		}
-	});
-}
+		});
+	}
 
-public static void main(String... args) {
-	// Do nothing.
-}
+	public static void main(String... args) {
+		// Do nothing.
+	}
 }

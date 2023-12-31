@@ -2434,12 +2434,14 @@ public class RecoeveDB {
 							if (nbExists) {
 								nbTScanAll = neighbor.getTimestamp("tScanAll");
 							}
+							neighbor.close();
 							ResultSet neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 							boolean nbRevExists = neighborRev.next();
 							Timestamp nbRevTScanAll = OLD;
 							if (nbRevExists) {
 								nbRevTScanAll = neighborRev.getTimestamp("tScanAll");
 							}
+							neighborRev.close();
 							ResultSet reco_to = getReco(user_to, uri);
 							if (reco_to.next()) {
 								Points pts_to = new Points(reco_to.getString("val"));
@@ -2477,6 +2479,7 @@ public class RecoeveDB {
 													// 최신 tScanAll 이 6개월이 지났을 때.
 													putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 												} else {
+													neighborRev.close();
 													neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 													neighborRev.next();
 													Similarity sim = new Similarity(neighborRev.getLong("sumSim"),
@@ -2488,6 +2491,7 @@ public class RecoeveDB {
 													Timestamp tScanAll = neighborRev.getTimestamp("tScanAll");
 													neighborRev.updateRow();
 													neighborRev.close();
+													neighbor.close();
 													neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 													neighbor.next();
 													neighbor.updateLong("sumSim", sim.sumSim);
@@ -2499,12 +2503,11 @@ public class RecoeveDB {
 												}
 											}
 										} else if (nbExists) {
-											if (tNow.getTime() - nbTScanAll.getTime() > HALF_YEAR_IN_MS) { // 최신
-																											// tScanAll
-																											// 이 6개월이
-																											// 지났을 때.
+											if (tNow.getTime() - nbTScanAll.getTime() > HALF_YEAR_IN_MS) {
+												// 최신 tScanAll 이 6개월이 지났을 때.
 												putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 											} else {
+												neighbor.close();
 												neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 												neighbor.next();
 												Similarity sim = new Similarity(neighbor.getLong("sumSim"),
@@ -2519,14 +2522,11 @@ public class RecoeveDB {
 														tNow, tScanAll);
 											}
 										} else if (nbRevExists) {
-											if (tNow.getTime() - nbRevTScanAll.getTime() > HALF_YEAR_IN_MS) { // 최신
-																												// tScanAll
-																												// 이
-																												// 6개월이
-																												// 지났을
-																												// 때.
+											if (tNow.getTime() - nbRevTScanAll.getTime() > HALF_YEAR_IN_MS) {
+												// 최신 tScanAll 이 6개월이 지났을 때.
 												putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 											} else {
+												neighborRev.close();
 												neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 												neighborRev.next();
 												Similarity sim = new Similarity(neighborRev.getLong("sumSim"),
@@ -2662,6 +2662,7 @@ public class RecoeveDB {
 												neighborRev.updateRow();
 											}
 										} else { // neighborRev 가 더 최신.
+											neighborRev.close();
 											neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 											neighborRev.next();
 											Similarity sim = new Similarity(neighborRev.getLong("sumSim"),
@@ -2677,6 +2678,7 @@ public class RecoeveDB {
 											} else {
 												neighborRev.updateRow();
 											}
+											neighbor.close();
 											neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 											neighbor.next();
 											if (sim.nSim == 0) {
@@ -2691,6 +2693,7 @@ public class RecoeveDB {
 											}
 										}
 									} else if (nbExists) {
+										neighbor.close();
 										neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
 										Similarity sim = new Similarity(neighbor.getLong("sumSim"),
@@ -2709,6 +2712,7 @@ public class RecoeveDB {
 													tNow, tScanAll);
 										}
 									} else if (nbRevExists) {
+										neighborRev.close();
 										neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 										neighborRev.next();
 										Similarity sim = new Similarity(neighborRev.getLong("sumSim"),
@@ -3691,7 +3695,6 @@ public class RecoeveDB {
 	private boolean deleteUser(String userEmail) { // DELETE `User` after DELETE TABLES which references `User`.
 		Timestamp tNow = Timestamp.valueOf(this.now());
 		boolean done = false;
-		ResultSet user = null;
 		try {
 			con.setAutoCommit(true);
 			ResultSet rsUser = findUserByEmail(userEmail);
