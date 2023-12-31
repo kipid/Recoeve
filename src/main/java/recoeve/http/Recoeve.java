@@ -376,7 +376,10 @@ public class Recoeve extends AbstractVerticle {
 		});
 
 		CorsHandler corsHandler = CorsHandler.create()
+				.addOrigin("https://youtube.com")
 				.addOrigin("https://www.youtube.com")
+				.addOrigin("https://youtube-nocookie.com")
+				.addOrigin("https://www.youtube-nocookie.com")
 				// .addOrigin("https://g.doubleclick.net")
 				// .addOrigin("https://tpc.googlesyndication.com")
 				// .addOrigin("https://www.googleapis.com")
