@@ -407,15 +407,18 @@
 					type: "GET", url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${m.hashMap.access_token.val}&token_type=${m.hashMap.token_type.val}`
 					, dataType: "json"
 				}).done(function (resp) {
-					console.log(resp);
+					console.log("Google data: ", resp);
 					if (resp.verified_email && resp.email) {
 						// Log-in with this email or Sign-up with this email and ID of sign-up, but state and ip check also.
 						$.ajax({
 							type: "POST", url: `/account/log-in/with/google.do`, data: `log\tiehack\tscreenWidth\tscreenHeight\tstate\temail\nweb\t&#9760;\t${sW}\t${sH}\t${m.hashMap.state}\t${resp.email}`
 							, dataType: "text"
+						}).fail(function (resp) {
+							console.log("fail: ", resp);
 						}).done(async function (resp) {
-							console.log(resp);
+							console.log("resp: ", resp);
 							let res = resp.substring(15);
+							console.log("res: ", res);
 							res = await m.strToJSON(res);
 							if (resp.startsWith("log-in success")&&m.hashMap.state.val===String(res[1]?.state)) {
 								gtag('event', 'conversion', { 'send_to': 'AW-11407455434/R4DjCJSIzPwYEMrpv78q', 'value': 0.1, 'currency': 'USD' });
