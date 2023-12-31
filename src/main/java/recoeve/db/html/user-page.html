@@ -5870,6 +5870,7 @@
 				for (let k = 1; k < resp.length; k++) {
 					let respK = await resp[k];
 					let uri = String(respK.uri);
+					let toDo = String(respK.do);
 					let r = recos[uri];
 					if (!r) { r = recos[uri] = { uri }; }
 					r.down = true;
@@ -5880,7 +5881,12 @@
 							r[prop] = String(respK[prop]);
 						}
 					}
-					r.deleted = false;
+					if (toDo==="delete") {
+						r.deleted = true;
+					}
+					else {
+						r.deleted = false;
+					}
 					if (r.desc !== undefined) {
 						r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
 					}
