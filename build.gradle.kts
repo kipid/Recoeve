@@ -7,6 +7,7 @@ plugins {
 	id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+org.gradle.caching=false
 group = "net.recoeve"
 version = "1.0.0-SNAPSHOT"
 
