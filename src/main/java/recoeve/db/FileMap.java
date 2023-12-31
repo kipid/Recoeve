@@ -1,6 +1,5 @@
 package recoeve.db;
 
-// import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
@@ -20,10 +19,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-// import recoeve.http.Recoeve;
-
 public class FileMap {
-	public static final String version = "1.0.0";
+	public static final String version = "1.0.1";
 	private static final String[] referersAllowed = {
 			"localhost", "recoeve.net", "www.recoeve.net"
 			// , "127.0.0.1"
