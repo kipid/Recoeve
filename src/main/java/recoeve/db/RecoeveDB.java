@@ -225,31 +225,26 @@ public class RecoeveDB {
 
 			pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
 			pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
-			pstmtPutRedirect = con
-					.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
+			pstmtPutRedirect = con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
 			pstmtPutBlogStat1 = con.prepareStatement(
 					"INSERT INTO `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
 			pstmtGetBlogStat1 = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<?;");
-			pstmtGetBlogStat1WithHost = con
-					.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
+			pstmtGetBlogStat1WithHost = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
 			pstmtDelBlogStat1 = con.prepareStatement("DELETE FROM `BlogStat1` WHERE `t`<?;");
 
-			pstmtPutPreGoogle = con
-					.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
+			pstmtPutPreGoogle = con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
 			pstmtGetPreGoogle = con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
 
 			pstmtSession = con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtCreateAuthToken = con
-					.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
+			pstmtCreateAuthToken = con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
 			pstmtCheckAuthToken = con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			pstmtUpdateAuthToken = con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
 			pstmtCreateUser = con.prepareStatement(
 					"INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-			// pstmtDeleteUser = con.prepareStatement("DELETE FROM `Users` WHERE
-			// `email`=?;");
+
 			pstmtDeleteUserCatList = con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
 			pstmtCreateEmailStat = con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
 			pstmtFindEmailStat = con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;",
@@ -288,12 +283,10 @@ public class RecoeveDB {
 
 			pstmtGetCatList = con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutCatList = con
-					.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
+			pstmtPutCatList = con.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
 			pstmtGetUriList = con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutUriList = con
-					.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
+			pstmtPutUriList = con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
 			pstmtPutRecentests = con.prepareStatement(
 					"INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
@@ -324,8 +317,7 @@ public class RecoeveDB {
 			pstmtGetNeighborListTo = con.prepareStatement(
 					"SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			pstmtDelNeighborListTo = con
-					.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
+			pstmtDelNeighborListTo = con.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
 
 			// pstmtPutRecoStat = con.prepareStatement(
 			// "INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?,
@@ -336,27 +328,22 @@ public class RecoeveDB {
 			pstmtPutRecoStatDefCat = con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
 			pstmtGetRecoStatDefCat = con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefTitle = con
-					.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
+			pstmtPutRecoStatDefTitle = con.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
 			pstmtGetRecoStatDefTitle = con.prepareStatement(
 					"SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefDesc = con
-					.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
+			pstmtPutRecoStatDefDesc = con.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
 			pstmtGetRecoStatDefDesc = con.prepareStatement(
 					"SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
-			pstmtPutRecoStatDefCatSet = con
-					.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
+			pstmtPutRecoStatDefCatSet = con.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
 			pstmtGetRecoStatDefCatSet = con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefTitleSet = con
-					.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
+			pstmtPutRecoStatDefTitleSet = con.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
 			pstmtGetRecoStatDefTitleSet = con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefDescSet = con
-					.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
+			pstmtPutRecoStatDefDescSet = con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
 			pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		}
@@ -3769,9 +3756,7 @@ public class RecoeveDB {
 			PreparedStatement pstmtGetAllRecos = con.prepareStatement("SELECT * FROM `Recos`;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pstmtGetAllRecos.executeQuery();
-			// pstmtPutReco=con.prepareStatement("INSERT INTO `Recos1` (`user_i`, `uri`,
-			// `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?,
-			// ?, ?, ?, ?, ?);");
+			// pstmtPutReco=con.prepareStatement("INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			while (rs.next()) {
 				long user_me = rs.getLong("user_i");
 				pstmtPutReco.setLong(1, user_me);
@@ -3811,8 +3796,7 @@ public class RecoeveDB {
 		StringBuilder sb = new StringBuilder();
 		sb.append("user_i\tuser_id\temail\tt\tip\tlog\tsuccess\tdesc");
 		try {
-			PreparedStatement pstmtGetLogs = con
-					.prepareStatement("SELECT * FROM `LogInLogs` WHERE `log`='snu' LIMIT 100;");
+			PreparedStatement pstmtGetLogs = con.prepareStatement("SELECT * FROM `LogInLogs` WHERE `log`='snu' LIMIT 100;");
 			ResultSet rs = pstmtGetLogs.executeQuery();
 			while (rs.next()) {
 				long user_me = rs.getLong("user_i");
@@ -3908,16 +3892,6 @@ public class RecoeveDB {
 				PreparedStatement pstmtDelLogInLogs = con.prepareStatement("DELETE FROM `LogInLogs` WHERE `user_i`=?;");
 				pstmtDelLogInLogs.setLong(1, user_me);
 				pstmtDelLogInLogs.executeUpdate();
-				// vertx.setTimer(1024, id -> {
-				// try {
-				// con.setAutoCommit(true);
-				// pstmtDeleteUser.setString(1, userEmail);
-				// pstmtDeleteUser.executeUpdate();
-				// }
-				// catch (SQLException e) {
-				// err(e);
-				// }
-				// });
 				rsUser.deleteRow();
 				done = true;
 			}
@@ -3960,8 +3934,12 @@ public class RecoeveDB {
 		RecoeveDB db = new RecoeveDB(Vertx.vertx());
 		System.out.println(db.delBlogVisitor());
 		// db.moveToBlogStat1();
-		// db.deleteUser("kepacti@gmail.com");
-		// db.deleteUser("kipacti@gmail.com");
+		db.deleteUser("C@recoeve.net");
+		db.deleteUser("D@recoeve.net");
+		db.deleteUser("E@recoeve.net");
+		db.deleteUser("F@recoeve.net");
+		db.deleteUser("G@recoeve.net");
+		db.deleteUser("H@recoeve.net");
 		// db.moveRecosToRecos1();
 		// System.out.println(longToHexString(0L));
 		// System.out.println(hexStringToLong(longToHexString(0L)));
