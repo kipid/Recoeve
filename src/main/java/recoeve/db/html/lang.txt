@@ -161,7 +161,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Toggle ShortKey Description--]	190	Toggle ShortKey Description	단축키 설명 보이기/숨기기	切换短关键说明	ショートカットの説明/非表示を表示します	Beschreibung der Shortkey -Beschreibung	Basculer la description de la clé courte	Descripción de shortkey de palanca	टॉगल शॉर्टकी विवरण	تبديل الوصف القصير	Alterne a descrição da chave curta	Переверните описание коротки
 [--To my p_a_ge--]	190	To my p<span class="bold underline">a</span>ge	내 페이지로(<span class="bold underline">A</span>)
 [--Log _i_n--]	191	Log <span class="bold underline">i</span>n	로그인(<span class="bold underline">I</span>)
-[--S_i_gn up--]	191	S<span class="bold underline">i</span>gn up	가입하기(<span class="bold underline">I</span>)
+[--S_i_gn up--]	191	S<span class="bold underline">i</span>gn up	가입하기
 [--Log _o_ut--]	192	Log <span class="bold underline">o</span>ut	로그아웃(<span class="bold underline">O</span>)
 [--Go to _C_ats--]	193	Go to <span class="bold underline">C</span>ats	카테고리이동(<span class="bold underline">C</span>)
 [--_F_orward--]	194	<span class="bold underline">F</span>orward	다음 레코로(<span class="bold underline">F</span>)
