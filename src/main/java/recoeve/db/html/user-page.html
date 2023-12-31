@@ -5332,7 +5332,7 @@
 				resolve();
 			});
 		};
-		m.changeCats_UriList = function (oldCats, newCats, uri) {
+		m.changeCats_UriList = async function (oldCats, newCats, uri) {
 			return new Promise(async function (resolve, reject) {
 				if (oldCats !== null && oldCats !== undefined && oldCats.constructor === String && newCats !== null && newCats !== undefined && newCats.constructor === String) {
 					let oldCatSplit = oldCats.split(";");
@@ -9496,15 +9496,6 @@
 					m.toggleManual();
 				}
 			}
-			// setTimeout(async function () {
-			// 	await m.reTriggerFS(m.fsToRs);
-			// 	await m.reTriggerFS(m.fsCat);
-			// 	await m.reTriggerFS(m.fsMRCat);
-			// 	await m.reTriggerFS(m.fsGotoCats);
-			// 	await m.reTriggerFS(m.fsTimezone);
-			// 	await m.reTriggerFS(m.fsGo);
-			// 	m.initialOpen=false;
-			// }, 2*m.wait);
 			setTimeout(async function () {
 				await m.reTriggerFS(m.fsToRs);
 				await m.reTriggerFS(m.fsCat);
