@@ -5747,20 +5747,18 @@
 		};
 		m.showRecosOnCat = async function (elem, from) {
 			return new Promise(async function (resolve, reject) {
+				m.lastRecoMode = m.recoMode;
 				let cat = m.currentCat;
 				if (m.lastRecoMode === "" && m.recoMode === "multireco") {
-					m.lastRecoMode = m.recoMode;
 					$contents.addClass("multireco");
 					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 					return resolve();
 				}
 				else if (m.lastRecoMode === "multireco" && m.recoMode === "") {
-					m.lastRecoMode = m.recoMode;
 					$contents.removeClass("multireco");
 					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 					return resolve();
 				}
-				m.lastRecoMode = m.recoMode;
 				let $elem = null;
 				if (elem) {
 					$elem = $(elem);
@@ -6310,6 +6308,7 @@
 							$contents.removeClass("multireco");
 							m.recoMode = "";
 						}
+						m.lastRecoMode = m.recoMode;
 						let catListCat = m.catList[cat];
 						if (catListCat) {
 							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
@@ -6321,12 +6320,10 @@
 								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
 								await m.getAndShowRecosOnCat(cat);
 							}
-							m.lastRecoMode = m.recoMode;
 						}
 						else {
 							$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
 							$contents.html("");
-							m.lastRecoMode = m.recoMode;
 						}
 						if (scroll) {
 							if (m.recoMode === "multireco") {
@@ -6350,6 +6347,7 @@
 							$button_get_recoms.addClass("enabled");
 						}
 						$contents.removeClass("multireco");
+						m.lastRecoMode = m.recoMode;
 						let catListCat = m.catList[cat];
 						if (catListCat) {
 							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
@@ -6361,12 +6359,10 @@
 								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
 								await m.getAndShowRecosOnCat(cat);
 							}
-							m.lastRecoMode = m.recoMode;
 						}
 						else {
 							$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
 							$contents.html("");
-							m.lastRecoMode = m.recoMode;
 						}
 						if (m.recoMode === "daily-mix") {
 							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
