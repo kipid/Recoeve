@@ -5686,7 +5686,9 @@
 			return new Promise(async function (resolve, reject) {
 				let fs = m.fsToRs;
 				let l = fs.fullList.length;
-				let nHiden = 0, nShown = 0;
+				let nHiden = 0;
+				let nShown = 0;
+				let nDeleted = 0;
 				for (let k = l - 1; k >= 0; k--) {
 					let fsFLk = fs.fullList[k];
 					let uri = fsFLk.uri;
@@ -5694,7 +5696,10 @@
 					let val = r?.val?.val;
 					fsFLk.txt = m.splitHangul(r?.title);
 					fsFLk.html = m.escapeOnlyTag(r?.title);
-					if (!fsFLk.deleted) {
+					if (fsFLk.deleted) {
+						nDeleted++;
+					}
+					else {
 						if (val === undefined || val === -1) {
 							if (m.showRWOP) {
 								fsFLk.inRange = true;
@@ -5737,7 +5742,7 @@
 					}
 				}
 				await m.reTriggerFS(fs);
-				let nOfRecos = `[--${m.userId} has ${l} recos (${nShown} to be shown, and ${nHiden} hiden.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
+				let nOfRecos = `[--${m.userId} has ${l} recos (${nShown} to be shown, ${nHiden} hiden, and ${nDeleted} deleted.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
 				if (!m.myPage) {
 					nOfRecos += `<br>[--You have ${nUnrecoed} unrecoed recos of ${m.userId}'s cat="${m.escapeOnlyTag(m.currentCat)}".--]`;
 				}
