@@ -1682,6 +1682,7 @@ web	${m.sW}	${m.sH}`;
 		return new Promise(async function (resolve, reject) {
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
+					uri=unescapeHTML(uri);
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
