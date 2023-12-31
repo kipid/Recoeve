@@ -9031,14 +9031,14 @@
 				case 77: // M=77
 					e.preventDefault();
 					if ($button_multireco_mode.hasClass("enabled")) {
-						m.recoMode = "";
+						m.lastRecoMode = m.recoMode = "";
 						$button_mode.removeClass("enabled");
 						$contents.removeClass("multireco");
 						$multireco_cats_container.hide();
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else {
-						m.recoMode = "multireco";
+						m.lastRecoMode = m.recoMode = "multireco";
 						$button_mode.removeClass("enabled");
 						$button_multireco_mode.addClass("enabled");
 						$contents.addClass("multireco");
