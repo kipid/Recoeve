@@ -287,12 +287,10 @@ a.seekTo {
 }
 
 #right-top-log-in .button {
-	display: inline-block;
 	float: right
 }
 
 #choose-lang-list {
-	display: inline-block;
 	padding: .5em;
 	line-height: 1.5;
 	float: right
@@ -338,7 +336,7 @@ a.seekTo {
 #sidebar {
 	position: fixed;
 	z-index: 10;
-	letf: 0;
+	left: 0;
 	max-width: 70%;
 	width: 15em;
 	max-height: 100%;
@@ -598,7 +596,6 @@ textarea.multi-line {
 
 #new-reco input#input-val {
 	float: right;
-	display: inline-block;
 	width: 6.2em
 }
 
@@ -621,7 +618,6 @@ textarea.multi-line {
 
 #input-val-stars {
 	float: right;
-	display: inline-block;
 	vertical-align: text-bottom;
 	margin: 0 0 -.5em -.5em
 }
@@ -894,7 +890,6 @@ textarea.multi-line {
 .stars-container {
 	float: right;
 	position: relative;
-	display: inline-block;
 	cursor: text
 }
 
@@ -940,7 +935,6 @@ textarea.multi-line {
 
 .reco .tFirst,
 .reco .tLast {
-	display: inline-block;
 	float: right;
 	margin: .2em 1em;
 	font-size: .8em
@@ -970,6 +964,7 @@ textarea.multi-line {
 	width: 110px;
 	height: 110px;
 	margin: 5em auto 0;
+	animation: spinPulse 5s infinite ease-in-out;
 	-moz-animation: spinPulse 5s infinite ease-in-out;
 	-webkit-animation: spinPulse 5s infinite ease-in-out
 }
@@ -986,11 +981,12 @@ textarea.multi-line {
 	height: 90px;
 	margin: 0 auto 20em;
 	position: relative;
+	animation: spinoffPulse 3s infinite linear;
 	-moz-animation: spinoffPulse 3s infinite linear;
 	-webkit-animation: spinoffPulse 3s infinite linear
 }
 
-@-moz-keyframes spinPulse {
+@keyframes spinPulse {
 	0% {
 		-moz-transform: rotate(160deg);
 		opacity: 0;
@@ -1008,7 +1004,7 @@ textarea.multi-line {
 	}
 }
 
-@-moz-keyframes spinoffPulse {
+@keyframes spinoffPulse {
 	0% {
 		-moz-transform: rotate(0deg)
 	}
@@ -1018,7 +1014,7 @@ textarea.multi-line {
 	}
 }
 
-@-webkit-keyframes spinPulse {
+@keyframes spinPulse {
 	0% {
 		-webkit-transform: rotate(160deg);
 		opacity: 0;
@@ -1045,8 +1041,6 @@ textarea.multi-line {
 		-webkit-transform: rotate(360deg)
 	}
 }
-
-.lyricsC {}
 
 .lyricsArrow {
 	width: 0;

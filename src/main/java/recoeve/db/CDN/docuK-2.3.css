@@ -92,6 +92,7 @@ codeprint.SEE {
 	width: 32px;
 	height: 32px;
 	content: "";
+	print-color-adjust: exact;
 	-webkit-print-color-adjust: exact
 }
 
@@ -741,7 +742,7 @@ textarea.multi-line {
 }
 
 .docuK.bright .change-docuK-style form button.enabled {
-	background: background:rgb(120, 210, 150);
+	background: rgb(120, 210, 150);
 	border: 2px solid #f3a0a0
 }
 
@@ -1081,8 +1082,6 @@ img {
 	height: auto;
 	vertical-align: middle
 }
-
-.docuK .fig>.image {}
 
 .docuK .fig>.image img {
 	display: block;
