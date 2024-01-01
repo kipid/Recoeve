@@ -6640,112 +6640,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							resolve();
 						});
 						break;
-					// case "recoms":
-					// if (m.neighbors[cat]) {
-					// 	if (m.lastTLIndex===m.TLIndex&&m.neighborsRecos[cat]&&m.recomsSorted[cat]) { // TL for Time Limit.
-					// 		let recomsUntil=m.recomsSorted[cat].sortedUntil;
-					// 		let strHTML="";
-					// 		if (!m.recoms[cat]||m.recoms[cat]?.length===0) {
-					// 			strHTML=String(`<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`);
-					// 		}
-					// 		else {
-					// 			strHTML=String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
-					// 			for (let i=m.recoms[cat].length-1;i>=recomsUntil;i--) {
-					// 				let uri=m.recoms[cat][m.recomsSorted[cat][i]].uri;
-					// 				let recomHTML=await m.recomHTML(m.userRecos[uri])
-					// 				strHTML+=String(recomHTML);
-					// 			}
-					// 			if (recomsUntil>0) {
-					// 				strHTML+=`<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-					// 			}
-					// 		}
-					// 		$contents_recoms.html(strHTML);
-					// 		m.reNewAndReOn();
-					// 		if (scroll) {
-					// 			$window.scrollTop($contents_recoms.offset().top);
-					// 		}
-					// 		resolve();
-					// 	}
-					// 	else {
-					// 		if (!(m.neighborsRecos[cat]&&m.recomsSorted[cat])) {
-					// 			let req=`user\tcat`;
-					// 			let n=m.neighbors[cat].length;
-					// 			let until=n<m.neighborUpto?0:n-m.neighborUpto;
-					// 			let sorted=m.neighbors[cat].sorted;
-					// 			for (let i=n-1;i>=until;i--) {
-					// 				let neighborI=m.neighbors[cat][sorted[i]];
-					// 				req+=`\n${neighborI.user_to}\t${neighborI.cat_to}`;
-					// 			}
-					// 			$.ajax({
-					// 				type:"POST", url:m.userPath+"/get-Recoms", data:req
-					// 				, dataType:"text"
-					// 			}).done(async function (resp) {
-					// 				let respJSON=await m.strToJSON(resp);
-					// 				for (let i=1;i<respJSON.length;i++) {
-					// 					let val=m.val(respJSON[i].val);
-					// 					if (val.valid) {
-					// 						respJSON[i].val=val.val;
-					// 					}
-					// 					else {
-					// 						respJSON.splice(i, 1);
-					// 						i--;
-					// 					}
-					// 				}
-					// 				respJSON.splice(0, 1);
-					// 				m.neighborsRecos[cat]=respJSON;
-					// 				await m.showRecoms(m.neighborsRecos[cat], cat);
-					// 				if (scroll) {
-					// 					$window.scrollTop($contents_recoms.offset().top);
-					// 				}
-					// 				resolve();
-					// 			});
-					// 		}
-					// 		else if (m.lastTLIndex!==m.TLIndex) {
-					// 			await m.showRecoms(m.neighborsRecos[cat], cat);
-					// 			m.lastTLIndex=m.TLIndex;
-					// 			if (scroll) {
-					// 				$window.scrollTop($contents_recoms.offset().top);
-					// 			}
-					// 			resolve();
-					// 		}
-					// 	}
-					// }
-					// else {
-					// 	$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
-					// 	let cat_from=m.currentCat=cat;
-					// 	$.ajax({
-					// 		type:"POST", url:m.userPath+"/get-Neighbors", data:cat_from
-					// 		, dataType:"text"
-					// 	}).fail(function (resp) {
-					// 		$numbers_of_recos.html(resp);
-					// 		resolve();
-					// 	}).done(async function (resp) {
-					// 		let respJSON=await m.strToJSON(resp);
-					// 		let neighbors=[];
-					// 		let sorted=neighbors.sorted=[];
-					// 		let n=0;
-					// 		for (let i=1;i<respJSON.length;i++) {
-					// 			let neighborI=respJSON[i];
-					// 			neighborI.cat_from=cat_from;
-					// 			let sumSim=neighborI.sumSim=parseInt(neighborI.sumSim, 16);
-					// 			let nSim=neighborI.nSim=parseInt(neighborI.nSim, 16);
-					// 			neighborI["simAvg100"]=Math.round(100.0*sumSim/(nSim>5?nSim:5));
-					// 			if (!neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]) {
-					// 				neighbors[n]=neighborI
-					// 				neighbors[n].i=n;
-					// 				sorted[n]=n;
-					// 				neighbors[`${neighborI.user_to}\t${neighborI.cat_to}`]=neighbors[n];
-					// 				n++;
-					// 			}
-					// 		}
-					// 		let until=m.heapsort(neighbors, "simAvg100", sorted, 200);
-					// 		$numbers_of_recos.html(`Loaded ${neighbors.length} neighbors of cat="${m.escapeOnlyTag(cat)}".`);
-					// 		m.neighbors[cat_from]=neighbors;
-					// 		await m.getUriListAndShowRecosOnCat(cat, scroll);
-					// 		resolve();
-					// 	});
-					// }
-					// break;
 				}
 			});
 		};
@@ -6790,7 +6684,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 				let $recoms_recos = null;
 				switch (option) {
-					case "recoed":
+					case "recoed": {
 						if (m.myPage) {
 							if (m.beInCurrentCat) {
 								m.recoedFromRecoms++;
@@ -6846,7 +6740,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							await m.reTriggerFS(m.fsGo);
 						}
 						break;
-					case "changed": case "deleted":
+					}
+					case "changed": case "deleted": {
 						if (m.myPage && uri === m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 							if (option === "changed") {
 								let r = m.myRecos[uri];
@@ -6864,25 +6759,26 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 						}
 						if (m.myPage) {
-							$recoms_recos = $contents_recoms.find(".reco");
-							for (let k = 0; k < $recoms_recos.length; k++) {
-								let $reco = $recoms_recos.eq(k);
-								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
-								if (recoURI === uri) {
-									let recoHTML = await m.recoHTML(r, false, true, true);
-									$reco.replaceWith(String(recoHTML));
-								}
-							}
-							let $contents_recos = $contents.find(".reco");
-							for (let k = 0; k < $contents_recos.length; k++) {
-								let $reco = $contents_recos.eq(k);
-								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
-								if (recoURI === uri) {
-									let recoHTML = await m.recoHTML(r, false, true);
-									$reco.replaceWith(String(recoHTML));
-								}
-							}
 							if (option === "changed") {
+								$recoms_recos = $contents_recoms.find(".reco");
+								for (let k = 0; k < $recoms_recos.length; k++) {
+									let $reco = $recoms_recos.eq(k);
+									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
+									if (recoURI === uri) {
+										let recoHTML = await m.recoHTML(r, false, true, true);
+										$reco.replaceWith(String(recoHTML));
+									}
+								}
+								let $contents_recos = $contents.find(".reco");
+								for (let k = 0; k < $contents_recos.length; k++) {
+									let $reco = $contents_recos.eq(k);
+									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
+									if (recoURI === uri) {
+										let recoHTML = await m.recoHTML(r, false, true);
+										$reco.replaceWith(String(recoHTML));
+									}
+								}
+
 								m.reNewAndReOn();
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
@@ -6928,8 +6824,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										$reco.find(".button.edit").addClass("deleted");
 									}
 								}
-								m.reNewAndReOn();
 
+								m.reNewAndReOn();
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
 								if (!fsFLk) {
@@ -6955,6 +6851,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 						}
 						break;
+					}
 					default:
 						m.openCat(cat);
 						break;
@@ -7819,26 +7716,20 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let uri = String(res[1]?.uri);
 				if (result.startsWith("changed")) {
 					$error.html(m.escapeOnlyTag(res[1].result));
-					if (args.cats !== args.r.cats) {
-						args.r.cats = args.cats;
-					}
-					if (args.title !== args.r.title) { args.r.title = args.title; }
-					if (args.desc !== args.r.desc) {
-						args.r.desc = args.desc;
-						args.r.descR = m.renderStrDescCmt(args.desc);
-					}
-					if (args.cmt !== args.r.cmt) {
-						args.r.cmt = args.cmt;
-						args.r.cmtR = m.renderStrDescCmt(args.cmt);
-					}
-					if (args.val.str !== args.r.val.str) { args.r.val = args.val; }
-					args.r.tLast = res[1]?.tLast;
-					await m.changeCats_UriList(args.r.cats, args.cats, uri);
-					args.r.cats = args.cats;
+					let r = args.r;
+					r.title = args.title;
+					r.desc = args.desc;
+					r.descR = m.renderStrDescCmt(args.desc);
+					r.cmt = args.cmt;
+					r.cmtR = m.renderStrDescCmt(args.cmt);
+					r.val = args.val;
+					r.tLast = res[1]?.tLast;
+					await m.changeCats_UriList(r.cats, args.cats, uri);
+					r.cats = args.cats;
 					setTimeout(function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
-						m.refresh(args.cats, "changed", uri);
+						m.refresh(args.cats, "changed", uri, true);
 						m.refreshFSToRs(m.currentCat);
 					}, m.wait);
 				}
