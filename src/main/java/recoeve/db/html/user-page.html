@@ -3866,7 +3866,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hid_e_--]</div>
 	${m.myIndex === "" ? `<div class="button">
 		<a class="a-log-in" href="/account/log-in">[--Log _i_n--]/[--S_i_gn up--]</a>
-	</div>`: `<div class="button${m.myPage ? " enabled" : ""}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button darkred">
+	</div>`: `<div class="button${m.myPage ? " enabled" : " cadetblue"}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button darkred">
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
 	${(!m.myPage) && m.myId ? `<div class="button"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>` : ""}
@@ -8823,8 +8823,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					m.intervalCount[intervalId] = 0;
 					$gotoCatsI.trigger("click");
 					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-					console.log(`m.currentCat: `, m.currentCat);
-					console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+					console.log(`m.currentCat: ${m.currentCat}, fsGotoCatsFLCat: `, fsGotoCatsFLCat);
 					if (!m.doNotPushHistory) {
 						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 					}
@@ -8835,19 +8834,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
 							$table_of_recos.trigger("keyup.fs");
 						}
+						m.gotoHash(m.initialHashURI);
 					}
-					m.gotoHash(m.initialHashURI);
 					return;
 				}
-				else if (m.intervalCount[intervalId] > m.intervalMaxCount) {
+				else if (m.intervalCount[intervalId] > m.intervalMaxCount / 2) {
 					clearInterval(intervalId);
 					m.intervalCount[intervalId] = 0;
-					fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
+					fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fsGotoCatsFLCat.html}</div>`);
 					$gotoCatsI = $(`#gotoCats-${fsGotoCatsFLCat.i}`);
 					$gotoCatsI.trigger("click");
 					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${m.recoMode}`);
-					console.log(`m.currentCat: `, m.currentCat);
-					console.log(`fsGotoCatsFLCat: `, fsGotoCatsFLCat);
+					console.log(`m.currentCat: ${m.currentCat}, fsGotoCatsFLCat: `, fsGotoCatsFLCat);
 					if (!m.doNotPushHistory) {
 						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 					}
@@ -8858,15 +8856,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
 							$table_of_recos.trigger("keyup.fs");
 						}
+						m.gotoHash(m.initialHashURI);
 					}
 				}
 			}
-			else {
-				if (m.intervalCount[intervalId] > m.intervalMaxCount) {
-					clearInterval(intervalId);
-					m.intervalCount[intervalId] = 0;
-					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`)
-				}
+			else if (m.intervalCount[intervalId] > m.intervalMaxCount) {
+				clearInterval(intervalId);
+				m.intervalCount[intervalId] = 0;
+				$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`)
 			}
 		};
 		$block_touch_exit.on("click", function (event) {
@@ -9049,13 +9046,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								}
 							}
 						}
-						m.recoMode = "";
+						m.lastRecoMode = m.recoMode = "";
 						$button_mode.removeClass("enabled");
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else {
-						$window.scrollTop($contents.offset().top);
-						m.recoMode = "neighbors";
+						m.lastRecoMode = m.recoMode = "neighbors";
 						$button_mode.removeClass("enabled");
 						$button_neighbors_mode.addClass("enabled");
 						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
@@ -9334,7 +9330,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.reNewAndReOn();
 			} // If there is m.myRecos[uri], fill #new-reco inputs with it. But if there is saved revision, fill revised versions to #new-reco inputs.
 			m.initialFillFromLocalStorageN = 0;
-			m.initialFillFromLocalStorage = setInterval(function () {
+			m.initialFillFromLocalStorage = setInterval(function (initialFillFromLocalStorage = m.initialFillFromLocalStorage) {
 				let title = m.localStorage.getItem("title");
 				let changed = false;
 				if (vars.title !== undefined) {
@@ -9382,7 +9378,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 				console.log("m.initialFillFromLocalStorageN: ", m.initialFillFromLocalStorageN);
 				if (!changed && m.initialFillFromLocalStorageN > 3) {
-					clearInterval(m.initialFillFromLocalStorage);
+					clearInterval(initialFillFromLocalStorage);
+					m.initialFillFromLocalStorageN = 0;
 				}
 			}, m.wait);
 
