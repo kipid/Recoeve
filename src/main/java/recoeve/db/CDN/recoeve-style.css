@@ -121,10 +121,23 @@ table>*>tr>td {
 .button {
 	display: inline-block;
 	cursor: pointer;
+	border-radius: .3em;
 	margin: 0 .1em .5em;
 	padding: .2em .5em;
 	border: .15em solid rgb(50, 50, 50);
 	background: rgb(110, 110, 110)
+}
+
+.button.darkred {
+	background: darkred
+}
+
+.bright .button.darkred {
+	background: indianred
+}
+
+.pink .button.darkred {
+	background: orangered
 }
 
 .bright .button {
@@ -176,15 +189,15 @@ table>*>tr>td {
 }
 
 .button.enabled {
-	background: rgb(50, 140, 80)
+	background: seagreen
 }
 
 .bright .button.enabled {
-	background: rgb(120, 210, 150)
+	background: palegreen
 }
 
 .pink .button.enabled {
-	background: rgb(115, 148, 213)
+	background: lightseagreen
 }
 
 .button.enabled:active {

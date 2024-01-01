@@ -3855,8 +3855,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		// Right top Log-in | Log-out
 		////////////////////////////////////////////////////
 		$right_top_log_in = $("#right-top-log-in");
-		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button"><a class="a-log-in" href="/account/log-in">[--Log _i_n--] / [--S_i_gn up--]</a></div>` : `<div class="button"><a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a></div>
-<div class="button"><a class="a-log-out-from-all" href="/account/log-out-from-all">[--Log out from all--]</a></div>`}`);
+		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button"><a class="a-log-in" href="/account/log-in">[--Log _i_n--] / [--S_i_gn up--]</a></div>` : `<div class="button darkred"><a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a></div>
+<div class="button darkred"><a class="a-log-out-from-all" href="/account/log-out-from-all">[--Log out from all--]</a></div>`}`);
 
 		////////////////////////////////////////////////////
 		// Floating key
@@ -3866,7 +3866,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$floating_key.html(`<div id="button-hideFK" class="button" onclick="m.hideFK()">▼ [--Hid_e_--]</div>
 	${m.myIndex === "" ? `<div class="button">
 		<a class="a-log-in" href="/account/log-in">[--Log _i_n--]/[--S_i_gn up--]</a>
-	</div>`: `<div class="button${m.myPage ? " enabled" : ""}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button">
+	</div>`: `<div class="button${m.myPage ? " enabled" : ""}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button darkred">
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
 	${(!m.myPage) && m.myId ? `<div class="button"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>` : ""}
