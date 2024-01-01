@@ -28,7 +28,7 @@ public class FileMap {
 			, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
 
-	private static final String filePath = "C:\\Recoeve\\src\\main\\java\\recoeve\\db\\CDN\\";
+	private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
 	private static final String[] fileNames = {
 			"favicon.ico", "jquery.js",
 			"recoeve-style.css", "link.png", "icon-Tag.png", "icon-Twitter.png",
@@ -72,9 +72,9 @@ public class FileMap {
 		return retrievedFile;
 	}
 
-	private static final String txtFilePath = "C:\\Recoeve\\src\\main\\java\\recoeve\\db\\html\\";
+	private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
 	private static final String[] txtFileNames = {
-			"jquery.js", "prepare.js", "robots.txt", "ads.txt", "log-in.html", "verify.html", "changePwd.html",
+			"prepare.js", "robots.txt", "ads.txt", "log-in.html", "verify.html", "changePwd.html",
 			"log-out.html", "user-page.html", "remember-me.html"
 	};
 	private static final int txtFileMapSize = 30;
