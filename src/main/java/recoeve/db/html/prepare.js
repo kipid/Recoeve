@@ -3,7 +3,6 @@ window.m = window.m || {};
 	// user-page.html, log-in.html, changePwd.html
 	$window = $(window);
 	$document = $(document);
-	$.fn.exists = function () { return this.length !== 0; };
 
 	window.awaitAll = async function (promises) {
 		const results = await Promise.all(promises);
