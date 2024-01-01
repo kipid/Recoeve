@@ -3869,7 +3869,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	</div>`: `<div class="button${m.myPage ? " enabled" : " cadetblue"}">Your id: ${m.escapeOnlyTag(m.myId)}</div><div class="button darkred">
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
-	${(!m.myPage) && m.myId ? `<div class="button"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>` : ""}
+	${(!m.myPage) && m.myId ? `<div class="button cadetblue"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>` : ""}
 	<div class="button button-block-touch" onclick="$window.trigger({type:'keydown', keyCode:'U'.charCodeAt(0)})">
 		[--Block to_u_ch--]
 	</div>
