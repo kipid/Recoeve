@@ -140,6 +140,10 @@ table>*>tr>td {
 	background: orangered
 }
 
+.button.cadetblue {
+	background: cadetblue
+}
+
 .bright .button {
 	border-color: rgb(200, 200, 200);
 	background: rgb(190, 190, 190)
