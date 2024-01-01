@@ -5386,30 +5386,30 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.changeCats_UriList = async function (oldCats, newCats, uri) {
 			return new Promise(async function (resolve, reject) {
-				if (oldCats !== null && oldCats !== undefined && oldCats.constructor === String && newCats !== null && newCats !== undefined && newCats.constructor === String) {
-					let oldCatSplit = oldCats.split(";");
-					let newCatSplit = newCats.split(";");
-					let o = [];
-					let n = [];
-					for (let i = 0; i < oldCatSplit.length; i++) {
-						o[oldCatSplit[i]] = true;
-					}
-					newCats = "";
-					for (let i = 0; i < newCatSplit.length; i++) {
-						if (o[newCatSplit[i]]) {
-							o[newCatSplit[i]] = false;
-							n[newCatSplit[i]] = false;
-						}
-						else {
-							newCats += newCatSplit[i] + ";";
-							n[newCatSplit[i]] = true;
-						}
-					}
-					oldCats = "";
-					for (let p in o) {
-						if (o[p]) { oldCats += p + ";"; }
-					}
+				if (m.myPage && oldCats !== null && oldCats !== undefined && oldCats.constructor === String && newCats !== null && newCats !== undefined && newCats.constructor === String) {
 					if (uri && uri.constructor === String) {
+						let oldCatSplit = m.formatCats(oldCats).split(";");
+						let newCatSplit = m.formatCats(newCats).split(";");
+						let o = [];
+						let n = [];
+						for (let i = 0; i < oldCatSplit.length; i++) {
+							o[oldCatSplit[i]] = true;
+						}
+						newCats = "";
+						for (let i = 0; i < newCatSplit.length; i++) {
+							if (o[newCatSplit[i]]) {
+								o[newCatSplit[i]] = false;
+								n[newCatSplit[i]] = false;
+							}
+							else {
+								newCats += newCatSplit[i] + ";";
+								n[newCatSplit[i]] = true;
+							}
+						}
+						oldCats = "";
+						for (let p in o) {
+							if (o[p]) { oldCats += p + ";"; }
+						}
 						if (oldCats.length > 0) {
 							await m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uri);
 						}
@@ -5418,17 +5418,40 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 					}
 					else if (uri && uri.constructor === Array) {
-						if (oldCats.length > 0) {
-							for (j = 0; j < uri.length; j++) {
-								let uriJ = uri[j];
+						let newCatSplit = m.formatCats(newCats).split(";");
+						for (j = 0; j < uri.length; j++) {
+							let uriJ = uri[j];
+							let oldCatSplit = m.formatCats(m.myRecos[uriJ].cats).split(";");
+							let o = [];
+							let n = [];
+							for (let i = 0; i < oldCatSplit.length; i++) {
+								o[oldCatSplit[i]] = true;
+							}
+							newCats = "";
+							for (let i = 0; i < newCatSplit.length; i++) {
+								if (o[newCatSplit[i]]) {
+									o[newCatSplit[i]] = false;
+									n[newCatSplit[i]] = false;
+								}
+								else {
+									newCats += newCatSplit[i] + ";";
+									n[newCatSplit[i]] = true;
+								}
+							}
+							oldCats = "";
+							for (let p in o) {
+								if (o[p]) { oldCats += p + ";"; }
+							}
+							if (oldCats.length > 0) {
 								await m.delCats_UriFromLists(oldCats.substring(0, oldCats.length - 1), uriJ);
 							}
-						}
-						if (newCats.length > 0) {
-							await m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uri);
+							if (newCats.length > 0) {
+								await m.putCats_UriToLists(newCats.substring(0, newCats.length - 1), uriJ);
+							}
 						}
 					}
 				}
+				resolve();
 			});
 		};
 
