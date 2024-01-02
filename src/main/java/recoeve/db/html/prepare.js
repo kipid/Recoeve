@@ -1417,7 +1417,6 @@ web	${m.sW}	${m.sH}`;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
-			console.log("descR: ", descR);
 			if (descR) {
 				if (descR["#start"]?.val) {
 					config.startSeconds = config.start = m.timeToSeconds(descR["#start"].val.trim());
@@ -1457,7 +1456,7 @@ web	${m.sW}	${m.sH}`;
 							v = vars.v.val;
 						}
 					}
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			return reject(false);
@@ -1758,7 +1757,6 @@ web	${m.sW}	${m.sH}`;
 	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
-			console.log("descR: ", descR);
 			if (descR) {
 				if (descR["#start"]?.val) {
 					config.start = m.timeToSeconds(descR["#start"].val.trim());
@@ -1767,7 +1765,7 @@ web	${m.sW}	${m.sH}`;
 					config.end = m.timeToSeconds(descR["#end"].val.trim());
 				}
 				if (config.start || config.end) {
-					config.hash = `${config.start ? config.start : "#t=0"}${config.end ? `,${config.end}` : ""}`;
+					config.hash = `${config.start ? `#t=${config.start}` : "#t=0"}${config.end ? `,${config.end}` : ""}`;
 				}
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
