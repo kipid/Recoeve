@@ -1111,7 +1111,7 @@ web	${m.sW}	${m.sH}`;
 			m.YtPlayer.seekTo(secondToSeek, true);
 		}
 		else if (m.listPlayFrom === "video") {
-			$("#video")[0].fastSeek(secondToSeek);
+			$("#video")[0].currentTime = secondToSeek;
 		}
 	}
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
