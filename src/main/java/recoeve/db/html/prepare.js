@@ -1767,7 +1767,7 @@ web	${m.sW}	${m.sH}`;
 					config.end = m.timeToSeconds(descR["#end"].val.trim());
 				}
 				if (config.start || config.end) {
-					config.hash = `#${config.start ? config.start : "0"}${config.end ? `, ${config.end}` : ""}`;
+					config.hash = `${config.start ? config.start : "#t=0"}${config.end ? `,${config.end}` : ""}`;
 				}
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
