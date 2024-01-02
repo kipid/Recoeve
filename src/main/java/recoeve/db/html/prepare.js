@@ -1417,6 +1417,7 @@ web	${m.sW}	${m.sH}`;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
+			console.log("descR: ", descR);
 			if (descR) {
 				if (descR["#start"]?.val) {
 					config.startSeconds = config.start = m.timeToSeconds(descR["#start"].val.trim());
@@ -1739,7 +1740,7 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[0] = {};
-	ptnURI.regEx = /^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
@@ -1757,6 +1758,7 @@ web	${m.sW}	${m.sH}`;
 	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
+			console.log("descR: ", descR);
 			if (descR) {
 				if (descR["#start"]?.val) {
 					config.start = m.timeToSeconds(descR["#start"].val.trim());
