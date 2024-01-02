@@ -1266,7 +1266,7 @@ web	${m.sW}	${m.sH}`;
 				if (exec[1]) {
 					v = exec[1];
 				}
-				else if (vars?.v?.val) {
+				if (vars?.v?.val) {
 					v = vars.v.val;
 				}
 				if (v) {
