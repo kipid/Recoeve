@@ -1129,14 +1129,15 @@ web	${m.sW}	${m.sH}`;
 					if (m.YtPlayer) {
 						let config = {
 							videoId: uriRendered.videoId
+							, playerVars: {}
 						};
 						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
 						if (descR) {
 							if (descR["#start"]?.val) {
-								config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+								config.playerVars.start = m.timeToSeconds(descR["#start"].val.trim());
 							}
 							if (descR["#end"]?.val) {
-								config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+								config.playerVars.end = m.timeToSeconds(descR["#end"].val.trim());
 							}
 						}
 						if (cue && m.YtPlayer.cueVideoById) {
@@ -1200,13 +1201,13 @@ web	${m.sW}	${m.sH}`;
 					};
 					if (descR) {
 						if (descR["#start"]?.val) {
-							config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+							config.start = m.timeToSeconds(descR["#start"].val.trim());
 						}
 						if (descR["#end"]?.val) {
-							config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+							config.end = m.timeToSeconds(descR["#end"].val.trim());
 						}
-						if (config.startSeconds || config.endSeconds) {
-							config.hash = `#${config.startSeconds ? config.startSeconds : "0"}${config.endSeconds ? `, ${config.endSeconds}` : ""}`;
+						if (config.start || config.end) {
+							config.hash = `#${config.start ? config.start : "0"}${config.end ? `, ${config.end}` : ""}`;
 						}
 					}
 					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
@@ -1437,10 +1438,10 @@ web	${m.sW}	${m.sH}`;
 			let config = {};
 			if (descR) {
 				if (descR["#start"]?.val) {
-					config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+					config.start = m.timeToSeconds(descR["#start"].val.trim());
 				}
 				if (descR["#end"]?.val) {
-					config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+					config.end = m.timeToSeconds(descR["#end"].val.trim());
 				}
 			}
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
@@ -1456,7 +1457,7 @@ web	${m.sW}	${m.sH}`;
 				}
 				if (v) {
 					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.startSeconds ? `&start=${config.startSeconds}` : ""}${config.endSeconds ? `&end=${config.endSeconds}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.startSeconds ? `&start=${config.startSeconds}` : ""}${config.endSeconds ? `&end=${config.endSeconds}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
 				}
 			}
 			else {
@@ -1777,13 +1778,13 @@ web	${m.sW}	${m.sH}`;
 			let config = {};
 			if (descR) {
 				if (descR["#start"]?.val) {
-					config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+					config.start = m.timeToSeconds(descR["#start"].val.trim());
 				}
 				if (descR["#end"]?.val) {
-					config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+					config.end = m.timeToSeconds(descR["#end"].val.trim());
 				}
-				if (config.startSeconds || config.endSeconds) {
-					config.hash = `#${config.startSeconds ? config.startSeconds : "0"}${config.endSeconds ? `, ${config.endSeconds}` : ""}`;
+				if (config.start || config.end) {
+					config.hash = `#${config.start ? config.start : "0"}${config.end ? `, ${config.end}` : ""}`;
 				}
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
@@ -1864,12 +1865,11 @@ web	${m.sW}	${m.sH}`;
 		});
 	};
 
-	window.uriRendering = function (uri, toA, inListPlay) {
+	window.uriRendering = function (uri, toA, inListPlay, descR) {
 		return new Promise(async function (resolve, reject) {
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
 					uri=m.unescapeHTML(uri);
-					let descR = m.userRecos[uri]?.descR;
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
@@ -1956,7 +1956,7 @@ web	${m.sW}	${m.sH}`;
 			}
 			else {
 				key = key.toLowerCase();
-				res[k] = res[key] = { i: k, key, value: listOfValues.join("\n\n") };
+				res[k] = res[key] = { i: k, key, val: listOfValues.join("\n\n") };
 				k++;
 				key = match[0]
 				listOfValues = [];
@@ -1966,7 +1966,7 @@ web	${m.sW}	${m.sH}`;
 				}
 			}
 		}
-		res[k] = res[key] = { i: k, key, value: listOfValues.join("\n\n") };
+		res[k] = res[key] = { i: k, key, val: listOfValues.join("\n\n") };
 		return res;
 	};
 	m.stashReco = function (event) {
@@ -2020,7 +2020,7 @@ web	${m.sW}	${m.sH}`;
 		}
 		res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
 		if (!inListPlay) {
-			let uriRendered = await uriRendering(r?.uri, false, inListPlay);
+			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 			res += String(uriRendered.html);
 		}
 		let recomsI = m.recoms[m.currentCat][r?.uri];
@@ -2056,10 +2056,10 @@ web	${m.sW}	${m.sH}`;
 			res += `<div class="desc">`;
 			for (let l = 0; l < descR.length; l++) {
 				let key = m.escapeOnlyTag(descR[l].key);
-				let value = m.escapeOnlyTag(descR[l].value);
+				let val = m.escapeOnlyTag(descR[l].val);
 				switch (key.toLowerCase()) {
 					case "#start": case "#end": case "#": case "": default:
-						res += `<div class="value">${key} ${value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+						res += `<div class="value">${key} ${val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
 						break;
 					case "#lyrics": case "#lyrics:":
 					case "#lyric": case "#lyric:":
@@ -2068,7 +2068,7 @@ web	${m.sW}	${m.sH}`;
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
+	<div class="lyrics">${val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
@@ -2076,10 +2076,10 @@ web	${m.sW}	${m.sH}`;
 					case "#related": case "#related:":
 					case "#originaluri": case "#originaluri:":
 						res += `<div class="value"><span class="key">${key}</span>:`;
-						let relateds = value.trim().split("\n");
+						let relateds = val.trim().split("\n");
 						for (let p = 0; p < relateds.length; p++) {
 							res += '<br>';
-							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true);
+							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false, r?.descR);
 							res += String(uriRendered.html);
 						}
 						res += `</div>`;
@@ -2104,7 +2104,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 <div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
 			if (!inListPlay) {
-				let uriRendered = await uriRendering(r?.uri, false, inListPlay);
+				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 				res += String(uriRendered.html);
 			}
 			res += `<div class="cBoth"></div>`;
@@ -2141,17 +2141,17 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				res += `<div class="desc">`;
 				for (let l = 0; l < descR.length; l++) {
 					let key = m.escapeOnlyTag(descR[l].key);
-					let value = m.escapeOnlyTag(descR[l].value);
+					let val = m.escapeOnlyTag(descR[l].val);
 					switch (key.toLowerCase()) {
 						case "#start": case "#end": case "#": case "": default: {
-							let valBrTrimed=value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
+							let valBrTrimed=val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
 							res += `<div class="value">${key} ${valBrTrimed&&inListPlay?valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valBrTrimed}</div>`;
 							break;
 						}
 						case "#lyrics": case "#lyrics:":
 						case "#lyric": case "#lyric:":
 						case "#가사": case "#가사:": {
-							let valTrimedBr=value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
+							let valTrimedBr=val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
 							res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
@@ -2165,10 +2165,10 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 						case "#related": case "#related:":
 						case "#originaluri": case "#originaluri:":
 							res += `<div class="value"><span class="key">${key}</span>:`;
-							let relateds = value.trim().split("\n");
+							let relateds = val.trim().split("\n");
 							for (let p = 0; p < relateds.length; p++) {
 								res += '<br>';
-								let uriRendered = await uriRendering(m.formatURI(relateds[p]), true);
+								let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false, r?.descR);
 								res += String(uriRendered.html);
 							}
 							res += `</div>`;
