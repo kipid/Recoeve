@@ -1425,8 +1425,8 @@ web	${m.sW}	${m.sH}`;
 	m.rC = function (elemStr, option, id, noPc) {
 		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 	};
-	m.YTiframe = function (v, inListPlay) {
-		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
+	m.YTiframe = function (v, inListPlay, config) {
+		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https%3A//recoeve.net${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
 	};
 
 	let ptnURI;
@@ -1457,7 +1457,7 @@ web	${m.sW}	${m.sH}`;
 				}
 				if (v) {
 					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list });
 				}
 			}
 			else {
@@ -1475,7 +1475,7 @@ web	${m.sW}	${m.sH}`;
 							v = vars.v.val;
 						}
 					}
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list });
 				}
 			}
 			return reject(false);
