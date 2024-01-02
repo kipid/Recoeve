@@ -1075,6 +1075,182 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	////////////////////////////////////////////////////
+	// YouTube API
+	////////////////////////////////////////////////////
+	m.timeToSeconds = function (time) {
+		let secondToSeek = 0;
+		let exec = /(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/.exec(time);
+		if (exec !== null) {
+			let hour = exec[1];
+			let minute = exec[2];
+			let second = exec[3];
+			if (hour && !isNaN(hour)) {
+				secondToSeek += Number(hour) * 3600;
+			}
+			if (minute && !isNaN(minute)) {
+				secondToSeek += Number(minute) * 60;
+			}
+			if (second && !isNaN(second)) {
+				secondToSeek += Number(second);
+			}
+		}
+		return secondToSeek;
+	};
+	m.seekToVideo = function (second, minute, hour) {
+		let secondToSeek = 0;
+		if (hour && !isNaN(hour)) {
+			secondToSeek += Number(hour) * 3600;
+		}
+		if (minute && !isNaN(minute)) {
+			secondToSeek += Number(minute) * 60;
+		}
+		if (second && !isNaN(second)) {
+			secondToSeek += Number(second);
+		}
+		if (m.listPlayFrom === "youtube") {
+			m.YtPlayer.seekTo(secondToSeek, true);
+		}
+		else if (m.listPlayFrom === "video") {
+			$("#video").fastSeek(secondToSeek);
+		}
+	}
+	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
+		if (inListPlay) {
+			let fs = m.fsToRs;
+			let from = String(uriRendered.from);
+			m.listPlayFrom = from;
+			if (from === "youtube") {
+				$eveElse.html('');
+				$eveElse_uri_rendered.hide();
+				$rC_youtube_uri_rendered.show();
+				fs.$playing = $rC_youtube_uri_rendered;
+				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+					if (m.YtPlayer) {
+						let config = {
+							videoId: uriRendered.videoId
+						};
+						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))].descR;
+						if (descR) {
+							if (descR["#start"]?.val) {
+								config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+							}
+							if (descR["#end"]?.val) {
+								config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+							}
+						}
+						if (cue && m.YtPlayer.cueVideoById) {
+							m.YtPlayer.cueVideoById(config);
+							fs.lastIndex = fs.currentIndex;
+							m.lastCat = m.currentCat;
+						}
+						else if (m.YtPlayer.loadVideoById) {
+							m.YtPlayer.loadVideoById(config);
+							fs.lastIndex = fs.currentIndex;
+							m.lastCat = m.currentCat;
+						}
+						else {
+							clearTimeout(m.setTimeoutGetAndPlayVideo);
+							m.setTimeoutGetAndPlayVideo = setTimeout(function () {
+								fs.getAndPlayVideo(cue, inListPlay);
+							}, m.wait);
+							return;
+						}
+					}
+					else if (YT?.Player) {
+						m.YtPlayer = new YT.Player('youtube', {
+							videoId: uriRendered.videoId, events: {
+								'onError': function (e) {
+									if (fs.skip) {
+										clearTimeout(m.setTimeoutPlayListYT);
+										m.setTimeoutPlayListYT = setTimeout(function () {
+											if (fs.skip) { fs.playNext(); }
+										}, 4 * m.wait);
+									}
+								}
+								, 'onStateChange': function (e) {
+									if (e.data === YT.PlayerState.ENDED) {
+										if (fs.oneLoop) {
+											m.YtPlayer.seekTo(0, true);
+										}
+										else {
+											fs.playNext();
+										}
+									}
+								}
+							}
+						});
+						fs.lastIndex = fs.currentIndex;
+						m.lastCat = m.currentCat;
+					}
+					else {
+						fs.prepareRecoListPlay(true);
+					}
+				}
+			}
+			else if (from === "video") {
+				$youtube.html('');
+				$eveElse_uri_rendered.show();
+				$rC_youtube_uri_rendered.hide();
+				fs.$playing = $eveElse_uri_rendered;
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+					let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))].descR;
+					let config = {
+						videoId: uriRendered.src
+					};
+					if (descR) {
+						if (descR["#start"]?.val) {
+							config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+						}
+						if (descR["#end"]?.val) {
+							config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+						}
+						if (config.startSeconds || config.endSeconds) {
+							config.hash = `#${config.startSeconds ? config.startSeconds : "0"}${config.endSeconds ? `, ${config.endSeconds}` : ""}`;
+						}
+					}
+					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
+					fs.lastIndex = fs.currentIndex;
+					m.lastCat = m.currentCat;
+				}
+				$eveElse = $("#eveElse");
+				$video = $("#video");
+				$video.on("ended", function () {
+					if (fs.oneLoop) {
+						$video[0].play();
+					}
+					else {
+						fs.playNext();
+					}
+				});
+				if (!cue) {
+					$video[0].play();
+				}
+			}
+			else {
+				fs.pauseVideo();
+				$youtube.html('');
+				$eveElse_uri_rendered.show();
+				$rC_youtube_uri_rendered.hide();
+				fs.$playing = $eveElse_uri_rendered;
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+					$eveElse.html(uriRendered.html);
+					fs.lastIndex = fs.currentIndex;
+					m.lastCat = m.currentCat;
+				}
+				if ((!cue) && fs.skip) {
+					clearTimeout(m.setTimeoutPlayList);
+					m.setTimeoutPlayList = setTimeout(function () {
+						if (fs.skip) {
+							fs.playNext(-1, false);
+						}
+					}, 17 * m.wait);
+				}
+			}
+		}
+	};
+
+	////////////////////////////////////////////////////
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
@@ -1256,8 +1432,17 @@ web	${m.sW}	${m.sH}`;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
 	ptnURI.regEx = /^(?:watch|embed|live|shorts)?\/?([\w\-]+)?(\?\S+)?/i;
 	ptnURI.regEx1 = /^([\w\-]+)(\?\S+)?/i;
-	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
+	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
+			let config = {};
+			if (descR) {
+				if (descR["#start"]?.val) {
+					config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+				}
+				if (descR["#end"]?.val) {
+					config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+				}
+			}
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 			if (exec !== null) {
 				let vars = null;
@@ -1271,7 +1456,7 @@ web	${m.sW}	${m.sH}`;
 				}
 				if (v) {
 					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.startSeconds ? `&start=${config.startSeconds}` : ""}${config.endSeconds ? `&end=${config.endSeconds}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.startSeconds ? `&start=${config.startSeconds}` : ""}${config.endSeconds ? `&end=${config.endSeconds}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
 				}
 			}
 			else {
@@ -1586,12 +1771,24 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[1] = {};
-	ptnURI.regEx = /^https?:\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
-	ptnURI.toIframe = function (uri, inListPlay, toA) {
+	ptnURI.regEx = /^https?:\/\/\S+\.(?:mp4|ogg|webm|webp|avi)(?=$|\?|\s)/i;
+	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
+			let config = {};
+			if (descR) {
+				if (descR["#start"]?.val) {
+					config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
+				}
+				if (descR["#end"]?.val) {
+					config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
+				}
+				if (config.startSeconds || config.endSeconds) {
+					config.hash = `#${config.startSeconds ? config.startSeconds : "0"}${config.endSeconds ? `, ${config.endSeconds}` : ""}`;
+				}
+			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
 			}
 			else {
 				return reject(false);
@@ -1672,6 +1869,7 @@ web	${m.sW}	${m.sH}`;
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
 					uri=m.unescapeHTML(uri);
+					let descR = m.userRecos[uri].descR;
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
@@ -1684,7 +1882,7 @@ web	${m.sW}	${m.sH}`;
 							let uriRest = uriAnalysed.pathname.substring(1) + uriAnalysed.search + uriAnalysed.hash;
 							if (m.ptnURI[uriHost]) {
 								try {
-									let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA);
+									let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
 									if (Boolean(result) !== false && (!result.list)) {
 										return resolve(result);
 									}
@@ -1697,7 +1895,7 @@ web	${m.sW}	${m.sH}`;
 					}
 					for (let i = 0; i < m.ptnURI.length; i++) {
 						try {
-							let result = await m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
+							let result = await m.ptnURI[i].toIframe(uri, inListPlay, toA, descR); // img or video
 							if (Boolean(result) !== false) {
 								return resolve(result);
 							}
@@ -1757,6 +1955,7 @@ web	${m.sW}	${m.sH}`;
 				listOfValues.push(trimedStrSplitted[i]);
 			}
 			else {
+				key = key.toLowerCase();
 				res[k] = res[key] = { i: k, key, value: listOfValues.join("\n\n") };
 				k++;
 				key = match[0]
@@ -1860,7 +2059,7 @@ web	${m.sW}	${m.sH}`;
 				let value = m.escapeOnlyTag(descR[l].value);
 				switch (key.toLowerCase()) {
 					case "#start": case "#end": case "#": case "": default:
-						res += `<div class="value">${key} ${value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+						res += `<div class="value">${key} ${value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
 						break;
 					case "#lyrics": case "#lyrics:":
 					case "#lyric": case "#lyric:":
@@ -1869,7 +2068,7 @@ web	${m.sW}	${m.sH}`;
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
+	<div class="lyrics">${value.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
@@ -1946,7 +2145,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 					switch (key.toLowerCase()) {
 						case "#start": case "#end": case "#": case "": default: {
 							let valBrTrimed=value.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
-							res += `<div class="value">${key} ${valBrTrimed&&inListPlay?valBrTrimed.replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valBrTrimed}</div>`;
+							res += `<div class="value">${key} ${valBrTrimed&&inListPlay?valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valBrTrimed}</div>`;
 							break;
 						}
 						case "#lyrics": case "#lyrics:":
@@ -1957,7 +2156,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${valTrimedBr&&inListPlay?valTrimedBr.replace(/(?:([0-9]{1,2})\:)?([0-9]{1,2})\:([0-9]{1,2})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valTrimedBr}</div>
+	<div class="lyrics">${valTrimedBr&&inListPlay?valTrimedBr.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)?([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valTrimedBr}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
