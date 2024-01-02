@@ -1591,7 +1591,7 @@ web	${m.sW}	${m.sH}`;
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + m.rC(`<video controls preload="auto" delayed-src="${exec[0]}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
 			}
 			else {
 				return reject(false);
@@ -1652,7 +1652,7 @@ web	${m.sW}	${m.sH}`;
 				if (exec !== null) {
 					href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 					uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<video controls preload="auto" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
+					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
 				}
 				else {
 					exec = m.ptnURI[4].regEx2.exec(uri);
