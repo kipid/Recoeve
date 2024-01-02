@@ -1190,6 +1190,7 @@ web	${m.sW}	${m.sH}`;
 				fs.$playing = $eveElse_uri_rendered;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					let config = uriRendered.config;
+					console.log("config: ", config);
 					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
