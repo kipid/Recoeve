@@ -105,9 +105,8 @@ window.m = {};
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live)?\/?([\w\-]+)?(\?\S+)?/i;
-	ptnURI.regEx1 = /^shorts\/([\w\-]+)/i;
-	ptnURI.regEx2 = /^([\w\-]+)(\?\S+)?/i;
+	ptnURI.regEx = /^(?:watch|embed|live|shorts)?\/?([\w\-]+)?(\?\S+)?/i;
+	ptnURI.regEx1 = /^([\w\-]+)(\?\S+)?/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
@@ -127,30 +126,21 @@ window.m = {};
 				}
 			}
 			else {
-				exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
+				exec = m.ptnURI["youtu.be"].regEx1.exec(uriRest);
 				if (exec !== null) {
 					let v = exec[1];
-					if (v) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}">https://www.youtube.com/watch?v=${v}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v });
-					}
-				}
-				else {
-					exec = m.ptnURI["youtu.be"].regEx2.exec(uriRest);
-					if (exec !== null) {
-						let v = exec[1];
-						let vars = null;
-						let list = null;
-						if (exec[2]) {
-							vars = m.getSearchVars(exec[2]);
-							if (vars?.list?.val) {
-								list = vars.list.val;
-							}
-							if (vars?.v?.val) {
-								v = vars.v.val;
-							}
+					let vars = null;
+					let list = null;
+					if (exec[2]) {
+						vars = m.getSearchVars(exec[2]);
+						if (vars?.list?.val) {
+							list = vars.list.val;
 						}
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+						if (vars?.v?.val) {
+							v = vars.v.val;
+						}
 					}
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
 				}
 			}
 			return reject(false);
