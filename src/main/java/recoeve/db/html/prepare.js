@@ -1130,7 +1130,7 @@ web	${m.sW}	${m.sH}`;
 						let config = {
 							videoId: uriRendered.videoId
 						};
-						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))].descR;
+						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
 						if (descR) {
 							if (descR["#start"]?.val) {
 								config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
@@ -1194,7 +1194,7 @@ web	${m.sW}	${m.sH}`;
 				$rC_youtube_uri_rendered.hide();
 				fs.$playing = $eveElse_uri_rendered;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
-					let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))].descR;
+					let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
 					let config = {
 						videoId: uriRendered.src
 					};
@@ -1869,7 +1869,7 @@ web	${m.sW}	${m.sH}`;
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
 					uri=m.unescapeHTML(uri);
-					let descR = m.userRecos[uri].descR;
+					let descR = m.userRecos[uri]?.descR;
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
