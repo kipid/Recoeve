@@ -1129,17 +1129,9 @@ web	${m.sW}	${m.sH}`;
 					if (m.YtPlayer) {
 						let config = {
 							videoId: uriRendered.videoId
-							, playerVars: {}
+							, ...uriRendered.config
 						};
-						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
-						if (descR) {
-							if (descR["#start"]?.val) {
-								config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
-							}
-							if (descR["#end"]?.val) {
-								config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
-							}
-						}
+						console.log("config: ", config);
 						if (cue && m.YtPlayer.cueVideoById) {
 							m.YtPlayer.cueVideoById(config);
 							fs.lastIndex = fs.currentIndex;
@@ -1160,7 +1152,9 @@ web	${m.sW}	${m.sH}`;
 					}
 					else if (YT?.Player) {
 						m.YtPlayer = new YT.Player('youtube', {
-							videoId: uriRendered.videoId, events: {
+							videoId: uriRendered.videoId
+							, playerVars: uriRendered.config
+							, events: {
 								'onError': function (e) {
 									if (fs.skip) {
 										clearTimeout(m.setTimeoutPlayListYT);
@@ -1195,21 +1189,7 @@ web	${m.sW}	${m.sH}`;
 				$rC_youtube_uri_rendered.hide();
 				fs.$playing = $eveElse_uri_rendered;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
-					let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
-					let config = {
-						videoId: uriRendered.src
-					};
-					if (descR) {
-						if (descR["#start"]?.val) {
-							config.start = m.timeToSeconds(descR["#start"].val.trim());
-						}
-						if (descR["#end"]?.val) {
-							config.end = m.timeToSeconds(descR["#end"].val.trim());
-						}
-						if (config.start || config.end) {
-							config.hash = `#${config.start ? config.start : "0"}${config.end ? `, ${config.end}` : ""}`;
-						}
-					}
+					let config = uriRendered.config;
 					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="auto" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
@@ -1438,10 +1418,10 @@ web	${m.sW}	${m.sH}`;
 			let config = {};
 			if (descR) {
 				if (descR["#start"]?.val) {
-					config.start = m.timeToSeconds(descR["#start"].val.trim());
+					config.startSeconds = config.start = m.timeToSeconds(descR["#start"].val.trim());
 				}
 				if (descR["#end"]?.val) {
-					config.end = m.timeToSeconds(descR["#end"].val.trim());
+					config.endSeconds = config.end = m.timeToSeconds(descR["#end"].val.trim());
 				}
 			}
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
@@ -1457,7 +1437,7 @@ web	${m.sW}	${m.sH}`;
 				}
 				if (v) {
 					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
@@ -1475,7 +1455,7 @@ web	${m.sW}	${m.sH}`;
 							v = vars.v.val;
 						}
 					}
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			return reject(false);
@@ -1789,7 +1769,7 @@ web	${m.sW}	${m.sH}`;
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
 			}
 			else {
 				return reject(false);
@@ -2079,7 +2059,7 @@ web	${m.sW}	${m.sH}`;
 						let relateds = val.trim().split("\n");
 						for (let p = 0; p < relateds.length; p++) {
 							res += '<br>';
-							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false, r?.descR);
+							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
 							res += String(uriRendered.html);
 						}
 						res += `</div>`;
@@ -2168,7 +2148,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 							let relateds = val.trim().split("\n");
 							for (let p = 0; p < relateds.length; p++) {
 								res += '<br>';
-								let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false, r?.descR);
+								let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
 								res += String(uriRendered.html);
 							}
 							res += `</div>`;
