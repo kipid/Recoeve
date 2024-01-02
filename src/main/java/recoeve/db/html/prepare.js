@@ -1134,10 +1134,10 @@ web	${m.sW}	${m.sH}`;
 						let descR = m.userRecos[m.unescapeHTML($reco_playing.find(".reco>.textURI"))]?.descR;
 						if (descR) {
 							if (descR["#start"]?.val) {
-								config.playerVars.start = m.timeToSeconds(descR["#start"].val.trim());
+								config.startSeconds = m.timeToSeconds(descR["#start"].val.trim());
 							}
 							if (descR["#end"]?.val) {
-								config.playerVars.end = m.timeToSeconds(descR["#end"].val.trim());
+								config.endSeconds = m.timeToSeconds(descR["#end"].val.trim());
 							}
 						}
 						if (cue && m.YtPlayer.cueVideoById) {
