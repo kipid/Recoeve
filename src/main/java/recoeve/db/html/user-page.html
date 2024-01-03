@@ -7749,7 +7749,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				if (!$elem.hasClass("list-item")) {
 					$elem = $elem.parents(".list-item");
 				}
-				// let uri=fs.fullList[k].uri;
 				if ($elem.hasClass("selected")) {
 					if ($elem.hasClass("clicked-twice")) {
 						fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // keyCode:27=ESC
@@ -7900,22 +7899,19 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						// fs.playNext(-1, true, true);
 					}
 					else {
-						if (m.setTimeoutPlayNextFirstCount===undefined||m.setTimeoutPlayNextFirstCount > 7) {
+						if (m.setTimeoutPlayNextFirstCount===undefined||m.setTimeoutPlayNextFirstCount >= 6) {
 							m.setTimeoutPlayNextFirstCount = 0;
 						}
-						setTimeout(function selfPlayNextFirst() {
+						clearTimeout(m.setTimeoutPlayNextFirst);
+						m.setTimeoutPlayNextFirst = setTimeout(function selfPlayNextFirst() {
 							console.log("selfPlayNextFirst()");
 							m.setTimeoutPlayNextFirstCount++;
 							fs.$fsLis = fs.$fsl.find(".list-item");
 							let $li0 = fs.$fsLis.eq(0);
 							if ($li0.length) {
-								// let idIndex = $li0.attr("id").substring(4);
-								// fs.currentIndex = Number(idIndex) === NaN ? idIndex : Number(idIndex);
 								m.fsViewAndScroll(fs, $li0);
 								$li0.trigger("click");
 								m.setTimeoutPlayNextFirstCount = 0;
-								// fs.playNext(-1, true, true);
-								// console.log("fs.playNext(-1, true, true); PlayNextFirst.");
 							}
 							else if (m.setTimeoutPlayNextFirstCount<6) {
 								setTimeout(selfPlayNextFirst, 2*m.wait);
@@ -7928,7 +7924,33 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 				}
 				else if (fs.lastIndex !== fs.currentIndex) {
-					$(`#toR-${fs.currentIndex}`).trigger("click");
+					let $toRk=$(`#toR-${fs.currentIndex}`);
+					if ($toRk.length) {
+						$toRk.trigger("click");
+					}
+					else {
+						if (m.setTimeoutPlayNextFirst1Count===undefined||m.setTimeoutPlayNextFirst1Count >= 6) {
+							m.setTimeoutPlayNextFirst1Count = 0;
+						}
+						clearTimeout(m.setTimeoutPlayNextFirst1);
+						m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
+							console.log("selfPlayNextFirst1()");
+							m.setTimeoutPlayNextFirst1Count++;
+							let $toRk=$(`#toR-${fs.currentIndex}`);
+							if ($toRk.length) {
+								m.fsViewAndScroll(fs, $toRk);
+								$toRk.trigger("click");
+								m.setTimeoutPlayNextFirst1Count = 0;
+							}
+							else if (m.setTimeoutPlayNextFirst1Count<6) {
+								setTimeout(selfPlayNextFirst1, 2*m.wait);
+							}
+							else {
+								console.log("PlayNextFirst has failed.");
+								m.setTimeoutPlayNextFirst1Count = 0;
+							}
+						}, m.wait);
+					}
 				}
 				if (fs === m.fsToRs && $table_of_recos_container.is(":visible")) {
 					m.args.ToR = $table_of_recos[0].value;

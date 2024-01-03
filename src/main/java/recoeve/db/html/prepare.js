@@ -1874,18 +1874,20 @@ web	${m.sW}	${m.sH}`;
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					m.lastRecoURIPlaying = m.recoURIPlaying;
+					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
 				}
 			}
-			else if (i?.constructor === Number && 0 <= i && i < fs.fullList.length) {
+			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
 				$(`#toR-${i}`).addClass("selected");
 				let r = fs.fullList[i].r;
-				let recoHTML = await m.recoHTML(r, inListPlay, true);
+				let recoHTML = await m.recoHTML(r, inListPlay, true, false);
 				$reco_playing.html(String(recoHTML));
 				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 				m.recoURIPlaying = r?.uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					m.lastRecoURIPlaying = m.recoURIPlaying;
+					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
 				}
 			}
