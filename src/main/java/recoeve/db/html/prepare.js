@@ -2008,7 +2008,7 @@ web	${m.sW}	${m.sH}`;
 				m.YtAPILoaded = true;
 			}
 		}
-		if (!YtAPINeeded || YT?.Player) {
+		if (!YtAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT?.Player) {
 			await m.doFSToRs();
 			// fs.playNext(-1, null, true);
 		}
