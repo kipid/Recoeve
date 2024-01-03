@@ -927,13 +927,6 @@ window.m = window.m || {};
 		return cats;
 	};
 
-	m.myRecos[""] = {
-		uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10")
-	};
-	m.recoDefs[""] = {
-		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
-	};
-
 	////////////////////////////////////////////
 	// Show reco, Fill reco/defs
 	////////////////////////////////////////////
@@ -1801,6 +1794,13 @@ web	${m.sW}	${m.sH}`;
 			return `<div class="stars-container" style="width:${xc + pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0 + 1}px; width:${(m.starsWidth * val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
 		}
 	}
+
+	m.myRecos[""] = {
+		uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10")
+	};
+	m.recoDefs[""] = {
+		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
+	};
 
 	////////////////////////////////////////////////////
 	// YouTube API
