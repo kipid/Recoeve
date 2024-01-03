@@ -3813,74 +3813,29 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 
-		m.fsTimezone = [];
-		m.fsTimezone[0] = m.fsTimezone[1] = [];
-		m.fsTimezone.catsSplit = [];
-		m.fsTimezone[0].k = m.fsTimezone[1].k = -1;
-		m.fsTimezone.fullList = [];
 		m.fsTimezone.$fs = $search_timezone;
 		m.fsTimezone.$fsl = $search_timezone_list;
 		m.fsTimezone.$fs_container = $search_timezone_container;
 
-		m.fsGotoCats = [];
-		m.fsGotoCats[0] = m.fsGotoCats[1] = [];
-		m.fsGotoCats.catsSplit = [];
-		m.fsGotoCats[0].k = m.fsGotoCats[1].k = -1;
-		m.fsGotoCats.fullList = [];
 		m.fsGotoCats.$fs = $goto_cats;
 		m.fsGotoCats.$fsl = $goto_cats_list;
 		m.fsGotoCats.$fs_container = $goto_cats_container;
 
-		m.fsCat = [];
-		m.fsCat[0] = m.fsCat[1] = [];
-		m.fsCat.catsSplit = [];
-		m.fsCat[0].k = m.fsCat[1].k = -1;
-		m.fsCat.fullList = [];
 		m.fsCat.$fs = $input_cats;
 		m.fsCat.$fsl = $cat_fs_list;
 		m.fsCat.$fs_container = $cat_fs_container;
 
-		m.fsMRCat = [];
-		m.fsMRCat[0] = m.fsMRCat[1] = [];
-		m.fsMRCat.catsSplit = [];
-		m.fsMRCat[0].k = m.fsMRCat[1].k = -1;
-		m.fsMRCat.fullList = [];
 		m.fsMRCat.$fs = $multireco_input_cats;
 		m.fsMRCat.$fsl = $multireco_cat_fs_list;
 		m.fsMRCat.$fs_container = $multireco_cat_fs_container;
 
-		m.fsGo = [];
-		m.fsGo[0] = m.fsGo[1] = [];
-		m.fsGo.fullList = [];
-		m.fsGo.shuffledOnce = false;
 		m.fsGo.$fs = $fuzzy_search;
 		m.fsGo.$fsl = $fuzzy_search_list;
 		m.fsGo.$fs_container = $fuzzy_search_container;
 
-		m.fsToRs = [];
-		m.fsToRs[0] = m.fsToRs[1] = [];
-		m.fsToRs.fixed = false;
-		m.fsToRs.lastIndex = -2;
-		m.fsToRs.currentIndex = -1;
-		m.fsToRs.fullList = [];
-		m.fsToRs.shuffled = [];
-		m.fsToRs.shuffledOnce = false;
 		m.fsToRs.$fs = $table_of_recos;
 		m.fsToRs.$fsl = $table_of_recos_list;
 		m.fsToRs.$fs_container = $table_of_recos_container;
-		m.fsToRs.skip = false;
-		m.fsToRs.oneLoop = false;
-		m.fsToRs.loop = false;
-
-		YT = undefined;
-		m.YtPlayer = null;
-		m.YtAPILoaded = false;
-
-		m.neighbors = {};
-		m.neighborsRecos = {};
-		m.recoms = {};
-		m.recomsSorted = {};
-		m.recomsPlusRandomSorted = {};
 
 		////////////////////////////////////////////////////
 		// Right top Log-in | Log-out

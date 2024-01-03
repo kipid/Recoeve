@@ -4,6 +4,58 @@ window.m = window.m || {};
 	$window = $(window);
 	$document = $(document);
 
+	m.fsTimezone = [];
+	m.fsTimezone[0] = m.fsTimezone[1] = [];
+	m.fsTimezone.catsSplit = [];
+	m.fsTimezone[0].k = m.fsTimezone[1].k = -1;
+	m.fsTimezone.fullList = [];
+
+	m.fsGotoCats = [];
+	m.fsGotoCats[0] = m.fsGotoCats[1] = [];
+	m.fsGotoCats.catsSplit = [];
+	m.fsGotoCats[0].k = m.fsGotoCats[1].k = -1;
+	m.fsGotoCats.fullList = [];
+
+	m.fsCat = [];
+	m.fsCat[0] = m.fsCat[1] = [];
+	m.fsCat.catsSplit = [];
+	m.fsCat[0].k = m.fsCat[1].k = -1;
+	m.fsCat.fullList = [];
+
+	m.fsMRCat = [];
+	m.fsMRCat[0] = m.fsMRCat[1] = [];
+	m.fsMRCat.catsSplit = [];
+	m.fsMRCat[0].k = m.fsMRCat[1].k = -1;
+	m.fsMRCat.fullList = [];
+
+	m.fsGo = [];
+	m.fsGo[0] = m.fsGo[1] = [];
+	m.fsGo.fullList = [];
+	m.fsGo.shuffledOnce = false;
+
+	m.fsToRs = [];
+	m.fsToRs[0] = m.fsToRs[1] = [];
+	m.fsToRs.fixed = false;
+	m.fsToRs.lastIndex = -2;
+	m.fsToRs.currentIndex = -1;
+	m.fsToRs.fullList = [];
+	m.fsToRs.shuffled = [];
+	m.fsToRs.shuffledOnce = false;
+	m.fsToRs.skip = false;
+	m.fsToRs.oneLoop = false;
+	m.fsToRs.loop = false;
+
+	YT = undefined;
+	m.YtPlayer = null;
+	m.YtAPILoaded = false;
+
+	m.neighbors = {};
+	m.neighborsRecos = {};
+	m.recoms = {};
+	m.recomsSorted = {};
+	m.recomsPlusRandomSorted = {};
+
+
 	window.awaitAll = async function (promises) {
 		const results = await Promise.all(promises);
 		return results;
