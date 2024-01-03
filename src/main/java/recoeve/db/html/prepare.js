@@ -817,7 +817,7 @@ window.m = window.m || {};
 				let respK = resp[k];
 				let uri = String(respK.uri);
 				let r = recos[uri];
-				if (!r) { r = recos[uri] = {}; }
+				if (!r) { r = recos[uri] = {uri}; }
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
 					if (isNaN(prop)) {
@@ -826,18 +826,8 @@ window.m = window.m || {};
 					}
 				}
 				r.deleted = false;
-				if (r.desc !== undefined) {
-					r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
-				}
-				else {
-					r.descR = m.renderStrDescCmt("");
-				}
-				if (r.cmt !== undefined) {
-					r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
-				}
-				else {
-					r.cmtR = m.renderStrDescCmt("");
-				}
+				r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
+				r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
 				r.val = m.val(String(r.val));
 			}
 			return resolve();
