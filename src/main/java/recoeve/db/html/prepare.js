@@ -2008,7 +2008,7 @@ web	${m.sW}	${m.sH}`;
 		}
 		if (!YtAPINeeded || YT?.Player) {
 			await m.doFSToRs();
-			fs.playNext(-1, null, true);
+			// fs.playNext(-1, null, true);
 		}
 		else {
 			setTimeout(function () {
