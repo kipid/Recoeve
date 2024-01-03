@@ -71,6 +71,15 @@ window.m = window.m || {};
 	m.PRmax = 10.0;
 	m.fullPts = 10.0;
 
+	////////////////////////////////////////////////////
+	// URI rendering :: http link itself, videos, images, maps.
+	////////////////////////////////////////////////////
+	m.ptnURI = [];
+	m.ptnURL = /^https?:\/\/\S+/i;
+	m.ptnFILE = /^file:\/\/\/\S+/i;
+	m.ptnTag = /^<\w+[\s\S]+>/i;
+	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+
 	window.awaitAll = async function (promises) {
 		const results = await Promise.all(promises);
 		return results;
@@ -2125,15 +2134,6 @@ web	${m.sW}	${m.sH}`;
 			}
 		}
 	};
-
-	////////////////////////////////////////////////////
-	// URI rendering :: http link itself, videos, images, maps.
-	////////////////////////////////////////////////////
-	m.ptnURI = [];
-	m.ptnURL = /^https?:\/\/\S+/i;
-	m.ptnFILE = /^file:\/\/\/\S+/i;
-	m.ptnTag = /^<\w+[\s\S]+>/i;
-	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
 	////////////////////////////////////////////////////
 	// New Reco or Edit
