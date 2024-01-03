@@ -1876,6 +1876,7 @@ web	${m.sW}	${m.sH}`;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
 					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					m.uriRendered = uriRendered;
 				}
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
@@ -1889,6 +1890,7 @@ web	${m.sW}	${m.sH}`;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
 					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					m.uriRendered = uriRendered;
 				}
 			}
 			else {
