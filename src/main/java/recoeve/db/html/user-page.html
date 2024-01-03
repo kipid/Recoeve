@@ -8259,6 +8259,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
 			if (hashURI && m.userIndex) {
 				m.fsGo.tryN = 0;
+				m.firstLiGotoLiClicked = false;
 				clearInterval(m.setIntervalFsGo);
 				m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
 					m.fsGo.tryN++;
@@ -8267,14 +8268,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						let k = m.fsGo.fullList[hashURI]?.i;
 						let $liK = $(`#li-${k}`);
 						if ($liK.length) {
-							clearInterval(setIntervalFsGo);
-							m.fsGo.tryN = 0;
+							if (m.firstLiGotoLiClicked) {
+								clearInterval(setIntervalFsGo);
+								m.fsGo.tryN = 0;
+								m.firstLiGotoLiClicked = false;
+							}
 							m.hashURI = hashURI;
 							console.log(`$(\`#li-${k}\`).trigger("click");`)
 							$(`#li-${k}`).trigger("click");
+							m.firstLiGotoLiClicked = true;
 						}
 					}
-					else if (m.fsGo.tryN < 7) {
+					else if (m.fsGo.tryN < 8) {
 						let $elem = $(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
 						if ($elem.length) {
 							clearInterval(setIntervalFsGo);
