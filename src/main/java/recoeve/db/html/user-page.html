@@ -30,6 +30,7 @@
 			, newRecoOn: false
 			, lastRecoMode: "nothing"
 			, lastCat: "i8@ㅏ%자DKW2!"
+			, lastRecoURIPlaying: "8@i#탖3KS!"
 			, args: {}
 			, dailyMixPer: 4
 			, recoedFromRecoms: 0
@@ -3178,10 +3179,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			<div class="button enabled" id="toggle-reco-list-play" onclick="m.fsToRs.toggleRecoListPlay()">▼ [--Showing reco list play--]</div>
 			<div id="playlist-container">
 				<div id="uri-rendered-container">
-					<div id="eveElse-uri-rendered">
+					<div id="eveElse-container">
 						<div id="eveElse"></div>
 					</div>
-					<div class="rC" id="rC-youtube-uri-rendered">
+					<div class="rC" id="rC-youtube-container">
 						<div class="rSC">
 							<div id="youtube"></div>
 						</div>
@@ -3389,8 +3390,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$toggle_reco_list_play = $("#toggle-reco-list-play");
 		$playlist_container = $("#playlist-container");
 		$uri_rendered_container = $("#uri-rendered-container");
-		$eveElse_uri_rendered = $("#eveElse-uri-rendered");
-		$rC_youtube_uri_rendered = $("#rC-youtube-uri-rendered");
+		$eveElse_container = $("#eveElse-container");
+		$rC_youtube_container = $("#rC-youtube-container");
 		$eveElse = $("#eveElse");
 		$youtube = $("#youtube");
 		$video = $("#video");
@@ -5863,8 +5864,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$youtube.html('');
 					$eveElse.html('');
 					$reco_playing.html('');
-					$eveElse_uri_rendered.hide();
-					$rC_youtube_uri_rendered.hide();
+					$eveElse_container.hide();
+					$rC_youtube_container.hide();
 				}
 				else if (elem === undefined || elem === null) {
 					from = l - 1;
@@ -6749,9 +6750,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 							{
 								let $reco = $reco_playing.find(".reco");
-								let recoURI = m.escapeHTML($reco.find(".textURI").html());
+								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 								if (recoURI === uri) {
-									let recoHTML = await m.recoHTML(r, true, true, true);
+									let recoHTML = await m.recoHTML(r, true, true, false);
 									$reco_playing.html(String(recoHTML));
 								}
 							}
@@ -6778,8 +6779,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								$reco_playing.html('');
 								$eveElse.html('');
 								$youtube.html('');
-								$eveElse_uri_rendered.hide();
-								$rC_youtube_uri_rendered.hide();
+								$eveElse_container.hide();
+								$rC_youtube_container.hide();
 							}
 						}
 						if (m.myPage) {
@@ -9506,26 +9507,34 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					let uri = m.recoms[m.currentCat][iToNumber].uri;
 					let recoHTML = await m.recomHTML(m.userRecos[uri], inListPlay);
 					$reco_playing.html(String(recoHTML));
-					let uriRendered = await uriRendering(uri, false, inListPlay);
-					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
+					m.recoURIPlaying = uri;
+					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+						m.lastRecoURIPlaying = m.recoURIPlaying;
+						m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					}
 				}
 				else if (i?.constructor === Number && 0 <= i && i < fs.fullList.length) {
 					$(`#toR-${i}`).addClass("selected");
 					let r = fs.fullList[i].r;
 					let recoHTML = await m.recoHTML(r, inListPlay, true);
 					$reco_playing.html(String(recoHTML));
-					let uriRendered = await uriRendering(r?.uri, false, inListPlay);
-					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+					m.recoURIPlaying = r?.uri;
+					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+						m.lastRecoURIPlaying = m.recoURIPlaying;
+						m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					}
 				}
 				else {
 					$reco_playing.html('');
 					$eveElse.html('');
 					$youtube.html('');
-					$eveElse_uri_rendered.hide();
-					$rC_youtube_uri_rendered.hide();
-					// fs.lastIndex=fs.currentIndex;
-					// m.lastCat=m.currentCat;
+					$eveElse_container.hide();
+					$rC_youtube_container.hide();
 				}
+				fs.lastIndex=fs.currentIndex;
+				m.lastCat=m.currentCat;
 				m.reNewAndReOn();
 				resolve();
 			});
@@ -9571,8 +9580,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					if (fs.pauseVideo) {
 						fs.pauseVideo();
 					}
-					$eveElse_uri_rendered.hide();
-					$rC_youtube_uri_rendered.hide();
+					$eveElse_container.hide();
+					$rC_youtube_container.hide();
 					clearTimeout(m.setTimeoutPlayNext);
 					if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 12) {
 						m.setTimeoutPlayNextCount = 0;
