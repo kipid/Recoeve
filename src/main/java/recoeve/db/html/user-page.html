@@ -3364,6 +3364,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$change_catList_order_cancel = $("#change-catList-order-cancel");
 
 		$new_reco = $("#new-reco");
+		$my_reco = $("#my-reco");
 		$log_out_do_container = $("#log-out-do-container, #log-out-do-exit");
 		$log_out_do = $("#log-out-do");
 		$log_out_do_container.hide();
@@ -3844,6 +3845,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$time_limit = $("#time-limit");
 		$time_limit_range = $("#time-limit-range");
 		$time_limit_scroll = $("#time-limit-scroll");
+
 		m.TL = 0;
 		m.lastTLIndex = 0;
 		m.TLIndex = 0;
@@ -6771,212 +6773,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 
-		$my_reco = $("#my-reco");
-		m.showReco = async function (r) {
-			if (r.has) {
-				if (r.deleted) {
-					$button_reco.show();
-					$button_edit.hide();
-					$button_del.hide();
-					$button_back.show();
-				}
-				else {
-					$button_reco.hide();
-					$button_edit.show();
-					$button_del.show();
-					$button_back.show();
-				}
-			}
-			else {
-				$button_reco.show();
-				$button_edit.hide();
-				$button_del.hide();
-				$button_back.hide();
-			}
-			if (r.has) {
-				let recoHTML = await m.recoHTML(r, true, true);
-				$my_reco.html(String(recoHTML)); // need to be edit.
-				let $edit = $my_reco.find(".button.edit").remove();
-			}
-			else {
-				$my_reco.html("");
-			}
-		};
-		m.fillRecoInNewReco = function (r, fillDefs) {
-			if (r.has) {
-				$input_title[0].value = r.title;
-				$input_cats[0].value = r.cats;
-				$input_desc[0].value = r.desc;
-				$input_cmt[0].value = r.cmt;
-				$input_val[0].value = r.val.str;
-				$input_val.trigger("keyup");
-			}
-			else if (fillDefs) {
-				let recoDef = m.recoDefs[r?.uri];
-				if (recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
-					$input_title[0].value = recoDef.defTitles[0][0];
-				}
-				if (recoDef.defCats[0] && recoDef.defCats[0][0]) {
-					$input_cats[0].value = recoDef.defCats[0][0];
-				}
-				if (recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
-					$input_desc[0].value = recoDef.defDescs[0][0];
-				}
-			}
-			let uri = r?.uri;
-			let myR = m.myRecos[uri];
-			if (!myR) { myR = m.myRecos[uri] = { uri }; }
-			if (myR.has) {
-				if (myR.deleted) {
-					$button_reco.show();
-					$button_edit.hide();
-					$button_del.hide();
-					$button_back.show();
-				}
-				else {
-					$button_reco.hide();
-					$button_edit.show();
-					$button_del.show();
-					$button_back.show();
-				}
-			}
-			else {
-				$button_reco.show();
-				$button_edit.hide();
-				$button_del.hide();
-				$button_back.hide();
-			}
-		};
-		m.emptifyRecoInNewReco = function () {
-			m.localStorage.clear();
-			$input_uri[0].value = "";
-			$input_val.trigger("keyup");
-			m.getAndShowDefsAndRecoInNewReco(true);
-			m.reNewAndReOn();
-		};
-		m.getH1 = function (uri) {
-			return new Promise(function (resolve, reject) {
-				$.ajax({
-					type: "POST", url: "/reco/getH1", data: uri
-					, dataType: "text"
-				}).done(function (resp) {
-					resolve(resp);
-				}).fail(function (resp) {
-					reject(resp);
-				});
-			});
-		}
-		m.showDefs = async function (uri) {
-			return new Promise(async function (resolve, reject) {
-				let recoDefs = m.recoDefs[uri];
-				if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false, h1: undefined }; }
-				let defTitles = recoDefs.defTitles;
-				let defTitlesHTML = "";
-				if (!recoDefs.h1) {
-					recoDefs.h1 = await m.getH1(uri);
-				}
-				defTitlesHTML += `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDefs.h1))}</div>`;
-				for (let i = 0; i < defTitles.length; i++) {
-					let title = defTitles[i][0].trim();
-					if (title.length !== 0 && title !== String(recoDefs.h1).trim()) {
-						defTitlesHTML += `<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
-					}
-				}
-				$def_titles.html(defTitlesHTML);
-				let $defTitles = $def_titles.find(".def-title");
-				$defTitles.on("click", function (e) {
-					$defTitles.removeClass("selected");
-					let $this = $(this);
-					$this.addClass("selected");
-					$input_title[0].value = m.unescapeHTML($this.html());
-				});
-
-				let defCats = m.recoDefs[uri].defCats;
-				let defCatsHTML = `<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
-				for (let i = 0; i < defCats.length; i++) {
-					let cat = defCats[i][0].trim();
-					if (cat.length !== 0) {
-						defCatsHTML += `<div class="def-cat replace-cat">${m.escapeOnlyTag(cat)}</div> `;
-					}
-				}
-				$def_cats.html(defCatsHTML);
-				let $defCats = $def_cats.find(".def-cat");
-				let $replaceCats = $def_cats.find(".replace-cat");
-				$replaceCats.on("click", function (e) {
-					let $this = $(this);
-					let fs = m.fsCat;
-					$defCats.removeClass("selected");
-					$this.addClass("selected");
-					let k = fs.k;
-					fs.catsSplit[k] = m.unescapeHTML($this.html()).trim();
-					fs.$fs[0].value = fs.catsSplit.join(";");
-					let sStart = 0;
-					for (let i = 0; i < k; i++) {
-						sStart += fs.catsSplit[i].length + 1;
-					}
-					let sEnd = sStart + fs.catsSplit[k].length;
-					fs.$fs.focus();
-					fs.$fs[0].setSelectionRange(sEnd, sEnd);
-				});
-				let $addTxts = $def_cats.find(".add-txt");
-				$addTxts.on("click", function (e) {
-					let $this = $(this);
-					$defCats.removeClass("selected");
-					$this.addClass("selected");
-					let sStart = $input_cats[0].selectionStart;
-					let sEnd = $input_cats[0].selectionEnd;
-					let inputValue = $input_cats[0].value;
-					let inserted = m.unescapeHTML($this.html());
-					$input_cats[0].value = `${inputValue.substring(0, sStart)}${inserted}${inputValue.substring(sEnd)}`;
-					let l = $input_cats[0].value.length;
-					$input_cats.focus();
-					sEnd = sStart + inserted.length;
-					$input_cats[0].setSelectionRange(sEnd, sEnd);
-					$input_cats.trigger("keyup.fs");
-				});
-				let $deleteCat = $def_cats.find(".delete-cat");
-				$deleteCat.on("click", function (e) {
-					let $this = $(this);
-					let fs = m.fsCat;
-					$defCats.removeClass("selected");
-					$this.addClass("selected");
-					let k = fs.k;
-					fs.catsSplit.splice(k, 1);
-					fs.$fs[0].value = fs.catsSplit.join(";");
-					let sStart = 0;
-					for (let i = 0; i < k; i++) {
-						sStart += fs.catsSplit[i].length + 1;
-					}
-					let sEnd = fs.catsSplit.length === k ? sStart - 1 : sStart;
-					fs.$fs.focus();
-					fs.$fs[0].setSelectionRange(sEnd, sEnd);
-					$input_cats.trigger("keyup.fs");
-				});
-
-				let defDescs = m.recoDefs[uri].defDescs;
-				let defDescsHTML = "";
-				for (let i = 0; i < defDescs.length; i++) {
-					let desc = defDescs[i][0].trim();
-					if (desc.length !== 0) {
-						if (desc.length <= 100) {
-							defDescsHTML += `<div class="def-desc">${m.escapeOnlyTag(desc)}<data class="none">${m.escapeOnlyTag(desc)}</data></div>`;
-						}
-						else {
-							defDescsHTML += `<div class="def-desc">${m.escapeOnlyTag(desc.substring(0, 50))} ... ${m.escapeOnlyTag(desc.substring(desc.length - 50))}<data class="none">${m.escapeOnlyTag(desc)}</data></div>`;
-						}
-					}
-				}
-				$def_descs.html(defDescsHTML);
-				let $defDesc = $def_descs.find(".def-desc");
-				$defDesc.on("click", function (e) {
-					$defDesc.removeClass("selected");
-					let $this = $(this);
-					$this.addClass("selected");
-					$input_desc[0].value = m.unescapeHTML($this.find("data.none").html());
-				});
-				resolve();
-			});
-		};
 		$def_cmd = $("#def-cmds").find(".def-cmd");
 		$def_cmd.on("click", function (e) {
 			$input_desc.focus();
