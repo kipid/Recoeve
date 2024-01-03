@@ -1076,7 +1076,11 @@ textarea.multi-line {
 }
 
 .rC {
-	margin: .5em 0
+	margin: .5em auto
+}
+
+.rC.instagram {
+	max-width: 37em
 }
 
 .rC.fixed {
