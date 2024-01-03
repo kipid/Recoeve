@@ -1121,9 +1121,9 @@ web	${m.sW}	${m.sH}`;
 			m.listPlayFrom = from;
 			if (from === "youtube") {
 				$eveElse.html('');
-				$eveElse_uri_rendered.hide();
-				$rC_youtube_uri_rendered.show();
-				fs.$playing = $rC_youtube_uri_rendered;
+				$eveElse_container.hide();
+				$rC_youtube_container.show();
+				fs.$playing = $rC_youtube_container;
 				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					if (m.YtPlayer) {
@@ -1185,9 +1185,9 @@ web	${m.sW}	${m.sH}`;
 			}
 			else if (from === "video") {
 				$youtube.html('');
-				$eveElse_uri_rendered.show();
-				$rC_youtube_uri_rendered.hide();
-				fs.$playing = $eveElse_uri_rendered;
+				$eveElse_container.show();
+				$rC_youtube_container.hide();
+				fs.$playing = $eveElse_container;
 				let config = uriRendered.config;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					let config = uriRendered.config;
@@ -1213,9 +1213,9 @@ web	${m.sW}	${m.sH}`;
 			else {
 				fs.pauseVideo();
 				$youtube.html('');
-				$eveElse_uri_rendered.show();
-				$rC_youtube_uri_rendered.hide();
-				fs.$playing = $eveElse_uri_rendered;
+				$eveElse_container.show();
+				$rC_youtube_container.hide();
+				fs.$playing = $eveElse_container;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					$eveElse.html(uriRendered.html);
 					fs.lastIndex = fs.currentIndex;
