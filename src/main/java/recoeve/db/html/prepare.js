@@ -814,7 +814,7 @@ window.m = window.m || {};
 		return new Promise(async function (resolve, reject) {
 			resp = await m.strToJSON(resp);
 			for (let k = 1; k < resp.length; k++) {
-				let respK = await resp[k];
+				let respK = resp[k];
 				let uri = String(respK.uri);
 				let r = recos[uri];
 				if (!r) { r = recos[uri] = {}; }
@@ -3171,7 +3171,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
 				m.rmb_me(m.reco_pointChange_do, { strHeads, strContents, $result, uri, cats, valStr, inRecoms });
 			}
-			else if (valStr !== m.myRecos[uri].val?.str) {
+			else if (valStr !== m.myRecos[uri]?.val?.str) {
 				let strHeads = "uri\tdo\tval";
 				let strContents = `${m.encloseStr(uri)}\tchange\t${m.encloseStr(valStr)}`;
 				let cats = "";
