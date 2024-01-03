@@ -125,10 +125,8 @@
 			<div class="button" id="choose-lang">▼ Language/언어/語言</div>
 		</div><!-- div#right-top-log-in -->
 		<div class="cBoth"></div>
-		<data id="data-lang">en ko zh ja de fr es hi ar ru
-			English/영어/英語/en Korean/한국어/韓語/ko Chinese/중국어(번체)/中文/zh Japanese/일본어/日語/ja deutsche Sprache/독일어/Deutsch/de
-			Français/French/프랑스어/佛語/fr Español/Spanish/스페인어/西班牙語/es हिन्दी/Hindi/힌디어/印地语/hi اللغة العربية/ar
-			Русский/Russian/러시아어/俄語/ru</data>
+		<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	pt	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Português/Portuguese/포르투갈어/葡萄牙語/pt	Русский/Russian/러시아어/俄語/ru</data>
 		<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 		<div class="cBoth"></div>
 		<div id="new-reco">
@@ -247,23 +245,9 @@
 		$title = $("title");
 		$body = $("body");
 
-		m.catList = m.myCatList = [];
-		m.myRecos = m.userRecos = {};
-		m.recoDefs = {};
-		m.timeout = {};
-
-		m.fsCat = [];
-		m.fsCat[0] = m.fsCat[1] = [];
-		m.fsCat[0].k = m.fsCat[1].k = -1;
-		m.fsCat.fullList = [];
 		m.fsCat.$fs = $input_cats;
 		m.fsCat.$fsl = $cat_fs_list;
 		m.fsCat.$fs_container = $cat_fs_container;
-
-		m.fsToRs = [];
-		m.fsToRs.fixed = false;
-
-		m.fullPts = 10.0;
 
 		m.a_log_in = function (e, elem) {
 			let uri = $input_uri[0].value;
@@ -293,21 +277,21 @@
 		};
 
 		$right_top_log_in = $("#right-top-log-in");
-		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
-</div>`: `<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+</div>`: `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>`}`);
 		$a_log_in = $(".a-log-in");
 		$a_log_out = $(".a-log-out");
 		$my_id = $("#my-id");
-		if (!!m.myIndex) {
+		if (m.myIndex) {
 			$my_id.html(m.myId + " ▾");
 		}
 		else {
 			$my_id.hide();
 		}
-		if (!!m.myIndex) {
+		if (m.myIndex) {
 			$a_log_in.hide();
 		}
 		else {
@@ -406,7 +390,7 @@
 			}
 			list.unshift(""); // cat=uncategorized : empty cat.
 			if (catList === undefined || catList === null) {
-				if (!!m.catList) {
+				if (m.catList) {
 					catList = m.catList;
 				}
 				else {
@@ -639,219 +623,6 @@
 			$cat_fs_container.show();
 		});
 
-		/* Points */
-		////////////////////////////////////////////////////
-		// val, points, stars
-		////////////////////////////////////////////////////
-		m.val = function (val) {
-			let res = { valid: false, str: "", val: -1 };
-			if (val === null || val === undefined) {
-				return res;
-			}
-			else if (val?.constructor !== String) {
-				return res;
-			}
-			res.str = val;
-			if (val.length === 0) {
-				res.valid = true;
-				res.val = -1;
-			}
-			else {
-				let exec = m.ptnVal.exec(val);
-				if (exec !== null) {
-					res.num = Number(exec[1]);
-					res.divisor = Number(exec[2]);
-					res.valid = (res.num >= 0 && res.num <= res.divisor);
-					if (res.valid) {
-						res.val = res.num / res.divisor;
-					}
-					else {
-						res.val = -1;
-					}
-				}
-			}
-			return res;
-		};
-		{
-			let r = 12; // outer radius of star
-			let r0 = 6; // inner radius of star
-			let pad = 1; // padding of star
-			let pad0 = 9; // left/right pad
-			let thetas = [];
-			let coss = [];
-			let sins = [];
-			for (let i = 0; i < 10; i++) {
-				thetas.push(-Math.PI / 2 + 2 * Math.PI / 10 * i);
-				coss.push(Math.cos(thetas[i]));
-				sins.push(Math.sin(thetas[i]));
-			}
-			let str = `${pad0},0 `;
-			let yc = pad + r;
-			let xc = pad0 + pad + r;
-			for (let k = 0; k < 5; k++, xc += 2 * r + pad) {
-				str += `${xc},0 `;
-				for (let i = 0; i < 10; i++) {
-					let rp = (i % 2 == 0) ? r : r0;
-					str += `${(xc + rp * coss[i]).toFixed(1)},${(yc + rp * sins[i]).toFixed(1)} `;
-				}
-				str += `${xc},${pad} ${xc},0 `;
-			}
-			xc -= r;
-			yc += r * sins[4] + pad;
-			str += `${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
-			m.starsWidth = xc - pad0 - 2;
-			m.stars = function (val) {
-				if (!val || val.constructor !== Number || val === NaN) { val = -1; }
-				if (val < 0) { val = 0; }
-				else if (val > 1) { val = 1; }
-				return `<div class="stars-container" style="width:${xc + pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0 + 1}px; width:${(m.starsWidth * val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
-			}
-		}
-
-		////////////////////////////////////////////////////
-		// Show recos
-		////////////////////////////////////////////////////
-		m.recoDowned = function (urisStr, recos) {
-			let uris = urisStr.trim().split("\n");
-			for (k = 0; k < uris.length; k++) {
-				let uri = uris[k];
-				let r = recos[uri];
-				if (!r) { r = recos[uri] = { uri }; }
-				r.down = true; // User's or My reco on the uri is downloaded.
-			}
-		};
-		m.recoToEve = async function (resp, recos, cat, uris) {
-			return new Promise(async function (resolve, reject) {
-				resp = await m.strToJSON(resp);
-				for (let k = 1; k < resp.length; k++) {
-					let respK = await resp[k];
-					let uri = String(respK.uri);
-					let r = recos[uri];
-					if (!r) { r = recos[uri] = {}; }
-					r.has = true; // User has a reco on the uri.
-					for (let prop in respK) {
-						if (isNaN(prop)) {
-							prop = String(prop);
-							r[prop] = String(respK[prop]);
-						}
-					}
-					r.deleted = false;
-					if (r.desc !== undefined) {
-						r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
-					}
-					else {
-						r.descR = m.renderStrDescCmt("");
-					}
-					if (r.cmt !== undefined) {
-						r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
-					}
-					else {
-						r.cmtR = m.renderStrDescCmt("");
-					}
-					r.val = m.val(String(r.val));
-				}
-				return resolve();
-			});
-		};
-
-		////////////////////////////////////////////////////
-		// New Reco or Edit
-		////////////////////////////////////////////////////
-		m.getUTF8Length = function (s) {
-			let len = 0;
-			for (let i = 0; i < s.length; i++) {
-				let code = s.charCodeAt(i);
-				if (code <= 0x7f) {
-					len += 1;
-				}
-				else if (code <= 0x7ff) {
-					len += 2;
-				}
-				else if (code >= 0xd800 && code <= 0xdfff) {
-					// Surrogate pair: These take 4 bytes in UTF-8 and 2 chars in UCS-2
-					// (Assume next char is the other [valid] half and just skip it)
-					len += 4; i++;
-				}
-				else if (code < 0xffff) {
-					len += 3;
-				}
-				else {
-					len += 4;
-				}
-			}
-			return len;
-		};
-		m.formatURI = function (uri) {
-			if (!!uri && uri.constructor === String) {
-				uri = uri.trim().replace(/[\t\n]/g, " ");
-				let exec = m.ptnTag.exec(uri);
-				if (exec !== null) {
-					try {
-						let $uri = $(uri);
-						let src = $uri.attr("src");
-						if (src) {
-							uri = src;
-						}
-						else {
-							src = $uri.find("[src]").attr("src");
-							if (src) { uri = src; }
-						}
-					} catch (err) {
-						console.log(err);
-					}
-				}
-				return m.unescapeHTML(uri).trim();
-			}
-			return "";
-		};
-		m.formatTitle = function (title) {
-			return title.trim().replace(/[\t\r\n]/g, " ");
-		};
-		m.formatCats = function (cats) {
-			if (!cats || cats.constructor !== String || cats.trim().length === 0) {
-				return "";
-			}
-			cats = cats.trim().replace(/[\t\r\n]/g, " ");
-			let list = cats.split(";");
-			for (let i = 0; i < list.length; i++) {
-				let levels = list[i].split("--");
-				for (let j = 0; j < levels.length; j++) {
-					levels[j] = levels[j].replace(/^[\s-]+/, "").replace(/[\s-]+$/, "");
-				}
-				list[i] = "";
-				let k = 0;
-				for (; k < levels.length; k++) {
-					if (levels[k].length !== 0) {
-						list[i] = levels[k];
-						break;
-					}
-				}
-				for (k++; k < levels.length; k++) {
-					if (levels[k].length !== 0) {
-						list[i] += "--" + levels[k];
-					}
-				}
-			}
-			let catsMap = {};
-			catsMap[list[0]] = true;
-			cats = list[0];
-			for (let i = 1; i < list.length; i++) {
-				if (catsMap[list[i]]) {
-				}
-				else {
-					catsMap[list[i]] = true;
-					cats += ";" + list[i];
-				}
-			}
-			return cats;
-		};
-
-		m.myRecos[""] = {
-			uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10")
-		};
-		m.recoDefs[""] = {
-			uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
-		};
 		$my_reco = $("#my-reco");
 		m.showReco = async function (r) {
 			if (r.has) {
@@ -1289,7 +1060,7 @@
 			}
 		});
 		window.onpopstate = function (e) {
-			if (!!e.state) {
+			if (e.state) {
 				if (e.state.uri) {
 					$input_uri[0].value = e.state.uri;
 					$input_uri.trigger("keyup");

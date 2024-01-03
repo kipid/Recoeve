@@ -4,6 +4,15 @@ window.m = window.m || {};
 	$window = $(window);
 	$document = $(document);
 
+	m.myCatList = [];
+	m.catList = m.myPage ? m.myCatList : [];
+	m.catUriList = [];
+	m.userRecos = {};
+	m.myRecos = m.myPage ? m.userRecos : {};
+	m.recoDefs = {};
+	m.timeout = {};
+	m.maxShowReco = 20;
+
 	m.fsTimezone = [];
 	m.fsTimezone[0] = m.fsTimezone[1] = [];
 	m.fsTimezone.catsSplit = [];
@@ -55,6 +64,12 @@ window.m = window.m || {};
 	m.recomsSorted = {};
 	m.recomsPlusRandomSorted = {};
 
+	m.mdInPRL = false; // mouse down in Point Range Left
+	m.mdInPRR = false; // mouse down in Point Range Right
+	m.mdInPRL1 = false; // mouse down in Point Range1 Left
+	m.mdInPRR1 = false; // mouse down in Point Range1 Right
+	m.PRmax = 10.0;
+	m.fullPts = 10.0;
 
 	window.awaitAll = async function (promises) {
 		const results = await Promise.all(promises);
@@ -658,6 +673,267 @@ window.m = window.m || {};
 		return until;
 	};
 
+	//////////////////////////////////////////////
+	// Log in, Log out, To my page, delayedLogout
+	//////////////////////////////////////////////
+	m.a_log_in = function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let href = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+		$a_log_in.attr("href", href);
+		if (e?.which === 2) {
+			window.open(href, "_blank");
+		}
+		else {
+			window.location.href = href;
+		}
+		return false;
+	};
+	m.log_out_do = function (args, err) {
+		if (err) {
+			$log_out_do_container.show();
+			$log_out_do.html(err);
+		}
+		$.ajax({
+			type: "POST", url: `/account/log-out.do`, data: args
+			, dataType: "text"
+		}).fail(function (resp) {
+			$log_out_do_container.show();
+			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
+		}).done(function (resp) {
+			$log_out_do_container.show();
+			$log_out_do.html(resp);
+			setTimeout(function () {
+				window.location.href = args.href;
+			}, m.wait);
+		});
+	};
+	m.a_log_out = function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let href_log_out = `/account/log-out?goto=${encodeURIComponent(fullPath)}`;
+		$a_log_out.attr("href", href_log_out);
+		if (e?.which === 2) {
+			window.open(href_log_out, "_blank");
+		}
+		else {
+			$log_out_do_container.show();
+			$log_out_do.html(`[--Log-out from Recoeve.net--]`);
+			let href_log_in = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+			m.rmb_me(m.log_out_do, { href: href_log_in, goto: fullPath });
+		}
+		return false;
+	};
+	m.log_out_do_from_all = function (args, err) {
+		if (err) {
+			$log_out_do_container.show();
+			$log_out_do.html(err);
+		}
+		$.ajax({
+			type: "POST", url: `/account/log-out-from-all.do`, data: args
+			, dataType: "text"
+		}).fail(function (resp) {
+			$log_out_do_container.show();
+			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
+		}).done(function (resp) {
+			$log_out_do_container.show();
+			$log_out_do.html(resp);
+			setTimeout(function () {
+				window.location.href = args.href;
+			}, m.wait);
+		});
+	};
+	m.a_log_out_from_all = function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let href_log_out_from_all = `/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
+		$a_log_out_from_all.attr("href", href_log_out_from_all);
+		if (e?.which === 2) {
+			window.open(href_log_out_from_all, "_blank");
+		}
+		else {
+			$log_out_do_container.show();
+			$log_out_do.html(`[--Log-out at all devices from Recoeve.net--]`);
+			let href_log_in = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
+			m.rmb_me(m.log_out_do_from_all, { href: href_log_in, goto: fullPath });
+		}
+		return false;
+	};
+	m.a_to_my_page = function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		let fullPath = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		$a_to_my_page.attr("href", fullPath);
+		if (e?.which === 2) {
+			window.open(fullPath, "_blank");
+		}
+		else {
+			window.location.href = fullPath;
+		}
+		return false;
+	};
+	m.delayedLogOut = function (msg, delayTime = 27, $result) {
+		let delay = delayTime && delayTime.constructor === Number ? delayTime : 27;
+		clearInterval(m.setIntervalDeleyedLogOut);
+		m.setIntervalDeleyedLogOut = setInterval(function () {
+			$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
+			$result?.html($error.html());
+			delay--;
+		}, 1000);
+		clearTimeout(m.setTimeoutDeleyedLogOut);
+		m.setTimeoutDeleyedLogOut = setTimeout(function () {
+			window.location.href = `/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
+		}, delay * 1000);
+	};
+
+	////////////////////////////////////////////////////
+	// Show recos
+	////////////////////////////////////////////////////
+	m.recoDowned = function (urisStr, recos) {
+		let uris = urisStr.trim().split("\n");
+		for (k = 0; k < uris.length; k++) {
+			let uri = uris[k];
+			let r = recos[uri];
+			if (!r) { r = recos[uri] = { uri }; }
+			r.down = true; // User's or My reco on the uri is downloaded.
+		}
+	};
+	m.recoToEve = async function (resp, recos, cat, uris) {
+		return new Promise(async function (resolve, reject) {
+			resp = await m.strToJSON(resp);
+			for (let k = 1; k < resp.length; k++) {
+				let respK = await resp[k];
+				let uri = String(respK.uri);
+				let r = recos[uri];
+				if (!r) { r = recos[uri] = {}; }
+				r.has = true; // User has a reco on the uri.
+				for (let prop in respK) {
+					if (isNaN(prop)) {
+						prop = String(prop);
+						r[prop] = String(respK[prop]);
+					}
+				}
+				r.deleted = false;
+				if (r.desc !== undefined) {
+					r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
+				}
+				else {
+					r.descR = m.renderStrDescCmt("");
+				}
+				if (r.cmt !== undefined) {
+					r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
+				}
+				else {
+					r.cmtR = m.renderStrDescCmt("");
+				}
+				r.val = m.val(String(r.val));
+			}
+			return resolve();
+		});
+	};
+
+	////////////////////////////////////////////////////
+	// New Reco or Edit
+	////////////////////////////////////////////////////
+	m.getUTF8Length = function (s) {
+		let len = 0;
+		for (let i = 0; i < s.length; i++) {
+			let code = s.charCodeAt(i);
+			if (code <= 0x7f) {
+				len += 1;
+			}
+			else if (code <= 0x7ff) {
+				len += 2;
+			}
+			else if (code >= 0xd800 && code <= 0xdfff) {
+				// Surrogate pair: These take 4 bytes in UTF-8 and 2 chars in UCS-2
+				// (Assume next char is the other [valid] half and just skip it)
+				len += 4; i++;
+			}
+			else if (code < 0xffff) {
+				len += 3;
+			}
+			else {
+				len += 4;
+			}
+		}
+		return len;
+	};
+	m.formatURI = function (uri) {
+		if (uri && uri.constructor === String) {
+			uri = uri.trim().replace(/[\t\n]/g, " ");
+			let exec = m.ptnTag.exec(uri);
+			if (exec !== null) {
+				try {
+					let $uri = $(uri);
+					let src = $uri.attr("src");
+					if (src) {
+						uri = src;
+					}
+					else {
+						src = $uri.find("[src]").attr("src");
+						if (src) { uri = src; }
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			}
+			return m.unescapeHTML(uri).trim();
+		}
+		return "";
+	};
+	m.formatTitle = function (title) {
+		return title.trim().replace(/[\t\r\n]/g, " ");
+	};
+	m.formatCats = function (cats) {
+		if (!cats || cats.constructor !== String || cats.trim().length === 0) {
+			return "";
+		}
+		cats = cats.trim().replace(/[\t\r\n]/g, " ");
+		let list = cats.split(";");
+		for (let i = 0; i < list.length; i++) {
+			let levels = list[i].split("--");
+			for (let j = 0; j < levels.length; j++) {
+				levels[j] = levels[j].replace(/^[\s-]+/, "").replace(/[\s-]+$/, "");
+			}
+			list[i] = "";
+			let k = 0;
+			for (; k < levels.length; k++) {
+				if (levels[k].length !== 0) {
+					list[i] = levels[k];
+					break;
+				}
+			}
+			for (k++; k < levels.length; k++) {
+				if (levels[k].length !== 0) {
+					list[i] += "--" + levels[k];
+				}
+			}
+		}
+		let catsMap = {};
+		catsMap[list[0]] = true;
+		cats = list[0];
+		for (let i = 1; i < list.length; i++) {
+			if (catsMap[list[i]]) {
+			}
+			else {
+				catsMap[list[i]] = true;
+				cats += ";" + list[i];
+			}
+		}
+		return cats;
+	};
+
+	m.myRecos[""] = {
+		uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10")
+	};
+	m.recoDefs[""] = {
+		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
+	};
+
 	////////////////////////////////////////////////////
 	// Delayed Loading.
 	////////////////////////////////////////////////////
@@ -1125,6 +1401,74 @@ web	${m.sW}	${m.sH}`;
 		fs.shuffledOnce = false;
 		return fs[0];
 	};
+
+	////////////////////////////////////////////////////
+	// val, points, stars
+	////////////////////////////////////////////////////
+	m.val = function (val) {
+		let res = { valid: false, str: "", val: -1 };
+		if (val === null || val === undefined) {
+			return res;
+		}
+		else if (val?.constructor !== String) {
+			return res;
+		}
+		res.str = val;
+		if (val.length === 0) {
+			res.valid = true;
+			res.val = -1;
+		}
+		else {
+			let exec = m.ptnVal.exec(val);
+			if (exec !== null) {
+				res.num = Number(exec[1]);
+				res.divisor = Number(exec[2]);
+				res.valid = (res.num >= 0 && res.num <= res.divisor);
+				if (res.valid) {
+					res.val = res.num / res.divisor;
+				}
+				else {
+					res.val = -1;
+				}
+			}
+		}
+		return res;
+	};
+	{
+		let r = 12; // outer radius of star
+		let r0 = 6; // inner radius of star
+		let pad = 1; // padding of star
+		let pad0 = 9; // left/right pad
+		let thetas = [];
+		let coss = [];
+		let sins = [];
+		for (let i = 0; i < 10; i++) {
+			thetas.push(-Math.PI / 2 + 2 * Math.PI / 10 * i);
+			coss.push(Math.cos(thetas[i]));
+			sins.push(Math.sin(thetas[i]));
+		}
+		let str = `${pad0},0 `;
+		let yc = pad + r;
+		let xc = pad0 + pad + r;
+		for (let k = 0; k < 5; k++, xc += 2 * r + pad) {
+			str += `${xc},0 `;
+			for (let i = 0; i < 10; i++) {
+				let rp = (i % 2 === 0) ? r : r0;
+				str += `${(xc + rp * coss[i]).toFixed(1)},${(yc + rp * sins[i]).toFixed(1)} `;
+			}
+			str += `${xc},${pad} ${xc},0 `;
+		}
+		xc -= r;
+		yc += r * sins[4] + pad;
+		str += `${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
+		m.starsWidth = xc - pad0 - 2;
+		m.stars = function (val) {
+			if (!val || val.constructor !== Number || val === NaN) { val = -1; }
+			if (val < 0) { val = 0; }
+			else if (val > 1) { val = 1; }
+			return `<div class="stars-container" style="width:${xc + pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0 + 1}px; width:${(m.starsWidth * val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
+		}
+	}
 
 	////////////////////////////////////////////////////
 	// YouTube API
