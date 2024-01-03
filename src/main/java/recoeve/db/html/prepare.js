@@ -1142,6 +1142,129 @@ window.m = window.m || {};
 			resolve();
 		});
 	};
+	m.getAndFillRecoInNewReco = function (r, fillDefs) {
+		return new Promise(function (resolve, reject) {
+			if (r.down) {
+				m.fillRecoInNewReco(r, fillDefs);
+				resolve();
+			}
+			else {
+				let getRecosStr = "uri" + "\n" + r.uri;
+				if (m.myIndex) {
+					$.ajax({
+						type: "POST", url: `/user/${m.myId}/get-Recos`, data: getRecosStr
+						, dataType: "text"
+					}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
+						m.recoDowned(r.uri, m.myRecos);
+						await m.recoToEve(resp, m.myRecos);
+						m.fillRecoInNewReco(r, fillDefs);
+						resolve();
+					});
+				}
+				else {
+					resolve();
+				}
+			}
+		});
+	};
+	m.getAndFillDefsInNewReco = function (r, fillDefs) {
+		return new Promise(function (resolve, reject) {
+			let uri = r.uri;
+			if (m.recoDefs[uri]?.down) {
+				m.showDefs(uri);
+				resolve();
+			}
+			else {
+				m.showDefs("");
+				$.ajax({
+					type: "POST", url: "/reco/defs", data: uri
+					, dataType: "text"
+				}).done(async function (resp) {
+					let defs = await m.strToJSON(resp);
+					let recoDefs = m.recoDefs[uri];
+					if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri }; }
+					recoDefs.down = true;
+					if (defs[1]) {
+						recoDefs.defCats = await m.strToJSON(defs[1]["def-cats"], false);
+						recoDefs.defTitles = await m.strToJSON(defs[1]["def-titles"], false);
+						recoDefs.defDescs = await m.strToJSON(defs[1]["def-descs"], false);
+						m.showDefs(uri);
+					}
+					resolve();
+				});
+			}
+		});
+	};
+	m.formatNOfPoints = function (n) {
+		if (n < 1000) {
+			return "" + n;
+		}
+		else if (n < 1000000) {
+			return (n / 1000.0).toFixed(2) + "K";
+		}
+		else if (n < 1000000000) {
+			return (n / 1000000.0).toFixed(2) + "M";
+		}
+		else if (n < 1000000000000) {
+			return (n / 1000000000.0).toFixed(2) + "B";
+		}
+	};
+	m.formatURIFully = function (uri, uriRendered) {
+		let from = String(uriRendered.from);
+		m.lastURI = uri;
+		switch (from) {
+			case "youtube":
+				uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+				break;
+			case "instagram":
+				uri = `https://www.instagram.com/p/${uriRendered.imgId}/`;
+				break;
+			case "tiktok":
+				uri = `https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
+				break;
+			case "weverse":
+				uri = `https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
+				break;
+			case "naver":
+				uri = `https://tv.naver.com/v/${uriRendered.videoId}`;
+				break;
+			case "vlive":
+				uri = `https://www.vlive.tv/video/${uriRendered.videoId}`;
+				break;
+			case "kakao":
+				uri = `https://tv.kakao.com/v/${uriRendered.videoId}`;
+				break;
+			case "ted":
+				uri = `https://www.ted.com/talks/${uriRendered.videoId}`;
+				break;
+			case "dailymotion":
+				uri = `https://www.dailymotion.com/video/${uriRendered.videoId}`;
+				break;
+			case "sogirl": case "topgirl":
+				uri = uriRendered.newURI;
+				break;
+		}
+		return uri;
+	};
+	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
+		let elem = $input_uri[0];
+		let uri = m.lastURI = noFormatURI ? elem.value : m.formatURI(elem.value);
+		if (elem.value !== uri) { elem.value = uri; }
+		let uriRendered = await uriRendering(uri, true);
+		if (!noFormatURI) {
+			elem.value = m.formatURIFully(uri, uriRendered);
+		}
+		$show_URI.html(String(uriRendered.html));
+		let r = m.myRecos[uri];
+		if (!r) { r = m.myRecos[uri] = { uri }; }
+		if (!(r && r.has)) {
+			r = m.userRecos[uri];
+			if (!r) { r = m.userRecos[uri] = { uri }; }
+		}
+		await m.getAndFillRecoInNewReco(r, fillDefs);
+		await m.getAndFillDefsInNewReco(r, fillDefs);
+		m.reNewAndReOn();
+	};
 
 	////////////////////////////////////////////////////
 	// Delayed Loading.
