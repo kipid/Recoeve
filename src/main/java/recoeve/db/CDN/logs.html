@@ -69,6 +69,7 @@ m.myId="kipid";
 </head>
 <body>
 <div id="print-logs"></div>
+<textarea id="textarea-csv" style="width:100%; height:30em; font-size:1em; background:white; color:black"></textarea>
 </body>
 <script>
 (function (m, $, undefined) {
@@ -81,8 +82,13 @@ m.printLogs=function (args, err) {
 		$print_logs.html(resp);
 	}).done(async function (resp) {
 		let txtArray=await m.strToJSON(resp);
-		txtArray[0].splice(1, 0, "index");
+		let csv="Email,First Name,Last Name";
 		let iMax=txtArray.length;
+		for (let i=1;i<iMax;i++) {
+			csv+=`\n${txtArray[i].email},,${txtArray[i].user_id}`;
+		}
+		$("#textarea-csv")[0].value=csv;
+		txtArray[0].splice(1, 0, "index");
 		for (let i=1;i<iMax;i++) {
 			txtArray[i].splice(1, 0, ""+parseInt(txtArray[i].user_i, 16));
 			txtArray[i].splice(2, 1, `<a target="_blank" href="https://recoeve.net/user/${txtArray[i].user_id}">${txtArray[i].user_id}</a>`);
