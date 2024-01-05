@@ -82,10 +82,10 @@ m.printLogs=function (args, err) {
 		$print_logs.html(resp);
 	}).done(async function (resp) {
 		let txtArray=await m.strToJSON(resp);
-		let csv="Email,First Name,Last Name";
+		let csv="Email";
 		let iMax=txtArray.length;
 		for (let i=1;i<iMax;i++) {
-			csv+=`\n${txtArray[i].email},,${txtArray[i].user_id}`;
+			csv+=`\n${txtArray[i].email}`;
 		}
 		$("#textarea-csv")[0].value=csv;
 		txtArray[0].splice(1, 0, "index");
