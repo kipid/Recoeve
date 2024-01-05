@@ -1980,9 +1980,9 @@ web	${m.sW}	${m.sH}`;
 					await fs.getAndPlayVideo(true);
 				}
 				else if (m.setTimeoutPlayNextCount < 8) {
+					fs.$fs[0].value="";
+					await m.reTriggerFS(fs);
 					m.setTimeoutPlayNext = setTimeout(function () {
-						fs.$fs[0].value="";
-						await m.reTriggerFS(fs);
 						fs.playNext(increment, cue, first);
 					}, m.wait);
 					console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
