@@ -2047,6 +2047,7 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					else if (YT?.Player) {
+						console.log(`new YT.Player('youtube'); :: fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
