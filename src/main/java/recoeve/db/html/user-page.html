@@ -6134,17 +6134,15 @@
 				if (fs.shuffledOnce || m.lastCat !== m.currentCat) {
 					fs.lastIndex = -2;
 					if ($li0.length) {
-						// console.log("fs.playNext(-1, true, true);");
-						// fs.currentIndex = Number($li0.attr("id").substring(4));
 						m.fsViewAndScroll(fs, $li0);
 						$li0.trigger("click");
-						// fs.playNext(-1, true, true);
 					}
 					else {
-						if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 6) {
+						if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 8) {
 							m.setTimeoutPlayNextFirstCount = 0;
 						}
 						clearTimeout(m.setTimeoutPlayNextFirst);
+						m.setTimeoutPlayNextFirstClickedOnce = false;
 						m.setTimeoutPlayNextFirst = setTimeout(function selfPlayNextFirst() {
 							console.log("selfPlayNextFirst();");
 							m.setTimeoutPlayNextFirstCount++;
@@ -6159,7 +6157,7 @@
 								}
 								m.setTimeoutPlayNextFirstCount = 0;
 							}
-							else if (m.setTimeoutPlayNextFirstCount < 6) {
+							else if (m.setTimeoutPlayNextFirstCount < 8) {
 								setTimeout(selfPlayNextFirst, 2 * m.wait);
 							}
 							else {
@@ -6459,9 +6457,8 @@
 		// ShortKeys
 		////////////////////////////////////////////////////
 		m.intervalCount = {};
-		m.intervalMaxCount = 8;
 		m.intervalOpenCat = function (intervalId) {
-			if (m.intervalCount[intervalId] === undefined || m.intervalCount[intervalId] > m.intervalMaxCount) {
+			if (m.intervalCount[intervalId] === undefined || m.intervalCount[intervalId] > 8) {
 				m.intervalCount[intervalId] = 0;
 			}
 			m.intervalCount[intervalId]++;
@@ -6470,7 +6467,7 @@
 			let fsGotoCatsFLCat = fs.fullList[m.currentCat];
 			if (fsGotoCatsFLCat?.i || fsGotoCatsFLCat?.i === 0) {
 				let $gotoCatsI = $(`#gotoCats-${fsGotoCatsFLCat.i}`);
-				if (m.intervalCount[intervalId] > m.intervalMaxCount) {
+				if (m.intervalCount[intervalId] > 8) {
 					clearInterval(intervalId);
 					m.intervalCount[intervalId] = 0;
 					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
@@ -6491,17 +6488,19 @@
 						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 					}
 					m.doNotPushHistory = false;
-					if (m.initialOpen && m.searchVars.ToR?.val || m.searchVars.ToR?.val === "") {
-						$table_of_recos[0].value = m.searchVars.ToR.val;
-						if (!$table_of_recos_container.is(":visible")) {
-							$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
-							$table_of_recos.trigger("keyup.fs");
+					if (m.initialOpen) {
+						if (m.searchVars.ToR?.val || m.searchVars.ToR?.val === "") {
+							$table_of_recos[0].value = m.searchVars.ToR.val;
+							if (!$table_of_recos_container.is(":visible")) {
+								$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
+								$table_of_recos.trigger("keyup.fs");
+							}
 						}
 						m.gotoHash(m.initialHashURI);
 					}
 					return;
 				}
-				else if (m.intervalCount[intervalId] > m.intervalMaxCount / 2) {
+				else if (m.intervalCount[intervalId] > 4) {
 					clearInterval(intervalId);
 					m.intervalCount[intervalId] = 0;
 					fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fsGotoCatsFLCat.html}</div>`);
@@ -6523,7 +6522,7 @@
 					}
 				}
 			}
-			else if (m.intervalCount[intervalId] > m.intervalMaxCount) {
+			else if (m.intervalCount[intervalId] > 8) {
 				clearInterval(intervalId);
 				m.intervalCount[intervalId] = 0;
 				$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`)
