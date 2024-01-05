@@ -817,7 +817,7 @@ window.m = window.m || {};
 				let respK = resp[k];
 				let uri = String(respK.uri);
 				let r = recos[uri];
-				if (!r) { r = recos[uri] = {uri}; }
+				if (!r) { r = recos[uri] = { uri }; }
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
 					if (isNaN(prop)) {
@@ -1890,8 +1890,8 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.hide();
 			}
-			fs.lastIndex=fs.currentIndex;
-			m.lastCat=m.currentCat;
+			fs.lastIndex = fs.currentIndex;
+			m.lastCat = m.currentCat;
 			m.reNewAndReOn();
 			resolve();
 		});
@@ -2739,7 +2739,7 @@ web	${m.sW}	${m.sH}`;
 		return new Promise(async function (resolve, reject) {
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
-					uri=m.unescapeHTML(uri);
+					uri = m.unescapeHTML(uri);
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
@@ -3014,19 +3014,19 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 					let val = m.escapeOnlyTag(descR[l].val);
 					switch (key.toLowerCase()) {
 						case "#start": case "#end": case "#": case "": default: {
-							let valBrTrimed=val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
-							res += `<div class="value">${key} ${valBrTrimed&&inListPlay?valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valBrTrimed}</div>`;
+							let valBrTrimed = val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
+							res += `<div class="value">${key} ${valBrTrimed && inListPlay ? valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valBrTrimed}</div>`;
 							break;
 						}
 						case "#lyrics": case "#lyrics:":
 						case "#lyric": case "#lyric:":
 						case "#가사": case "#가사:": {
-							let valTrimedBr=val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
+							let valTrimedBr = val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
 							res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${valTrimedBr&&inListPlay?valTrimedBr.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`):valTrimedBr}</div>
+	<div class="lyrics">${valTrimedBr && inListPlay ? valTrimedBr.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valTrimedBr}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
