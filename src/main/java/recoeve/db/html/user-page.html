@@ -3143,56 +3143,6 @@
 				}, m.wait * 1.5 - passed);
 			}
 		};
-		m.reTriggerFS = function (fs) {
-			return new Promise(function (resolve, reject) {
-				fs[1] = null;
-				fs[0].ptnSH = m.splitHangul("$!@#");
-				if (fs === m.fsToRs) {
-					fs.$fs.off("keyup.fs");
-					fs.$fs.on("keyup.fs", async function (e) {
-						await fs.fsOn(e);
-						resolve();
-					});
-					fs.$fs.trigger("keyup.fs");
-				}
-				else {
-					fs.$fs.trigger("keyup.fs");
-					resolve();
-				}
-			});
-		};
-		m.reNewfsCatsOn = async function () {
-			return new Promise(async function (resolve, reject) {
-				$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
-				$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
-				$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
-				$multireco_input_cats.off("keyup.fs cut.fs paste.fs click.fs");
-				$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
-				$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
-
-				$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
-				$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
-				$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-				$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
-				$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
-				$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
-					await m.fsGotoCatsOn(event);
-					return resolve();
-				});
-
-				if (m.initialOpen) {
-					await m.reTriggerFS(m.fsGo);
-					await m.reTriggerFS(m.fsCat);
-					await m.reTriggerFS(m.fsMRCat);
-					await m.reTriggerFS(m.fsTimezone);
-					await m.reTriggerFS(m.fsToRs);
-					await m.reTriggerFS(m.fsGotoCats);
-				}
-				else {
-					resolve();
-				}
-			});
-		};
 		m.onKeydownInFS = function (e, fs) {
 			clearTimeout(m.setTimeoutTargetOn);
 			e.stopPropagation();
@@ -6032,15 +5982,21 @@
 		///////////////////////////////////////////
 		// Fuzzy search on Table of Recos (TofR)
 		///////////////////////////////////////////
-		m.playLi = async function (e, elem, k, fs) {
+		m.playLi = async function (e) {
+			let fs=m.fsToRs;
 			if (!(e && e.srcElement && e.srcElement.nodeName === "A")) {
-				let $elem = $(elem);
+				let $elem = $(e.target);
 				if (!$elem.hasClass("list-item")) {
 					$elem = $elem.parents(".list-item");
 				}
+				let k=$elem[0].id.substring(4);
+				if (!isNaN(k)) {
+					k = Number(k);
+				}
+				fs.currentIndex = k;
 				if ($elem.hasClass("selected")) {
 					if ($elem.hasClass("clicked-twice")) {
-						fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // keyCode:27=ESC
+						fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // 27=ESC
 						fs.$fsl.find(".list-item").removeClass("clicked-twice");
 					}
 					else {
@@ -6048,14 +6004,11 @@
 					}
 				}
 				else if ($elem.hasClass("from-recoms")) {
-					fs.currentIndex = k;
 					await fs.getAndPlayVideo(false);
 				}
 				else {
-					fs.currentIndex = k;
 					await fs.getAndPlayVideo($elem[0].id === fs.$fsl.find(".list-item")[0].id); // cue or not?
-					if ($playlist_container.is(":visible")) {
-						let pHeight = $playlist_container.height();
+					if (m.recoMode==="" || m.recoMode==="daily-mix") {
 						if (m.fsToRs.$playing.hasClass("fixed")) {
 							$window.scrollTop($playlist_container.offset().top - m.fsToRs.$playing.outerHeight());
 						}
@@ -6159,7 +6112,7 @@
 					let fsFLk = fs.fullList[k];
 					if (fsFLk.inRange && !fsFLk.r?.deleted) {
 						let uri = fsFLk.uri;
-						str += `<div id="toR-${k}" class="list-item" onclick="m.playLi(event,this,${k},m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight !== undefined) ? `<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>` : "")}</div>`;
+						str += `<div id="toR-${k}" class="list-item" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight !== undefined) ? `<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>` : "")}</div>`;
 					}
 				}
 				fs.$fsl.html(str);
@@ -6170,7 +6123,7 @@
 						let k = m.recomsPlusRandomSorted[cat][i];
 						let uri = m.recoms[cat][k].uri;
 						let recoDef = m.recoDefs[uri];
-						fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event,this,'from-recoms-${k}',m.fsToRs)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
+						fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
 					}
 				}
 				let $li0 = fs.$fsLis.eq(0);
@@ -6745,9 +6698,9 @@
 					$contents.removeClass("multireco");
 					$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 					if ($button_neighbors_mode.hasClass("enabled")) {
+						m.lastRecoMode = m.recoMode = "";
 						if (!m.initialOpen || !m.initialHashURI) {
-							if ($playlist_container.is(":visible")) {
-								let pHeight = $playlist_container.height();
+							if (m.recoMode==="" || m.recoMode==="daily-mix") {
 								if (m.fsToRs.fixed) {
 									$window.scrollTop($playlist_container.offset().top - m.fsToRs.$playing.outerHeight());
 								}
@@ -6756,7 +6709,6 @@
 								}
 							}
 						}
-						m.lastRecoMode = m.recoMode = "";
 						$button_mode.removeClass("enabled");
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}

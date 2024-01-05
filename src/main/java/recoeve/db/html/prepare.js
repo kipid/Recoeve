@@ -1415,8 +1415,7 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	////////////////////////////////////////////////////
-	// Hangul (Korean) split and map to English
-	// KE : Korean Expanded
+	// Fuzzy Search :: Hangul (Korean) split and map to English, KE : Korean Expanded
 	////////////////////////////////////////////////////
 	m.fsLength = m.fsLength || 300;
 	m.jamoKE = ["ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄷㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
@@ -1725,6 +1724,56 @@ web	${m.sW}	${m.sH}`;
 		fs.shuffledOnce = false;
 		return fs[0];
 	};
+	m.reTriggerFS = function (fs) {
+		return new Promise(function (resolve, reject) {
+			fs[1] = null;
+			fs[0].ptnSH = m.splitHangul("$!@#");
+			if (fs === m.fsToRs) {
+				fs.$fs.off("keyup.fs");
+				fs.$fs.on("keyup.fs", async function (e) {
+					await fs.fsOn(e);
+					resolve();
+				});
+				fs.$fs.trigger("keyup.fs");
+			}
+			else {
+				fs.$fs.trigger("keyup.fs");
+				resolve();
+			}
+		});
+	};
+	m.reNewfsCatsOn = async function () {
+		return new Promise(async function (resolve, reject) {
+			$fuzzy_search.off("keyup.fs cut.fs paste.fs click.fs");
+			$table_of_recos.off("keyup.fs cut.fs paste.fs click.fs");
+			$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
+			$multireco_input_cats.off("keyup.fs cut.fs paste.fs click.fs");
+			$search_timezone.off("keyup.fs cut.fs paste.fs click.fs");
+			$goto_cats.off("keyup.fs cut.fs paste.fs click.fs");
+
+			$fuzzy_search.on("keyup.fs cut.fs paste.fs click.fs", m.fsGoOn);
+			$table_of_recos.on("keyup.fs cut.fs paste.fs click.fs", m.fsToRsOn);
+			$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+			$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
+			$search_timezone.on("keyup.fs cut.fs paste.fs click.fs", m.fsTimezoneOn);
+			$goto_cats.on("keyup.fs cut.fs paste.fs click.fs", async function (event) {
+				await m.fsGotoCatsOn(event);
+				return resolve();
+			});
+
+			if (m.initialOpen) {
+				await m.reTriggerFS(m.fsGo);
+				await m.reTriggerFS(m.fsCat);
+				await m.reTriggerFS(m.fsMRCat);
+				await m.reTriggerFS(m.fsTimezone);
+				await m.reTriggerFS(m.fsToRs);
+				await m.reTriggerFS(m.fsGotoCats);
+			}
+			else {
+				resolve();
+			}
+		});
+	};
 
 	////////////////////////////////////////////////////
 	// val, points, stars
@@ -1916,17 +1965,28 @@ web	${m.sW}	${m.sH}`;
 			let $li0 = fs.$fsLis.eq(0);
 			if ($li0.length) {
 				fs.lastIndex = -2;
-				fs.currentIndex = Number($li0.attr("id").substring(4));
+				let k = $li0.attr("id").substring(4);
+				if (!isNaN(k)) {
+					k = Number(k);
+				}
+				fs.currentIndex = k;
+				if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 8) {
+					m.setTimeoutPlayNextCount = 0;
+				}
+				m.setTimeoutPlayNextCount++;
+				clearTimeout(m.setTimeoutPlayNext);
 				if (fs.fullList[fs.currentIndex]?.r?.has) {
 					m.fsViewAndScroll(fs, $li0);
 					await fs.getAndPlayVideo(true);
 				}
-				else {
+				else if (m.setTimeoutPlayNextCount < 8) {
 					m.setTimeoutPlayNext = setTimeout(function () {
+						fs.$fs[0].value="";
+						await m.reTriggerFS(fs);
 						fs.playNext(increment, cue, first);
 					}, m.wait);
+					console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
 				}
-				m.setTimeoutPlayNextCount = 0;
 			}
 			else {
 				fs.lastIndex = -2;
@@ -1940,11 +2000,13 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.hide();
 				clearTimeout(m.setTimeoutPlayNext);
-				if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 12) {
+				if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 8) {
 					m.setTimeoutPlayNextCount = 0;
 				}
 				m.setTimeoutPlayNextCount++;
-				if (m.setTimeoutPlayNextCount < 12) {
+				if (m.setTimeoutPlayNextCount < 8) {
+					fs.$fs[0].value="";
+					await m.reTriggerFS(fs);
 					m.setTimeoutPlayNext = setTimeout(function () {
 						fs.playNext(increment, cue, first);
 					}, 2 * m.wait);
@@ -1977,12 +2039,12 @@ web	${m.sW}	${m.sH}`;
 			m.fsViewAndScroll(fs, $next);
 		}
 		else {
-			if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 7) {
+			if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 8) {
 				m.setTimeoutPlayNextCount = 0;
 			}
 			m.setTimeoutPlayNextCount++;
-			if (m.setTimeoutPlayNextCount < 7) {
-				console.log("fs.playNext(increment, cue, first);");
+			if (m.setTimeoutPlayNextCount < 8) {
+				console.log("setTimeout :: fs.playNext(increment, cue, first);");
 				setTimeout(function () {
 					fs.playNext(increment, cue, first);
 				}, 2 * m.wait);
@@ -2057,7 +2119,7 @@ web	${m.sW}	${m.sH}`;
 										clearTimeout(m.setTimeoutPlayListYT);
 										m.setTimeoutPlayListYT = setTimeout(function () {
 											if (fs.skip) { fs.playNext(); }
-										}, 4 * m.wait);
+										}, 8 * m.wait);
 									}
 								}
 								, 'onStateChange': function (e) {
@@ -2124,7 +2186,7 @@ web	${m.sW}	${m.sH}`;
 						if (fs.skip) {
 							fs.playNext(-1, false);
 						}
-					}, 17 * m.wait);
+					}, 8 * m.wait);
 				}
 			}
 		}
