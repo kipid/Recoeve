@@ -3343,7 +3343,7 @@
 			cat = cat ?? m.currentCat;
 			let fs = m.fsToRs;
 			let fsFL = fs.fullList = [];
-			let uris = m.catUriList[cat].uris;
+			let uris = m.catUriList[cat]?.uris;
 			if (!uris) {
 				await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
 				uris = m.catUriList[cat].uris;
@@ -4087,42 +4087,35 @@
 		};
 		m.getAndShowRecosOnCat = async function (cat) {
 			return new Promise(async function (resolve, reject) {
-				m.currentCat = cat;
-				if (!m.catUriList[cat]?.has) {
-					await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-				}
-				let uris = m.catUriList[cat].uris;
-				await m.getRecos(uris, m.userRecos, cat);
-				if (!m.myIndex) {
-					for (let i = 0; i < uris.length; i++) {
-						let uri = String(uris[i]);
-						if (!m.myRecos[uri]) {
-							m.myRecos[uri] = { uri, down: true, has: false };
+				if (m.recoMode !== "neighbors" && m.recoMode !== "recoms") {
+					if (!m.catUriList[cat]?.has) {
+						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+					}
+					let uris = m.catUriList[cat].uris;
+					await m.getRecos(uris, m.userRecos, cat);
+					if (!m.myIndex) {
+						for (let i = 0; i < uris.length; i++) {
+							let uri = String(uris[i]);
+							if (!m.myRecos[uri]) {
+								m.myRecos[uri] = { uri, down: true, has: false };
+							}
 						}
 					}
+					else if (!m.myPage) {
+						await m.getRecos(uris, m.myRecos, cat);
+					}
+					m.refreshFSToRs(cat);
+					if (m.lastCat !== cat) {
+						m.recoedFromRecoms = 0;
+					}
+					await m.showRecosOnCat();
+					if (m.lastCat !== cat || fs.lastIndex !== fs.currentIndex) {
+						let k = fs.currentIndex;
+						let $toRK=$(`#toR-${k}`);
+						await fs.getAndPlayVideo($toRK[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
+					}
 				}
-				else if (!m.myPage) {
-					await m.getRecos(uris, m.myRecos, cat);
-				}
-				let fs = m.fsToRs;
-				let fsFL = fs.fullList = [];
-				for (let i = 0; i < uris.length; i++) {
-					let uri = uris[i];
-					let r = m.userRecos[uri];
-					fsFL[uri] = { i, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
-					fsFL.push(fsFL[uri]);
-				}
-				if (m.lastCat !== cat) {
-					m.recoedFromRecoms = 0;
-				}
-				await m.reTriggerFS(fs);
-				await m.showRecosOnCat();
-				fs.lastIndex = -2;
-				if (m.lastCat !== cat || fs.lastIndex !== fs.currentIndex) {
-					let k = fs.currentIndex;
-					let $toRK=$(`#toR-${k}`);
-					await fs.getAndPlayVideo($toRK[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
-				}
+				m.lastCat = m.currentCat = cat;
 				resolve();
 			});
 		};
@@ -4465,12 +4458,13 @@
 						}
 						if (m.recoMode === "daily-mix") {
 							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+							m.recosShown = true;
 						}
 						else {
 							m.goDirectlyToHash("button-get-recoms");
 						}
 						if (m.neighbors[cat]) {
-							if (m.lastTLIndex === m.TLIndex && m.neighborsRecos[cat] && m.recomsSorted[cat]) { // TL for Time Limit.
+							if (m.lastTLIndex === m.TLIndex && m.neighborsRecos[cat] && m.recomsSorted[cat] && m.recomsPlusRandomSorted[cat]) { // TL for Time Limit.
 								let recomsPlusRandomUntil = m.recomsPlusRandomSorted[cat]?.sortedUntil;
 								let strHTML = "";
 								if (m.recoms[cat]?.length === 0) {
@@ -4483,9 +4477,8 @@
 									if (m.recoMode === "recoms") {
 										let recomsUntil = m.recomsSorted[cat].sortedUntil;
 										for (let i = m.recoms[cat].length - 1; i >= recomsUntil; i--) {
-											let k = m.recomsSorted[cat][i];
-											let uri = m.recoms[cat][k].uri;
-											let recomHTML = await m.recomHTML(m.userRecos[uri])
+											let uri = m.recoms[cat][m.recomsSorted[cat][i]].uri;
+											let recomHTML = await m.recomHTML(m.userRecos[uri]);
 											strHTML += String(recomHTML);
 										}
 										if (recomsUntil > 0) {
@@ -4494,13 +4487,13 @@
 									}
 								}
 								$contents_recoms.html(strHTML);
-								m.reNewAndReOn();
 								if (m.recoMode === "daily-mix") {
 									$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 								}
 								else {
 									m.goDirectlyToHash("button-get-recoms");
 								}
+								m.reNewAndReOn();
 								resolve();
 							}
 							else {
@@ -4947,7 +4940,6 @@
 				}
 			}
 			else {
-				m.refreshFSToRs(cat);
 				if (!m.doNotPushHistory) {
 					if (m.recoMode === "neighbors" || m.recoMode === "multireco") {
 						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
@@ -4961,7 +4953,7 @@
 				}
 			}
 			m.doNotPushHistory = false;
-			m.currentCat = cat;
+			m.lastCat = m.currentCat = cat;
 			return false; // Prevent <a href="link"> to be opened.
 		};
 
@@ -5666,7 +5658,7 @@
 			else if (event?.which === 1) {
 				event.preventDefault();
 				event.stopPropagation();
-				if (cat !== m.currentCat || m.recoMode !== "" && m.recoMode !== "multireco") {
+				if (cat !== m.currentCat || m.recoMode === "recoms" || m.recoMode === "neighbors") {
 					m.recosShown = false;
 					m.fsToRs.shuffled = null;
 				}
@@ -6720,21 +6712,22 @@
 					break;
 				case 77: // M=77
 					e.preventDefault();
+					$button_mode.removeClass("enabled");
 					if ($button_multireco_mode.hasClass("enabled")) {
-						m.lastRecoMode = m.recoMode = "";
-						$button_mode.removeClass("enabled");
+						m.recoMode = "";
 						$contents.removeClass("multireco");
 						$multireco_cats_container.hide();
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else {
-						m.lastRecoMode = m.recoMode = "multireco";
-						$button_mode.removeClass("enabled");
+						m.recoMode = "multireco";
 						$button_multireco_mode.addClass("enabled");
 						$contents.addClass("multireco");
 						$multireco_cats_container.show();
 						$multireco_cats_container.css({ zIndex: ++m.zIndex });
-						$multireco_input_cats[0].value = m.currentCat;
+						if (!m.catsContainsAllAnotCats($multireco_input_cats[0].value, m.currentCat)) {
+							$multireco_input_cats[0].value = m.currentCat;
+						}
 						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
 					}
 					if (!m.recosShown) {
@@ -6751,19 +6744,17 @@
 				case 89: // Y=89
 					if (m.myPage) {
 						e.preventDefault();
+						$button_mode.removeClass("enabled");
 						if ($button_daily_mix.hasClass("enabled")) {
 							m.recoMode = "";
 							$contents_recoms.html("");
-							$button_mode.removeClass("enabled");
-							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 						}
 						else {
 							m.recoMode = "daily-mix";
-							$button_mode.removeClass("enabled");
 							$button_daily_mix.addClass("enabled");
 							$contents_recoms.hide();
-							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 						}
+						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 						clearInterval(m.initialFsGotoCats4);
 						m.initialFsGotoCats4 = setInterval(function () {
 							m.intervalOpenCat(m.initialFsGotoCats4);

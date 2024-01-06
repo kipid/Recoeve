@@ -1896,9 +1896,6 @@ web	${m.sW}	${m.sH}`;
 			clearTimeout(m.setTimeoutPlayNext);
 			clearTimeout(m.setTimeoutCueOrLoadUri);
 			let fs = m.fsToRs;
-			if (cue && fs.pauseVideo) {
-				fs.pauseVideo();
-			}
 			let i = fs.currentIndex;
 			fs.$fsLis = fs.$fsl.find(".list-item");
 			fs.$fsLis.removeClass("selected");
