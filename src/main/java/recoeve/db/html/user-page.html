@@ -4346,7 +4346,8 @@
 						let recomHTML = "";
 						if (m.myRecos[uri]?.has) {
 							recomHTML = await m.recoHTML(m.myRecos[uri], false, true, true);
-						} else {
+						}
+						else {
 							recomHTML = await m.recomHTML(m.myRecos[uri], false);
 						}
 						strHTML += String(recomHTML);
@@ -4366,7 +4367,8 @@
 						let recomHTML = "";
 						if (m.myRecos[uri]?.has) {
 							recomHTML = await m.recoHTML(m.myRecos[uri], false, true, true);
-						} else {
+						}
+						else {
 							recomHTML = await m.recomHTML(m.myRecos[uri]);
 						}
 						strHTML += String(recomHTML);
@@ -5196,7 +5198,8 @@
 					}
 					$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
 				}
-			} else {
+			}
+			else {
 				$input_val[0].value = "0.0/10";
 			}
 			$input_val.trigger("keyup");
@@ -5214,7 +5217,8 @@
 					}
 					$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
 				}
-			} else {
+			}
+			else {
 				$input_val[0].value = "10.0/10";
 			}
 			$input_val.trigger("keyup");
@@ -5959,7 +5963,8 @@
 							window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 							$window.scrollTop($elem.offset().top);
 						}
-					} else {
+					}
+					else {
 						clearInterval(setIntervalFsGo);
 						m.fsGo.tryN = 0;
 						console.log(`gotoHash has failed!: `, hashURI);
