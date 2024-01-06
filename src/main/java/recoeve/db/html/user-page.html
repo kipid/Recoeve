@@ -4117,10 +4117,11 @@
 				}
 				await m.reTriggerFS(fs);
 				await m.showRecosOnCat();
+				fs.lastIndex = -2;
 				if (m.lastCat !== cat || fs.lastIndex !== fs.currentIndex) {
 					let k = fs.currentIndex;
-					let $elem=$(`#toR-${k}`);
-					await fs.getAndPlayVideo($elem[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
+					let $toRK=$(`#toR-${k}`);
+					await fs.getAndPlayVideo($toRK[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
 				}
 				resolve();
 			});
@@ -4409,18 +4410,14 @@
 							$contents.removeClass("multireco");
 							m.recoMode = "";
 						}
-						m.lastRecoMode = m.recoMode;
 						let catListCat = m.catList[cat];
-						if (catListCat && (m.lastRecoMode === "neighbors" || m.lastCat !== cat)) {
+						if (catListCat) {
 							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
-							if (catUriListCat.down) {
-								await m.getAndShowRecosOnCat(cat);
-							}
-							else {
+							if (!catUriListCat.down) {
 								$numbers_of_recos.html(`Getting UriList on cat="${m.escapeOnlyTag(cat)}".`);
 								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-								await m.getAndShowRecosOnCat(cat);
 							}
+							await m.getAndShowRecosOnCat(cat);
 						}
 						else {
 							$numbers_of_recos.html(`Cat="${m.escapeOnlyTag(cat)}" does not exist.`);
@@ -4434,6 +4431,7 @@
 								$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 							}
 						}
+						m.lastRecoMode = m.recoMode;
 						m.recosShown = true;
 						resolve();
 						break;
@@ -4452,14 +4450,11 @@
 						let catListCat = m.catList[cat];
 						if (catListCat) {
 							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
-							if (catUriListCat.down) {
-								await m.getAndShowRecosOnCat(cat);
-							}
-							else {
+							if (!catUriListCat.down) {							}
 								$numbers_of_recos.html(`Getting UriList on cat="${m.escapeOnlyTag(cat)}".`);
 								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-								await m.getAndShowRecosOnCat(cat);
 							}
+							await m.getAndShowRecosOnCat(cat);
 						}
 						else {
 							$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
@@ -4941,6 +4936,7 @@
 				fsFLUri.catAndI[cat] = { cat, i: uris[uri]?.i ?? uris.length };
 			}
 			await m.getUriListAndShowRecosOnCat(cat, true);
+			m.refreshFSToRs(cat);
 			if (m.initialOpen) {
 				m.gotoHash(m.initialHashURI);
 				if (!m.doNotPushHistory) {
@@ -6162,9 +6158,9 @@
 					}
 				}
 				else {
-					let $toRk = $(`#toR-${fs.currentIndex}`);
-					if ($toRk.length) {
-						$toRk.trigger("click");
+					let $toRK = $(`#toR-${fs.currentIndex}`);
+					if ($toRK.length) {
+						$toRK.trigger("click");
 					}
 					else {
 						if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 6) {
@@ -6174,10 +6170,10 @@
 						m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
 							console.log("selfPlayNextFirst1()");
 							m.setTimeoutPlayNextFirst1Count++;
-							let $toRk = $(`#toR-${fs.currentIndex}`);
-							if ($toRk.length) {
-								m.fsViewAndScroll(fs, $toRk);
-								$toRk.trigger("click");
+							let $toRK = $(`#toR-${fs.currentIndex}`);
+							if ($toRK.length) {
+								m.fsViewAndScroll(fs, $toRK);
+								$toRK.trigger("click");
 								m.setTimeoutPlayNextFirst1Count = 0;
 							}
 							else if (m.setTimeoutPlayNextFirst1Count < 6) {
@@ -7115,7 +7111,7 @@
 			if (m.recoMode === "") {
 				$button_mode.removeClass("enabled");
 				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
-				await m.getAndShowRecosOnCat(m.currentCat);
+				// await m.getUriListAndShowRecosOnCat(m.currentCat, true);
 				clearInterval(m.initialFsGotoCats0);
 				m.initialFsGotoCats0 = setInterval(function () {
 					m.intervalOpenCat(m.initialFsGotoCats0);
