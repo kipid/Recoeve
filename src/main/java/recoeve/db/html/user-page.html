@@ -3849,17 +3849,18 @@
 		};
 		m.showRecosOnCat = async function (elem, from) {
 			return new Promise(async function (resolve, reject) {
-				m.lastRecoMode = m.recoMode;
 				let cat = m.currentCat;
-				if (m.lastRecoMode === "" && m.recoMode === "multireco") {
-					$contents.addClass("multireco");
-					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-					return resolve();
-				}
-				else if (m.lastRecoMode === "multireco" && m.recoMode === "") {
-					$contents.removeClass("multireco");
-					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
-					return resolve();
+				if (elem === undefined || elem === null) {
+					if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco")) {
+						$contents.addClass("multireco");
+						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+						return resolve();
+					}
+					else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
+						$contents.removeClass("multireco");
+						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						return resolve();
+					}
 				}
 				let $elem = null;
 				if (elem) {
@@ -3882,7 +3883,7 @@
 					from = l - 1;
 					await m.fsToRsInRangeCheck();
 					for (let i = from, k = 0; i >= 0; i -= m.maxShowReco, k++) {
-						strHTML += `<div id="load-recos-${k}" class="button to-be-executed" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i - m.maxShowReco + 1 >= 0 ? i - m.maxShowReco + 1 : 0}</span></div>`;
+						strHTML += `<div id="load-recos-${k}" class="button to-be-executed load-recos" onclick="m.showRecosOnCat(this,${i})">Load more... <span class="from">${i}</span> to <span class="to">${i - m.maxShowReco + 1 >= 0 ? i - m.maxShowReco + 1 : 0}</span></div>`;
 					}
 					$contents.html(strHTML);
 					$(".to-be-executed").eq(0).trigger("click");
@@ -3912,6 +3913,7 @@
 						$elem.replaceWith(strHTML);
 					}
 				}
+				m.lastRecoMode = m.recoMode;
 				m.reNewAndReOn();
 				resolve();
 			});
@@ -4093,7 +4095,7 @@
 				await m.getRecos(uris, m.userRecos, cat);
 				if (!m.myIndex) {
 					for (let i = 0; i < uris.length; i++) {
-						let uri = uris[i];
+						let uri = String(uris[i]);
 						if (!m.myRecos[uri]) {
 							m.myRecos[uri] = { uri, down: true, has: false };
 						}
@@ -4115,10 +4117,10 @@
 				}
 				await m.reTriggerFS(fs);
 				await m.showRecosOnCat();
-				fs.lastIndex = -2;
-				fs.currentIndex = m.catUriList[cat].uris.length - 1;
 				if (m.lastCat !== cat || fs.lastIndex !== fs.currentIndex) {
-					fs.playNext(-1, null, true);
+					let k = fs.currentIndex;
+					let $elem=$(`#toR-${k}`);
+					await fs.getAndPlayVideo($elem[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
 				}
 				resolve();
 			});
@@ -4379,7 +4381,6 @@
 		};
 		m.getUriListAndShowRecosOnCat = async function (cat, scroll) {
 			return new Promise(async function (resolve, reject) {
-				clearTimeout(m.setTimeoutGetUriListAndShowRecosOnCat);
 				if (m.catList[cat]) {
 					$("#catList").find(".cat").removeClass("selected");
 					let $cat = $(`#cat-${m.escapeEncodePctg(encodeURIComponent(cat))}`);
@@ -4399,19 +4400,18 @@
 				switch (m.recoMode) {
 					case "multireco": case "": default: {
 						$numbers_of_recos.html(`Loading recos in cat="${m.escapeOnlyTag(cat)}".`);
+						$button_mode.removeClass("enabled");
 						if (m.recoMode === "multireco") {
-							$button_mode.removeClass("enabled");
 							$button_multireco_mode.addClass("enabled");
 							$contents.addClass("multireco");
 						}
 						else {
-							$button_mode.removeClass("enabled");
 							$contents.removeClass("multireco");
 							m.recoMode = "";
 						}
 						m.lastRecoMode = m.recoMode;
 						let catListCat = m.catList[cat];
-						if (catListCat) {
+						if (catListCat && (m.lastRecoMode === "neighbors" || m.lastCat !== cat)) {
 							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
 							if (catUriListCat.down) {
 								await m.getAndShowRecosOnCat(cat);
@@ -4423,7 +4423,7 @@
 							}
 						}
 						else {
-							$numbers_of_recos.html(`Category "${m.escapeOnlyTag(cat)}" does not exist.`);
+							$numbers_of_recos.html(`Cat="${m.escapeOnlyTag(cat)}" does not exist.`);
 							$contents.html("");
 						}
 						if (scroll) {
@@ -5623,7 +5623,7 @@
 			fs2.$fsLis = fs2.$fsl.find(".list-item");
 			fs2.$fsLis.removeClass("selected");
 			$elem.addClass("selected");
-			if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco") || (m.lastRecoMode === "recoms" && m.recoMode === "multireco")) {
+			if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco")) {
 				m.lastRecoMode = m.recoMode;
 				$contents.addClass("multireco");
 				if (!m.doNotPushHistory) {
@@ -5632,7 +5632,7 @@
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
 			}
-			else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "") || (m.lastRecoMode === "recoms" && m.recoMode === "")) {
+			else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
 				m.lastRecoMode = m.recoMode;
 				$contents.removeClass("multireco");
 				if (!m.doNotPushHistory) {
