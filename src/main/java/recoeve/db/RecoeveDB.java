@@ -3899,9 +3899,6 @@ public class RecoeveDB {
 		catch (SQLException e) {
 			err(e);
 		}
-		catch (Exception e) {
-			System.out.println(e);
-		}
 		// try {
 		System.out.println("User with email:" + userEmail + " is deleted successfully. : " + done);
 		// if (done) {
