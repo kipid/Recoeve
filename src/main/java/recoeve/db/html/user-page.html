@@ -4451,8 +4451,9 @@
 						m.lastRecoMode = m.recoMode;
 						let catListCat = m.catList[cat];
 						if (catListCat) {
-							let catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
-							if (!catUriListCat.down) {							}
+							let catUriListCat;
+							catUriListCat = m.catUriList[cat] = m.catUriList[cat] || {};
+							if (!catUriListCat.down) {
 								$numbers_of_recos.html(`Getting UriList on cat="${m.escapeOnlyTag(cat)}".`);
 								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
 							}
