@@ -2242,10 +2242,6 @@
 		$point_range_right1 = $(".point-range-right").eq(1);
 		$point_range_result = $(".point-range-result");
 
-		m.PRw = $point_range.width();
-		m.PRw1 = $point_range1.width();
-		// from <= pts <= to
-
 		$user_noti.html(m.userId + "'s recos");
 		if (m.myIndex) {
 			$my_id.html(m.myId + " ▾");
@@ -3564,6 +3560,8 @@
 			window.getSelection().removeAllRanges();
 			e.preventDefault();
 			e.stopPropagation();
+			m.PRw = $point_range.width();
+			m.PRw1 = $point_range1.width();
 			let x = (e.type === 'touchmove') ? e.originalEvent.touches[0].clientX : e.clientX;
 			let w = x - $point_range.offset().left + $window.scrollLeft();
 			w = (w < 0) ? 0 : w;
@@ -3639,6 +3637,8 @@
 			window.getSelection().removeAllRanges();
 			e.preventDefault();
 			e.stopPropagation();
+			m.PRw = $point_range.width();
+			m.PRw1 = $point_range1.width();
 			let x = (e.type === 'touchmove') ? e.originalEvent.touches[0].clientX : e.clientX;
 			let w1 = x - $point_range1.offset().left + $window.scrollLeft();
 			w1 = (w1 < 0) ? 0 : w1;
