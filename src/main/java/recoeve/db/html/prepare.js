@@ -1892,10 +1892,10 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.fsToRs.getAndPlayVideo = async function (cue, inListPlay = true) {
 		return new Promise(async function (resolve, reject) {
-			clearTimeout(m.setTimeoutPlayListYT);
-			clearTimeout(m.setTimeoutPlayList);
+			clearTimeout(m.setTimeoutPlayNextYT);
 			clearTimeout(m.setTimeoutPlayNext);
 			clearTimeout(m.setTimeoutGetAndPlayVideo);
+			clearTimeout(m.setTimeoutCueOrLoadUri);
 			let fs = m.fsToRs;
 			if (cue && fs.pauseVideo) {
 				fs.pauseVideo();
@@ -1912,10 +1912,8 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					m.lastRecoURIPlaying = m.recoURIPlaying;
 					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					m.uriRendered = uriRendered;
 				}
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
@@ -1926,10 +1924,8 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 				m.recoURIPlaying = r?.uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					m.lastRecoURIPlaying = m.recoURIPlaying;
 					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					m.uriRendered = uriRendered;
 				}
 			}
 			else {
@@ -1954,10 +1950,10 @@ web	${m.sW}	${m.sH}`;
 		}
 	};
 	m.fsToRs.playNext = async function (increment, cue, first) {
-		clearTimeout(m.setTimeoutPlayListYT);
-		clearTimeout(m.setTimeoutPlayList);
+		clearTimeout(m.setTimeoutPlayNextYT);
 		clearTimeout(m.setTimeoutPlayNext);
 		clearTimeout(m.setTimeoutGetAndPlayVideo);
+		clearTimeout(m.setTimeoutCueOrLoadUri);
 		let fs = m.fsToRs;
 		fs.$fsLis = fs.$fsl.find(".list-item");
 		if (increment === undefined || increment === null || increment.constructor !== Number) { increment = -1; }
@@ -1974,14 +1970,17 @@ web	${m.sW}	${m.sH}`;
 					m.setTimeoutPlayNextCount = 0;
 				}
 				m.setTimeoutPlayNextCount++;
-				clearTimeout(m.setTimeoutPlayNext);
 				if (fs.fullList[fs.currentIndex]?.r?.has) {
 					m.fsViewAndScroll(fs, $li0);
-					await fs.getAndPlayVideo(true);
+					clearTimeout(m.setTimeoutGetAndPlayVideo);
+					m.setTimeoutGetAndPlayVideo = setTimeout(function () {
+						await fs.getAndPlayVideo(true);
+					}, m*m.wait);
 				}
 				else if (m.setTimeoutPlayNextCount < 8) {
 					fs.$fs[0].value="";
 					await m.reTriggerFS(fs);
+					clearTimeout(m.setTimeoutPlayNext);
 					m.setTimeoutPlayNext = setTimeout(function () {
 						fs.playNext(increment, cue, first);
 					}, m.wait);
@@ -1999,7 +1998,6 @@ web	${m.sW}	${m.sH}`;
 				}
 				$eveElse_container.hide();
 				$rC_youtube_container.hide();
-				clearTimeout(m.setTimeoutPlayNext);
 				if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 8) {
 					m.setTimeoutPlayNextCount = 0;
 				}
@@ -2007,6 +2005,7 @@ web	${m.sW}	${m.sH}`;
 				if (m.setTimeoutPlayNextCount < 8) {
 					fs.$fs[0].value="";
 					await m.reTriggerFS(fs);
+					clearTimeout(m.setTimeoutPlayNext);
 					m.setTimeoutPlayNext = setTimeout(function () {
 						fs.playNext(increment, cue, first);
 					}, 2 * m.wait);
@@ -2062,9 +2061,8 @@ web	${m.sW}	${m.sH}`;
 				m.YtAPILoaded = true;
 			}
 		}
-		if (!YtAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT?.Player) {
+		if (!YtAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT.Player) {
 			await m.doFSToRs();
-			// fs.playNext(-1, null, true);
 		}
 		else {
 			setTimeout(function () {
@@ -2073,7 +2071,8 @@ web	${m.sW}	${m.sH}`;
 		}
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
-		if (inListPlay) {
+		clearTimeout(m.setTimeoutCueOrLoadUri);
+		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
 			let from = String(uriRendered.from);
 			m.listPlayFrom = from;
@@ -2092,23 +2091,25 @@ web	${m.sW}	${m.sH}`;
 						console.log("config: ", config);
 						if (cue && m.YtPlayer.cueVideoById) {
 							m.YtPlayer.cueVideoById(config);
+							m.lastRecoURIPlaying = m.recoURIPlaying;
 							fs.lastIndex = fs.currentIndex;
 							m.lastCat = m.currentCat;
 						}
 						else if (m.YtPlayer.loadVideoById) {
 							m.YtPlayer.loadVideoById(config);
+							m.lastRecoURIPlaying = m.recoURIPlaying;
 							fs.lastIndex = fs.currentIndex;
 							m.lastCat = m.currentCat;
 						}
 						else {
-							clearTimeout(m.setTimeoutGetAndPlayVideo);
-							m.setTimeoutGetAndPlayVideo = setTimeout(function () {
-								fs.getAndPlayVideo(cue, inListPlay);
+							clearTimeout(m.setTimeoutCueOrLoadUri);
+							m.setTimeoutCueOrLoadUri = setTimeout(function () {
+								fs.cueOrLoadUri(cue, uriRendered, inListPlay);
 							}, m.wait);
 							return;
 						}
 					}
-					else if (YT?.Player) {
+					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
 						console.log(`new YT.Player('youtube'); :: fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
@@ -2116,8 +2117,8 @@ web	${m.sW}	${m.sH}`;
 							, events: {
 								'onError': function (e) {
 									if (fs.skip) {
-										clearTimeout(m.setTimeoutPlayListYT);
-										m.setTimeoutPlayListYT = setTimeout(function () {
+										clearTimeout(m.setTimeoutPlayNextYT);
+										m.setTimeoutPlayNextYT = setTimeout(function () {
 											if (fs.skip) { fs.playNext(); }
 										}, 8 * m.wait);
 									}
@@ -2134,6 +2135,7 @@ web	${m.sW}	${m.sH}`;
 								}
 							}
 						});
+						m.lastRecoURIPlaying = m.recoURIPlaying;
 						fs.lastIndex = fs.currentIndex;
 						m.lastCat = m.currentCat;
 					}
@@ -2181,8 +2183,8 @@ web	${m.sW}	${m.sH}`;
 					m.lastCat = m.currentCat;
 				}
 				if ((!cue) && fs.skip) {
-					clearTimeout(m.setTimeoutPlayList);
-					m.setTimeoutPlayList = setTimeout(function () {
+					clearTimeout(m.setTimeoutPlayNext);
+					m.setTimeoutPlayNext = setTimeout(function () {
 						if (fs.skip) {
 							fs.playNext(-1, false);
 						}
