@@ -3975,18 +3975,8 @@
 					else {
 						r.deleted = false;
 					}
-					if (r.desc !== undefined) {
-						r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
-					}
-					else {
-						r.descR = m.renderStrDescCmt("");
-					}
-					if (r.cmt !== undefined) {
-						r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
-					}
-					else {
-						r.cmtR = m.renderStrDescCmt("");
-					}
+					r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
+					r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
 					r.val = m.val(String(r.val));
 				}
 				let fs = m.fsGo;
@@ -4007,6 +3997,7 @@
 							}
 						}
 					}
+					m.beInCurrentCat = false;
 					if (!cat && cat !== "") { // If (!cat&&cat!==""), only resp[1] is there in most cases.
 						let catsSplit = m.catsToString(resp[1]?.cats).split(";");
 						for (let i = catsSplit.length - 1; i >= 0; i--) {
@@ -4016,9 +4007,9 @@
 								break;
 							}
 						}
-						// cat=m.beInCurrentCat?m.currentCat:catsSplit[0]; // Must not asign!
+						// cat = m.beInCurrentCat?m.currentCat:catsSplit[0]; // Must not asign!
 					}
-					if (cat || cat === "") {
+					if (cat || cat === "" && m.beInCurrentCat) {
 						// TODO: Delete? or Preserve the below?
 						if (!m.catUriList[cat]?.has) {
 							await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
@@ -4027,10 +4018,10 @@
 							let respK = resp[k];
 							let uri = String(respK.uri);
 							let r = recos[uri];
-							fsFL[uri].catAndI[cat] = { cat, i: m.catUriList[cat].uris[uri]?.i };
+							fsFL[uri].catAndI[cat] = { cat, i: m.catUriList[cat].uris[uri]?.i ?? m.catUriList[cat].uris.length };
 						}
-						// fs.shuffledOnce=true;
-						// await m.reTriggerFS(fs);
+						fs.shuffledOnce=true;
+						await m.reTriggerFS(fs);
 					}
 				}
 				if ((cat || cat === "") && m.catUriList[cat]?.uris) {
@@ -4454,7 +4445,7 @@
 						if (m.recoMode === "daily-mix") {
 							$button_daily_mix.addClass("enabled");
 						}
-						else {
+						else if (m.recoMode === "recoms") {
 							$button_get_recoms.addClass("enabled");
 						}
 						$contents.removeClass("multireco");
@@ -4925,6 +4916,9 @@
 			let fs1 = m.fsToRs;
 			let fsFL = fs.fullList;
 			let fs1FL = fs1.fullList;
+			if (m.recoMode !== "neighbors" && m.recoMode !== "recoms") {
+				await m.getRecos(uris, m.userRecos, cat);
+			}
 			for (let k = 0; k < uris.length; k++) {
 				let uri = String(uris[k]);
 				let r = m.userRecos[uri];
@@ -4948,27 +4942,29 @@
 				fsFLUri.catAndI[cat] = { cat, i: uris[uri]?.i ?? uris.length };
 			}
 			await m.getUriListAndShowRecosOnCat(cat, true);
-			m.refreshFSToRs(cat);
 			if (m.initialOpen) {
 				m.gotoHash(m.initialHashURI);
 				if (!m.doNotPushHistory) {
 					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.initialHashURI, m.args));
 				}
 			}
-			else if (!m.doNotPushHistory) {
-				if (m.recoMode === "neighbors" || m.recoMode === "multireco") {
-					$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
-				}
-				else if (m.recoMode === "recoms") {
-					m.goDirectlyToHash("button-get-recoms");
-				}
-				else {
-					$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+			else {
+				m.refreshFSToRs(cat);
+				if (!m.doNotPushHistory) {
+					if (m.recoMode === "neighbors" || m.recoMode === "multireco") {
+						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+					}
+					else if (m.recoMode === "recoms") {
+						m.goDirectlyToHash("button-get-recoms");
+					}
+					else {
+						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+					}
 				}
 			}
 			m.doNotPushHistory = false;
 			m.currentCat = cat;
-			return false;
+			return false; // Prevent <a href="link"> to be opened.
 		};
 
 		window.onpopstate = function (e) {
@@ -5628,7 +5624,7 @@
 			fs2.$fsLis = fs2.$fsl.find(".list-item");
 			fs2.$fsLis.removeClass("selected");
 			$elem.addClass("selected");
-			if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco")) {
+			if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco") || (m.lastRecoMode === "recoms" && m.recoMode === "multireco")) {
 				m.lastRecoMode = m.recoMode;
 				$contents.addClass("multireco");
 				if (!m.doNotPushHistory) {
@@ -5637,7 +5633,7 @@
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
 			}
-			else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
+			else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "") || (m.lastRecoMode === "recoms" && m.recoMode === "")) {
 				m.lastRecoMode = m.recoMode;
 				$contents.removeClass("multireco");
 				if (!m.doNotPushHistory) {
