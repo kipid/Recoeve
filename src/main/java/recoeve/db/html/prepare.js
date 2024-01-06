@@ -1894,7 +1894,6 @@ web	${m.sW}	${m.sH}`;
 		return new Promise(async function (resolve, reject) {
 			clearTimeout(m.setTimeoutPlayNextYT);
 			clearTimeout(m.setTimeoutPlayNext);
-			clearTimeout(m.setTimeoutGetAndPlayVideo);
 			clearTimeout(m.setTimeoutCueOrLoadUri);
 			let fs = m.fsToRs;
 			if (cue && fs.pauseVideo) {
@@ -1952,7 +1951,6 @@ web	${m.sW}	${m.sH}`;
 	m.fsToRs.playNext = async function (increment, cue, first) {
 		clearTimeout(m.setTimeoutPlayNextYT);
 		clearTimeout(m.setTimeoutPlayNext);
-		clearTimeout(m.setTimeoutGetAndPlayVideo);
 		clearTimeout(m.setTimeoutCueOrLoadUri);
 		let fs = m.fsToRs;
 		fs.$fsLis = fs.$fsl.find(".list-item");
@@ -1972,10 +1970,7 @@ web	${m.sW}	${m.sH}`;
 				m.setTimeoutPlayNextCount++;
 				if (fs.fullList[fs.currentIndex]?.r?.has) {
 					m.fsViewAndScroll(fs, $li0);
-					clearTimeout(m.setTimeoutGetAndPlayVideo);
-					m.setTimeoutGetAndPlayVideo = setTimeout(function () {
-						await fs.getAndPlayVideo(true);
-					}, m*m.wait);
+					await fs.getAndPlayVideo(true);
 				}
 				else if (m.setTimeoutPlayNextCount < 8) {
 					fs.$fs[0].value="";
