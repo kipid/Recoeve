@@ -2064,6 +2064,7 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 		clearTimeout(m.setTimeoutCueOrLoadUri);
+		console.log(`m.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
 			let from = String(uriRendered.from);
