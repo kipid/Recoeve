@@ -2504,7 +2504,6 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
-				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					if (m.YtPlayer) {
 						let config = {
@@ -2533,7 +2532,7 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						console.log(`new YT.Player('youtube'); :: fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
+						console.log(`new YT.Player('youtube'); :: fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nnew YT.Player('youtube');`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
