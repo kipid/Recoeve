@@ -1953,10 +1953,10 @@ web	${m.sW}	${m.sH}`;
 		fs.$fsLis = fs.$fsl.find(".list-item");
 		if (increment === undefined || increment === null || increment.constructor !== Number) { increment = -1; }
 		if (first) {
-			let $li0 = fs.$fsLis.eq(0);
-			if ($li0.length) {
+			let $toR0 = fs.$fsLis.eq(0);
+			if ($toR0.length) {
 				fs.lastIndex = -2;
-				let k = $li0.attr("id").substring(4);
+				let k = $toR0.attr("id").substring(4);
 				if (!isNaN(k)) {
 					k = Number(k);
 				}
@@ -1966,7 +1966,7 @@ web	${m.sW}	${m.sH}`;
 				}
 				m.setTimeoutPlayNextCount++;
 				if (fs.fullList[fs.currentIndex]?.r?.has) {
-					m.fsViewAndScroll(fs, $li0);
+					m.fsViewAndScroll(fs, $toR0);
 					await fs.getAndPlayVideo(true);
 				}
 				else if (m.setTimeoutPlayNextCount < 8) {

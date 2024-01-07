@@ -5982,7 +5982,7 @@
 					k = Number(k);
 				}
 				fs.currentIndex = k;
-				if ($elem.hasClass("selected")) {
+				if (!m.initialOpen && $elem.hasClass("selected")) {
 					if ($elem.hasClass("clicked-twice")) {
 						fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // 27=ESC
 						fs.$fsl.find(".list-item").removeClass("clicked-twice");
@@ -6115,16 +6115,16 @@
 						fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
 					}
 				}
-				let $li0 = fs.$fsLis.eq(0);
 				if (shuffle) {
 					fs.shuffledOnce = true;
 					m.fsGo.shuffledOnce = true;
 				}
 				if (fs.shuffledOnce || m.lastCat !== m.currentCat) {
 					fs.lastIndex = -2;
-					if ($li0.length) {
-						m.fsViewAndScroll(fs, $li0);
-						$li0.trigger("click");
+					let $toR0 = fs.$fsLis.eq(0);
+					if ($toR0.length) {
+						m.fsViewAndScroll(fs, $toR0);
+						$toR0.trigger("click");
 					}
 					else {
 						if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 8) {
@@ -6136,10 +6136,10 @@
 							console.log("selfPlayNextFirst();");
 							m.setTimeoutPlayNextFirstCount++;
 							fs.$fsLis = fs.$fsl.find(".list-item");
-							let $li0 = fs.$fsLis.eq(0);
-							if ($li0.length) {
-								m.fsViewAndScroll(fs, $li0);
-								$li0.trigger("click");
+							let $toR0 = fs.$fsLis.eq(0);
+							if ($toR0.length) {
+								m.fsViewAndScroll(fs, $toR0);
+								$toR0.trigger("click");
 								if (!m.setTimeoutPlayNextFirstClickedOnce) {
 									m.setTimeoutPlayNextFirstClickedOnce = true;
 									setTimeout(selfPlayNextFirst, 2 * m.wait);
@@ -6162,7 +6162,7 @@
 						$toRK.trigger("click");
 					}
 					else {
-						if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 6) {
+						if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 8) {
 							m.setTimeoutPlayNextFirst1Count = 0;
 						}
 						clearTimeout(m.setTimeoutPlayNextFirst1);
@@ -6175,7 +6175,7 @@
 								$toRK.trigger("click");
 								m.setTimeoutPlayNextFirst1Count = 0;
 							}
-							else if (m.setTimeoutPlayNextFirst1Count < 6) {
+							else if (m.setTimeoutPlayNextFirst1Count < 8) {
 								setTimeout(selfPlayNextFirst1, 2 * m.wait);
 							}
 							else {
@@ -6976,13 +6976,12 @@
 			if (uri !== m.lastURI) {
 				m.lastURI = uri;
 				m.getAndShowDefsAndRecoInNewReco(false);
-				m.reNewAndReOn();
 			} // If there is m.myRecos[uri], fill #new-reco inputs with it. But if there is saved revision, fill revised versions to #new-reco inputs.
 			m.initialFillFromLocalStorageN = 0;
-			m.initialFillFromLocalStorage = setInterval(function (initialFillFromLocalStorage = m.initialFillFromLocalStorage) {
+			m.initialFillFromLocalStorage = setInterval(function () {
 				let title = m.localStorage.getItem("title");
 				let changed = false;
-				if (vars.title !== undefined) {
+				if (vars?.title?.val) {
 					changed = changed || $input_title[0].value !== vars.title.val;
 					$input_title[0].value = vars.title.val;
 				}
@@ -6991,7 +6990,7 @@
 					$input_title[0].value = title;
 				}
 				let cats = m.localStorage.getItem("cats");
-				if (vars.cats !== undefined) {
+				if (vars?.cats?.val) {
 					changed = changed || $input_cats[0].value !== vars.cats.val;
 					cats = $input_cats[0].value = vars.cats.val;
 				}
@@ -6999,12 +6998,14 @@
 					changed = changed || $input_cats[0].value !== cats;
 					$input_cats[0].value = cats;
 				}
-				if (vars.cat !== undefined) {
+				if (vars?.cat?.val) {
 					cat = m.currentCat = vars.cat.val;
 				}
 				else if (cats && cats !== 'null') {
-					changed = changed || m.currentCat !== cats.split(";")[0].trim();
-					cat = m.currentCat = cats.split(";")[0].trim();
+					changed = changed || !m.catsContainsAllAnotCats(cats, m.currentCat);
+					if (!m.catsContainsAllAnotCats(cats, m.currentCat)) {
+						cat = m.currentCat = cats.split(";")[0].trim();
+					}
 				}
 				let desc = m.localStorage.getItem("desc");
 				if (desc && desc !== 'null') {
@@ -7027,7 +7028,7 @@
 				}
 				console.log("m.initialFillFromLocalStorageN: ", m.initialFillFromLocalStorageN);
 				if (!changed && m.initialFillFromLocalStorageN > 3) {
-					clearInterval(initialFillFromLocalStorage);
+					clearInterval(m.initialFillFromLocalStorage);
 					m.initialFillFromLocalStorageN = 0;
 				}
 			}, m.wait);
