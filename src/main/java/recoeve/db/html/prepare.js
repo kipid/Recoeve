@@ -190,17 +190,6 @@ window.m = window.m || {};
 		}
 	};
 
-	m.saveSSN = function () {
-		if (m.docCookies.hasItem("salt")) {
-			m.saltSSN = m.docCookies.getItem("salt");
-			m.docCookies.removeItem("salt", "/", false, true);
-		}
-		if (m.docCookies.hasItem("session")) {
-			m.session = m.docCookies.getItem("session");
-			m.docCookies.removeItem("session", "/", false, true);
-		}
-	};
-
 	////////////////////////////////////////////////////
 	// Local storage
 	////////////////////////////////////////////////////
@@ -221,6 +210,18 @@ window.m = window.m || {};
 			return true;
 		}
 	};
+
+	m.saveSSN = function () {
+		if (m.docCookies.hasItem("salt")) {
+			m.localStorage.setItem("salt", m.docCookies.getItem("salt"));
+			m.docCookies.removeItem("salt", "/", "recoeve.net", true);
+		}
+		if (m.docCookies.hasItem("session")) {
+			m.localStorage.setItem("session", m.docCookies.getItem("session"));
+			m.docCookies.removeItem("session", "/", "recoeve.net", true);
+		}
+	};
+	m.saveSSN();
 
 	////////////////////////////////////////////////////
 	// hash encrypt
@@ -1365,7 +1366,7 @@ web	${m.sW}	${m.sH}`;
 						resolve();
 					}
 					else {
-						m.docCookies.setItem("SSN", m.encrypt(m.saltSSN, m.session.substring(3, 11), iter), 3, "/", false, true);
+						m.docCookies.setItem("SSN", m.encrypt(m.localStorage.getItem("salt"), m.localStorage.getItem("session").substring(3, 11), iter), 3, "/", false, true);
 						callback(args, null); // null means no error.
 						// m.localStorage.clear();
 						resolve();
@@ -1377,7 +1378,7 @@ web	${m.sW}	${m.sH}`;
 				if (m.docCookies.hasItem("salt") || m.docCookies.hasItem("session")) {
 					m.saveSSN();
 				}
-				if (m.saltSSN && m.session) {
+				if (m.localStorage.getItem("salt") && m.localStorage.getItem("session")) {
 					SSNencrypt(callback, args);
 					return;
 				}
@@ -1392,7 +1393,7 @@ web	${m.sW}	${m.sH}`;
 						console.log(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
 						if (resp.startsWith("Rmbd") && m.docCookies.hasItem('tCreate')) {
 							m.saveSSN();
-							if (m.saltSSN && m.session) {
+							if (m.localStorage.getItem("salt") && m.localStorage.getItem("session")) {
 								SSNencrypt(callback, args);
 							}
 							else {
@@ -2152,12 +2153,22 @@ web	${m.sW}	${m.sH}`;
 				}
 				$eveElse = $("#eveElse");
 				$video = $("#video");
-				$video.on("ended", function () {
+				$video.on("ended", function (event) {
 					if (fs.oneLoop) {
 						$video[0].play();
 					}
 					else {
 						fs.playNext();
+					}
+				});
+				$video.on("pause", function (event) {
+					if (event.target.currentTime >= config?.end) {
+						if (fs.oneLoop) {
+							$video[0].play();
+						}
+						else {
+							fs.playNext();
+						}
 					}
 				});
 				if (!cue) {
