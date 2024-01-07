@@ -5754,7 +5754,7 @@
 				clearInterval(m.setIntervalFsGo);
 				m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
 					m.fsGo.tryN++;
-					console.log(`m.setIntervalFsGo triggered!: `, setIntervalFsGo, m.fsGo.tryN);
+					console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo}, ${m.fsGo.tryN};`);
 					if (m.fsGo.fullList[hashURI]) {
 						let k = m.fsGo.fullList[hashURI]?.i;
 						let $liK = $(`#li-${k}`);
