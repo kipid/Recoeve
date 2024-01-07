@@ -2045,21 +2045,22 @@ web	${m.sW}	${m.sH}`;
 		}
 		m.setTimeoutPlayNextCount = 0;
 	};
-	m.fsToRs.prepareRecoListPlay = async function (YtAPINeeded) {
+	m.fsToRs.prepareRecoListPlay = async function (ytAPINeeded) {
 		let fs = m.fsToRs;
 		if (!m.YtAPILoaded) {
-			if (YtAPINeeded) {
+			if (ytAPINeeded) {
 				let ytAPI = `<script id="YouTube-API" src="https://www.youtube.com/player_api"></` + `script>`; // Avoid closing script
 				$scripts.append(ytAPI);
 				m.YtAPILoaded = true;
 			}
 		}
-		if (!YtAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT.Player) {
+		if (!ytAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT.Player) {
+			console.log(`YT is ready! and await m.doFSToRs();`);
 			await m.doFSToRs();
 		}
 		else {
 			setTimeout(function () {
-				fs.prepareRecoListPlay(YtAPINeeded);
+				fs.prepareRecoListPlay(ytAPINeeded);
 			}, m.wait);
 		}
 	};
@@ -2364,7 +2365,7 @@ web	${m.sW}	${m.sH}`;
 		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 	};
 	m.YTiframe = function (v, inListPlay, config) {
-		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https%3A//recoeve.net${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
+		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https%3A//recoeve.net${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
 	};
 
 	let ptnURI;
@@ -2468,7 +2469,7 @@ web	${m.sW}	${m.sH}`;
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
