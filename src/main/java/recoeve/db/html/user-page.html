@@ -5526,7 +5526,7 @@
 				m.lastRecoMode = m.recoMode;
 				$contents.addClass("multireco");
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
@@ -5535,14 +5535,14 @@
 				m.lastRecoMode = m.recoMode;
 				$contents.removeClass("multireco");
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 			}
 			else {
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				console.log(`await m.openCat(${cat});`);
@@ -6260,7 +6260,7 @@
 					$contents.removeClass("multireco");
 					$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
 					if ($button_neighbors_mode.hasClass("enabled")) {
-						m.lastRecoMode = m.recoMode = "";
+						m.recoMode = "";
 						if (!m.initialOpen || !m.initialHashURI) {
 							if (m.recoMode==="" || m.recoMode==="daily-mix") {
 								if (m.fsToRs.fixed) {
@@ -6275,7 +6275,7 @@
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else {
-						m.lastRecoMode = m.recoMode = "neighbors";
+						m.recoMode = "neighbors";
 						$button_mode.removeClass("enabled");
 						$button_neighbors_mode.addClass("enabled");
 						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
@@ -6287,15 +6287,16 @@
 					break;
 				case 77: // M=77
 					e.preventDefault();
-					$button_mode.removeClass("enabled");
 					if ($button_multireco_mode.hasClass("enabled")) {
 						m.recoMode = "";
+						$button_mode.removeClass("enabled");
 						$contents.removeClass("multireco");
 						$multireco_cats_container.hide();
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else {
 						m.recoMode = "multireco";
+						$button_mode.removeClass("enabled");
 						$button_multireco_mode.addClass("enabled");
 						$contents.addClass("multireco");
 						$multireco_cats_container.show();
@@ -6319,15 +6320,16 @@
 				case 89: // Y=89
 					if (m.myPage) {
 						e.preventDefault();
-						$button_mode.removeClass("enabled");
 						if ($button_daily_mix.hasClass("enabled")) {
 							m.recoMode = "";
-							$contents_recoms.html("");
+							$button_mode.removeClass("enabled");
+							// $contents_recoms.html("");
 						}
 						else {
 							m.recoMode = "daily-mix";
+							$button_mode.removeClass("enabled");
 							$button_daily_mix.addClass("enabled");
-							$contents_recoms.hide();
+							// $contents_recoms.hide();
 						}
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 						clearInterval(m.initialFsGotoCats4);
@@ -6341,7 +6343,7 @@
 						e.preventDefault();
 						if ($button_get_recoms.hasClass("enabled")) {
 							m.recoMode = "";
-							$contents_recoms.html("");
+							// $contents_recoms.html("");
 							$button_mode.removeClass("enabled");
 							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 						}
