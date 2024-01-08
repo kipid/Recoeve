@@ -89,6 +89,9 @@
 			else if (m.docCookies.hasItem("lang")) {
 				m.lang = m.docCookies.getItem("lang");
 			}
+
+			m.catList = m.myPage ? m.myCatList : [];
+			m.myRecos = m.myPage ? m.userRecos : {};
 		})(window.m, jQuery);
 	</script>
 	<!-- <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9843810906985249" crossorigin="anonymous"></script> -->
@@ -3826,7 +3829,7 @@
 		m.editOrRecoToMine = function (elem, fillDefs) {
 			if (!$new_reco.is(":visible")) {
 				$new_reco.show();
-				let $reco = $(elem).parent(".reco");
+				let $reco = $(elem).parents(".reco");
 				let uri = m.unescapeHTML($reco.find(".textURI").html());
 				let r = m.myRecos[uri];
 				if (!r) { m.myRecos[uri] = { uri }; }
@@ -4053,6 +4056,12 @@
 							for (k = 0; k < catUL.uris.length; k++) {
 								let uri = catUL.uris[k];
 								catUL.uris[uri] = { i: k, uri };
+								if (!m.userRecos[uri]) {
+									m.userRecos[uri] = { uri, down: false };
+								}
+								if (!m.myRecos[uri]) {
+									m.myRecos[uri] = { uri, down: false };
+								}
 							}
 						}
 					}

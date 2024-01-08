@@ -5,10 +5,8 @@ window.m = window.m || {};
 	$document = $(document);
 
 	m.myCatList = [];
-	m.catList = m.myPage ? m.myCatList : [];
 	m.catUriList = [];
 	m.userRecos = {};
-	m.myRecos = m.myPage ? m.userRecos : {};
 	m.recoDefs = {};
 	m.timeout = {};
 	m.maxShowReco = 20;
@@ -1241,11 +1239,11 @@ window.m = window.m || {};
 	};
 	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
 		let elem = $input_uri[0];
-		let uri = m.lastURI = noFormatURI ? elem.value : m.formatURI(elem.value);
+		let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
 		if (elem.value !== uri) { elem.value = uri; }
 		let uriRendered = await uriRendering(uri, true);
 		if (!noFormatURI) {
-			elem.value = m.formatURIFully(uri, uriRendered);
+			elem.value = uri = m.formatURIFully(uri, uriRendered);
 		}
 		$show_URI.html(String(uriRendered.html));
 		let r = m.myRecos[uri];
@@ -1256,6 +1254,7 @@ window.m = window.m || {};
 		}
 		await m.getAndFillRecoInNewReco(r, fillDefs);
 		await m.getAndFillDefsInNewReco(r, fillDefs);
+		m.lastURI = uri;
 		m.reNewAndReOn();
 	};
 
@@ -3603,7 +3602,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				let r = m.myRecos[uri];
 				let recoDef = m.recoDefs[uri];
 				if (!r) {
-					r = m.myRecos[uri] = { uri: uri, has: true, down: true, val: m.val(args.valStr) };
+					r = m.myRecos[uri] = { uri, has: true, down: true, val: m.val(args.valStr) };
 				}
 				r.uri = uri;
 				r.has = true;
@@ -3611,14 +3610,20 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				r.val = m.val(args.valStr);
 				r.tFirst = res[1]?.tLast;
 				r.tLast = res[1]?.tLast;
-				if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+				if (args.title) {
+					r.title = args.title;
+				}
+				else if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
 					r.title = recoDef.defTitles[0][0];
 				}
 				else {
 					r.title = "";
 				}
 				r.cats = args.cats;
-				if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+				if (args.desc) {
+					r.desc = args.desc;
+				}
+				else if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
 					r.desc = recoDef.defDescs[0][0];
 				}
 				else {
