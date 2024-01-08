@@ -2271,9 +2271,6 @@ web	${m.sW}	${m.sH}`;
 		}
 	}
 
-	m.myRecos[""] = {
-		uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10")
-	};
 	m.recoDefs[""] = {
 		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
 	};
