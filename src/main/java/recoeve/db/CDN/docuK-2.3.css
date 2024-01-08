@@ -165,7 +165,9 @@ codeprint.SEE {
 }
 
 .button-Go,
-.bright .button-Go {
+.button.button-Go,
+.bright .button-Go,
+.bright .button.button-Go {
 	background: cornflowerblue
 }
 
