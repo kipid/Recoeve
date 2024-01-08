@@ -2494,7 +2494,7 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 		clearTimeout(m.setTimeoutCueOrLoadUri);
-		console.log(`m.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
+		console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}`);
 		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
 			let from = String(uriRendered.from);
@@ -2504,6 +2504,7 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
+				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
 					if (m.YtPlayer) {
 						let config = {
@@ -2532,7 +2533,7 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						console.log(`new YT.Player('youtube'); :: fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nnew YT.Player('youtube');`);
+						console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
@@ -2562,6 +2563,7 @@ web	${m.sW}	${m.sH}`;
 						m.lastCat = m.currentCat;
 					}
 					else {
+						console.log(`fs.prepareRecoListPlay(true);`);
 						fs.prepareRecoListPlay(true);
 					}
 				}
