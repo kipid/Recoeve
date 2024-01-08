@@ -4062,22 +4062,27 @@
 		};
 		m.getMultiDefs = function (uris) {
 			return new Promise(async function (resolve, reject) {
-				$.ajax({
-					type: "POST", url: "/reco/multidefs", data: uris.trim()
-					, dataType: "text"
-				}).done(async function (resp) {
-					let defs = await m.strToJSON(resp.trim());
-					for (let j = 1; j < defs.length; j++) {
-						let uri = defs[j].uri;
-						let recoDefs = m.recoDefs[uri];
-						if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri }; }
-						recoDefs.down = true;
-						recoDefs.defCats = await m.strToJSON(String(defs[j]["def-cats"]), false);
-						recoDefs.defTitles = await m.strToJSON(String(defs[j]["def-titles"]), false);
-						recoDefs.defDescs = await m.strToJSON(String(defs[j]["def-descs"]), false);
-					}
-					resolve();
-				});
+				if (uris) {
+					$.ajax({
+						type: "POST", url: "/reco/multidefs", data: uris.trim()
+						, dataType: "text"
+					}).done(async function (resp) {
+						let defs = await m.strToJSON(resp.trim());
+						for (let j = 1; j < defs.length; j++) {
+							let uri = defs[j].uri;
+							let recoDefs = m.recoDefs[uri];
+							if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri }; }
+							recoDefs.down = true;
+							recoDefs.defCats = await m.strToJSON(String(defs[j]["def-cats"]), false);
+							recoDefs.defTitles = await m.strToJSON(String(defs[j]["def-titles"]), false);
+							recoDefs.defDescs = await m.strToJSON(String(defs[j]["def-descs"]), false);
+						}
+						resolve();
+					});
+				}
+				else {
+					reject();
+				}
 			});
 		}
 		m.loadMoreRecoms = async function (elem, sortedUntil, sortN) {
