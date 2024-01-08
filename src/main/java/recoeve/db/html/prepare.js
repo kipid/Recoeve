@@ -3376,8 +3376,13 @@ web	${m.sW}	${m.sH}`;
 			return String(recoHTML);
 		}
 		let recoDef = m.recoDefs[r?.uri];
-		if (!recoDef) {
-			await m.getMultiDefs(r?.uri);
+		if (r?.uri && !recoDef) {
+			try {
+				await m.getMultiDefs(r?.uri);
+			}
+			catch (err) {
+				// Do nothing.
+			}
 		}
 		let res = `<div class="reco recom"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
 <div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>

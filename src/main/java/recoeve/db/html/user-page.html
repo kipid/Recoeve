@@ -4098,7 +4098,12 @@
 					m.myRecos[uri] = { uri, down: true, has: false };
 				}
 			}
-			await m.getMultiDefs(uris);
+			try {
+				await m.getMultiDefs(uris);
+			}
+			catch (err) {
+				// Do nothing.
+			}
 			let strHTML = "";
 			for (let i = sortedUntil - 1; i >= recomsUntil; i--) {
 				let uri = m.recoms[cat][m.recomsSorted[cat][i]].uri;
@@ -4264,7 +4269,12 @@
 					resolve();
 				}
 				else {
-					await m.getMultiDefs(uris);
+					try {
+						await m.getMultiDefs(uris);
+					}
+					catch (err) {
+						// Do nothing.
+					}
 					let strHTML = String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
 					for (let i = m.recoms[cat].length - 1; i >= minRecomsUntil; i--) {
 						let uri = m.recoms[cat][sorted[i]].uri;
