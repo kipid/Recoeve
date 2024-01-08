@@ -133,7 +133,9 @@ codeprint.SEE {
 }
 
 #floating-key div.button {
+	cursor: pointer;
 	border-top: none;
+	border-radius: .3em;
 	text-align: center;
 	margin: 0;
 	padding: 1px;
@@ -143,6 +145,28 @@ codeprint.SEE {
 
 #floating-key div.button:first-child {
 	border-top: 2px solid rgb(50, 50, 50)
+}
+
+.button.darkred {
+	background: darkred
+}
+
+.bright .button.darkred {
+	background: indianred
+}
+
+.button.cadetblue {
+	background: cadetblue
+}
+
+.button.darkgoldenrod,
+.bight .button.darkgoldenrod {
+	background: darkgoldenrod
+}
+
+.button-Go,
+.bright .button-Go {
+	background: cornflowerblue
 }
 
 #toggle-floating-key {

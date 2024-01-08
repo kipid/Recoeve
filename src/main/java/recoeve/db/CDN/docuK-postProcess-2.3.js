@@ -150,36 +150,36 @@
 <div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
 	<span class="bold underline">G</span>o (FS)
 </div>
-<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
 	<span class="bold underline">T</span>ofC
 </div>
 <div class="button button-log" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">
 	Docu<span class="bold underline">K</span> Log
 </div>
-<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
+<div class="button darkgoldenrod" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
 	Backwar<span class="bold underline">d</span>
 </div>
-<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
+<div class="button darkgoldenrod" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
 	<span class="bold underline">F</span>orward
 </div>
-<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
 	<span class="bold underline">R</span>RA
 </div>
 <div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">
 	<span class="bold underline">L</span>ists
 </div>
-<div class="button" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
 	Cmt<span class="bold underline">Z</span>
 </div>
-<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})">
 	Cmt<span class="bold underline">X</span>
 </div>
 <div class="button" onclick="$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})">
 	<span class="bold underline">H</span>andle CmtZ
 </div>
-${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 	Log <span class="bold underline">i</span>n
-</div>`: `<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+</div>`: `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 	Log <span class="bold underline">o</span>ut
 </div>`}
 <div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"></div><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
