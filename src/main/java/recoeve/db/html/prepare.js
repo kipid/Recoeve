@@ -1895,10 +1895,10 @@ web	${m.sW}	${m.sH}`;
 					let k = m.recomsPlusRandomSorted[cat][i];
 					let uri = m.recoms[cat][k].uri;
 					let r = m.userRecos[uri];
+					let recoDef = m.recoDefs[uri];
 					let fsFLFromRecomsK;
 					fsFLFromRecomsK = fs.fullList[`from-recoms-${k}`] = fs.fullList[uri] = { uri, i:`from-recoms-${k}`, r, txt:r?.title ? r.title : recoDef?.defTitles[0] && recoDef.defTitles[0][0] ? recoDef.defTitles[0][0] : ""};
 					fsFLFromRecomsK.html=m.escapeOnlyTag(fsFLFromRecomsK.txt);
-					let recoDef = m.recoDefs[uri];
 					fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
 				}
 			}
