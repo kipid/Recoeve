@@ -3335,19 +3335,20 @@
 					let superCatIsDeleted = false;
 					for (let i = 0; i < catsSplit.length; i++) {
 						let cat = catsSplit[i];
-						if (m.catUriList[cat]?.has) {
-							let { k, fullURIs } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
-							if (k !== -1) {
-								m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
-								// Intentionally no change on m.catUriList[cat].uris;
-								// if (m.catUriList[cat].uris[uri]) {
-								// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
-								// 	delete m.catUriList[cat].uris[uri];
-								// 	m.refreshFSToRs(cat);
-								// }
-							}
+						if (!m.catUriList[cat]?.has) {
+							await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
 						}
-						if (m.catUriList[cat].UriList.trim().length === 0) {
+						let { k, fullURIs } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
+						if (k !== -1) {
+							m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
+							// Intentionally no change on m.catUriList[cat].uris;
+							// if (m.catUriList[cat].uris[uri]) {
+							// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
+							// 	delete m.catUriList[cat].uris[uri];
+							// 	m.refreshFSToRs(cat);
+							// }
+						}
+						if (m.catUriList[cat]?.UriList?.trim().length === 0) {
 							let catIsDeleted = true;
 							while (cat !== null && catIsDeleted) {
 								catIsDeleted = false;
