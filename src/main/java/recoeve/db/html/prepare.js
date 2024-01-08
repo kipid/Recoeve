@@ -2505,7 +2505,7 @@ web	${m.sW}	${m.sH}`;
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
 				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
-				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					if (m.YtPlayer) {
 						let config = {
 							videoId: uriRendered.videoId
