@@ -2337,7 +2337,7 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
+					// console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
 				}
 			}
@@ -2349,7 +2349,7 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 				m.recoURIPlaying = r?.uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
+					// console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
 					m.cueOrLoadUri(cue, uriRendered, inListPlay);
 				}
 			}
