@@ -971,13 +971,13 @@ window.m = window.m || {};
 		}
 		else if (fillDefs) {
 			let recoDef = m.recoDefs[r?.uri];
-			if (recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+			if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
 				$input_title[0].value = recoDef.defTitles[0][0];
 			}
-			if (recoDef.defCats[0] && recoDef.defCats[0][0]) {
+			if (recoDef?.defCats[0] && recoDef.defCats[0][0]) {
 				$input_cats[0].value = recoDef.defCats[0][0];
 			}
-			if (recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+			if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
 				$input_desc[0].value = recoDef.defDescs[0][0];
 			}
 		}
@@ -1026,17 +1026,17 @@ window.m = window.m || {};
 	}
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
-			let recoDefs = m.recoDefs[uri];
-			if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false, h1: undefined }; }
-			let defTitles = recoDefs.defTitles;
+			let recoDef = m.recoDefs[uri];
+			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false, h1: undefined }; }
+			let defTitles = recoDef.defTitles;
 			let defTitlesHTML = "";
-			if (!recoDefs.h1) {
-				recoDefs.h1 = await m.getH1(uri);
+			if (!recoDef.h1) {
+				recoDef.h1 = await m.getH1(uri);
 			}
-			defTitlesHTML += `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDefs.h1))}</div>`;
+			defTitlesHTML += `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.h1))}</div>`;
 			for (let i = 0; i < defTitles.length; i++) {
 				let title = defTitles[i][0].trim();
-				if (title.length !== 0 && title !== String(recoDefs.h1).trim()) {
+				if (title.length !== 0 && title !== String(recoDef.h1).trim()) {
 					defTitlesHTML += `<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
 				}
 			}
@@ -3379,6 +3379,7 @@ web	${m.sW}	${m.sH}`;
 		if (r?.uri && !recoDef) {
 			try {
 				await m.getMultiDefs(r?.uri);
+				recoDef = m.recoDefs[r?.uri];
 			}
 			catch (err) {
 				// Do nothing.
@@ -3388,7 +3389,7 @@ web	${m.sW}	${m.sH}`;
 <div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>`;
-		if (recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+		if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
 			res += `<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
 		}
 		res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
@@ -3424,7 +3425,7 @@ web	${m.sW}	${m.sH}`;
 <div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
 		}
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
-		if (recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
 			let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
 			res += `<div class="desc">`;
 			for (let l = 0; l < descR.length; l++) {
@@ -3610,14 +3611,14 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				r.val = m.val(args.valStr);
 				r.tFirst = res[1]?.tLast;
 				r.tLast = res[1]?.tLast;
-				if (recoDef.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+				if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
 					r.title = recoDef.defTitles[0][0];
 				}
 				else {
 					r.title = "";
 				}
 				r.cats = args.cats;
-				if (recoDef.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+				if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
 					r.desc = recoDef.defDescs[0][0];
 				}
 				else {
