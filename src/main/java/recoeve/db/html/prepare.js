@@ -2557,6 +2557,9 @@ web	${m.sW}	${m.sH}`;
 						m.lastRecoURIPlaying = m.recoURIPlaying;
 						fs.lastIndex = fs.currentIndex;
 						m.lastCat = m.currentCat;
+						if (m.initialOpen) {
+							m.gotoHash(m.initialHashURI);
+						}
 					}
 					else {
 						console.log(`fs.prepareRecoListPlay(true);`);
@@ -2600,6 +2603,9 @@ web	${m.sW}	${m.sH}`;
 				if (!cue) {
 					$video[0].play();
 				}
+				if (m.initialOpen) {
+					m.gotoHash(m.initialHashURI);
+				}
 			}
 			else {
 				fs.pauseVideo();
@@ -2611,6 +2617,9 @@ web	${m.sW}	${m.sH}`;
 					$eveElse.html(uriRendered.html);
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
+					if (m.initialOpen) {
+						m.gotoHash(m.initialHashURI);
+					}
 				}
 				if ((!cue) && fs.skip) {
 					clearTimeout(m.setTimeoutPlayNext);
