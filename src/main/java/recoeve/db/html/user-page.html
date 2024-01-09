@@ -6096,12 +6096,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 					}
 					m.doNotPushHistory = false;
-					if (m.initialOpen && m.searchVars.ToR?.val || m.searchVars.ToR?.val === "") {
-						$table_of_recos[0].value = m.searchVars.ToR.val;
-						if (!$table_of_recos_container.is(":visible")) {
-							$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
-							$table_of_recos.trigger("keyup.fs");
-						}
+					if (m.initialOpen) {
 						m.gotoHash(m.initialHashURI);
 					}
 				}
@@ -6630,6 +6625,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 			}, m.wait);
 
+			if (vars.ToR?.val || vars.ToR?.val === "") {
+				$table_of_recos[0].value = vars.ToR.val;
+				if (!$table_of_recos_container.is(":visible")) {
+					$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
+					$table_of_recos.trigger("keyup.fs");
+				}
+			}
+
 			if (vars.timezone) {
 				let timezone = vars.timezone;
 				m.docCookies.setItem("timezone", timezone, Infinity, "/", false, true);
@@ -6785,7 +6788,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				await m.reTriggerFS(m.fsTimezone);
 				await m.reTriggerFS(m.fsGo);
 				m.initialOpen = false;
-			}, 4 * m.wait);
+			}, 8 * m.wait);
 		});
 
 		$toggle_reco_list_play.on("mouseenter", function (e) {
