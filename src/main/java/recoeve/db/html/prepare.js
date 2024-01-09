@@ -1779,7 +1779,7 @@ web	${m.sW}	${m.sH}`;
 			}
 			else {
 				await fs.getAndPlayVideo($elem[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
-				if (m.recoMode==="" || m.recoMode==="daily-mix") {
+				if (!m.initialOpen && m.recoMode==="" || m.recoMode==="daily-mix") {
 					if (m.fsToRs.$playing?.hasClass("fixed")) {
 						$window.scrollTop($playlist_container.offset().top - m.fsToRs.$playing?.outerHeight());
 					}
