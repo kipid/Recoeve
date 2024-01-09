@@ -6080,13 +6080,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					m.doNotPushHistory = false;
 					if (m.initialOpen) {
-						if (m.searchVars.ToR?.val || m.searchVars.ToR?.val === "") {
-							$table_of_recos[0].value = m.searchVars.ToR.val;
-							if (!$table_of_recos_container.is(":visible")) {
-								$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
-								$table_of_recos.trigger("keyup.fs");
-							}
-						}
 						m.gotoHash(m.initialHashURI);
 					}
 					return;
