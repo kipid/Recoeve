@@ -2562,7 +2562,9 @@ web	${m.sW}	${m.sH}`;
 						fs.lastIndex = fs.currentIndex;
 						m.lastCat = m.currentCat;
 						if (m.initialOpen) {
-							m.gotoHash(m.initialHashURI);
+							setTimeout(function () {
+								m.gotoHash(m.initialHashURI);
+							}, 2 * m.wait);
 						}
 					}
 					else {
@@ -2608,7 +2610,9 @@ web	${m.sW}	${m.sH}`;
 					$video[0].play();
 				}
 				if (m.initialOpen) {
-					m.gotoHash(m.initialHashURI);
+					setTimeout(function () {
+						m.gotoHash(m.initialHashURI);
+					}, 2 * m.wait);
 				}
 			}
 			else {
@@ -2622,7 +2626,9 @@ web	${m.sW}	${m.sH}`;
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
 					if (m.initialOpen) {
-						m.gotoHash(m.initialHashURI);
+						setTimeout(function () {
+							m.gotoHash(m.initialHashURI);
+						}, 2 * m.wait);
 					}
 				}
 				if ((!cue) && fs.skip) {
