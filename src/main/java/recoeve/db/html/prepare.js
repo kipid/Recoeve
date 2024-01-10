@@ -2555,17 +2555,24 @@ web	${m.sW}	${m.sH}`;
 											fs.playNext();
 										}
 									}
+									else if (e.data === YT.PlayerState.CUED) {
+										if (m.initialOpen) {
+											setTimeout(function () {
+												m.gotoHash(m.initialHashURI);
+											}, 2 * m.wait);
+										}
+									}
 								}
 							}
 						});
 						m.lastRecoURIPlaying = m.recoURIPlaying;
 						fs.lastIndex = fs.currentIndex;
 						m.lastCat = m.currentCat;
-						if (m.initialOpen) {
-							setTimeout(function () {
-								m.gotoHash(m.initialHashURI);
-							}, 8 * m.wait);
-						}
+						// if (m.initialOpen) {
+						// 	setTimeout(function () {
+						// 		m.gotoHash(m.initialHashURI);
+						// 	}, 8 * m.wait);
+						// }
 					}
 					else {
 						console.log(`fs.prepareRecoListPlay(true);`);
