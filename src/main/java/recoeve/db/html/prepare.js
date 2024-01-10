@@ -2333,8 +2333,10 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					// console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
-					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					clearTimeout(m.setTimeoutCueOrLoadUri);
+					m.setTimeoutCueOrLoadUri = setTimeout(function () {
+						m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					}, m.wait);
 				}
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
@@ -2345,8 +2347,10 @@ web	${m.sW}	${m.sH}`;
 				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
 				m.recoURIPlaying = r?.uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					// console.log(`m.cueOrLoadUri(cue: ${cue}, uriRendered: ${uriRendered}, inListPlay: ${inListPlay});`, uriRendered);
-					m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					clearTimeout(m.setTimeoutCueOrLoadUri);
+					m.setTimeoutCueOrLoadUri = setTimeout(function () {
+						m.cueOrLoadUri(cue, uriRendered, inListPlay);
+					}, m.wait);
 				}
 			}
 			else {
@@ -2523,7 +2527,7 @@ web	${m.sW}	${m.sH}`;
 						else {
 							clearTimeout(m.setTimeoutCueOrLoadUri);
 							m.setTimeoutCueOrLoadUri = setTimeout(function () {
-								fs.cueOrLoadUri(cue, uriRendered, inListPlay);
+								m.cueOrLoadUri(cue, uriRendered, inListPlay);
 							}, m.wait);
 							return;
 						}
