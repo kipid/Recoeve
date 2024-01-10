@@ -2564,7 +2564,7 @@ web	${m.sW}	${m.sH}`;
 						if (m.initialOpen) {
 							setTimeout(function () {
 								m.gotoHash(m.initialHashURI);
-							}, 2 * m.wait);
+							}, 4 * m.wait);
 						}
 					}
 					else {
@@ -2612,7 +2612,7 @@ web	${m.sW}	${m.sH}`;
 				if (m.initialOpen) {
 					setTimeout(function () {
 						m.gotoHash(m.initialHashURI);
-					}, 2 * m.wait);
+					}, 4 * m.wait);
 				}
 			}
 			else {
@@ -2628,7 +2628,7 @@ web	${m.sW}	${m.sH}`;
 					if (m.initialOpen) {
 						setTimeout(function () {
 							m.gotoHash(m.initialHashURI);
-						}, 2 * m.wait);
+						}, 4 * m.wait);
 					}
 				}
 				if ((!cue) && fs.skip) {
