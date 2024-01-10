@@ -5675,7 +5675,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}, m.wait);
 				return;
 			}
-			if ($elem.hasClass("selected")) {
+			if (!m.initialOpen && $elem.hasClass("selected")) {
 				if ($elem.hasClass("clicked-twice")) {
 					fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // keyCode:27=ESC
 					fs.$fsl.find(".list-item").removeClass("clicked-twice");
@@ -5714,6 +5714,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				if ($recoElem.length) {
 					m.showAndScrollTo($recoElem);
 					console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
+				}
+				else {
+					m.setTimeoutGotoLi = setTimeout(function () {
+						m.gotoLi(event);
+					}, m.wait);
 				}
 			}
 		};
