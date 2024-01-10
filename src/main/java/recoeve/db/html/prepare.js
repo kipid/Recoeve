@@ -2564,7 +2564,7 @@ web	${m.sW}	${m.sH}`;
 						if (m.initialOpen) {
 							setTimeout(function () {
 								m.gotoHash(m.initialHashURI);
-							}, 4 * m.wait);
+							}, 8 * m.wait);
 						}
 					}
 					else {
@@ -2612,7 +2612,7 @@ web	${m.sW}	${m.sH}`;
 				if (m.initialOpen) {
 					setTimeout(function () {
 						m.gotoHash(m.initialHashURI);
-					}, 4 * m.wait);
+					}, 8 * m.wait);
 				}
 			}
 			else {
