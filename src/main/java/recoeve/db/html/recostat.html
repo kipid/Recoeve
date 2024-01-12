@@ -253,6 +253,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.fsCat.$fsl = $cat_fs_list;
 		m.fsCat.$fs_container = $cat_fs_container;
 
+		m.reNewFSsOn = async function () {
+			return new Promise(async function (resolve, reject) {
+				$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
+				$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+				if (m.initialOpen) {
+					await m.reTriggerFS(m.fsCat);
+				}
+				else {
+					resolve();
+				}
+			});
+		};
 		m.a_log_in = function (e, elem) {
 			let uri = $input_uri[0].value;
 			let fullPath = m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
