@@ -726,7 +726,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			});
 		};
 		m.getAndShowDefsAndRecoInNewReco1 = async function (noFormatURI, fillDefs) {
-			m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
+			let uri = m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
 			await m.getFullRecoStatAndPlotChart(uri);
 		};
 		$new_reco.find("input, textarea").on("keydown.common", function (e) {

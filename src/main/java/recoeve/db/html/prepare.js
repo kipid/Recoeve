@@ -1256,6 +1256,7 @@ window.m = window.m || {};
 		await m.getAndFillDefsInNewReco(r, fillDefs);
 		m.lastURI = uri;
 		m.reNewAndReOn();
+		return uri;
 	};
 
 	////////////////////////////////////////////////////
