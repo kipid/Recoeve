@@ -725,58 +725,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				});
 			});
 		};
-		m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
-			let elem = $input_uri[0];
-			let uri = m.lastURI = noFormatURI ? elem.value : m.formatURI(elem.value);
-			if (elem.value !== uri) { elem.value = uri; }
-			let uriRendered = await uriRendering(uri, true);
-			let from = String(uriRendered.from);
-			if (!noFormatURI) {
-				m.lastURI = uri;
-				switch (from) {
-					case "youtube":
-						uri = elem.value = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
-						break;
-					case "instagram":
-						uri = elem.value = `https://www.instagram.com/p/${uriRendered.imgId}/`;
-						break;
-					case "tiktok":
-						uri = elem.value = `https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
-						break;
-					case "weverse":
-						uri = elem.value = `https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
-						break;
-					case "naver":
-						uri = elem.value = `https://tv.naver.com/v/${uriRendered.videoId}`;
-						break;
-					case "vlive":
-						uri = elem.value = `https://www.vlive.tv/video/${uriRendered.videoId}`;
-						break;
-					case "kakao":
-						uri = elem.value = `https://tv.kakao.com/v/${uriRendered.videoId}`;
-						break;
-					case "ted":
-						uri = elem.value = `https://www.ted.com/talks/${uriRendered.videoId}`;
-						break;
-					case "dailymotion":
-						uri = elem.value = `https://www.dailymotion.com/video/${uriRendered.videoId}`;
-						break;
-					case "sogirl": case "topgirl":
-						uri = elem.value = uriRendered.newURI;
-						break;
-				}
-			}
-			$show_URI.html(String(uriRendered.html));
-			let r = m.myRecos[uri];
-			if (!r) { r = m.myRecos[uri] = { uri }; }
-			if (!(r && r.has)) {
-				r = m.userRecos[uri];
-				if (!r) { r = m.userRecos[uri] = { uri }; }
-			}
-			await m.getAndFillRecoInNewReco(r, fillDefs);
-			await m.getAndFillDefsInNewReco(r, fillDefs);
+		m.getAndShowDefsAndRecoInNewReco1 = async function (noFormatURI, fillDefs) {
+			m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
 			await m.getFullRecoStatAndPlotChart(uri);
-			m.reNewAndReOn();
 		};
 		$new_reco.find("input, textarea").on("keydown.common", function (e) {
 			if (e.ctrlKey && e.keyCode === 13) { // Ctrl+Enter
@@ -796,7 +747,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.lastURI = m.uri;
 				clearTimeout(m.timeOutGetInfos);
 				m.timeOutGetInfos = setTimeout(function () {
-					m.getAndShowDefsAndRecoInNewReco(false);
+					m.getAndShowDefsAndRecoInNewReco1(false);
 					window.history.pushState({ uri: m.uri }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 				}, 1024);
 			}
@@ -1348,7 +1299,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 				}
 				if (m.initialURI) {
 					m.uri = $input_uri[0].value = m.initialURI;
-					$input_uri.trigger("input");
+					$input_uri.trigger("keyup");
 				}
 				window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 				if (m.setIntervalInitialN++ > 4) {
