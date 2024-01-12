@@ -4622,7 +4622,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								$gotoCatsI.trigger("click");
 							}
 							else {
-								m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fs.fullList[fsGotoCatsFLCat.i].html}</div>`);
+								m.fsGotoCats.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}" onclick="m.completeCatAndOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fsGotoCatsFLCat.html}</div>`);
 								$gotoCatsI = $(`#gotoCats-${fsGotoCatsFLCat.i}`);
 								$gotoCatsI.trigger("click");
 							}

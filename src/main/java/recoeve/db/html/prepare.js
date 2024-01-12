@@ -1367,9 +1367,7 @@ web	${m.sW}	${m.sH}`;
 					else {
 						m.docCookies.setItem("SSN", m.encrypt(m.localStorage.getItem("salt"), m.localStorage.getItem("session").substring(3, 11), iter), 3, "/", false, true);
 						callback(args, null); // null means no error.
-						// m.localStorage.clear();
 						resolve();
-						// m.docCookies.removeItem("SSN", "/", false, true);
 					}
 				});
 			};

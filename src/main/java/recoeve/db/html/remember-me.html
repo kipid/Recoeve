@@ -21,6 +21,10 @@
 				if (err) {
 					console.log(err);
 					$err.html(m.escapeHTML(err));
+					if (err.startsWith("Expired")) {
+						m.localStorage.removeItem("session");
+						m.localStorage.removeItem("salt");
+					}
 				}
 				// wait until saving session/rmb cookies.
 				setTimeout(function () {
