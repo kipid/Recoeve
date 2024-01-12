@@ -3666,7 +3666,13 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 			m.delayedLogOut("You are not logged-in.", 60 * 60 * 24, $result);
 			return;
 		}
-		let valStr = $str.html();
+		let valStr = "";
+		if ($str?.constructor === String) {
+			valStr = $str;
+		}
+		else {
+			valStr = $str.html();
+		}
 		if (m.myPage) {
 			if (inRecoms) {
 				let strHeads = "uri\tdo\tval";
