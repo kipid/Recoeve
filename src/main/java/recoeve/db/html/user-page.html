@@ -75,6 +75,7 @@
 
 			m.searchVars = m.getSearchVars(m.initialSearch);
 			m.currentCat = m.searchVars.cat?.val ?? "";
+			$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(m.currentCat)}" />`);
 			for (let prop in m.searchVars) {
 				m.args[m.searchVars[prop].key] = m.searchVars[prop].val;
 			}
@@ -6710,7 +6711,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(cat, m.recoMode, m.lang, m.initialHashURI, m.args));
 			}
 			m.doNotPushHistory = false;
-			$("head").append(`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(cat)}" />`);
 
 			if (m.recoMode === "") {
 				$button_mode.removeClass("enabled");
