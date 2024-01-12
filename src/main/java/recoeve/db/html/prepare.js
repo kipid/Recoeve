@@ -3689,7 +3689,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 					cats = m.formatCats(m.currentCat);
 				}
 				strContents += `\t${m.encloseStr(cats)}`;
-				$result?.html(`Recoing... The cats on this URI is ${m.escapeOnlyTag(cats)}.`);
+				$result?.html(`Recoing... The cats on this URI is "${m.escapeOnlyTag(cats)}".`);
 				m.rmb_me(m.reco_pointChange_do, { strHeads, strContents, $result, uri, cats, valStr, inRecoms });
 			}
 			else if (valStr !== m.myRecos[uri]?.val?.str) {
