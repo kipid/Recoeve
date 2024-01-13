@@ -743,6 +743,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (m.uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
 				m.timeOutGetInfos = setTimeout(function () {
+					console.log(`m.getAndShowDefsAndRecoInNewReco1(false);`);
 					m.getAndShowDefsAndRecoInNewReco1(false);
 					window.history.pushState({ uri: m.uri }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 					m.lastURI = m.uri;
