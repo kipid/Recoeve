@@ -161,8 +161,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				<div style="margin:.5em 0">
 					<label for="input-val" style="margin:.1em .5em">[--Points--]</label>
 					<div id="input-val-stars"></div>
-					<span class="upDown" id="input-val-down">&lt;</span>
 					<span class="upDown" id="input-val-up">&gt;</span>
+					<span class="upDown" id="input-val-down">&lt;</span>
 					<input id="input-val" name="val" placeholder="(ex: 7.5/10)" type="text" tabindex="4" />
 				</div>
 				<div id="error-msg" class="cBoth"></div>
@@ -546,11 +546,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}, m.wait * 1.5 - passed);
 			}
 		};
-		m.fsCatsOnTimeout = function () {
-			$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-			$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
-		};
-		m.fsCatsOnTimeout();
+		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 		m.onKeydownInFS = function (e, fs) {
 			clearTimeout(m.setTimeoutTargetOn);
 			e.stopPropagation();
@@ -1277,17 +1274,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		// Initial open :: Lang: set cookie, uri: get and show RecoStat.
 		////////////////////////////////////////////////
 		$document.ready(function () {
-			let blogStat = `URI	referer	REACTION_GUEST
-${window.location.href}	${document.referrer}	${m.myId}`;
-			$.ajax({
-				type: "POST", url: "/BlogStat", data: blogStat, dataType: "text"
-			}).fail(function (resp) {
-				// console.log("Failed to post blogStat", resp);
-				// console.log(blogStat);
-			}).done(function (resp) {
-				// console.log("Posted blogStat", resp);
-				// console.log(blogStat);
-			});
+			setTimeout(function () {
+				let blogStat = `URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\t${m.myId}`;
+				$.ajax({
+					type: "POST", url: "/BlogStat", data: blogStat, dataType: "text"
+				}).fail(function (resp) {
+					console.log("Failed to post blogStat", resp);
+					console.log(blogStat);
+				}).done(function (resp) {
+					console.log("Posted blogStat", resp);
+					console.log(blogStat);
+				});
+			}, 4 * m.wait);
 
 			m.setIntervalInitialN = 0;
 			m.setIntervalInitial = setInterval(function () {
@@ -1298,6 +1296,7 @@ ${window.location.href}	${document.referrer}	${m.myId}`;
 					$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
 				}
 				if (m.initialURI) {
+					m.lastURI="41kjIO아녜#@@";
 					m.uri = $input_uri[0].value = m.initialURI;
 					$input_uri.trigger("keyup");
 				}
