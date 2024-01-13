@@ -2495,7 +2495,6 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 		clearTimeout(m.setTimeoutCueOrLoadUri);
-		console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
 		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
 			let from = String(uriRendered.from);
@@ -2629,10 +2628,12 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.show();
 				$rC_youtube_container.hide();
 				fs.$playing = $eveElse_container;
-				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+				console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					$eveElse.html(String(uriRendered.html));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
+					m.lastRecoURIPlaying = m.recoURIPlaying;
 					if (m.initialOpen) {
 						setTimeout(function () {
 							m.gotoHash(m.initialHashURI);
