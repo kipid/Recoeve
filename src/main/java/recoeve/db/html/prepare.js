@@ -2495,7 +2495,7 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 		clearTimeout(m.setTimeoutCueOrLoadUri);
-		console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}`);
+		console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
 		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
 			let from = String(uriRendered.from);
@@ -2630,13 +2630,13 @@ web	${m.sW}	${m.sH}`;
 				$rC_youtube_container.hide();
 				fs.$playing = $eveElse_container;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
-					$eveElse.html(uriRendered.html);
+					$eveElse.html(String(uriRendered.html));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
 					if (m.initialOpen) {
 						setTimeout(function () {
 							m.gotoHash(m.initialHashURI);
-						}, 4 * m.wait);
+						}, 2 * m.wait);
 					}
 				}
 				if ((!cue) && fs.skip) {
