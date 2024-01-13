@@ -1847,7 +1847,7 @@ web	${m.sW}	${m.sH}`;
 					}
 					break;
 				default:
-					for (let i = 0; i < l; i++) {
+					for (let i = l - 1; i >= 0; i--) {
 						shuffled[l - 1 - i] = { i: l - 1 - i, sortN: i }; // Desc sorted.
 					}
 					break;
@@ -1943,7 +1943,7 @@ web	${m.sW}	${m.sH}`;
 					}, m.wait);
 				}
 			}
-			else {
+			else if (m.recoMode === "" || m.recoMode === "daily-mix") {
 				let $toRK = $(`#toR-${fs.currentIndex}`);
 				if ($toRK.length) {
 					$toRK.trigger("click");
@@ -1972,7 +1972,7 @@ web	${m.sW}	${m.sH}`;
 					}, m.wait);
 				}
 			}
-			if (fs === m.fsToRs && $table_of_recos_container.is(":visible")) {
+			if ($table_of_recos_container.is(":visible")) {
 				m.args.ToR = $table_of_recos[0].value;
 				window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
 			}
