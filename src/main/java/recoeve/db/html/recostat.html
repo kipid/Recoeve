@@ -1143,6 +1143,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.reNewAndReOn();
 		};
 
+		m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
+			m.hashURI = hashURI;
+			window.location.hash = `#${m.hashURI}`;
+			$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
+			window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+		};
 		m.$fdList = $("#right-top-log-in, #reco-stat, .reco, .to-be-executed"); // Ordered automatically by jQuery.
 		m.processShortKey = function (e) {
 			if (e.altKey || e.ctrlKey || e.metaKey) { return; }
@@ -1151,20 +1157,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 			switch (e.keyCode) {
 				case 90: // Z=90 To new-reco
-					m.hashURI = "new-reco";
-					window.location.hash = `#${m.hashURI}`;
-					$window.scrollTop($new_reco.offset().top); // For when hash is not changed.
-					window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+					m.goDirectlyToHash("new-reco");
 					break;
 				case 88: // X=88 To reco-stat
-					m.hashURI = "reco-stat";
-					window.location.hash = `#${m.hashURI}`;
-					$window.scrollTop($reco_stat.offset().top); // For when hash is not changed.
-					window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+					m.goDirectlyToHash("reco-stat");
 					break;
-				case 69: // E=69 Expand/Hide floating keys
-					m.toggleFK();
-					break;
+				// case 69: // E=69 Expand/Hide floating keys
+				// 	m.toggleFK();
+				// 	break;
 				case 65: // A=65 To my page
 					if (m.myIndex) {
 						window.location.href = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
@@ -1297,7 +1297,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
 				}
 				if (m.initialURI) {
-					m.lastURI="41kjIO아녜#@@";
+					// m.lastURI="41kjIO아녜#@@";
 					m.uri = $input_uri[0].value = m.initialURI;
 					$input_uri.trigger("keyup");
 				}
