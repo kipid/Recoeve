@@ -2630,7 +2630,7 @@ web	${m.sW}	${m.sH}`;
 				fs.$playing = $eveElse_container;
 				console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					$eveElse.html(String(uriRendered.html));
+					$eveElse.html(String(uriRendered.html).replace(/\sdelayed\-src\=/g, " src="));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
