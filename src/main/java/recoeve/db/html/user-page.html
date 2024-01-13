@@ -3831,7 +3831,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				resolve();
 			});
 		};
-		m.editOrRecoToMine = function (elem, fillDefs) {
+		m.editOrRecoToMine = async function (elem, fillDefs) {
 			if (!$new_reco.is(":visible")) {
 				$new_reco.show();
 				let $reco = $(elem).parents(".reco");
@@ -3845,14 +3845,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$input_uri[0].value = r?.uri;
 				$input_uri[0].disabled = true;
 				if (uri.length !== 0 && uri !== m.lastURI) {
-					m.getAndShowDefsAndRecoInNewReco(true, fillDefs);
+					await m.getAndShowDefsAndRecoInNewReco(true, fillDefs);
 				}
 				m.wST = $window.scrollTop();
 				$window.off("scroll.stop");
 				$window.on("scroll.stop", function (e) {
 					$window.scrollTop(m.wST);
 				});
-				m.reNewAndReOn();
 			}
 			else {
 				$window.off("scroll.stop");
@@ -5025,17 +5024,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		});
 		$input_cats.off("keydown.common");
-		m.input_uriOn = function (e) {
+		m.input_uriOn = async function (e) {
 			let uri = $input_uri[0].value;
 			if (uri === "") {
 				m.myRecos[""].cats = m.currentCat;
 			}
 			if (uri !== m.lastURI) {
-				m.lastURI = uri;
 				clearTimeout(m.timeOutGetInfos);
-				m.timeOutGetInfos = setTimeout(function () {
-					m.getAndShowDefsAndRecoInNewReco(false);
-					m.reNewAndReOn();
+				m.timeOutGetInfos = setTimeout(async function () {
+					await m.getAndShowDefsAndRecoInNewReco(false);
 				}, m.wait);
 			}
 		};
@@ -6575,7 +6572,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			uri = $input_uri[0].value;
 			if (uri !== m.lastURI) {
 				m.lastURI = uri;
-				m.getAndShowDefsAndRecoInNewReco(false);
+				await m.getAndShowDefsAndRecoInNewReco(false);
 			} // If there is m.myRecos[uri], fill #new-reco inputs with it. But if there is saved revision, fill revised versions to #new-reco inputs.
 			m.initialFillFromLocalStorageN = 0;
 			m.initialFillFromLocalStorage = setInterval(function () {

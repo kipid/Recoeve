@@ -1008,7 +1008,6 @@ window.m = window.m || {};
 		$input_uri[0].value = "";
 		$input_val.trigger("keyup");
 		m.getAndShowDefsAndRecoInNewReco(true);
-		m.reNewAndReOn();
 	};
 	m.getH1 = function (uri) {
 		return new Promise(function (resolve, reject) {
@@ -1238,25 +1237,28 @@ window.m = window.m || {};
 		return uri;
 	};
 	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
-		let elem = $input_uri[0];
-		let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
-		if (elem.value !== uri) { elem.value = uri; }
-		let uriRendered = await uriRendering(uri, true);
-		if (!noFormatURI) {
-			elem.value = uri = m.formatURIFully(uri, uriRendered);
-		}
-		$show_URI.html(String(uriRendered.html));
-		let r = m.myRecos[uri];
-		if (!r) { r = m.myRecos[uri] = { uri }; }
-		if (!(r && r.has)) {
-			r = m.userRecos[uri];
-			if (!r) { r = m.userRecos[uri] = { uri }; }
-		}
-		await m.getAndFillRecoInNewReco(r, fillDefs);
-		await m.getAndFillDefsInNewReco(r, fillDefs);
-		m.lastURI = uri;
-		m.reNewAndReOn();
-		return uri;
+		return new Promise(async function (resolve, reject) {
+			let elem = $input_uri[0];
+			let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
+			if (elem.value !== uri) { elem.value = uri; }
+			let uriRendered = await uriRendering(uri, true);
+			if (!noFormatURI) {
+				elem.value = uri = m.formatURIFully(uri, uriRendered);
+			}
+			m.uri = uri;
+			$show_URI.html(String(uriRendered.html));
+			let r = m.myRecos[uri];
+			if (!r) { r = m.myRecos[uri] = { uri }; }
+			if (!(r && r.has)) {
+				r = m.userRecos[uri];
+				if (!r) { r = m.userRecos[uri] = { uri }; }
+			}
+			await m.getAndFillRecoInNewReco(r, fillDefs);
+			await m.getAndFillDefsInNewReco(r, fillDefs);
+			m.lastURI = uri;
+			m.reNewAndReOn();
+			resolve();
+		});
 	};
 
 	////////////////////////////////////////////////////

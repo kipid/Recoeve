@@ -723,8 +723,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			});
 		};
 		m.getAndShowDefsAndRecoInNewReco1 = async function (noFormatURI, fillDefs) {
-			let uri = m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
-			await m.getFullRecoStatAndPlotChart(uri);
+			return new Promise(async function (resolve, reject) {
+				await m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
+				await m.getFullRecoStatAndPlotChart(m.uri);
+				resolve();
+			});
 		};
 		$new_reco.find("input, textarea").on("keydown.common", function (e) {
 			if (e.ctrlKey && e.keyCode === 13) { // Ctrl+Enter
@@ -742,11 +745,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.uri = $input_uri[0].value;
 			if (m.uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
-				m.timeOutGetInfos = setTimeout(function () {
-					console.log(`m.getAndShowDefsAndRecoInNewReco1(false);`);
-					m.getAndShowDefsAndRecoInNewReco1(false);
+				m.timeOutGetInfos = setTimeout(async function () {
+					console.log(`await m.getAndShowDefsAndRecoInNewReco1(false);`);
+					await m.getAndShowDefsAndRecoInNewReco1(false);
 					window.history.pushState({ uri: m.uri }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
-					m.lastURI = m.uri;
 				}, m.wait);
 			}
 		});
