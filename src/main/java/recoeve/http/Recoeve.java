@@ -1038,8 +1038,7 @@ public class Recoeve extends AbstractVerticle {
 			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 			pl.req.bodyHandler((Buffer data) -> {
 				StrArray inputs = new StrArray(data.toString());
-				List<io.vertx.core.http.Cookie> setCookieRMB = db.authUserFromRmbd(pl.cookie, inputs, pl.ip,
-						pl.userAgent, pl.tNow);
+				List<io.vertx.core.http.Cookie> setCookieRMB = db.authUserFromRmbd(pl.cookie, inputs, pl.ip, pl.userAgent, pl.tNow);
 				for (io.vertx.core.http.Cookie singleCookie : setCookieRMB) {
 					pl.req.response().addCookie(singleCookie);
 					System.out.println(singleCookie.getName() + ": " + singleCookie.getValue());

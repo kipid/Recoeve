@@ -22,10 +22,12 @@
 					console.log(err);
 					$err.html(m.escapeHTML(err));
 					if (err.startsWith("Expired")) {
+						m.docCookies.removeItem("tCreate");
 						m.localStorage.removeItem("session");
 						m.localStorage.removeItem("salt");
 					}
 				}
+				m.saveSSN();
 				// wait until saving session/rmb cookies.
 				setTimeout(function () {
 					if (err) {
@@ -39,7 +41,7 @@
 							window.location.pathname = "/";
 						}
 					}
-				}, 512);
+				}, m.wait);
 			}, { ...m.searchVars, $result: $err });
 		})(window.m = window.m || {}, jQuery);
 	</script>

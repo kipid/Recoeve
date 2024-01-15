@@ -1365,7 +1365,38 @@ web	${m.sW}	${m.sH}`;
 					let iter = Number(resp);
 					if (isNaN(iter)) {
 						callback(args, resp);
-						resolve();
+						m.docCookies.removeItem("tCreate");
+						m.localStorage.removeItem("session");
+						m.localStorage.removeItem("salt");
+						if (m.docCookies.hasItem('rmbdI')) {
+							$.ajax({
+								type: "POST", url: "/account/log-in/remember-me.do", data: m.str_rmb_me
+								, dataType: "text"
+							}).done(function (resp) {
+								console.log("rmb_do : " + resp);
+								setTimeout(function () {
+									console.log(`${resp}, tCreate:${m.docCookies.hasItem('tCreate')}`);
+									if (resp.startsWith("Rmbd") && m.docCookies.hasItem('tCreate')) {
+										m.saveSSN();
+										if (m.localStorage.getItem("salt") && m.localStorage.getItem("session")) {
+											SSNencrypt(callback, args);
+										}
+										else {
+											callback(args, resp);
+											resolve();
+										}
+									}
+									else {
+										callback(args, resp);
+										resolve();
+									}
+								}, m.wait);
+							});
+						}
+						else {
+							callback(args, "Error: No rmbdI cookie.");
+							resolve();
+						}
 					}
 					else {
 						m.docCookies.setItem("SSN", m.encrypt(m.localStorage.getItem("salt"), m.localStorage.getItem("session").substring(3, 11), iter), 3, "/", false, true);
@@ -1405,7 +1436,7 @@ web	${m.sW}	${m.sH}`;
 							callback(args, resp);
 							resolve();
 						}
-					}, 1024);
+					}, m.wait);
 				});
 			}
 			else {
