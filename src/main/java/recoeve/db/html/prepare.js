@@ -2392,8 +2392,6 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.hide();
 			}
-			fs.lastIndex = fs.currentIndex;
-			m.lastCat = m.currentCat;
 			m.reNewAndReOn();
 			resolve();
 		});
@@ -2617,12 +2615,13 @@ web	${m.sW}	${m.sH}`;
 				$rC_youtube_container.hide();
 				fs.$playing = $eveElse_container;
 				let config = uriRendered.config;
-				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat) {
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					let config = uriRendered.config;
 					console.log("config: ", config);
 					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="metadata" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
+					m.lastRecoURIPlaying = m.recoURIPlaying;
 				}
 				$eveElse = $("#eveElse");
 				$video = $("#video");
