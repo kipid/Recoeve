@@ -2489,11 +2489,11 @@ web	${m.sW}	${m.sH}`;
 			m.fsViewAndScroll(fs, $next);
 		}
 		else {
-			if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 8) {
+			if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 2) {
 				m.setTimeoutPlayNextCount = 0;
 			}
 			m.setTimeoutPlayNextCount++;
-			if (m.setTimeoutPlayNextCount < 8) {
+			if (m.setTimeoutPlayNextCount < 2) {
 				console.log("setTimeout :: fs.playNext(increment, cue, first);");
 				setTimeout(function () {
 					fs.playNext(increment, cue, first);
