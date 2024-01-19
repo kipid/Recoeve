@@ -1919,10 +1919,13 @@ web	${m.sW}	${m.sH}`;
 				}
 			}
 			fs.$fsl.html(str);
-			fs.$fsLis = fs.$fsl.find(".list-item");
 			let cat = m.currentCat;
-			if (m.recoMode === "daily-mix" && m.recoms[cat] && m.recomsPlusRandomSorted[cat]) {
-				for (let j = 2 + m.recoedFromRecoms, i = m.recoms[cat].length - 1; j < fs.$fsLis.length && i >= 0; j += m.dailyMixPer, i--) {
+			if (fs.$fs[0].value.trim() === "" && m.recoMode === "daily-mix" && m.recoms[cat] && m.recomsPlusRandomSorted[cat]) {
+				for (let j = 2 + m.recoedFromRecoms, i = m.recoms[cat].length - 1; i >= 0; j += m.dailyMixPer, i--) {
+					fs.$fsLis = fs.$fsl.find(".list-item");
+					if (j >= fs.$fsLis.length) {
+						j = fs.$fsLis.length - 1;
+					}
 					let k = m.recomsPlusRandomSorted[cat][i];
 					let uri = m.recoms[cat][k].uri;
 					let r = m.userRecos[uri];
@@ -1941,8 +1944,8 @@ web	${m.sW}	${m.sH}`;
 				fs.lastIndex = -2;
 				let $toR0 = fs.$fsLis.eq(0);
 				if ($toR0.length) {
-					m.fsViewAndScroll(fs, $toR0);
 					$toR0.trigger("click");
+					m.fsViewAndScroll(fs, $toR0);
 				}
 				else {
 					if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 8) {
@@ -1956,8 +1959,8 @@ web	${m.sW}	${m.sH}`;
 						fs.$fsLis = fs.$fsl.find(".list-item");
 						let $toR0 = fs.$fsLis.eq(0);
 						if ($toR0.length) {
-							m.fsViewAndScroll(fs, $toR0);
 							$toR0.trigger("click");
+							m.fsViewAndScroll(fs, $toR0);
 							if (!m.setTimeoutPlayNextFirstClickedOnce) {
 								m.setTimeoutPlayNextFirstClickedOnce = true;
 								setTimeout(selfPlayNextFirst, 2 * m.wait);
@@ -2586,6 +2589,7 @@ web	${m.sW}	${m.sH}`;
 									}
 									else if (e.data === YT.PlayerState.CUED) {
 										if (m.initialOpen) {
+											m.initialOpen = false;
 											setTimeout(function () {
 												m.gotoHash(m.initialHashURI);
 											}, 2 * m.wait);
@@ -2597,11 +2601,6 @@ web	${m.sW}	${m.sH}`;
 						m.lastRecoURIPlaying = m.recoURIPlaying;
 						fs.lastIndex = fs.currentIndex;
 						m.lastCat = m.currentCat;
-						// if (m.initialOpen) {
-						// 	setTimeout(function () {
-						// 		m.gotoHash(m.initialHashURI);
-						// 	}, 8 * m.wait);
-						// }
 					}
 					else {
 						console.log(`fs.prepareRecoListPlay(true);`);
@@ -2647,9 +2646,10 @@ web	${m.sW}	${m.sH}`;
 					$video[0].play();
 				}
 				if (m.initialOpen) {
+					m.initialOpen = false;
 					setTimeout(function () {
 						m.gotoHash(m.initialHashURI);
-					}, 8 * m.wait);
+					}, 4 * m.wait);
 				}
 			}
 			else {
@@ -2665,6 +2665,7 @@ web	${m.sW}	${m.sH}`;
 					m.lastCat = m.currentCat;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
 					if (m.initialOpen) {
+						m.initialOpen = false;
 						setTimeout(function () {
 							m.gotoHash(m.initialHashURI);
 						}, 2 * m.wait);
