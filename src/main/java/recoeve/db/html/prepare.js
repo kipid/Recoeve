@@ -1942,7 +1942,7 @@ web	${m.sW}	${m.sH}`;
 			}
 			if (fs.shuffledOnce || m.lastCat !== m.currentCat) {
 				fs.lastIndex = -2;
-				let $toR0 = fs.$fsLis.eq(0);
+				let $toR0 = fs.$fsl.find(".list-item").eq(0);
 				if ($toR0.length) {
 					$toR0.trigger("click");
 					m.fsViewAndScroll(fs, $toR0);
