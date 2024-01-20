@@ -1978,32 +1978,34 @@ web	${m.sW}	${m.sH}`;
 				}
 			}
 			else if (m.recoMode === "" || m.recoMode === "daily-mix") {
-				let $toRK = $(`#toR-${fs.currentIndex}`);
-				if ($toRK.length) {
-					$toRK.trigger("click");
-				}
-				else {
-					if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 8) {
-						m.setTimeoutPlayNextFirst1Count = 0;
+				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+					let $toRK = $(`#toR-${fs.currentIndex}`);
+					if ($toRK.length) {
+						$toRK.trigger("click");
 					}
-					clearTimeout(m.setTimeoutPlayNextFirst1);
-					m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
-						console.log("selfPlayNextFirst1();");
-						m.setTimeoutPlayNextFirst1Count++;
-						let $toRK = $(`#toR-${fs.currentIndex}`);
-						if ($toRK.length) {
-							m.fsViewAndScroll(fs, $toRK);
-							$toRK.trigger("click");
+					else {
+						if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 8) {
 							m.setTimeoutPlayNextFirst1Count = 0;
 						}
-						else if (m.setTimeoutPlayNextFirst1Count < 8) {
-							setTimeout(selfPlayNextFirst1, 2 * m.wait);
-						}
-						else {
-							console.log("PlayNextFirst has failed.");
-							m.setTimeoutPlayNextFirst1Count = 0;
-						}
-					}, m.wait);
+						clearTimeout(m.setTimeoutPlayNextFirst1);
+						m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
+							console.log("selfPlayNextFirst1();");
+							m.setTimeoutPlayNextFirst1Count++;
+							let $toRK = $(`#toR-${fs.currentIndex}`);
+							if ($toRK.length) {
+								m.fsViewAndScroll(fs, $toRK);
+								$toRK.trigger("click");
+								m.setTimeoutPlayNextFirst1Count = 0;
+							}
+							else if (m.setTimeoutPlayNextFirst1Count < 8) {
+								setTimeout(selfPlayNextFirst1, 2 * m.wait);
+							}
+							else {
+								console.log("PlayNextFirst has failed.");
+								m.setTimeoutPlayNextFirst1Count = 0;
+							}
+						}, m.wait);
+					}
 				}
 			}
 			if ($table_of_recos_container.is(":visible")) {
