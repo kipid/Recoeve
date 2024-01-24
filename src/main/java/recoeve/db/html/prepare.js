@@ -1915,7 +1915,7 @@ web	${m.sW}	${m.sH}`;
 				let fsFLk = fs.fullList[k];
 				if (fsFLk.inRange && !fsFLk.r?.deleted) {
 					let uri = fsFLk.uri;
-					str += `<div id="toR-${k}" class="list-item" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight !== undefined) ? `<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>` : "")}</div>`;
+					str += `<div id="toR-${k}" class="list-item${fs.currentIndex === k ? " selected" : ""}" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${fs.fullList[k].html}${((fsRes[sorted[i]].highlight !== undefined) ? `<div class="highlighted"><span class="maxMatchScore">${fsRes[sorted[i]].maxMatchScore}</span> :: ${fsRes[sorted[i]].highlight}</div>` : "")}</div>`;
 				}
 			}
 			fs.$fsl.html(str);
@@ -1933,7 +1933,7 @@ web	${m.sW}	${m.sH}`;
 					let fsFLFromRecomsK;
 					fsFLFromRecomsK = fs.fullList[`from-recoms-${k}`] = fs.fullList[uri] = { uri, i:`from-recoms-${k}`, r, txt:r?.title ? r.title : recoDef?.defTitles[0] && recoDef.defTitles[0][0] ? recoDef.defTitles[0][0] : ""};
 					fsFLFromRecomsK.html=m.escapeOnlyTag(fsFLFromRecomsK.txt);
-					fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
+					fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms${fs.currentIndex === "from-recoms-" + k ? " selected" : ""}" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
 				}
 			}
 			if (shuffle) {
