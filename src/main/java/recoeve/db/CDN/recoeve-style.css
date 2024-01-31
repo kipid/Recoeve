@@ -888,6 +888,11 @@ textarea.multi-line {
 	border-left: .3em solid rgb(10, 80, 80)
 }
 
+.bright .reco>.cmt,
+.bright .reco>.cmts>.cmt {
+	background: rgb(220, 220, 220)
+}
+
 .multireco .reco>.desc,
 .multireco .reco>.cmt {
 	font-size: .7em;
