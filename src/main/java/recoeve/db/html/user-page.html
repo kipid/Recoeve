@@ -4243,7 +4243,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 				let uris = "";
 				for (let i = m.recoms[cat].length - 1; i >= 0; i--) {
-					let uri = m.recoms[cat][sorted[i]].uri;
+					let uri = m.recoms[cat][m.recomsSorted[cat][i]].uri;
 					if (!m.recoDefs[uri]) {
 						uris += uri + "\n";
 					}
