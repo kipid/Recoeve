@@ -870,7 +870,7 @@
 				</svg>
 			</div>
 		</div><!-- div#goto-cats-container -->
-		<div id="new-reco" style="display:none">
+		<div id="new-reco">
 			<form>
 				<label for="input-uri">URI <span class="desc">([--required--])</span></label>
 				<textarea class="single-line" id="input-uri" name="uri" placeholder="[--placeholder URI--]" type="text" tabindex="1"></textarea>
@@ -1714,6 +1714,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$change_catList_order_cancel = $("#change-catList-order-cancel");
 
 		$new_reco = $("#new-reco");
+		$new_reco.hide();
 		$my_reco = $("#my-reco");
 		$log_out_do_container = $("#log-out-do-container, #log-out-do-exit");
 		$log_out_do = $("#log-out-do");
@@ -5252,6 +5253,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let uri = m.unescapeHTML(fs.$fsLis.eq(0).find(".list-index-id").html());
 			m.rmb_me(m.reco_do, { strRecoDo, $result, uri, cats });
 			$new_reco.show();
+			setTimeout(function () {
+				$new_reco.hide();
+			}, 2 * m.wait);
 		};
 		$button_reco.on("click", function (e) {
 			$button_reco.addClass("disabled");
