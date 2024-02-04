@@ -1011,7 +1011,7 @@ textarea.multi-line {
 	-webkit-animation: spinoffPulse 3s infinite linear
 }
 
-@keyframes spinPulse {
+@-moz-keyframes spinPulse {
 	0% {
 		-moz-transform: rotate(160deg);
 		opacity: 0;
@@ -1029,7 +1029,7 @@ textarea.multi-line {
 	}
 }
 
-@keyframes spinoffPulse {
+@-moz-keyframes spinoffPulse {
 	0% {
 		-moz-transform: rotate(0deg)
 	}
@@ -1039,7 +1039,7 @@ textarea.multi-line {
 	}
 }
 
-@keyframes spinPulse {
+@-moz-keyframes spinPulse {
 	0% {
 		-webkit-transform: rotate(160deg);
 		opacity: 0;
