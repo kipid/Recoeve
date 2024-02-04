@@ -3768,12 +3768,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco")) {
 						$contents.addClass("multireco");
 						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
-						return resolve();
+						resolve();
 					}
 					else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
 						$contents.removeClass("multireco");
 						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
-						return resolve();
+						resolve();
 					}
 				}
 				let $elem = null;
@@ -4099,11 +4099,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 			});
 		}
-		m.loadMoreRecoms = async function (elem, sortedUntil, sortN) {
+		m.loadMoreRecoms = async function (elem, from, until) {
 			let cat = m.currentCat;
-			let recomsUntil = m.recomsSorted[cat].sortedUntil = m.heapsortRest(m.recoms[cat], "avgVal", m.recomsSorted[cat], sortN, sortedUntil);
 			let uris = "";
-			for (let i = sortedUntil - 1; i >= recomsUntil; i--) {
+			until = until < 0 ? 0 : until;
+			for (let i = from - 1; i >= until; i--) {
 				let uri = m.recoms[cat][m.recomsSorted[cat][i]].uri;
 				if (!m.recoDefs[uri]) {
 					uris += uri + "\n";
@@ -4119,13 +4119,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				// Do nothing.
 			}
 			let strHTML = "";
-			for (let i = sortedUntil - 1; i >= recomsUntil; i--) {
+			for (let i = from - 1; i >= until; i--) {
 				let uri = m.recoms[cat][m.recomsSorted[cat][i]].uri;
 				let recomHTML = await m.recomHTML(m.userRecos[uri]);
 				strHTML += String(recomHTML);
 			}
-			if (recomsUntil > 0) {
-				strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
+			if (until > 0) {
+				strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${until}, ${until-12})">More Recoms...</div>`;
 			}
 			$(elem).replaceWith(strHTML);
 			m.reNewAndReOn();
@@ -4147,7 +4147,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let tLast = new Date(respJSONi.tLast.replace(/\s/, "T"));
 			return (m.tNow - tLast) / 1000 <= m.TLinSec[`i${m.TLIndex}`];
 		};
-		m.showRecoms = async function (respJSON, cat, plusRandom) {
+		m.showRecoms = async function (respJSON, cat, plusRandom = true) {
 			return new Promise(async function (resolve, reject) {
 				let recoms = [];
 				for (let i = respJSON.length - 1; i >= 0; i--) {
@@ -4164,7 +4164,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 						let val = { user: respJSONi.user, user_id: respJSONi.user_id, val: respJSONi.val, cmt: respJSONi.cmt };
 						if (!recoms[uri].vals[`user_${respJSONi.user}`]) {
-
 							let catsSplit = respJSONi.cats.split(";");
 							let simAvg100 = 0;
 							let maxCat = null;
@@ -4236,23 +4235,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					recomsI.avgValPlusRandomStr = avgValPlusRandom.toFixed(2);
 				}
 				m.recoms[cat] = recoms;
-				let recomsUntil = m.recomsSorted[cat].sortedUntil = m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], 12);
-				let recomsPlusRandomUntil = null;
+				m.recomsSorted[cat].sortedUntil = m.heapsort(m.recoms[cat], "avgVal", m.recomsSorted[cat], m.recoms[cat].length);
 				if (plusRandom) {
-					recomsPlusRandomUntil = m.recomsPlusRandomSorted[cat].sortedUntil = m.heapsort(m.recoms[cat], "avgValPlusRandom", m.recomsPlusRandomSorted[cat], m.fsToRs.fullList.length / m.dailyMixPer + 1);
+					m.recomsPlusRandomSorted[cat].sortedUntil = m.heapsort(m.recoms[cat], "avgValPlusRandom", m.recomsPlusRandomSorted[cat], m.recoms[cat].length);
 				}
 				let uris = "";
-				let minRecomsUntil = 0;
-				let sorted = null;
-				if (plusRandom && recomsPlusRandomUntil < recomsUntil) {
-					minRecomsUntil = recomsPlusRandomUntil;
-					sorted = m.recomsPlusRandomSorted[cat];
-				}
-				else {
-					minRecomsUntil = recomsUntil;
-					sorted = m.recomsSorted[cat];
-				}
-				for (let i = m.recoms[cat].length - 1; i >= minRecomsUntil; i--) {
+				for (let i = m.recoms[cat].length - 1; i >= 0; i--) {
 					let uri = m.recoms[cat][sorted[i]].uri;
 					if (!m.recoDefs[uri]) {
 						uris += uri + "\n";
@@ -4262,52 +4250,33 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 				}
 				uris = uris.trim();
-				if (uris === "") {
-					let strHTML = String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
-					for (let i = m.recoms[cat].length - 1; i >= minRecomsUntil; i--) {
-						let uri = m.recoms[cat][sorted[i]].uri;
-						let recomHTML = "";
-						if (m.myRecos[uri]?.has) {
-							recomHTML = await m.recoHTML(m.myRecos[uri], false, true, true);
-						}
-						else {
-							recomHTML = await m.recomHTML(m.myRecos[uri], false);
-						}
-						strHTML += String(recomHTML);
-					}
-					if (recomsUntil > 0) {
-						strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-					}
-					$contents_recoms.html(strHTML);
-					m.reNewAndReOn();
-					resolve();
-				}
-				else {
+				if (uris !== "") {
 					try {
 						await m.getMultiDefs(uris);
 					}
 					catch (err) {
 						// Do nothing.
 					}
-					let strHTML = String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
-					for (let i = m.recoms[cat].length - 1; i >= minRecomsUntil; i--) {
-						let uri = m.recoms[cat][sorted[i]].uri;
-						let recomHTML = "";
-						if (m.myRecos[uri]?.has) {
-							recomHTML = await m.recoHTML(m.myRecos[uri], false, true, true);
-						}
-						else {
-							recomHTML = await m.recomHTML(m.myRecos[uri]);
-						}
-						strHTML += String(recomHTML);
-					}
-					if (recomsUntil > 0) {
-						strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, 12)">More Recoms...</div>`;
-					}
-					$contents_recoms.html(strHTML);
-					m.reNewAndReOn();
-					resolve();
 				}
+				let strHTML = String(`<div class="msg">[--You have ${m.recoms[cat].length} recoms from your neighbors.--]</div>`);
+				let recomsUntil = m.recoms[cat].length - 12 < 0 ? 0 : m.recoms[cat].length - 12;
+				for (let i = m.recoms[cat].length - 1; i >= recomsUntil; i--) {
+					let uri = m.recoms[cat][sorted[i]].uri;
+					let recomHTML = "";
+					if (m.myRecos[uri]?.has) {
+						recomHTML = await m.recoHTML(m.myRecos[uri], false, true, true);
+					}
+					else {
+						recomHTML = await m.recomHTML(m.myRecos[uri], false);
+					}
+					strHTML += String(recomHTML);
+				}
+				if (recomsUntil > 0) {
+					strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${recomsUntil}, ${recomsUntil-12})">More Recoms...</div>`;
+				}
+				$contents_recoms.html(strHTML);
+				m.reNewAndReOn();
+				resolve();
 			});
 		};
 		m.getUriListAndShowRecosOnCat = async function (cat, scroll) {
@@ -4326,7 +4295,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 				}
 				else {
-					return reject();
+					reject();
 				}
 				switch (m.recoMode) {
 					case "multireco": case "": default: {
@@ -4400,7 +4369,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 						if (m.neighbors[cat]) {
 							if (m.lastTLIndex === m.TLIndex && m.neighborsRecos[cat] && m.recomsSorted[cat] && m.recomsPlusRandomSorted[cat]) { // TL for Time Limit.
-								let recomsPlusRandomUntil = m.recomsPlusRandomSorted[cat]?.sortedUntil;
 								let strHTML = "";
 								if (m.recoms[cat]?.length === 0) {
 									strHTML = `<div class="msg">[--You have no recoms yet from your neighbors.--]</div>`;
@@ -4830,7 +4798,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		// Open Cat
 		/////////////////////////////////////////
 		m.openCat = async function (cat) {
-			cat = cat ?? "";
+			m.currentCat = cat = cat ?? "";
 			$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
 			$title.html(`${cat ? `${m.escapeOnlyTag(cat)} of` : "[--Uncategorized--] of"} ${m.userId}'s recoeve.net`);
 			if (!m.catUriList[cat]?.has) {
@@ -4888,7 +4856,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 			}
 			m.doNotPushHistory = false;
-			m.lastCat = m.currentCat = cat;
+			m.lastCat = m.currentCat;
 			return false; // Prevent <a href="link"> to be opened.
 		};
 
@@ -6786,12 +6754,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 			}
 			setTimeout(async function () {
-				await m.reTriggerFS(m.fsToRs);
-				await m.reTriggerFS(m.fsCat);
-				await m.reTriggerFS(m.fsMRCat);
-				await m.reTriggerFS(m.fsGotoCats);
-				await m.reTriggerFS(m.fsTimezone);
-				await m.reTriggerFS(m.fsGo);
+				if (m.initialOpen) {
+					await m.reTriggerFS(m.fsToRs);
+					await m.reTriggerFS(m.fsCat);
+					await m.reTriggerFS(m.fsMRCat);
+					await m.reTriggerFS(m.fsGotoCats);
+					await m.reTriggerFS(m.fsTimezone);
+					await m.reTriggerFS(m.fsGo);
+				}
 				m.initialOpen = false;
 			}, 24 * m.wait);
 		});
