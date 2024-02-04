@@ -622,6 +622,10 @@ textarea.multi-line {
 	margin: 0 .3em
 }
 
+.bright .upDown {
+	border-color: black
+}
+
 .up,
 .down {
 	vertical-align: top
