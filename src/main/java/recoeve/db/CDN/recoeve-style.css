@@ -989,7 +989,7 @@ textarea.multi-line {
 	width: 110px;
 	height: 110px;
 	margin: 5em auto 0;
-	animation: spinPulse 5s infinite ease-in-out;
+/*	animation: spinPulse 5s infinite ease-in-out;*/
 	-moz-animation: spinPulse 5s infinite ease-in-out;
 	-webkit-animation: spinPulse 5s infinite ease-in-out
 }
@@ -1006,7 +1006,7 @@ textarea.multi-line {
 	height: 90px;
 	margin: 0 auto 20em;
 	position: relative;
-	animation: spinoffPulse 3s infinite linear;
+/*	animation: spinoffPulse 3s infinite linear;*/
 	-moz-animation: spinoffPulse 3s infinite linear;
 	-webkit-animation: spinoffPulse 3s infinite linear
 }
