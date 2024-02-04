@@ -5248,9 +5248,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				uris.push(uri);
 				strRecoDo += `\n${uri}\tchange\t${cats}`;
 			}
-			let $result = $numbers_of_recos;
+			let $result = $numbers_of_recos.add("#error-msg");
 			let uri = m.unescapeHTML(fs.$fsLis.eq(0).find(".list-index-id").html());
 			m.rmb_me(m.reco_do, { strRecoDo, $result, uri, cats });
+			$new_reco.show();
 		};
 		$button_reco.on("click", function (e) {
 			$button_reco.addClass("disabled");
