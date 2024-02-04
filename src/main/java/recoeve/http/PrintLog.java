@@ -126,14 +126,19 @@ public class PrintLog implements Handler<RoutingContext> {
 
 		String acceptLang = req.headers().get("Accept-Language");
 		System.out.println("Accept-Language:"+acceptLang);
-		String tmpLang = req.params().get("lang");
-		if (tmpLang == null) {
-			tmpLang = cookie.get("lang");
-			if (tmpLang == null) {
-				tmpLang = "en";
+		String tempLang = req.params().get("lang");
+		if (tempLang == null) {
+			tempLang = cookie.get("lang");
+			if (tempLang == null) {
+				if (acceptLang.length() >= 2) {
+					tepLang = acceptLang.substring(0, 2);
+				}
+				else {
+					tempLang = "en";
+				}
 			}
 		}
-		lang = tmpLang;
+		lang = tempLang;
 		System.out.println("Lang: " + lang);
 		System.out.flush();
 	}
