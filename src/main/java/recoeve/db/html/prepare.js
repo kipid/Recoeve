@@ -2501,6 +2501,7 @@ web	${m.sW}	${m.sH}`;
 			if (m.setTimeoutPlayNextCount < 2) {
 				console.log("setTimeout :: fs.playNext(increment, cue, first);");
 				setTimeout(function () {
+					fs.$fsLis.filter(".selected").trigger("click");
 					fs.playNext(increment, cue, first);
 				}, 2 * m.wait);
 			}
