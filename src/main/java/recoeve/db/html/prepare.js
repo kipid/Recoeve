@@ -54,7 +54,7 @@ window.m = window.m || {};
 
 	YT = undefined;
 	m.YtPlayer = null;
-	m.YtAPILoaded = false;
+	m.YtAPILoaded = Boolean($("#youtube-API").length);
 
 	m.neighbors = {};
 	m.neighborsRecos = {};
@@ -2512,8 +2512,10 @@ web	${m.sW}	${m.sH}`;
 		let fs = m.fsToRs;
 		if (!m.YtAPILoaded) {
 			if (ytAPINeeded) {
-				let ytAPI = `<script id="YouTube-API" src="https://www.youtube.com/player_api"></` + `script>`; // Avoid closing script
-				$scripts.append(ytAPI);
+				if (!$("#youtube-API").length) {
+					let ytAPI = `<script id="youtube-API" src="https://www.youtube.com/player_api"></` + `script>`; // Avoid closing script
+					$scripts.append(ytAPI);
+				}
 				m.YtAPILoaded = true;
 			}
 		}
