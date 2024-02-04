@@ -1788,10 +1788,10 @@ web	${m.sW}	${m.sH}`;
 	///////////////////////////////////////////
 	// Fuzzy Search on Table of Recos (ToRs)
 	///////////////////////////////////////////
-	m.playLi = async function (e) {
+	m.playLi = async function (event) {
 		let fs=m.fsToRs;
-		if (!(e?.srcElement?.nodeName === "A")) {
-			let $elem = $(e.target);
+		if (!(event?.srcElement?.nodeName === "A")) {
+			let $elem = $(event.target);
 			if (!$elem.hasClass("list-item")) {
 				$elem = $elem.parents(".list-item");
 			}
@@ -1800,7 +1800,7 @@ web	${m.sW}	${m.sH}`;
 				k = Number(k);
 			}
 			fs.currentIndex = k;
-			if (!m.initialOpen && $elem.hasClass("selected")) {
+			if (!m.initialOpen && $elem.hasClass("selected") && !event.byShortKey) {
 				if ($elem.hasClass("clicked-twice")) {
 					fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // 27=ESC
 					fs.$fsl.find(".list-item").removeClass("clicked-twice");
@@ -2409,7 +2409,7 @@ web	${m.sW}	${m.sH}`;
 			m.YtPlayer.pauseVideo();
 		}
 	};
-	m.fsToRs.playNext = async function (increment, cue, first) {
+	m.fsToRs.playNext = async function (increment, cue, first, byShortKey = false) {
 		clearTimeout(m.setTimeoutPlayNextYT);
 		clearTimeout(m.setTimeoutPlayNext);
 		clearTimeout(m.setTimeoutCueOrLoadUri);
@@ -2493,6 +2493,9 @@ web	${m.sW}	${m.sH}`;
 			$next.trigger("click");
 			m.fsViewAndScroll(fs, $next);
 		}
+		else if (byShortKey) {
+			m.playLi({ target: fs.$fsLis.filter(".selected")[0], byShortKey })
+		}
 		else {
 			if (m.setTimeoutPlayNextCount === undefined || m.setTimeoutPlayNextCount >= 2) {
 				m.setTimeoutPlayNextCount = 0;
@@ -2501,7 +2504,6 @@ web	${m.sW}	${m.sH}`;
 			if (m.setTimeoutPlayNextCount < 2) {
 				console.log("setTimeout :: fs.playNext(increment, cue, first);");
 				setTimeout(function () {
-					fs.$fsLis.filter(".selected").trigger("click");
 					fs.playNext(increment, cue, first);
 				}, 2 * m.wait);
 			}

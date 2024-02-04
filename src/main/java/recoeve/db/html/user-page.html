@@ -6114,10 +6114,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					break;
 				case 81: // Q=81 Preceding
-					m.fsToRs.playNext(1);
+					m.fsToRs.playNext(1, false, false, true);
 					break;
 				case 87: // W=87 Following
-					m.fsToRs.playNext();
+					m.fsToRs.playNext(-1, false, false, true);
 					break;
 				case 83: // S=83 Shuffle
 					$sort_list.toggle();
