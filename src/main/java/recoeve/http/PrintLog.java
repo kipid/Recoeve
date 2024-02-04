@@ -131,7 +131,7 @@ public class PrintLog implements Handler<RoutingContext> {
 			tempLang = cookie.get("lang");
 			if (tempLang == null) {
 				if (acceptLang.length() >= 2) {
-					tepLang = acceptLang.substring(0, 2);
+					tempLang = acceptLang.substring(0, 2);
 				}
 				else {
 					tempLang = "en";
