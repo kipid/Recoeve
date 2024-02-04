@@ -3528,7 +3528,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.ptsRangeFrom = Number(PRL.toFixed(2));
 						m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 						m.args.PRL = PRL.toFixed(2);
-						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 				}
 				if (m.mdInPRR) {
@@ -3537,7 +3537,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.ptsRangeTo = Number(PRR.toFixed(2));
 						m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 						m.args.PRR = PRR.toFixed(2);
-						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 				}
 				$point_range_result.html((m.ptsRangeFrom * m.PRmax).toFixed(1) + "~" + (m.ptsRangeTo * m.PRmax).toFixed(1) + " / " + m.PRmax);
@@ -3605,7 +3605,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.ptsRangeFrom = Number(PRL.toFixed(2));
 						m.docCookies.setItem("PRL", PRL.toFixed(2), Infinity, "/", false, true);
 						m.args.PRL = PRL.toFixed(2);
-						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 				}
 				if (m.mdInPRR1) {
@@ -3614,7 +3614,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.ptsRangeTo = Number(PRR.toFixed(2));
 						m.docCookies.setItem("PRR", PRR.toFixed(2), Infinity, "/", false, true);
 						m.args.PRR = PRR.toFixed(2);
-						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 				}
 				$point_range_result.html((m.ptsRangeFrom * m.PRmax).toFixed(1) + "~" + (m.ptsRangeTo * m.PRmax).toFixed(1) + " / " + m.PRmax);
@@ -4841,7 +4841,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (m.initialOpen) {
 				m.gotoHash(m.initialHashURI);
 				if (!m.doNotPushHistory) {
-					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.initialHashURI, m.args));
+					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.initialHashURI, m.args));
 				}
 			}
 			else {
@@ -5527,7 +5527,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.lastRecoMode = m.recoMode;
 				$contents.addClass("multireco");
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
@@ -5536,14 +5536,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.lastRecoMode = m.recoMode;
 				$contents.removeClass("multireco");
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 			}
 			else {
 				if (!m.doNotPushHistory) {
-					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
+					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 				}
 				m.doNotPushHistory = false;
 				console.log(`await m.openCat(${cat});`);
@@ -5783,7 +5783,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							m.fsGo.tryN = 0;
 							m.hashURI = hashURI;
 							window.location.hash = `#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
-							window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+							window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 							$window.scrollTop($elem.offset().top);
 						}
 					}
@@ -5897,7 +5897,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if ($table_of_recos_container.is(":visible")) {
 				m.args["ToR"] = $table_of_recos[0].value;
 			}
-			let recoeveURI = window.location.origin + m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+			let recoeveURI = window.location.origin + m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args);
 			switch (service) {
 				case 'link':
 					if ($elem) {
@@ -6042,7 +6042,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$numbers_of_recos.html(`[--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]`);
 					console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click") failed.`);
 					if (!m.doNotPushHistory) {
-						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+						window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 					m.doNotPushHistory = false;
 					return;
@@ -6157,7 +6157,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					break;
 				case 65: // A=65 To my page
 					if ((!m.myPage) && m.myIndex) {
-						window.location.href = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+						window.location.href = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, null, m.hashURI, m.args);
 					}
 					break;
 				case 85: // U=85 Block touch
@@ -6682,7 +6682,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			$point_range_result.html((m.ptsRangeFrom * m.PRmax).toFixed(1) + "~" + (m.ptsRangeTo * m.PRmax).toFixed(1) + " / " + m.PRmax);
 
 			if (!m.doNotPushHistory && m.initialPathname !== "/reco") {
-				window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(cat, m.recoMode, m.lang, m.initialHashURI, m.args));
+				window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(cat, m.recoMode, null, m.initialHashURI, m.args));
 			}
 			m.doNotPushHistory = false;
 
