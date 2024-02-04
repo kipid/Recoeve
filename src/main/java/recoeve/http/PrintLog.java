@@ -124,6 +124,8 @@ public class PrintLog implements Handler<RoutingContext> {
 			}
 		}
 
+		String acceptLang = req.headers().get("Accept-Language");
+		System.out.println("Accept-Language:"+acceptLang);
 		String tmpLang = req.params().get("lang");
 		if (tmpLang == null) {
 			tmpLang = cookie.get("lang");
