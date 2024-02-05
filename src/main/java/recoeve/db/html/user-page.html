@@ -5643,6 +5643,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				for (let k = 0; k < uris.length; k++) {
 					let uri = String(uris[k]);
 					m.catUriList[cat].uris[uri].i = k; // TODO: Because shuffledOnce. But when only saved???
+					if (!fsFL[uri]) {
+						let r = m.userRecos[uri];
+						fsFL[uri] = { uri, r, i: m.fsGo.fullList.length, catsSplit: m.catsToString(r?.cats).split(";"), txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} }
+					}
 					if (!fsFL[uri].catAndI) {
 						fsFL[uri].catAndI = {};
 					}
