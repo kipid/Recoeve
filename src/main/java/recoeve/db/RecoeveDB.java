@@ -566,7 +566,7 @@ public class RecoeveDB {
 			pstmtPutBlogStat1.setTimestamp(1, tNow);
 			pstmtPutBlogStat1.setString(2, ip);
 			pstmtPutBlogStat1.setString(3, uri);
-			if (referer == null || referer.isEmpty() || refererFromServer.length() > referer.length()) {
+			if (referer == null || referer.isEmpty() || refererFromServer != null && refererFromServer.length() > referer.length()) {
 				pstmtPutBlogStat1.setString(4, refererFromServer);
 			}
 			else {
