@@ -71,7 +71,7 @@ window.m = {};
 		if (!uri || uri.constructor !== String) { return ""; }
 		let exec = m.ptnURL.exec(uri);
 		if (exec !== null) {
-			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
+			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri)).replace(/[\n\s\t\r]/g, " ")}</a>`;
 		}
 		else {
 			return m.escapeOnlyTag(uri);
