@@ -1974,7 +1974,7 @@ web	${m.sW}	${m.sH}`;
 							console.log("PlayNextFirst has failed.");
 							m.setTimeoutPlayNextFirstCount = 0;
 						}
-					}, m.wait);
+					}, m.wait / 2);
 				}
 			}
 			else if (m.recoMode === "" || m.recoMode === "daily-mix") {
@@ -2373,7 +2373,7 @@ web	${m.sW}	${m.sH}`;
 					clearTimeout(m.setTimeoutCueOrLoadUri);
 					m.setTimeoutCueOrLoadUri = setTimeout(function () {
 						m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					}, m.wait);
+					}, m.wait / 2);
 				}
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
@@ -2387,7 +2387,7 @@ web	${m.sW}	${m.sH}`;
 					clearTimeout(m.setTimeoutCueOrLoadUri);
 					m.setTimeoutCueOrLoadUri = setTimeout(function () {
 						m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					}, m.wait);
+					}, m.wait / 2);
 				}
 			}
 			else {
@@ -2543,7 +2543,7 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
-				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
+				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					if (m.YtPlayer) {
 						let config = {
@@ -2567,12 +2567,12 @@ web	${m.sW}	${m.sH}`;
 							clearTimeout(m.setTimeoutCueOrLoadUri);
 							m.setTimeoutCueOrLoadUri = setTimeout(function () {
 								m.cueOrLoadUri(cue, uriRendered, inListPlay);
-							}, m.wait);
+							}, m.wait / 2);
 							return;
 						}
 					}
 					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}`);
+						console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
