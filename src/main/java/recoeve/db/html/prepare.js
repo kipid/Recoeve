@@ -809,14 +809,16 @@ window.m = window.m || {};
 			r.down = true; // User's or My reco on the uri is downloaded.
 		}
 	};
-	m.recoToEve = async function (resp, recos, cat, uris) {
+	m.recoToEve = async function (resp, recos, cat, conciseURIs) {
 		return new Promise(async function (resolve, reject) {
 			resp = await m.strToJSON(resp);
 			for (let k = 1; k < resp.length; k++) {
 				let respK = resp[k];
-				let uri = String(respK.uri);
+				let uri = conciseURIs[k];
+				let toDo = String(respK.do);
 				let r = recos[uri];
 				if (!r) { r = recos[uri] = { uri }; }
+				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
 					if (isNaN(prop)) {
@@ -824,12 +826,87 @@ window.m = window.m || {};
 						r[prop] = String(respK[prop]);
 					}
 				}
-				r.deleted = false;
+				if (toDo === "delete") {
+					r.deleted = true;
+				}
+				else {
+					r.deleted = false;
+				}
 				r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
 				r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
-				r.val = m.val(String(r.val));
+				if (r.val === undefined || r.val === null || typeof r.val === "string") {
+					r.val = m.val(String(r.val));
+				}
 			}
-			return resolve();
+			let fs = m.fsGo;
+			let fsFL = fs.fullList;
+			if (recos === m.userRecos) {
+				for (let k = 1; k < resp.length; k++) {
+					let respK = resp[k];
+					let uri = conciseURIs[k];
+					let r = recos[uri];
+					let catsSplit = m.catsToString(m.formatCats(r?.cats)).split(";");
+					if (!fsFL[uri]) {
+						fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, catAndI: {}, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title) };
+					}
+					else {
+						fsFL[fsFL[uri].i] = fsFL[uri] = { ...fsFL[uri], catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title) }; // i and catAndI is preserved.
+						if (!fsFL[uri].catAndI) {
+							fsFL[uri].catAndI = {};
+						}
+					}
+				}
+				m.beInCurrentCat = false;
+				if (!cat && cat !== "") { // If (!cat&&cat!==""), only resp[1] is there in most cases.
+					let catsSplit = m.catsToString(r?.cats).split(";");
+					for (let i = catsSplit.length - 1; i >= 0; i--) {
+						let catI = catsSplit[i];
+						if (catI === m.currentCat) {
+							m.beInCurrentCat = true;
+							break;
+						}
+					}
+					// cat = m.beInCurrentCat?m.currentCat:catsSplit[0]; // Must not asign!
+				}
+				if (m.beInCurrentCat) {
+					if (!m.catUriList[m.currentCat]?.has) {
+						await m.getUriList("cat\n" + (m.currentCat === "" ? "\tp" : m.currentCat));
+					}
+					for (let k = 1; k < resp.length; k++) {
+						let respK = resp[k];
+						let uri = conciseURIs[k];
+						let r = recos[uri];
+						fsFL[uri].catAndI[m.currentCat] = { cat: m.currentCat, i: m.catUriList[m.currentCat].uris[uri]?.i ?? m.catUriList[m.currentCat].uris.length };
+					}
+					fs.shuffledOnce=true;
+					await m.reTriggerFS(fs);
+				}
+				else if (cat || cat === "") {
+					if (!m.catUriList[cat]?.has) {
+						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+					}
+					for (let k = 1; k < resp.length; k++) {
+						let respK = resp[k];
+						let uri = conciseURIs[k];
+						let r = recos[uri];
+						fsFL[uri].catAndI[cat] = { cat, i: m.catUriList[cat].uris[uri]?.i ?? m.catUriList[cat].uris.length };
+					}
+					fs.shuffledOnce=true;
+					await m.reTriggerFS(fs);
+				}
+				if (m.catUriList[cat]?.uris) {
+					let uris = m.catUriList[cat].uris;
+					for (k = 0; k < uris.length; k++) {
+						let uri = String(uris[k]);
+						let r = recos[uri];
+						if (!r) {
+							r = recos[uri] = { uri, down: true, has: false };
+						}
+						r.i = k;
+					}
+				}
+			}
+			resolve();
 		});
 	};
 
