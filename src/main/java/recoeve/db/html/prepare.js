@@ -820,6 +820,7 @@ window.m = window.m || {};
 				let r = recos[uri];
 				if (!r) { r = recos[uri] = { uri }; }
 				console.log(`recos[uri].uri: ${recos[uri].uri}`); // TODO: delete log.
+				console.log(`m.myRecos[uri].uri: ${m.myRecos[uri].uri}`); // TODO: delete log.
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
