@@ -939,7 +939,7 @@ window.m = window.m || {};
 	};
 	m.formatURI = function (uri) {
 		if (uri && uri.constructor === String) {
-			uri = uri.trim().replace(/[\t\n]/g, " ");
+			uri = uri.trim().replace(/[\s\t\n\r]+/g, " ");
 			let exec = m.ptnTag.exec(uri);
 			if (exec !== null) {
 				try {

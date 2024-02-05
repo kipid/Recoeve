@@ -3718,7 +3718,7 @@ public class RecoeveDB {
 						err(e2);
 					}
 				}
-				res += "\t" + tNow + "\t" + originalURI + "\t" + uri;
+				res += "\t" + tNow + "\t" + StrArray.enclose(originalURI) + "\t" + uri;
 			}
 		}
 		catch (SQLException e) {
