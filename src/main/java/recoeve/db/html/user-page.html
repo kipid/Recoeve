@@ -5095,8 +5095,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.recoDowned(uriI, m.myRecos);
 						m.myRecos[uriI].tLast = res[i]?.tLast;
 						let desc = m.myRecos[uriI]?.desc;
-						if (uriI !== res[i]?.originalURI) {
-							m.myRecos[uriI].desc = (`#originalURI\n${res[i]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
+						if (uriI !== String(res[i]?.originalURI)) {
+							m.myRecos[uriI].desc = (`#originalURI\n${String(res[i]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
 						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(args.cats), uriI);
 					}
@@ -5114,8 +5114,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					m.recoDowned(uri, m.myRecos);
 					if (result.startsWith("recoed")) {
 						let desc = String(m.myRecos[uri].desc);
-						if (uri !== res[1]?.originalURI) {
-							m.myRecos[uri].desc = (`#originalURI\n${res[1]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
+						if (uri !== String(res[1]?.originalURI)) {
+							m.myRecos[uri].desc = (`#originalURI\n${String(res[1]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
 						await m.recoToEve(args.strRecoDo, m.myRecos, cat, ["uri", uri]);
 						let cats = m.catsToString(m.myRecos[uri].cats);
@@ -5124,6 +5124,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						setTimeout(function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
+							console.log(`m.refresh(cats, "recoed", uri: ${uri}, true);`);
 							m.refresh(cats, "recoed", uri, true);
 							m.refreshFSToRs(m.currentCat);
 						}, m.wait);
