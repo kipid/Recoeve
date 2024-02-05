@@ -5087,7 +5087,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let result = String(res[1]?.result);
 				console.log(`result: ${result}`); // TODO: delete log.
 				let uri = String(res[1]?.uri);
-				console.log(uri); // TODO: delete log.
+				console.log(`uri = res[1]?.uri: ${uri}`); // TODO: delete log.
 				if (String(res[2]?.uri) && String(res[2]?.uri) !== "undefined") { // When multireco.
 					args.$result?.html(m.arrayToTableHTML(res));
 					let uris = ["uri"];
@@ -5128,6 +5128,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$button_close.trigger("click");
 							console.log(`m.refresh(cats, "recoed", uri: ${uri}, true);`); // TODO: delete log.
 							m.refresh(cats, "recoed", uri, true);
+							console.log(`m.myRecos[uri].uri: ${m.myRecos[uri].uri}`); // TODO: delete log.
 							m.refreshFSToRs(m.currentCat);
 						}, m.wait);
 					}
