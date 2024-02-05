@@ -3546,6 +3546,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					let fs = m.fsToRs;
 					fs[0].ptnSH = m.splitHangul("$!@#");
 					fs.$fs.trigger("keyup.fs");
+					if (!fs.$fsl.find(".list-item.selected").length) {
+						fs.$fsl.find(".list-item").eq(0).trigger("click");
+					}
 				}, m.wait);
 			}
 		};
@@ -3623,6 +3626,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					let fs = m.fsToRs;
 					fs[0].ptnSH = m.splitHangul("$!@#");
 					fs.$fs.trigger("keyup.fs");
+					if (!fs.$fsl.find(".list-item.selected").length) {
+						fs.$fsl.find(".list-item").eq(0).trigger("click");
+					}
 				}, m.wait);
 			}
 		};
