@@ -1223,7 +1223,7 @@ window.m = window.m || {};
 						, dataType: "text"
 					}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 						m.recoDowned(r.uri, m.myRecos);
-						await m.recoToEve(resp, m.myRecos);
+						await m.recoToEve(resp, m.myRecos, m.currentCat, getRecosStr.split("\n"));
 						m.fillRecoInNewReco(r, fillDefs);
 						resolve();
 					});
