@@ -5112,6 +5112,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$error.html(result);
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
+					console.log(`result: ${result}`); // TODO: delete log.
 					if (result.startsWith("recoed")) {
 						let desc = String(m.myRecos[uri].desc);
 						if (uri !== String(res[1]?.originalURI)) {
@@ -5124,7 +5125,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						setTimeout(function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
-							console.log(`m.refresh(cats, "recoed", uri: ${uri}, true);`);
+							console.log(`m.refresh(cats, "recoed", uri: ${uri}, true);`); // TODO: delete log.
 							m.refresh(cats, "recoed", uri, true);
 							m.refreshFSToRs(m.currentCat);
 						}, m.wait);
