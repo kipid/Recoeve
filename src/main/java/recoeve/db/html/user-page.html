@@ -3317,13 +3317,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 				}
 				if (catIsPut) {
-					// TODO: update m.currentCat; Update will be done in refresh(...);
 					$change_catList_order_cancel.trigger("click");
 					await m.reTriggerFS(m.fsGotoCats);
-					// m.fsToRs.shuffledOnce = true;
-					// m.fsGo.shuffledOnce = true;
-					// await m.reTriggerFS(m.fsToRs);
-					// await m.reTriggerFS(m.fsGo);
 				}
 				resolve();
 			});
@@ -5087,9 +5082,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
 				let res = await m.strToJSON(resp);
+				console.log(res); // TODO: delete log.
 				let result = String(res[1]?.result);
-				let uri = res[1]?.uri;
-				if (res[2]?.uri) { // When multireco.
+				let uri = String(res[1]?.uri);
+				if (String(res[2]?.uri)) { // When multireco.
 					args.$result?.html(m.arrayToTableHTML(res));
 					let uris = ["uri"];
 					for (let i = 1; i < res.length; i++) {
@@ -5106,7 +5102,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					setTimeout(function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
-						m.refresh(m.myRecos[uris[0]].cats, "changed", uris[0], true);
+						m.refresh(m.myRecos[uris[1]].cats, "changed", uris[1], true);
 						m.refreshFSToRs(m.currentCat);
 					}, m.wait);
 				}
@@ -5115,14 +5111,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
 					if (result.startsWith("recoed")) {
-						await m.recoToEve(args.strRecoDo, m.myRecos, cat, ["uri", uri]);
-						let cats = String(m.myRecos[uri].cats);
-						await m.putCats_UriToLists(cats, uri);
-						m.myRecos[uri].tFirst = m.myRecos[uri].tLast = res[1]?.tLast;
 						let desc = String(m.myRecos[uri].desc);
 						if (uri !== res[1]?.originalURI) {
 							m.myRecos[uri].desc = (`#originalURI\n${res[1]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
+						await m.recoToEve(args.strRecoDo, m.myRecos, cat, ["uri", uri]);
+						let cats = m.catsToString(m.myRecos[uri].cats);
+						await m.putCats_UriToLists(cats, uri);
+						m.myRecos[uri].tLast = res[1]?.tLast;
 						setTimeout(function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
