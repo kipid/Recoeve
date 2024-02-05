@@ -815,13 +815,14 @@ window.m = window.m || {};
 			for (let k = 1; k < resp.length; k++) {
 				let respK = resp[k];
 				let uri = conciseURIs[k];
+				console.log(`conciseURIs[k]: ${uri}`); // TODO: delete log.
 				let toDo = String(respK.do);
 				let r = recos[uri];
 				if (!r) { r = recos[uri] = { uri }; }
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
-					if (isNaN(prop)) {
+					if (isNaN(String(prop))) {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
 					}
