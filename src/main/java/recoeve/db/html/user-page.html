@@ -5085,6 +5085,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				console.log(res); // TODO: delete log.
 				let result = String(res[1]?.result);
 				let uri = String(res[1]?.uri);
+				console.log(uri); // TODO: delete log.
 				if (String(res[2]?.uri)) { // When multireco.
 					args.$result?.html(m.arrayToTableHTML(res));
 					let uris = ["uri"];
