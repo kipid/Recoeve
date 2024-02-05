@@ -5084,9 +5084,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let res = await m.strToJSON(resp);
 				console.log(res); // TODO: delete log.
 				let result = String(res[1]?.result);
+				console.log(`result: ${result}`); // TODO: delete log.
 				let uri = String(res[1]?.uri);
 				console.log(uri); // TODO: delete log.
-				if (String(res[2]?.uri)) { // When multireco.
+				if (String(res[2]?.uri) && String(res[2]?.uri) !== "undefined") { // When multireco.
 					args.$result?.html(m.arrayToTableHTML(res));
 					let uris = ["uri"];
 					for (let i = 1; i < res.length; i++) {
@@ -5112,7 +5113,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$error.html(result);
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
-					console.log(`result: ${result}`); // TODO: delete log.
 					if (result.startsWith("recoed")) {
 						let desc = String(m.myRecos[uri].desc);
 						if (uri !== String(res[1]?.originalURI)) {
