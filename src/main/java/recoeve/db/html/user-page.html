@@ -3900,7 +3900,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
 					r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
-					r.val = m.val(String(r.val));
+					if (r.val === undefined || r.val === null || typeof r.val === "string") {
+						r.val = m.val(String(r.val));
+					}
 				}
 				let fs = m.fsGo;
 				let fsFL = fs.fullList;
@@ -5161,9 +5163,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					let uris = [];
 					for (let i = 1; i < res.length; i++) {
 						let uriI = res[i].uri;
-						uris.push(uri);
+						uris.push(uriI);
 						m.recoDowned(uriI, m.myRecos);
-						m.myRecos[uriI].tFirst = m.myRecos[uriI].tLast = res[i]?.tLast;
+						m.myRecos[uriI].tLast = res[i]?.tLast;
 						if (uriI !== res[i]?.originalURI) {
 							m.myRecos[uriI].desc = (`#originalURI\n${res[i]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
