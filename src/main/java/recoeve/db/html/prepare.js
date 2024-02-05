@@ -2620,7 +2620,7 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
-				console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
+				// console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					if (m.YtPlayer) {
 						let config = {
@@ -2649,7 +2649,7 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
+						// console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
@@ -2742,7 +2742,7 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.show();
 				$rC_youtube_container.hide();
 				fs.$playing = $eveElse_container;
-				console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
+				// console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					$eveElse.html(String(uriRendered.html).replace(/\sdelayed\-src\=/g, " src="));
 					fs.lastIndex = fs.currentIndex;

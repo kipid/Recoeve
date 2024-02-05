@@ -5089,7 +5089,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					args.$result?.html(m.arrayToTableHTML(res));
 					let uris = ["uri"];
 					for (let i = 1; i < res.length; i++) {
-						let uriI = res[i].uri;
+						let uriI = String(res[i].uri);
 						uris.push(uriI);
 						m.recoDowned(uriI, m.myRecos);
 						m.myRecos[uriI].tLast = res[i]?.tLast;
