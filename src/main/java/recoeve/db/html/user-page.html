@@ -5093,6 +5093,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						uris.push(uriI);
 						m.recoDowned(uriI, m.myRecos);
 						m.myRecos[uriI].tLast = res[i]?.tLast;
+						let desc = m.myRecos[uriI]?.desc;
 						if (uriI !== res[i]?.originalURI) {
 							m.myRecos[uriI].desc = (`#originalURI\n${res[i]?.originalURI}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
