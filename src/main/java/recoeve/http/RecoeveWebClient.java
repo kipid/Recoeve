@@ -80,7 +80,7 @@ public class RecoeveWebClient {
 				Elements titleElements = document.select("title");
 				Elements h1Elements = document.select("h1");
 				Elements h2Elements = document.select("h2");
-				Elements tiktokElements = document.select(".css-j2a19r-SpanText.efbd9f0");
+				Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
 				Elements naverElements = document.select(".se-fs-");
 
 				String heads = "";
