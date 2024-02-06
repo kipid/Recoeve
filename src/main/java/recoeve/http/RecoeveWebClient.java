@@ -91,19 +91,19 @@ public class RecoeveWebClient {
 				}
 				if (!h1Elements.isEmpty()) {
 					heads += "\th1";
-					contents += h1Elements.first().text();
+					contents += "\t" + h1Elements.first().text();
 				}
 				if (!h2Elements.isEmpty()) {
 					heads += "\th2";
-					contents += h2Elements.first().text();
+					contents += "\t" + h2Elements.first().text();
 				}
 				if (!tiktokElements.isEmpty()) {
 					heads += "\ttiktok";
-					contents += tiktokElements.first().text();
+					contents += "\t" + tiktokElements.first().text();
 				}
 				if (!naverElements.isEmpty()) {
 					heads += "\tnaver";
-					contents += naverElements.first().text();
+					contents += "\t" + naverElements.first().text();
 				}
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 					.end(heads + "\n" + contents, Recoeve.ENCODING);
