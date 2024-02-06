@@ -811,7 +811,7 @@ window.m = window.m || {};
 			})
 		});
 	};
-	m.recoDowned = function (urisStr, recos) {
+	m.recoDowned = async function (urisStr, recos) {
 		let uris = urisStr.trim().split("\n");
 		for (k = 0; k < uris.length; k++) {
 			let uri = uris[k];
