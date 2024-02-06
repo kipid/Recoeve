@@ -5156,8 +5156,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					else {
 						m.delayedLogOut(result, 60 * 60 * 24, args.$result);
 						args.$result?.html(m.arrayToTableHTML(res));
-						let uri = res[1]?.uri;
-						if (uri !== res[1]?.originalURI) {
+						if (uri !== String(res[1]?.originalURI)) {
 							$input_uri[0].value = uri;
 							$input_uri.trigger("keyup");
 						}
