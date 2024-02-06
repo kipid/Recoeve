@@ -10,11 +10,15 @@ import io.vertx.ext.web.client.WebClientOptions;
 import java.net.MalformedURLException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Element;
 
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
@@ -27,11 +31,13 @@ public class RecoeveWebClient {
 	public WebClient webClient;
 	public long timerId;
 	public int timerN;
+	public XPath xpath;
 
 	public RecoeveWebClient(Vertx vertx) {
 		this.vertx = vertx;
 		webClient = WebClient.create(vertx, options);
 		timerN = 0;
+		xpath = XPathFactory.newInstance().newXPath();
 	}
 
 	public String redirected(String shortURI) {
@@ -96,6 +102,16 @@ public class RecoeveWebClient {
 				if (!h2Elements.isEmpty()) {
 					heads += "\th2";
 					contents += "\t" + h2Elements.first().text();
+				}
+				try {
+					Element tiktokElement0 = (Element) xpath.evaluate("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1", document, XPathConstants.NODE);
+					if (tiktokElement0.getChildNodes().getLength() != 0) {
+						heads += "\ttiktok0";
+						contents += "\t" + tiktokElement0.getTextContent();
+					}
+				}
+				catch (XPathExpressionException e) {
+					RecoeveDB.err(e);
 				}
 				if (!tiktokElements.isEmpty()) {
 					heads += "\ttiktok";
