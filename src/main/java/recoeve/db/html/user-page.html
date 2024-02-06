@@ -4649,7 +4649,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								r.deleted = true;
 								r.has = false;
 								m.$recoDeleted[deletedRecosCount] = m.$recoDeleted[uri] = { r, i: deletedRecosCount };
-								m.lastURI = "";
+								m.refreshFSToRs(cat);
+								// m.lastURI = ""; // TODO: delete this.
 								$recoms_recos = $contents_recoms.find(".reco");
 								for (let k = 0; k < $recoms_recos.length; k++) {
 									let $reco = $recoms_recos.eq(k);
@@ -4677,8 +4678,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										$contents_recos.prepend($reco.html());
 										$reco.remove();
 									}
+									else {
+										$reco[0].id = `reco-${m.catUriList[cat].uris[recoURI].i}`;
+									}
 								}
-								m.refreshFSToRs(cat);
+
 								m.reNewAndReOn();
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
