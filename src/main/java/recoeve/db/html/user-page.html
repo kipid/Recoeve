@@ -4677,7 +4677,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										m.fsGo.fullList[uri].catAndI[cat] = { cat, i: `deleted-${m.deletedRecosCount}` };
 										$reco.addClass("none deleted");
 										$reco.find(".button.edit").addClass("deleted");
-										$contents.prepend($reco.html());
+										$contents.prepend($reco[0].outerHTML);
 										$reco.remove();
 									}
 									else {
