@@ -3257,33 +3257,36 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			return String(cats);
 		}
 		m.refreshFSToRs = async function (cat) {
-			cat = cat ?? m.currentCat;
-			let fs0 = m.fsGo;
-			let fs = m.fsToRs;
-			let fsFL = fs.fullList = [];
-			let uris = m.catUriList[cat]?.uris;
-			if (!uris) {
-				await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-				uris = m.catUriList[cat].uris;
-			}
-			for (let i = 0; i < uris.length; i++) {
-				let uri = String(uris[i]);
-				let r = m.userRecos[uri];
-				let catsSplit = m.catsToString(r?.cats).split(";");
-				fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
-				fs0.fullList[uri].catAndI[cat] = { cat, i };
-			}
-			for (let i = 0; i < m.$recoDeleted.length; i++) {
-				let r = m.$recoDeleted[i].r;
-				let uri = r.uri;
-				let catsSplit = m.catsToString(m.$recoDeleted[i].r?.cats).split(";");
-				fs0.fullList[uri] = { i: `deleted-${i}`, catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} };
-				for (let j = 0; j < catsSplit.length; j++) {
-					let catJ = catsSplit[j];
-					fs0.fullList[uri].catAndI[catJ] = { cat: catJ, i: `deleted-${i}` };
+			return new Promise(async function (resolve, reject) {
+				cat = cat ?? m.currentCat;
+				let fs0 = m.fsGo;
+				let fs = m.fsToRs;
+				let fsFL = fs.fullList = [];
+				let uris = m.catUriList[cat]?.uris;
+				if (!uris) {
+					await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+					uris = m.catUriList[cat].uris;
 				}
-			}
-			await m.fsToRsInRangeCheck();
+				for (let i = 0; i < uris.length; i++) {
+					let uri = String(uris[i]);
+					let r = m.userRecos[uri];
+					let catsSplit = m.catsToString(r?.cats).split(";");
+					fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
+					fs0.fullList[uri].catAndI[cat] = { cat, i };
+				}
+				for (let i = 0; i < m.$recoDeleted.length; i++) {
+					let r = m.$recoDeleted[i].r;
+					let uri = r.uri;
+					let catsSplit = m.catsToString(m.$recoDeleted[i].r?.cats).split(";");
+					fs0.fullList[uri] = { i: `deleted-${i}`, catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} };
+					for (let j = 0; j < catsSplit.length; j++) {
+						let catJ = catsSplit[j];
+						fs0.fullList[uri].catAndI[catJ] = { cat: catJ, i: `deleted-${i}` };
+					}
+				}
+				await m.fsToRsInRangeCheck();
+				resolve();
+			});
 		};
 		m.putCats_UriToLists = async function (cats, uri) {
 			return new Promise(async function (resolve, reject) {
@@ -3357,7 +3360,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							if (m.catUriList[cat].uris[uri]) {
 								m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
 								delete m.catUriList[cat].uris[uri];
-								m.refreshFSToRs(cat);
+								await m.refreshFSToRs(cat);
 							}
 						}
 						if (m.catUriList[cat]?.UriList?.trim().length === 0) {
@@ -3939,7 +3942,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					else if (!m.myPage) {
 						await m.getRecos(uris, m.myRecos, cat);
 					}
-					m.refreshFSToRs(cat);
+					await m.refreshFSToRs(cat);
 					if (m.lastCat !== cat) {
 						m.recoedFromRecoms = 0;
 					}
@@ -4648,7 +4651,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								r.deleted = true;
 								r.has = false;
 								m.$recoDeleted[m.deletedRecosCount] = m.$recoDeleted[uri] = { r, i: m.deletedRecosCount };
-								m.refreshFSToRs(cat);
+								await m.refreshFSToRs(cat);
 								// m.lastURI = ""; // TODO: delete this.
 								$recoms_recos = $contents_recoms.find(".reco");
 								for (let k = 0; k < $recoms_recos.length; k++) {
@@ -4774,7 +4777,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				fsFLUri.catAndI[cat] = { cat, i: uris[uri]?.i ?? uris.length };
 			}
 			await m.getUriListAndShowRecosOnCat(cat, true);
-			m.refreshFSToRs(cat);
+			await m.refreshFSToRs(cat);
 			if (m.initialOpen) {
 				m.gotoHash(m.initialHashURI);
 				if (!m.doNotPushHistory) {
@@ -5115,11 +5118,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(args.cats), uriI);
 					}
 					await m.recoToEve(args.strRecoDo, m.myRecos, cat, uris);
-					setTimeout(function () {
+					setTimeout(async function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
 						m.refresh(m.myRecos[uris[1]].cats, "changed", uris[1], true);
-						m.refreshFSToRs(m.currentCat);
+						await m.refreshFSToRs(m.currentCat);
 					}, m.wait);
 				}
 				else {
@@ -5131,11 +5134,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						let cats = m.catsToString(m.myRecos[uri].cats);
 						await m.putCats_UriToLists(args.cats, uri);
 						m.myRecos[uri].tLast = res[1]?.tLast;
-						setTimeout(function () {
+						setTimeout(async function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "recoed", uri, true);
-							m.refreshFSToRs(m.currentCat);
+							await m.refreshFSToRs(m.currentCat);
 						}, m.wait);
 					}
 					else if (result.startsWith("changed")) {
@@ -5143,20 +5146,20 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						await m.changeCats_UriList(cats, args.cats, uri);
 						await m.recoToEve(args.strRecoDo, m.myRecos, m.currentCat, ["uri", uri]);
 						m.myRecos[uri].tLast = res[1]?.tLast;
-						setTimeout(function () {
+						setTimeout(async function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "changed", uri);
-							m.refreshFSToRs(m.currentCat);
+							await m.refreshFSToRs(m.currentCat);
 						}, m.wait);
 					}
 					else if (result.startsWith("deleted")) {
 						await m.delCats_UriFromLists(cats, uri);
-						setTimeout(function () {
+						setTimeout(async function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "deleted", uri);
-							m.refreshFSToRs(m.currentCat);
+							await m.refreshFSToRs(m.currentCat);
 						}, m.wait);
 					}
 					else {
@@ -5285,11 +5288,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					await m.changeCats_UriList(r.cats, args.cats, uri);
 					r.cats = args.cats;
 					console.log("setTimeout( close ); triggered!");
-					setTimeout(function () {
+					setTimeout(async function () {
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
 						m.refresh(args.cats, "changed", uri, true);
-						m.refreshFSToRs(m.currentCat);
+						await m.refreshFSToRs(m.currentCat);
 					}, m.wait);
 				}
 				else {
