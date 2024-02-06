@@ -1029,9 +1029,11 @@ window.m = window.m || {};
 			let conciseURI = await m.getConciseURI(uri);
 			conciseURI = String(conciseURI).trim();
 			if (uri !== conciseURI) {
-				let desc = $input_desc[0].value;
+				let desc = $input_desc[0].value ?? "";
 				$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
 				uri = conciseURI;
+				$input_uri[0].value = uri;
+				$input_uri.trigger("keyup");
 			}
 			let recoDef = m.recoDefs[uri];
 			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
