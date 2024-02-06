@@ -801,7 +801,7 @@ window.m = window.m || {};
 	// Show recos
 	////////////////////////////////////////////////////
 	m.getConciseURI = function (uri) {
-		return Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			$.ajax({
 				type: "POST", url: "/reco/getConciseURI", data: uri, dataType: "text"
 			}).fail(function (resp) {
