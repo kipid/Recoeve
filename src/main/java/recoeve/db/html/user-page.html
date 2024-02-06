@@ -4648,7 +4648,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								let r = m.myRecos[uri];
 								r.deleted = true;
 								r.has = false;
-								m.$recoDeleted[deletedRecosCount] = m.$recoDeleted[uri] = { r, i: deletedRecosCount };
+								m.$recoDeleted[m.deletedRecosCount] = m.$recoDeleted[uri] = { r, i: m.deletedRecosCount };
 								m.refreshFSToRs(cat);
 								// m.lastURI = ""; // TODO: delete this.
 								$recoms_recos = $contents_recoms.find(".reco");
@@ -4666,13 +4666,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									let $reco = $contents_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
-										$reco[0].id = `reco-deleted-${deletedRecosCount}`;
+										$reco[0].id = `reco-deleted-${m.deletedRecosCount}`;
 										let catsSplit = m.catsToString(m.fsGo.fullList[uri]?.r?.cats).split(";");
 										for (let i = 0; i < catsSplit.length; i++) {
 											let catI = catsSplit[i];
 											delete m.fsGo.fullList[uri].catAndI[catI];
 										}
-										m.fsGo.fullList[uri].catAndI[cat] = { cat, i: `deleted-${deletedRecosCount}` };
+										m.fsGo.fullList[uri].catAndI[cat] = { cat, i: `deleted-${m.deletedRecosCount}` };
 										$reco.addClass("none deleted");
 										$reco.find(".button.edit").addClass("deleted");
 										$contents_recos.prepend($reco.html());
@@ -4707,7 +4707,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fsFLk.inRange = false;
 								await m.reTriggerFS(fs);
 
-								deletedRecosCount++;
+								m.deletedRecosCount++;
 							}
 						}
 						break;
