@@ -3360,7 +3360,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							if (m.catUriList[cat].uris[uri]) {
 								m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
 								delete m.catUriList[cat].uris[uri];
-								await m.refreshFSToRs(cat);
+								// await m.refreshFSToRs(cat); // TODO: delete this.
 							}
 						}
 						if (m.catUriList[cat]?.UriList?.trim().length === 0) {
@@ -4629,22 +4629,21 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
 								if (!fsFLk) {
-									fsFLk = fs.fullList[uri] = { uri, i: fs.fullList.length, down: false };
-									fs.fullList.push(fs.fullList[uri]);
+									fsFLk = fs.fullList[fs.fullList.length] = fs.fullList[uri] = { uri, i: fs.fullList.length, down: false };
 								}
 								fsFLk.txt = m.splitHangul(`${r?.cats} :: ${r?.title}`);
 								fsFLk.html = m.escapeOnlyTag(r?.title);
 								await m.reTriggerFS(fs);
 
-								fs = m.fsToRs;
-								fsFLk = fs.fullList[uri];
-								if (!fsFLk) {
-									fsFLk = fs.fullList[uri] = { uri, down: false };
+								let fs1 = m.fs1ToRs;
+								let fs1FLk = fs1.fullList[uri];
+								if (!fs1FLk) {
+									fs1FLk = fs1.fullList[fs1.fullList.length] = fs1.fullList[uri] = { uri, i: fs1.fullList.length, down: false };
 								}
-								fsFLk.txt = m.splitHangul(r?.title);
-								fsFLk.html = m.escapeOnlyTag(r?.title);
-								fsFLk.inRange = true;
-								await m.reTriggerFS(fs);
+								fs1FLk.txt = m.splitHangul(r?.title);
+								fs1FLk.html = m.escapeOnlyTag(r?.title);
+								fs1FLk.inRange = true;
+								await m.reTriggerFS(fs1);
 							}
 							else if (option === "deleted") {
 								let r = m.myRecos[uri];
@@ -4668,7 +4667,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									let $reco = $contents_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
-										$reco[0].id = `reco-deleted-${m.deletedRecosCount}`;
+										$reco[0].setAttribute("id", `reco-deleted-${m.deletedRecosCount}`);
 										let catsSplit = m.catsToString(m.fsGo.fullList[uri]?.r?.cats).split(";");
 										for (let i = 0; i < catsSplit.length; i++) {
 											let catI = catsSplit[i];
@@ -4681,7 +4680,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										$reco.remove();
 									}
 									else {
-										$reco[0].id = `reco-${m.catUriList[cat].uris[recoURI].i}`;
+										$reco[0].setAttribute("id", `reco-${m.catUriList[cat].uris[recoURI].i}`);
 									}
 								}
 
@@ -5122,7 +5121,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
 						m.refresh(m.myRecos[uris[1]].cats, "changed", uris[1], true);
-						await m.refreshFSToRs(m.currentCat);
+						// await m.refreshFSToRs(m.currentCat); // TODO: delete this.
 					}, m.wait);
 				}
 				else {
@@ -5138,7 +5137,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "recoed", uri, true);
-							await m.refreshFSToRs(m.currentCat);
+							// await m.refreshFSToRs(m.currentCat); // TODO: delete this.
 						}, m.wait);
 					}
 					else if (result.startsWith("changed")) {
@@ -5150,7 +5149,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "changed", uri);
-							await m.refreshFSToRs(m.currentCat);
+							// await m.refreshFSToRs(m.currentCat); // TODO: delete this.
 						}, m.wait);
 					}
 					else if (result.startsWith("deleted")) {
@@ -5159,7 +5158,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							m.refresh(cats, "deleted", uri);
-							await m.refreshFSToRs(m.currentCat);
+							// await m.refreshFSToRs(m.currentCat); // TODO: delete this.
 						}, m.wait);
 					}
 					else {
@@ -5292,7 +5291,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.emptifyRecoInNewReco();
 						$button_close.trigger("click");
 						m.refresh(args.cats, "changed", uri, true);
-						await m.refreshFSToRs(m.currentCat);
+						// await m.refreshFSToRs(m.currentCat); // TODO: delete this.
 					}, m.wait);
 				}
 				else {

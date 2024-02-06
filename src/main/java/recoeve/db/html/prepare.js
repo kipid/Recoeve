@@ -2547,7 +2547,7 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
-				// console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
+				// console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`); // TODO: delete this.
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					if (m.YtPlayer) {
 						let config = {
@@ -3657,7 +3657,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				}
 				m.myRecos[uri].tLast = res[1]?.tLast;
 				args.$result?.html(res[1].result);
-				// m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat); // TODO: delete this.
 				m.refresh(args.cats, "changed", uri);
 			}
 			else if (result.startsWith("recoed")) {
@@ -3694,7 +3694,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				r.descR = m.renderStrDescCmt(r.desc);
 				m.putCats_UriToLists(r.cats, uri);
 				m.refresh(r.cats, "recoed", uri);
-				m.refreshFSToRs(m.currentCat);
+				// m.refreshFSToRs(m.currentCat); // TODO: delete this.
 			}
 			else {
 				m.delayedLogOut(result, 60 * 60 * 24, args.$result);
