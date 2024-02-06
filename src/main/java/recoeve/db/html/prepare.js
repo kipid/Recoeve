@@ -3536,97 +3536,92 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.recoHTML = async function (r, inListPlay, inRange, inRecoms) {
 		let res = "";
-		if (r?.has) {
-			res += `<div class="reco${inRange && !r.deleted ? '' : ' none'}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res += `<div class="reco${inRange && !r.deleted ? '' : ' none'}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onclick="m.editOrRecoToMine(this)">${m.myPage ? '[--Edit--]' : '[--Reco to mine--]'}</div>` : ''}
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
 <div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
-			if (!inListPlay) {
-				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
-				res += String(uriRendered.html);
-			}
-			res += `<div class="cBoth"></div>`;
+		if (!inListPlay) {
+			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+			res += String(uriRendered.html);
+		}
+		res += `<div class="cBoth"></div>`;
+		if (r.val?.str) {
+			res += `<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+		}
+		else {
+			res += `<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
+		}
+		res += `<div class="cBoth"></div>`;
+		if (m.myPage) {
 			if (r.val?.str) {
-				res += `<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
-			}
-			else {
-				res += `<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
-			}
-			res += `<div class="cBoth"></div>`;
-			if (m.myPage) {
-				if (r.val?.str) {
-					res += `<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
-				}
-				else {
-					res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
-				}
-			}
-			else if (m.myRecos[r?.uri]) {
-				let mR = m.myRecos[r?.uri];
-				if (mR.has) {
-					res += `<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
-				}
-				else {
-					res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
-				}
+				res += `<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
 			}
 			else {
 				res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 			}
-			res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
-			if (r.desc) {
-				let descR = r.descR;
-				res += `<div class="desc">`;
-				for (let l = 0; l < descR.length; l++) {
-					let key = m.escapeOnlyTag(descR[l].key);
-					let val = m.escapeOnlyTag(descR[l].val);
-					switch (key.toLowerCase()) {
-						case "#start": case "#end": case "#": case "": default: {
-							let valBrTrimed = val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
-							res += `<div class="value">${key} ${valBrTrimed && inListPlay ? valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valBrTrimed}</div>`;
-							break;
-						}
-						case "#lyrics": case "#lyrics:":
-						case "#lyric": case "#lyric:":
-						case "#가사": case "#가사:": {
-							let valTrimedBr = val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
-							res += `<div class="value">
+		}
+		else if (m.myRecos[r?.uri]) {
+			let mR = m.myRecos[r?.uri];
+			if (mR.has) {
+				res += `<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
+			}
+			else {
+				res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+			}
+		}
+		else {
+			res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+		}
+		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+		if (r.desc) {
+			let descR = r.descR;
+			res += `<div class="desc">`;
+			for (let l = 0; l < descR.length; l++) {
+				let key = m.escapeOnlyTag(descR[l].key);
+				let val = m.escapeOnlyTag(descR[l].val);
+				switch (key.toLowerCase()) {
+					case "#start": case "#end": case "#": case "": default: {
+						let valBrTrimed = val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim();
+						res += `<div class="value">${key} ${valBrTrimed && inListPlay ? valBrTrimed.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valBrTrimed}</div>`;
+						break;
+					}
+					case "#lyrics": case "#lyrics:":
+					case "#lyric": case "#lyric:":
+					case "#가사": case "#가사:": {
+						let valTrimedBr = val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ")
+						res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
-	<div class="lyricsArrow"></div>
-	<div class="lyrics">${valTrimedBr && inListPlay ? valTrimedBr.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valTrimedBr}</div>
-	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+<div class="lyricsArrow"></div>
+<div class="lyrics">${valTrimedBr && inListPlay ? valTrimedBr.replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`) : valTrimedBr}</div>
+<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 </div>
 </div>`;
-							break;
-						}
-						case "#related": case "#related:":
-						case "#originaluri": case "#originaluri:":
-							res += `<div class="value"><span class="key">${key}</span>:`;
-							let relateds = val.trim().split("\n");
-							for (let p = 0; p < relateds.length; p++) {
-								res += '<br>';
-								let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
-								res += String(uriRendered.html);
-							}
-							res += `</div>`;
-							break;
+						break;
 					}
+					case "#related": case "#related:":
+					case "#originaluri": case "#originaluri:":
+						res += `<div class="value"><span class="key">${key}</span>:`;
+						let relateds = val.trim().split("\n");
+						for (let p = 0; p < relateds.length; p++) {
+							res += '<br>';
+							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
+							res += String(uriRendered.html);
+						}
+						res += `</div>`;
+						break;
 				}
-				res += `</div>`;
-			}
-			res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
-			res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
-			if (r.tFirst !== r.tLast) {
-				res += `<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 			}
 			res += `</div>`;
 		}
-		else {
-			res += `<div class="reco">No Reco</div>`;
+		res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
+		res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+		if (r.tFirst !== r.tLast) {
+			res += `<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 		}
+		res += `</div>`;
 		return res;
 	};
 	m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents, $result, uri, cats, valStr, inRecoms}
