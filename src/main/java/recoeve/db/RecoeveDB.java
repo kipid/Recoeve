@@ -515,59 +515,14 @@ public class RecoeveDB {
 		return false;
 	}
 
-	// public void moveToBlogStat1() {
-	// try {
-	// PreparedStatement pstmtGetAllBlogStat=con.prepareStatement("SELECT * FROM
-	// `BlogStat`;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-	// PreparedStatement pstmtPutBlogStat1=con.prepareStatement("INSERT INTO
-	// `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES
-	// (?, ?, ?, ?, ?, ?);");
-	// ResultSet rs=pstmtGetAllBlogStat.executeQuery();
-	// while (rs.next()) {
-	// pstmtPutBlogStat1.setTimestamp(1, rs.getTimestamp("t"));
-	// pstmtPutBlogStat1.setString(2, rs.getString("ip"));
-	// pstmtPutBlogStat1.setString(3, rs.getString("URI"));
-	// pstmtPutBlogStat1.setString(4, rs.getString("referer"));
-	// pstmtPutBlogStat1.setString(5, rs.getString("REACTION_GUEST"));
-	// String host=null;
-	// String uri=rs.getString("URI");
-	// if (uri.substring(0,4).toLowerCase().equals("http")) {
-	// int k=4;
-	// if (uri.charAt(k)=='s'||uri.charAt(k)=='S') {
-	// k++;
-	// }
-	// if (uri.startsWith("://",k)) {
-	// k+=3;
-	// int l=uri.indexOf("/",k);
-	// if (l>0) {
-	// host=uri.substring(k,l);
-	// }
-	// else {
-	// host=uri.substring(k);
-	// }
-	// if (host.equals("www.recoeve.net")) {
-	// host="recoeve.net";
-	// }
-	// }
-	// }
-	// // System.out.println(host);
-	// pstmtPutBlogStat1.setString(6, host);
-	// pstmtPutBlogStat1.executeUpdate();
-	// }
-	// }
-	// catch (SQLException e) {
-	// err(e);
-	// }
-	// }
-	public boolean putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST,
-			String refererFromServer) {
+	public boolean putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST, String refererFromServer) {
 		try {
 			con.setAutoCommit(true);
 			pstmtPutBlogStat1.setTimestamp(1, tNow);
 			pstmtPutBlogStat1.setString(2, ip);
 			pstmtPutBlogStat1.setString(3, uri);
 			if (referer == null || referer.isEmpty() || refererFromServer != null && refererFromServer.length() > referer.length()) {
-				pstmtPutBlogStat1.setString(4, refererFromServer);
+				pstmtPutBlogStat1.setString(4, refererFromServer); // null is allowed.
 			}
 			else {
 				pstmtPutBlogStat1.setString(4, referer);
