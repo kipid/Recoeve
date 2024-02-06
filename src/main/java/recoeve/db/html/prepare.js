@@ -818,9 +818,9 @@ window.m = window.m || {};
 				console.log(`conciseURIs[k]: ${uri}`); // TODO: delete log.
 				let toDo = String(respK.do);
 				let r = recos[uri];
-				if (!r) { r = recos[uri] = { uri }; }
+				if (!r) { r = recos[uri] = { uri: conciseURIs[k] }; }
 				console.log(`recos[uri].uri:\n${uri}\n${recos[uri].uri}`); // TODO: delete log.
-				console.log(`m.myRecos[uri].uri: ${m.myRecos[uri].uri}`); // TODO: delete log.
+				console.log(`m.myRecos[uri].uri:\n${uri}\n${m.myRecos[uri].uri}`); // TODO: delete log.
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
