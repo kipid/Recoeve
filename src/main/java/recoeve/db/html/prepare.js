@@ -820,7 +820,7 @@ window.m = window.m || {};
 			}
 			uri = String(uri);
 			let r = recos[uri];
-			if (!r) { r = recos[uri] = { uri }; }
+			if (!r) { r = recos[uri] = { uri: uri }; }
 			console.log(`recos[uri].uri:\n\n${uri}\n\n${recos[uri].uri}`); // TODO: delete log.
 			console.log(`m.myRecos[uri].uri:\n\n${uri}\n\n${m.myRecos[uri].uri}`); // TODO: delete log.
 			r.down = true; // User's or My reco on the uri is downloaded.
