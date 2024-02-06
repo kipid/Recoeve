@@ -4041,7 +4041,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.cutNeighbors = function (str) {
 			$.ajax({
-				type: "POST", url: m.userPath + "/cut-Neighbors", data: str
+				type: "POST", url: `${m.userPath}/cut-Neighbors`, data: str
 				, dataType: "text"
 			}).done(function (resp) {
 				if (resp === "cut") {
@@ -4319,7 +4319,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										req += `\n${neighborI.user_to}\t${neighborI.cat_to}`;
 									}
 									$.ajax({
-										type: "POST", url: m.userPath + "/get-Recoms", data: req
+										type: "POST", url: `${m.userPath}/get-Recoms`, data: req
 										, dataType: "text"
 									}).done(async function (resp) {
 										let respJSON = await m.strToJSON(resp);
@@ -4362,7 +4362,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}".`);
 							let cat_from = m.currentCat = cat;
 							$.ajax({
-								type: "POST", url: m.userPath + "/get-Neighbors", data: cat_from
+								type: "POST", url: `${m.userPath}/get-Neighbors`, data: cat_from
 								, dataType: "text"
 							}).fail(function (resp) {
 								$numbers_of_recos.html(resp);
@@ -4405,7 +4405,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						$numbers_of_recos.html(`Loading neighbors of cat="${m.escapeOnlyTag(cat)}", and plotting charts.`);
 						let cat_from = m.currentCat = cat;
 						$.ajax({
-							type: "POST", url: m.userPath + "/get-Neighbors", data: cat_from
+							type: "POST", url: `${m.userPath}/get-Neighbors`, data: cat_from
 							, dataType: "text"
 						}).fail(function (resp) {
 							$contents.html(resp);

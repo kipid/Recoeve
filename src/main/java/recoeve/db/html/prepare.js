@@ -704,7 +704,7 @@ window.m = window.m || {};
 			$log_out_do.html(err);
 		}
 		$.ajax({
-			type: "POST", url: `/account/log-out.do`, data: args
+			type: "POST", url: "/account/log-out.do", data: args
 			, dataType: "text"
 		}).fail(function (resp) {
 			$log_out_do_container.show();
@@ -740,7 +740,7 @@ window.m = window.m || {};
 			$log_out_do.html(err);
 		}
 		$.ajax({
-			type: "POST", url: `/account/log-out-from-all.do`, data: args
+			type: "POST", url: "/account/log-out-from-all.do", data: args
 			, dataType: "text"
 		}).fail(function (resp) {
 			$log_out_do_container.show();
@@ -800,10 +800,25 @@ window.m = window.m || {};
 	////////////////////////////////////////////////////
 	// Show recos
 	////////////////////////////////////////////////////
+	m.getConciseURI = function (uri) {
+		return Promise(function (resolve, reject) {
+			$.ajax({
+				type: "POST", url: "/reco/getConciseURI", data: uri, dataType: "text"
+			}).fail(function (resp) {
+				reject(resp);
+			}).done(function (resp) {
+				resolve(resp);
+			})
+		});
+	};
 	m.recoDowned = function (urisStr, recos) {
 		let uris = urisStr.trim().split("\n");
 		for (k = 0; k < uris.length; k++) {
 			let uri = uris[k];
+			if (m.getUTF8Length(uri) > 255) {
+				uri = await m.getConciseURI(uri);
+			}
+			uri = String(uri);
 			let r = recos[uri];
 			if (!r) { r = recos[uri] = { uri }; }
 			console.log(`recos[uri].uri:\n\n${uri}\n\n${recos[uri].uri}`); // TODO: delete log.
@@ -2966,7 +2981,7 @@ web	${m.sW}	${m.sH}`;
 			if (exec !== null) {
 				let shortURI = `https://vt.tiktok.com/${exec[1]}/`;
 				$.ajax({
-					type: "POST", url: "https://recoeve.net/BlogStat/getFullURI", data: shortURI, dataType: "text"
+					type: "POST", url: "/BlogStat/getFullURI", data: shortURI, dataType: "text"
 				}).fail(function (resp) {
 					resolve(resp);
 					// throw new Error("Failed to expand TikTok URL");

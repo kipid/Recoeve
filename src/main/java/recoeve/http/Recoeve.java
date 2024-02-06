@@ -122,10 +122,12 @@ public class Recoeve extends AbstractVerticle {
 						FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)),
 						ENCODING);
 				System.out.println("Sended user-page.html. (already logged-in)");
-			} else if (pl.cookie.get("rmbdI") != null) {
+			}
+			else if (pl.cookie.get("rmbdI") != null) {
 				pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
 				System.out.println("Sended remember-me.html.");
-			} else {
+			}
+			else {
 				String authenticater = ctx.pathParam("authenticater");
 				switch (authenticater) {
 					case "pre-google":
@@ -154,7 +156,8 @@ public class Recoeve extends AbstractVerticle {
 									}
 									pl.req.response().end("log-in success\n" + gotoStr, ENCODING);
 									System.out.println("Sended log-in success: " + inputs.get(1, "email"));
-								} else {
+								}
+								else {
 									// Log-in failed.
 									pl.req.response()
 											.end(FileMap.replaceStr("[--Log-in failed.--] [--User of email--]:"
@@ -216,7 +219,8 @@ public class Recoeve extends AbstractVerticle {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end("No http-URI.", ENCODING);
 					System.out.println("Sended \"No http-URI.\".");
-				} else if (shortURI.substring(0, 4).toLowerCase().equals("http")) {
+				}
+				else if (shortURI.substring(0, 4).toLowerCase().equals("http")) {
 					int k = 4;
 					if (shortURI.charAt(k) == 's' || shortURI.charAt(k) == 'S') {
 						k++;
@@ -237,7 +241,8 @@ public class Recoeve extends AbstractVerticle {
 											System.out.println("Full TikTok URL: " + fullURI);
 											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 													.end(fullURI, ENCODING);
-										} else {
+										}
+										else {
 											System.out.println("Sended shortURI.");
 											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 													.end(shortURI, ENCODING);
@@ -252,12 +257,14 @@ public class Recoeve extends AbstractVerticle {
 						} catch (URISyntaxException e) {
 							RecoeveDB.err(e);
 						}
-					} else {
+					}
+					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 								.end(shortURI, ENCODING);
 						System.out.println("Sended shortURI. No http-URI.");
 					}
-				} else {
+				}
+				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end(shortURI, ENCODING);
 					System.out.println("Sended shortURI.");
@@ -326,17 +333,20 @@ public class Recoeve extends AbstractVerticle {
 					if (fileInMemory != null) {
 						pl.req.response().end(fileInMemory);
 						System.out.println("Sended file in memory: " + fileName);
-					} else {
+					}
+					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println("No file in memory: " + fileName + ".");
 					}
-				} else {
+				}
+				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")");
 				}
-			} else {
+			}
+			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer not allowed.)");
@@ -372,7 +382,8 @@ public class Recoeve extends AbstractVerticle {
 						FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)),
 						ENCODING); // to "/user/:userId". (Cookie owner's page)
 				System.out.println("Sended user-page.html");
-			} else {
+			}
+			else {
 				pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // to
 																									// "/account/log-in".
 				System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be
@@ -416,14 +427,16 @@ public class Recoeve extends AbstractVerticle {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(db.printLogs());
 							System.out.println("Sended printLogs.");
-						} else {
+						}
+						else {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (You are not admin kipid. Invalid session.)");
 						}
 						break;
 				}
-			} else {
+			}
+			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (You are not admin kipid.)");
@@ -500,12 +513,14 @@ public class Recoeve extends AbstractVerticle {
 									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS);
 					}
-				} else {
+				}
+				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 					System.out.println(INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")");
 				}
-			} else {
+			}
+			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer is not allowed.)");
@@ -530,13 +545,15 @@ public class Recoeve extends AbstractVerticle {
 					pl.req.response().end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang,
 							db.varMapUserPage(pl.cookie, userId)), ENCODING);
 					System.out.println("Sended user-page.html");
-				} else {
+				}
+				else {
 					String res = FileMap.replaceStr("<h1>[--User does not exist.--] UserID=" + userId + "</h1>",
 							pl.lang);
 					pl.req.response().end(res, ENCODING);
 					System.out.println("Sended '" + res + "'");
 				}
-			} else {
+			}
+			else {
 				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer is not allowed.)");
 			}
@@ -586,7 +603,8 @@ public class Recoeve extends AbstractVerticle {
 										pl.req.response().end("" + result, ENCODING);
 										System.out.println("Sended result: " + result + " of change-order-of-UriList.");
 									});
-								} else {
+								}
+								else {
 									pl.req.response().end(INVALID_ACCESS, ENCODING);
 									System.out.println("Session is not passed.");
 								}
@@ -606,7 +624,8 @@ public class Recoeve extends AbstractVerticle {
 												ENCODING);
 										System.out.println("Sended neighbors.");
 									});
-								} else {
+								}
+								else {
 									pl.req.response().end("No session.");
 									System.out.println("No session.");
 								}
@@ -621,16 +640,19 @@ public class Recoeve extends AbstractVerticle {
 								pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 								System.out.println(INVALID_ACCESS);
 						}
-					} else {
+					}
+					else {
 						pl.req.response().end("Wrong method POST.", ENCODING);
 						System.out.println("Sended 'Wrong method' POST.");
 					}
-				} else {
+				}
+				else {
 					String res = FileMap.replaceStr("[--User does not exist.--] UserID=" + finalUserId, pl.lang);
 					pl.req.response().end(res, ENCODING);
 					System.out.println("Sended '" + res + "'");
 				}
-			} else {
+			}
+			else {
 				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer is not allowed.)");
 			}
@@ -644,6 +666,19 @@ public class Recoeve extends AbstractVerticle {
 				String toDo = ctx.pathParam("toDo");
 				System.out.println("/reco/:toDo :: toDo=" + toDo);
 				switch (toDo) {
+					case "getConciseURI": // path=/reco/getConciseURI
+						pl.req.bodyHandler((Buffer data) -> {
+							final String uri = data.toString();
+							System.out.println(uri);
+							if (uri == null) {
+								pl.req.response().end("", ENCODING);
+								System.out.println("uri is null.");
+							}
+							else {
+								pl.req.response().end(db.getConciseURI(uri), ENCODING);
+							}
+						});
+						break;
 					case "getH1": // path=/reco/getH1
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
@@ -651,7 +686,8 @@ public class Recoeve extends AbstractVerticle {
 							if (uri == null) {
 								pl.req.response().end("No http-URI.", ENCODING);
 								System.out.println("Sended \"No http-URI.\".");
-							} else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
+							}
+							else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
 								int k = 4;
 								if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
 									k++;
@@ -666,7 +702,8 @@ public class Recoeve extends AbstractVerticle {
 												.send(ar -> {
 													if (ar.succeeded()) {
 														recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
-													} else {
+													}
+													else {
 														System.err.println("Failed to retrieve the webpage: "
 																+ ar.cause().getMessage());
 														pl.req.response().end("Failed to retrieve the webpage.",
@@ -676,11 +713,13 @@ public class Recoeve extends AbstractVerticle {
 									} catch (URISyntaxException e) {
 										RecoeveDB.err(e);
 									}
-								} else {
+								}
+								else {
 									pl.req.response().end("No http-URI.", ENCODING);
 									System.out.println("Sended \"No http-URI.\".");
 								}
-							} else {
+							}
+							else {
 								pl.req.response().end("No http-URI.", ENCODING);
 								System.out.println("Sended \"No http-URI.\".");
 							}
@@ -709,7 +748,8 @@ public class Recoeve extends AbstractVerticle {
 								pl.req.response().end(FileMap.replaceStr(res, pl.lang));
 								System.out.println("Do reco:\n" + recoStr);
 							});
-						} else {
+						}
+						else {
 							pl.req.response().end("No session.");
 							System.out.println("No session.");
 						}
@@ -724,7 +764,8 @@ public class Recoeve extends AbstractVerticle {
 						pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 						System.out.println(INVALID_ACCESS + " (Invalid URI.)");
 				}
-			} else {
+			}
+			else {
 				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer is not allowed.)");
 			}
@@ -758,17 +799,20 @@ public class Recoeve extends AbstractVerticle {
 								// User is verified.
 								pl.req.response().end("You are verified.", ENCODING);
 								System.out.println("Sended 'You are verified.'.");
-							} else {
+							}
+							else {
 								// User is NOT verified.
 								pl.req.response().end("Wrong verification key. You are not verified.", ENCODING);
 								System.out.println("Sended 'Wrong verification key. You are not verified.'.");
 							}
-						} else if (pl.method == HttpMethod.GET) {
+						}
+						else if (pl.method == HttpMethod.GET) {
 							// Log-in 유도.
 							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 							pl.req.response().end(fileMap.getFileWithLang("verify.html", pl.lang), ENCODING);
 							System.out.println("Sended 'Please log in first to verify your account.'.");
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (Wrong method:" + pl.method + ")");
 						}
@@ -778,7 +822,8 @@ public class Recoeve extends AbstractVerticle {
 						if (db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
 							pl.req.response().end(fileMap.getFileWithLang("changePwd.html", pl.lang), ENCODING);
 							System.out.println("Sended changePwd.html.");
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS);
 						}
@@ -798,16 +843,19 @@ public class Recoeve extends AbstractVerticle {
 										String new_salt = db.getNewPwdSalt("id", id);
 										pl.req.response().end(new_salt, ENCODING);
 										System.out.println("Sended new password_salt: " + new_salt + ".");
-									} else {
+									}
+									else {
 										pl.req.response().end("Invalid token.", ENCODING);
 										System.out.println("Invalid token.");
 									}
-								} else {
+								}
+								else {
 									pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 									System.out.println(INVALID_ACCESS + " (Invalid form: no tab.)");
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (Invalid method: " + pl.method + ")");
 						}
@@ -825,20 +873,23 @@ public class Recoeve extends AbstractVerticle {
 												pl.lang);
 										pl.req.response().end(res, ENCODING);
 										System.out.println("Sended " + res);
-									} else {
+									}
+									else {
 										final String res = FileMap.replaceStr(
 												"[--Error occured during changing password. Please try again.--]",
 												pl.lang);
 										pl.req.response().end(res, ENCODING);
 										System.out.println("Sended " + res);
 									}
-								} else {
+								}
+								else {
 									final String res = FileMap.replaceStr("[--Token is invalid.--]", pl.lang);
 									pl.req.response().end(res, ENCODING);
 									System.out.println("Sended " + res);
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (Invalid method: " + pl.method + ")");
 						}
@@ -849,10 +900,12 @@ public class Recoeve extends AbstractVerticle {
 							pl.req.response().end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang,
 									db.varMapMyPage(pl.cookie)), ENCODING);
 							System.out.println("Sended user-page.html. (already logged-in)");
-						} else if (pl.cookie.get("rmbdI") != null) {
+						}
+						else if (pl.cookie.get("rmbdI") != null) {
 							pl.req.response().end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
 							System.out.println("Sended remember-me.html.");
-						} else {
+						}
+						else {
 							pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 							System.out.println("Sended log-in.html. (No rmbd cookie)");
 						}
@@ -869,12 +922,14 @@ public class Recoeve extends AbstractVerticle {
 									String iter = db.getPwdIteration(idType, id);
 									pl.req.response().end(iter, ENCODING);
 									System.out.println("Sended pwd_iteration for " + idType + " " + id + ": " + iter);
-								} else {
+								}
+								else {
 									pl.req.response().end("Invalid form of data (no tab).", ENCODING);
 									System.out.println("Invalid form of data (no tab). dataStr: " + dataStr);
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (Invalid method: " + pl.method + ")");
 						}
@@ -894,14 +949,16 @@ public class Recoeve extends AbstractVerticle {
 									pl.req.response().end("log-in success", ENCODING);
 									System.out.println("Sended log-in success: " + inputs.get(1, "idType") + ": "
 											+ inputs.get(1, "userId"));
-								} else {
+								}
+								else {
 									// Log-in failed.
 									pl.req.response().end("log-in fail", ENCODING);
 									System.out.println(
 											"log-in fail: " + inputs.get(1, "idType") + ": " + inputs.get(1, "userId"));
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println(INVALID_ACCESS + " (Invalid method: " + pl.method + ")");
 						}
@@ -958,7 +1015,8 @@ public class Recoeve extends AbstractVerticle {
 											+ " are available. So a token is created.");
 									System.out.println(
 											"tNow: " + pl.tNow + "\n" + "token: " + RecoeveDB.bytesToHexString(token));
-								} else {
+								}
+								else {
 									db.logsCommit(1 // `user_i`=1 for anonymous.
 											, pl.tNow, pl.ip, "chk", false,
 											"ID: " + id + " [" + idAvailable + "] and E-mail: " + email + " ["
@@ -969,7 +1027,8 @@ public class Recoeve extends AbstractVerticle {
 											+ email + " is available? " + emailAvailable);
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println("check: invalid method " + pl.method);
 						}
@@ -983,7 +1042,8 @@ public class Recoeve extends AbstractVerticle {
 								pl.req.response().end(forgotPwd, ENCODING);
 								System.out.println("Sended forgotPwd: " + forgotPwd);
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println("forgotPwd: invalid method " + pl.method);
 						}
@@ -1002,19 +1062,22 @@ public class Recoeve extends AbstractVerticle {
 										pl.req.response().end(FileMapWithVar.getFileWithLangAndVars("signed-up.html",
 												pl.lang, varMap), ENCODING);
 										System.out.println("Sended signed-up.html.");
-									} else {
+									}
+									else {
 										final String res = FileMap.replaceStr(
 												"[--Error occured during registration. Please sign-up again.--]",
 												pl.lang);
 										pl.req.response().end(res, ENCODING);
 										System.out.println("Sended " + res);
 									}
-								} else {
+								}
+								else {
 									pl.req.response().end("Token is invalid.", ENCODING);
 									System.out.println("Token is invalid.");
 								}
 							});
-						} else {
+						}
+						else {
 							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 							System.out.println("sign-up: invalid method " + pl.method);
 						}
@@ -1024,7 +1087,8 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(INVALID_ACCESS + " (Invalid URI.)");
 						break;
 				}
-			} else {
+			}
+			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
 				System.out.println(INVALID_ACCESS + " (Referer is not allowed.)");
@@ -1049,7 +1113,8 @@ public class Recoeve extends AbstractVerticle {
 							pl.lang), ENCODING);
 					System.out.println(
 							"Sended Rmbd with Set-Cookie of session and new rmbd token. (Succeed in remembering the user.)");
-				} else { // if (setCookieRMB.startsWith("rmbdI="))
+				}
+				else { // if (setCookieRMB.startsWith("rmbdI="))
 							// Failed: Delete rmbd cookie.
 					pl.req.response()
 							.end(FileMap.replaceStr(

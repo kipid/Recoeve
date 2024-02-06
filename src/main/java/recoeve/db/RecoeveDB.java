@@ -3495,6 +3495,45 @@ public class RecoeveDB {
 		return res;
 	}
 
+	public String getConciseURI(String originalURI) {
+		String uri = originalURI;
+		try {
+			if (getutf8mb4Length(originalURI) > 255) {
+				String hashpath = Encrypt.encrypt0("", originalURI, 1).substring(0, 16);
+				System.out.println("hashpath: " + hashpath);
+				long longHashpath = hexStringToLong(hashpath);
+				boolean done = false;
+				while (!done) {
+					pstmtGetRedirect.setLong(1, longHashpath);
+					ResultSet rs = pstmtGetRedirect.executeQuery();
+					if (rs.next()) {
+						if (rs.getString("originalURI").equals(originalURI)) {
+							done = true;
+							break;
+						}
+						else {
+							longHashpath++;
+							continue;
+						}
+					}
+					else {
+						pstmtPutRedirect.setLong(1, longHashpath);
+						pstmtPutRedirect.setString(2, originalURI);
+						done = (pstmtPutRedirect.executeUpdate() == 1);
+						break;
+					}
+				}
+				System.out.println("done: " + done);
+				if (done) {
+					uri = "https://recoeve.net/redirect/" + longToHexString(longHashpath);
+				}
+			}
+		}
+		catch (SQLException e) {
+			err(e);
+		}
+		return uri;
+	}
 	public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 		System.out.println(recoStr);
 		String res = "result\ttLast\toriginalURI\turi";
