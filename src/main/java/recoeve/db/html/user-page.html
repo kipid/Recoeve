@@ -5104,6 +5104,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				else {
 					$error.html(result);
 					args.$result?.html(result);
+					console.log(`m.recoDowned(uri: ${uri}, m.myRecos);`); // TODO: delete log.
 					m.recoDowned(uri, m.myRecos);
 					if (result.startsWith("recoed")) {
 						let desc = String(m.myRecos[uri].desc);
