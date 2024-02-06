@@ -5084,10 +5084,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						uris.push(uriI);
 						m.recoDowned(uriI, m.myRecos);
 						m.myRecos[uriI].tLast = res[i]?.tLast;
-						let desc = m.myRecos[uriI]?.desc ?? "";
-						if (uriI !== String(res[i]?.originalURI)) {
-							m.myRecos[uriI].desc = (`#originalURI\n${String(res[i]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
-						}
 						await m.changeCats_UriList(m.myRecos[uriI].cats, m.catsToString(args.cats), uriI);
 					}
 					await m.recoToEve(args.strRecoDo, m.myRecos, cat, uris);
@@ -5103,10 +5099,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
 					if (result.startsWith("recoed")) {
-						let desc = String(strRecoDoJSON[1]?.desc) && String(strRecoDoJSON[1]?.desc) !== "undefined" ? strRecoDoJSON[1]?.desc : "";
-						if (uri !== String(res[1]?.originalURI)) {
-							m.myRecos[uri].desc = (`#originalURI\n${String(res[1]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
-						}
 						await m.recoToEve(args.strRecoDo, m.myRecos, cat, ["uri", uri]);
 						let cats = m.catsToString(m.myRecos[uri].cats);
 						await m.putCats_UriToLists(args.cats, uri);

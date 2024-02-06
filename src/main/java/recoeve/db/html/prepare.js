@@ -815,10 +815,6 @@ window.m = window.m || {};
 		let uris = urisStr.trim().split("\n");
 		for (k = 0; k < uris.length; k++) {
 			let uri = uris[k];
-			if (m.getUTF8Length(uri) > 255) {
-				uri = await m.getConciseURI(uri);
-			}
-			uri = String(uri);
 			let r = recos[uri];
 			if (!r) { r = recos[uri] = { uri }; }
 			console.log(`recos[uri].uri:\n\n${uri}\n\n${recos[uri].uri}`); // TODO: delete log.
@@ -838,7 +834,7 @@ window.m = window.m || {};
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
-					if (isNaN(String(prop)) && String(prop) !== "uri" && String(prop) !== "desc") {
+					if (isNaN(String(prop)) && String(prop) !== "uri") {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
 					}
