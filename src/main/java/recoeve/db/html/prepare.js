@@ -1048,7 +1048,11 @@ window.m = window.m || {};
 				recoDef.heads = await m.getH1(uri);
 				recoDef.heads = await m.strToJSON(String(recoDef.heads));
 			}
-			defTitlesHTML += `${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}${String(recoDef.heads[1]?.h2).trim() && String(recoDef.heads[1]?.h2) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h2))}</div>` : ""}`;
+			defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
+${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
+${String(recoDef.heads[1]?.h2).trim() && String(recoDef.heads[1]?.h2) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h2))}</div>` : ""}
+${String(recoDef.heads[1]?.tiktok).trim() && String(recoDef.heads[1]?.tiktok) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.tiktok))}</div>` : ""}
+${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.naver))}</div>` : ""}`;
 			for (let i = 0; i < defTitles.length; i++) {
 				let title = defTitles[i][0].trim();
 				if (title.length !== 0
@@ -2324,10 +2328,10 @@ web	${m.sW}	${m.sH}`;
 	}
 
 	m.recoDefs[""] = {
-		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, heads: [ [ "h1" ], [ "Empty URI." ] ]
+		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, heads: [ [ "title" ], [ "Empty URI." ] ]
 	};
-	m.recoDefs[""].heads[0].h1 = "h1";
-	m.recoDefs[""].heads[1].h1 = "Empty URI.";
+	m.recoDefs[""].heads[0].title = "title";
+	m.recoDefs[""].heads[1].title = "Empty URI.";
 
 	////////////////////////////////////////////////////
 	// YouTube API
