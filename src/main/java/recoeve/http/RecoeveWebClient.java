@@ -33,28 +33,23 @@ public class RecoeveWebClient {
 
 	public String redirected(String shortURI) {
 		final AtomicReference<String> res = new AtomicReference<>();
+		res.set(shortURI);
 		webClient.headAbs(shortURI)
 			.send()
 			.onSuccess(response -> {
 				if (response.statusCode() == 200) {
 					// If the response is a redirect, so get the followedRedirects().
 					List<String> followedURIs = response.followedRedirects();
-					if (followedURIs.size() >= 1) {
+					if (followedURIs.size() > 0) {
 						String fullURI = followedURIs.get(followedURIs.size() - 1);
 						System.out.println("The last redirected URL: " + fullURI);
 						res.set(fullURI);
 					}
-					else {
-						res.set(shortURI);
-					}
-				} else {
-					res.set(shortURI);
 				}
 			})
 			.onFailure(throwable -> {
 				throwable.printStackTrace();
 				System.out.println("Sended shortURI.");
-				res.set(shortURI);
 			});
 		return res.get();
 	}
