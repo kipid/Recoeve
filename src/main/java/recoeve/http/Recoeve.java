@@ -701,7 +701,7 @@ public class Recoeve extends AbstractVerticle {
 										recoeveWebClient.webClient.getAbs(recoeveWebClient.redirected(uri))
 											.send(ar -> {
 												if (ar.succeeded()) {
-													recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
+													recoeveWebClient.findTitles(ar.result(), pl, 256);
 												}
 												else {
 													System.err.println("Failed to retrieve the webpage: "
