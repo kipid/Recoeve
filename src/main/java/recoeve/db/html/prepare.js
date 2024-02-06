@@ -817,8 +817,6 @@ window.m = window.m || {};
 			let uri = uris[k];
 			let r = recos[uri];
 			if (!r) { r = recos[uri] = { uri }; }
-			console.log(`recos[uri].uri:\n\n${uri}\n\n${recos[uri].uri}`); // TODO: delete log.
-			console.log(`m.myRecos[uri].uri:\n\n${uri}\n\n${m.myRecos[uri].uri}`); // TODO: delete log.
 			r.down = true; // User's or My reco on the uri is downloaded.
 		}
 	};
@@ -1311,11 +1309,6 @@ window.m = window.m || {};
 				this.removeAttr("delayed-src");
 				done = true;
 			}
-			// MathJax Process TODO: update MathJax
-			// if (typeof MathJax!=='undefined'&&this.is(".MathJax_Preview")) {
-			// 	MathJax.Hub.Queue(["Process", MathJax.Hub, this.next()[0]]);
-			// 	done=true;
-			// }
 		}
 		return done;
 	};

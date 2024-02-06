@@ -4552,7 +4552,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 							fsGoFLUri.catAndI[cat] = { cat, i: m.catUriList[cat].uris[uri].i };
 
-							console.log(`uri in refresh(...): ${uri}`); // TODO: delete log.
 							let fs1FLUri = m.fsToRs.fullList[uri];
 							if (!fs1FLUri) {
 								fs1FLUri = m.fsToRs.fullList[m.fsToRs.fullList.length] = m.fsToRs.fullList[uri] = { uri, r, i: m.fsToRs.fullList.length, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
