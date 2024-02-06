@@ -5121,14 +5121,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 						await m.recoToEve(args.strRecoDo, m.myRecos, cat, ["uri", uri]);
 						let cats = m.catsToString(m.myRecos[uri].cats);
-						await m.putCats_UriToLists(cats, uri);
+						await m.putCats_UriToLists(args.cats, uri);
 						m.myRecos[uri].tLast = res[1]?.tLast;
 						setTimeout(function () {
 							m.emptifyRecoInNewReco();
 							$button_close.trigger("click");
 							console.log(`m.refresh(cats, "recoed", uri: ${uri}, true);`); // TODO: delete log.
 							m.refresh(cats, "recoed", uri, true);
-							console.log(`m.myRecos[uri].uri: ${m.myRecos[uri].uri}`); // TODO: delete log.
+							console.log(`m.myRecos[uri].uri:\n${uri}\n${m.myRecos[uri].uri}`); // TODO: delete log.
 							m.refreshFSToRs(m.currentCat);
 						}, m.wait);
 					}

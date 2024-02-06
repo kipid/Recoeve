@@ -1015,13 +1015,14 @@ window.m = window.m || {};
 			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false, h1: undefined }; }
 			let defTitles = recoDef.defTitles;
 			let defTitlesHTML = "";
-			if (!recoDef.h1) {
-				recoDef.h1 = await m.getH1(uri);
+			if (!recoDef.heads) {
+				recoDef.heads = await m.getH1(uri);
+				recoDef.heads = await m.strToJSON(String(recoDef.heads));
 			}
-			defTitlesHTML += `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.h1))}</div>`;
+			defTitlesHTML += `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1].h1).trim())}</div>${String(recoDef.heads[1].h2).trim() && String(recoDef.heads[1].h2) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1].h2))}</div>` : ""}`;
 			for (let i = 0; i < defTitles.length; i++) {
 				let title = defTitles[i][0].trim();
-				if (title.length !== 0 && title !== String(recoDef.h1).trim()) {
+				if (title.length !== 0 && title !== String(recoDef.heads[1].h1).trim() && !(String(recoDef.heads[1].h2).trim() && String(recoDef.heads[1].h2) !== "undefined" && title === String(recoDef.heads[1].h2).trim())) {
 					defTitlesHTML += `<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
 				}
 			}

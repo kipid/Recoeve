@@ -11,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import recoeve.db.StrArray;
+
 public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions().setMaxHeaderSize(16384)
 			.setFollowRedirects(true);
@@ -35,6 +37,7 @@ public class RecoeveWebClient {
 
 				// Select the first <h1> element and extract its text content
 				Elements h1Elements = document.select("title, h1, .se-fs-");
+				Elements h2Elements = document.select("h2");
 				if (h1Elements.isEmpty() && timerN < 7) {
 					doUntilH1IsFound(response, pl, delay + 512);
 				} else {
@@ -42,8 +45,17 @@ public class RecoeveWebClient {
 						Element firstH1Element = h1Elements.first();
 						String h1Text = firstH1Element.text();
 						System.out.println("Content of the first <h1> tag: " + h1Text);
-						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.end(h1Text, Recoeve.ENCODING);
+						if (!h2Elements.isEmpty()) {
+							Element firstH2Element = h2Elements.first();
+							String h2Text = firstH2Element.text();
+							System.out.println("Content of the first <h2> tag: " + h2Text);
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+									.end("h1\th2\n"+StrArray.enclose(h1Text)+"\t"+StrArray.enclose(h2Text), Recoeve.ENCODING);
+						}
+						else {
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+									.end("h1\n"+StrArray.enclose(h1Text), Recoeve.ENCODING);
+						}
 					} else {
 						System.out.println("No <h1> tags found on the page.");
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
