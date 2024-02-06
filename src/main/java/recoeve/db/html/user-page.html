@@ -5610,7 +5610,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.showAndScrollTo($recoElem);
 			}
 			else if (isNaN(l)) {
-				let recoHTML = await recoHTML(m.$recoDeleted[uri]?.r);
+				let recoHTML = await m.recoHTML(m.$recoDeleted[uri]?.r);
 				$contents_recos.prepend(String(recoHTML));
 				$recoElem = $(`#reco-${l}`);
 				if ($recoElem.length) {
