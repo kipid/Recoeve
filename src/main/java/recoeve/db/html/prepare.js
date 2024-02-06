@@ -803,7 +803,7 @@ window.m = window.m || {};
 	m.getConciseURI = function (uri) {
 		return new Promise(function (resolve, reject) {
 			$.ajax({
-				type: "POST", url: "/reco/getConciseURI", data: uri, dataType: "text"
+				type: "POST", url: "/reco/getConciseURI", data: uri.trim(), dataType: "text"
 			}).fail(function (resp) {
 				reject(resp);
 			}).done(function (resp) {
@@ -838,7 +838,7 @@ window.m = window.m || {};
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
-					if (isNaN(String(prop)) && String(prop) !== "uri") {
+					if (isNaN(String(prop)) && String(prop) !== "uri" && String(prop) !== "desc") {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
 					}
@@ -1025,6 +1025,14 @@ window.m = window.m || {};
 	}
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
+			uri = uri.trim();
+			let conciseURI = await m.getConciseURI(uri);
+			conciseURI = String(conciseURI).trim();
+			if (uri !== conciseURI) {
+				let desc = $input_desc[0].value;
+				$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
+				uri = conciseURI;
+			}
 			let recoDef = m.recoDefs[uri];
 			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
 			let defTitles = recoDef.defTitles;

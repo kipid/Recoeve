@@ -5084,7 +5084,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						uris.push(uriI);
 						m.recoDowned(uriI, m.myRecos);
 						m.myRecos[uriI].tLast = res[i]?.tLast;
-						let desc = m.myRecos[uriI]?.desc;
+						let desc = m.myRecos[uriI]?.desc ?? "";
 						if (uriI !== String(res[i]?.originalURI)) {
 							m.myRecos[uriI].desc = (`#originalURI\n${String(res[i]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
@@ -5103,7 +5103,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					args.$result?.html(result);
 					m.recoDowned(uri, m.myRecos);
 					if (result.startsWith("recoed")) {
-						let desc = String(m.myRecos[uri].desc);
+						let desc = String(strRecoDoJSON[1]?.desc) && String(strRecoDoJSON[1]?.desc) !== "undefined" ? strRecoDoJSON[1]?.desc : "";
 						if (uri !== String(res[1]?.originalURI)) {
 							m.myRecos[uri].desc = (`#originalURI\n${String(res[1]?.originalURI)}\n\n${desc ? desc.trim() : ""}`).trim();
 						}
