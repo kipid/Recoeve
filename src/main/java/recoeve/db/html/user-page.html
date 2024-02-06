@@ -3256,6 +3256,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		}
 		m.refreshFSToRs = async function (cat) {
 			cat = cat ?? m.currentCat;
+			let fs0 = m.fsGo;
 			let fs = m.fsToRs;
 			let fsFL = fs.fullList = [];
 			let uris = m.catUriList[cat]?.uris;
@@ -3268,6 +3269,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let r = m.userRecos[uri];
 				let catsSplit = m.catsToString(r?.cats).split(";");
 				fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
+				fs0.fullList[uri].catAndI = { cat, i }
 			}
 			await m.fsToRsInRangeCheck();
 		};
@@ -3340,12 +3342,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						let { k, fullURIs } = m.indexOfUriOnCatUriListCat(m.catUriList[cat], uri);
 						if (k !== -1) {
 							m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
-							// Intentionally no change on m.catUriList[cat].uris;
-							// if (m.catUriList[cat].uris[uri]) {
-							// 	m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
-							// 	delete m.catUriList[cat].uris[uri];
-							// 	m.refreshFSToRs(cat);
-							// }
+							if (m.catUriList[cat].uris[uri]) {
+								m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
+								delete m.catUriList[cat].uris[uri];
+								m.refreshFSToRs(cat);
+							}
 						}
 						if (m.catUriList[cat]?.UriList?.trim().length === 0) {
 							let catIsDeleted = true;
