@@ -1047,6 +1047,7 @@ window.m = window.m || {};
 			if (!recoDef.heads) {
 				recoDef.heads = await m.getH1(uri);
 				recoDef.heads = await m.strToJSON(String(recoDef.heads));
+				console.log(recoDef.heads);
 			}
 			defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
 ${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
