@@ -2324,8 +2324,10 @@ web	${m.sW}	${m.sH}`;
 	}
 
 	m.recoDefs[""] = {
-		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, h1: "Empty URI."
+		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, heads: [ [ "h1" ], [ "Empty URI." ] ]
 	};
+	m.recoDefs[""].heads[0].h1 = "h1";
+	m.recoDefs[""].heads[1].h1 = "Empty URI.";
 
 	////////////////////////////////////////////////////
 	// YouTube API
