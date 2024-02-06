@@ -60,10 +60,11 @@ public class RecoeveWebClient {
 			if (response.statusCode() == 200) {
 				// If the response is a redirect, so get the followedRedirects().
 				List<String> followedURIs = response.followedRedirects();
-				String fullURI = followedURIs.get(followedURIs.size() - 1);
+				String fullURI = null;
+				if (followedURIs.size() > 0) {
+					fullURI = followedURIs.get(followedURIs.size() - 1);
+				}
 				System.out.println("The last redirected URL: " + fullURI);
-				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-						.end(fullURI, Recoeve.ENCODING);
 				String body = response.bodyAsString();
 				Document document = Jsoup.parse(body);
 
