@@ -4694,17 +4694,17 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fsFLk.deleted = true;
 								await m.reTriggerFS(fs);
 
-								fs = m.fsToRs;
-								fsFLk = fs.fullList[uri];
-								if (!fsFLk) {
-									fs.fullList[uri] = { uri, has: false, down: true };
+								let fs1 = m.fsToRs;
+								let fs1FLk = fs1.fullList[uri];
+								if (!fs1FLk) {
+									fs1FLk = fs1.fullList[uri] = { uri, has: false, down: true };
 								}
-								fsFLk.uri = uri;
-								fsFLk.has = false;
-								fsFLk.down = true;
-								fsFLk.deleted = true;
-								fsFLk.inRange = false;
-								await m.reTriggerFS(fs);
+								fs1FLk.uri = uri;
+								fs1FLk.has = false;
+								fs1FLk.down = true;
+								fs1FLk.deleted = true;
+								fs1FLk.inRange = false;
+								await m.reTriggerFS(fs1);
 
 								m.deletedRecosCount++;
 							}
