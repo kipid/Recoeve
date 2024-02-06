@@ -32,7 +32,7 @@ public class RecoeveWebClient {
 	}
 
 	public String redirected(String shortURI) {
-		AtomicReference<String> res = new AtomicReference<>();
+		final AtomicReference<String> res = new AtomicReference<>();
 		webClient.headAbs(shortURI)
 			.send()
 			.onSuccess(response -> {
