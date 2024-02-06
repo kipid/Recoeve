@@ -814,16 +814,16 @@ window.m = window.m || {};
 	m.recoDowned = async function (urisStr, recos) {
 		let uris = urisStr.trim().split("\n");
 		for (k = 0; k < uris.length; k++) {
-			let uriK = uris[k];
-			if (m.getUTF8Length(uriK) > 255) {
-				uriK = await m.getConciseURI(uriK);
+			let uri = uris[k];
+			if (m.getUTF8Length(uri) > 255) {
+				uri = await m.getConciseURI(uri);
 			}
-			uriK = String(uriK);
-			let r = recos[uriK];
-			if (!r) { r = recos[uriK] = { uri: uriK }; }
-			console.log(`recos[uriK].uri:\n\n${uriK}\n\n${recos[uriK].uri}`); // TODO: delete log.
-			console.log(`m.myRecos[uriK].uri:\n\n${uriK}\n\n${m.myRecos[uriK].uri}`); // TODO: delete log.
-			r.down = true; // User's or My reco on the uriK is downloaded.
+			uri = String(uri);
+			let r = recos[uri];
+			if (!r) { r = recos[uri] = { uri }; }
+			console.log(`recos[uri].uri:\n\n${uri}\n\n${recos[uri].uri}`); // TODO: delete log.
+			console.log(`m.myRecos[uri].uri:\n\n${uri}\n\n${m.myRecos[uri].uri}`); // TODO: delete log.
+			r.down = true; // User's or My reco on the uri is downloaded.
 		}
 	};
 	m.recoToEve = async function (resp, recos, cat, conciseURIs) {
@@ -834,11 +834,11 @@ window.m = window.m || {};
 				let uri = conciseURIs[k];
 				let toDo = String(respK.do);
 				let r = recos[uri];
-				if (!r) { r = recos[uri] = { uri: conciseURIs[k] }; }
+				if (!r) { r = recos[uri] = { uri }; }
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
-					if (isNaN(String(prop))) {
+					if (isNaN(String(prop)) && String(prop) !== "uri") {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
 					}
