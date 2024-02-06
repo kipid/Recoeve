@@ -1012,7 +1012,7 @@ window.m = window.m || {};
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
 			let recoDef = m.recoDefs[uri];
-			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false, h1: undefined }; }
+			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
 			let defTitles = recoDef.defTitles;
 			let defTitlesHTML = "";
 			if (!recoDef.heads) {
