@@ -2,10 +2,12 @@ package recoeve.http;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxException;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
+import java.net.MalformedURLException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
 public class RecoeveWebClient {
@@ -34,23 +37,28 @@ public class RecoeveWebClient {
 	public String redirected(String shortURI) {
 		final AtomicReference<String> res = new AtomicReference<>();
 		res.set(shortURI);
-		webClient.headAbs(shortURI)
-			.send()
-			.onSuccess(response -> {
-				if (response.statusCode() == 200) {
-					// If the response is a redirect, so get the followedRedirects().
-					List<String> followedURIs = response.followedRedirects();
-					if (followedURIs.size() > 0) {
-						String fullURI = followedURIs.get(followedURIs.size() - 1);
-						System.out.println("The last redirected URL: " + fullURI);
-						res.set(fullURI);
+		try {
+			webClient.headAbs(shortURI)
+				.send()
+				.onSuccess(response -> {
+					if (response.statusCode() == 200) {
+						// If the response is a redirect, so get the followedRedirects().
+						List<String> followedURIs = response.followedRedirects();
+						if (followedURIs.size() > 0) {
+							String fullURI = followedURIs.get(followedURIs.size() - 1);
+							System.out.println("The last redirected URL: " + fullURI);
+							res.set(fullURI);
+						}
 					}
-				}
-			})
-			.onFailure(throwable -> {
-				throwable.printStackTrace();
-				System.out.println("Sended shortURI.");
-			});
+				})
+				.onFailure(throwable -> {
+					throwable.printStackTrace();
+					System.out.println("Sended shortURI.");
+				});
+		}
+		catch (VertxException e) {
+			RecoeveDB.err(e);
+		}
 		return res.get();
 	}
 
