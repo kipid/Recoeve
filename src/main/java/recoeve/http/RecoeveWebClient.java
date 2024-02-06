@@ -39,9 +39,14 @@ public class RecoeveWebClient {
 				if (response.statusCode() == 200) {
 					// If the response is a redirect, so get the followedRedirects().
 					List<String> followedURIs = response.followedRedirects();
-					String fullURI = followedURIs.get(followedURIs.size() - 1);
-					System.out.println("The last redirected URL: " + fullURI);
-					res.set(fullURI);
+					if (followedURIs.size() >= 1) {
+						String fullURI = followedURIs.get(followedURIs.size() - 1);
+						System.out.println("The last redirected URL: " + fullURI);
+						res.set(fullURI);
+					}
+					else {
+						res.set(shortURI);
+					}
 				} else {
 					res.set(shortURI);
 				}
