@@ -3861,15 +3861,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$window.off("scroll.stop");
 			}
 		};
-		m.recoDowned = function (urisStr, recos) {
-			let uris = urisStr.trim().split("\n");
-			for (k = 0; k < uris.length; k++) {
-				let uri = uris[k];
-				let r = recos[uri];
-				if (!r) { r = recos[uri] = { uri }; }
-				r.down = true; // User's or My reco on the uri is downloaded.
-			}
-		};
 		m.getRecos = function (uris, recos, cat) {
 			let getRecosStr = "uri";
 			let getRecosN = 0;
