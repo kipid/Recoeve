@@ -4661,7 +4661,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									}
 								}
 								$contents_recos = $contents.find(".reco");
-								for (let k = 0; k < $contents_recos.length; k++) {
+								for (let k = $contents_recos.length - 1; k >= 0; k--) {
 									let $reco = $contents_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
