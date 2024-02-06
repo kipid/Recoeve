@@ -3303,7 +3303,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						if (m.catUriList[cat]?.has) {
 							if (uri?.constructor === String) {
 								m.catUriList[cat].UriList = m.catUriList[cat].UriList.trim() + "\n" + uri;
-								m.catUriList[cat].uris[uri] = { i: m.catUriList[cat].uris.length, uri };
+								m.catUriList[cat].uris[uri] = { uri, i: m.catUriList[cat].uris.length };
 								m.catUriList[cat].uris.push(uri);
 							}
 							else if (uri?.constructor === Array) {
@@ -3323,7 +3323,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							else if (uri?.constructor === Array) {
 								m.catUriList[cat] = { cat, down: true, has: true, UriList: uri.join("\n"), uris: [] };
 								for (let j = 0; j < uri.length; j++) {
-									m.catUriList[cat].uris[uriJ] = { i: m.catUriList[cat].uris.length, uriJ };
+									m.catUriList[cat].uris[uriJ] = { uri: uriJ, i: m.catUriList[cat].uris.length };
 									m.catUriList[cat].uris.push(uriJ);
 								}
 							}
@@ -3359,8 +3359,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							m.catUriList[cat].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
 							if (m.catUriList[cat].uris[uri]) {
 								m.catUriList[cat].uris.splice(m.catUriList[cat].uris[uri].i, 1);
-								delete m.catUriList[cat].uris[uri];
-								// await m.refreshFSToRs(cat); // TODO: delete this.
+								for (let j = m.catUriList[cat].uris[uri].i; j < m.catUriList[cat].uris.length; j++) {
+									let uriJ = m.catUriList[cat].uris[j];
+									m.catUriList[cat].uris[uriJ].i = j;
+								}
+								m.catUriList[cat].uris[uri].i = `deleted-${m.deletedRecosCount}`;
 							}
 						}
 						if (m.catUriList[cat]?.UriList?.trim().length === 0) {
@@ -5636,7 +5639,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.doFSGo = async function () {
 			let fs = m.fsGo;
-			if (fs.shuffledOnce) {
+			if (fs.shuffledOnce) { // Because shuffledOnce. But when only saved???
 				let cat = m.currentCat;
 				if (!m.catUriList[cat]?.has) {
 					await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
@@ -5645,7 +5648,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let fsFL = fs.fullList;
 				for (let k = 0; k < uris.length; k++) {
 					let uri = String(uris[k]);
-					m.catUriList[cat].uris[uri].i = k; // TODO: Because shuffledOnce. But when only saved???
+					m.catUriList[cat].uris[uri].i = k;
 					if (!fsFL[uri]) {
 						let r = m.userRecos[uri];
 						fsFL[uri] = { uri, r, i: m.fsGo.fullList.length, catsSplit: m.catsToString(r?.cats).split(";"), txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} }

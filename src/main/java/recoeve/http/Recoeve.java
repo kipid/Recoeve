@@ -235,7 +235,7 @@ public class Recoeve extends AbstractVerticle {
 									.send()
 									.onSuccess(response -> {
 										if (response.statusCode() == 200) {
-											// The response is a redirect, so get the followedRedirects().
+											// If the response is a redirect, so get the followedRedirects().
 											List<String> followedURIs = response.followedRedirects();
 											String fullURI = followedURIs.get(followedURIs.size() - 1);
 											System.out.println("Full TikTok URL: " + fullURI);
@@ -675,7 +675,7 @@ public class Recoeve extends AbstractVerticle {
 								System.out.println("uri is null.");
 							}
 							else {
-								pl.req.response().end(db.getConciseURI(uri), ENCODING);
+								pl.req.response().end(recoeveWebClient.redirected(uri), ENCODING);
 							}
 						});
 						break;
@@ -698,18 +698,18 @@ public class Recoeve extends AbstractVerticle {
 										URI uriAnalysed = new URI(uri);
 										String shortURIHost = uriAnalysed.getHost();
 										System.out.println("shortURIHost: " + shortURIHost);
-										recoeveWebClient.webClient.getAbs(uri)
-												.send(ar -> {
-													if (ar.succeeded()) {
-														recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
-													}
-													else {
-														System.err.println("Failed to retrieve the webpage: "
-																+ ar.cause().getMessage());
-														pl.req.response().end("Failed to retrieve the webpage.",
-																ENCODING);
-													}
-												});
+										recoeveWebClient.webClient.getAbs(recoeveWebClient.redirected(uri))
+											.send(ar -> {
+												if (ar.succeeded()) {
+													recoeveWebClient.doUntilH1IsFound(ar.result(), pl, 256);
+												}
+												else {
+													System.err.println("Failed to retrieve the webpage: "
+															+ ar.cause().getMessage());
+													pl.req.response().end("Failed to retrieve the webpage.",
+															ENCODING);
+												}
+											});
 									} catch (URISyntaxException e) {
 										RecoeveDB.err(e);
 									}

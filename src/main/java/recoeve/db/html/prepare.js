@@ -1005,6 +1005,17 @@ window.m = window.m || {};
 		$input_val.trigger("keyup");
 		m.getAndShowDefsAndRecoInNewReco(true);
 	};
+	m.getFullURI = function (shortURI) {
+		return new Promise(function (resolve, reject) {
+			$.ajax({
+				type: "POST", url: "/BlogStat/getFullURI", data: shortURI, dataType: "text"
+			}).fail(function (resp) {
+				reject(resp);
+			}).done(function (resp) {
+				resolve(resp);
+			});
+		});
+	};
 	m.getH1 = function (uri) {
 		return new Promise(function (resolve, reject) {
 			$.ajax({
@@ -2983,7 +2994,6 @@ web	${m.sW}	${m.sH}`;
 					type: "POST", url: "/BlogStat/getFullURI", data: shortURI, dataType: "text"
 				}).fail(function (resp) {
 					resolve(resp);
-					// throw new Error("Failed to expand TikTok URL");
 				}).done(async function (resp) {
 					let uriRendered = await uriRendering(resp, toA, inListPlay);
 					uriRendered.newURI = resp;
