@@ -33,6 +33,8 @@
 			, args: {}
 			, dailyMixPer: 5
 			, recoedFromRecoms: 0
+			, deletedRecosCount: 0
+			, $recoDeleted: []
 			, showOnlyUnrecoed: false
 		};
 	</script>
@@ -3269,7 +3271,17 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				let r = m.userRecos[uri];
 				let catsSplit = m.catsToString(r?.cats).split(";");
 				fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
-				fs0.fullList[uri].catAndI = { cat, i }
+				fs0.fullList[uri].catAndI[cat] = { cat, i };
+			}
+			for (let i = 0; i < m.$recoDeleted.length; i++) {
+				let r = m.$recoDeleted[i].r;
+				let uri = r.uri;
+				let catsSplit = m.catsToString(m.$recoDeleted[i].r?.cats).split(";");
+				fs0.fullList[uri] = { i: `deleted-${i}`, catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} };
+				for (let j = 0; j < catsSplit.length; j++) {
+					let catJ = catsSplit[j];
+					fs0.fullList[uri].catAndI[catJ] = { cat: catJ, i: `deleted-${i}` };
+				}
 			}
 			await m.fsToRsInRangeCheck();
 		};
@@ -4636,6 +4648,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								let r = m.myRecos[uri];
 								r.deleted = true;
 								r.has = false;
+								m.$recoDeleted[deletedRecosCount] = m.$recoDeleted[uri] = { r, i: deletedRecosCount };
 								m.lastURI = "";
 								$recoms_recos = $contents_recoms.find(".reco");
 								for (let k = 0; k < $recoms_recos.length; k++) {
@@ -4652,11 +4665,20 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									let $reco = $contents_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
+										$reco[0].id = `reco-deleted-${deletedRecosCount}`;
+										let catsSplit = m.catsToString(m.fsGo.fullList[uri]?.r?.cats).split(";");
+										for (let i = 0; i < catsSplit.length; i++) {
+											let catI = catsSplit[i];
+											delete m.fsGo.fullList[uri].catAndI[catI];
+										}
+										m.fsGo.fullList[uri].catAndI[cat] = { cat, i: `deleted-${deletedRecosCount}` };
 										$reco.addClass("none deleted");
 										$reco.find(".button.edit").addClass("deleted");
+										$contents_recos.prepend($reco.html());
+										$reco.remove();
 									}
 								}
-
+								m.refreshFSToRs(cat);
 								m.reNewAndReOn();
 								let fs = m.fsGo;
 								let fsFLk = fs.fullList[uri];
@@ -4680,6 +4702,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fsFLk.deleted = true;
 								fsFLk.inRange = false;
 								await m.reTriggerFS(fs);
+
+								deletedRecosCount++;
 							}
 						}
 						break;
@@ -5550,23 +5574,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 			fs.fullList[uri].selected = true;
 			let fsFLUri = fs.fullList[uri];
-			if (!fsFLUri) { // if (!fsFLUri), error!. Must be there.
-				// TODO: delete below.
-				let cat = m.currentCat;
-				let r = m.userRecos[uri];
-				if (r) {
-					fsFLUri = fs.fullList[k] = fs.fullList[uri] = { uri, r, i: k, catsSplit: m.catsToString(r?.cats).split(";"), txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title), catAndI: {} };
-					if (!m.catUriList[cat]) {
-						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-					}
-					fsFLUri.catAndI[m.currentCat] = { cat, i: m.catUriList[m.currentCat]?.uris[uri]?.i };
-				}
-				console.log("Error: There is no m.fsGo.fullList[uri].");
-				m.setTimeoutGotoLi = setTimeout(function () {
-					m.gotoLi(event);
-				}, m.wait);
-				return;
-			}
 			if (!m.initialOpen && $elem.hasClass("selected")) {
 				if ($elem.hasClass("clicked-twice")) {
 					fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // keyCode:27=ESC
@@ -5598,6 +5605,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let $recoElem = $(`#reco-${l}`);
 			if ($recoElem.length) {
 				m.showAndScrollTo($recoElem);
+			}
+			else if (isNaN(l)) {
+				let recoHTML = await recoHTML(m.$recoDeleted[uri]?.r);
+				$contents_recos.prepend(String(recoHTML));
+				$recoElem = $(`#reco-${l}`);
+				if ($recoElem.length) {
+					m.showAndScrollTo($recoElem);
+				}
 			}
 			else {
 				let i = Math.floor((m.catUriList[m.currentCat].uris.length - 1 - l) / m.maxShowReco);
