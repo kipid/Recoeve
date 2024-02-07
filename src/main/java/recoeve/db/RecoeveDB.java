@@ -216,136 +216,157 @@ public class RecoeveDB {
 			ds.setUser("eve");
 			ds.setPassword("$repakeoco#eve");
 			ds.setServerTimezone("UTC");
-			con = ds.getConnection();
-			pstmtNow = con.prepareStatement("SELECT utc_timestamp();");
-			pstmtTimeDiff = con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
-			pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
-			pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
-			pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
+			vertx.executeBlocking(future -> {
+				try {
+					con = ds.getConnection();
+					future.complete(con);
+				}
+				catch (SQLException e) {
+					err(e);
+				}
+			}
+			, res -> {
+				if (res.succeeded()) {
+					try {
+						con = (Connection) res.result();
+						pstmtNow = con.prepareStatement("SELECT utc_timestamp();");
+						pstmtTimeDiff = con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
+						pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
+						pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
+						pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
 
-			pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
-			pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
-			pstmtPutRedirect = con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
+						pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
+						pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
+						pstmtPutRedirect = con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
-			pstmtPutBlogStat1 = con.prepareStatement(
-					"INSERT INTO `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
-			pstmtGetBlogStat1 = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<?;");
-			pstmtGetBlogStat1WithHost = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
-			pstmtDelBlogStat1 = con.prepareStatement("DELETE FROM `BlogStat1` WHERE `t`<?;");
+						pstmtPutBlogStat1 = con.prepareStatement(
+								"INSERT INTO `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
+						pstmtGetBlogStat1 = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<?;");
+						pstmtGetBlogStat1WithHost = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
+						pstmtDelBlogStat1 = con.prepareStatement("DELETE FROM `BlogStat1` WHERE `t`<?;");
 
-			pstmtPutPreGoogle = con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
-			pstmtGetPreGoogle = con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
+						pstmtPutPreGoogle = con.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
+						pstmtGetPreGoogle = con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
 
-			pstmtSession = con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtCreateAuthToken = con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
-			pstmtCheckAuthToken = con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtUpdateAuthToken = con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
-			pstmtCreateUser = con.prepareStatement(
-					"INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+						pstmtSession = con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtCreateAuthToken = con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
+						pstmtCheckAuthToken = con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtUpdateAuthToken = con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
+						pstmtCreateUser = con.prepareStatement(
+								"INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-			pstmtDeleteUserCatList = con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
-			pstmtCreateEmailStat = con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
-			pstmtFindEmailStat = con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtCreateUserSession = con.prepareStatement(
-					"INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
-			pstmtCreateUserRemember = con.prepareStatement(
-					"INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-			pstmtCheckUserRemember = con.prepareStatement(
-					"SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
+						pstmtDeleteUserCatList = con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
+						pstmtCreateEmailStat = con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
+						pstmtFindEmailStat = con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtCreateUserSession = con.prepareStatement(
+								"INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
+						pstmtCreateUserRemember = con.prepareStatement(
+								"INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+						pstmtCheckUserRemember = con.prepareStatement(
+								"SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
 
-			pstmtDelUserSession1 = con.prepareStatement("DELETE FROM `UserSession1` WHERE `user_i`=?;");
-			pstmtDelUserRemember = con.prepareStatement("DELETE FROM `UserRemember` WHERE `user_i`=?;");
+						pstmtDelUserSession1 = con.prepareStatement("DELETE FROM `UserSession1` WHERE `user_i`=?;");
+						pstmtDelUserRemember = con.prepareStatement("DELETE FROM `UserRemember` WHERE `user_i`=?;");
 
-			pstmtFindUserByIndex = con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtFindUserById = con.prepareStatement("SELECT * FROM `Users` WHERE `id`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtFindUserByEmail = con.prepareStatement("SELECT * FROM `Users` WHERE `email`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtFindUserByIndex = con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtFindUserById = con.prepareStatement("SELECT * FROM `Users` WHERE `id`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtFindUserByEmail = con.prepareStatement("SELECT * FROM `Users` WHERE `email`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-			pstmtGetUserIndexToPut = con.prepareStatement("SELECT * FROM `UserClass` WHERE `class`=-1;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtUpdateUserClass = con.prepareStatement("UPDATE `UserClass` SET `count`=`count`+? WHERE `class`=?;");
-			pstmtLog = con.prepareStatement(
-					"INSERT INTO `LogInLogs` (`user_i`, `t`, `ip`, `log`, `success`, `desc`) VALUES (?, ?, ?, ?, ?, ?);");
+						pstmtGetUserIndexToPut = con.prepareStatement("SELECT * FROM `UserClass` WHERE `class`=-1;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtUpdateUserClass = con.prepareStatement("UPDATE `UserClass` SET `count`=`count`+? WHERE `class`=?;");
+						pstmtLog = con.prepareStatement(
+								"INSERT INTO `LogInLogs` (`user_i`, `t`, `ip`, `log`, `success`, `desc`) VALUES (?, ?, ?, ?, ?, ?);");
 
-			// pstmtGetWholeRecos = con.prepareStatement("SELECT * FROM `Recos1` WHERE
-			// `user_i`=?;",
-			// ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtGetReco = con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=? and `uri`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutReco = con.prepareStatement(
-					"INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+						// pstmtGetWholeRecos = con.prepareStatement("SELECT * FROM `Recos1` WHERE
+						// `user_i`=?;",
+						// ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtGetReco = con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=? and `uri`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutReco = con.prepareStatement(
+								"INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-			pstmtGetCatList = con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutCatList = con.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
-			pstmtGetUriList = con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutUriList = con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
+						pstmtGetCatList = con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutCatList = con.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
+						pstmtGetUriList = con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutUriList = con.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
-			pstmtPutRecentests = con.prepareStatement(
-					"INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
-			// pstmtCutAndPutRecentests = con.prepareStatement(
-			// "UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?),
-			// ?), `N`=? WHERE `uri`=?;");
+						pstmtPutRecentests = con.prepareStatement(
+								"INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
+						// pstmtCutAndPutRecentests = con.prepareStatement(
+						// "UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?),
+						// ?), `N`=? WHERE `uri`=?;");
 
-			pstmtPutNeighbor = con.prepareStatement(
-					"INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-			pstmtGetNeighbor = con.prepareStatement(
-					"SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtDelNeighbor = con.prepareStatement(
-					"DELETE FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;");
-			pstmtPutNeighborListFrom = con.prepareStatement(
-					"INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
-			pstmtUpdateNeighborListFrom0 = con.prepareStatement(
-					"UPDATE `NeighborListFrom` SET `userCatList`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
-			pstmtUpdateNeighborListFrom = con.prepareStatement(
-					"UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
-			pstmtGetNeighborListFrom = con.prepareStatement(
-					"SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutNeighborListTo = con.prepareStatement(
-					"INSERT INTO `NeighborListTo` (`user_to`, `cat_to`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
-			pstmtUpdateNeighborListTo = con.prepareStatement(
-					"UPDATE `NeighborListTo` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_to`=? and `cat_to`=?;");
-			pstmtGetNeighborListTo = con.prepareStatement(
-					"SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			pstmtDelNeighborListTo = con.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
+						pstmtPutNeighbor = con.prepareStatement(
+								"INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+						pstmtGetNeighbor = con.prepareStatement(
+								"SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtDelNeighbor = con.prepareStatement(
+								"DELETE FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;");
+						pstmtPutNeighborListFrom = con.prepareStatement(
+								"INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+						pstmtUpdateNeighborListFrom0 = con.prepareStatement(
+								"UPDATE `NeighborListFrom` SET `userCatList`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
+						pstmtUpdateNeighborListFrom = con.prepareStatement(
+								"UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
+						pstmtGetNeighborListFrom = con.prepareStatement(
+								"SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutNeighborListTo = con.prepareStatement(
+								"INSERT INTO `NeighborListTo` (`user_to`, `cat_to`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+						pstmtUpdateNeighborListTo = con.prepareStatement(
+								"UPDATE `NeighborListTo` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_to`=? and `cat_to`=?;");
+						pstmtGetNeighborListTo = con.prepareStatement(
+								"SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
+						pstmtDelNeighborListTo = con.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
 
-			// pstmtPutRecoStat = con.prepareStatement(
-			// "INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?,
-			// ?, 1);");
-			pstmtGetRecoStat = con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						// pstmtPutRecoStat = con.prepareStatement(
+						// "INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?,
+						// ?, 1);");
+						pstmtGetRecoStat = con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-			pstmtPutRecoStatDefCat = con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
-			pstmtGetRecoStatDefCat = con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefTitle = con.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
-			pstmtGetRecoStatDefTitle = con.prepareStatement(
-					"SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefDesc = con.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
-			pstmtGetRecoStatDefDesc = con.prepareStatement(
-					"SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefCat = con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
+						pstmtGetRecoStatDefCat = con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefTitle = con.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
+						pstmtGetRecoStatDefTitle = con.prepareStatement(
+								"SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefDesc = con.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
+						pstmtGetRecoStatDefDesc = con.prepareStatement(
+								"SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
 
-			pstmtPutRecoStatDefCatSet = con.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
-			pstmtGetRecoStatDefCatSet = con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefTitleSet = con.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
-			pstmtGetRecoStatDefTitleSet = con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			pstmtPutRecoStatDefDescSet = con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
-			pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefCatSet = con.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
+						pstmtGetRecoStatDefCatSet = con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefTitleSet = con.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
+						pstmtGetRecoStatDefTitleSet = con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						pstmtPutRecoStatDefDescSet = con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
+						pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
+								ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+					}
+					catch (SQLException e) {
+						err(e);
+					}
+				}
+				else {
+					System.err.println("MySQL connection error!");
+				}
+			});
 		}
 		catch (SQLException e) {
 			err(e);
