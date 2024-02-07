@@ -141,7 +141,7 @@
 					console.log("BlogStat is logged. ", resp)
 				});
 			}
-		}, 4 * m.wait);
+		}, 8 * m.wait);
 
 		$title.html($title.html() + ` at ${window.location.host}`);
 

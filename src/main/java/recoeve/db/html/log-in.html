@@ -776,14 +776,16 @@ ${userId}	${userEmail}	${res[2]}	${res[3]}	${userPwd}	${userPwdCfm}`;
 		});
 
 		$(document).ready(function () {
-			let blogStat = `URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\tlog-in guest`;
-			$.ajax({
-				type: "POST", url: "https://recoeve.net/BlogStat", data: blogStat, dataType: "text"
-			}).fail(function (resp) {
-				console.log("BlogStat: ", resp);
-			}).done(function (resp) {
-				console.log("BlogStat: ", resp);
-			});
+			setTimeout(function () {
+				let blogStat = `URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\tlog-in guest`;
+				$.ajax({
+					type: "POST", url: "https://recoeve.net/BlogStat", data: blogStat, dataType: "text"
+				}).fail(function (resp) {
+					console.log("BlogStat: ", resp);
+				}).done(function (resp) {
+					console.log("BlogStat: ", resp);
+				});
+			}, 8 * m.wait)
 		});
 
 		m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
