@@ -687,7 +687,7 @@ window.m = window.m || {};
 	m.a_log_in = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
-		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args);
 		let href = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 		$a_log_in.attr("href", href);
 		if (e?.which === 2) {
@@ -720,7 +720,7 @@ window.m = window.m || {};
 	m.a_log_out = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
-		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args);
 		let href_log_out = `/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 		$a_log_out.attr("href", href_log_out);
 		if (e?.which === 2) {
@@ -756,7 +756,7 @@ window.m = window.m || {};
 	m.a_log_out_from_all = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
-		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let fullPath = m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args);
 		let href_log_out_from_all = `/account/log-out-from-all?goto=${encodeURIComponent(fullPath)}`;
 		$a_log_out_from_all.attr("href", href_log_out_from_all);
 		if (e?.which === 2) {
@@ -773,7 +773,7 @@ window.m = window.m || {};
 	m.a_to_my_page = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
-		let fullPath = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
+		let fullPath = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, null, m.hashURI, m.args);
 		$a_to_my_page.attr("href", fullPath);
 		if (e?.which === 2) {
 			window.open(fullPath, "_blank");
@@ -2030,7 +2030,7 @@ web	${m.sW}	${m.sH}`;
 			}
 			if ($table_of_recos_container.is(":visible")) {
 				m.args.ToR = $table_of_recos[0].value;
-				window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI, m.args));
+				window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 			}
 			fs.shuffledOnce = false;
 			resolve();
