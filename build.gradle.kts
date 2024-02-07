@@ -59,6 +59,7 @@ dependencies {
 	implementation("io.vertx:vertx-auth-jdbc")
 	testImplementation("io.vertx:vertx-junit5")
 	testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+	implementation("org.seleniumhq.selenium:selenium-java:4.17.0") // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
 }
 
 java {

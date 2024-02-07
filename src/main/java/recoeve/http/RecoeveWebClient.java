@@ -8,6 +8,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
 import javax.xml.xpath.XPath;
@@ -18,6 +19,13 @@ import javax.xml.xpath.XPathFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.w3c.dom.Element;
 
 import recoeve.db.RecoeveDB;
@@ -32,12 +40,14 @@ public class RecoeveWebClient {
 	public long timerId;
 	public int timerN;
 	public XPath xpath;
+	public WebDriver driver;
 
 	public RecoeveWebClient(Vertx vertx) {
 		this.vertx = vertx;
 		webClient = WebClient.create(vertx, options);
 		timerN = 0;
 		xpath = XPathFactory.newInstance().newXPath();
+		driver = new ChromeDriver();
 	}
 
 	public String redirected(String shortURI) {
@@ -104,6 +114,11 @@ public class RecoeveWebClient {
 					contents += "\t" + h2Elements.first().text();
 				}
 				try {
+					Wait<WebDriver> wait = new FluentWait<>(driver)
+						.withTimeout(Duration.ofSeconds(10)) // 최대 10초 동안 기다림
+						.pollingEvery(Duration.ofMillis(500)) // 0.5초마다 조건 확인
+						.ignoring(NoSuchElementException.class); // NoSuchElementException 무시
+					WebElement element = wait.until(d -> d.findElement(By.id("main-content-video_detail"))); // id가 some-id인 엘리먼트가 존재하면 반환
 					Element tiktokElement0 = (Element) xpath.evaluate("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1", document, XPathConstants.NODE);
 					if (tiktokElement0.getChildNodes().getLength() != 0) {
 						heads += "\ttiktok0";
