@@ -112,7 +112,7 @@ window.m = window.m || {};
 				argsSearch += `&${prop}=${encodeURIComponent(args[prop])}`;
 			}
 		}
-		return `${m.userPath}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${lang ? `&lang=${lang}` : ""}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
+		return `${m.userPath}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
 	};
 	m.pathOfNeighbor = function (user_id, cat, mode, lang, hashURI, args) {
 		let argsSearch = "";
@@ -121,7 +121,7 @@ window.m = window.m || {};
 				argsSearch += `&${prop}=${args[prop]}`;
 			}
 		}
-		return `/user/${user_id}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${lang ? `&lang=${lang}` : ""}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
+		return `/user/${user_id}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
 	};
 	m.pathOfRecoStat = function (uri, lang, hash, args) {
 		let argsSearch = "";
@@ -130,7 +130,7 @@ window.m = window.m || {};
 				argsSearch += `&${prop}=${encodeURIComponent(args[prop])}`;
 			}
 		}
-		return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${lang ? `&lang=${lang}` : ""}${hash ? `#${encodeURIComponent(hash)}` : ""}`
+		return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${hash ? `#${encodeURIComponent(hash)}` : ""}`
 	}
 
 	/*	:: cookies.js :: Slightly edited by kipid at 2023-10-25.
