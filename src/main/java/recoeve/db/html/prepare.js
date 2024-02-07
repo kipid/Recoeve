@@ -73,9 +73,9 @@ window.m = window.m || {};
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
-	m.ptnURL = /^https?:\/\/\S+/i;
-	m.ptnFILE = /^file:\/\/\/\S+/i;
-	m.ptnTag = /^<\w+[\s\S]+>/i;
+	m.ptnURL = /https?:\/\/\S+/i;
+	m.ptnFILE = /file:\/\/\/\S+/i;
+	m.ptnTag = /<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
 	window.awaitAll = async function (promises) {
@@ -3366,6 +3366,25 @@ web	${m.sW}	${m.sH}`;
 			return resolve({ html: "" });
 		});
 	};
+	window.relatedRendering = function (str) {
+		return new Promise(async function (resolve, reject) {
+			if (!str || str.constructor !== String) {
+				reject("");
+			}
+			ptnURL = /https?:\/\/\S+/ig;
+			let exec = ptnURL.exec(str);
+			let start = 0;
+			let res = "";
+			while (exec !== null) {
+				res += str.substring(start, exec.index);
+				res += String((await uriRendering(m.formatURI(exec[0]), true, false)).html);
+				start = ptnURL.lastIndex;
+				exec = ptnURL.exec(str);
+			}
+			res += str.substring(start);
+			resolve(res);
+		}
+	}
 
 	////////////////////////////////////////////////////
 	// slide element.
@@ -3536,8 +3555,7 @@ web	${m.sW}	${m.sH}`;
 						let relateds = val.trim().split("\n");
 						for (let p = 0; p < relateds.length; p++) {
 							res += '<br>';
-							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
-							res += String(uriRendered.html);
+							res += String(await relatedRendering(relateds[p]));
 						}
 						res += `</div>`;
 						break;
@@ -3624,8 +3642,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 						let relateds = val.trim().split("\n");
 						for (let p = 0; p < relateds.length; p++) {
 							res += '<br>';
-							let uriRendered = await uriRendering(m.formatURI(relateds[p]), true, false);
-							res += String(uriRendered.html);
+							res += String(await relatedRendering(relateds[p]));
 						}
 						res += `</div>`;
 						break;
