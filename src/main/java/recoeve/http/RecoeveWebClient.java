@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
+// import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.jsoup.Jsoup;
@@ -113,21 +113,6 @@ public class RecoeveWebClient {
 					heads += "\th2";
 					contents += "\t" + h2Elements.first().text();
 				}
-				try {
-					Wait<WebDriver> wait = new FluentWait<>(driver)
-						.withTimeout(Duration.ofSeconds(10)) // 최대 10초 동안 기다림
-						.pollingEvery(Duration.ofMillis(500)) // 0.5초마다 조건 확인
-						.ignoring(NoSuchElementException.class); // NoSuchElementException 무시
-					WebElement element = wait.until(d -> d.findElement(By.id("main-content-video_detail"))); // id가 some-id인 엘리먼트가 존재하면 반환
-					Element tiktokElement0 = (Element) xpath.evaluate("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1", document, XPathConstants.NODE);
-					if (tiktokElement0.getChildNodes().getLength() != 0) {
-						heads += "\ttiktok0";
-						contents += "\t" + tiktokElement0.getTextContent();
-					}
-				}
-				catch (XPathExpressionException e) {
-					RecoeveDB.err(e);
-				}
 				if (!tiktokElements.isEmpty()) {
 					heads += "\ttiktok";
 					contents += "\t" + tiktokElements.first().text();
@@ -136,6 +121,16 @@ public class RecoeveWebClient {
 					heads += "\tnaver";
 					contents += "\t" + naverElements.first().text();
 				}
+
+				driver.get(fullURI);
+				Wait<WebDriver> wait = new FluentWait<>(driver)
+					.withTimeout(Duration.ofSeconds(10)) // 최대 10초 동안 기다림
+					.pollingEvery(Duration.ofMillis(500)) // 0.5초마다 조건 확인
+					.ignoring(NoSuchElementException.class); // NoSuchElementException 무시
+				WebElement tiktokElement0 = wait.until(d -> d.findElement(By.xpath("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1"))); // id가 some-id인 엘리먼트가 존재하면 반환
+				heads += "\ttiktok0";
+				contents += "\t" + tiktokElement0.getText();
+				driver.close();
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 					.end(heads + "\n" + contents, Recoeve.ENCODING);
 				// webClient.close();
