@@ -3327,6 +3327,7 @@ web	${m.sW}	${m.sH}`;
 							k++;
 						}
 						if (uri.substring(k, k + 3) === "://") {
+							console.log(uri); // TODO: delete this.
 							let uriAnalysed = new URL(uri);
 							k += 3;
 							let uriHost = uriAnalysed.host;
