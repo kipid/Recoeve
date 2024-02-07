@@ -3834,8 +3834,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 						let r = fsFLi?.r;
 						if (r) {
-							let recoHTML = await m.recoHTML(r, false, fsFLi.inRange);
-							strHTML += String(recoHTML);
+							try {
+								let recoHTML = await m.recoHTML(r, false, fsFLi.inRange);
+								strHTML += String(recoHTML);
+							}
+							catch (err) {}
 						}
 					}
 					let beforeLoadSH = document.documentElement.scrollHeight;
