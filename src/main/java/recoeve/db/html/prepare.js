@@ -2565,7 +2565,6 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.hide();
 				$rC_youtube_container.show();
 				fs.$playing = $rC_youtube_container;
-				// console.log(`fs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`); // TODO: delete this.
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					if (m.YtPlayer) {
 						let config = {
@@ -3327,7 +3326,6 @@ web	${m.sW}	${m.sH}`;
 							k++;
 						}
 						if (uri.substring(k, k + 3) === "://") {
-							console.log(uri); // TODO: delete this.
 							let uriAnalysed = new URL(uri);
 							k += 3;
 							let uriHost = uriAnalysed.host;
