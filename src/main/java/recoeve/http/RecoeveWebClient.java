@@ -80,26 +80,24 @@ public class RecoeveWebClient {
 	public void findTitles(String uri, String host, PrintLog pl) {
 		System.out.println("findTitles :: uri : " + uri);
 		System.out.println("findTitles :: host : " + host);
-		uri = "https://www.tiktok.com/@le_sserafim/video/7315619523153988870";
-		host = "www.tiktok.com";
-		if (host == "www.tiktok.com") {
-			driver = new ChromeDriver();
-			String heads = "";
-			String contents = "";
-			driver.get(uri);
-			Wait<WebDriver> wait = new FluentWait<>(driver)
-				.withTimeout(Duration.ofMillis(8096))
-				.pollingEvery(Duration.ofMillis(512))
-				.ignoring(NoSuchElementException.class);
-			WebElement tiktokElement0 = wait.until(d -> d.findElement(By.xpath("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1")));
-			heads += "tiktok0";
-			contents += "" + tiktokElement0.getText();
-			driver.quit();
-			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-				.end(heads + "\n" + contents, Recoeve.ENCODING);
-			return;
-		}
-		else {
+		// if (host == "www.tiktok.com") {
+		// 	driver = new ChromeDriver();
+		// 	String heads = "";
+		// 	String contents = "";
+		// 	driver.get(uri);
+		// 	Wait<WebDriver> wait = new FluentWait<>(driver)
+		// 		.withTimeout(Duration.ofMillis(8096))
+		// 		.pollingEvery(Duration.ofMillis(512))
+		// 		.ignoring(NoSuchElementException.class);
+		// 	WebElement tiktokElement0 = wait.until(d -> d.findElement(By.xpath("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1")));
+		// 	heads += "tiktok0";
+		// 	contents += "" + tiktokElement0.getText();
+		// 	driver.quit();
+		// 	pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+		// 		.end(heads + "\n" + contents, Recoeve.ENCODING);
+		// 	return;
+		// }
+		// else {
 			webClient.getAbs(uri).send(ar -> {
 				if (ar.succeeded()) {
 					HttpResponse<Buffer> response = ar.result();
@@ -160,7 +158,7 @@ public class RecoeveWebClient {
 							Recoeve.ENCODING);
 				}
 			});
-		}
+		// }
 		// webClient.close();
 	}
 
