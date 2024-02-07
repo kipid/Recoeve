@@ -2379,47 +2379,50 @@ web	${m.sW}	${m.sH}`;
 			clearTimeout(m.setTimeoutPlayNextYT);
 			clearTimeout(m.setTimeoutPlayNext);
 			clearTimeout(m.setTimeoutCueOrLoadUri);
-			let fs = m.fsToRs;
-			let i = fs.currentIndex;
-			fs.$fsLis = fs.$fsl.find(".list-item");
-			fs.$fsLis.removeClass("selected");
-			if (i?.constructor === String && i.startsWith("from-recoms-")) {
-				$(`#toR-${i}`).addClass("selected");
-				let iToNumber = Number(i.substring(12));
-				let uri = m.recoms[m.currentCat][iToNumber].uri;
-				let recoHTML = await m.recomHTML(m.userRecos[uri], inListPlay);
-				$reco_playing.html(String(recoHTML));
-				let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
-				m.recoURIPlaying = uri;
-				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					clearTimeout(m.setTimeoutCueOrLoadUri);
-					m.setTimeoutCueOrLoadUri = setTimeout(function () {
-						m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					}, m.wait / 2);
+			try {
+				let fs = m.fsToRs;
+				let i = fs.currentIndex;
+				fs.$fsLis = fs.$fsl.find(".list-item");
+				fs.$fsLis.removeClass("selected");
+				if (i?.constructor === String && i.startsWith("from-recoms-")) {
+					$(`#toR-${i}`).addClass("selected");
+					let iToNumber = Number(i.substring(12));
+					let uri = m.recoms[m.currentCat][iToNumber].uri;
+					let recoHTML = await m.recomHTML(m.userRecos[uri], inListPlay);
+					$reco_playing.html(String(recoHTML));
+					let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
+					m.recoURIPlaying = uri;
+					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+						clearTimeout(m.setTimeoutCueOrLoadUri);
+						m.setTimeoutCueOrLoadUri = setTimeout(function () {
+							m.cueOrLoadUri(cue, uriRendered, inListPlay);
+						}, m.wait / 2);
+					}
 				}
-			}
-			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
-				$(`#toR-${i}`).addClass("selected");
-				let r = fs.fullList[i].r;
-				let recoHTML = await m.recoHTML(r, inListPlay, true, false);
-				$reco_playing.html(String(recoHTML));
-				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
-				m.recoURIPlaying = r?.uri;
-				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					clearTimeout(m.setTimeoutCueOrLoadUri);
-					m.setTimeoutCueOrLoadUri = setTimeout(function () {
-						m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					}, m.wait / 2);
+				else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
+					$(`#toR-${i}`).addClass("selected");
+					let r = fs.fullList[i].r;
+					let recoHTML = await m.recoHTML(r, inListPlay, true, false);
+					$reco_playing.html(String(recoHTML));
+					let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+					m.recoURIPlaying = r?.uri;
+					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+						clearTimeout(m.setTimeoutCueOrLoadUri);
+						m.setTimeoutCueOrLoadUri = setTimeout(function () {
+							m.cueOrLoadUri(cue, uriRendered, inListPlay);
+						}, m.wait / 2);
+					}
 				}
+				else {
+					$reco_playing.html('');
+					$eveElse.html('');
+					$youtube.html('');
+					$eveElse_container.hide();
+					$rC_youtube_container.hide();
+				}
+				m.reNewAndReOn();
 			}
-			else {
-				$reco_playing.html('');
-				$eveElse.html('');
-				$youtube.html('');
-				$eveElse_container.hide();
-				$rC_youtube_container.hide();
-			}
-			m.reNewAndReOn();
+			catch (err) {}
 			resolve();
 		});
 	};
