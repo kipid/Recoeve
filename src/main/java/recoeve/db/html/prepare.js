@@ -3372,7 +3372,7 @@ web	${m.sW}	${m.sH}`;
 			if (!str || str.constructor !== String) {
 				reject("");
 			}
-			ptnURL = /https?:\/\/\S+/ig;
+			ptnURL = /https?:\/\/[^\s\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";
