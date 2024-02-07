@@ -723,6 +723,7 @@
 </head>
 
 <body>
+	<h1 id="h1" class="none"></h1>
 	<data id="data-myCatList">{--myCatList--}</data>
 	<data id="data-catList">{--catList--}</data>
 	<div class="block-touch" id="block-touch" style="display:-webkit-flex; display:flex"></div>
@@ -1688,6 +1689,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		//////////////////
 		// Variables
 		//////////////////
+		$h1 = $("#h1");
 		$block_touch = $("#block-touch");
 		$block_touch_exit = $("#block-touch-exit");
 		$block_touch_exit.trigger("click");
@@ -4744,6 +4746,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.openCat = async function (cat) {
 			m.currentCat = cat = cat ?? "";
 			$('link[rel="canonical"]').attr("href", `https://recoeve.net${m.pathOfCat(cat)}`);
+			$h1.html(`${cat ? `${m.escapeOnlyTag(cat)} of` : "[--Uncategorized--] of"} ${m.userId}'s recoeve.net`);
 			$title.html(`${cat ? `${m.escapeOnlyTag(cat)} of` : "[--Uncategorized--] of"} ${m.userId}'s recoeve.net`);
 			if (!m.catUriList[cat]?.has) {
 				await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
