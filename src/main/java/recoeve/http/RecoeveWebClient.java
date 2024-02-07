@@ -35,19 +35,18 @@ public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions().setMaxHeaderSize(16384)
 			.setFollowRedirects(true);
 
-	public Vertx vertx;
+	// public Vertx vertx;
 	public WebClient webClient;
-	public long timerId;
-	public int timerN;
+	// public long timerId;
+	// public int timerN;
 	public XPath xpath;
 	public WebDriver driver;
 
 	public RecoeveWebClient(Vertx vertx) {
-		this.vertx = vertx;
+		// this.vertx = vertx;
 		webClient = WebClient.create(vertx, options);
-		timerN = 0;
+		// timerN = 0;
 		xpath = XPathFactory.newInstance().newXPath();
-		driver = new ChromeDriver();
 	}
 
 	public String redirected(String shortURI) {
@@ -78,64 +77,91 @@ public class RecoeveWebClient {
 		return res.get();
 	}
 
-	public void findTitles(HttpResponse<Buffer> response, PrintLog pl, int delay) {
-		timerId = vertx.setTimer(delay, timerHandler -> {
-			timerN++;
-			if (response.statusCode() == 200) {
-				// If the response is a redirect, so get the followedRedirects().
-				List<String> followedURIs = response.followedRedirects();
-				String fullURI = null;
-				if (followedURIs.size() > 0) {
-					fullURI = followedURIs.get(followedURIs.size() - 1);
-				}
-				System.out.println("The last redirected URL: " + fullURI);
-				String body = response.bodyAsString();
-				Document document = Jsoup.parse(body);
+	public void findTitles(String uri, String host, PrintLog pl) {
+		System.out.println("findTitles :: uri : " + uri);
+		System.out.println("findTitles :: host : " + host);
+		uri = "https://www.tiktok.com/@le_sserafim/video/7315619523153988870";
+		host = "www.tiktok.com";
+		if (host == "www.tiktok.com") {
+			driver = new ChromeDriver();
+			String heads = "";
+			String contents = "";
+			driver.get(uri);
+			Wait<WebDriver> wait = new FluentWait<>(driver)
+				.withTimeout(Duration.ofMillis(8096))
+				.pollingEvery(Duration.ofMillis(512))
+				.ignoring(NoSuchElementException.class);
+			WebElement tiktokElement0 = wait.until(d -> d.findElement(By.xpath("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1")));
+			heads += "tiktok0";
+			contents += "" + tiktokElement0.getText();
+			driver.quit();
+			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+				.end(heads + "\n" + contents, Recoeve.ENCODING);
+			return;
+		}
+		else {
+			webClient.getAbs(uri).send(ar -> {
+				if (ar.succeeded()) {
+					HttpResponse<Buffer> response = ar.result();
+					if (response.statusCode() == 200) {
+						// If the response is a redirect, so get the followedRedirects().
+						List<String> followedURIs = response.followedRedirects();
+						String fullURI = null;
+						if (followedURIs.size() > 0) {
+							fullURI = followedURIs.get(followedURIs.size() - 1);
+						}
+						System.out.println("The last redirected URL: " + fullURI);
+						String body = response.bodyAsString();
+						Document document = Jsoup.parse(body);
 
-				// Select the first <h1> element and extract its text content
-				Elements titleElements = document.select("title");
-				Elements h1Elements = document.select("h1");
-				Elements h2Elements = document.select("h2");
-				Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
-				Elements naverElements = document.select(".se-fs-");
+						// Select the first <h1> element and extract its text content
+						Elements titleElements = document.select("title");
+						Elements h1Elements = document.select("h1");
+						Elements h2Elements = document.select("h2");
+						Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
+						Elements naverElements = document.select(".se-fs-");
 
-				String heads = "";
-				String contents = "";
-				if (!titleElements.isEmpty()) {
-					heads += "title";
-					contents += titleElements.first().text();
+						String heads = "";
+						String contents = "";
+						if (!titleElements.isEmpty()) {
+							heads += "title";
+							contents += titleElements.first().text();
+						}
+						if (!h1Elements.isEmpty()) {
+							heads += "\th1";
+							contents += "\t" + h1Elements.first().text();
+						}
+						if (!h2Elements.isEmpty()) {
+							heads += "\th2";
+							contents += "\t" + h2Elements.first().text();
+						}
+						if (!tiktokElements.isEmpty()) {
+							heads += "\ttiktok";
+							contents += "\t" + tiktokElements.first().text();
+						}
+						if (!naverElements.isEmpty()) {
+							heads += "\tnaver";
+							contents += "\t" + naverElements.first().text();
+						}
+						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+							.end(heads + "\n" + contents, Recoeve.ENCODING);
+					}
+					else {
+						System.out.println("Failed to retrieve the webpage: "
+								+ ar.cause().getMessage());
+						pl.req.response().end("Failed to retrieve the webpage.",
+								Recoeve.ENCODING);
+					}
 				}
-				if (!h1Elements.isEmpty()) {
-					heads += "\th1";
-					contents += "\t" + h1Elements.first().text();
+				else {
+					System.out.println("Failed to retrieve the webpage: "
+							+ ar.cause().getMessage());
+					pl.req.response().end("Failed to retrieve the webpage.",
+							Recoeve.ENCODING);
 				}
-				if (!h2Elements.isEmpty()) {
-					heads += "\th2";
-					contents += "\t" + h2Elements.first().text();
-				}
-				if (!tiktokElements.isEmpty()) {
-					heads += "\ttiktok";
-					contents += "\t" + tiktokElements.first().text();
-				}
-				if (!naverElements.isEmpty()) {
-					heads += "\tnaver";
-					contents += "\t" + naverElements.first().text();
-				}
-
-				driver.get(fullURI);
-				Wait<WebDriver> wait = new FluentWait<>(driver)
-					.withTimeout(Duration.ofSeconds(10)) // 최대 10초 동안 기다림
-					.pollingEvery(Duration.ofMillis(500)) // 0.5초마다 조건 확인
-					.ignoring(NoSuchElementException.class); // NoSuchElementException 무시
-				WebElement tiktokElement0 = wait.until(d -> d.findElement(By.xpath("//*[@id=\"main-content-video_detail\"]/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/h1"))); // id가 some-id인 엘리먼트가 존재하면 반환
-				heads += "\ttiktok0";
-				contents += "\t" + tiktokElement0.getText();
-				driver.close();
-				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-					.end(heads + "\n" + contents, Recoeve.ENCODING);
-				// webClient.close();
-			}
-		});
+			});
+		}
+		// webClient.close();
 	}
 
 	public static void main(String... args) {

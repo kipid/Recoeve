@@ -695,21 +695,10 @@ public class Recoeve extends AbstractVerticle {
 								if (uri.startsWith("://", k)) {
 									k += 3;
 									try {
-										URI uriAnalysed = new URI(uri);
-										String shortURIHost = uriAnalysed.getHost();
-										System.out.println("shortURIHost: " + shortURIHost);
-										recoeveWebClient.webClient.getAbs(recoeveWebClient.redirected(uri))
-											.send(ar -> {
-												if (ar.succeeded()) {
-													recoeveWebClient.findTitles(ar.result(), pl, 256);
-												}
-												else {
-													System.err.println("Failed to retrieve the webpage: "
-															+ ar.cause().getMessage());
-													pl.req.response().end("Failed to retrieve the webpage.",
-															ENCODING);
-												}
-											});
+										URI uriAnalysed = new URI(recoeveWebClient.redirected(uri));
+										String uriHost = uriAnalysed.getHost();
+										System.out.println("uriHost: " + uriHost);
+										recoeveWebClient.findTitles(uriAnalysed.toString(), uriHost, pl);
 									} catch (URISyntaxException e) {
 										RecoeveDB.err(e);
 									}
