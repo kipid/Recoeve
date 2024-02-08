@@ -5637,9 +5637,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					console.log(`m.showAndScrollTo($(\`#reco-${l}\`));`);
 				}
 				else {
-					m.setTimeoutGotoLi = setTimeout(function () {
-						m.gotoLi(event);
-					}, m.wait);
+					if (!m.setTimeoutGotoLiCount || m.setTimeoutGotoLiCount >= 3) {
+						m.setTimeoutGotoLiCount = 0;
+					}
+					m.setTimeoutGotoLiCount++;
+					if (m.setTimeoutGotoLiCount < 3) {
+						m.setTimeoutGotoLi = setTimeout(function () {
+							m.gotoLi(event);
+						}, m.wait);
+					}
 				}
 			}
 		};
