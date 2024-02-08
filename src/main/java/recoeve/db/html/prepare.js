@@ -2574,7 +2574,6 @@ web	${m.sW}	${m.sH}`;
 							videoId: uriRendered.videoId
 							, ...uriRendered.config
 						};
-						console.log("config: ", config);
 						if (cue && m.YtPlayer.cueVideoById) {
 							m.YtPlayer.cueVideoById(config);
 							m.lastRecoURIPlaying = m.recoURIPlaying;
@@ -2647,7 +2646,6 @@ web	${m.sW}	${m.sH}`;
 				let config = uriRendered.config;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					let config = uriRendered.config;
-					console.log("config: ", config);
 					$eveElse.replaceWith(m.rC(`<video id="video" controls preload="metadata" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
