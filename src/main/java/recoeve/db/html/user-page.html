@@ -4555,7 +4555,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fsGoFLUri.catAndI = {};
 							}
 							if (!m.catUriList[cat]?.has) {
-								await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+								try {
+									await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
+								}
+								catch (err) {}
 							}
 							if (!m.catUriList[cat].uris[uri]) {
 								m.catUriList[cat].uris[uri] = { uri, i: m.catUriList[cat].uris.length };
@@ -4573,35 +4576,51 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								let $reco = $recoms_recos.eq(k);
 								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 								if (recoURI === uri) {
-									let recoHTML = await m.recoHTML(r, false, true, true);
-									$reco.replaceWith(String(recoHTML));
+									try {
+										let recoHTML = await m.recoHTML(r, false, true, true);
+										$reco.replaceWith(String(recoHTML));
+									}
+									catch (err) {}
 								}
 							}
 							{
 								let $reco = $reco_playing.find(".reco");
 								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 								if (recoURI === uri) {
-									let recoHTML = await m.recoHTML(r, true, true, false);
-									$reco_playing.html(String(recoHTML));
+									try {
+										let recoHTML = await m.recoHTML(r, true, true, false);
+										$reco_playing.html(String(recoHTML));
+									}
+									catch (err) {}
 								}
 							}
-							let recoHTML = await m.recoHTML(r, false, true)
-							$contents.prepend(String(recoHTML));
+							try {
+								let recoHTML = await m.recoHTML(r, false, true)
+								$contents.prepend(String(recoHTML));
+							}
+							catch (err) {}
 							m.reNewAndReOn();
+
 							m.fsToRs.shuffledOnce = true;
 							m.fsGo.shuffledOnce = true;
-							await m.reTriggerFS(m.fsToRs);
-							await m.reTriggerFS(m.fsGo);
+							try {
+								await m.reTriggerFS(m.fsToRs);
+								await m.reTriggerFS(m.fsGo);
+							}
+							catch (err) {}
 						}
 						break;
 					}
 					case "changed": case "deleted": {
 						if (m.myPage && uri === m.unescapeHTML($reco_playing.find(".reco>.textURI").html())) {
 							if (option === "changed") {
-								let r = m.myRecos[uri];
-								let recoHTML = await m.recoHTML(r, true, true);
-								$reco_playing.html(String(recoHTML));
-								m.reNewAndReOn();
+								try {
+									let r = m.myRecos[uri];
+									let recoHTML = await m.recoHTML(r, true, true);
+									$reco_playing.html(String(recoHTML));
+									m.reNewAndReOn();
+								}
+								catch (err) {}
 							}
 							else if (option === "deleted") {
 								m.fsToRs.pauseVideo();
@@ -4619,8 +4638,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									let $reco = $recoms_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
-										let recoHTML = await m.recoHTML(r, false, true, true);
-										$reco.replaceWith(String(recoHTML));
+										try {
+											let recoHTML = await m.recoHTML(r, false, true, true);
+											$reco.replaceWith(String(recoHTML));
+										}
+										catch (err) {}
 									}
 								}
 								let $contents_recos = $contents.find(".reco");
@@ -4628,8 +4650,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									let $reco = $contents_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
-										let recoHTML = await m.recoHTML(r, false, true);
-										$reco.replaceWith(String(recoHTML));
+										try {
+											let recoHTML = await m.recoHTML(r, false, true);
+											$reco.replaceWith(String(recoHTML));
+										}
+										catch (err) {}
 									}
 								}
 
@@ -4641,7 +4666,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								}
 								fsFLk.txt = m.splitHangul(`${r?.cats} :: ${r?.title}`);
 								fsFLk.html = m.escapeOnlyTag(r?.title);
-								await m.reTriggerFS(fs);
 
 								let fs1 = m.fsToRs;
 								let fs1FLk = fs1.fullList[uri];
@@ -4651,23 +4675,33 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fs1FLk.txt = m.splitHangul(r?.title);
 								fs1FLk.html = m.escapeOnlyTag(r?.title);
 								fs1FLk.inRange = true;
-								await m.reTriggerFS(fs1);
+								try {
+									await m.reTriggerFS(fs);
+									await m.reTriggerFS(fs1);
+								}
+								catch (err) {}
 							}
 							else if (option === "deleted") {
 								let r = m.myRecos[uri];
 								r.deleted = true;
 								r.has = false;
 								m.$recoDeleted[m.deletedRecosCount] = m.$recoDeleted[uri] = { r, i: m.deletedRecosCount };
-								await m.refreshFSToRs(cat);
+								try {
+									await m.refreshFSToRs(cat);
+								}
+								catch (err) {}
 								// m.lastURI = ""; // TODO: delete this.
 								$recoms_recos = $contents_recoms.find(".reco");
 								for (let k = 0; k < $recoms_recos.length; k++) {
 									let $reco = $recoms_recos.eq(k);
 									let recoURI = m.unescapeHTML($reco.find(".textURI").html());
 									if (recoURI === uri) {
-										let recomHTML = await m.recomHTML(r);
-										$reco.replaceWith(String(recomHTML));
-										$reco.find(".button.edit").addClass("deleted");
+										try {
+											let recomHTML = await m.recomHTML(r);
+											$reco.replaceWith(String(recomHTML));
+											$reco.find(".button.edit").addClass("deleted");
+										}
+										catch (err) {}
 									}
 								}
 								$contents_recos = $contents.find(".reco");
@@ -4702,7 +4736,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fsFLk.has = false;
 								fsFLk.down = true;
 								fsFLk.deleted = true;
-								await m.reTriggerFS(fs);
 
 								let fs1 = m.fsToRs;
 								let fs1FLk = fs1.fullList[uri];
@@ -4714,7 +4747,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								fs1FLk.down = true;
 								fs1FLk.deleted = true;
 								fs1FLk.inRange = false;
-								await m.reTriggerFS(fs1);
+								try {
+									await m.reTriggerFS(fs);
+									await m.reTriggerFS(fs1);
+								}
+								catch (err) {}
 
 								m.deletedRecosCount++;
 							}
