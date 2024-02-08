@@ -3371,7 +3371,7 @@ web	${m.sW}	${m.sH}`;
 			if (!str || str.constructor !== String) {
 				reject("");
 			}
-			ptnURL = /https?:\/\/[^\s\<\>\(\)\[\]]+/ig;
+			ptnURL = /https?:\/\/[^\"\'\`\s\<\>\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";
