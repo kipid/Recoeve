@@ -5571,6 +5571,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		m.gotoLi = async function (event) {
+			console.log(`m.gotoLi(event): `, event);
 			clearTimeout(m.setTimeoutGotoLi);
 			if (event?.srcElement?.nodeName === "A") {
 				return;
