@@ -3371,17 +3371,17 @@ web	${m.sW}	${m.sH}`;
 			if (!str || str.constructor !== String) {
 				reject("");
 			}
-			ptnURL = /https?:\/\/[^\s\(\)\[\]]+/ig;
+			ptnURL = /https?:\/\/[^\s\<\>\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";
 			while (exec !== null) {
-				res += str.substring(start, exec.index);
+				res += m.escapeOnlyTag(str.substring(start, exec.index));
 				res += String((await uriRendering(m.formatURI(exec[0]), true, false)).html);
 				start = ptnURL.lastIndex;
 				exec = ptnURL.exec(str);
 			}
-			res += str.substring(start);
+			res += m.escapeOnlyTag(str.substring(start));
 			resolve(res);
 		});
 	}
