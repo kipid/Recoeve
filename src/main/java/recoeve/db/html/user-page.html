@@ -5618,7 +5618,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (!$elem.hasClass("list-item")) {
 				$elem = $elem.parents(".list-item");
 			}
-			console.log(`m.gotoLi(event) :: $elem.html(): `, $elem.html());
+			console.log(`m.gotoLi(event) :: $elem.find(".list-index-id").html(): `, $elem.find(".list-index-id").html());
 			let k = Number($elem.find(".list-index").html());
 			let uri = m.unescapeHTML($elem.find(".list-index-id").html());
 			for (let i = 0; i < fs.fullList.length; i++) {
