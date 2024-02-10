@@ -744,7 +744,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 <li><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&PRL=0.80&PRR=1.00#headPlay">[음식/요리/건강]--건강 of kipid's Recoeve.net</a></li>
 </ul>
 </div>
-<div class="caption p cmt" style="margin:1em 0 0">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.85&PRR=1.00#headPlay">[Recoeve]--설명서 | Manuals of kipid's Recoeve.net</a></div>
+<div class="caption p cmt" style="margin:1em 0 0">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C#headPlay">[Recoeve]--Manual/설명서 of kipid's Recoeve.net</a></div>
 <div class="caption p cmt" style="margin:1em 0 0">How to use Recoeve.net and How to reco (레코이브 사용법)
 <div class="p rC"><div class="rSC">
 	<iframe delayed-src="https://www.youtube.com/embed/zfdpwhGlY7s" frameborder="0"></iframe>
