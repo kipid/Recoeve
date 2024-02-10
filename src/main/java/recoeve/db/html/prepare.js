@@ -2595,7 +2595,6 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						// console.log(`new YT.Player('youtube'); ::\nfs.lastIndex: ${fs.lastIndex}, fs.currentIndex: ${fs.currentIndex}\nm.lastCat: ${m.lastCat}, m.currentCat: ${m.currentCat}\ninListPlay: ${inListPlay}\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying}, m.recoURIPlaying: ${m.recoURIPlaying}`);
 						m.YtPlayer = new YT.Player('youtube', {
 							videoId: uriRendered.videoId
 							, playerVars: uriRendered.config
