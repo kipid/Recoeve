@@ -1047,7 +1047,6 @@ window.m = window.m || {};
 			if (!recoDef.heads) {
 				recoDef.heads = await m.getH1(uri);
 				recoDef.heads = await m.strToJSON(String(recoDef.heads));
-				console.log(recoDef.heads);
 			}
 			defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
 ${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
@@ -2376,7 +2375,7 @@ web	${m.sW}	${m.sH}`;
 		if (second && !isNaN(second)) {
 			secondToSeek += Number(second);
 		}
-		if (m.listPlayFrom === "youtube") {
+		if (m.listPlayFrom === "youtube" || m.listPlayFrom === "youtube-list") {
 			m.YtPlayer.seekTo(secondToSeek, true);
 		}
 		else if (m.listPlayFrom === "video") {
@@ -3058,8 +3057,8 @@ web	${m.sW}	${m.sH}`;
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)?\/?([\w\-]+)?(\?\S+)?/i;
-	ptnURI.regEx1 = /^([\w\-]+)(\?\S+)?/i;
+	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)?\/?([\w\-]+)?(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
+	ptnURI.regEx1 = /^([\w\-]+)(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
@@ -3087,10 +3086,10 @@ web	${m.sW}	${m.sH}`;
 					list = vars?.list?.val;
 				}
 				if (list) {
-					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 				}
 				if (v) {
-					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
@@ -3109,10 +3108,10 @@ web	${m.sW}	${m.sH}`;
 						}
 					}
 					if (list) {
-						resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 					}
 					if (v) {
-						resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 					}
 				}
 			}
