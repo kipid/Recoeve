@@ -2613,7 +2613,7 @@ web	${m.sW}	${m.sH}`;
 			if (ytAPINeeded) {
 				let fs = m.fsToRs;
 				function onYouTubeIframeAPIReady() {
-					m.YtPlayer = new YT.Player("youtube", {
+					m.YtPlayer = new YT.Player("youtube-player", {
 						events: {
 							'onReady': function (e) {
 								let p = e.target;
@@ -2707,38 +2707,38 @@ web	${m.sW}	${m.sH}`;
 							return;
 						}
 					}
-					// else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-					// 	m.YtPlayer = new YT.Player("youtube", {
-					// 		videoId: uriRendered.videoId
-					// 		, playerVars: uriRendered.config
-					// 		, events: {
-					// 			'onError': function (e) {
-					// 				if (fs.skip) {
-					// 					clearTimeout(m.setTimeoutPlayNextYT);
-					// 					m.setTimeoutPlayNextYT = setTimeout(function () {
-					// 						if (fs.skip) { fs.playNext(); }
-					// 					}, 8 * m.wait);
-					// 				}
-					// 			}
-					// 			, 'onStateChange': function (e) {
-					// 				if (e.data === YT.PlayerState.ENDED) {
-					// 					if (fs.oneLoop) {
-					// 						m.YtPlayer.seekTo(0, true);
-					// 					}
-					// 					else {
-					// 						fs.playNext();
-					// 					}
-					// 				}
-					// 				else if (e.data === YT.PlayerState.CUED) {
-					// 					m.finalizeInitialOpen();
-					// 				}
-					// 			}
-					// 		}
-					// 	});
-					// 	m.lastRecoURIPlaying = m.recoURIPlaying;
-					// 	fs.lastIndex = fs.currentIndex;
-					// 	m.lastCat = m.currentCat;
-					// }
+					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
+						m.YtPlayer = new YT.Player("youtube-player", {
+							videoId: uriRendered.videoId
+							, playerVars: uriRendered.config
+							, events: {
+								'onError': function (e) {
+									if (fs.skip) {
+										clearTimeout(m.setTimeoutPlayNextYT);
+										m.setTimeoutPlayNextYT = setTimeout(function () {
+											if (fs.skip) { fs.playNext(); }
+										}, 8 * m.wait);
+									}
+								}
+								, 'onStateChange': function (e) {
+									if (e.data === YT.PlayerState.ENDED) {
+										if (fs.oneLoop) {
+											m.YtPlayer.seekTo(0, true);
+										}
+										else {
+											fs.playNext();
+										}
+									}
+									else if (e.data === YT.PlayerState.CUED) {
+										m.finalizeInitialOpen();
+									}
+								}
+							}
+						});
+						m.lastRecoURIPlaying = m.recoURIPlaying;
+						fs.lastIndex = fs.currentIndex;
+						m.lastCat = m.currentCat;
+					}
 					else {
 						console.log(`fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);`);
 						fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);
@@ -2775,6 +2775,44 @@ web	${m.sW}	${m.sH}`;
 							}, m.wait / 2);
 							return;
 						}
+					}
+					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
+						m.YtPlayer = new YT.Player("youtube-player", {
+							events: {
+								'onReady': function (e) {
+									if (cue) {
+										p.cuePlaylist({ listType: "playlist", list: uriRendered.list });
+									}
+									else {
+										p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
+									}
+								}
+								, 'onError': function (e) {
+									if (fs.skip) {
+										clearTimeout(m.setTimeoutPlayNextYT);
+										m.setTimeoutPlayNextYT = setTimeout(function () {
+											if (fs.skip) { fs.playNext(); }
+										}, 8 * m.wait);
+									}
+								}
+								, 'onStateChange': function (e) {
+									if (e.data === YT.PlayerState.ENDED) {
+										if (fs.oneLoop) {
+											m.YtPlayer.seekTo(0, true);
+										}
+										else {
+											fs.playNext();
+										}
+									}
+									else if (e.data === YT.PlayerState.CUED) {
+										m.finalizeInitialOpen();
+									}
+								}
+							}
+						});
+						m.lastRecoURIPlaying = m.recoURIPlaying;
+						fs.lastIndex = fs.currentIndex;
+						m.lastCat = m.currentCat;
 					}
 					else {
 						console.log(`fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);`);
