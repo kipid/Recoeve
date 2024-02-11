@@ -1225,6 +1225,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 	m.formatURIFully = function (uri, uriRendered) {
 		let from = String(uriRendered.from);
+		console.log(uriRendered, uriRendered.from);
 		m.lastURI = uri;
 		switch (from) {
 			case "youtube":
