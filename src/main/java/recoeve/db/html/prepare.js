@@ -3520,7 +3520,7 @@ web	${m.sW}	${m.sH}`;
 							if (m.ptnURI[uriHost]) {
 								try {
 									let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
-									if (Boolean(result) !== false && (!result.list)) {
+									if (Boolean(result) !== false) {
 										return resolve(result);
 									}
 								}
