@@ -2598,7 +2598,7 @@ web	${m.sW}	${m.sH}`;
 			m.initialOpen = false;
 			setTimeout(async function () {
 				m.gotoHash(m.initialHashURI);
-				// await m.reTriggerFS(m.fsToRs);
+				await m.reTriggerFS(m.fsToRs);
 				await m.reTriggerFS(m.fsCat);
 				await m.reTriggerFS(m.fsMRCat);
 				await m.reTriggerFS(m.fsGotoCats);
