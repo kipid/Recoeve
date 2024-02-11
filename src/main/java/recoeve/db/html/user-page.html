@@ -3886,6 +3886,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		m.getRecos = function (uris, recos, cat) {
+			cat = cat ?? m.currentCat;
 			let getRecosStr = "uri";
 			let getRecosN = 0;
 			let fs1 = m.fsToRs;
@@ -3976,7 +3977,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$contents.html("");
 					resolve();
 				}).done(async function (resp) { // resp=cat\tUriList\tcutP\terr
-					let respJSON = await m.strToJSON(resp);
+					let respJSON = Object(await m.strToJSON(resp));
 					for (let i = 1; i < respJSON.length; i++) {
 						let catUL = m.catUriList[respJSON[i].cat] = m.catUriList[respJSON[i].cat] || {};
 						catUL.down = true;
@@ -4014,15 +4015,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						type: "POST", url: "/reco/multidefs", data: uris.trim()
 						, dataType: "text"
 					}).done(async function (resp) {
-						let defs = await m.strToJSON(resp.trim());
+						let defs = Object(await m.strToJSON(resp.trim()));
 						for (let j = 1; j < defs.length; j++) {
 							let uri = defs[j].uri;
 							let recoDefs = m.recoDefs[uri];
 							if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri }; }
 							recoDefs.down = true;
-							recoDefs.defCats = await m.strToJSON(String(defs[j]["def-cats"]), false);
-							recoDefs.defTitles = await m.strToJSON(String(defs[j]["def-titles"]), false);
-							recoDefs.defDescs = await m.strToJSON(String(defs[j]["def-descs"]), false);
+							recoDefs.defCats = Object(await m.strToJSON(String(defs[j]["def-cats"]), false));
+							recoDefs.defTitles = Object(await m.strToJSON(String(defs[j]["def-titles"]), false));
+							recoDefs.defDescs = Object(await m.strToJSON(String(defs[j]["def-descs"]), false));
 						}
 						resolve();
 					});
@@ -4346,7 +4347,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										type: "POST", url: `${m.userPath}/get-Recoms`, data: req
 										, dataType: "text"
 									}).done(async function (resp) {
-										let respJSON = await m.strToJSON(resp);
+										let respJSON = Object(await m.strToJSON(resp));
 										for (let i = 1; i < respJSON.length; i++) {
 											let val = m.val(respJSON[i].val);
 											if (val.valid) {
@@ -4392,7 +4393,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								$numbers_of_recos.html(resp);
 								reject();
 							}).done(async function (resp) {
-								let respJSON = await m.strToJSON(resp);
+								let respJSON = Object(await m.strToJSON(resp));
 								let neighbors = [];
 								let sorted = neighbors.sorted = [];
 								let n = 0;
@@ -4438,7 +4439,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 							resolve();
 						}).done(async function (resp) {
-							let respJSON = await m.strToJSON(resp.trim());
+							let respJSON = Object(await m.strToJSON(resp.trim()));
 							let neighbors = [];
 							neighbors.sorted = [];
 							let sorted = neighbors.sorted;
@@ -5137,7 +5138,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (!m.beInCurrentCat) {
 				m.currentCat = cat = catsSplit[0];
 			}
-			let strRecoDoJSON = await m.strToJSON(args.strRecoDo, true, true);
+			let strRecoDoJSON = Object(await m.strToJSON(args.strRecoDo, true, true));
 			$.ajax({
 				type: "POST", url: "/reco/do", data: args.strRecoDo
 				, dataType: "text"
@@ -5149,7 +5150,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}).done(async function (resp) {
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
-				let res = await m.strToJSON(resp);
+				let res = Object(await m.strToJSON(resp));
 				let result = String(res[1]?.result);
 				let uri = String(res[1]?.uri);
 				if (String(res[2]?.uri) && String(res[2]?.uri) !== "undefined") { // When multireco.
@@ -5316,7 +5317,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}).done(async function (resp) {
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
-				let res = await m.strToJSON(resp);
+				let res = Object(await m.strToJSON(resp));
 				let result = String(res[1]?.result);
 				let uri = String(res[1]?.uri);
 				$error.html(m.escapeOnlyTag(res[1].result));
@@ -5434,7 +5435,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}).done(async function (resp) {
 				clearInterval(m.setIntervalDeleyedLogOut);
 				clearTimeout(m.setTimeoutDeleyedLogOut);
-				let res = await m.strToJSON(resp);
+				let res = Object(await m.strToJSON(resp));
 				let uri = String(res[1].uri);
 				if (res[1]?.result.startsWith("deleted")) {
 					$error.html("[--Deleted.--]");
@@ -6436,7 +6437,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		(async function () {
-			let dataLang = await m.strToJSON($data_lang.html().trim());
+			let dataLang = Object(await m.strToJSON($data_lang.html().trim()));
 			let htmlLangs = "";
 			for (let i = 0; i < dataLang[0].length; i++) {
 				htmlLangs += `<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
@@ -6574,14 +6575,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$table_of_recos[0].value = vars.ToR.val;
 				if (!$table_of_recos_container.is(":visible")) {
 					$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
-					$table_of_recos.trigger("keyup.fs");
+					// $table_of_recos.trigger("keyup.fs"); // TODO: Delete this.
 				}
 			}
 			if (vars?.Go?.val || vars?.Go?.val === "") {
 				$fuzzy_search[0].value = vars.Go.val;
 				if (!$fuzzy_search_container.is(":visible")) {
 					$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) });
-					$fuzzy_search.trigger("keyup.fs");
+					// $fuzzy_search.trigger("keyup.fs"); // TODO: Delete this.
 				}
 			}
 

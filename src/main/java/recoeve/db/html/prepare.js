@@ -826,7 +826,7 @@ window.m = window.m || {};
 	};
 	m.recoToEve = async function (resp, recos, cat, conciseURIs) {
 		return new Promise(async function (resolve, reject) {
-			resp = await m.strToJSON(resp);
+			resp = Object(await m.strToJSON(resp));
 			for (let k = 1; k < resp.length; k++) {
 				let respK = resp[k];
 				let uri = conciseURIs[k];
@@ -1050,7 +1050,7 @@ window.m = window.m || {};
 			let defTitlesHTML = "";
 			if (!recoDef.heads) {
 				recoDef.heads = await m.getH1(uri);
-				recoDef.heads = await m.strToJSON(String(recoDef.heads));
+				recoDef.heads = Object(await m.strToJSON(String(recoDef.heads)));
 			}
 			defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
 ${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
@@ -1198,14 +1198,14 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					type: "POST", url: "/reco/defs", data: uri
 					, dataType: "text"
 				}).done(async function (resp) {
-					let defs = await m.strToJSON(resp);
+					let defs = Object(await m.strToJSON(resp));
 					let recoDefs = m.recoDefs[uri];
 					if (!recoDefs) { recoDefs = m.recoDefs[uri] = { uri }; }
 					recoDefs.down = true;
 					if (defs[1]) {
-						recoDefs.defCats = await m.strToJSON(defs[1]["def-cats"], false);
-						recoDefs.defTitles = await m.strToJSON(defs[1]["def-titles"], false);
-						recoDefs.defDescs = await m.strToJSON(defs[1]["def-descs"], false);
+						recoDefs.defCats = Object(await m.strToJSON(defs[1]["def-cats"], false));
+						recoDefs.defTitles = Object(await m.strToJSON(defs[1]["def-titles"], false));
+						recoDefs.defDescs = Object(await m.strToJSON(defs[1]["def-descs"], false));
 						m.showDefs(uri);
 					}
 					resolve();
@@ -3872,7 +3872,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 		}).done(async function (resp) {
 			clearInterval(m.setIntervalDeleyedLogOut);
 			clearTimeout(m.setTimeoutDeleyedLogOut);
-			let res = await m.strToJSON(resp);
+			let res = Object(await m.strToJSON(resp));
 			let result = String(res[1]?.result);
 			let uri = res[1]?.uri;
 			if (result.startsWith("changed")) {
