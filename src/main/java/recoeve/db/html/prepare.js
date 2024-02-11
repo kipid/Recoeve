@@ -1227,7 +1227,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			return (n / 1000000000.0).toFixed(2) + "B";
 		}
 	};
-	m.formatURIFully = function (uri, uriRendered) {
+	m.formatURIFully = async function (uri, uriRendered) {
 		let from = String(uriRendered.from);
 		console.log(uriRendered, uriRendered.from);
 		m.lastURI = uri;
