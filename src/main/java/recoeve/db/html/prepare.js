@@ -1266,6 +1266,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				uri = uriRendered.newURI;
 				break;
 		}
+		if (m.getUTF8Length(uri) > 255) {
+			uri = String(await m.getConciseURI(uri));
+		}
 		return uri;
 	};
 	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
