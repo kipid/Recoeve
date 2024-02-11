@@ -3013,7 +3013,7 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.YTiframe = function (v, inListPlay, config, list) {
 		if (list && list.constructor === String) {
-			return m.rC(`<iframe delayed-src="https://www.youtube.com/videoseries?list=${list}&origin=${window.location.origin}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null))
+			return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/videoseries?list=${list}&origin=${window.location.origin}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null))
 		}
 		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=${window.location.origin}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
 	};
