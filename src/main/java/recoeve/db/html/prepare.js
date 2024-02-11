@@ -73,9 +73,9 @@ window.m = window.m || {};
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
-	m.ptnURL = /https?:\/\/\S+/i;
-	m.ptnFILE = /file:\/\/\/\S+/i;
-	m.ptnTag = /<\w+[\s\S]+>/i;
+	m.ptnURL = /^https?:\/\/[^\s\t\n\r\<\>]+/i;
+	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\<\>]+/i;
+	m.ptnTag = /^<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
 	window.awaitAll = async function (promises) {
@@ -1231,6 +1231,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			case "youtube":
 				uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
 				break;
+			case "youtube-list":
+				uri = `https://www.youtube.com/watch?list=${uriRendered.list}`;
+				break;
 			case "instagram":
 				uri = `https://www.instagram.com/p/${uriRendered.imgId}/`;
 				break;
@@ -1273,10 +1276,16 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			m.uri = uri;
 			$show_URI.html(String(uriRendered.html));
 			let r = m.myRecos[uri];
-			if (!r) { r = m.myRecos[uri] = { uri }; }
+			if (!r) {
+				r = m.myRecos[uri] = { uri };
+				await m.getRecos([uri], m.myRecos);
+			}
 			if (!(r && r.has)) {
 				r = m.userRecos[uri];
-				if (!r) { r = m.userRecos[uri] = { uri }; }
+				if (!r) {
+					r = m.userRecos[uri] = { uri };
+					await m.getRecos([uri], m.userRecos);
+				}
 			}
 			await m.getAndFillRecoInNewReco(r, fillDefs);
 			await m.getAndFillDefsInNewReco(r, fillDefs);
@@ -2536,12 +2545,121 @@ web	${m.sW}	${m.sH}`;
 		}
 		m.setTimeoutPlayNextCount = 0;
 	};
-	m.fsToRs.prepareRecoListPlay = async function (ytAPINeeded) {
+	m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
+		m.hashURI = hashURI;
+		window.location.hash = `#${m.hashURI}`;
+		$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
+		window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+	};
+	m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
+		if (hashURI && m.userIndex) {
+			m.fsGo.tryN = 0;
+			m.firstLiGotoLiClicked = false;
+			clearInterval(m.setIntervalFsGo);
+			m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
+				m.fsGo.tryN++;
+				console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo}, ${m.fsGo.tryN};`);
+				if (m.fsGo.fullList[hashURI]) {
+					let k = m.fsGo.fullList[hashURI]?.i;
+					let $liK = $(`#li-${k}`);
+					if ($liK.length) {
+						if (m.firstLiGotoLiClicked) {
+							clearInterval(setIntervalFsGo);
+							m.fsGo.tryN = 0;
+							m.firstLiGotoLiClicked = false;
+						}
+						m.hashURI = hashURI;
+						console.log(`$(\`#li-${k}\`).trigger("click");`)
+						$(`#li-${k}`).trigger("click");
+						m.firstLiGotoLiClicked = true;
+					}
+				}
+				else if (m.fsGo.tryN < 8) {
+					let $elem = $(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
+					if ($elem.length) {
+						clearInterval(setIntervalFsGo);
+						m.fsGo.tryN = 0;
+						m.hashURI = hashURI;
+						window.location.hash = `#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
+						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
+						$window.scrollTop($elem.offset().top);
+					}
+				}
+				else {
+					clearInterval(setIntervalFsGo);
+					m.fsGo.tryN = 0;
+					console.log(`gotoHash has failed!: `, hashURI);
+				}
+			}, m.wait);
+		}
+	};
+	m.finalizeInitialOpen = function () {
+		if (m.initialOpen) {
+			m.initialOpen = false;
+			setTimeout(async function () {
+				m.gotoHash(m.initialHashURI);
+				// await m.reTriggerFS(m.fsToRs);
+				await m.reTriggerFS(m.fsCat);
+				await m.reTriggerFS(m.fsMRCat);
+				await m.reTriggerFS(m.fsGotoCats);
+				await m.reTriggerFS(m.fsTimezone);
+				await m.reTriggerFS(m.fsGo);
+			}, 2 * m.wait);
+		}
+	}
+	m.fsToRs.prepareRecoListPlay = async function (ytAPINeeded, cue, uriRendered, inListPlay) {
 		let fs = m.fsToRs;
 		if (!m.YtAPILoaded) {
 			if (ytAPINeeded) {
+				let fs = m.fsToRs;
+				function onYouTubeIframeAPIReady() {
+					m.YtPlayer = new YT.Player("youtube", {
+						events: {
+							'onReady': function (e) {
+								let p = e.target;
+								if (uriRendered.from === "youtube") {
+									if (cue) {
+										p.cueVideoById(uriRendered.config);
+									}
+									else {
+										p.loadVideoById(uriRendered.config);
+									}
+								}
+								else if (uriRendered.from === "youtube-list") {
+									if (cue) {
+										p.cuePlaylist({ listType: "playlist", list: uriRendered.list });
+									}
+									else {
+										p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
+									}
+								}
+							}
+							, 'onError': function (e) {
+								if (fs.skip) {
+									clearTimeout(m.setTimeoutPlayNextYT);
+									m.setTimeoutPlayNextYT = setTimeout(function () {
+										if (fs.skip) { fs.playNext(); }
+									}, 8 * m.wait);
+								}
+							}
+							, 'onStateChange': function (e) {
+								if (e.data === YT.PlayerState.ENDED) {
+									if (fs.oneLoop) {
+										m.YtPlayer.seekTo(0, true);
+									}
+									else {
+										fs.playNext();
+									}
+								}
+								else if (e.data === YT.PlayerState.CUED) {
+									m.finalizeInitialOpen();
+								}
+							}
+						}
+					});
+				}
 				if (!$("#youtube-API").length) {
-					let ytAPI = `<script id="youtube-API" src="https://www.youtube.com/player_api"></` + `script>`; // Avoid closing script
+					let ytAPI = `<script id="youtube-API" src="https://www.youtube.com/iframe_api"></` + `script>`; // Avoid closing script
 					$scripts.append(ytAPI);
 				}
 				m.YtAPILoaded = true;
@@ -2550,11 +2668,6 @@ web	${m.sW}	${m.sH}`;
 		if (!ytAPINeeded || typeof YT !== 'undefined' && YT.loaded && YT.Player) {
 			console.log(`YT is ready! and await m.doFSToRs();`);
 			await m.doFSToRs();
-		}
-		else {
-			setTimeout(function () {
-				fs.prepareRecoListPlay(ytAPINeeded);
-			}, m.wait);
 		}
 	};
 	m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
@@ -2594,46 +2707,78 @@ web	${m.sW}	${m.sH}`;
 							return;
 						}
 					}
-					else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
-						m.YtPlayer = new YT.Player('youtube', {
+					// else if (typeof YT !== 'undefined' && YT.loaded && YT.Player) {
+					// 	m.YtPlayer = new YT.Player("youtube", {
+					// 		videoId: uriRendered.videoId
+					// 		, playerVars: uriRendered.config
+					// 		, events: {
+					// 			'onError': function (e) {
+					// 				if (fs.skip) {
+					// 					clearTimeout(m.setTimeoutPlayNextYT);
+					// 					m.setTimeoutPlayNextYT = setTimeout(function () {
+					// 						if (fs.skip) { fs.playNext(); }
+					// 					}, 8 * m.wait);
+					// 				}
+					// 			}
+					// 			, 'onStateChange': function (e) {
+					// 				if (e.data === YT.PlayerState.ENDED) {
+					// 					if (fs.oneLoop) {
+					// 						m.YtPlayer.seekTo(0, true);
+					// 					}
+					// 					else {
+					// 						fs.playNext();
+					// 					}
+					// 				}
+					// 				else if (e.data === YT.PlayerState.CUED) {
+					// 					m.finalizeInitialOpen();
+					// 				}
+					// 			}
+					// 		}
+					// 	});
+					// 	m.lastRecoURIPlaying = m.recoURIPlaying;
+					// 	fs.lastIndex = fs.currentIndex;
+					// 	m.lastCat = m.currentCat;
+					// }
+					else {
+						console.log(`fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);`);
+						fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);
+					}
+				}
+			}
+			else if (from === "youtube-list") {
+				$eveElse.html('');
+				$eveElse_container.hide();
+				$rC_youtube_container.show();
+				fs.$playing = $rC_youtube_container;
+				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
+					if (m.YtPlayer) {
+						let config = {
 							videoId: uriRendered.videoId
-							, playerVars: uriRendered.config
-							, events: {
-								'onError': function (e) {
-									if (fs.skip) {
-										clearTimeout(m.setTimeoutPlayNextYT);
-										m.setTimeoutPlayNextYT = setTimeout(function () {
-											if (fs.skip) { fs.playNext(); }
-										}, 8 * m.wait);
-									}
-								}
-								, 'onStateChange': function (e) {
-									if (e.data === YT.PlayerState.ENDED) {
-										if (fs.oneLoop) {
-											m.YtPlayer.seekTo(0, true);
-										}
-										else {
-											fs.playNext();
-										}
-									}
-									else if (e.data === YT.PlayerState.CUED) {
-										if (m.initialOpen) {
-											m.initialOpen = false;
-											setTimeout(function () {
-												m.gotoHash(m.initialHashURI);
-											}, 2 * m.wait);
-										}
-									}
-								}
-							}
-						});
-						m.lastRecoURIPlaying = m.recoURIPlaying;
-						fs.lastIndex = fs.currentIndex;
-						m.lastCat = m.currentCat;
+							, ...uriRendered.config
+						};
+						if (cue && m.YtPlayer.cuePlaylist) {
+							m.YtPlayer.cuePlaylist({ listType: "playlist", list: uriRendered.list });
+							m.lastRecoURIPlaying = m.recoURIPlaying;
+							fs.lastIndex = fs.currentIndex;
+							m.lastCat = m.currentCat;
+						}
+						else if (m.YtPlayer.loadPlaylist) {
+							m.YtPlayer.loadPlaylist({ listType: "playlist", list: uriRendered.list });
+							m.lastRecoURIPlaying = m.recoURIPlaying;
+							fs.lastIndex = fs.currentIndex;
+							m.lastCat = m.currentCat;
+						}
+						else {
+							clearTimeout(m.setTimeoutCueOrLoadUri);
+							m.setTimeoutCueOrLoadUri = setTimeout(function () {
+								m.cueOrLoadUri(cue, uriRendered, inListPlay);
+							}, m.wait / 2);
+							return;
+						}
 					}
 					else {
-						console.log(`fs.prepareRecoListPlay(true);`);
-						fs.prepareRecoListPlay(true);
+						console.log(`fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);`);
+						fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);
 					}
 				}
 			}
@@ -2673,12 +2818,7 @@ web	${m.sW}	${m.sH}`;
 				if (!cue) {
 					$video[0].play();
 				}
-				if (m.initialOpen) {
-					m.initialOpen = false;
-					setTimeout(function () {
-						m.gotoHash(m.initialHashURI);
-					}, 4 * m.wait);
-				}
+				m.finalizeInitialOpen();
 			}
 			else {
 				fs.pauseVideo();
@@ -2692,12 +2832,7 @@ web	${m.sW}	${m.sH}`;
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
-					if (m.initialOpen) {
-						m.initialOpen = false;
-						setTimeout(function () {
-							m.gotoHash(m.initialHashURI);
-						}, 2 * m.wait);
-					}
+					m.finalizeInitialOpen();
 				}
 				if ((!cue) && fs.skip) {
 					clearTimeout(m.setTimeoutPlayNext);
@@ -2876,8 +3011,11 @@ web	${m.sW}	${m.sH}`;
 	m.rC = function (elemStr, option, id, noPc) {
 		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 	};
-	m.YTiframe = function (v, inListPlay, config) {
-		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=${escape(window.location.origin)}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
+	m.YTiframe = function (v, inListPlay, config, list) {
+		if (list && list.constructor === String) {
+			return m.rC(`<iframe delayed-src="https://www.youtube.com/videoseries?list=${list}&origin=${window.location.origin}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null))
+		}
+		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=${window.location.origin}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
 	};
 
 	let ptnURI;
@@ -2900,19 +3038,25 @@ web	${m.sW}	${m.sH}`;
 				let vars = null;
 				if (exec[2]) { vars = m.getSearchVars(exec[2]); }
 				let v = null;
+				let list = null;
 				if (exec[1]) {
 					v = exec[1];
 				}
 				if (vars?.v?.val) {
 					v = vars.v.val;
 				}
+				if (vars?.list?.val) {
+					list = vars?.list?.val;
+				}
+				if (list) {
+					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+				}
 				if (v) {
-					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
-				exec = m.ptnURI["youtu.be"].regEx1.exec(uriRest);
+				exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
 				if (exec !== null) {
 					let v = exec[1];
 					let vars = null;
@@ -2926,10 +3070,15 @@ web	${m.sW}	${m.sH}`;
 							v = vars.v.val;
 						}
 					}
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					if (list) {
+						resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					}
+					if (v) {
+						resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					}
 				}
 			}
-			return reject(false);
+			reject(false);
 		});
 	};
 
@@ -3370,7 +3519,7 @@ web	${m.sW}	${m.sH}`;
 			if (!str || str.constructor !== String) {
 				reject("");
 			}
-			ptnURL = /https?:\/\/[^\"\'\`\s\<\>\(\)\[\]]+/ig;
+			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";

@@ -5746,54 +5746,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}, m.wait * 1.5 - passed);
 			}
 		};
-		m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
-			m.hashURI = hashURI;
-			window.location.hash = `#${m.hashURI}`;
-			$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
-			window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
-		};
-		m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
-			if (hashURI && m.userIndex) {
-				m.fsGo.tryN = 0;
-				m.firstLiGotoLiClicked = false;
-				clearInterval(m.setIntervalFsGo);
-				m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
-					m.fsGo.tryN++;
-					console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo}, ${m.fsGo.tryN};`);
-					if (m.fsGo.fullList[hashURI]) {
-						let k = m.fsGo.fullList[hashURI]?.i;
-						let $liK = $(`#li-${k}`);
-						if ($liK.length) {
-							if (m.firstLiGotoLiClicked) {
-								clearInterval(setIntervalFsGo);
-								m.fsGo.tryN = 0;
-								m.firstLiGotoLiClicked = false;
-							}
-							m.hashURI = hashURI;
-							console.log(`$(\`#li-${k}\`).trigger("click");`)
-							$(`#li-${k}`).trigger("click");
-							m.firstLiGotoLiClicked = true;
-						}
-					}
-					else if (m.fsGo.tryN < 8) {
-						let $elem = $(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
-						if ($elem.length) {
-							clearInterval(setIntervalFsGo);
-							m.fsGo.tryN = 0;
-							m.hashURI = hashURI;
-							window.location.hash = `#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
-							window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
-							$window.scrollTop($elem.offset().top);
-						}
-					}
-					else {
-						clearInterval(setIntervalFsGo);
-						m.fsGo.tryN = 0;
-						console.log(`gotoHash has failed!: `, hashURI);
-					}
-				}, m.wait);
-			}
-		};
 
 		$table_of_recos.on("keydown", function (e) {
 			m.onKeydownInFS0(e, 'T', m.fsToRs)
@@ -6768,17 +6720,6 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					m.toggleManual();
 				}
 			}
-			setTimeout(async function () {
-				if (m.initialOpen) {
-					await m.reTriggerFS(m.fsToRs);
-					await m.reTriggerFS(m.fsCat);
-					await m.reTriggerFS(m.fsMRCat);
-					await m.reTriggerFS(m.fsGotoCats);
-					await m.reTriggerFS(m.fsTimezone);
-					await m.reTriggerFS(m.fsGo);
-				}
-				m.initialOpen = false;
-			}, 24 * m.wait);
 		});
 
 		$toggle_reco_list_play.on("mouseenter", function (e) {
