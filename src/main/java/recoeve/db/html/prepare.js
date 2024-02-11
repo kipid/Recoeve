@@ -109,7 +109,9 @@ window.m = window.m || {};
 		let argsSearch = "";
 		if (args) {
 			for (const prop in args) {
-				argsSearch += `&${prop}=${encodeURIComponent(args[prop])}`;
+				if (prop !== "cat" && prop !== "lang") {
+					argsSearch += `&${encodeURIComponent(prop)}=${encodeURIComponent(args[prop])}`;
+				}
 			}
 		}
 		return `${m.userPath}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
@@ -118,7 +120,9 @@ window.m = window.m || {};
 		let argsSearch = "";
 		if (args) {
 			for (const prop in args) {
-				argsSearch += `&${prop}=${args[prop]}`;
+				if (prop !== "cat" && prop !== "lang") {
+					argsSearch += `&${encodeURIComponent(prop)}=${encodeURIComponent(args[prop])}`;
+				}
 			}
 		}
 		return `/user/${user_id}${mode ? `/mode/${mode}` : ''}?${(cat !== null && cat !== undefined) ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
@@ -1965,84 +1969,86 @@ web	${m.sW}	${m.sH}`;
 					fs.$fsLis.eq(j).after(`<div id="toR-from-recoms-${k}" class="list-item from-recoms${fs.currentIndex === "from-recoms-" + k ? " selected" : ""}" onclick="m.playLi(event)"><span class="list-index-id">${m.escapeOnlyTag(uri)}</span>${m.escapeOnlyTag(recoDef?.defTitles[0] && recoDef.defTitles[0][0])}</div>`);
 				}
 			}
-			if (shuffle) {
-				fs.shuffledOnce = true;
-				m.fsGo.shuffledOnce = true;
-			}
-			if (fs.shuffledOnce || m.lastCat !== m.currentCat) {
-				fs.lastIndex = -2;
-				let $toR0 = fs.$fsl.find(".list-item").eq(0);
-				if ($toR0.length) {
-					$toR0.trigger("click");
-					m.fsViewAndScroll(fs, $toR0);
+			setTimeout(function () {
+				if (shuffle) {
+					fs.shuffledOnce = true;
+					m.fsGo.shuffledOnce = true;
 				}
-				else {
-					if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 8) {
-						m.setTimeoutPlayNextFirstCount = 0;
-					}
-					clearTimeout(m.setTimeoutPlayNextFirst);
-					m.setTimeoutPlayNextFirstClickedOnce = false;
-					m.setTimeoutPlayNextFirst = setTimeout(function selfPlayNextFirst() {
-						console.log("selfPlayNextFirst();");
-						m.setTimeoutPlayNextFirstCount++;
-						fs.$fsLis = fs.$fsl.find(".list-item");
-						let $toR0 = fs.$fsLis.eq(0);
-						if ($toR0.length) {
-							$toR0.trigger("click");
-							m.fsViewAndScroll(fs, $toR0);
-							if (!m.setTimeoutPlayNextFirstClickedOnce) {
-								m.setTimeoutPlayNextFirstClickedOnce = true;
-								setTimeout(selfPlayNextFirst, 2 * m.wait);
-							}
-							m.setTimeoutPlayNextFirstCount = 0;
-						}
-						else if (m.setTimeoutPlayNextFirstCount < 8) {
-							setTimeout(selfPlayNextFirst, 2 * m.wait);
-						}
-						else {
-							console.log("PlayNextFirst has failed.");
-							m.setTimeoutPlayNextFirstCount = 0;
-						}
-					}, m.wait / 2);
-				}
-			}
-			else if (m.recoMode === "" || m.recoMode === "daily-mix") {
-				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					let $toRK = $(`#toR-${fs.currentIndex}`);
-					if ($toRK.length) {
-						$toRK.trigger("click");
+				if (fs.shuffledOnce || m.lastCat !== m.currentCat) {
+					fs.lastIndex = -2;
+					let $toR0 = fs.$fsl.find(".list-item").eq(0);
+					if ($toR0.length) {
+						$toR0.trigger("click");
+						m.fsViewAndScroll(fs, $toR0);
 					}
 					else {
-						if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 8) {
-							m.setTimeoutPlayNextFirst1Count = 0;
+						if (m.setTimeoutPlayNextFirstCount === undefined || m.setTimeoutPlayNextFirstCount >= 8) {
+							m.setTimeoutPlayNextFirstCount = 0;
 						}
-						clearTimeout(m.setTimeoutPlayNextFirst1);
-						m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
-							console.log("selfPlayNextFirst1();");
-							m.setTimeoutPlayNextFirst1Count++;
-							let $toRK = $(`#toR-${fs.currentIndex}`);
-							if ($toRK.length) {
-								m.fsViewAndScroll(fs, $toRK);
-								$toRK.trigger("click");
-								m.setTimeoutPlayNextFirst1Count = 0;
+						clearTimeout(m.setTimeoutPlayNextFirst);
+						m.setTimeoutPlayNextFirstClickedOnce = false;
+						m.setTimeoutPlayNextFirst = setTimeout(function selfPlayNextFirst() {
+							console.log("selfPlayNextFirst();");
+							m.setTimeoutPlayNextFirstCount++;
+							fs.$fsLis = fs.$fsl.find(".list-item");
+							let $toR0 = fs.$fsLis.eq(0);
+							if ($toR0.length) {
+								$toR0.trigger("click");
+								m.fsViewAndScroll(fs, $toR0);
+								if (!m.setTimeoutPlayNextFirstClickedOnce) {
+									m.setTimeoutPlayNextFirstClickedOnce = true;
+									setTimeout(selfPlayNextFirst, 2 * m.wait);
+								}
+								m.setTimeoutPlayNextFirstCount = 0;
 							}
-							else if (m.setTimeoutPlayNextFirst1Count < 8) {
-								setTimeout(selfPlayNextFirst1, 2 * m.wait);
+							else if (m.setTimeoutPlayNextFirstCount < 8) {
+								setTimeout(selfPlayNextFirst, 2 * m.wait);
 							}
 							else {
 								console.log("PlayNextFirst has failed.");
-								m.setTimeoutPlayNextFirst1Count = 0;
+								m.setTimeoutPlayNextFirstCount = 0;
 							}
-						}, m.wait);
+						}, m.wait / 2);
 					}
 				}
-			}
-			if ($table_of_recos_container.is(":visible")) {
-				m.args.ToR = $table_of_recos[0].value;
-				window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
-			}
-			fs.shuffledOnce = false;
-			resolve();
+				else if (m.recoMode === "" || m.recoMode === "daily-mix") {
+					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
+						let $toRK = $(`#toR-${fs.currentIndex}`);
+						if ($toRK.length) {
+							$toRK.trigger("click");
+						}
+						else {
+							if (m.setTimeoutPlayNextFirst1Count === undefined || m.setTimeoutPlayNextFirst1Count >= 8) {
+								m.setTimeoutPlayNextFirst1Count = 0;
+							}
+							clearTimeout(m.setTimeoutPlayNextFirst1);
+							m.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
+								console.log("selfPlayNextFirst1();");
+								m.setTimeoutPlayNextFirst1Count++;
+								let $toRK = $(`#toR-${fs.currentIndex}`);
+								if ($toRK.length) {
+									m.fsViewAndScroll(fs, $toRK);
+									$toRK.trigger("click");
+									m.setTimeoutPlayNextFirst1Count = 0;
+								}
+								else if (m.setTimeoutPlayNextFirst1Count < 8) {
+									setTimeout(selfPlayNextFirst1, 2 * m.wait);
+								}
+								else {
+									console.log("PlayNextFirst has failed.");
+									m.setTimeoutPlayNextFirst1Count = 0;
+								}
+							}, m.wait);
+						}
+					}
+				}
+				if ($table_of_recos_container.is(":visible")) {
+					m.args.ToR = $table_of_recos[0].value;
+					window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
+				}
+				fs.shuffledOnce = false;
+				resolve();
+			}, m.wait / 2);
 		});
 	};
 	m.fsToRsOn = async function () {
@@ -2498,7 +2504,7 @@ web	${m.sW}	${m.sH}`;
 					clearTimeout(m.setTimeoutPlayNext);
 					m.setTimeoutPlayNext = setTimeout(function () {
 						fs.playNext(increment, cue, first);
-					}, 2 * m.wait);
+					}, m.wait);
 					console.log("m.setTimeoutPlayNext: ", m.setTimeoutPlayNext);
 				}
 			}
@@ -2539,7 +2545,7 @@ web	${m.sW}	${m.sH}`;
 				console.log("setTimeout :: fs.playNext(increment, cue, first);");
 				setTimeout(function () {
 					fs.playNext(increment, cue, first);
-				}, 2 * m.wait);
+				}, m.wait);
 			}
 			return;
 		}
