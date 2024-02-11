@@ -6503,7 +6503,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let vars = m.searchVars; // At the first script.
 			let cat = m.currentCat; // At the first script.
 			let uri = m.localStorage.getItem("uri");
-			if (vars.uri !== undefined) {
+			if (vars?.uri?.val) {
 				$input_uri[0].value = vars.uri.val;
 			}
 			else if (uri && uri !== 'null') {
@@ -6570,11 +6570,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 			}, m.wait);
 
-			if (vars.ToR?.val || vars.ToR?.val === "") {
+			if (vars?.ToR?.val || vars?.ToR?.val === "") {
 				$table_of_recos[0].value = vars.ToR.val;
 				if (!$table_of_recos_container.is(":visible")) {
 					$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
 					$table_of_recos.trigger("keyup.fs");
+				}
+			}
+			if (vars?.Go?.val || vars?.Go?.val === "") {
+				$fuzzy_search[0].value = vars.Go.val;
+				if (!$fuzzy_search_container.is(":visible")) {
+					$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) });
+					$fuzzy_search.trigger("keyup.fs");
 				}
 			}
 
