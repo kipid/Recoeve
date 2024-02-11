@@ -811,6 +811,7 @@ window.m = window.m || {};
 			}).fail(function (resp) {
 				reject(resp);
 			}).done(function (resp) {
+				console.log(`resp: ${resp}`);
 				resolve(resp);
 			})
 		});
@@ -1268,7 +1269,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		if (m.getUTF8Length(uri) > 255) {
 			try {
+				console.log(uri);
 				uri = String(await m.getConciseURI(uri));
+				console.log(uri);
 			}
 			catch (err) {}
 		}
