@@ -3020,7 +3020,7 @@ web	${m.sW}	${m.sH}`;
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live|shorts)?\/?([\w\-]+)?(\?\S+)?/i;
+	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)?\/?([\w\-]+)?(\?\S+)?/i;
 	ptnURI.regEx1 = /^([\w\-]+)(\?\S+)?/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
