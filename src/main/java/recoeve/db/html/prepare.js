@@ -1267,7 +1267,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				break;
 		}
 		if (m.getUTF8Length(uri) > 255) {
-			uri = String(await m.getConciseURI(uri));
+			try {
+				uri = String(await m.getConciseURI(uri));
+			}
+			catch (err) {}
 		}
 		return uri;
 	};
