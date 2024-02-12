@@ -537,19 +537,32 @@ public class RecoeveDB {
 		return false;
 	}
 
-	public boolean putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST, String refererFromServer) {
+	public String putBlogStat1(Timestamp tNow, String ip, String uri, String referer, String REACTION_GUEST, String refererFromServer) {
+		String heads = "";
+		String contents = "";
 		try {
 			con.setAutoCommit(true);
 			pstmtPutBlogStat1.setTimestamp(1, tNow);
+			heads += "tNow";
+			contents += tNow.toString();
 			pstmtPutBlogStat1.setString(2, ip);
+			heads += "\tip";
+			contents += "\t" + ip;
 			pstmtPutBlogStat1.setString(3, uri);
+			heads += "\turi";
+			contents += "\t" + uri;
+			heads += "\treferer";
 			if (referer == null || referer.isEmpty() || refererFromServer != null && refererFromServer.length() > referer.length()) {
 				pstmtPutBlogStat1.setString(4, refererFromServer); // null is allowed.
+				contents += "\t" + refererFromServer;
 			}
 			else {
 				pstmtPutBlogStat1.setString(4, referer);
+				contents += "\t" + referer;
 			}
 			pstmtPutBlogStat1.setString(5, REACTION_GUEST);
+			heads += "\tREACTION_GUEST";
+			contents += "\t" + REACTION_GUEST;
 			String host = null;
 			if (uri.substring(0, 4).toLowerCase().equals("http")) {
 				int k = 4;
@@ -571,12 +584,23 @@ public class RecoeveDB {
 				}
 			}
 			pstmtPutBlogStat1.setString(6, host);
-			return pstmtPutBlogStat1.executeUpdate() == 1;
+			heads += "\thost";
+			contents += "\t" + host;
+			if (pstmtPutBlogStat1.executeUpdate() == 1) {
+				return heads + "\n" + contents;
+			}
+			else {
+				heads += "\terror";
+				contents += "\tNot put blogstat.";
+				return heads + "\n" + contents;
+			}
 		}
 		catch (SQLException e) {
 			err(e);
 		}
-		return false;
+		heads += "\terror";
+		contents += "\terror ocurred!";
+		return heads + "\n" + contents;
 	}
 
 	public String getBlogStat1(StrArray fromTo) {
