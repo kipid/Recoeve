@@ -1233,7 +1233,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 	m.formatURIFully = async function (uri, uriRendered) {
 		let from = String(uriRendered.from);
-		console.log(uriRendered, uriRendered.from);
+		console.log(`uriRendered`, uriRendered, `uriRendered.from: ${uriRendered.from}\nuri: ${uri}`);
 		m.lastURI = uri;
 		switch (from) {
 			case "youtube":
@@ -1387,8 +1387,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		m.sW = screen.height;
 		m.sH = screen.width;
 	}
-	m.str_rmb_me = `log	sW	sH
-web	${m.sW}	${m.sH}`;
+	m.str_rmb_me = `log\tsW\tsH\nweb\t${m.sW}\t${m.sH}`;
 	m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		return new Promise(async function (resolve, reject) {
 			if (saveNewRecoInputs) {
