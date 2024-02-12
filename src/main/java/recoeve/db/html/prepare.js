@@ -3638,10 +3638,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				}
 				key = match[0]
 				listOfValues = [];
-				let value0 = strSplitted[i].substring(match[0].length);
-				if (value0) {
-					listOfValues[0] = value0;
-				}
+				listOfValues.push(strSplitted[i].substring(match[0].length));
 			}
 		}
 		res[k] = res[key] = { i: k, key, val: listOfValues.join("\n") };

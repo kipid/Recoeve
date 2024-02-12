@@ -3695,10 +3695,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			});
 		});
 
-		$preview_desc.on("click", function (e) {
+		$preview_desc.on("click", async function (e) {
 			let descR = m.renderStrDescCmt($input_desc[0].value);
 			$input_desc[0].value = m.descCmtRToString(descR);
-			$previewed_desc.html(m.descCmtRToHTML(descR));
+			$previewed_desc.html(String(await m.descCmtRToHTML(descR)));
 		});
 		$formatting_lyrics.on("click", function (e) {
 			let descR = m.renderStrDescCmt($input_desc[0].value);
