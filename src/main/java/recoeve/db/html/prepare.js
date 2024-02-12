@@ -2361,7 +2361,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	}
 
 	m.recoDefs[""] = {
-		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, heads: [ [ "title" ], [ "Empty URI." ] ]
+		uri: "", defTitles: [[""]], defCats: [[""]], defDescs: [[""]], defs: true, heads: [ [ "title" ], [ "Empty URI." ] ], down: true
 	};
 	m.recoDefs[""].heads[0].title = "title";
 	m.recoDefs[""].heads[1].title = "Empty URI.";
@@ -2617,6 +2617,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 	};
 	m.finalizeInitialOpen = function () {
+		console.log(`m.finalizeInitialOpen() called.\nm.initialOpen: ${m.initialOpen}`)
 		if (m.initialOpen) {
 			m.initialOpen = false;
 			setTimeout(async function () {
