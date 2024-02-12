@@ -3702,24 +3702,25 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		});
 		$formatting_lyrics.on("click", function (e) {
 			let descR = m.renderStrDescCmt($input_desc[0].value);
-			let lyrics = descR["#lyrics"] || descR["#lyrics:"] || descR["#가사"] || descR["#가사:"];
+			let lyrics = descR["#lyrics"] || descR["#lyrics:"] || descR["#가사"] || descR["#가사:"] || descR[""];
 			if (lyrics) {
-				let lyricsSplitted = lyrics?.val?.replace(/\s+/g, " ").split("\n");
+				let lyricsSplitted = lyrics.val?.replace(/\s+/g, " ").trim().split("\n");
+				// replacing all unicode whitespace.
+				// https://stackoverflow.com/questions/61300904/removing-narrow-no-break-space-unicode-characters-u00a0-in-python-nlp
+				// lyrics=lyrics.replace(/ /g, " ").replace(/ /, " ")...;
 				for (let i = 0; i < lyricsSplitted.length; i++) {
 					lyricsSplitted[i] = lyricsSplitted[i].trim();
-					// replacing all unicode whitespace.
-					// https://stackoverflow.com/questions/61300904/removing-narrow-no-break-space-unicode-characters-u00a0-in-python-nlp
-					// lyrics=lyrics.replace(/ /g, " ").replace(/ /, " ")...;
 				}
-				let trimedLyrics = lyricsSplitted.join("\n").trim();
-				let trimedLyricsSplitted = trimedLyrics.split(/\n\n+/g);
+				let trimedLyricsSplitted = lyricsSplitted.join("\n").split(/\n\n+/g);
 				for (let i = 0; i < trimedLyricsSplitted.length; i++) {
 					if (trimedLyricsSplitted[i].startsWith("You might also like")) {
 						trimedLyricsSplitted.splice(i, 1);
 						i--;
 					}
 				}
-				lyrics.val = trimedLyricsSplitted.join("\n\n") + "\n\n\n";
+				lyrics.key = "#lyrics";
+				lyrics.val = "\n\n" + trimedLyricsSplitted.join("\n\n") + "\n\n\n";
+				descR["#lyrics"] = descR[lyrics.i] = lyrics;
 			}
 			$input_desc[0].value = m.descCmtRToString(descR);
 		});
