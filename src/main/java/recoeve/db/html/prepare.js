@@ -73,8 +73,8 @@ window.m = window.m || {};
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
-	m.ptnURL = /^https?:\/\/[^\s\t\n\r\<\>]+/i;
-	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\<\>]+/i;
+	m.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
+	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
 	m.ptnTag = /^<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
@@ -2045,7 +2045,7 @@ web	${m.sW}	${m.sH}`;
 									setTimeout(selfPlayNextFirst1, 2 * m.wait);
 								}
 								else {
-									console.log("PlayNextFirst has failed.");
+									console.log("PlayNextFirst1 has failed.");
 									m.setTimeoutPlayNextFirst1Count = 0;
 								}
 							}, m.wait);
@@ -2228,7 +2228,6 @@ web	${m.sW}	${m.sH}`;
 				break;
 			case 27: // ESC=27
 				e.preventDefault();
-				console.log("ESC is triggered!");
 				$fs_container.hide();
 				if (fs === m.fsCat) {
 				}
@@ -2574,7 +2573,7 @@ web	${m.sW}	${m.sH}`;
 			clearInterval(m.setIntervalFsGo);
 			m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
 				m.fsGo.tryN++;
-				console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo}, ${m.fsGo.tryN};`);
+				console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo},\nm.fsGo.tryN: ${m.fsGo.tryN};`);
 				if (m.fsGo.fullList[hashURI]) {
 					let k = m.fsGo.fullList[hashURI]?.i;
 					let $liK = $(`#li-${k}`);
@@ -2880,7 +2879,6 @@ web	${m.sW}	${m.sH}`;
 				$eveElse_container.show();
 				$rC_youtube_container.hide();
 				fs.$playing = $eveElse_container;
-				// console.log(`inListPlay: ${inListPlay},\nm.lastRecoURIPlaying: ${m.lastRecoURIPlaying},\nm.recoURIPlaying: ${m.recoURIPlaying}\nuriRendered: `, uriRendered);
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					$eveElse.html(String(uriRendered.html).replace(/\sdelayed\-src\=/g, " src="));
 					fs.lastIndex = fs.currentIndex;
@@ -3414,7 +3412,7 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[0] = {};
-	ptnURI.regEx = /^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
@@ -3428,7 +3426,7 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[1] = {};
-	ptnURI.regEx = /^https?:\/\/\S+\.(?:mp4|ogg|webm|webp|avi)(?=$|\?|\s)/i;
+	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|webp|avi)(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
@@ -3454,8 +3452,8 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[2] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/\S*)?/i;
-	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/\S*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
+	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[2].regEx.exec(uri);
@@ -3475,7 +3473,7 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[3] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/\S*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[3].regEx.exec(uri);
@@ -3489,9 +3487,9 @@ web	${m.sW}	${m.sH}`;
 	};
 
 	ptnURI = m.ptnURI[4] = {};
-	ptnURI.regEx = /^file:\/\/\/(\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
-	ptnURI.regEx1 = /^file:\/\/\/(\S+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
-	ptnURI.regEx2 = /^file:\/\/\/(\S+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx1 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
+	ptnURI.regEx2 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[4].regEx.exec(uri);
@@ -3543,22 +3541,18 @@ web	${m.sW}	${m.sH}`;
 										return resolve(result);
 									}
 								}
-								catch (error) {
-									// continue.
-								}
+								catch (error) {}
 							}
 						}
 					}
 					for (let i = 0; i < m.ptnURI.length; i++) {
 						try {
-							let result = await m.ptnURI[i].toIframe(uri, inListPlay, toA, descR); // img or video
+							let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR); // img or video
 							if (Boolean(result) !== false) {
 								return resolve(result);
 							}
 						}
-						catch (error) {
-							// continue.
-						}
+						catch (error) {}
 					}
 					if (toA) {
 						return resolve({ html: m.uriToA(uri) });
