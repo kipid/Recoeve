@@ -3791,7 +3791,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
 			let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
-			res += m.descCmtRToHTML(descR);
+			res += String(m.descCmtRToHTML(descR));
 		}
 		if (recomsI?.cmtsHTML) {
 			res += recomsI.cmtsHTML;
@@ -3842,7 +3842,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (r.desc) {
 			let descR = r.descR;
-			res += m.descCmtRToHTML(descR);
+			res += String(m.descCmtRToHTML(descR));
 		}
 		res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
 		res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
