@@ -6499,9 +6499,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}).fail(function (resp) {
 					console.log("BlogStat: ", resp);
 					console.log(blogStat);
+					m.finalizeInitialOpen();
 				}).done(function (resp) {
 					console.log("BlogStat: ", resp);
 					console.log(blogStat);
+					m.finalizeInitialOpen();
 				});
 			}, 16 * m.wait);
 

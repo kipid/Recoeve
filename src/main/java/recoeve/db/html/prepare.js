@@ -2676,9 +2676,8 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 										fs.playNext();
 									}
 								}
-								else if (e.data === YT.PlayerState.CUED) {
-									m.finalizeInitialOpen();
-								}
+								else if (e.data === YT.PlayerState.CUED) {}
+								m.finalizeInitialOpen();
 							}
 						}
 					});
@@ -2754,9 +2753,8 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 											fs.playNext();
 										}
 									}
-									else if (e.data === YT.PlayerState.CUED) {
-										m.finalizeInitialOpen();
-									}
+									else if (e.data === YT.PlayerState.CUED) {}
+									m.finalizeInitialOpen();
 								}
 							}
 						});
@@ -2830,9 +2828,8 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 											fs.playNext();
 										}
 									}
-									else if (e.data === YT.PlayerState.CUED) {
-										m.finalizeInitialOpen();
-									}
+									else if (e.data === YT.PlayerState.CUED) {}
+									m.finalizeInitialOpen();
 								}
 							}
 						});
