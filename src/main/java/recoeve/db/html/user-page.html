@@ -3873,7 +3873,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$input_uri[0].value = r?.uri;
 				$input_uri[0].disabled = true;
 				if (uri.length !== 0 && uri !== m.lastURI) {
-					await m.getAndShowDefsAndRecoInNewReco(true, fillDefs);
+					await m.formatURIAndGetAndShowDefsAndRecoInNewReco(true, fillDefs);
 				}
 				m.wST = $window.scrollTop();
 				$window.off("scroll.stop");
@@ -4989,7 +4989,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
 				m.timeOutGetInfos = setTimeout(async function () {
-					await m.getAndShowDefsAndRecoInNewReco(false);
+					await m.formatURIAndGetAndShowDefsAndRecoInNewReco(false);
 				}, m.wait);
 			}
 		};
@@ -5253,9 +5253,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$new_reco.hide();
 			}, 2 * m.wait);
 		};
-		$button_reco.on("click", function (e) {
+		$button_reco.on("click", async function (e) {
 			$button_reco.addClass("disabled");
-			let uri = m.formatURI($input_uri[0].value);
+			let uri = String(await m.formatURI($input_uri[0].value));
+			uri = String(await m.formatURIFully(uri));
 			$input_uri[0].value = uri;
 			let val = m.val($input_val[0].value.trim());
 			let errorMsg = "";
@@ -5280,7 +5281,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				strHeads += "\tcats";
 				strContents += "\t" + m.encloseStr(cats);
 
-				let desc = $input_desc[0].value.trim();
+				let desc = m.descCmtRToString(m.renderStrDescCmt($input_desc[0].value.trim()));
 				strHeads += "\tdesc";
 				strContents += "\t" + m.encloseStr(desc);
 
@@ -5293,7 +5294,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				strContents += "\t" + m.encloseStr(points);
 
 				let strRecoDo = strHeads + "\n" + strContents;
-				$error.html("Being recoed.");
+				$error.html("[--Being recoed...--]");
 				m.rmb_me(m.reco_do, { strRecoDo, cats, uri }, true);
 			}
 			else {
@@ -6513,7 +6514,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			uri = $input_uri[0].value;
 			if (uri !== m.lastURI) {
 				m.lastURI = uri;
-				await m.getAndShowDefsAndRecoInNewReco(false);
+				await m.formatURIAndGetAndShowDefsAndRecoInNewReco(false);
 			} // If there is m.myRecos[uri], fill #new-reco inputs with it. But if there is saved revision, fill revised versions to #new-reco inputs.
 			m.initialFillFromLocalStorageN = 0;
 			m.initialFillFromLocalStorage = setInterval(function () {

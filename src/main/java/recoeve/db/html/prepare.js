@@ -1008,7 +1008,7 @@ window.m = window.m || {};
 		m.localStorage.clear();
 		$input_uri[0].value = "";
 		$input_val.trigger("keyup");
-		m.getAndShowDefsAndRecoInNewReco(true);
+		m.formatURIAndGetAndShowDefsAndRecoInNewReco(true);
 	};
 	m.getFullURI = function (shortURI) {
 		return new Promise(function (resolve, reject) {
@@ -1036,18 +1036,6 @@ window.m = window.m || {};
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
 			uri = String(uri).trim();
-			if (m.getUTF8Length(uri) > 255) {
-				let conciseURI = String(await m.getConciseURI(uri));
-				conciseURI = conciseURI.trim();
-				console.log(`conciseURI: ${conciseURI}`); // TODO: delete this.
-				if (uri !== conciseURI) {
-					let desc = $input_desc[0].value && $input_desc[0].value !== "undefined" ? $input_desc[0].value : "";
-					$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
-					uri = conciseURI;
-					$input_uri[0].value = uri;
-					$input_uri.trigger("keyup");
-				}
-			}
 			let recoDef = m.recoDefs[uri];
 			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
 			let defTitles = recoDef.defTitles;
@@ -1280,14 +1268,16 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			return resolve(uri);
 		});
 	};
-	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
+	m.formatURIAndGetAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
 		return new Promise(async function (resolve, reject) {
 			let elem = $input_uri[0];
+			let originalURI = String(await m.formatURI(elem.value, true));
 			let uri = noFormatURI ? elem.value : String(await m.formatURI(elem.value));
 			elem.value = uri;
 			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
 				elem.value = uri = String(await m.formatURIFully(uri, uriRendered));
+				$input_uri.trigger("keyup");
 			}
 			m.uri = uri;
 			$show_URI.html(String(uriRendered.html));
@@ -1305,8 +1295,24 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			}
 			await m.getAndFillRecoInNewReco(r, fillDefs);
 			await m.getAndFillDefsInNewReco(r, fillDefs);
-			m.lastURI = uri;
 			m.reNewAndReOn();
+			if (originalURI !== uri) {
+				let desc = $input_desc[0].value;
+				let descR = m.renderStrDescCmt(desc);
+				if (descR["#originaluri"]) {
+					descR["#originaluri"].key = "#originalURI";
+					descR["#originaluri"].val = `\n${uri}\n`;
+				}
+				else {
+					descR["#originaluri"] = { key: "#originalURI", val: `\n${uri}\n` };
+					descR.splice(0, 0, descR["#originaluri"]);
+					for (let i = 0; i < descR.length; i++) {
+						descR[i].i = i;
+					}
+				}
+				$input_desc[0].value = m.descCmtRToString(descR);
+			}
+			m.lastURI = uri;
 			resolve();
 		});
 	};
@@ -3613,35 +3619,49 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.ptnDescCmt = /^#\S+/; // \w=[A-Za-z0-9_]
 	m.renderStrDescCmt = function (str) {
 		let res = [];
-		let strSplitted = str.trim().split(/\n/g);
+		let strSplitted = str.trim().split("\n");
 		for (let i = 0; i < strSplitted.length; i++) {
-			strSplitted[i] = strSplitted[i];
+			strSplitted[i] = strSplitted[i].replace(/[\s\t\n\r]+$/, ""); // trim only last blanks.
 		}
-		let trimedStr = strSplitted.join("\n").trim();
-		let trimedStrSplitted = trimedStr.split(/\n\n+/g);
 		let k = 0;
 		let key = "";
 		let listOfValues = [];
-		for (let i = 0; i < trimedStrSplitted.length; i++) {
-			let match = trimedStrSplitted[i].match(/^#\S*/);
+		for (let i = 0; i < strSplitted.length; i++) {
+			let match = strSplitted[i].match(/^#\S*/);
 			if (match === null) {
-				listOfValues.push(trimedStrSplitted[i]);
+				listOfValues.push(strSplitted[i]);
 			}
 			else {
-				key = key.toLowerCase();
-				res[k] = res[key] = { i: k, key, val: listOfValues.join("\n\n") };
-				k++;
+				if (!res[key.toLowerCase()]) {
+					res[k] = res[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
+					k++;
+				}
 				key = match[0]
 				listOfValues = [];
-				let value0 = trimedStrSplitted[i].substring(match[0].length);
+				let value0 = strSplitted[i].substring(match[0].length);
 				if (value0) {
 					listOfValues[0] = value0;
 				}
 			}
 		}
-		res[k] = res[key] = { i: k, key, val: listOfValues.join("\n\n") };
+		res[k] = res[key] = { i: k, key, val: listOfValues.join("\n") };
+		res[""].val = res[""].val.trim();
+		if (!res[""].val) {
+			res.splice(0, 1);
+			delete res[""];
+			for (let i = 0; i < res.length; i++) {
+				res[i].i = i;
+			}
+		}
 		return res;
 	};
+	m.descCmtRToString = function (descCmtR) {
+		let res = "";
+		for (let i = 0; i < descCmtR.length; i++) {
+			res += `${descCmtR[i].key}${descCmtR[i].val}\n`;
+		}
+		return res.trim();
+	}
 	m.stashReco = function (event) {
 		let $target = $(event.target);
 		let $reco = $target.parents(".reco");
