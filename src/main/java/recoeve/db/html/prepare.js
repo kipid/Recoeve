@@ -1390,9 +1390,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.str_rmb_me = `log	sW	sH
 web	${m.sW}	${m.sH}`;
 	m.rmb_me = function (callback, args, saveNewRecoInputs) {
-		return new Promise(function (resolve, reject) {
+		return new Promise(async function (resolve, reject) {
 			if (saveNewRecoInputs) {
-				m.localStorage.setItem("uri", String(await m.formatURI($input_uri[0].value)));
+				m.localStorage.setItem("uri", m.formatURIFully(String(await m.formatURI($input_uri[0].value))));
 				m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
 				m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
 				m.localStorage.setItem("desc", $input_desc[0].value.trim());
