@@ -1036,14 +1036,16 @@ window.m = window.m || {};
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
 			uri = uri.trim();
-			let conciseURI = await m.getConciseURI(uri);
-			conciseURI = String(conciseURI).trim();
-			if (uri !== conciseURI) {
-				let desc = $input_desc[0].value && $input_desc[0].value !== "undefined" ? $input_desc[0].value : "";
-				$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
-				uri = conciseURI;
-				$input_uri[0].value = uri;
-				$input_uri.trigger("keyup");
+			if (m.getUTF8Length(uri) > 255) {
+				let conciseURI = String(await m.getConciseURI(uri));
+				conciseURI = conciseURI.trim();
+				if (uri !== conciseURI) {
+					let desc = $input_desc[0].value && $input_desc[0].value !== "undefined" ? $input_desc[0].value : "";
+					$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
+					uri = conciseURI;
+					$input_uri[0].value = uri;
+					$input_uri.trigger("keyup");
+				}
 			}
 			let recoDef = m.recoDefs[uri];
 			if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
@@ -1269,9 +1271,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		if (m.getUTF8Length(uri) > 255) {
 			try {
-				console.log(uri);
+				console.log(uri); // TODO: delete this.
 				uri = String(await m.getConciseURI(uri));
-				console.log(uri);
+				console.log(uri); // TODO: delete this.
 			}
 			catch (err) {}
 		}
