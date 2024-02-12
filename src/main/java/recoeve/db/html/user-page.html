@@ -6716,7 +6716,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				// if (!m.doNotPushHistory) {
 				// 	window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", `/reco${m.initialSearch}${m.initialHashURI ? `#${encodeURIComponent(m.initialHashURI)}` : ""}`);
 				// } // TODO: delete this.
-				m.doNotPushHistory = false;
+				m.doNotPushHistory = true;
 			}
 			$title.html(`${m.userId}'s recoeve.net`);
 			m.gotoHash(m.initialHashURI);
