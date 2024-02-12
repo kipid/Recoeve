@@ -1282,7 +1282,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(async function (resolve, reject) {
 			let elem = $input_uri[0];
 			let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
-			if (elem.value !== uri) { elem.value = uri; }
+			elem.value = uri;
 			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
 				elem.value = uri = m.formatURIFully(uri, uriRendered);
@@ -2928,7 +2928,7 @@ web	${m.sW}	${m.sH}`;
 		return len;
 	};
 	m.ptnPureNumber = /^\d+$/;
-	m.formatURI = function (uri) {
+	m.formatURI = async function (uri) {
 		if (uri && uri.constructor === String) {
 			uri = uri.trim().replace(/[\s\t\n]+/g, " ");
 			let exec = m.ptnTag.exec(uri);
@@ -2950,6 +2950,9 @@ web	${m.sW}	${m.sH}`;
 			exec = m.ptnPureNumber.exec(uri);
 			if (exec !== null) {
 				uri = "Number: " + uri;
+			}
+			if (m.getUTF8Length(uri) > 255) {
+				return m.unescapeHTML(String(await m.getConciseURI(uri)));
 			}
 			return m.unescapeHTML(uri).trim();
 		}
