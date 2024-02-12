@@ -3578,7 +3578,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	window.relatedRendering = function (str) {
 		return new Promise(async function (resolve, reject) {
 			if (!str || str.constructor !== String) {
-				reject("");
+				str = String(str);
 			}
 			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
@@ -3689,7 +3689,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					let relateds = val.split("\n");
 					for (let p = 0; p < relateds.length; p++) {
 						res += '<br>';
-						res += String(await relatedRendering(relateds[p]));
+						try {
+							res += String(await relatedRendering(relateds[p]));
+						}
+						catch (err) {}
 					}
 					res += `</div>`;
 					break;
