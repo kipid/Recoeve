@@ -2928,7 +2928,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return len;
 	};
 	m.ptnPureNumber = /^\d+$/;
-	m.formatURI = async function (uri) {
+	m.formatURI = async function (uri, keepOriginal) {
 		return new Promise(async function (resolve, reject) {
 			if (uri && uri.constructor === String) {
 				uri = uri.trim().replace(/[\s\t\n]+/g, " ");
@@ -2952,7 +2952,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				if (exec !== null) {
 					uri = "Number: " + uri;
 				}
-				if (m.getUTF8Length(uri) > 255) {
+				if (!keepOriginal && m.getUTF8Length(uri) > 255) {
 					return resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
 				}
 				return resolve(m.unescapeHTML(uri).trim());
@@ -3580,7 +3580,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			let res = "";
 			while (exec !== null) {
 				res += m.escapeOnlyTag(str.substring(start, exec.index));
-				res += String(Object((await uriRendering(String(await m.formatURI(exec[0])), true, false))).html);
+				res += String(Object((await uriRendering(String(await m.formatURI(exec[0], true)), true, false))).html);
 				start = ptnURL.lastIndex;
 				exec = ptnURL.exec(str);
 			}
