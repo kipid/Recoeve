@@ -3704,12 +3704,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let descR = m.renderStrDescCmt($input_desc[0].value);
 			let lyrics = descR["#lyrics"] || descR["#lyrics:"] || descR["#가사"] || descR["#가사:"] || descR[""];
 			if (lyrics) {
-				let lyricsSplitted = lyrics.val?.replace(/\s+/g, " ").trim().split("\n");
-				// replacing all unicode whitespace.
-				// https://stackoverflow.com/questions/61300904/removing-narrow-no-break-space-unicode-characters-u00a0-in-python-nlp
-				// lyrics=lyrics.replace(/ /g, " ").replace(/ /, " ")...;
+				let lyricsSplitted = lyrics.val?.trim().split("\n");
 				for (let i = 0; i < lyricsSplitted.length; i++) {
-					lyricsSplitted[i] = lyricsSplitted[i].trim();
+					lyricsSplitted[i] = lyricsSplitted[i].replace(/\s+/g, " ").trim();
+					// replacing all unicode whitespace.
+					// https://stackoverflow.com/questions/61300904/removing-narrow-no-break-space-unicode-characters-u00a0-in-python-nlp
+					// lyrics=lyrics.replace(/ /g, " ").replace(/ /, " ")...;
 				}
 				let trimedLyricsSplitted = lyricsSplitted.join("\n").split(/\n\n+/g);
 				for (let i = 0; i < trimedLyricsSplitted.length; i++) {
