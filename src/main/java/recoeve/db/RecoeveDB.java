@@ -350,13 +350,13 @@ public class RecoeveDB {
 					pstmtPutRecoStatDefDescSet = con.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
 					pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-					delBlogVisitor();
-					deleteUser("C@recoeve.net");
-					deleteUser("D@recoeve.net");
-					deleteUser("E@recoeve.net");
-					deleteUser("F@recoeve.net");
-					deleteUser("G@recoeve.net");
-					deleteUser("H@recoeve.net");
+					// delBlogVisitor();
+					// deleteUser("C@recoeve.net");
+					// deleteUser("D@recoeve.net");
+					// deleteUser("E@recoeve.net");
+					// deleteUser("F@recoeve.net");
+					// deleteUser("G@recoeve.net");
+					// deleteUser("H@recoeve.net");
 					return null;
 				}
 			},
