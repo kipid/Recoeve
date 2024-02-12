@@ -1233,7 +1233,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 	m.formatURIFully = async function (uri, uriRendered) {
 		return new Promise(async function (resolve, reject) {
-			let from = String(uriRendered.from);
+			let from = String(uriRendered?.from);
 			console.log(`uriRendered`, uriRendered, `uriRendered.from: ${uriRendered.from}\nuri: ${uri}`);
 			m.lastURI = uri;
 			switch (from) {
@@ -1393,7 +1393,8 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		return new Promise(async function (resolve, reject) {
 			if (saveNewRecoInputs) {
-				m.localStorage.setItem("uri", String(await m.formatURIFully(String(await m.formatURI($input_uri[0].value)))));
+				let uri = String(await m.formatURI($input_uri[0].value));
+				m.localStorage.setItem("uri", String(await m.formatURIFully(uri, Object(await uriRendering(uri)))));
 				m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
 				m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
 				m.localStorage.setItem("desc", $input_desc[0].value.trim());
