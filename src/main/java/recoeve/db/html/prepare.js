@@ -2657,6 +2657,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 										p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
 									}
 								}
+								m.finalizeInitialOpen();
 							}
 							, 'onError': function (e) {
 								if (fs.skip) {
@@ -2810,6 +2811,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 									else {
 										p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
 									}
+									m.finalizeInitialOpen();
 								}
 								, 'onError': function (e) {
 									if (fs.skip) {
