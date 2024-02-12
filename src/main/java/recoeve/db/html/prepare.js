@@ -1272,7 +1272,8 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		if (m.getUTF8Length(uri) > 255) {
 			try {
 				console.log(uri); // TODO: delete this.
-				uri = String(await m.getConciseURI(uri));
+				// uri = String(Object(await m.getConciseURI(uri)));
+				uri = await m.getConciseURI(uri);
 				console.log(uri); // TODO: delete this.
 			}
 			catch (err) {}
