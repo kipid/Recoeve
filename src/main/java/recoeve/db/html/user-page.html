@@ -923,12 +923,14 @@
 				</div>
 				<label for="input-desc">[--Description--]</label>
 				<div id="def-cmds">
+					<div id="preview-desc">[--Preview--]</div>
 					<div class="def-cmd">#related</div>
 					<div class="def-cmd">#lyrics</div>
 					<div id="formatting-lyrics">[--Formatting the lyrics--] (mainly from genius.com)</div>
 				</div>
 				<div id="def-descs"></div>
 				<textarea class="multi-line" id="input-desc" name="desc" placeholder="[--placeholder Description--]" tabindex="10"></textarea>
+				<div id="previewed-desc"></div>
 				<label for="input-cmt">[--Comment--]</label>
 				<textarea class="multi-line" id="input-cmt" name="cmt" placeholder="[--placeholder Comment--]" tabindex="11"></textarea>
 				<div id="my-reco"></div>
@@ -1769,6 +1771,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$formatting_lyrics = $("#formatting-lyrics");
 		$def_descs = $("#def-descs");
 		$input_desc = $("#input-desc");
+		$preview_desc = $("#preview-desc");
+		$previewed_desc = $("#previewed-desc");
 		$input_cmt = $("#input-cmt");
 		$input_val = $("#input-val");
 
@@ -3691,6 +3695,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			});
 		});
 
+		$preview_desc.on("click", function (e) {
+			let descR = m.renderStrDescCmt($input_desc[0].value);
+			$input_desc[0].value = m.descCmtRToString(descR);
+			$previewed_desc.html(m.descCmtRToHTML(descR));
+		});
 		$formatting_lyrics.on("click", function (e) {
 			let descR = m.renderStrDescCmt($input_desc[0].value);
 			let lyrics = descR["#lyrics"] || descR["#lyrics:"] || descR["#가사"] || descR["#가사:"];

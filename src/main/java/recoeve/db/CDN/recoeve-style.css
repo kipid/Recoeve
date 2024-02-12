@@ -693,12 +693,28 @@ textarea.multi-line {
 }
 
 #new-reco .def-cmd,
+#preview-desc,
 #formatting-lyrics {
 	display: inline-block;
 	margin: .2em 0;
 	border: 1px solid rgb(130, 130, 130);
 	padding: 1px .5em;
 	font-size: .9em
+}
+
+#formatting-lyrics {
+	border-color: rgb(130, 130, 200)
+}
+
+#preview-desc {
+	border-color: rgb(130, 200, 130)
+}
+
+#previewed-desc {
+	font-size: .8em;
+	height: auto;
+	max-height: 20em;
+	overflow-y: scroll
 }
 
 #javascript-disable {
