@@ -3662,7 +3662,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		return res.trim();
 	};
-	m.descCmtRToHTML = function (descCmtR) {
+	m.descCmtRToHTML = async function (descCmtR) {
 		let res = `<div class="desc">`;
 		for (let l = 0; l < descR.length; l++) {
 			let key = m.escapeOnlyTag(descR[l].key);
@@ -3697,7 +3697,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		res += `</div>`;
 		return res;
-	}
+	};
 	m.stashReco = function (event) {
 		let $target = $(event.target);
 		let $reco = $target.parents(".reco");
