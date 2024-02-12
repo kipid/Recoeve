@@ -811,7 +811,7 @@ window.m = window.m || {};
 			}).fail(function (resp) {
 				reject(resp);
 			}).done(function (resp) {
-				console.log(`resp: ${resp}`);
+				console.log(`/reco/getConciseURI ::\nuri: ${uri}\nresp: ${resp}`); // TODO: delete this.
 				resolve(resp);
 			})
 		});
