@@ -1282,7 +1282,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			let elem = $input_uri[0];
 			let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
 			if (elem.value !== uri) { elem.value = uri; }
-			let uriRendered = await uriRendering(uri, true);
+			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
 				elem.value = uri = m.formatURIFully(uri, uriRendered);
 			}
@@ -2414,7 +2414,7 @@ web	${m.sW}	${m.sH}`;
 					let uri = m.recoms[m.currentCat][iToNumber].uri;
 					let recoHTML = await m.recomHTML(m.userRecos[uri], inListPlay);
 					$reco_playing.html(String(recoHTML));
-					let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
+					let uriRendered = Object(await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR));
 					m.recoURIPlaying = uri;
 					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 						clearTimeout(m.setTimeoutCueOrLoadUri);
@@ -2428,7 +2428,7 @@ web	${m.sW}	${m.sH}`;
 					let r = fs.fullList[i].r;
 					let recoHTML = await m.recoHTML(r, inListPlay, true, false);
 					$reco_playing.html(String(recoHTML));
-					let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+					let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
 					m.recoURIPlaying = r?.uri;
 					if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 						clearTimeout(m.setTimeoutCueOrLoadUri);
@@ -3203,7 +3203,7 @@ web	${m.sW}	${m.sH}`;
 				}).fail(function (resp) {
 					resolve(resp);
 				}).done(async function (resp) {
-					let uriRendered = await uriRendering(resp, toA, inListPlay);
+					let uriRendered = Object(await uriRendering(resp, toA, inListPlay));
 					uriRendered.newURI = resp;
 					resolve(uriRendered);
 				});
@@ -3578,7 +3578,7 @@ web	${m.sW}	${m.sH}`;
 			let res = "";
 			while (exec !== null) {
 				res += m.escapeOnlyTag(str.substring(start, exec.index));
-				res += String((await uriRendering(m.formatURI(exec[0]), true, false)).html);
+				res += String(Object((await uriRendering(m.formatURI(exec[0]), true, false))).html);
 				start = ptnURL.lastIndex;
 				exec = ptnURL.exec(str);
 			}
@@ -3697,7 +3697,7 @@ web	${m.sW}	${m.sH}`;
 		}
 		res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
 		if (!inListPlay) {
-			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
 			res += String(uriRendered.html);
 		}
 		let recomsI = m.recoms[m.currentCat][r?.uri];
@@ -3779,7 +3779,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 <div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
 		if (!inListPlay) {
-			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
 			res += String(uriRendered.html);
 		}
 		res += `<div class="cBoth"></div>`;
