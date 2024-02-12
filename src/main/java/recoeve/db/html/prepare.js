@@ -1035,7 +1035,7 @@ window.m = window.m || {};
 	}
 	m.showDefs = async function (uri) {
 		return new Promise(async function (resolve, reject) {
-			uri = uri.trim();
+			uri = String(uri).trim();
 			if (m.getUTF8Length(uri) > 255) {
 				let conciseURI = String(await m.getConciseURI(uri));
 				conciseURI = conciseURI.trim();
