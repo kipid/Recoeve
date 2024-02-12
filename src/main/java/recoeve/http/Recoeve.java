@@ -706,7 +706,12 @@ public class Recoeve extends AbstractVerticle {
 									k += 3;
 									CompletableFuture<String> redirectedURI = recoeveWebClient.redirected(uri);
 									redirectedURI.thenAccept(result -> {
-										recoeveWebClient.findTitles(result, pl);
+										if (result == null) {
+											recoeveWebClient.findTitles(uri, pl);
+										}
+										else {
+											recoeveWebClient.findTitles(result, pl);
+										}
 									});
 								}
 								else {
