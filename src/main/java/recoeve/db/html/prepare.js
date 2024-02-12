@@ -3662,7 +3662,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		return res.trim();
 	};
-	m.descCmtRToHTML = async function (descCmtR) {
+	m.descCmtRToHTML = async function (descR) {
 		let res = `<div class="desc">`;
 		for (let l = 0; l < descR.length; l++) {
 			let key = m.escapeOnlyTag(descR[l].key);
