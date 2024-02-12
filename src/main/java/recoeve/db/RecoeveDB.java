@@ -365,6 +365,7 @@ public class RecoeveDB {
 				}
 				else {
 					System.err.println("MySQL connection error!");
+					res.cause().printStackTrace();
 				}
 			});
 		}

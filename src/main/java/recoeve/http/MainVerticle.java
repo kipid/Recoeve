@@ -20,7 +20,7 @@ public class MainVerticle extends AbstractVerticle {
 		vertx = getVertx();
 		fileMap = new FileMap(vertx);
 		fileMapWithVar = new FileMapWithVar();
-		recoeveWebClient = new RecoeveWebClient(vertx);
+		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		db = new RecoeveDB(vertx);
 		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db));
 		// vertx.deployVerticle(new UnderConstruction(vertx, db));

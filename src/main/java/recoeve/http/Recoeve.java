@@ -31,6 +31,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 // import java.sql.*;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,7 +214,7 @@ public class Recoeve extends AbstractVerticle {
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
 			pl.req.bodyHandler((Buffer data) -> {
-				String shortURI = data.toString();
+				final String shortURI = data.toString();
 				System.out.println(shortURI);
 				if (shortURI == null) {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
@@ -238,21 +239,32 @@ public class Recoeve extends AbstractVerticle {
 											// If the response is a redirect, so get the followedRedirects().
 											List<String> followedURIs = response.followedRedirects();
 											String fullURI = followedURIs.get(followedURIs.size() - 1);
-											System.out.println("Full redirected URL: " + fullURI);
+											if (fullURI != null && db.getutf8mb4Length(fullURI) > 255) {
+												fullURI = db.getConciseURI(fullURI);
+											}
+											System.out.println("Full redirected or concise URL: " + fullURI);
 											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 													.end(fullURI, ENCODING);
 										}
 										else {
-											System.out.println("Sended shortURI.");
+											String conciseURI = shortURI;
+											if (shortURI != null && db.getutf8mb4Length(shortURI) > 255) {
+												conciseURI = db.getConciseURI(shortURI);
+											}
+											System.out.println("Sended shortURI or conciseURI.");
 											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-													.end(shortURI, ENCODING);
+													.end(conciseURI, ENCODING);
 										}
 									})
 									.onFailure(throwable -> {
 										throwable.printStackTrace();
-										System.out.println("Sended shortURI.");
+										String conciseURI = shortURI;
+										if (shortURI != null && db.getutf8mb4Length(shortURI) > 255) {
+											conciseURI = db.getConciseURI(shortURI);
+										}
+										System.out.println("Sended shortURI or conciseURI.");
 										pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-												.end(shortURI, ENCODING);
+												.end(conciseURI, ENCODING);
 									});
 						} catch (URISyntaxException e) {
 							RecoeveDB.err(e);
@@ -301,7 +313,7 @@ public class Recoeve extends AbstractVerticle {
 				if (fileName != null && !fileName.isEmpty()) {
 					pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400
 																										// sec.
-					pl.req.response().putHeader("ETag", "1.7.19");
+					pl.req.response().putHeader("ETag", "1.7.20");
 					String[] fileNameSplit = fileName.split("\\.");
 					switch (fileNameSplit[fileNameSplit.length - 1]) {
 						case "ico":
@@ -384,10 +396,8 @@ public class Recoeve extends AbstractVerticle {
 				System.out.println("Sended user-page.html");
 			}
 			else {
-				pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // to
-																									// "/account/log-in".
-				System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be
-															// checked too.
+				pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING); // to "/account/log-in".
+				System.out.println("Sended log-in.html"); // redirecting to /account/log-in since rmbd cookie is to be checked too.
 			}
 		});
 
@@ -694,14 +704,10 @@ public class Recoeve extends AbstractVerticle {
 								}
 								if (uri.startsWith("://", k)) {
 									k += 3;
-									try {
-										URI uriAnalysed = new URI(recoeveWebClient.redirected(uri));
-										String uriHost = uriAnalysed.getHost();
-										System.out.println("uriHost: " + uriHost);
-										recoeveWebClient.findTitles(uriAnalysed.toString(), uriHost, pl);
-									} catch (URISyntaxException e) {
-										RecoeveDB.err(e);
-									}
+									CompletableFuture<String> redirectedURI = recoeveWebClient.redirected(uri);
+									redirectedURI.thenAccept(result -> {
+										recoeveWebClient.findTitles(result, pl);
+									});
 								}
 								else {
 									pl.req.response().end("No http-URI.", ENCODING);

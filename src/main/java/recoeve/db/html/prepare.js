@@ -1039,6 +1039,7 @@ window.m = window.m || {};
 			if (m.getUTF8Length(uri) > 255) {
 				let conciseURI = String(await m.getConciseURI(uri));
 				conciseURI = conciseURI.trim();
+				console.log(`conciseURI: ${conciseURI}`); // TODO: delete this.
 				if (uri !== conciseURI) {
 					let desc = $input_desc[0].value && $input_desc[0].value !== "undefined" ? $input_desc[0].value : "";
 					$input_desc[0].value = (`#originalURI\n${uri}\n\n${desc ? desc.trim() : ""}`).trim();
@@ -1052,8 +1053,8 @@ window.m = window.m || {};
 			let defTitles = recoDef.defTitles;
 			let defTitlesHTML = "";
 			if (!recoDef.heads) {
-				recoDef.heads = await m.getH1(uri);
-				recoDef.heads = Object(await m.strToJSON(String(recoDef.heads)));
+				recoDef.heads = String(await m.getH1(uri));
+				recoDef.heads = Object(await m.strToJSON(recoDef.heads));
 			}
 			defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
 ${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
@@ -1271,10 +1272,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 		if (m.getUTF8Length(uri) > 255) {
 			try {
-				console.log(uri); // TODO: delete this.
-				uri = String(Object(await m.getConciseURI(uri)));
-				// uri = await m.getConciseURI(uri);
-				console.log(uri); // TODO: delete this.
+				uri = String(await m.getConciseURI(uri));
 			}
 			catch (err) {}
 		}
