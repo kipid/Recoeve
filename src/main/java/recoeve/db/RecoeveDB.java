@@ -3906,8 +3906,6 @@ public class RecoeveDB {
 				long user_me = rsUser.getLong("i");
 				updateUserClass(rsUser.getInt("class"), -1);
 				updateEmailStat(userEmail.substring(userEmail.indexOf("@") + 1), -1);
-				pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
-				pstmtDeleteUserCatList.executeUpdate();
 				PreparedStatement pstmtGetAllRecosOfUser = con.prepareStatement(
 						"SELECT * FROM `Recos1` WHERE `user_i`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
@@ -3924,8 +3922,12 @@ public class RecoeveDB {
 					updateDefTitle(uri, title, -1);
 					updateDefDesc(uri, desc, -1);
 					updateRecoStat(user_me, uri, pts, tNow, -1);
-					rs.deleteRow();
+					String recoStr = "uri\tdo\n" + uri + "\tdelete";
+					recoDo(user_me, recoStr, tNow);
 				}
+				// CatList catL = getCatList(user_me);
+				// pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
+				// pstmtDeleteUserCatList.executeUpdate();
 				pstmtDelUserRemember.setLong(1, user_me);
 				pstmtDelUserRemember.executeUpdate();
 				pstmtDelUserSession1.setLong(1, user_me);
