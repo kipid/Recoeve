@@ -357,6 +357,7 @@ public class RecoeveDB {
 					// deleteUser("F@recoeve.net");
 					// deleteUser("G@recoeve.net");
 					// deleteUser("H@recoeve.net");
+					recoDo(100000000, "uri\tdo\n\tdelete", Timestamp.valueOf(now()));
 					return null;
 				}
 			},
