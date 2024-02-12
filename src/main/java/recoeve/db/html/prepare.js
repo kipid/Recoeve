@@ -1232,51 +1232,53 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 	};
 	m.formatURIFully = async function (uri, uriRendered) {
-		let from = String(uriRendered.from);
-		console.log(`uriRendered`, uriRendered, `uriRendered.from: ${uriRendered.from}\nuri: ${uri}`);
-		m.lastURI = uri;
-		switch (from) {
-			case "youtube":
-				uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
-				break;
-			case "youtube-list":
-				uri = `https://www.youtube.com/watch?list=${uriRendered.list}`;
-				break;
-			case "instagram":
-				uri = `https://www.instagram.com/p/${uriRendered.imgId}/`;
-				break;
-			case "tiktok":
-				uri = `https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
-				break;
-			case "weverse":
-				uri = `https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
-				break;
-			case "naver":
-				uri = `https://tv.naver.com/v/${uriRendered.videoId}`;
-				break;
-			case "vlive":
-				uri = `https://www.vlive.tv/video/${uriRendered.videoId}`;
-				break;
-			case "kakao":
-				uri = `https://tv.kakao.com/v/${uriRendered.videoId}`;
-				break;
-			case "ted":
-				uri = `https://www.ted.com/talks/${uriRendered.videoId}`;
-				break;
-			case "dailymotion":
-				uri = `https://www.dailymotion.com/video/${uriRendered.videoId}`;
-				break;
-			case "sogirl": case "topgirl":
-				uri = uriRendered.newURI;
-				break;
-		}
-		if (m.getUTF8Length(uri) > 255) {
-			try {
-				uri = String(await m.getConciseURI(uri));
+		return new Promise(function (resolve, reject) {
+			let from = String(uriRendered.from);
+			console.log(`uriRendered`, uriRendered, `uriRendered.from: ${uriRendered.from}\nuri: ${uri}`);
+			m.lastURI = uri;
+			switch (from) {
+				case "youtube":
+					uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
+					break;
+				case "youtube-list":
+					uri = `https://www.youtube.com/watch?list=${uriRendered.list}`;
+					break;
+				case "instagram":
+					uri = `https://www.instagram.com/p/${uriRendered.imgId}/`;
+					break;
+				case "tiktok":
+					uri = `https://www.tiktok.com/@${uriRendered.userId}/video/${uriRendered.videoId}`;
+					break;
+				case "weverse":
+					uri = `https://weverse.io/${uriRendered.singer}/artist/${uriRendered.videoId}`;
+					break;
+				case "naver":
+					uri = `https://tv.naver.com/v/${uriRendered.videoId}`;
+					break;
+				case "vlive":
+					uri = `https://www.vlive.tv/video/${uriRendered.videoId}`;
+					break;
+				case "kakao":
+					uri = `https://tv.kakao.com/v/${uriRendered.videoId}`;
+					break;
+				case "ted":
+					uri = `https://www.ted.com/talks/${uriRendered.videoId}`;
+					break;
+				case "dailymotion":
+					uri = `https://www.dailymotion.com/video/${uriRendered.videoId}`;
+					break;
+				case "sogirl": case "topgirl":
+					uri = uriRendered.newURI;
+					break;
 			}
-			catch (err) {}
-		}
-		return uri;
+			if (m.getUTF8Length(uri) > 255) {
+				try {
+					return resolve(String(await m.getConciseURI(uri)));
+				}
+				catch (err) {}
+			}
+			return resolve(uri);
+		});
 	};
 	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
 		return new Promise(async function (resolve, reject) {
@@ -1285,7 +1287,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			elem.value = uri;
 			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
-				elem.value = uri = m.formatURIFully(uri, uriRendered);
+				elem.value = uri = String(await m.formatURIFully(uri, uriRendered));
 			}
 			m.uri = uri;
 			$show_URI.html(String(uriRendered.html));
@@ -1391,7 +1393,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		return new Promise(async function (resolve, reject) {
 			if (saveNewRecoInputs) {
-				m.localStorage.setItem("uri", m.formatURIFully(String(await m.formatURI($input_uri[0].value))));
+				m.localStorage.setItem("uri", String(await m.formatURIFully(String(await m.formatURI($input_uri[0].value)))));
 				m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
 				m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
 				m.localStorage.setItem("desc", $input_desc[0].value.trim());
