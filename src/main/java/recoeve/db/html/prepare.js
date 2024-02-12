@@ -3663,43 +3663,46 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return res.trim();
 	};
 	m.descCmtRToHTML = async function (descR) {
-		let res = `<div class="desc">`;
-		for (let l = 0; l < descR.length; l++) {
-			let key = m.escapeOnlyTag(descR[l].key);
-			let val = m.escapeOnlyTag(descR[l].val);
-			switch (key.toLowerCase()) {
-				case "#start": case "#end": case "#": case "": default:
-					res += `<div class="value">${key} ${val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
-					break;
-				case "#lyrics": case "#lyrics:":
-				case "#lyric": case "#lyric:":
-				case "#가사": case "#가사:":
-					res += `<div class="value">
-<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
-<div class="lyricsC" style="display:none">
-<div class="lyricsArrow"></div>
-<div class="lyrics">${val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
-<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
-</div>
-</div>`;
-					break;
-				case "#related": case "#related:":
-				case "#originaluri": case "#originaluri:":
-					res += `<div class="value"><span class="key">${key}</span>:`;
-					let relateds = val.split("\n");
-					for (let p = 0; p < relateds.length; p++) {
-						res += '<br>';
-						try {
-							res += String(await relatedRendering(relateds[p]));
+		return Promise(async function (resolve, reject) {
+			let res = `<div class="desc">`;
+			for (let l = 0; l < descR.length; l++) {
+				let key = m.escapeOnlyTag(descR[l].key);
+				let val = m.escapeOnlyTag(descR[l].val);
+				switch (key.toLowerCase()) {
+					case "#start": case "#end":
+					case "#": case "": default:
+						res += `<div class="value"><span class="key">${key}</span> ${val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+						break;
+					case "#lyrics": case "#lyrics:":
+					case "#lyric": case "#lyric:":
+					case "#가사": case "#가사:":
+						res += `<div class="value">
+	<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
+	<div class="lyricsC" style="display:none">
+	<div class="lyricsArrow"></div>
+	<div class="lyrics">${val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
+	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+	</div>
+	</div>`;
+						break;
+					case "#related": case "#related:":
+					case "#originaluri": case "#originaluri:":
+						res += `<div class="value"><span class="key">${key}</span> `;
+						let relateds = val.split("\n");
+						for (let p = 0; p < relateds.length; p++) {
+							res += '<br>';
+							try {
+								res += String(await relatedRendering(relateds[p]));
+							}
+							catch (err) {}
 						}
-						catch (err) {}
-					}
-					res += `</div>`;
-					break;
+						res += `</div>`;
+						break;
+				}
 			}
-		}
-		res += `</div>`;
-		return res;
+			res += `</div>`;
+			return resolve(res);
+		});
 	};
 	m.stashReco = function (event) {
 		let $target = $(event.target);
@@ -3791,7 +3794,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
 			let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
-			res += String(m.descCmtRToHTML(descR));
+			res += String(await m.descCmtRToHTML(descR));
 		}
 		if (recomsI?.cmtsHTML) {
 			res += recomsI.cmtsHTML;
@@ -3842,7 +3845,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (r.desc) {
 			let descR = r.descR;
-			res += String(m.descCmtRToHTML(descR));
+			res += String(await m.descCmtRToHTML(descR));
 		}
 		res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
 		res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
