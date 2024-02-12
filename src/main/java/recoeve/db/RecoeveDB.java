@@ -3925,9 +3925,8 @@ public class RecoeveDB {
 					String recoStr = "uri\tdo\n" + uri + "\tdelete";
 					recoDo(user_me, recoStr, tNow);
 				}
-				// CatList catL = getCatList(user_me);
-				// pstmtDeleteUserCatList.setLong(1, rsUser.getLong("i"));
-				// pstmtDeleteUserCatList.executeUpdate();
+				pstmtDeleteUserCatList.setLong(1, user_me);
+				pstmtDeleteUserCatList.executeUpdate();
 				pstmtDelUserRemember.setLong(1, user_me);
 				pstmtDelUserRemember.executeUpdate();
 				pstmtDelUserSession1.setLong(1, user_me);
