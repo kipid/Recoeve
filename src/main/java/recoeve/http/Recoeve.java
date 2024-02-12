@@ -209,7 +209,7 @@ public class Recoeve extends AbstractVerticle {
 			});
 		});
 
-		router0.post("/BlogStat/getFullURI").handler(ctx -> { // e.g. path=/getFullURI
+		router0.post("/BlogStat/getFullURI").handler(ctx -> { // e.g. path=/BlogStat/getFullURI
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
 			pl.req.bodyHandler((Buffer data) -> {
@@ -238,7 +238,7 @@ public class Recoeve extends AbstractVerticle {
 											// If the response is a redirect, so get the followedRedirects().
 											List<String> followedURIs = response.followedRedirects();
 											String fullURI = followedURIs.get(followedURIs.size() - 1);
-											System.out.println("Full TikTok URL: " + fullURI);
+											System.out.println("Full redirected URL: " + fullURI);
 											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 													.end(fullURI, ENCODING);
 										}
