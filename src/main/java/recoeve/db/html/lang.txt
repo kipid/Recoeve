@@ -80,6 +80,7 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Stash--]	114	Stash	치우기	藏	除去	Versteck	Planque	Reserva	छिपाने की जगह	خبأ	Esconder	Тайник
 [--Stashed--]	114	Stashed	치워진	藏匿	削除	Versteckt	Caché	Escondido	रखे	مخبأ	Escondido	Спрятан
 [--Unknown--]	114	Unknown	모르는	未知	わかりません	Unbekannt	Inconnu	Desconocido	अज्ञात	مجهول	Desconhecido	Неизвестный
+[--Formatting the lyrics--]	115	Formatting the lyrics	가사 포멧화하기	格式化歌词	歌詞のフォーマット	Formatieren der Texte	Formatage des paroles	Formateo de la letra	गीतों को प्रारूपित करना	تنسيق كلمات	Formatando a letra	Форматирование текста
 [--Toggle Recoeve.net Manual--]	115	Toggle Recoeve.net Manual	Recoeve.net 설명서 보이기/숨기기	toggle recoeve.net手册	Recoe.net訪問/非表示	Schaltet recoeve.net Handbuch	Toggle REVOEVE.NET Manuel	Alternar recoeve.net manual	टॉगल recoeve.net मैनुअल	تبديل recoeve.net دليل	Alternar o manual do RECOEVE.NET	Toggle Recoeve.net Руководство
 [--Showing Recoeve.net Manual--]	116	Showing Recoeve.net Manual	Recoeve.net 설명서 보이고 있음	显示recoeve.net手册	recoe.netマニュアル	Recoeve.net -Handbuch anzeigen	Affichage du manuel Reoeve.net	Mostrar manual de recoeve.net	Recoeve.net मैनुअल दिखा रहा है	تظهر دليل recoeve.net	Mostrando o Manual do RECOEVE.NET	Показывая ручное руководство Recoeve.net
 [--Hiding Recoeve.net Manual--]	117	Hiding Recoeve.net Manual	Recoeve.net 설명서 숨겨져 있음	隐藏recoeve.net手册	Recoe.netマニュアルが隠されています	HIDIERENDE RECOEVE.NET -Handbuch	Cacher le manuel Reoeve.net	Ocultación manual de recoeve.net	छिपाना recoeve.net मैनुअल	إخفاء اليدوي recoeve.net	Escondendo o manual do RECOEVE.NET	Скрытие ручной работы .NET
