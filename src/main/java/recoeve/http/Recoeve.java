@@ -704,15 +704,7 @@ public class Recoeve extends AbstractVerticle {
 								}
 								if (uri.startsWith("://", k)) {
 									k += 3;
-									CompletableFuture<String> redirectedURI = recoeveWebClient.redirected(uri);
-									redirectedURI.thenAccept(result -> {
-										if (result == null) {
-											recoeveWebClient.findTitles(uri, pl);
-										}
-										else {
-											recoeveWebClient.findTitles(result, pl);
-										}
-									});
+									recoeveWebClient.findTitles(uri, pl);
 								}
 								else {
 									pl.req.response().end("No http-URI.", ENCODING);
