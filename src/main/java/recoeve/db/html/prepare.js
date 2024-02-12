@@ -1281,7 +1281,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.getAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
 		return new Promise(async function (resolve, reject) {
 			let elem = $input_uri[0];
-			let uri = noFormatURI ? elem.value : m.formatURI(elem.value);
+			let uri = noFormatURI ? elem.value : String(await m.formatURI(elem.value));
 			elem.value = uri;
 			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
@@ -1392,7 +1392,7 @@ web	${m.sW}	${m.sH}`;
 	m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		return new Promise(function (resolve, reject) {
 			if (saveNewRecoInputs) {
-				m.localStorage.setItem("uri", m.formatURI($input_uri[0].value));
+				m.localStorage.setItem("uri", String(await m.formatURI($input_uri[0].value)));
 				m.localStorage.setItem("title", m.formatTitle($input_title[0].value.trim()));
 				m.localStorage.setItem("cats", m.formatCats($input_cats[0].value.trim()));
 				m.localStorage.setItem("desc", $input_desc[0].value.trim());
@@ -2927,34 +2927,36 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.ptnPureNumber = /^\d+$/;
 	m.formatURI = async function (uri) {
-		if (uri && uri.constructor === String) {
-			uri = uri.trim().replace(/[\s\t\n]+/g, " ");
-			let exec = m.ptnTag.exec(uri);
-			if (exec !== null) {
-				try {
-					let $uri = $(uri);
-					let src = $uri.attr("src");
-					if (src) {
-						uri = src;
+		return new Promise(async function () {
+			if (uri && uri.constructor === String) {
+				uri = uri.trim().replace(/[\s\t\n]+/g, " ");
+				let exec = m.ptnTag.exec(uri);
+				if (exec !== null) {
+					try {
+						let $uri = $(uri);
+						let src = $uri.attr("src");
+						if (src) {
+							uri = src;
+						}
+						else {
+							src = $uri.find("[src]").attr("src");
+							if (src) { uri = src; }
+						}
+					} catch (err) {
+						console.log(err);
 					}
-					else {
-						src = $uri.find("[src]").attr("src");
-						if (src) { uri = src; }
-					}
-				} catch (err) {
-					console.log(err);
 				}
+				exec = m.ptnPureNumber.exec(uri);
+				if (exec !== null) {
+					uri = "Number: " + uri;
+				}
+				if (m.getUTF8Length(uri) > 255) {
+					return resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
+				}
+				return resolve(m.unescapeHTML(uri).trim());
 			}
-			exec = m.ptnPureNumber.exec(uri);
-			if (exec !== null) {
-				uri = "Number: " + uri;
-			}
-			if (m.getUTF8Length(uri) > 255) {
-				return m.unescapeHTML(String(await m.getConciseURI(uri)));
-			}
-			return m.unescapeHTML(uri).trim();
-		}
-		return "";
+			return resolve("");
+		});
 	};
 	m.formatTitle = function (title) {
 		return title.trim().replace(/[\t\r\n]/g, " ");
@@ -3576,7 +3578,7 @@ web	${m.sW}	${m.sH}`;
 			let res = "";
 			while (exec !== null) {
 				res += m.escapeOnlyTag(str.substring(start, exec.index));
-				res += String(Object((await uriRendering(m.formatURI(exec[0]), true, false))).html);
+				res += String(Object((await uriRendering(String(await m.formatURI(exec[0])), true, false))).html);
 				start = ptnURL.lastIndex;
 				exec = ptnURL.exec(str);
 			}
