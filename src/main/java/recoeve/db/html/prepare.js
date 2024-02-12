@@ -2927,7 +2927,7 @@ web	${m.sW}	${m.sH}`;
 	};
 	m.ptnPureNumber = /^\d+$/;
 	m.formatURI = async function (uri) {
-		return new Promise(async function () {
+		return new Promise(async function (resolve, reject) {
 			if (uri && uri.constructor === String) {
 				uri = uri.trim().replace(/[\s\t\n]+/g, " ");
 				let exec = m.ptnTag.exec(uri);
