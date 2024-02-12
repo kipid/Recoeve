@@ -675,7 +675,7 @@ public class Recoeve extends AbstractVerticle {
 								System.out.println("uri is null.");
 							}
 							else {
-								pl.req.response().end(recoeveWebClient.redirected(uri), ENCODING);
+								pl.req.response().end(db.getConciseURI(uri), ENCODING);
 							}
 						});
 						break;

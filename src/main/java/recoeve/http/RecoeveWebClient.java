@@ -119,11 +119,11 @@ public class RecoeveWebClient {
 						Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
 						Elements naverElements = document.select(".se-fs-");
 
-						String heads = "";
-						String contents = "";
+						String heads = "redirectedURI";
+						String contents = fullURI;
 						if (!titleElements.isEmpty()) {
-							heads += "title";
-							contents += titleElements.first().text();
+							heads += "\ttitle";
+							contents += "\t" + titleElements.first().text();
 						}
 						if (!h1Elements.isEmpty()) {
 							heads += "\th1";
