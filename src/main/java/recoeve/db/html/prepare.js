@@ -1222,7 +1222,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.formatURIFully = async function (uri, uriRendered) {
 		return new Promise(async function (resolve, reject) {
 			let from = String(uriRendered?.from);
-			console.log(`uriRendered`, uriRendered, `uriRendered.from: ${uriRendered.from}\nuri: ${uri}`);
+			console.log(`uriRendered`, uriRendered, `uriRendered.from: ${from}\nuri: ${uri}`);
 			m.lastURI = uri;
 			switch (from) {
 				case "youtube":
