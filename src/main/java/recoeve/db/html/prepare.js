@@ -3393,7 +3393,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	ptnURI = m.ptnURI["gall.dcinside.com"] = {};
 	ptnURI.regEx = /\/movie\/share_movie(\?\S+)/i;
 	ptnURI.regEx1 = /\/poll\/vote(\?\S+)/i;
-	https://gall.dcinside.com/board/poll/vote?no=710233
+	// https://gall.dcinside.com/board/poll/vote?no=710233
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
@@ -3420,6 +3420,9 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			return reject(false);
 		});
 	};
+
+	ptnURI = m.ptnURI["v.qq.com"] = {};
+	ptnURI.regEx = /([\w\d]+).html$/i;
 
 	ptnURI = m.ptnURI[0] = {};
 	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
@@ -3468,12 +3471,12 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[2].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: `<a target="_blank" href="https://kr60.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr60.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr60.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+				return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 			}
 			else {
 				exec = m.ptnURI[2].regEx1.exec(uri);
 				if (exec !== null) {
-					return resolve({ html: `<a target="_blank" href="https://kr60.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr60.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr60.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+					return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 				}
 				else {
 					return reject(false);
