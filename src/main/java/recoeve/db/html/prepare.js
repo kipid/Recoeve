@@ -3422,7 +3422,19 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 
 	ptnURI = m.ptnURI["v.qq.com"] = {};
-	ptnURI.regEx = /([\w\d]+).html$/i;
+	ptnURI.regEx = /([\w\d]+)\/([\w\d]+).html$/i;
+	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
+		return new Promise(function (resolve, reject) {
+			let exec = m.ptnURI["v.qq.com"].regEx.exec(uriRest);
+			if (exec !== null) {
+				let v = exec[2];
+				if (v) {
+					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
+				}
+			}
+			return reject(false);
+		});
+	};
 
 	ptnURI = m.ptnURI[0] = {};
 	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
