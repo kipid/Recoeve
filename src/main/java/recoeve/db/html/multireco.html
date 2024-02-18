@@ -298,17 +298,32 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let recosJSON = await m.strToJSON($textarea_recos[0].value);
 			for (let i = 1; i < recosJSON.length; i++) {
 				let recosJSONi = recosJSON[i];
-				if (recosJSONi.uri) {
-					recosJSONi.uri = String(await m.formatURIFully(String(await m.formatURI(recosJSONi.uri))));
-				}
+				let originalURI = String(await m.formatURI(recosJSONi.uri, true));
+				let uriRendered = Object(await uriRendering(originalURI, true));
+				let uri = recosJSONi.uri = String(await m.formatURIFully(originalURI, uriRendered));
 				if (recosJSONi.title) {
 					recosJSONi.title = m.formatTitle(recosJSONi.title);
 				}
 				if (recosJSONi.cats) {
 					recosJSONi.cats = m.formatCats(recosJSONi.cats);
 				}
-				if (recosJSONi.desc) {
-					recosJSONi.desc = m.descCmtRToString(m.renderStrDescCmt(recosJSONi.desc.trim()));
+				if (!recosJSONi.desc) {
+					recosJSONi.desc = "";
+				}
+				let descR = recosJSONi.descR = m.renderStrDescCmt(recosJSONi.desc.trim());
+				if (originalURI !== uri) {
+					if (descR["#originaluri"]) {
+						descR["#originaluri"].key = "#originalURI";
+						descR["#originaluri"].val = `\n${originalURI}\n`;
+					}
+					else {
+						descR["#originaluri"] = { key: "#originalURI", val: `\n${originalURI}\n` };
+						descR.splice(0, 0, descR["#originaluri"]);
+						for (let i = 0; i < descR.length; i++) {
+							descR[i].i = i;
+						}
+					}
+					recosJSONi.desc = m.descCmtRToString(descR);
 				}
 			}
 			let strRecoDo = String(await m.JSONtoStrRev(recosJSON));
