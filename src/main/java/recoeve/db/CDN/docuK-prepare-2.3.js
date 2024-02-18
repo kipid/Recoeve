@@ -115,18 +115,27 @@ window.m = {};
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
-	m.ptnURL = /^https?:\/\/\S+/i;
-	m.ptnTag = /^<\w+[\s\S]+>$/i;
+	m.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
+	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
+	m.ptnTag = /^<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
 	m.uriToA = function (uri) {
-		if (!uri || uri.constructor !== String) { return ""; }
+		if (!uri || uri.constructor !== String) {
+			uri = String(uri);
+		}
 		let exec = m.ptnURL.exec(uri);
 		if (exec !== null) {
-			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri)).replace(/[\n\s\t\r]/g, " ")}</a>`;
+			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
 		}
 		else {
-			return m.escapeOnlyTag(uri);
+			exec = m.ptnFILE.exec(uri);
+			if (exec !== null) {
+				return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
+			}
+			else {
+				return m.escapeOnlyTag(uri);
+			}
 		}
 	};
 	m.videoZIndex = 10000;
@@ -141,44 +150,71 @@ window.m = {};
 			m.fsToRs.fixed = false;
 		}
 		else {
+			window.scrollBy({ left: 0, top: -$parent.height(), behavior: "smooth" });
 			$parent.addClass("fixed");
-			$parent.css("z-index", m.videoZIndex--);
-			window.scrollBy(0, -$parent.height());
+			let $z = $parent.find(".z-index");
+			let zIndex = m.videoZIndex;
+			if ($z.length) {
+				zIndex = parseInt($z.html());
+			}
+			else {
+				$elem.before(`<span class="none z-index">${m.videoZIndex}</span>`);
+				m.videoZIndex--;
+			}
+			$parent.css("z-index", zIndex);
 			$elem.text("▲ [--return to the original position--]");
 			m.fsToRs.fixed = true;
 		}
 	};
 	m.rC = function (elemStr, option, id, noPc) {
-		return `<div class="rC${(option ? ` ${option}` : '')}"${id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
+		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 	};
-	m.YTiframe = function (v, inListPlay) {
-		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=https://recoeve.net" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
+	m.YTiframe = function (v, inListPlay, config, list) {
+		if (list && list.constructor === String) {
+			return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/videoseries?list=${list}&origin=${window.location.origin}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null))
+		}
+		return m.rC(`<iframe delayed-src="https://www.youtube.com/embed/${v}?origin=${window.location.origin}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null));
 	};
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live|shorts)?\/?([\w\-]+)?(\?\S+)?/i;
-	ptnURI.regEx1 = /^([\w\-]+)(\?\S+)?/i;
-	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
+	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)?\/?([\w\-]+)?(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
+	ptnURI.regEx1 = /^([\w\-]+)(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
+	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
+			let config = {};
+			if (descR) {
+				if (descR["#start"]?.val) {
+					config.startSeconds = config.start = m.timeToSeconds(descR["#start"].val.trim());
+				}
+				if (descR["#end"]?.val) {
+					config.endSeconds = config.end = m.timeToSeconds(descR["#end"].val.trim());
+				}
+			}
 			let exec = m.ptnURI["www.youtube.com"].regEx.exec(uriRest);
 			if (exec !== null) {
 				let vars = null;
 				if (exec[2]) { vars = m.getSearchVars(exec[2]); }
 				let v = null;
+				let list = null;
 				if (exec[1]) {
 					v = exec[1];
 				}
 				if (vars?.v?.val) {
 					v = vars.v.val;
 				}
+				if (vars?.list?.val) {
+					list = vars?.list?.val;
+				}
+				if (list) {
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+				}
 				if (v) {
-					let list = vars?.list?.val;
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
-				exec = m.ptnURI["youtu.be"].regEx1.exec(uriRest);
+				exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
 				if (exec !== null) {
 					let v = exec[1];
 					let vars = null;
@@ -192,10 +228,15 @@ window.m = {};
 							v = vars.v.val;
 						}
 					}
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay), from: "youtube", videoId: v, list });
+					if (list) {
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					}
+					if (v) {
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					}
 				}
 			}
-			return reject(false);
+			reject(false);
 		});
 	};
 
@@ -247,7 +288,7 @@ window.m = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${encodeURIComponent(window.location.href)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
@@ -266,9 +307,8 @@ window.m = {};
 					type: "POST", url: "https://recoeve.net/BlogStat/getFullURI", data: shortURI, dataType: "text"
 				}).fail(function (resp) {
 					resolve(resp);
-					// throw new Error("Failed to expand TikTok URL");
 				}).done(async function (resp) {
-					let uriRendered = await uriRendering(resp, toA, inListPlay);
+					let uriRendered = Object(await uriRendering(resp, toA, inListPlay));
 					uriRendered.newURI = resp;
 					resolve(uriRendered);
 				});
@@ -446,7 +486,7 @@ window.m = {};
 	ptnURI = m.ptnURI["gall.dcinside.com"] = {};
 	ptnURI.regEx = /\/movie\/share_movie(\?\S+)/i;
 	ptnURI.regEx1 = /\/poll\/vote(\?\S+)/i;
-	https://gall.dcinside.com/board/poll/vote?no=710233
+	// https://gall.dcinside.com/board/poll/vote?no=710233
 	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
@@ -474,8 +514,23 @@ window.m = {};
 		});
 	};
 
+	ptnURI = m.ptnURI["v.qq.com"] = {};
+	ptnURI.regEx = /([\w\d]+)\/([\w\d]+).html$/i;
+	ptnURI.toIframe = function (uriRest, inListPlay, toA) {
+		return new Promise(function (resolve, reject) {
+			let exec = m.ptnURI["v.qq.com"].regEx.exec(uriRest);
+			if (exec !== null) {
+				let v = exec[2];
+				if (v) {
+					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
+				}
+			}
+			return reject(false);
+		});
+	};
+
 	ptnURI = m.ptnURI[0] = {};
-	ptnURI.regEx = /^(https?:\/\/\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
@@ -489,12 +544,24 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[1] = {};
-	ptnURI.regEx = /^https?:\/\/\S+\.(?:mp4|ogg|webm|avi)(?=$|\?|\s)/i;
-	ptnURI.toIframe = function (uri, inListPlay, toA) {
+	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avif|avi)(?=$|\?|\s)/i;
+	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
+			let config = {};
+			if (descR) {
+				if (descR["#start"]?.val) {
+					config.start = m.timeToSeconds(descR["#start"].val.trim());
+				}
+				if (descR["#end"]?.val) {
+					config.end = m.timeToSeconds(descR["#end"].val.trim());
+				}
+				if (config.start || config.end) {
+					config.hash = `${config.start ? `#t=${config.start}` : "#t=0"}${config.end ? `,${config.end}` : ""}`;
+				}
+			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
 			}
 			else {
 				return reject(false);
@@ -503,18 +570,18 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[2] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/\S*)?/i;
-	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/\S*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
+	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[2].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: `<a target="_blank" href="https://kr57.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr57.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr57.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+				return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 			}
 			else {
 				exec = m.ptnURI[2].regEx1.exec(uri);
 				if (exec !== null) {
-					return resolve({ html: `<a target="_blank" href="https://kr57.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr57.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr57.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+					return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 				}
 				else {
 					return reject(false);
@@ -524,7 +591,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[3] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/\S*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[3].regEx.exec(uri);
@@ -538,9 +605,9 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[4] = {};
-	ptnURI.regEx = /^file:\/\/\/(\S+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
-	ptnURI.regEx1 = /^file:\/\/\/(\S+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
-	ptnURI.regEx2 = /^file:\/\/\/(\S+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx1 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
+	ptnURI.regEx2 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[4].regEx.exec(uri);
@@ -570,50 +637,40 @@ window.m = {};
 		});
 	};
 
-	window.uriRendering = function (uri, toA, inListPlay) {
+	window.uriRendering = function (uri, toA, inListPlay, descR) {
 		return new Promise(async function (resolve, reject) {
 			if (uri?.constructor === String) {
 				if (uri.length > 6) {
+					uri = m.unescapeHTML(uri);
 					if (uri.substring(0, 4).toLowerCase() === "http") {
 						let k = 4;
 						if (uri.charAt(k).toLowerCase() === 's') {
 							k++;
 						}
 						if (uri.substring(k, k + 3) === "://") {
+							let uriAnalysed = new URL(uri);
 							k += 3;
-							let l = uri.indexOf('/', k);
-							let uriHost = null;
-							let uriRest = '';
-							if (l === -1) {
-								uriHost = uri.substring(k);
-							}
-							else {
-								uriHost = uri.substring(k, l);
-								uriRest = uri.substring(l + 1);
-							}
+							let uriHost = uriAnalysed.host;
+							let uriRest = uriAnalysed.pathname.substring(1) + uriAnalysed.search + uriAnalysed.hash;
 							if (m.ptnURI[uriHost]) {
 								try {
-									let result = await m.ptnURI[uriHost].toIframe(uriRest, inListPlay, toA);
-									if (Boolean(result) !== false && (!result.list)) {
+									let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
+									if (Boolean(result) !== false) {
 										return resolve(result);
 									}
 								}
-								catch (error) {
-									// continue.
-								}
+								catch (error) {}
 							}
 						}
 					}
 					for (let i = 0; i < m.ptnURI.length; i++) {
 						try {
-							let result = await m.ptnURI[i].toIframe(uri, inListPlay, toA); // img or video
+							let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR); // img or video
 							if (Boolean(result) !== false) {
 								return resolve(result);
 							}
 						}
-						catch (error) {
-							// continue.
-						}
+						catch (error) {}
 					}
 					if (toA) {
 						return resolve({ html: m.uriToA(uri) });
@@ -624,6 +681,25 @@ window.m = {};
 				}
 			}
 			return resolve({ html: "" });
+		});
+	};
+	window.relatedRendering = function (str) {
+		return new Promise(async function (resolve, reject) {
+			if (!str || str.constructor !== String) {
+				str = String(str);
+			}
+			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
+			let exec = ptnURL.exec(str);
+			let start = 0;
+			let res = "";
+			while (exec !== null) {
+				res += m.escapeOnlyTag(str.substring(start, exec.index));
+				res += String(Object((await uriRendering(String(await m.formatURI(exec[0], true)), true, false))).html);
+				start = ptnURL.lastIndex;
+				exec = ptnURL.exec(str);
+			}
+			res += m.escapeOnlyTag(str.substring(start));
+			resolve(res);
 		});
 	};
 

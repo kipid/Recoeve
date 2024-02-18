@@ -78,11 +78,6 @@ window.m = window.m || {};
 	m.ptnTag = /^<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
-	window.awaitAll = async function (promises) {
-		const results = await Promise.all(promises);
-		return results;
-	}
-
 	m.getSearchVars = function (searchStr) {
 		let vars = [];
 		if (searchStr !== null && searchStr !== undefined && searchStr.constructor === String && searchStr.length !== 0) {
@@ -3030,15 +3025,17 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 
 	m.uriToA = function (uri) {
-		if (!uri || uri.constructor !== String) { return ""; }
+		if (!uri || uri.constructor !== String) {
+			uri = String(uri);
+		}
 		let exec = m.ptnURL.exec(uri);
 		if (exec !== null) {
-			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
+			return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
 		}
 		else {
 			exec = m.ptnFILE.exec(uri);
 			if (exec !== null) {
-				return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>`;
+				return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
 			}
 			else {
 				return m.escapeOnlyTag(uri);
@@ -3437,7 +3434,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 
 	ptnURI = m.ptnURI[0] = {};
-	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
@@ -3451,7 +3448,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	};
 
 	ptnURI = m.ptnURI[1] = {};
-	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|webp|avi)(?=$|\?|\s)/i;
+	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avif|avi)(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
@@ -3608,7 +3605,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			res += m.escapeOnlyTag(str.substring(start));
 			resolve(res);
 		});
-	}
+	};
 
 	////////////////////////////////////////////////////
 	// slide element.
