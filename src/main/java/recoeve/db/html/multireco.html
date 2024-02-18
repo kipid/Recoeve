@@ -11,7 +11,7 @@
 		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes" />
 	<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
 	<meta name="google-adsense-account" content="ca-pub-9843810906985249">
-	<title>Recoeve.net</title>
+	<title>Multireco</title>
 	<link rel="stylesheet" href="/CDN/recoeve-style.css">
 	<script src="/CDN/jquery.js"></script>
 	<script src="/prepare.js"></script>
@@ -65,10 +65,8 @@
 			<div class="button" id="choose-lang">▼ Language/언어/語言</div>
 		</div>
 		<div class="cBoth"></div>
-		<data id="data-lang">en ko zh ja de fr es hi ar ru
-			English/영어/英語/en Korean/한국어/韓語/ko Chinese/중국어(번체)/中文/zh Japanese/일본어/日語/ja deutsche Sprache/독일어/Deutsch/de
-			Français/French/프랑스어/佛語/fr Español/Spanish/스페인어/西班牙語/es हिन्दी/Hindi/힌디어/印地语/hi اللغة العربية/ar
-			Русский/Russian/러시아어/俄語/ru</data>
+		<data id="data-lang">en	ko	zh	ja	de	fr	es	hi	ar	pt	ru
+English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/中文/zh	Japanese/일본어/日語/ja	deutsche Sprache/독일어/Deutsch/de	Français/French/프랑스어/佛語/fr	Español/Spanish/스페인어/西班牙語/es	हिन्दी/Hindi/힌디어/印地语/hi	اللغة العربية/ar	Português/Portuguese/포르투갈어/葡萄牙語/pt	Русский/Russian/러시아어/俄語/ru</data>
 		<div id="choose-lang-list" style="border:solid 1px gray; display:none"></div>
 		<div class="cBoth"></div>
 		<div>Ref: <a target="_blank"
@@ -289,6 +287,7 @@
 			}).done(async function (resp) {
 				clearInterval(m.deleyedLogOutInterval);
 				clearTimeout(m.deleyedLogOutTimeout);
+				console.log(resp);
 				let res = await m.strToJSON(resp);
 				$error.html(m.arrayToTableHTML(res));
 			}).always(function () {
@@ -300,7 +299,7 @@
 			for (let i = 1; i < recosJSON.length; i++) {
 				let recosJSONi = recosJSON[i];
 				if (recosJSONi.uri) {
-					recosJSONi.uri = m.formatURI(recosJSONi.uri);
+					recosJSONi.uri = String(await m.formatURIFully(String(await m.formatURI(recosJSONi.uri))));
 				}
 				if (recosJSONi.title) {
 					recosJSONi.title = m.formatTitle(recosJSONi.title);
@@ -308,9 +307,12 @@
 				if (recosJSONi.cats) {
 					recosJSONi.cats = m.formatCats(recosJSONi.cats);
 				}
+				if (recosJSONi.desc) {
+					recosJSONi.desc = m.descCmtRToString(m.renderStrDescCmt(recosJSONi.desc.trim()));
+				}
 			}
-			let strRecoDo = await m.JSONtoStrRev(recosJSON);
-			m.rmb_me(m.reco_do, { strRecoDo: String(strRecoDo) });
+			let strRecoDo = String(await m.JSONtoStrRev(recosJSON));
+			m.rmb_me(m.reco_do, { strRecoDo: strRecoDo });
 		});
 
 		m.processShortKey = function (e) {

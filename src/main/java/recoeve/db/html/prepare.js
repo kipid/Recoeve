@@ -473,14 +473,16 @@ window.m = window.m || {};
 	// String to Array
 	////////////////////////////
 	m.encloseStr = function (str) {
-		if (!str || str.constructor !== String) { return ''; }
+		if (!str || str.constructor !== String) {
+			str = String(str);
+		}
 		if (str.charAt(0) === '"' || /[\n\t]/.test(str)) {
 			return `"${str.replace(/"/g, '""')}"`;
 		} return str;
 	};
 	m.strToJSON = function (str, colMap = true, rowMap = false) {
 		if (!str || str.constructor !== String) {
-			return Promise.resolve(str);
+			str = String(str);
 		}
 		if (str.charAt(str.length - 1) !== "\n") {
 			str += "\n";
@@ -554,7 +556,7 @@ window.m = window.m || {};
 	};
 	m.csvToJSON = function (str, colMap = true, rowMap = false) {
 		if (!str || str.constructor !== String) {
-			return Promise.resolve(str);
+			str = String(str);
 		}
 		let rows = str.split("\n");
 		for (let i = 0; i < rows.length; i++) {
@@ -588,6 +590,9 @@ window.m = window.m || {};
 		return Promise.resolve(rows);
 	};
 	m.arrayToTableHTML = function (txtArray) {
+		if (!txtArray || txtArray.constructor !== Array) {
+			return "";
+		}
 		let tableStr = "<table>";
 		for (let row = 0; row < txtArray.length; row++) {
 			tableStr += "<tr>";
@@ -599,30 +604,33 @@ window.m = window.m || {};
 		tableStr += "</table>";
 		return tableStr;
 	};
-	m.JSONtoStr = function (JSON) {
-		let res = m.encloseStr(JSON[0][0]);
-		for (let j = 1; j < JSON[0].length; j++) {
-			res += "\t" + m.encloseStr(JSON[0][j]);
+	m.JSONtoStr = function (json) {
+		if (!json || json.constructor !== Array) {
+			return "";
 		}
-		for (let i = 1; i < JSON.length; i++) {
-			res += "\n" + m.encloseStr(JSON[i][JSON[0][0]]);
-			let jMax = JSON[0].length < JSON[i].length ? JSON[0].length : JSON[i].length;
+		let res = m.encloseStr(json[0][0]);
+		for (let j = 1; j < json[0].length; j++) {
+			res += "\t" + m.encloseStr(json[0][j]);
+		}
+		for (let i = 1; i < json.length; i++) {
+			res += "\n" + m.encloseStr(json[i][json[0][0]]);
+			let jMax = json[0].length < json[i].length ? json[0].length : json[i].length;
 			for (let j = 1; j < jMax; j++) {
-				res += "\t" + m.encloseStr(JSON[i][JSON[0][j]]);
+				res += "\t" + m.encloseStr(json[i][json[0][j]]);
 			}
 		}
 		return Promise.resolve(res);
 	};
-	m.JSONtoStrRev = function (JSON) {
-		let res = m.encloseStr(JSON[0][0]);
-		for (let j = 1; j < JSON[0].length; j++) {
-			res += "\t" + m.encloseStr(JSON[0][j]);
+	m.JSONtoStrRev = function (json) {
+		let res = m.encloseStr(json[0][0]);
+		for (let j = 1; j < json[0].length; j++) {
+			res += "\t" + m.encloseStr(json[0][j]);
 		}
-		for (let i = JSON.length - 1; i > 0; i--) {
-			res += "\n" + m.encloseStr(JSON[i][JSON[0][0]]);
-			let jMax = JSON[0].length < JSON[i].length ? JSON[0].length : JSON[i].length;
+		for (let i = json.length - 1; i > 0; i--) {
+			res += "\n" + m.encloseStr(json[i][json[0][0]]);
+			let jMax = json[0].length < json[i].length ? json[0].length : json[i].length;
 			for (let j = 1; j < jMax; j++) {
-				res += "\t" + m.encloseStr(JSON[i][JSON[0][j]]);
+				res += "\t" + m.encloseStr(json[i][json[0][j]]);
 			}
 		}
 		return Promise.resolve(res);
