@@ -3707,11 +3707,11 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 						res += `<div class="value"><span class="key">${key}</span> `;
 						let relateds = val.split("\n");
 						for (let p = 0; p < relateds.length; p++) {
-							res += '<br>';
 							try {
 								res += String(await relatedRendering(relateds[p]));
 							}
 							catch (err) {}
+							res += '<br>';
 						}
 						res += `</div>`;
 						break;
