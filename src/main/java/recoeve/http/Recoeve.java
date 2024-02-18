@@ -287,14 +287,14 @@ public class Recoeve extends AbstractVerticle {
 		StaticHandler staticHandler = StaticHandler.create("/CDN/*")
 				.setCachingEnabled(true)
 				.setDirectoryListing(true)
-				.setDirectoryTemplate("C:/Recoeve/CDN/template.html")
+				.setDirectoryTemplate("C:/Recoeve/src/main/java/recoeve/db/CDN/template.html")
 				.setFilesReadOnly(true)
 				.setDefaultContentEncoding("UTF-8")
 				.setAlwaysAsyncFS(true)
 				.setMaxCacheSize(1024 * 100)
 				.setSendVaryHeader(true)
-				.setMaxAgeSeconds(60L * 60L * 24L * 365L) // Set value for max age in caching headers in seconds.
-				.setCacheEntryTimeout(1000L * 60L * 60L * 24L * 365L); // Cache timeout in ms (1 year)
+				.setMaxAgeSeconds(60L * 60L * 24L) // Set value for max age in caching headers in seconds.
+				.setCacheEntryTimeout(1000L * 60L * 60L * 24L); // Cache timeout in ms (1 day)
 
 		router1.route().handler(staticHandler);
 
@@ -313,7 +313,7 @@ public class Recoeve extends AbstractVerticle {
 				if (fileName != null && !fileName.isEmpty()) {
 					pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400
 																										// sec.
-					pl.req.response().putHeader("ETag", "1.7.27");
+					pl.req.response().putHeader("ETag", "1.7.28");
 					String[] fileNameSplit = fileName.split("\\.");
 					switch (fileNameSplit[fileNameSplit.length - 1]) {
 						case "ico":
