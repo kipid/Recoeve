@@ -81,16 +81,6 @@ public class Recoeve extends AbstractVerticle {
 		final Router router1 = Router.router(vertx);
 		final Router router2 = Router.router(vertx);
 		final Router router = Router.router(vertx);
-		// final OAuth2Options authOptions=new OAuth2Options()
-		// .setClientId("964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com")
-		// .setClientSecret("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")
-		// .setSite("https://accounts.google.com")
-		// .setTokenPath("/o/oauth2/v2/token")
-		// .setAuthorizationPath("/o/oauth2/v2/auth");
-		// .setUserInfoPath("https://www.googleapis.com/oauth2/v3/userinfo");
-		// final OAuth2Auth authProvider=GoogleAuth.create(vertx,
-		// "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com",
-		// "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");
 
 		CorsHandler corsHandler2 = CorsHandler.create()
 				.addOrigin("https://www.youtube.com")
@@ -107,12 +97,6 @@ public class Recoeve extends AbstractVerticle {
 				.allowCredentials(false);
 
 		router2.route().handler(corsHandler2);
-
-		// OAuth2AuthHandler oauth2Handler=OAuth2AuthHandler.create(vertx, authProvider,
-		// "https://recoeve.net/account/log-in/with/google");
-		// oauth2Handler.withScopes(List.of("https://www.googleapis.com/auth/userinfo.email",
-		// "https://www.googleapis.com/auth/userinfo.profile"));
-		// router2.route("/account/log-in/with/google").handler(oauth2Handler);
 
 		router2.route("/account/log-in/with/:authenticater").handler(ctx -> {
 			PrintLog pl = new PrintLog(db);
