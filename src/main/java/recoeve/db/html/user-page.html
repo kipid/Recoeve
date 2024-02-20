@@ -4615,6 +4615,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							try {
 								await m.reTriggerFS(m.fsToRs);
 								await m.reTriggerFS(m.fsGo);
+								await m.refreshFSToRs();
 							}
 							catch (err) {}
 						}
