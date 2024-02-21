@@ -821,7 +821,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 </ul>
 </div>
 <div class="caption p cmt" style="margin:1em 0 0">Recoeve.net Manual collection | 사용방법 모음집: <a class="wheat" target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C#headPlay">[Recoeve]--Manual/설명서 of kipid's Recoeve.net</a></div>
-<div class="caption p cmt" style="margin:1em 0 0">[Music/Break]--K-Pop of kipid's Recoeve.net
+<div class="caption p cmt" style="margin:1em 0 0"><a target="_blank" href="https://recoeve.net/user/kipid?cat=%5BMusic%2FBreak%5D--K-Pop&ToR=#headPlay">[Music/Break]--K-Pop of kipid's Recoeve.net</a>
 <div class="rC recoeve"><div class="rSC">
 	<iframe delayed-src="https://recoeve.net/user/kipid?cat=%5BMusic%2FBreak%5D--K-Pop&ToR=#headPlay" frameborder="0"></iframe>
 </div></div></div>
