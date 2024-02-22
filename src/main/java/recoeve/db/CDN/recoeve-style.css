@@ -600,6 +600,10 @@ a.seekTo {
 	color: rgb(50, 50, 50)
 }
 
+textarea#input-uri {
+	padding: .2em 1.8em .2em .3em
+}
+
 textarea.single-line {
 	min-height: 2.2em;
 	height: 3.8em

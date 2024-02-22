@@ -1275,7 +1275,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(async function (resolve, reject) {
 			let elem = $input_uri[0];
 			let originalURI = String(await m.formatURI(elem.value, true));
-			let uri = noFormatURI ? elem.value : String(await m.formatURI(elem.value));
+			let uri = noFormatURI ? originalURI : String(await m.formatURI(originalURI));
 			elem.value = uri;
 			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
@@ -1304,10 +1304,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				let descR = m.renderStrDescCmt(desc);
 				if (descR["#originaluri"]) {
 					descR["#originaluri"].key = "#originalURI";
-					descR["#originaluri"].val = `\n${uri}\n`;
+					descR["#originaluri"].val = `\n${originalURI}\n`;
 				}
 				else {
-					descR["#originaluri"] = { key: "#originalURI", val: `\n${uri}\n` };
+					descR["#originaluri"] = { key: "#originalURI", val: `\n${originalURI}\n` };
 					descR.splice(0, 0, descR["#originaluri"]);
 					for (let i = 0; i < descR.length; i++) {
 						descR[i].i = i;

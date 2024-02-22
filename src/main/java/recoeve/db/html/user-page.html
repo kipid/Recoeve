@@ -878,6 +878,17 @@
 			<form>
 				<label for="input-uri">URI <span class="desc">([--required--])</span></label>
 				<textarea class="single-line" id="input-uri" name="uri" placeholder="[--placeholder URI--]" type="text" tabindex="1"></textarea>
+				<div class="reset" style="position:absolute; display:inline-block; right:1em; top:3em; width:1.8em; height:1.8em; line-height:1.0; text-align:center; cursor:pointer; border:2px rgb(80, 80, 80) solid; background-color:rgb(30,30,30); color:white">
+					<svg style="display:inline-block; width:100%; height:100%">
+						<g style="stroke:white; stroke-width:10%; stroke-linecap:round">
+							<line x1="20%" y1="30%" x2="80%" y2="30%"></line>
+							<line x1="80%" y1="30%" x2="80%" y2="70%"></line>
+							<line x1="80%" y1="70%" x2="20%" y2="70%"></line>
+							<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
+							<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
+						</g>
+					</svg>
+				</div>
 				<label for="input-title">[--Title--] <span class="desc"><code>Ctrl+Enter</code> to Reco/Edit
 						directly</span></label>
 				<div id="def-titles"></div>
@@ -2371,6 +2382,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
 				});
 			});
+		});
+		$("#new-reco>form>.reset").on("click.reset", function (e) {
+			$input_uri[0].value = "";
+			$input_uri.focus();
+			$input_uri.trigger("keyup.fs");
 		});
 		$("#goto-cats-container>.reset").on("click.reset", function (e) {
 			$goto_cats[0].value = "";
