@@ -121,7 +121,7 @@
 			($("head") || $("#docuK-style")).append(`<link rel="canonical" href="${url}" />`);
 			let hrefAnalyzed = new URL(window.location.href);
 			let urlAnalyzed = new URL(url);
-			if (hrefAnalyzed.protocol.toLowerCase() === urlAnalyzed.protocol.toLowerCase() && decodeURIComponent(hrefAnalyzed.pathname) !== decodeURIComponent(urlAnalyzed.pathname)) {
+			if (hrefAnalyzed.hostname === "kipid.tistory.com" && hrefAnalyzed.protocol.toLowerCase() === urlAnalyzed.protocol.toLowerCase() && decodeURIComponent(hrefAnalyzed.pathname) !== decodeURIComponent(urlAnalyzed.pathname)) {
 				window.location.pathname = urlAnalyzed.pathname;
 			}
 		}
