@@ -1117,8 +1117,8 @@ public class Recoeve extends AbstractVerticle {
 						.setUseAlpn(true)
 						.setSsl(true)
 						.setKeyCertOptions(new JksOptions()
-								.setPath("C:/RecoeveNet/old/Convert/recoeve.net_202302280263A.jks")
-								.setPassword("o8lx6xxp")))
+								.setPath("C:/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
+								.setPassword("q63kewmf")))
 				.requestHandler(req -> {
 					Router routerK = req.path().startsWith("/BlogStat") ? router0
 							: req.path().startsWith("/CDN/") ? router1
