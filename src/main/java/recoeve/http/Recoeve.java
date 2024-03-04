@@ -463,6 +463,10 @@ public class Recoeve extends AbstractVerticle {
 									.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
 							break;
+						case "recoeve-style.css":
+							pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8")
+									.end(fileMap.getFileWithLang("recoeve-style.css", pl.lang), ENCODING);
+							break;
 						case "jquery.js": // e.g. path=/jquery.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
 									.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
