@@ -3755,122 +3755,125 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		}
 	};
 	m.recomHTML = async function (r, inListPlay) {
-		if (r?.has) {
-			let recoHTML = await m.recoHTML(r, inListPlay, true, true);
-			return String(recoHTML);
-		}
-		let recoDef = m.recoDefs[r?.uri];
-		if (r?.uri && !recoDef) {
-			try {
-				await m.getMultiDefs(r?.uri);
-				recoDef = m.recoDefs[r?.uri];
+		return new Promise(async function(resolve, reject) {
+			if (r?.has) {
+				let recoHTML = await m.recoHTML(r, inListPlay, true, true);
+				return resolve(String(recoHTML));
 			}
-			catch (err) {
-				// Do nothing.
+			let recoDef = m.recoDefs[r?.uri];
+			if (r?.uri && !recoDef) {
+				try {
+					await m.getMultiDefs(r?.uri);
+					recoDef = m.recoDefs[r?.uri];
+				}
+				catch (err) {
+					// Do nothing.
+				}
 			}
-		}
-		let res = `<div class="reco recom"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
+			let res = `<div class="reco recom"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
 <div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>`;
-		if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
-			res += `<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
-		}
-		res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
-		if (!inListPlay) {
-			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
-			res += String(uriRendered.html);
-		}
-		let recomsI = m.recoms[m.currentCat][r?.uri];
-		if (recomsI?.valsStat) {
-			let valsStat = recomsI.valsStat;
-			let dx = 100.0 / (m.valsStatN + 2);
-			res += `<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
-			for (let k = 0; k <= m.valsStatN; k++) {
-				let h = 79.0 * valsStat[k] / valsStat.max;
-				res += `<rect class="column" x="${dx * (k + 0.5)}%" y="${80 - h}%" width="${dx}%" height="${h}%"></rect>`;
+			if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
+				res += `<div class="title">${m.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
 			}
-			res += `<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
-			for (let k = 0; k <= m.valsStatN; k++) {
-				let x = dx * (k + 1);
-				res += `<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
+			res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
+			if (!inListPlay) {
+				let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
+				res += String(uriRendered.html);
 			}
-			res += `<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`
-			for (let k = 2; k <= m.valsStatN; k += 2) {
-				res += `<tspan text-anchor="middle" x="${dx * (k + 1)}%" y="90%">${k / 2}</tspan>`;
+			let recomsI = m.recoms[m.currentCat][r?.uri];
+			if (recomsI?.valsStat) {
+				let valsStat = recomsI.valsStat;
+				let dx = 100.0 / (m.valsStatN + 2);
+				res += `<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+				for (let k = 0; k <= m.valsStatN; k++) {
+					let h = 79.0 * valsStat[k] / valsStat.max;
+					res += `<rect class="column" x="${dx * (k + 0.5)}%" y="${80 - h}%" width="${dx}%" height="${h}%"></rect>`;
+				}
+				res += `<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
+				for (let k = 0; k <= m.valsStatN; k++) {
+					let x = dx * (k + 1);
+					res += `<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
+				}
+				res += `<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`
+				for (let k = 2; k <= m.valsStatN; k += 2) {
+					res += `<tspan text-anchor="middle" x="${dx * (k + 1)}%" y="90%">${k / 2}</tspan>`;
+				}
+				res += `</text>`;
+				res += `<text class="max-simSum" x="0%" y="10%">${(valsStat.max / 10000.0).toFixed(2)}</text>`;
+				let x_expected = (2.0 * recomsI.avgVal + 1.0) * dx;
+				res += `<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
 			}
-			res += `</text>`;
-			res += `<text class="max-simSum" x="0%" y="10%">${(valsStat.max / 10000.0).toFixed(2)}</text>`;
-			let x_expected = (2.0 * recomsI.avgVal + 1.0) * dx;
-			res += `<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
-		}
-		if (m.myPage) {
-			res += `<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>
-<div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
-		}
-		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
-		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
-			let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
-			res += String(await m.descCmtRToHTML(descR));
-		}
-		if (recomsI?.cmtsHTML) {
-			res += recomsI.cmtsHTML;
-		}
-		res += `</div>`;
-		return res;
+			if (m.myPage) {
+				res += `<div class="cBoth"></div><div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div><div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
+			}
+			res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+			if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
+				let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
+				res += String(await m.descCmtRToHTML(descR));
+			}
+			if (recomsI?.cmtsHTML) {
+				res += recomsI.cmtsHTML;
+			}
+			res += `</div>`;
+			resolve(res);
+		});
 	};
 	m.recoHTML = async function (r, inListPlay, inRange, inRecoms) {
-		let res = "";
-		res += `<div class="reco${inRange && !r.deleted ? '' : ' none'}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		return new Promise(async function(resolve, reject) {
+			let res = "";
+			res += `<div class="reco${inRange && !r.deleted ? '' : ' none'}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onclick="m.editOrRecoToMine(this)">${m.myPage ? '[--Edit--]' : '[--Reco to mine--]'}</div>` : ''}
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
 <div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
-		if (!inListPlay) {
-			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
-			res += String(uriRendered.html);
-		}
-		res += `<div class="cBoth"></div>`;
-		if (r.val?.str) {
-			res += `<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
-		}
-		else {
-			res += `<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
-		}
-		res += `<div class="cBoth"></div>`;
-		if (m.myPage) {
+			if (!inListPlay) {
+				let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
+				res += String(uriRendered.html);
+			}
+			res += `<div class="cBoth"></div>`;
 			if (r.val?.str) {
-				res += `<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+				res += `<div class="val">${m.stars(r.val.val)} <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+			}
+			else {
+				res += `<div class="val">${m.stars(0)} <span class="str"> </span></div>`;
+			}
+			res += `<div class="cBoth"></div>`;
+			if (m.myPage) {
+				if (r.val?.str) {
+					res += `<div class="my-point">${m.stars(r.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(r?.val.str)}</span></div>`;
+				}
+				else {
+					res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+				}
+			}
+			else if (m.myRecos[r?.uri]) {
+				let mR = m.myRecos[r?.uri];
+				if (mR.has) {
+					res += `<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
+				}
+				else {
+					res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+				}
 			}
 			else {
 				res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
 			}
-		}
-		else if (m.myRecos[r?.uri]) {
-			let mR = m.myRecos[r?.uri];
-			if (mR.has) {
-				res += `<div class="my-point">${m.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m.escapeOnlyTag(mR.val.str)}</span></div>`;
+			res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+			if (r.desc) {
+				let descR = r.descR;
+				res += String(await m.descCmtRToHTML(descR));
 			}
-			else {
-				res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+			res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
+			res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+			if (r.tFirst !== r.tLast) {
+				res += `<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 			}
-		}
-		else {
-			res += `<div class="my-point">${m.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
-		}
-		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
-		if (r.desc) {
-			let descR = r.descR;
-			res += String(await m.descCmtRToHTML(descR));
-		}
-		res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
-		res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
-		if (r.tFirst !== r.tLast) {
-			res += `<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
-		}
-		res += `</div>`;
-		return res;
+			res += `</div>`;
+			resolve(res);
+		});
 	};
 	m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents, $result, uri, cats, valStr, inRecoms}
 		if (err) {
