@@ -828,20 +828,20 @@ window.m = window.m || {};
 			r.down = true; // User's or My reco on the uri is downloaded.
 		}
 	};
-	m.recoToEve = async function (resp, recos, cat, conciseURIs) {
+	m.recoToEve = async function (resp, recos, cat, conciseURIs) { // disable conciseURIs
 		return new Promise(async function (resolve, reject) {
 			resp = Object(await m.strToJSON(resp));
 			console.log(resp);
 			for (let k = 1; k < resp.length; k++) {
 				let respK = resp[k];
-				let uri = conciseURIs[k];
+				let uri = respK.uri;
 				let toDo = String(respK.do);
 				let r = recos[uri];
-				if (!r) { r = recos[respK.uri] = recos[uri] = { uri }; }
+				if (!r) { r = recos[uri] = { uri:uri }; }
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
-					if (isNaN(String(prop)) && String(prop) !== "uri") {
+					if (isNaN(String(prop))) {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
 					}
