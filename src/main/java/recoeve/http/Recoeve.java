@@ -31,7 +31,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 // import java.sql.*;
 
-import java.util.concurrent.CompletableFuture;
+// import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,7 +223,7 @@ public class Recoeve extends AbstractVerticle {
 											// If the response is a redirect, so get the followedRedirects().
 											List<String> followedURIs = response.followedRedirects();
 											String fullURI = followedURIs.get(followedURIs.size() - 1);
-											if (fullURI != null && db.getutf8mb4Length(fullURI) > 255) {
+											if (fullURI != null && RecoeveDB.getutf8mb4Length(fullURI) > 255) {
 												fullURI = db.getConciseURI(fullURI);
 											}
 											System.out.println("Full redirected or concise URL: " + fullURI);
@@ -232,7 +232,7 @@ public class Recoeve extends AbstractVerticle {
 										}
 										else {
 											String conciseURI = shortURI;
-											if (shortURI != null && db.getutf8mb4Length(shortURI) > 255) {
+											if (shortURI != null && RecoeveDB.getutf8mb4Length(shortURI) > 255) {
 												conciseURI = db.getConciseURI(shortURI);
 											}
 											System.out.println("Sended shortURI or conciseURI.");
@@ -243,7 +243,7 @@ public class Recoeve extends AbstractVerticle {
 									.onFailure(throwable -> {
 										throwable.printStackTrace();
 										String conciseURI = shortURI;
-										if (shortURI != null && db.getutf8mb4Length(shortURI) > 255) {
+										if (shortURI != null && RecoeveDB.getutf8mb4Length(shortURI) > 255) {
 											conciseURI = db.getConciseURI(shortURI);
 										}
 										System.out.println("Sended shortURI or conciseURI.");

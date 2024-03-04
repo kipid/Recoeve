@@ -3958,7 +3958,7 @@ public class RecoeveDB {
 
 	public static void main(String... args) {
 
-		// RecoeveDB db=new RecoeveDB();
+		// RecoeveDB db=new RecoeveDB(Vertx.vertx());
 		// db.sendEmailAll();
 		// String now=db.now();
 		// // TRUNCATE `RecoStat`;
@@ -3970,18 +3970,18 @@ public class RecoeveDB {
 		// // TRUNCATE `RecoStatDefDescSet`;
 		// db.updateDefsAll(Timestamp.valueOf(now));
 
-		// RecoeveDB db = new RecoeveDB(Vertx.vertx());
+		RecoeveDB db = new RecoeveDB(Vertx.vertx());
 		// db.vertx.executeBlocking(new Callable<Void>() {
 		// 	@Override
 		// 	public Void call() throws Exception {
 		// 		System.out.println(db.delBlogVisitor());
 		// 		// db.moveToBlogStat1();
-		// 		db.deleteUser("C@recoeve.net");
-		// 		db.deleteUser("D@recoeve.net");
-		// 		db.deleteUser("E@recoeve.net");
-		// 		db.deleteUser("F@recoeve.net");
-		// 		db.deleteUser("G@recoeve.net");
-		// 		db.deleteUser("H@recoeve.net");
+				db.deleteUser("C@recoeve.net");
+				db.deleteUser("D@recoeve.net");
+				db.deleteUser("E@recoeve.net");
+				db.deleteUser("F@recoeve.net");
+				db.deleteUser("G@recoeve.net");
+				db.deleteUser("H@recoeve.net");
 		// 		return null;
 		// 	}
 		// }
