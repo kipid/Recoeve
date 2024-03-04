@@ -837,7 +837,7 @@ window.m = window.m || {};
 				let uri = conciseURIs[k];
 				let toDo = String(respK.do);
 				let r = recos[uri];
-				if (!r) { r = recos[uri] = { uri }; }
+				if (!r) { r = recos[respK.uri] = recos[uri] = { uri }; }
 				r.down = true;
 				r.has = true; // User has a reco on the uri.
 				for (let prop in respK) {
