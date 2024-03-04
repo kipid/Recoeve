@@ -831,6 +831,7 @@ window.m = window.m || {};
 	m.recoToEve = async function (resp, recos, cat, conciseURIs) {
 		return new Promise(async function (resolve, reject) {
 			resp = Object(await m.strToJSON(resp));
+			console.log(resp);
 			for (let k = 1; k < resp.length; k++) {
 				let respK = resp[k];
 				let uri = conciseURIs[k];
@@ -1162,7 +1163,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				resolve();
 			}
 			else {
-				let getRecosStr = "uri" + "\n" + r.uri;
+				let getRecosStr = "uri" + "\n" + m.encloseStr(r.uri);
 				if (m.myIndex) {
 					$.ajax({
 						type: "POST", url: `/user/${m.myId}/get-Recos`, data: getRecosStr
