@@ -685,7 +685,45 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 			chartHTML += `</svg></div></div></div>`;
 			$reco_stat.html(chartHTML);
-		}
+		};
+		m.getRecos = function (uris, recos) {
+			let getRecosStr = "uri";
+			let getRecosN = 0;
+			for (let i = 0; i < uris.length; i++) {
+				let uri = uris[i];
+				let r = recos[uri];
+				if (!r) { r = recos[uri] = { uri, down: false }; }
+				if (!r.down) {
+					getRecosStr += "\n" + uri;
+					getRecosN++;
+				}
+			}
+			return new Promise(function (resolve, reject) {
+				if (getRecosN > 0) {
+					let postURL = m.myIndex ? `/user/${m.myId}/get-Recos` : null;
+					if (postURL) {
+						$.ajax({
+							type: "POST", url: postURL, data: getRecosStr
+							, dataType: "text"
+						}).fail(function () {
+							$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(m.currentCat)} has failed.`);
+							$contents.html("");
+							reject();
+						}).done(async function (resp) {
+							m.recoDowned(getRecosStr.substring(4), recos);
+							await m.recoToEve(resp, recos, cat, getRecosStr.split("\n"));
+							resolve();
+						});
+					}
+					else {
+						resolve();
+					}
+				}
+				else {
+					resolve();
+				}
+			});
+		};
 		m.getFullRecoStatAndPlotChart = function (uri) {
 			return new Promise(function (resolve, reject) {
 				$.ajax({
