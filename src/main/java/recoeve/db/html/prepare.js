@@ -844,6 +844,9 @@ window.m = window.m || {};
 					if (isNaN(String(prop))) {
 						prop = String(prop);
 						r[prop] = String(respK[prop]);
+						if (prop === "has") {
+							r[prop] = Boolean(r[prop])
+						}
 					}
 				}
 				if (toDo === "delete") {
@@ -923,6 +926,19 @@ window.m = window.m || {};
 							r = recos[uri] = { uri, down: true, has: false };
 						}
 						r.i = k;
+					}
+				}
+			}
+			if (recos === m.myRecos) {
+				let strHeads = "uri\tdo\tcats";
+				for (let k = 1; k < resp.length; k++) {
+					let respK = resp[k];
+					let uri = respK.uri;
+					let r = recos[uri];
+					if (!r.deleted && !r.has) {
+						console.log(`Do delete in cat="${cat}" :: `, r)
+						let strContents = `${uri}\tdelete\t${cat}`;
+						await m.rmb_me(m.reco_delete_do, { strHeads, strContents, $result: $error, r, uri });
 					}
 				}
 			}

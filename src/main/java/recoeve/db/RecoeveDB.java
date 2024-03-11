@@ -2040,13 +2040,14 @@ public class RecoeveDB {
 			ResultSet user = findUserById(user_id);
 			if (user.next()) {
 				long user_me = user.getLong("i");
-				res += "uri\tcats\ttitle\tdesc\tcmt\tval\ttFirst\ttLast";
+				res += "uri\thas\tcats\ttitle\tdesc\tcmt\tval\ttFirst\ttLast";
 				int size = uris.getRowSize();
 				for (int i = 1; i < size; i++) {
 					String uri = uris.get(i, "uri");
 					ResultSet reco = getReco(user_me, uri);
 					if (reco.next()) {
 						res += "\n" + uri
+								+ "\ty"
 								+ "\t" + StrArray.enclose(reco.getString("cats"))
 								+ "\t" + StrArray.enclose(reco.getString("title"))
 								+ "\t" + StrArray.enclose(reco.getString("desc"))
@@ -2054,6 +2055,10 @@ public class RecoeveDB {
 								+ "\t" + StrArray.enclose(reco.getString("val"))
 								+ "\t" + reco.getString("tFirst")
 								+ "\t" + reco.getString("tLast");
+					}
+					else {
+						res += "\n" + uri
+								+ "\t";
 					}
 				}
 			}
@@ -3726,18 +3731,21 @@ public class RecoeveDB {
 							}
 							break;
 						case "delete":
-							oldCats = new Categories(reco.getString("cats"));
-							oldTitle = reco.getString("title");
-							oldDesc = reco.getString("desc");
-							oldPts = new Points(reco.getString("val")); // can be null.
-							System.out.println("deleting " + reco.getString("uri"));
+							oldCats = cats;
+							if (hasReco) {
+								oldCats = new Categories(reco.getString("cats"));
+								oldTitle = reco.getString("title");
+								oldDesc = reco.getString("desc");
+								oldPts = new Points(reco.getString("val")); // can be null.
+								System.out.println("deleting " + reco.getString("uri"));
+								reco.deleteRow();
+								updateDefCat(uri, oldCats, -1);
+								updateDefTitle(uri, oldTitle, -1);
+								updateDefDesc(uri, oldDesc, -1);
+								updateRecoStat(user_me, uri, oldPts, tNow, -1);
+								updateNeighbors(user_me, uri, oldCats, oldPts, catL, tNow, -1);
+							}
 							deleteCatsUriFromList(user_me, oldCats, uri, catL);
-							reco.deleteRow();
-							updateDefCat(uri, oldCats, -1);
-							updateDefTitle(uri, oldTitle, -1);
-							updateDefDesc(uri, oldDesc, -1);
-							updateRecoStat(user_me, uri, oldPts, tNow, -1);
-							updateNeighbors(user_me, uri, oldCats, oldPts, catL, tNow, -1);
 							res += "deleted";
 							break;
 						case "nothing":
