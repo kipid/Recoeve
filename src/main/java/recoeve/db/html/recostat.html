@@ -722,9 +722,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				});
 			});
 		};
-		m.getAndShowDefsAndRecoInNewReco1 = async function (noFormatURI, fillDefs) {
+		m.formatURIAndGetAndShowDefsAndRecoInNewReco1 = async function (noFormatURI, fillDefs) {
 			return new Promise(async function (resolve, reject) {
-				await m.getAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
+				await m.formatURIAndGetAndShowDefsAndRecoInNewReco(noFormatURI, fillDefs);
 				await m.getFullRecoStatAndPlotChart(m.uri);
 				resolve();
 			});
@@ -746,8 +746,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (m.uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
 				m.timeOutGetInfos = setTimeout(async function () {
-					console.log(`await m.getAndShowDefsAndRecoInNewReco1(false);`);
-					await m.getAndShowDefsAndRecoInNewReco1(false);
+					console.log(`await m.formatURIAndGetAndShowDefsAndRecoInNewReco1(false);`);
+					await m.formatURIAndGetAndShowDefsAndRecoInNewReco1(false);
 					window.history.pushState({ uri: m.uri }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 				}, m.wait);
 			}
