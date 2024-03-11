@@ -30,7 +30,7 @@ public class FileMap {
 
 	private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
 	private static final String[] fileNames = {
-			"favicon.ico", "jquery.js",
+			"favicon.ico", "jquery.js", "recoeve-style.css",
 			"link.png", "icon-Tag.png", "icon-Twitter.png",
 			"icon-X.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png", "icon-Whatsapp.png", "cc.png",
 			"by.png", "nc.png", "nd.png", "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js",
@@ -75,7 +75,6 @@ public class FileMap {
 	private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
 	private static final String[] txtFileNames = {
 			"prepare.js", "robots.txt", "ads.txt", "log-in.html", "verify.html", "changePwd.html",
-			"recoeve-style.css",
 			"log-out.html", "user-page.html", "remember-me.html"
 	};
 	private static final int txtFileMapSize = 30;

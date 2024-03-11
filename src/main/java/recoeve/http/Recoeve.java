@@ -296,7 +296,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 				if (fileName != null && !fileName.isEmpty()) {
 					pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
-					pl.req.response().putHeader("ETag", "1.7.29");
+					pl.req.response().putHeader("ETag", "1.7.30");
 					String[] fileNameSplit = fileName.split("\\.");
 					switch (fileNameSplit[fileNameSplit.length - 1]) {
 						case "ico":
@@ -463,10 +463,10 @@ public class Recoeve extends AbstractVerticle {
 									.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
 							break;
-						case "recoeve-style.css":
-							pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8")
-									.end(fileMap.getFileWithLang("recoeve-style.css", pl.lang), ENCODING);
-							break;
+						// case "recoeve-style.css":
+						// 	pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8")
+						// 			.end(fileMap.getFileWithLang("recoeve-style.css", pl.lang), ENCODING);
+						// 	break;
 						case "jquery.js": // e.g. path=/jquery.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
 									.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
