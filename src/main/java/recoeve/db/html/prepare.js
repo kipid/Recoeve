@@ -863,7 +863,7 @@ window.m = window.m || {};
 			if (recos === m.userRecos) {
 				for (let k = 1; k < resp.length; k++) {
 					let respK = resp[k];
-					let uri = conciseURIs[k];
+					let uri = respK.uri;
 					let r = recos[uri];
 					let catsSplit = m.catsToString(m.formatCats(r?.cats)).split(";");
 					if (!fsFL[uri]) {
@@ -894,7 +894,7 @@ window.m = window.m || {};
 					}
 					for (let k = 1; k < resp.length; k++) {
 						let respK = resp[k];
-						let uri = conciseURIs[k];
+						let uri = respK.uri;
 						let r = recos[uri];
 						fsFL[uri].catAndI[m.currentCat] = { cat: m.currentCat, i: m.catUriList[m.currentCat].uris[uri]?.i ?? m.catUriList[m.currentCat].uris.length };
 					}
@@ -907,7 +907,7 @@ window.m = window.m || {};
 					}
 					for (let k = 1; k < resp.length; k++) {
 						let respK = resp[k];
-						let uri = conciseURIs[k];
+						let uri = respK.uri;
 						let r = recos[uri];
 						fsFL[uri].catAndI[cat] = { cat, i: m.catUriList[cat].uris[uri]?.i ?? m.catUriList[cat].uris.length };
 					}

@@ -686,6 +686,39 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			chartHTML += `</svg></div></div></div>`;
 			$reco_stat.html(chartHTML);
 		};
+		m.recoToEve = async function (resp, recos, cat, conciseURIs) { // disable conciseURIs
+			return new Promise(async function (resolve, reject) {
+				resp = Object(await m.strToJSON(resp));
+				console.log(resp);
+				for (let k = 1; k < resp.length; k++) {
+					let respK = resp[k];
+					let uri = respK.uri;
+					let toDo = String(respK.do);
+					let r = recos[uri];
+					if (!r) { r = recos[uri] = { uri:uri }; }
+					r.down = true;
+					r.has = true; // User has a reco on the uri.
+					for (let prop in respK) {
+						if (isNaN(String(prop))) {
+							prop = String(prop);
+							r[prop] = String(respK[prop]);
+						}
+					}
+					if (toDo === "delete") {
+						r.deleted = true;
+					}
+					else {
+						r.deleted = false;
+					}
+					r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
+					r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
+					if (r.val === undefined || r.val === null || typeof r.val === "string") {
+						r.val = m.val(String(r.val));
+					}
+				}
+				resolve();
+			});
+		};
 		m.getRecos = function (uris, recos) {
 			let getRecosStr = "uri";
 			let getRecosN = 0;
