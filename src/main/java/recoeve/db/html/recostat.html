@@ -744,7 +744,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							reject();
 						}).done(async function (resp) {
 							m.recoDowned(getRecosStr.substring(4), recos);
-							await m.recoToEve(resp, recos, cat, getRecosStr.split("\n"));
+							await m.recoToEve(resp, recos, null, getRecosStr.split("\n"));
 							resolve();
 						});
 					}
