@@ -4584,7 +4584,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 							let fs1FLUri = m.fsToRs.fullList[uri];
 							if (!fs1FLUri) {
-								fs1FLUri = m.fsToRs.fullList[m.fsToRs.fullList.length] = m.fsToRs.fullList[uri] = { uri, r, i: m.fsToRs.fullList.length, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
+								fs1FLUri = m.fsToRs.fullList[uri] = { uri, r, i: m.fsToRs.fullList.length, txt: m.splitHangul(r?.title), html: m.escapeOnlyTag(r?.title) };
+								m.fsToRs.fullList.push(fs1FLUri);
 							}
 
 							$recoms_recos = $contents_recoms.find(".reco");
@@ -4600,15 +4601,20 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								}
 							}
 							{
-								let $reco = $reco_playing.find(".reco");
-								let recoURI = m.unescapeHTML($reco.find(".textURI").html());
-								if (recoURI === uri) {
+								// let $reco = $reco_playing.find(".reco");
+								// let recoURI = m.unescapeHTML($reco.find(".textURI").html());
+								// if (recoURI === uri) {
 									try {
 										let recoHTML = await m.recoHTML(r, true, true, false);
 										$reco_playing.html(String(recoHTML));
+										let uriRendered = Object(await uriRendering(uri, false, inListPlay, r[uri]?.descR));
+										clearTimeout(m.setTimeoutCueOrLoadUri);
+										m.setTimeoutCueOrLoadUri = setTimeout(function () {
+											m.cueOrLoadUri(true, uriRendered, true);
+										}, m.wait / 2);
 									}
 									catch (err) {}
-								}
+								// }
 							}
 							try {
 								let recoHTML = await m.recoHTML(r, false, true);
