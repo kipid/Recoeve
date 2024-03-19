@@ -3884,9 +3884,12 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				res += String(await m.descCmtRToHTML(descR));
 			}
 			res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
-			res += `<div class="tFirst">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
-			if (r.tFirst !== r.tLast) {
-				res += `<div class="tLast">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
+			if (r.tFirst && r.tLast && r.tFirst !== r.tLast) {
+				res += `<div class="tFirst">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
+				res += `<div class="tLast">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
+			}
+			else if (r.tLast) {
+				res += `<div class="tLast">Firstly Recoed at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 			}
 			res += `</div>`;
 			resolve(res);
