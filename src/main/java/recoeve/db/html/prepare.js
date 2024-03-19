@@ -1239,7 +1239,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			return (n / 1000000000.0).toFixed(2) + "B";
 		}
 	};
-	m.formatURIFully = async function (uri, uriRendered) {
+	m.formatURIFully = async function (uri, uriRendered, keepOriginal) {
 		return new Promise(async function (resolve, reject) {
 			let from = String(uriRendered?.from);
 			console.log(`uriRendered`, uriRendered, `uriRendered.from: ${from}\nuri: ${uri}`);
@@ -1279,7 +1279,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					uri = uriRendered.newURI;
 					break;
 			}
-			if (m.getUTF8Length(uri) > 255) {
+			if (!keepOriginal && m.getUTF8Length(uri) > 255) {
 				try {
 					return resolve(String(await m.getConciseURI(uri)));
 				}
@@ -1291,10 +1291,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.formatURIAndGetAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
 		return new Promise(async function (resolve, reject) {
 			let elem = $input_uri[0];
-			let originalURI = String(await m.formatURI(elem.value, true));
-			let uri = noFormatURI ? originalURI : String(await m.formatURI(originalURI));
+			let uriRendered = Object(await uriRendering(elem.value, true));
+			let originalURI = String(await m.formatURIFully(elem.value, uriRendered, true));
+			let uri = noFormatURI ? originalURI : String(await m.formatURIFully(originalURI, uriRendered, false));
 			elem.value = uri;
-			let uriRendered = Object(await uriRendering(uri, true));
 			if (!noFormatURI) {
 				elem.value = uri = String(await m.formatURIFully(uri, uriRendered));
 				$input_uri.trigger("keyup");
