@@ -640,15 +640,6 @@
 			border-left: 1px gray solid
 		}
 
-		#SNS-floating .SNS-img .icon-X {
-			background: #a92323;
-			position: absolute;
-			left: 6%;
-			width: 88%;
-			top: 6%;
-			height: 88%
-		}
-
 		#floating-key,
 		#toggle-floating-key {
 			font-size: 1.1em;
@@ -2151,7 +2142,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	<div class="button button-new-reco" onclick="$window.trigger({ type: 'keydown', keyCode: 'N'.charCodeAt(0) })">
 		[--_N_ew reco--]
 	</div>
-	<div id="SNS-floating"><a onclick="return m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="return m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareCurrentPage('recoeve')"><div class="SNS-img icon-X"><img class="icon-X" src="/CDN/icon-X.png" onclick="return m.shareCurrentPage('X')"></div><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareCurrentPage('whatsapp')"></div>`);
+	<div id="SNS-floating"><a onclick="return m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="return m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareCurrentPage('X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareCurrentPage('whatsapp')"></div>`);
 		if (m.myPage) {
 			$("#button-get-recoms").before(`<div style="position:relative; margin:0 1.5em 2em; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
 <div id="time-limit-range" style="position:absolute; left:0px; right:0; height:100%; background:rgb(100,200,100)"></div>
