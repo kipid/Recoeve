@@ -115,19 +115,19 @@ public class Recoeve extends AbstractVerticle {
 			else {
 				String authenticater = ctx.pathParam("authenticater");
 				switch (authenticater) {
-					case "pre-google":
+					case "pre-google": // e.g. path=/account/log-in/with/pre-google
 						pl.req.bodyHandler((Buffer data) -> {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
 							System.out.println("Sended pre-google saved or not. state and goto:\n" + data.toString());
 						});
 						break;
-					case "google":
+					case "google": // e.g. path=/account/log-in/with/google
 						pl.req.response().end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 							// To send #hash data with POST method.
 						System.out.println("Sended log-in.html");
 						break;
-					case "google.do":
+					case "google.do": // e.g. path=/account/log-in/with/google.do
 						pl.req.bodyHandler((Buffer data) -> {
 							StrArray inputs = new StrArray(data.toString());
 							if (db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
@@ -305,8 +305,7 @@ public class Recoeve extends AbstractVerticle {
 						case "png":
 							pl.req.response().putHeader("Content-Type", "image/png");
 							break;
-						case "jpeg":
-						case "jpg":
+						case "jpeg": case "jpg":
 							pl.req.response().putHeader("Content-Type", "image/jpeg");
 							break;
 						case "css":
@@ -463,10 +462,15 @@ public class Recoeve extends AbstractVerticle {
 									.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
 							break;
-						// case "recoeve-style.css":
+						// case "recoeve-style.css": // e.g. path=/recoeve-style.css
 						// 	pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8")
 						// 			.end(fileMap.getFileWithLang("recoeve-style.css", pl.lang), ENCODING);
 						// 	break;
+						case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
+							pl.req.response().putHeader("Content-Type", "text/javascript")
+									.end(fileMap.getFileWithLang("bundle-log-in.js", pl.lang), ENCODING);
+							System.out.println("Sended bundle-log-in.js.");
+							break;
 						case "jquery.js": // e.g. path=/jquery.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
 									.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);

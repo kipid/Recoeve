@@ -74,7 +74,9 @@ public class FileMap {
 
 	private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
 	private static final String[] txtFileNames = {
-			"prepare.js", "robots.txt", "ads.txt", "log-in.html", "verify.html", "changePwd.html",
+			"prepare.js", "robots.txt", "ads.txt",
+			"log-in.html", "bundle-log-in.js",
+			"verify.html", "changePwd.html",
 			"log-out.html", "user-page.html", "remember-me.html"
 	};
 	private static final int txtFileMapSize = 30;
@@ -221,11 +223,11 @@ public class FileMap {
 		FileMap fileMap = new FileMap(Vertx.vertx());
 		fileMap.vertx.setTimer(2000, timerId -> {
 			System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
-			System.out.println(fileMap.getFileWithLang("log-in.html", "ko"));
-			System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
-			System.out.println(FileMap.refererAllowed("localhost"));
-			System.out.println(Pattern.quote("[a-d]"));
-			System.out.println(fileMap.getCDNFileInMemory("link.png"));
+			// System.out.println(fileMap.getFileWithLang("log-in.html", "ko"));
+			// System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
+			// System.out.println(FileMap.refererAllowed("localhost"));
+			// System.out.println(Pattern.quote("[a-d]"));
+			// System.out.println(fileMap.getCDNFileInMemory("link.png"));
 			// getCDNFileInMemory("docuK-2.3.css");
 		});
 	}
