@@ -3,7 +3,6 @@ package recoeve.http;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-// import jakarta.mail.util.StreamProvider;
 import java.util.Properties;
 
 public class Gmail {
