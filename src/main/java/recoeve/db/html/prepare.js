@@ -1873,7 +1873,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			fs.currentIndex = k;
 			if (!m.initialOpen && $elem.hasClass("selected") && !event.byShortKey) {
 				if ($elem.hasClass("clicked-twice")) {
-					fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // 27=ESC
+					fs.$fs.trigger({ type: 'keydown', code: 'Escape' }); // 27=ESC
 					fs.$fsl.find(".list-item").removeClass("clicked-twice");
 				}
 				else {
@@ -2152,13 +2152,13 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		let $target = $(e.target);
 		let $fsl = fs.$fsl;
 		let $fsLis = $fsl.find(".list-item");
-		switch (e.keyCode) {
-			case 9: // Tab=9
+		switch (e.code) {
+			case 'Tab': // Tab=9
 				e.preventDefault();
 				$target.off("keyup.fs cut.fs paste.fs click.fs");
 				$fsLis.eq(0)?.trigger("click");
 				break;
-			case 27: // ESC=27
+			case 'Escape': // ESC=27
 				e.preventDefault();
 				$target.off("keyup.fs cut.fs paste.fs click.fs");
 				switch (shortKey) {
@@ -2180,14 +2180,14 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				}
 				m.doNotPushHistory = false;
 				break;
-			case 38: // up=38
-			case 40: // down=40
+			case 'ArrowUp': // up=38
+			case 'ArrowDown': // down=40
 				e.preventDefault();
 				$target.off("keyup.fs cut.fs paste.fs click.fs");
 				let $liSelected = $fsl.find(".list-item.selected").eq(0);
 				let $liTo = null;
 				if ($liSelected.length) {
-					if (e.keyCode === 38) {
+					if (e.code === 'ArrowUp') {
 						$liTo = $liSelected.prev();
 					}
 					else {
@@ -2205,7 +2205,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				}
 				else {
 					if ($fsLis.length) {
-						if (e.keyCode === 38) {
+						if (e.code === 'ArrowUp') {
 							$liTo = $fsLis.last();
 							$fsl.scrollTop($fsl[0].scrollHeight);
 						}
@@ -2248,13 +2248,13 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		} // Picking cat index k of the current selectionEnd.
 		let $fsLis = $fsl.find(".list-item");
 		let $liSelected = $fsl.find(".list-item.selected").eq(0);
-		switch (e.keyCode) {
-			case 9: // Tab=9
+		switch (e.code) {
+			case 'Tab': // Tab=9
 				e.preventDefault();
 				$target.off("keyup.fs cut.fs paste.fs click.fs");
 				$fsLis.eq(0)?.trigger("click");
 				break;
-			case 27: // ESC=27
+			case 'Escape': // ESC=27
 				e.preventDefault();
 				$fs_container.hide();
 				if (fs === m.fsCat) {
@@ -2269,13 +2269,13 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					$choose_timezone.removeClass("enabled");
 				}
 				break;
-			case 38: // up=38
-			case 40: // down=40
+			case 'ArrowUp': // up=38
+			case 'ArrowDown': // down=40
 				e.preventDefault();
 				$target.off("keyup.fs cut.fs paste.fs click.fs");
 				let $liTo = null;
 				if ($liSelected.length) {
-					if (e.keyCode === 38) {
+					if (e.code === 'ArrowUp') {
 						$liTo = $liSelected.prev();
 					}
 					else {
@@ -2293,7 +2293,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				}
 				else {
 					if ($fsLis.length) {
-						if (e.keyCode === 38) {
+						if (e.code === 'ArrowUp') {
 							$liTo = $fsLis.last();
 							$fsl.scrollTop($fsl[0].scrollHeight);
 						}

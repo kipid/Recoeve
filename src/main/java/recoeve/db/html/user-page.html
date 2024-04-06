@@ -1750,7 +1750,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		});
 		$textarea_gs.on("keydown.gs", function (e) {
 			if (e.altKey || e.ctrlKey || e.metaKey) { return; }
-			if (e.keyCode === 13) { // Enter=13
+			if (e.code === 'Enter') { // Enter=13
 				e.preventDefault();
 				$button_gs.trigger("click.gs");
 			}
@@ -3085,7 +3085,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let passed = now - m.previous;
 			if (passed > m.wait) {
 				m.previous = now;
-				if (event.keyCode !== 27) { // ESC=27
+				if (event.code !== 'Escape') { // ESC=27
 					m.fsCat.$fs_container.show();
 				}
 				m.doFSCat(m.fsCat);
@@ -3095,7 +3095,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				setTimeout(function () {
 					$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 					m.previous = Date.now();
-					if (event.keyCode !== 27) { // ESC=27
+					if (event.code !== 'Escape') { // ESC=27
 						m.fsCat.$fs_container.show();
 					}
 					m.doFSCat(m.fsCat);
@@ -3107,7 +3107,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let passed = now - m.previous;
 			if (passed > m.wait) {
 				m.previous = now;
-				if (event.keyCode !== 27) { // ESC=27
+				if (event.code !== 'Escape') { // ESC=27
 					m.fsMRCat.$fs_container.show();
 				}
 				m.doMRFSCat();
@@ -3117,7 +3117,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				setTimeout(function () {
 					$multireco_input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsMRCatOn);
 					m.previous = Date.now();
-					if (event.keyCode !== 27) { // ESC=27
+					if (event.code !== 'Escape') { // ESC=27
 						m.fsMRCat.$fs_container.show();
 					}
 					m.doMRFSCat();
@@ -4997,10 +4997,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		});
 
 		$new_reco.find("input, textarea").on("keydown.common", function (e) {
-			if (e.keyCode === 27 && $new_reco.is(":visible")) { // ESC
+			if (e.code === 'Escape' && $new_reco.is(":visible")) { // ESC
 				$window.trigger({ type: 'keydown', code: 'KeyN' });
 			}
-			else if (e.ctrlKey && e.keyCode === 13) { // Ctrl+Enter
+			else if (e.ctrlKey && e.code === 'Enter') { // Ctrl+Enter
 				let r = m.myRecos[$input_uri[0].value];
 				if (r.has) {
 					$button_edit.trigger("click");
@@ -5660,7 +5660,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let fsFLUri = fs.fullList[uri];
 			if (!m.initialOpen && $elem.hasClass("selected")) {
 				if ($elem.hasClass("clicked-twice")) {
-					fs.$fs.trigger({ type: 'keydown', keyCode: 27 }); // keyCode:27=ESC
+					fs.$fs.trigger({ type: 'keydown', code: 'Escape' }); // 27=ESC
 					fs.$fsl.find(".list-item").removeClass("clicked-twice");
 				}
 				else {
@@ -6369,7 +6369,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					let scrollTop = $window.scrollTop();
 					let i, k = m.$fdList.length;
 					let $hI;
-					if (e.keyCode === 70) { // F=70
+					if (e.code === 'KeyF') { // F=70
 						scrollTop += 25;
 						for (i = 0; i < k; i++) {
 							$hI = m.$fdList.eq(i);
@@ -6402,7 +6402,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					else if (hIID) {
 						m.hashURI = hIID;
-						if (e.keyCode === 70 && hIID.startsWith("load-recos-")) { // F=70
+						if (e.code === 'KeyF' && hIID.startsWith("load-recos-")) { // F=70
 							$window.scrollTop($hI.offset().top - $window.height() * 2.0 / 3.0);
 						}
 						else { // F=70 (normal) and D=68
