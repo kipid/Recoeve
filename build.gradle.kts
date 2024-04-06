@@ -33,7 +33,8 @@ dependencies {
 	implementation("mysql:mysql-connector-java:8.0.33")
 	// https://mavenlibs.com/maven/dependency/com.mysql/mysql-connector-j
 	implementation("com.mysql:mysql-connector-j:8.1.0")
-	implementation("javax.mail:mail:1.4.7")
+	// https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api
+	implementation("com.sun.mail:jakarta.mail:2.0.1")
 	implementation("org.jsoup:jsoup:1.17.1")
 	// https://mvnrepository.com/artifact/io.vertx/vertx-core
 	implementation("io.vertx:vertx-core:$vertxVersion")
