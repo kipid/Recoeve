@@ -830,7 +830,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	// logPrint function.
 	m.$log = $("#docuK-log");
 	m.$log.addClass("fixed");
-	m.$log.before(`<div class="docuK-log exit" onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+	m.$log.before(`<div class="docuK-log exit" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
 	m.$logAll = $("#docuK-log, .docuK-log.exit");
 	m.logPrint = function (str) {
 		m.$log.append(str);
@@ -860,7 +860,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
 <a id="out-focus" class="none">out focus</a>`);
 
@@ -1205,20 +1205,20 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 
 	$fuzzy_search.on("keydown", function (e) {
 		e.stopPropagation();
-		switch (e.keyCode) {
-			case 27: // ESC=27
+		switch (e.code) {
+			case 'Escape': // ESC=27
 				e.preventDefault();
-				m.$window.trigger({ type: "keydown", keyCode: 71 }); // G=71
+				m.$window.trigger({ type: "keydown", code: 'KeyG' }); // G=71
 				break;
-			case 38: // up=38
-			case 40: // down=40
+			case 'ArrowUp': // up=38
+			case 'ArrowDown': // down=40
 				e.preventDefault();
 				let $fsl = $fuzzy_search_list;
 				let $lis = $fsl.find(".list-item");
 				let $liSelected = $fsl.find(".list-item.selected").eq(0);
 				let $liTo = null;
 				if ($liSelected.length) {
-					if (e.keyCode === 38) {
+					if (e.code === 'ArrowUp') {
 						$liTo = $liSelected.prev();
 					}
 					else {
@@ -1236,7 +1236,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				}
 				else {
 					if ($lis.length) {
-						if (e.keyCode === 38) {
+						if (e.code === 'ArrowUp') {
 							$liTo = $lis.last();
 							$fsl.scrollTop($fsl[0].scrollHeight);
 						}
@@ -1256,7 +1256,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		else {
 			let $elem = $(elem);
 			if ($elem.hasClass("selected")) {
-				$fuzzy_search.trigger({ type: "keydown", keyCode: 27 }); // keyCode:27=ESC
+				$fuzzy_search.trigger({ type: "keydown", code: 'Escape' }); // 27=ESC
 			}
 			else {
 				fs.$fsLis.removeClass("selected");
@@ -2122,23 +2122,23 @@ document.referrer: ${referrerHTML}`
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</span> mess</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyA'})">Toggle <span class="bold underline">a</span> mess</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyG'})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyK'})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyF'})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyD'})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyT'})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyR'})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})"><span class="bold underline">H</span>: <span class="bold underline">H</span>andle URI links in Tistory comments.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyH'})"><span class="bold underline">H</span>: <span class="bold underline">H</span>andle URI links in Tistory comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyI'})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyO'})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
 			$sDocuK.after(`<div class="copyright order"><ul>
@@ -2159,8 +2159,8 @@ document.referrer: ${referrerHTML}`
 	<form><input id="input${docuKI}-font-family" class="bold" type="text" name="font" value="맑은 고딕" style="font-family:'맑은 고딕'; font-size:1.2em; width:73px; height:23px; text-align:center" onchange="m.CfontFamily(this.value)"></input></form>
 	<form><button type="button" onclick="m.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="m.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
 	<form><button type="button" onclick="m.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="m.ClineHeight(1)" style="font-size:1.6em">=</button></form>
-	<form><button class="button-log" type="button" onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
-	<form><button class="button-Go" type="button" onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
+	<form><button class="button-log" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
+	<form><button class="button-Go" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
 	</div>
