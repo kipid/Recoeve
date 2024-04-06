@@ -776,7 +776,7 @@
 					</g>
 				</svg>
 			</div>
-			<div class="exit" onclick="$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) })">
+			<div class="exit" onclick="$window.trigger({ type: 'keydown', code: 'KeyG' })">
 				<svg>
 					<g style="stroke:white;stroke-width:23%">
 						<line x1="20%" y1="20%" x2="80%" y2="80%"></line>
@@ -816,7 +816,7 @@
 					</g>
 				</svg>
 			</div>
-			<div class="exit" onclick="$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) })">
+			<div class="exit" onclick="$window.trigger({ type: 'keydown', code: 'KeyT' })">
 				<svg>
 					<g style="stroke:white;stroke-width:23%">
 						<line x1="20%" y1="20%" x2="80%" y2="80%"></line>
@@ -856,7 +856,7 @@
 					</g>
 				</svg>
 			</div>
-			<div class="exit" onclick="$window.trigger({ type: 'keydown', keyCode: 'C'.charCodeAt(0) })">
+			<div class="exit" onclick="$window.trigger({ type: 'keydown', code: 'KeyC' })">
 				<svg>
 					<g style="stroke:white;stroke-width:23%">
 						<line x1="20%" y1="20%" x2="80%" y2="80%"></line>
@@ -990,7 +990,7 @@
 						</g>✖
 					</svg></div>
 			</div>
-			<div class="exit" onclick="$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) })">
+			<div class="exit" onclick="$window.trigger({ type: 'keydown', code: 'KeyM' })">
 				<svg>
 					<g style="stroke:white;stroke-width:23%">
 						<line x1="20%" y1="20%" x2="80%" y2="80%"></line>
@@ -1543,11 +1543,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			<div class="cBoth" style="padding:.5em"></div>
 		</div>
 		<div class="side2" id="head">
-			<div class="button button-Go" onclick="$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) })">[--Fuzzy Search--] [--_G_o (FS)--]</div>
-			<div class="button button-goto-cats" onclick="$window.trigger({ type: 'keydown', keyCode: 'C'.charCodeAt(0) })">[--Go to _C_ats--]</div>
-			<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({ type: 'keydown', keyCode: 'B'.charCodeAt(0) })">[--Neigh_b_ors mode--]</div>
-			<div class="button button-mode button-multireco-mode" onclick="$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) })">[--_M_ultireco mode--]</div>
-			<div class="button button-new-reco" onclick="$window.trigger({ type: 'keydown', keyCode: 'N'.charCodeAt(0) })">[--_N_ew reco--]</div>
+			<div class="button button-Go" onclick="$window.trigger({ type: 'keydown', code: 'KeyG' })">[--Fuzzy Search--] [--_G_o (FS)--]</div>
+			<div class="button button-goto-cats" onclick="$window.trigger({ type: 'keydown', code: 'KeyC' })">[--Go to _C_ats--]</div>
+			<div class="button button-mode button-neighbors-mode" onclick="$window.trigger({ type: 'keydown', code: 'KeyB' })">[--Neigh_b_ors mode--]</div>
+			<div class="button button-mode button-multireco-mode" onclick="$window.trigger({ type: 'keydown', code: 'KeyM' })">[--_M_ultireco mode--]</div>
+			<div class="button button-new-reco" onclick="$window.trigger({ type: 'keydown', code: 'KeyN' })">[--_N_ew reco--]</div>
 		</div><!-- div#head -->
 		<div class="side2">
 			<div id="button-get-recoms" class="button-mode none"></div>
@@ -1583,10 +1583,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						</div>
 					</div>
 				</div>
-				<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'Q'.charCodeAt(0) })">[--Preceding(_Q_)--]</div>
-				<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'W'.charCodeAt(0) })">[--Follo_w_ing--]</div>
+				<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyQ' })">[--Preceding(_Q_)--]</div>
+				<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyW' })">[--Follo_w_ing--]</div>
 				<div style="display:inline-block">
-					<div class="button" onclick="$window.trigger({ type: 'keydown', keyCode: 'S'.charCodeAt(0) })">▼ [--_S_ort--]</div>
+					<div class="button" onclick="$window.trigger({ type: 'keydown', code: 'KeyS' })">▼ [--_S_ort--]</div>
 					<div id="sort-list" style="display:none">
 						<div class="button" onclick="m.doFSToRs('shuffle')">[--Shuffle--]</div>
 						<div class="button" onclick="m.doFSToRs('tFirst-desc')">[--Sort by tFirst, desc--]</div>
@@ -1601,10 +1601,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						<div id="result-of-change-order" style="display: table; font-size: .7em; width: 100%; max-width: max-content; background: black; color: white"></div>
 					</div>
 				</div>
-				<div class="button enabled button-auto-skip" onclick="$window.trigger({ type: 'keydown', keyCode: 'K'.charCodeAt(0) })">[--Auto s_k_ip--]</div>
-				<div class="button button-loop" onclick="$window.trigger({ type: 'keydown', keyCode: 'L'.charCodeAt(0) })">[--_L_oop--]</div>
-				<div class="button button-one-loop" onclick="$window.trigger({ type: 'keydown', keyCode: 'P'.charCodeAt(0) })">[--One-loo_p_--]</div>
-				<div class="button button-ToR" onclick="$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) })">[--_T_ofR--]</div>
+				<div class="button enabled button-auto-skip" onclick="$window.trigger({ type: 'keydown', code: 'KeyK' })">[--Auto s_k_ip--]</div>
+				<div class="button button-loop" onclick="$window.trigger({ type: 'keydown', code: 'KeyL' })">[--_L_oop--]</div>
+				<div class="button button-one-loop" onclick="$window.trigger({ type: 'keydown', code: 'KeyP' })">[--One-loo_p_--]</div>
+				<div class="button button-ToR" onclick="$window.trigger({ type: 'keydown', code: 'KeyT' })">[--_T_ofR--]</div>
 				<div class="button button-move-all" onclick="m.moveAllTo()">[--Move filtered all recos in ToRs to the different cats at once.--]</div>
 				<div id="reco-playing"></div>
 			</div>
@@ -2105,7 +2105,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		<a class="a-log-out" href="/account/log-out">[--Log _o_ut--]</a>
 	</div>`}
 	${(!m.myPage) && m.myId ? `<div class="button cadetblue"><a id="a-to-my-page" href="/user/${m.myId}">[--To my p_a_ge--]</a></div>` : ""}
-	<div class="button button-block-touch" onclick="$window.trigger({ type: 'keydown', keyCode: 'U'.charCodeAt(0) })">
+	<div class="button button-block-touch" onclick="$window.trigger({ type: 'keydown', code: 'KeyU' })">
 		[--Block to_u_ch--]
 	</div>
 	<span class="point-range-result">0~10/10</span>
@@ -2114,40 +2114,40 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			<div class="point-range-bar"></div><div class="point-range-right"></div><div class="point-range-left"></div>
 		</div>
 	</div>
-	<div class="button button-mode button-neighbors-mode" style="border-top:2px solid rgb(50,50,50)" onclick="$window.trigger({ type: 'keydown', keyCode: 'B'.charCodeAt(0) })">
+	<div class="button button-mode button-neighbors-mode" style="border-top:2px solid rgb(50,50,50)" onclick="$window.trigger({ type: 'keydown', code: 'KeyB' })">
 		[--Neigh_b_ors mode--]
 	</div>
-	${m.myPage ? `<div class="button button-mode button-get-recoms" onclick="$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) })">
+	${m.myPage ? `<div class="button button-mode button-get-recoms" onclick="$window.trigger({ type: 'keydown', code: 'KeyR' })">
 		[--Get _R_ecoms--]
 	</div>
-	<div class="button button-mode button-daily-mix" onclick="$window.trigger({ type: 'keydown', keyCode: 'Y'.charCodeAt(0) })">
+	<div class="button button-mode button-daily-mix" onclick="$window.trigger({ type: 'keydown', code: 'KeyY' })">
 		[--Dail_y_ Mix--]
 	</div>`: ``}
-	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) })">
+	<div class="button button-mode button-multireco-mode" onclick="$window.trigger({ type: 'keydown', code: 'KeyM' })">
 		[--_M_ultireco mode--]
 	</div>
-	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) })">
+	<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({ type: 'keydown', code: 'KeyG' })">
 		[--_G_o (FS)--]
 	</div>
-	<div class="button button-ToR" style="width:4.5em" onclick="$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) })">
+	<div class="button button-ToR" style="width:4.5em" onclick="$window.trigger({ type: 'keydown', code: 'KeyT' })">
 		[--_T_ofR--]
 	</div>
-	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) })">
+	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyZ' })">
 		[--To List Play(_Z_)--]
 	</div>
-	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })">
+	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyX' })">
 		[--To Contents(_X_)--]
 	</div>
-	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'D'.charCodeAt(0) })">
+	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyD' })">
 		[--Backwar_d_--]
 	</div>
-	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', keyCode: 'F'.charCodeAt(0) })">
+	<div class="button darkgoldenrod" onclick="$window.trigger({ type: 'keydown', code: 'KeyF' })">
 		[--_F_orward--]
 	</div>
-	<div class="button button-goto-cats" onclick="$window.trigger({ type: 'keydown', keyCode: 'C'.charCodeAt(0) })">
+	<div class="button button-goto-cats" onclick="$window.trigger({ type: 'keydown', code: 'KeyC' })">
 		[--Go to _C_ats--]
 	</div>
-	<div class="button button-new-reco" onclick="$window.trigger({ type: 'keydown', keyCode: 'N'.charCodeAt(0) })">
+	<div class="button button-new-reco" onclick="$window.trigger({ type: 'keydown', code: 'KeyN' })">
 		[--_N_ew reco--]
 	</div>
 	<div id="SNS-floating"><a onclick="return m.shareCurrentPage('link',this)"><img class="SNS-img" src="/CDN/link.png"></a><a onclick="return m.shareCurrentPage('tag',this)"><img class="SNS-img" src="/CDN/icon-Tag.png"></a><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareCurrentPage('recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareCurrentPage('X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareCurrentPage('facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareCurrentPage('kakao')"><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareCurrentPage('whatsapp')"></div>`);
@@ -2173,12 +2173,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 	</text>
 </svg>
 </div></div>`);
-			$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) })">[--Get _R_ecoms--]</div>
-<div class="button button-mode button-daily-mix fLeft" onclick="$window.trigger({ type: 'keydown', keyCode: 'Y'.charCodeAt(0) })">[--Dail_y_ Mix Recoms with ToR--]</div>
+			$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="$window.trigger({ type: 'keydown', code: 'KeyR' })">[--Get _R_ecoms--]</div>
+<div class="button button-mode button-daily-mix fLeft" onclick="$window.trigger({ type: 'keydown', code: 'KeyY' })">[--Dail_y_ Mix Recoms with ToR--]</div>
 <div class="cBoth"></div>`);
 		}
 		else {
-			$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) })">[--Get _R_ecoms--]</div>`);
+			$("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="$window.trigger({ type: 'keydown', code: 'KeyR' })">[--Get _R_ecoms--]</div>`);
 		}
 		$a_log_in = $(".a-log-in");
 		$a_log_out = $(".a-log-out");
@@ -2246,7 +2246,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (m.lastTLIndex !== m.TLIndex) {
 				m.timeoutTL = setTimeout(function () {
 					$button_get_recoms.removeClass("enabled");
-					$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyR' });
 				}, 2 * m.wait);
 			}
 		};
@@ -3814,12 +3814,12 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				if (elem === undefined || elem === null) {
 					if ((m.lastRecoMode === "" && m.recoMode === "multireco") || (m.lastRecoMode === "daily-mix" && m.recoMode === "multireco")) {
 						$contents.addClass("multireco");
-						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyX' });
 						resolve();
 					}
 					else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
 						$contents.removeClass("multireco");
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 						resolve();
 					}
 				}
@@ -4281,10 +4281,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						}
 						if (scroll) {
 							if (m.recoMode === "multireco") {
-								$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+								$window.trigger({ type: 'keydown', code: 'KeyX' });
 							}
 							else {
-								$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+								$window.trigger({ type: 'keydown', code: 'KeyZ' });
 							}
 						}
 						m.lastRecoMode = m.recoMode;
@@ -4318,7 +4318,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$contents.html("");
 						}
 						if (m.recoMode === "daily-mix") {
-							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+							$window.trigger({ type: 'keydown', code: 'KeyZ' });
 							m.recosShown = true;
 						}
 						else {
@@ -4348,7 +4348,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 								}
 								$contents_recoms.html(strHTML);
 								if (m.recoMode === "daily-mix") {
-									$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+									$window.trigger({ type: 'keydown', code: 'KeyZ' });
 								}
 								else {
 									m.goDirectlyToHash("button-get-recoms");
@@ -4385,7 +4385,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 										m.neighborsRecos[cat] = respJSON;
 										await m.showRecoms(m.neighborsRecos[cat], cat, true);
 										if (m.recoMode === "daily-mix") {
-											$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+											$window.trigger({ type: 'keydown', code: 'KeyZ' });
 										}
 										else {
 											m.goDirectlyToHash("button-get-recoms");
@@ -4397,7 +4397,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 									await m.showRecoms(m.neighborsRecos[cat], cat, true);
 									m.lastTLIndex = m.TLIndex;
 									if (m.recoMode === "daily-mix") {
-										$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+										$window.trigger({ type: 'keydown', code: 'KeyZ' });
 									}
 									else {
 										m.goDirectlyToHash("button-get-recoms");
@@ -4863,13 +4863,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			else {
 				if (!m.doNotPushHistory) {
 					if (m.recoMode === "neighbors" || m.recoMode === "multireco") {
-						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyX' });
 					}
 					else if (m.recoMode === "recoms") {
 						m.goDirectlyToHash("button-get-recoms");
 					}
 					else {
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 					}
 				}
 			}
@@ -4910,13 +4910,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 
 				if (e.state.recoMode === "multireco" && (!$button_multireco_mode.hasClass("enabled"))) {
-					$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyM' });
 				}
 				else if (e.state.recoMode === "neighbors" && (!$button_neighbors_mode.hasClass("enabled"))) {
-					$window.trigger({ type: 'keydown', keyCode: 'B'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyB' });
 				}
 				else if (e.state.recoMode === "daily-mix" && !$button_daily_mix.hasClass("enabled")) {
-					$window.trigger({ type: 'keydown', keyCode: 'Y'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyY' });
 				}
 
 				if (e.state.cat) {
@@ -4998,7 +4998,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 		$new_reco.find("input, textarea").on("keydown.common", function (e) {
 			if (e.keyCode === 27 && $new_reco.is(":visible")) { // ESC
-				$window.trigger({ type: 'keydown', keyCode: 'N'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyN' });
 			}
 			else if (e.ctrlKey && e.keyCode === 13) { // Ctrl+Enter
 				let r = m.myRecos[$input_uri[0].value];
@@ -5556,7 +5556,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 				}
 				m.doNotPushHistory = false;
-				$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyX' });
 			}
 			else if ((m.lastRecoMode === "multireco" && m.recoMode === "") || (m.lastRecoMode === "daily-mix" && m.recoMode === "")) {
 				m.lastRecoMode = m.recoMode;
@@ -5565,7 +5565,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 				}
 				m.doNotPushHistory = false;
-				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyZ' });
 			}
 			else {
 				if (!m.doNotPushHistory) {
@@ -6085,27 +6085,27 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			switch (e.target.nodeName) {
 				case "INPUT": case "SELECT": case "TEXTAREA": return;
 			}
-			switch (e.keyCode) {
-				case 90: // Z=90 To List Play
+			switch (e.code) {
+				case 'KeyZ': // Z=90 To List Play
 					if (!m.initialOpen || !m.initialHashURI) {
 						m.goDirectlyToHash("headPlay");
 					}
 					break;
-				case 88: // X=88 To contents
+				case 'KeyX': // X=88 To contents
 					if (!m.initialOpen || !m.initialHashURI) {
 						m.goDirectlyToHash("numbers-of-recos");
 					}
 					break;
-				case 81: // Q=81 Preceding
+				case 'KeyQ': // Q=81 Preceding
 					m.fsToRs.playNext(1, false, false, true);
 					break;
-				case 87: // W=87 Following
+				case 'KeyW': // W=87 Following
 					m.fsToRs.playNext(-1, false, false, true);
 					break;
-				case 83: // S=83 Shuffle
+				case 'KeyS': // S=83 Shuffle
 					$sort_list.toggle();
 					break;
-				case 75: // K=75 Auto skip
+				case 'KeyK': // K=75 Auto skip
 					if ($button_auto_skip.hasClass("enabled")) {
 						$button_auto_skip.removeClass("enabled");
 						m.fsToRs.skip = false;
@@ -6117,7 +6117,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.docCookies.setItem("auto_skip", "true", Infinity, "/", false, true);
 					}
 					break;
-				case 76: // L=76 Loop
+				case 'KeyL': // L=76 Loop
 					if ($button_loop.hasClass("enabled")) {
 						$button_loop.removeClass("enabled");
 						m.fsToRs.loop = false;
@@ -6129,7 +6129,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.docCookies.setItem("loop", "true", Infinity, "/", false, true);
 					}
 					break;
-				case 80: // P=80 One loop
+				case 'KeyP': // P=80 One loop
 					if ($button_one_loop.hasClass("enabled")) {
 						$button_one_loop.removeClass("enabled");
 						m.fsToRs.oneLoop = false;
@@ -6141,15 +6141,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.docCookies.setItem("one_loop", "true", Infinity, "/", false, true);
 					}
 					break;
-				case 69: // E=69 Expand/Hide floating keys
+				case 'KeyE': // E=69 Expand/Hide floating keys
 					m.toggleFK();
 					break;
-				case 65: // A=65 To my page
+				case 'KeyA': // A=65 To my page
 					if ((!m.myPage) && m.myIndex) {
 						window.location.href = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, null, m.hashURI, m.args);
 					}
 					break;
-				case 85: // U=85 Block touch
+				case 'KeyU': // U=85 Block touch
 					if ($button_block_touch.hasClass("enabled")) {
 						$block_touch.hide();
 						$block_touch_exit.hide();
@@ -6163,7 +6163,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						$button_block_touch.addClass("enabled");
 					}
 					break;
-				case 67: // C=67 GotoCats
+				case 'KeyC': // C=67 GotoCats
 					e.preventDefault();
 					if ($goto_cats_container.is(":visible")) {
 						$goto_cats_container.hide();
@@ -6188,7 +6188,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.doNotPushHistory = false;
 					}
 					break;
-				case 71: // G=71
+				case 'KeyG': // G=71
 					e.preventDefault();
 					if ($fuzzy_search_container.is(":visible")) {
 						$fuzzy_search_container.hide();
@@ -6215,7 +6215,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.doNotPushHistory = false;
 					}
 					break;
-				case 84: // T=84
+				case 'KeyT': // T=84
 					e.preventDefault();
 					if ($table_of_recos_container.is(":visible")) {
 						$table_of_recos_container.hide();
@@ -6242,7 +6242,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.doNotPushHistory = false;
 					}
 					break;
-				case 66: // B=66
+				case 'KeyB': // B=66
 					e.preventDefault();
 					$contents.removeClass("multireco");
 					$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
@@ -6259,27 +6259,27 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							}
 						}
 						$button_mode.removeClass("enabled");
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 					}
 					else {
 						m.recoMode = "neighbors";
 						$button_mode.removeClass("enabled");
 						$button_neighbors_mode.addClass("enabled");
-						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyX' });
 					}
 					clearInterval(m.initialFsGotoCats1);
 					m.initialFsGotoCats1 = setInterval(function () {
 						m.intervalOpenCat(m.initialFsGotoCats1);
 					}, m.wait);
 					break;
-				case 77: // M=77
+				case 'KeyM': // M=77
 					e.preventDefault();
 					if ($button_multireco_mode.hasClass("enabled")) {
 						m.recoMode = "";
 						$button_mode.removeClass("enabled");
 						$contents.removeClass("multireco");
 						$multireco_cats_container.hide();
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 					}
 					else {
 						m.recoMode = "multireco";
@@ -6291,7 +6291,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						if (!m.catsContainsAllAnotCats($multireco_input_cats[0].value, m.currentCat)) {
 							$multireco_input_cats[0].value = m.currentCat;
 						}
-						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyX' });
 					}
 					if (!m.recosShown) {
 						$contents.html(`<div class="loading"><div class="outerCircle"></div><div class="innerCircle"></div></div>`);
@@ -6304,7 +6304,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 					break;
-				case 89: // Y=89
+				case 'KeyY': // Y=89
 					if (m.myPage) {
 						e.preventDefault();
 						if ($button_daily_mix.hasClass("enabled")) {
@@ -6318,21 +6318,21 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$button_daily_mix.addClass("enabled");
 							// $contents_recoms.hide();
 						}
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 						clearInterval(m.initialFsGotoCats4);
 						m.initialFsGotoCats4 = setInterval(function () {
 							m.intervalOpenCat(m.initialFsGotoCats4);
 						}, m.wait);
 					}
 					break;
-				case 82: // R=82
+				case 'KeyR': // R=82
 					if (m.myPage) {
 						e.preventDefault();
 						if ($button_get_recoms.hasClass("enabled")) {
 							m.recoMode = "";
 							$contents_recoms.html("");
 							$button_mode.removeClass("enabled");
-							$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+							$window.trigger({ type: 'keydown', code: 'KeyZ' });
 						}
 						else {
 							m.recoMode = "recoms";
@@ -6353,19 +6353,19 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						m.recoMode = "";
 						$contents_recoms.html("");
 						$button_mode.removeClass("enabled");
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						$window.trigger({ type: 'keydown', code: 'KeyZ' });
 						clearInterval(m.initialFsGotoCats3);
 						m.initialFsGotoCats3 = setInterval(function () {
 							m.intervalOpenCat(m.initialFsGotoCats3);
 						}, m.wait);
 					}
 					break;
-				case 78: // N=78
+				case 'KeyN': // N=78
 					e.preventDefault();
 					m.toggleNewReco();
 					break;
-				case 70: // F=70
-				case 68: // D=68
+				case 'KeyF': // F=70
+				case 'KeyD': // D=68
 					let scrollTop = $window.scrollTop();
 					let i, k = m.$fdList.length;
 					let $hI;
@@ -6411,10 +6411,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
 					}
 					break;
-				case 73: // I=73
+				case 'KeyI': // I=73
 					$a_log_in.trigger("click");
 					break;
-				case 79: // O=79
+				case 'KeyO': // O=79
 					$a_log_out.trigger("click");
 					break;
 				default:
@@ -6426,21 +6426,21 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		$shortkeyDesc = $("ul#shortkeys");
 		if ($shortkeyDesc.length) {
 			$shortkeyDesc.html(
-				`<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'C'.charCodeAt(0) })"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) })"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) })"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) })"><span class="bold">Z</span>: [--To List Play(_Z_)--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })"><span class="bold">X</span>: [--To Contents(_X_)--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'F'.charCodeAt(0) })"><span class="bold">F</span>: [--_F_orward--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'D'.charCodeAt(0) })"><span class="bold">D</span>: [--Backwar_d_--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'N'.charCodeAt(0) })"><span class="bold">N</span>: [--_N_ew reco--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) })"><span class="bold">M</span>: [--_M_ultireco mode--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'B'.charCodeAt(0) })"><span class="bold">B</span>: [--Neigh_b_ors mode--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) })"><span class="bold">R</span>: [--Get _R_ecoms--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'Y'.charCodeAt(0) })"><span class="bold">Y</span>: [--Dail_y_ Mix Recoms with ToR--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'U'.charCodeAt(0) })"><span class="bold">U</span>: [--Block to_u_ch--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'I'.charCodeAt(0) })"><span class="bold">I</span>: [--Log _i_n--]</span></li>
-<li><span onclick="$window.trigger({ type: 'keydown', keyCode: 'O'.charCodeAt(0) })"><span class="bold">O</span>: [--Log _o_ut--]</span></li>`
+				`<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyC' })"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyG' })"><span class="bold">G</span>: [--Fuzzy Search--] [--_G_o (FS)--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyT' })"><span class="bold">T</span>: Table of Recos [--_T_ofR--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyZ' })"><span class="bold">Z</span>: [--To List Play(_Z_)--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyX' })"><span class="bold">X</span>: [--To Contents(_X_)--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyF' })"><span class="bold">F</span>: [--_F_orward--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyD' })"><span class="bold">D</span>: [--Backwar_d_--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyN' })"><span class="bold">N</span>: [--_N_ew reco--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyM' })"><span class="bold">M</span>: [--_M_ultireco mode--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyB' })"><span class="bold">B</span>: [--Neigh_b_ors mode--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyR' })"><span class="bold">R</span>: [--Get _R_ecoms--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyY' })"><span class="bold">Y</span>: [--Dail_y_ Mix Recoms with ToR--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyU' })"><span class="bold">U</span>: [--Block to_u_ch--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyI' })"><span class="bold">I</span>: [--Log _i_n--]</span></li>
+<li><span onclick="$window.trigger({ type: 'keydown', code: 'KeyO' })"><span class="bold">O</span>: [--Log _o_ut--]</span></li>`
 			);
 		}
 		$shortkeyDesc.hide();
@@ -6613,14 +6613,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			if (vars?.ToR?.val || vars?.ToR?.val === "") {
 				$table_of_recos[0].value = vars.ToR.val;
 				if (!$table_of_recos_container.is(":visible")) {
-					$window.trigger({ type: 'keydown', keyCode: 'T'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyT' });
 					// $table_of_recos.trigger("keyup.fs"); // TODO: Delete this.
 				}
 			}
 			if (vars?.Go?.val || vars?.Go?.val === "") {
 				$fuzzy_search[0].value = vars.Go.val;
 				if (!$fuzzy_search_container.is(":visible")) {
-					$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyG' });
 					// $fuzzy_search.trigger("keyup.fs"); // TODO: Delete this.
 				}
 			}
@@ -6695,17 +6695,17 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 			if (m.docCookies.hasItem("auto_skip")) {
 				if (m.docCookies.getItem("auto_skip") === "true" && !$button_auto_skip.hasClass("enabled")) {
-					$window.trigger({ type: 'keydown', keyCode: 'K'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyK' });
 				}
 			}
 			if (m.docCookies.hasItem("loop")) {
 				if (m.docCookies.getItem("loop") === "true" && !$button_loop.hasClass("enabled")) {
-					$window.trigger({ type: 'keydown', keyCode: 'L'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyL' });
 				}
 			}
 			if (m.docCookies.hasItem("one_loop")) {
 				if (m.docCookies.getItem("one_loop") === "true" && !$button_one_loop.hasClass("enabled")) {
-					$window.trigger({ type: 'keydown', keyCode: 'P'.charCodeAt(0) });
+					$window.trigger({ type: 'keydown', code: 'KeyP' });
 				}
 			}
 
@@ -6716,7 +6716,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 			if (m.recoMode === "") {
 				$button_mode.removeClass("enabled");
-				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyZ' });
 				// await m.getUriListAndShowRecosOnCat(m.currentCat, true);
 				clearInterval(m.initialFsGotoCats0);
 				m.initialFsGotoCats0 = setInterval(function () {
@@ -6724,16 +6724,16 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}, m.wait);
 			}
 			else if (m.recoMode === "multireco") {
-				$window.trigger({ type: 'keydown', keyCode: 'M'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyM' });
 			}
 			else if (m.recoMode === "neighbors") {
-				$window.trigger({ type: 'keydown', keyCode: 'B'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyB' });
 			}
 			else if (m.recoMode === "recoms") {
-				$window.trigger({ type: 'keydown', keyCode: 'R'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyR' });
 			}
 			else if (m.recoMode === "daily-mix") {
-				$window.trigger({ type: 'keydown', keyCode: 'Y'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyY' });
 			}
 
 			if (m.initialPathname === "/reco") {
@@ -6777,7 +6777,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.gotoHash(m.initialHashURI);
 			$goto_cats_container.hide();
 			if (!m.initialHashURI) {
-				$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+				$window.trigger({ type: 'keydown', code: 'KeyZ' });
 			}
 			if (m.docCookies.getItem("hideFK") === "y") {
 				$floating_key.hide();
