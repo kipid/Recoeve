@@ -1,8 +1,8 @@
 window.m = window.m || {};
 (function (m, $, undefined) {
 	// user-page.html, log-in.html, changePwd.html
-	$window = $(window);
-	$document = $(document);
+	m.$window = $(window);
+	m.$document = $(document);
 
 	m.myCatList = [];
 	m.catUriList = [];
