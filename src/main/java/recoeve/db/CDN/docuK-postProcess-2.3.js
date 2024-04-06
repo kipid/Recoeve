@@ -17,13 +17,12 @@
 	}
 	$("pre.prettyprint.scrollable").addClass("linenums");
 
-	let $docuK = $(".docuK");
-	m.$docuK = $docuK;
+	m.$docuK = $(".docuK");
 
 	// Showing disableQ0 only in width>321.
 	if (m.browserWidth > 321) {
-		$docuK.find(".disableQ0").html(function (ith, orgText) {
-			m.logPrint(`<br><br>".disableQ0"s are enabled at vertical position of ${(100 * $(this).offset().top / $document.height()).toPrecision(3)}% of document.`);
+		m.$docuK.find(".disableQ0").html(function (ith, orgText) {
+			m.logPrint(`<br><br>".disableQ0"s are enabled at vertical position of ${(100 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document.`);
 			return orgText.replace(/<!--/g, '').replace(/-->/g, '');
 		});
 	}
@@ -40,15 +39,15 @@
 	m.logPrint(`<br><br>&lt;eq&gt; and &lt;eqq&gt; tags are rendered to MathJax format, being enclosed by \\ ( and \\ ).`);
 
 	// docuK process.
-	$docuK.has("script").addClass("noDIdHandle");
-	let k = $docuK.length;
+	m.$docuK.has("script").addClass("noDIdHandle");
+	let k = m.$docuK.length;
 	for (let i = 1; i < k; i++) {
 		m.docuKProcess(m, jQuery, i);
 	}
 
-	m.bubbleRefs = $docuK.find(".bubbleRef"); // for function m.ShowBR
+	m.bubbleRefs = m.$docuK.find(".bubbleRef"); // for function m.ShowBR
 
-	let $inRefs = $docuK.find(".inRef");
+	let $inRefs = m.$docuK.find(".inRef");
 	// Centering arrow.
 	$inRefs.each(function () {
 		let $elem = $(this);
@@ -61,7 +60,7 @@
 	// Delayed-Load in bubble ref.
 	$inRefs.on("mouseenter.delayedLoad", function () {
 		m.logPrint(`<br>Do delayed-load in bubble ref.`);
-		$window.trigger("scroll.delayedLoad");
+		m.$window.trigger("scroll.delayedLoad");
 		$(this).off("mouseenter.delayedLoad");
 	});
 
@@ -102,16 +101,16 @@
 	window.onpopstate = function (e) {
 		if (!!e.state) {
 			if (e.state?.goOn !== m.goOn) {
-				$window.trigger({ type: 'keydown', keyCode: 'G'.charCodeAt(0) });
+				m.$window.trigger({ type: 'keydown', code: 'KeyG' });
 			}
 			if (e.state?.logOn !== m.logOn) {
-				$window.trigger({ type: 'keydown', keyCode: 'K'.charCodeAt(0) });
+				m.$window.trigger({ type: 'keydown', code: 'KeyK' });
 			}
 		}
 	};
 
 	// On ready.
-	$document.ready(function () {
+	m.$document.ready(function () {
 		// Disqus js script, and Redirect to the canonical URL.
 		if (window.disqus_config) {
 			m.disqusVars = { page: {} };
@@ -143,43 +142,43 @@
 			}
 		}, 8 * m.wait);
 
-		$title.html($title.html() + ` at ${window.location.host}`);
+		m.$title.html(m.$title.html() + ` at ${window.location.host}`);
 
 		m.$log.after(`<div id="floating-key">
 <div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
-<div class="button button-Go" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})">
+<div class="button button-Go" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})">
 	<span class="bold underline">G</span>o (FS)
 </div>
-<div class="button darkgoldenrod" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyT'})">
 	<span class="bold underline">T</span>ofC
 </div>
-<div class="button button-log" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})">
+<div class="button button-log" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})">
 	Docu<span class="bold underline">K</span> Log
 </div>
-<div class="button darkgoldenrod" onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})">
+<div class="button darkgoldenrod" onclick="m.$window.trigger({type:'keydown', code:'KeyD'})">
 	Backwar<span class="bold underline">d</span>
 </div>
-<div class="button darkgoldenrod" onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})">
+<div class="button darkgoldenrod" onclick="m.$window.trigger({type:'keydown', code:'KeyF'})">
 	<span class="bold underline">F</span>orward
 </div>
-<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyR'})">
 	<span class="bold underline">R</span>RA
 </div>
-<div class="button" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})">
+<div class="button" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyL'})">
 	<span class="bold underline">L</span>ists
 </div>
-<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyZ'})">
 	Cmt<span class="bold underline">Z</span>
 </div>
-<div class="button darkgoldenrod" style="width:4.5em" onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyX'})">
 	Cmt<span class="bold underline">X</span>
 </div>
-<div class="button" onclick="$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})">
+<div class="button" onclick="m.$window.trigger({type:'keydown', code:'KeyH'})">
 	<span class="bold underline">H</span>andle CmtZ
 </div>
-${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyI'})">
 	Log <span class="bold underline">i</span>n
-</div>`: `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+</div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyO'})">
 	Log <span class="bold underline">o</span>ut
 </div>`}
 <div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
@@ -203,10 +202,10 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 		}
 
 		// Hiding hiden sections.
-		$docuK.find(".sec.hiden").find(">.sec-contents").css({ display: "none" });
+		m.$docuK.find(".sec.hiden").find(">.sec-contents").css({ display: "none" });
 
 		// Setting and Printing Styles
-		m.$deviceInfo = $docuK.find(".deviceInfo");
+		m.$deviceInfo = m.$docuK.find(".deviceInfo");
 
 		let cookieItem;
 		m.logPrint(`<br>`);
@@ -420,14 +419,14 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 		};
 
 		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-		if ($docuK.find('.prettyprint').length) {
+		if (m.$docuK.find('.prettyprint').length) {
 			let $gcp = $(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
 			$headOrBody.append($gcp);
 			m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
 		}
 
 		// MathJax js script (from cdn.mathjax.org) is added.
-		if ($docuK.find('eq, eqq').length) {
+		if (m.$docuK.find('eq, eqq').length) {
 			let $mjxConfig = $(`<script>
 window.MathJax={
 	startup: {
@@ -481,14 +480,14 @@ window.MathJax={
 			}
 			let scrollTop = null;
 			let i, k;
-			switch (event.keyCode) {
-				case 65: // A=65 Toggle a mess
+			switch (event.code) {
+				case 'KeyA': // A=65 Toggle a mess
 					$(".toggle-a-mess").eq(0).trigger("click");
 					break;
-				case 69: // E=69 Expand/Hide floating keys
+				case 'KeyE': // E=69 Expand/Hide floating keys
 					m.toggleFK();
 					break;
-				case 71: // G=71
+				case 'KeyG': // G=71
 					event.preventDefault();
 					if ($fuzzy_search_container.is(":visible")) {
 						$fuzzy_search_container.hide();
@@ -505,7 +504,7 @@ window.MathJax={
 						window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 					}
 					break;
-				case 75: // K=75
+				case 'KeyK': // K=75
 					event.preventDefault();
 					if (m.$log.is(":visible")) {
 						m.$logAll.hide();
@@ -521,13 +520,13 @@ window.MathJax={
 						window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 					}
 					break;
-				case 70: // F=70
-				case 68: // D=68
-					scrollTop = $window.scrollTop();
+				case 'KeyF': // F=70
+				case 'KeyD': // D=68
+					scrollTop = m.$window.scrollTop();
 					k = m.$fdList.length;
 					let $hI;
 
-					if (event.keyCode === 70) { // F=70
+					if (event.code === 'KeyF') { // F=70
 						scrollTop += 10;
 						for (i = 0; i < k; i++) {
 							$hI = m.$fdList.eq(i);
@@ -551,10 +550,10 @@ window.MathJax={
 					if (hIID) {
 						window.location.hash = `#${hIID}`;
 					}
-					$window.scrollTop($hI.offset().top);
+					m.$window.scrollTop($hI.offset().top);
 					break;
-				case 84: // T=84
-					scrollTop = $window.scrollTop();
+				case 'KeyT': // T=84
+					scrollTop = m.$window.scrollTop();
 					k = m.tocs.length;
 					let tocI;
 					scrollTop -= 10;
@@ -565,10 +564,10 @@ window.MathJax={
 					if (i === -1) {
 						tocI = m.tocs.eq(k - 1);
 					}
-					$window.scrollTop(tocI.offset().top);
+					m.$window.scrollTop(tocI.offset().top);
 					break;
-				case 82: // R=82
-					scrollTop = $window.scrollTop();
+				case 'KeyR': // R=82
+					scrollTop = m.$window.scrollTop();
 					k = m.rras.length;
 					let rraI;
 					scrollTop -= 10;
@@ -579,9 +578,9 @@ window.MathJax={
 					if (i === -1) {
 						rraI = m.rras.eq(k - 1);
 					}
-					$window.scrollTop(rraI.offset().top);
+					m.$window.scrollTop(rraI.offset().top);
 					break;
-				case 76: // L=76
+				case 'KeyL': // L=76
 					if (window.location.pathname === "/entry/Lists") {
 						window.location = "/category";
 					}
@@ -589,20 +588,20 @@ window.MathJax={
 						window.location = "/entry/Lists";
 					}
 					break;
-				case 90: // Z=90
-					if ($("div.comments").length) $window.scrollTop($("div.comments").offset().top);
+				case 'KeyZ': // Z=90
+					if ($("div.comments").length) m.$window.scrollTop($("div.comments").offset().top);
 					break;
-				case 72: // H=72
+				case 'KeyH': // H=72
 					m.handleAhrefInComment();
 					break;
-				case 88: // X=88
-					if ($("#disqus_thread").length) $window.scrollTop($("#disqus_thread").offset().top);
+				case 'KeyX': // X=88
+					if ($("#disqus_thread").length) m.$window.scrollTop($("#disqus_thread").offset().top);
 					break;
-				case 73: // I=73
+				case 'KeyI': // I=73
 					m.docCookies.removeItem("REACTION_GUEST", "/");
 					window.location.href = "https://www.tistory.com/auth/login";
 					break;
-				case 79: // O=79
+				case 'KeyO': // O=79
 					window.location.href = "https://www.tistory.com/auth/logout";
 					break;
 				default:
@@ -611,7 +610,7 @@ window.MathJax={
 					}
 			}
 		}
-		$window.on("keydown", m.processShortKey);
+		m.$window.on("keydown", m.processShortKey);
 		m.logPrint(`<br><br>New ShortKeys (T: Table of Contents, F: Forward Section, D: Previous Section, L: To 전체목록/[Lists]) are set.`);
 
 		m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
@@ -682,15 +681,15 @@ window.MathJax={
 			})
 		};
 
-		$window.on("resize.menubar", function (e) {
+		m.$window.on("resize.menubar", function (e) {
 			$("#menubar_wrapper").parents().show();
 		});
 
 		m.reNewAndReOn = function () {
 			m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
-			$window.off("scroll.delayedLoad");
-			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-			$window.trigger("scroll.delayedLoad");
+			m.$window.off("scroll.delayedLoad");
+			m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+			m.$window.trigger("scroll.delayedLoad");
 			m.$fdList = $("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer");
 		};
 		m.handleAhrefInComment();

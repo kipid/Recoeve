@@ -1,16 +1,15 @@
 window.m = {};
 (function (m, $, undefined) {
 	m.version0 = "2.7";
-	$window = $(window);
-	$document = $(document);
-	$html = $("html");
-	$title = $("title");
+	m.$window = $(window);
+	m.$document = $(document);
+	m.$html = $("html");
+	m.$title = $("title");
 	m.fsToRs = [];
 
 	$.fn.exists = function () { return this.length; };
 	m.browserWidth = window.innerWidth;
-	const $docuK = $(".docuK");
-	m.$docuK = $docuK;
+	m.$docuK = $(".docuK");
 
 	m.getUTF8Length = function (s) {
 		let len = 0;
@@ -831,7 +830,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	// logPrint function.
 	m.$log = $("#docuK-log");
 	m.$log.addClass("fixed");
-	m.$log.before(`<div class="docuK-log exit" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+	m.$log.before(`<div class="docuK-log exit" onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
 	m.$logAll = $("#docuK-log, .docuK-log.exit");
 	m.logPrint = function (str) {
 		m.$log.append(str);
@@ -861,7 +860,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
 <a id="out-focus" class="none">out focus</a>`);
 
@@ -873,16 +872,16 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 
 	$fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
 		let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-		let relativeX = touch0.clientX - Math.round($fuzzy_search_container_move.offset().left) + $window.scrollLeft();
-		let relativeY = touch0.clientY - Math.round($fuzzy_search_container_move.offset().top) + $window.scrollTop();
-		$html.on("mousemove.move touchmove.move", function (e) {
+		let relativeX = touch0.clientX - Math.round($fuzzy_search_container_move.offset().left) + m.$window.scrollLeft();
+		let relativeY = touch0.clientY - Math.round($fuzzy_search_container_move.offset().top) + m.$window.scrollTop();
+		m.$html.on("mousemove.move touchmove.move", function (e) {
 			window.getSelection().removeAllRanges();
 			e.preventDefault();
 			e.stopPropagation();
 			let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
 			$fuzzy_search_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-			$html.on("mouseup.move touchend.move", function () {
-				$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+			m.$html.on("mouseup.move touchend.move", function () {
+				m.$html.off("mouseup.move touchend.move mousemove.move touchmove.move");
 			});
 		});
 	});
@@ -1209,7 +1208,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		switch (e.keyCode) {
 			case 27: // ESC=27
 				e.preventDefault();
-				$window.trigger({ type: "keydown", keyCode: 71 }); // G=71
+				m.$window.trigger({ type: "keydown", keyCode: 71 }); // G=71
 				break;
 			case 38: // up=38
 			case 40: // down=40
@@ -1268,7 +1267,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				if (!$listI.is(":visible")) {
 					$listI.parents("*").show();
 				}
-				$window.scrollTop($listI.offset().top);
+				m.$window.scrollTop($listI.offset().top);
 			}
 		}
 	};
@@ -1724,7 +1723,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	m.toggleHeight = function (obj) {
 		let next = $(obj).next();
 		let toBeScrolledBy = 0;
-		let windowScrollTop = $window.scrollTop();
+		let windowScrollTop = m.$window.scrollTop();
 		// (window.pageYOffset!==undefined)?window.pageYOffset:(document.documentElement||document.body.parentNode||document.body).scrollTop
 		let nOffsetTop = next.offset().top;
 		let nHeight = next.height();
@@ -1750,7 +1749,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				next[0].scrollTop = toBeScrolledBy;
 			}
 		}
-		// m.resultTest.append("after : \twindowScrollTop: "+$window.scrollTop()+";\tnOffsetTop: "+next.offset().top+";\tnHeight: "+next.height()+"\n\n");
+		// m.resultTest.append("after : \twindowScrollTop: "+m.$window.scrollTop()+";\tnOffsetTop: "+next.offset().top+";\tnHeight: "+next.height()+"\n\n");
 		// m.resultTest[0].scrollTop=m.resultTest[0].scrollHeight;
 	};
 
@@ -1763,7 +1762,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		else {
 			$(elem).html("▼ Show");
 		}
-		setTimeout(function () { $window.trigger("scroll.delayedLoad"); }, 1000);
+		setTimeout(function () { m.$window.trigger("scroll.delayedLoad"); }, 1000);
 	};
 	m.Hide = function (elem) {
 		let $elem = $(elem).parent();
@@ -1891,7 +1890,7 @@ document.referrer: ${referrerHTML}`
 		}
 		return false;
 	};
-	$window.on("resize.deviceInfo", function () {
+	m.$window.on("resize.deviceInfo", function () {
 		if (window.innerWidth !== m.browserWidth) {
 			m.browserWidth = window.innerWidth;
 			m.fontSize = parseInt(m.$docuK.css("font-size"));
@@ -1901,7 +1900,7 @@ document.referrer: ${referrerHTML}`
 
 	// Share a link through SNS
 	m.shareSNS = async function (service, elem) {
-		let title = $title.html();
+		let title = m.$title.html();
 		let url = window.location.href;
 		let open = "";
 		let $elem = null;
@@ -1960,7 +1959,7 @@ document.referrer: ${referrerHTML}`
 	$.fn.inView = function () {
 		if (this.is(":visible")) {
 			let viewportHeight = window.innerHeight;
-			let scrollTop = $window.scrollTop();
+			let scrollTop = m.$window.scrollTop();
 			let elemTop = this.offset().top - m.delayPad;
 			let elemBottom = elemTop + this.height() + m.delayPad;
 			return (scrollTop + viewportHeight > elemTop) && (scrollTop < elemBottom);
@@ -2003,19 +2002,19 @@ document.referrer: ${referrerHTML}`
 			m.$delayedElems.each(function () {
 				if ($(this).delayedLoad()) {
 					m.$delayedElems = m.$delayedElems.not(this);
-					m.logPrint(`<br><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / $document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${m.$delayedElems.length} of $delayedElems are remained.<br>`);
+					m.logPrint(`<br><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${m.$delayedElems.length} of $delayedElems are remained.<br>`);
 				}
 			});
-			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+			m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 		}
 		else {
 			m.logPrint(`<br><br>All delayedElem are loaded.`);
-			$window.off("scroll.delayedLoad");
+			m.$window.off("scroll.delayedLoad");
 		}
 		m.previous = Date.now();
 	};
 	m.delayedLoadByScroll = function () {
-		$window.off("scroll.delayedLoad");
+		m.$window.off("scroll.delayedLoad");
 		let now = Date.now();
 		let passed = now - m.previous;
 		if (passed > m.wait) {
@@ -2028,12 +2027,12 @@ document.referrer: ${referrerHTML}`
 			m.logPrint(`<br>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
 		}
 	};
-	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
 	m.toggleAMess = function (elem) {
 		let $elem = $(elem);
-		let wSTBefore = $window.scrollTop();
-		$window.on("scroll.stopDF", function (e) {
+		let wSTBefore = m.$window.scrollTop();
+		m.$window.on("scroll.stopDF", function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 		});
@@ -2045,7 +2044,7 @@ document.referrer: ${referrerHTML}`
 				let sHBefore = document.documentElement.scrollHeight;
 				$collection.hide();
 				let sHAfter = document.documentElement.scrollHeight;
-				$window.scrollTop(wSTBefore - sHBefore + sHAfter);
+				m.$window.scrollTop(wSTBefore - sHBefore + sHAfter);
 			}
 			else {
 				let outerHeightBefore = 0;
@@ -2058,7 +2057,7 @@ document.referrer: ${referrerHTML}`
 					}
 				});
 				$collection.hide();
-				$window.scrollTop(wSTBefore - outerHeightBefore);
+				m.$window.scrollTop(wSTBefore - outerHeightBefore);
 			}
 		}
 		else {
@@ -2066,7 +2065,7 @@ document.referrer: ${referrerHTML}`
 				let sHBefore = document.documentElement.scrollHeight;
 				$collection.show();
 				let sHAfter = document.documentElement.scrollHeight;
-				$window.scrollTop(wSTBefore - sHBefore + sHAfter);
+				m.$window.scrollTop(wSTBefore - sHBefore + sHAfter);
 			}
 			else {
 				let outerHeightBefore = 0;
@@ -2079,11 +2078,11 @@ document.referrer: ${referrerHTML}`
 					}
 				});
 				$collection.show();
-				$window.scrollTop(wSTBefore + outerHeightBefore);
+				m.$window.scrollTop(wSTBefore + outerHeightBefore);
 			}
 		}
 		setTimeout(function () {
-			$window.off("scroll.stopDF");
+			m.$window.off("scroll.stopDF");
 		}, 32);
 	};
 
@@ -2092,19 +2091,19 @@ document.referrer: ${referrerHTML}`
 		// Possible duplicate id is handled.
 		docuKI = (isNaN(docuKI) || docuKI < 0) ? 0 : parseInt(docuKI);
 		m.logPrint(`<br><br>docuK-${docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
-		let $docuK = $(".docuK").eq(docuKI);
-		if ($docuK.is(".rendered")) {
+		let $sDocuK = $(".docuK").eq(docuKI);
+		if ($sDocuK.is(".rendered")) {
 			m.logPrint(`<br><br>docuK-${docuKI} is already rendered.`);
 			return;
 		}
 
 		let postId = "-in-docuK" + docuKI;
 		let postIdRegEx = new RegExp(postId + "$");
-		if ($docuK.is(".noDIdHandle")) {
+		if ($sDocuK.is(".noDIdHandle")) {
 			postId = "";
 		}
 		else {
-			$docuK.find("[id]").each(function () {
+			$sDocuK.find("[id]").each(function () {
 				let $this = $(this);
 				$this[0].id += postId;
 			});
@@ -2112,7 +2111,7 @@ document.referrer: ${referrerHTML}`
 
 		if (!m.printMode) {
 			// Copyright and Short Keys announcement.
-			$docuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+			$sDocuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
@@ -2123,26 +2122,26 @@ document.referrer: ${referrerHTML}`
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</span> mess</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'A'.charCodeAt(0)})">Toggle <span class="bold underline">a</span> mess</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'F'.charCodeAt(0)})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'D'.charCodeAt(0)})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'T'.charCodeAt(0)})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'R'.charCodeAt(0)})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})"><span class="bold underline">H</span>: <span class="bold underline">H</span>andle URI links in Tistory comments.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'L'.charCodeAt(0)})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'Z'.charCodeAt(0)})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'H'.charCodeAt(0)})"><span class="bold underline">H</span>: <span class="bold underline">H</span>andle URI links in Tistory comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'X'.charCodeAt(0)})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
-		<li><span onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
-			$docuK.after(`<div class="copyright order"><ul>
+			$sDocuK.after(`<div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
 	<li class="license by"><span class="bold">저작자표시</span> - 적절한 출처와, 해당 라이센스 링크를 표시하고, 변경이 있는 경우 공지해야 합니다. 합리적인 방식으로 이렇게 하면 되지만, 이용 허락권자가 귀하에게 권리를 부여한다거나 귀하의 사용을 허가한다는 내용을 나타내서는 안 됩니다.</li>
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
@@ -2153,28 +2152,28 @@ document.referrer: ${referrerHTML}`
 		}
 
 		// Style change widget, and SNS widget.
-		$docuK.prepend(`<div class="change-docuK-style">
+		$sDocuK.prepend(`<div class="change-docuK-style">
 	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
 	<form><input id="button${docuKI}-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
 	</input><input id="button${docuKI}-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
 	<form><input id="input${docuKI}-font-family" class="bold" type="text" name="font" value="맑은 고딕" style="font-family:'맑은 고딕'; font-size:1.2em; width:73px; height:23px; text-align:center" onchange="m.CfontFamily(this.value)"></input></form>
 	<form><button type="button" onclick="m.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="m.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
 	<form><button type="button" onclick="m.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="m.ClineHeight(1)" style="font-size:1.6em">=</button></form>
-	<form><button class="button-log" type="button" onclick="$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
-	<form><button class="button-Go" type="button" onclick="$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
+	<form><button class="button-log" type="button" onclick="m.$window.trigger({type:'keydown', keyCode:'K'.charCodeAt(0)})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
+	<form><button class="button-Go" type="button" onclick="m.$window.trigger({type:'keydown', keyCode:'G'.charCodeAt(0)})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
 	</div>
 <div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
 		);
-		$docuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
+		$sDocuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
 
 		// Scrollable switching of 'pre.prettyprint'.
-		$docuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
+		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
 		m.logPrint(`<br><br>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 		// Numbering section, making table of contents, and numbering eqq (formatting to MathJax also) and figure tags
-		let $secs = $docuK.find(">.sec");
+		let $secs = $sDocuK.find(">.sec");
 		let $subSecs;
 		let $subSubSecs;
 		let secContentsId = "";
@@ -2281,19 +2280,19 @@ document.referrer: ${referrerHTML}`
 			}
 			return str;
 		}
-		let olRefs = $docuK.find("ol.refs");
+		let olRefs = $sDocuK.find("ol.refs");
 		olRefs = olRefs.eq(olRefs.length - 1);
-		let refs = $docuK.find("ol.refs>li");
+		let refs = $sDocuK.find("ol.refs>li");
 		let refsN = refs.length;
 		for (i = 0; i < refsN; i++) { // ref [i+1] with id
 			refs.eq(i).prepend(`<span class="refN">Ref. <span class="number">[${pad(i + 1, 2)}]</span> </span>`);
 		}
-		let cites = $docuK.find("cite"), citeI, refered;
+		let cites = $sDocuK.find("cite"), citeI, refered;
 		for (i = 0; i < cites.length; i++) {
 			citeI = cites.eq(i);
 			if (citeI.is("[class]")) {
 				if (citeI.html() !== "") {
-					refered = $docuK.find("#" + citeI.attr("class") + postId);
+					refered = $sDocuK.find("#" + citeI.attr("class") + postId);
 					if (refered.length) {
 						let refNHtml = refered.find(".refN").html();
 						refered.html(`<span class="refN">${refNHtml}</span>${citeI.html()}`);
@@ -2303,7 +2302,7 @@ document.referrer: ${referrerHTML}`
 						olRefs.append(`<li id="${citeI.attr("class")}${postId}"><span class="refN">Ref. <span class="number">[${pad(refsN, 2)}]</span> </span>${citeI.html()}</li>`);
 					}
 				}
-				refered = $docuK.find("#" + citeI.attr("class") + postId);
+				refered = $sDocuK.find("#" + citeI.attr("class") + postId);
 				if (refered.length) {
 					citeN = (i + 1).toString() + "-" + citeI.attr("class") + postId;
 					refHtml = refered.html().trim().replace(/\bid\s*=/gi, 'psudoId=');
@@ -2315,12 +2314,12 @@ document.referrer: ${referrerHTML}`
 				}
 			}
 		}
-		let refers = $docuK.find("refer"), referI;
+		let refers = $sDocuK.find("refer"), referI;
 		refers.html(`<span class="emph">( No refer. )</span>`);
 		for (i = 0; i < refers.length; i++) {
 			referI = refers.eq(i);
 			if (referI.is("[class]")) {
-				refered = $docuK.find(`#${referI.attr("class")}${postId}`);
+				refered = $sDocuK.find(`#${referI.attr("class")}${postId}`);
 				if (refered.length) {
 					citeN = (i + 1).toString() + "-" + referI.attr("class") + postId;
 					refHtml = refered.html().trim().replace(/\bid\s*=/gi, 'psudoId=');
@@ -2331,6 +2330,6 @@ document.referrer: ${referrerHTML}`
 		}
 		m.logPrint(`<br><br>&lt;cite&gt; and &lt;refer&gt; tags are rendered to show bubble reference.`);
 
-		$docuK.addClass("rendered");
+		$sDocuK.addClass("rendered");
 	};
 })(window.m, jQuery);
