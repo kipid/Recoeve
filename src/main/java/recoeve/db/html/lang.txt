@@ -186,13 +186,14 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--${m.userId} has ${l} recos (${nShown} to be shown, ${nHiden} hiden, and ${nDeleted} deleted.) on cat="${m.escapeOnlyTag(m.currentCat)}".--]	1000	${m.userId} has ${l} recos (${nShown} to be shown, ${nHiden} hiden, and ${nDeleted} deleted.) on cat="${m.escapeOnlyTag(m.currentCat)}".	${m.userId} 은/는 cat="${m.escapeOnlyTag(m.currentCat)}" 에 ${l} 개의 레코 (${nShown} 개는 보여지고, ${nHiden} 개는 숨겨지고, ${nDeleted} 개의 지워진) 를 가지고 있습니다.										Special treat is needed.
 [--Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.--]	1001	Cat=${m.escapeOnlyTag(m.currentCat)} of user=${m.escapeOnlyTag(m.userId)} may not exist.	유저=${m.escapeOnlyTag(m.userId)} 의 카테고리=${m.escapeOnlyTag(m.currentCat)} 는 아마 없는 것 같습니다.										Special treat is needed.
 [--Manual youtube id--]	1002	5E1BR8BdUCY	RuyOq-r_dsc										Special treat is needed.
-[--foot 0--]	1050	{' '}is currently on beta test service stage. Please give us feedbacks, error or errata reports, and suggestions through{' '}	{' '}는 현재 베타 테스트 단계에 있습니다. 에러나 오타를 발견하시거나, 제안사항, 도움이 필요한 부분이 있으시면{' '}	{' '}目前處於 beta 測試服務階段。 請通過	は現在アルファテスト段階にあります。 エラーや誤字を発見したり、提案、助けが必要な部分がある場合は、	{' '}befindet sich derzeit im Beta-Test-Service-Stadium. Bitte geben Sie uns über{' '}	{' '}est actuellement en phase de service de test beta. Veuillez nous faire part de vos commentaires, rapports d'erreurs ou d'errata et suggestions via{' '}	{' '}se encuentra actualmente en la etapa de servicio de prueba beta. Envíenos comentarios, informes de errores o erratas y sugerencias a través de{' '}	{' '}वर्तमान में अल्फ़ा परीक्षण सेवा चरण पर है। कृपया हमें{' '}	{' '}is currently on beta test service stage. Please give us feedbacks, error or errata reports, and suggestions through{' '}	{' '}está atualmente em fase de serviço de teste beta. Por favor, forneça-nos{' '}	{' '}в настоящее время находится на стадии альфа-тестирования. Пожалуйста, присылайте нам отзывы, отчеты об ошибках и исправлениях и предложения через{' '}	Special treat is needed.
+[--foot 0--]	1050	 is currently on beta test service stage. Please give us feedbacks, error or errata reports, and suggestions through 	 는 현재 베타 테스트 단계에 있습니다. 에러나 오타를 발견하시거나, 제안사항, 도움이 필요한 부분이 있으시면 	 目前處於 beta 測試服務階段。 請通過	は現在アルファテスト段階にあります。 エラーや誤字を発見したり、提案、助けが必要な部分がある場合は、	 befindet sich derzeit im Beta-Test-Service-Stadium. Bitte geben Sie uns über 	 est actuellement en phase de service de test beta. Veuillez nous faire part de vos commentaires, rapports d'erreurs ou d'errata et suggestions via 	 se encuentra actualmente en la etapa de servicio de prueba beta. Envíenos comentarios, informes de errores o erratas y sugerencias a través de 	 वर्तमान में अल्फ़ा परीक्षण सेवा चरण पर है। कृपया हमें 	 is currently on beta test service stage. Please give us feedbacks, error or errata reports, and suggestions through 	 está atualmente em fase de serviço de teste beta. Por favor, forneça-nos 	 в настоящее время находится на стадии альфа-тестирования. Пожалуйста, присылайте нам отзывы, отчеты об ошибках и исправлениях и предложения через 	Special treat is needed.
 [--foot 1: Feedback link--]	1051	https://kipid.tistory.com/entry/Recoeve-net-Feedbacks-Error-reports-and-Suggestions
 [--foot 1: Feedback name--]	1052	this blog page (Recoeve.net : Feedbacks, Error reports, and Suggestions)	이 블로그 페이지 (Recoeve.net : Feedbacks, Error reports, and Suggestions)	此博客页面（Recoeve.net：反馈、错误报告和建议）	このブログページ (Recoeve.net: Feedbacks, Error reports, and Suggestions)	diese Blog-Seite (Recoeve.net: Rückmeldungen, Fehlerberichte und Vorschläge)	cette page de blog (Recoeve.net : Commentaires, rapports d'erreurs et suggestions)	esta página de blog (Recoeve.net: comentarios, informes de errores y sugerencias)	यह ब्लॉग पेज (Recoeve.net: फीडबैक, त्रुटि रिपोर्ट और सुझाव)	صفحة المدونة هذه (Recoeve.net: التعليقات وتقارير الأخطاء والاقتراحات)	esta página do blog (Recoeve.net: comentários, relatórios de erros e sugestões)	эта страница блога (Recoeve.net: отзывы, отчеты об ошибках и предложения)
-[--foot 2: ending--]	1053	.	의 댓글을 통해 알려주세요.	向我們提供反饋、錯誤或勘誤報告以及建議 一個。	のコメントでお知らせください。	{' '}Rückmeldungen, Fehler- oder Irrtumsberichte und Vorschläge.	.	.	।	.	.	.
+[--foot 2: ending--]	1053	.	의 댓글을 통해 알려주세요.	向我們提供反饋、錯誤或勘誤報告以及建議 一個。	のコメントでお知らせください。	 Rückmeldungen, Fehler- oder Irrtumsberichte und Vorschläge.	.	.	।	.	.	.
 [--URI (Length ${m.getUTF8Length(uri)} &gt; maxUTF8Length 255) is too long.--]	1101	URI (Length ${m.getUTF8Length(uri)} &gt; maxUTF8Length 255) is too long.	URI (길이 ${m.getUTF8Length(uri)} &gt; 최대길이 255) 가 너무 깁니다.										Special treat is needed.
-[--ID '${userId}' is already in use. Please try another ID.--]	1102	ID '${userId}' is already in use. Please try another ID.	아이디 '${userId}' 는 이미 사용중입니다.	ID '${userId}' 已经在使用中。请尝试另一个ID。	ID '${userId}' はすでに使用されています。	ID '${userId}' ist bereits im Einsatz. Bitte versuchen Sie es mit einer anderen ID.	Id '${userId}' est déjà utilisé. Veuillez essayer un autre identifiant.	ID '${userId}' ya está en uso. Pruebe con otra identificación.	ID '${userId}' पहले से ही उपयोग में है। कृपया एक और आईडी आज़माएं।	المعرف '${userId}' قيد الاستخدام بالفعل. يرجى تجربة معرف آخر.	Id '${userId}' já está em uso. Por favor, tente outro ID.	ID '${userId}' уже используется. Пожалуйста, попробуйте другой идентификатор.	Special treat is needed.
-[--E-mail '${userEmail}' is already registered. Please try another e-mail.--]	1103	E-mail '${userEmail}' is already registered. Please try another e-mail.	이메일 '${userEmail}' 는 이미 등록되어 있습니다. 다른 이메일을 등록해 주세요.	电子邮件 '${userEmail}' 已经注册。请尝试另一封电子邮件。	電子メール '${userEmail}' は既に登録されています。別の電子メールをお試しください。	E-Mail '${userEmail}' ist bereits registriert. Bitte versuchen Sie es mit einer anderen E-Mail.	Le courriel '${userEmail}' est déjà enregistré. Veuillez essayer un autre e-mail.	El correo electrónico '${userEmail}' ya está registrado. Pruebe con otro correo electrónico.	ई-मेल '${userEmail}' पहले से ही पंजीकृत है। कृपया एक और ई-मेल का प्रयास करें।	البريد الإلكتروني '${userEmail}' مسجل بالفعل. يرجى تجربة بريد إلكتروني آخر.	E-mail '${userEmail}' já está registrado. Por favor, tente outro e-mail.	Электронная почта «${userEmail}» уже зарегистрирована. Пожалуйста, попробуйте другой адрес электронной почты.	Special treat is needed.
+[--is already in use. Please try another ID.--]	1102	is already in use. Please try another ID.	는 이미 사용중입니다. 다른 아이디를 입력해주세요.	已在使用中。请尝试使用其他 ID。	はすでに使用中です。別のIDを入力してください。	wird bereits verwendet. Bitte versuchen Sie es mit einer anderen ID.	déja en cours d'utilisation. Veuillez essayer un autre identifiant.	Esta en uso. Pruebe con otra identificación.	यह पहले से ही उपयोग में है। कृपया कोई अन्य आईडी आज़माएँ.	قيد الاستخدام بالفعل. الرجاء تجربة معرف آخر.	já está em uso. Por favor, tente outro ID.	уже используется. Пожалуйста, попробуйте другой идентификатор.
+[--ID is in invalid form.--]	1102	ID is in invalid form.	아이디 형식이 잘못되었습니다.	ID 格式无效。	ID形式が間違っています。	Die ID ist ungültig.	La pièce d'identité est sous une forme invalide.	La identificación no es válida.	आईडी अमान्य रूप में है.	المعرف في شكل غير صالح.	O ID está em formato inválido.	Идентификатор имеет неверную форму.
+[--is already registered. Please try another e-mail.--]	1103	is already registered. Please try another e-mail.	는 이미 등록되어 있습니다. 다른 이메일을 사용해 주세요.	已注册。请尝试使用其他电子邮件。	はすでに登録されています。別のメールを使用してください。	ist bereits registriert. Bitte versuchen Sie es mit einer anderen E-Mail.	est déjà enregistré. Veuillez essayer un autre e-mail.	ya esta registrado. Por favor intente con otro correo electrónico.	पंजीकृत है। कृपया कोई अन्य ई-मेल आज़माएँ.	أنه مسجل مسبقا. الرجاء تجربة بريد إلكتروني آخر.	já está registrado. Por favor, tente outro e-mail.	уже зарегистрирован. Пожалуйста, попробуйте другой адрес электронной почты.
 [--Preceding(_Q_)--]	1104	Preceding(<span class='bold underline'>Q</span>)	전으로(<span class='bold underline'>Q</span>)										Special treat is requirerd.
 [--Preceding(_Q_): pre--]	1105	Preceding(	전으로(
 [--Preceding(_Q_): Q--]	1106	Q	Q
@@ -224,14 +225,14 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--To my p_a_ge: pre--]	2000	To my p	내 페이지로(
 [--To my p_a_ge: a--]	2001	a	A
 [--To my p_a_ge: post--]	2002	ge	)
-[--Log _i_n: pre--]	2003	Log{' '}	로그인(
+[--Log _i_n: pre--]	2003	Log 	로그인(
 [--Log _i_n: i--]	2004	i	I
 [--Log _i_n: post--]	2005	n	)
 [--S_i_gn up--]	2006	Sign up	가입하기
-[--Log _o_ut: pre--]	2007	Log{' '}	로그아웃(
+[--Log _o_ut: pre--]	2007	Log 	로그아웃(
 [--Log _o_ut: o--]	2008	o	O
 [--Log _o_ut: post--]	2009	ut	)
-[--Go to _C_ats: pre--]	2010	Go to{' '}	카테고리이동(
+[--Go to _C_ats: pre--]	2010	Go to 	카테고리이동(
 [--Go to _C_ats: C--]	2011	C	C
 [--Go to _C_ats: post--]	2012	ats	)
 [--_F_orward: pre--]	2013		다음 레코로(
@@ -258,12 +259,12 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Neigh_b_ors mode: pre--]	2034	Neigh	이웃보기(
 [--Neigh_b_ors mode: b--]	2035	b	B
 [--Neigh_b_ors mode: post--]	2036	ors mode	)
-[--Get _R_ecoms: pre--]	2037	Get{' '}	추천받기(
+[--Get _R_ecoms: pre--]	2037	Get 	추천받기(
 [--Get _R_ecoms: R--]	2038	R	R
 [--Get _R_ecoms: post--]	2039	ecoms	)
 [--Dail_y_ Mix: pre--]	2040	Dail	추천섞기(
 [--Dail_y_ Mix: y--]	2041	y	Y
-[--Dail_y_ Mix: post--]	2042	{' '}Mix	)
+[--Dail_y_ Mix: post--]	2042	 Mix	)
 [--_N_ew reco: pre--]	2043		새 레코(
 [--_N_ew reco: N--]	2044	N	N
 [--_N_ew reco: post--]	2045	ew reco	)
@@ -291,5 +292,5 @@ Replacer	0	English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어
 [--Dail_y_ Mix--]	2115	Dail<span class='bold underline'>y</span> Mix	추천섞기(<span class='bold underline'>Y</span>)
 [--_N_ew reco--]	2116	<span class='bold underline'>N</span>ew reco	새 레코(<span class='bold underline'>N</span>)
 [--Block to_u_ch--]	2117	Block to<span class='bold underline'>u</span>ch	터치 방지(<span class='bold underline'>U</span>)
-[--You should log-in | sign-up first with remember me option.--]	2118	You should <a class='goto-current-page' onclick='return m.gotoLogIn(this)' target='_blank' href='/account/log-in?goto=${encodeURIComponent(m.initialPathname+m.initialSearch+(m.initialHashURI?`#${encodeURIComponent(m.initialHashURI)}`:'))}'>log-in | sign-up</a> first with remember me option.	레코를 하기 위해선 우선 로그인 유지 체크를 하시고 <a class='goto-current-page' onclick='return m.gotoLogIn(this)' target='_blank' href='/account/log-in?goto=${encodeURIComponent(m.initialPathname+m.initialSearch+(m.initialHashURI?`#${encodeURIComponent(m.initialHashURI)}`:'))}'>로그인 | 가입하기</a> 를 먼저 하셔야 합니다.
+[--You should log-in | sign-up first with remember me option.--]	2118	You should <a class='goto-current-page' onclick='return m.gotoLogIn(this)' target='_blank' href='/account/log-in?goto=${encodeURIComponent(m.initialPathname+m.initialSearch+(m.initialHashURI?`#${encodeURIComponent(m.initialHashURI)}`:''))}'>log-in | sign-up</a> first with remember me option.	레코를 하기 위해선 우선 로그인 유지 체크를 하시고 <a class='goto-current-page' onclick='return m.gotoLogIn(this)' target='_blank' href='/account/log-in?goto=${encodeURIComponent(m.initialPathname+m.initialSearch+(m.initialHashURI?`#${encodeURIComponent(m.initialHashURI)}`:''))}'>로그인 | 가입하기</a> 를 먼저 하셔야 합니다.
 [--Hid_e_--]	2119	Hid<span class='bold underline'>e</span>	숨기기(<span class='bold underline'>E</span>)
