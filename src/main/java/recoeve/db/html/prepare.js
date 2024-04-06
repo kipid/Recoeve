@@ -52,7 +52,6 @@ window.m = window.m || {};
 	m.fsToRs.oneLoop = false;
 	m.fsToRs.loop = false;
 
-	YT = undefined;
 	m.YtPlayer = null;
 	m.YtAPILoaded = Boolean($("#youtube-API").length);
 
@@ -68,6 +67,13 @@ window.m = window.m || {};
 	m.mdInPRR1 = false; // mouse down in Point Range1 Right
 	m.PRmax = 10.0;
 	m.fullPts = 10.0;
+
+	m.sW = screen.width;
+	m.sH = screen.height;
+	if (m.sW < m.sH) {
+	  m.sW = screen.height;
+	  m.sH = screen.width;
+	}
 
 	////////////////////////////////////////////////////
 	// URI rendering :: http link itself, videos, images, maps.
@@ -597,7 +603,7 @@ window.m = window.m || {};
 		for (let row = 0; row < txtArray.length; row++) {
 			tableStr += "<tr>";
 			for (let col = 0; col < txtArray[row].length; col++) {
-				tableStr += `<td>${txtArray[row][col].replace(/\n/g, '<br>')}</td>`;
+				tableStr += `<td>${txtArray[row][col].replace(/\n/g, '<br />')}</td>`;
 			}
 			tableStr += "</tr>";
 		}
@@ -715,7 +721,7 @@ window.m = window.m || {};
 			, dataType: "text"
 		}).fail(function (resp) {
 			$log_out_do_container.show();
-			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
+			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br /><a target="_blank" href="/account/log-out?goto=${args.goto}">Click me to [--Log-out from Recoeve.net--]</a>`);
 		}).done(function (resp) {
 			$log_out_do_container.show();
 			$log_out_do.html(resp);
@@ -751,7 +757,7 @@ window.m = window.m || {};
 			, dataType: "text"
 		}).fail(function (resp) {
 			$log_out_do_container.show();
-			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
+			$log_out_do.html(`[--Log-out has failed.--] ${resp}<br /><a target="_blank" href="/account/log-out-from-all?goto=${args.goto}">Click me to [--Log-out at all devices from Recoeve.net--]</a>`);
 		}).done(function (resp) {
 			$log_out_do_container.show();
 			$log_out_do.html(resp);
@@ -794,7 +800,7 @@ window.m = window.m || {};
 		let delay = delayTime && delayTime.constructor === Number ? delayTime : 27;
 		clearInterval(m.setIntervalDeleyedLogOut);
 		m.setIntervalDeleyedLogOut = setInterval(function () {
-			$error.html(`${msg}<br>[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
+			$error.html(`${msg}<br />[--You are not logged-in recoeve.net. You will be brought to log-in (or sign-up) page in ${delay} sec.--] [--Or try again, or refresh the page and try again.--]`);
 			$result?.html($error.html());
 			delay--;
 		}, 1000);
@@ -1087,7 +1093,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			});
 
 			let defCats = m.recoDefs[uri].defCats;
-			let defCatsHTML = `<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br>`;
+			let defCatsHTML = `<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br />`;
 			for (let i = 0; i < defCats.length; i++) {
 				let cat = defCats[i][0].trim();
 				if (cat.length !== 0) {
@@ -1347,7 +1353,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	$.fn.inView = function () {
 		if (this.is(":visible")) {
 			let viewportHeight = window.innerHeight;
-			let scrollTop = $window.scrollTop();
+			let scrollTop = m.$window.scrollTop();
 			let elemTop = this.offset().top - m.delayPad;
 			let elemBottom = elemTop + this.height() + m.delayPad;
 			return (scrollTop + viewportHeight >= elemTop) && (scrollTop <= elemBottom);
@@ -1386,15 +1392,15 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			}
 		});
 		if (m.$delayedElems.length > 0) {
-			$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+			m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 		}
 		else {
-			$window.off("scroll.delayedLoad");
+			m.$window.off("scroll.delayedLoad");
 		}
 		m.previous = Date.now();
 	};
 	m.delayedLoadByScroll = function () {
-		$window.off("scroll.delayedLoad");
+		m.$window.off("scroll.delayedLoad");
 		let now = Date.now();
 		let passed = now - m.previous;
 		if (passed > m.wait) {
@@ -1406,7 +1412,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			}, m.wait * 1.5 - passed);
 		}
 	};
-	$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+	m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
 	/* Remember user */
 	m.sW = screen.width;
@@ -1884,10 +1890,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				await fs.getAndPlayVideo($elem[0]?.id === fs.$fsl.find(".list-item")[0]?.id); // cue or not?
 				if (!m.initialOpen && m.recoMode==="" || m.recoMode==="daily-mix") {
 					if (m.fsToRs.$playing?.hasClass("fixed")) {
-						$window.scrollTop($playlist_container.offset().top - m.fsToRs.$playing?.outerHeight());
+						m.$window.scrollTop($playlist_container.offset().top - m.fsToRs.$playing?.outerHeight());
 					}
 					else {
-						$window.scrollTop($playlist_container.offset().top);
+						m.$window.scrollTop($playlist_container.offset().top);
 					}
 				}
 			}
@@ -2591,7 +2597,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
 		m.hashURI = hashURI;
 		window.location.hash = `#${m.hashURI}`;
-		$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
+		m.$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
 		window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 	};
 	m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
@@ -2625,7 +2631,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 						m.hashURI = hashURI;
 						window.location.hash = `#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
 						window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
-						$window.scrollTop($elem.offset().top);
+						m.$window.scrollTop($elem.offset().top);
 					}
 				}
 				else {
@@ -3136,10 +3142,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					list = vars?.list?.val;
 				}
 				if (list) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br />` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 				}
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br />` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
@@ -3158,10 +3164,10 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 						}
 					}
 					if (list) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br />` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 					}
 					if (v) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br />` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 					}
 				}
 			}
@@ -3175,7 +3181,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br>` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false"></iframe>`), from: "docs-google", docId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br />` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false"></iframe>`), from: "docs-google", docId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3189,7 +3195,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br />` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3203,7 +3209,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br />` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3217,7 +3223,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br />` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
@@ -3251,7 +3257,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
 			}
 			else {
 				return reject(false);
@@ -3265,7 +3271,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3279,7 +3285,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["weverse.io"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br>` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br />` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
@@ -3294,12 +3300,12 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 			}
 			else {
 				exec = m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
 				if (exec !== null) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 				}
 				else {
 					return reject(false);
@@ -3314,7 +3320,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
 			}
 			return reject(false);
 		});
@@ -3326,7 +3332,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3340,7 +3346,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3380,7 +3386,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				if (vars?.language) {
 					uriRest = "lang/" + vars.language.val + "/" + uriRest;
 				}
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
 			}
 			else {
 				return reject(false);
@@ -3404,7 +3410,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 						lastPath += vars[i].key + "=" + vars[i].val + "&";
 					}
 				}
-				return resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br />` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
 			}
 			else {
 				return reject(false);
@@ -3423,7 +3429,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				let vars = m.getSearchVars(exec[1]);
 				let v = vars.no?.val;
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br>` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br />` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
 				}
 				else {
 					return resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>` });
@@ -3435,7 +3441,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 					let vars = m.getSearchVars(exec[1]);
 					let no = vars.no?.val;
 					if (no) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}"></iframe>`), from: "dcinside", voteId: no })
+						return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br />` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}"></iframe>`), from: "dcinside", voteId: no })
 					}
 				}
 			}
@@ -3451,7 +3457,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			if (exec !== null) {
 				let v = exec[2];
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br />` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
 				}
 			}
 			return reject(false);
@@ -3464,7 +3470,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br />` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -3490,7 +3496,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br />` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
 			}
 			else {
 				return reject(false);
@@ -3551,14 +3557,14 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				if (exec !== null) {
 					href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 					uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
+					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br />` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
 				}
 				else {
 					exec = m.ptnURI[4].regEx2.exec(uri);
 					if (exec !== null) {
 						href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 						uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-						return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
+						return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br />` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
 					}
 				}
 				return reject(false);
@@ -3705,7 +3711,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 				switch (key.toLowerCase()) {
 					case "#start": case "#end":
 					case "#": case "": default:
-						res += `<div class="value"><span class="key">${key}</span> ${val.replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+						res += `<div class="value"><span class="key">${key}</span> ${val.replace(/\n/g, "<br />").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
 						break;
 					case "#lyrics": case "#lyrics:":
 					case "#lyric": case "#lyric:":
@@ -3714,7 +3720,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 	<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle lyrics--]</div></div>
 	<div class="lyricsC" style="display:none">
 	<div class="lyricsArrow"></div>
-	<div class="lyrics">${val.trim().replace(/\n/g, "<br>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
+	<div class="lyrics">${val.trim().replace(/\n/g, "<br />").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
 	<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
 	</div>
 	</div>`;
@@ -3728,7 +3734,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 								res += String(await relatedRendering(relateds[p]));
 							}
 							catch (err) {}
-							res += '<br>';
+							res += '<br />';
 						}
 						res += `</div>`;
 						break;
@@ -3883,7 +3889,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 				let descR = r.descR;
 				res += String(await m.descCmtRToHTML(descR));
 			}
-			res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br>")}</div>`) : "");
+			res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br />")}</div>`) : "");
 			if (r.tFirst && r.tLast && r.tFirst !== r.tLast) {
 				res += `<div class="tFirst">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
 				res += `<div class="tLast">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
@@ -4108,7 +4114,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 		let $bar = $target.find(".bar");
 		let barW = $bar.width();
 		let $str = $target.siblings(".str");
-		let w = e.clientX - $bar.offset().left + $window.scrollLeft();
+		let w = e.clientX - $bar.offset().left + m.$window.scrollLeft();
 		if (w < -15) {
 			w = -1;
 		}
@@ -4153,7 +4159,7 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 			e.preventDefault();
 			e.stopPropagation();
 			let x = (e.type === 'touchmove') ? e.originalEvent.touches[0].clientX : e.clientX;
-			let w = x - $bar.offset().left + $window.scrollLeft();
+			let w = x - $bar.offset().left + m.$window.scrollLeft();
 			if (w < -15) {
 				w = -1;
 			}
@@ -4243,9 +4249,9 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 	};
 	m.reNewAndReOn = async function () {
 		m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
-		$window.off("scroll.delayedLoad");
-		$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-		$window.trigger("scroll.delayedLoad");
+		m.$window.off("scroll.delayedLoad");
+		m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+		m.$window.trigger("scroll.delayedLoad");
 		m.$fdList = $("#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed");
 		let $stars = $(".my-point>.stars-container");
 		$stars.off("click.mdInStars");
