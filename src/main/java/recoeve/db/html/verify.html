@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
-<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
-<meta name="keywords" content="Recoeve.net"/>
-<style>
-#error-msg {font-size:27px}
-</style>
-<script src="/jquery.js"></script>
-<script src="/prepare.js"></script>
-</head>
-<body>
-<div id="error-msg">You are being verified.</div>
-</body>
-<script>
-(function (m, $, undefined) {
-$error_msg=$("#error-msg");
-let fullPath=window.location.href;
-let args={fullPath:fullPath, $result:$error_msg};
-let verify=function (args, err) {
-	if (err) {
-		console.log(err);
-		return;
-	}
-	args.$result.html("Sending a verification key.");
-	$.ajax({
-		type:"POST", url:args.fullPath
-		, dataType:"text"
-	}).fail(function (resp) {
-		console.log(resp);
-		args.$result.html("Verification is failed. "+resp);
-	}).done(function (resp) {
-		args.$result.html(resp);
-	});
-};
-m.saveSSN();
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"
+    />
+    <link rel="icon" type="image/x-icon" href="/CDN/favicon.ico" />
+    <meta name="keywords" content="Recoeve.net" />
+    <style>
+      #error-msg {
+        font-size: 27px;
+      }
+    </style>
+    <script src="/jquery.js"></script>
+    <script src="/prepare.js"></script>
+  </head>
+  <body>
+    <div id="error-msg">You are being verified.</div>
+  </body>
+  <script>
+    (function (m, $, undefined) {
+      $error_msg = $("#error-msg");
+      let fullPath = window.location.href;
+      let args = { fullPath: fullPath, $result: $error_msg };
+      let verify = function (args, err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        args.$result.html("Sending a verification key.");
+        $.ajax({
+          type: "POST",
+          url: args.fullPath,
+          dataType: "text",
+        })
+          .fail(function (resp) {
+            console.log(resp);
+            args.$result.html("Verification is failed. " + resp);
+          })
+          .done(function (resp) {
+            args.$result.html(resp);
+          });
+      };
+      m.saveSSN();
 
-setTimeout(function () {
-	m.rmb_me(verify, args);
-}, 2048);
-})(window.m, jQuery);
-</script>
+      setTimeout(function () {
+        m.rmb_me(verify, args);
+      }, m.wait);
+    })(window.m, jQuery);
+  </script>
 </html>
