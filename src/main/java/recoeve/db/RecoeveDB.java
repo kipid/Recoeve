@@ -958,10 +958,10 @@ public class RecoeveDB {
     return done;
   }
 
-  public boolean changePwd(BodyData inputs, String ip, Timestamp tNow) {
+  public boolean changePwd(StrArray inputs, String ip, Timestamp tNow) {
     boolean done = false;
-    String id = inputs.get("userId");
-    String pwd = inputs.get("userPwd");
+    String id = inputs.get(1, "userId");
+    String pwd = inputs.get(1, "userPwd");
     ResultSet user = null;
     try {
       con.setAutoCommit(false);

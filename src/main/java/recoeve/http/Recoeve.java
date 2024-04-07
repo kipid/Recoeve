@@ -461,6 +461,11 @@ public class Recoeve extends AbstractVerticle {
                   .end(fileMap.getFileWithLang("bundle-log-in.js", pl.lang), ENCODING);
               System.out.println("Sended bundle-log-in.js.");
               break;
+            case "bundle-changePwd.js": // e.g. path=/bundle-changePwd.js
+              pl.req.response().putHeader("Content-Type", "text/javascript")
+                  .end(fileMap.getFileWithLang("bundle-changePwd.js", pl.lang), ENCODING);
+              System.out.println("Sended bundle-changePwd.js.");
+              break;
             case "jquery.js": // e.g. path=/jquery.js
               pl.req.response().putHeader("Content-Type", "text/javascript")
                   .end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
@@ -815,9 +820,9 @@ public class Recoeve extends AbstractVerticle {
             pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
             if (pl.method == HttpMethod.POST) {
               pl.req.bodyHandler((Buffer data) -> {
-                BodyData inputs = new BodyData(data.toString());
+                StrArray inputs = new StrArray(data.toString());
                 System.out.println("data:\n" + inputs);
-                if (db.checkChangePwdToken(inputs.get("userId"), inputs.get("token"), pl.tNow)) {
+                if (db.checkChangePwdToken(inputs.get(1, "userId"), inputs.get(1, "token"), pl.tNow)) {
                   System.out.println("Token is verified. User ID: " + inputs.get("userId"));
                   if (db.changePwd(inputs, pl.ip, pl.tNow)) {
                     final String res = FileMap.replaceStr("[--Your password is changed.--]",
