@@ -6461,6 +6461,7 @@ $button_toggle_shortkey_desc = $("#button-toggle-shortkey-desc");
 // Language/언어/語言
 ////////////////////////////////////////////////////
 m.changeLang = function (lang, e, elem) {
+  m.docCookies.setItem('lang', lang, Infinity, '/');
   let search = window.location.search;
   let searchVars = m.getSearchVars(search);
   if (searchVars['lang']) {
