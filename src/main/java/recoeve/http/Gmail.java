@@ -19,8 +19,11 @@ public class Gmail {
     Gmail.send(email, "", title, msg);
   }
 
-  public static void sendVeriKey(String email, String id, String veriKey) {
+  public static void sendVeriKey(String email, String id, String veriKey, String lang) {
     String title = "Verify your account on Recoeve.net";
+    if (lang.equals("ko")) {
+      title = "Recoeve.net 의 계정을 인증해주세요.";
+    }
     String url = "https://" + Recoeve.HOST + "/account/verify/" + id + "/" + veriKey;
     String msg = "<span style='line-height:1.6; font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif; font-size:27px'>Thanks for your registration on <a href='https://recoeve.net/'>Recoeve.net</a>.<br><br>Please log in <a href='https://recoeve.net/'>Recoeve.net</a> first, and then click the following link to verify your account:<br><a href='"
         + url + "'>" + url
@@ -73,7 +76,7 @@ public class Gmail {
   }
 
   public static void main(String... args) throws Exception {
-    Gmail.sendVeriKey("kipid84@naver.com", "kipid", "dfij378asd91fa9sdf1kraq9defr134nr913hjred9af");
+    Gmail.sendVeriKey("kipid84@naver.com", "kipid", "dfij378asd91fa9sdf1kraq9defr134nr913hjred9af", "ko");
     Gmail.sendChangePwd("kipid", "kipid84@naver.com", "29riw7fus8dfu8348u48f8uf", "ko");
   }
 }

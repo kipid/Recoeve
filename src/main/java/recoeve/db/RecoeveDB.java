@@ -49,7 +49,7 @@ import java.util.concurrent.Callable;
 
 import recoeve.http.Gmail;
 import recoeve.http.Cookie;
-import recoeve.http.BodyData;
+// import recoeve.http.BodyData;
 
 public class RecoeveDB {
   public static final String encoding = "UTF-8";
@@ -865,7 +865,7 @@ public class RecoeveDB {
     return false;
   }
 
-  public boolean createUserWithGoogle(StrArray preInputs, StrArray inputs, String ip, Timestamp tNow) {
+  public boolean createUserWithGoogle(StrArray preInputs, StrArray inputs, String ip, Timestamp tNow, String lang) {
     boolean done = false;
     String id = preInputs.get(1, "id");
     String email = inputs.get(1, "email");
@@ -885,7 +885,7 @@ public class RecoeveDB {
       if (pstmtCreateUser.executeUpdate() > 0) {
         user = findUserById(id);
         if (user.next()) {
-          Gmail.sendVeriKey(email, id, veriKey);
+          Gmail.sendVeriKey(email, id, veriKey, lang);
           updateUserClass(0, 1); // 0: Not verified yet
           updateEmailStat(email.substring(email.indexOf("@") + 1), 1);
           logsCommit(user.getLong("i"), tNow, ip, "snu", true,
@@ -911,7 +911,7 @@ public class RecoeveDB {
     return done;
   }
 
-  public boolean createUser(StrArray inputs, String ip, Timestamp tNow) {
+  public boolean createUser(StrArray inputs, String ip, Timestamp tNow, String lang) {
     boolean done = false;
     String id = inputs.get(1, "userId");
     byte[] pwd_salt = hexStrToBytes(inputs.get(1, "authToken"));
@@ -933,7 +933,7 @@ public class RecoeveDB {
       if (pstmtCreateUser.executeUpdate() > 0) {
         user = findUserById(id);
         if (user.next()) {
-          Gmail.sendVeriKey(email, id, veriKey);
+          Gmail.sendVeriKey(email, id, veriKey, lang);
           updateUserClass(0, 1); // 0: Not verified yet
           updateEmailStat(email.substring(email.indexOf("@") + 1), 1);
           logsCommit(user.getLong("i"), tNow, ip, "snu", true, "ID: " + id + ", E-mail: " + email); // sign-up
@@ -1316,7 +1316,7 @@ public class RecoeveDB {
   }
 
   public List<io.vertx.core.http.Cookie> authUserWithGoogle(StrArray inputs, String ip, String userAgent,
-      Timestamp tNow) {
+      Timestamp tNow, String lang) {
     boolean done = false;
     long user_me = 1; // anonymous
     List<io.vertx.core.http.Cookie> setCookie = null;
@@ -1336,7 +1336,7 @@ public class RecoeveDB {
       } else {
         StrArray data = new StrArray(getDataPreGoogle(inputs.get(1, "state"), ip));
         if (!data.get(1, "id").isEmpty()) {
-          if (createUserWithGoogle(data, inputs, ip, tNow)) {
+          if (createUserWithGoogle(data, inputs, ip, tNow, lang)) {
             user = findUserByEmail(inputs.get(1, "email"));
             if (user != null && user.next()) {
               user_me = user.getLong("i");

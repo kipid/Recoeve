@@ -131,7 +131,7 @@ public class Recoeve extends AbstractVerticle {
               if (db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
                 String gotoStr = db.getDataPreGoogle(inputs.get(1, "state"), pl.ip);
                 List<io.vertx.core.http.Cookie> setCookieSSN = db.authUserWithGoogle(inputs, pl.ip,
-                    pl.userAgent, pl.tNow);
+                    pl.userAgent, pl.tNow, pl.lang);
                 if (setCookieSSN != null) {
                   // Log-in success!
                   for (io.vertx.core.http.Cookie singleCookie : setCookieSSN) {
@@ -999,7 +999,7 @@ public class Recoeve extends AbstractVerticle {
                 StrArray inputs = new StrArray(data.toString());
                 if (db.checkAuthToken(inputs, pl.ip, pl.tNow)) {
                   System.out.println("Token is verified.");
-                  if (db.createUser(inputs, pl.ip, pl.tNow)) {
+                  if (db.createUser(inputs, pl.ip, pl.tNow, pl.lang)) {
                     Map<String, String> varMap = new HashMap<String, String>();
                     varMap.put("{--user id--}", inputs.get(1, "userId"));
                     varMap.put("{--user email--}", inputs.get(1, "userEmail"));
