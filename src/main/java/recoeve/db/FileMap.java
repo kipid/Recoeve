@@ -222,9 +222,9 @@ public class FileMap {
 	public static void main(String... args) {
 		FileMap fileMap = new FileMap(Vertx.vertx());
 		fileMap.vertx.setTimer(2000, timerId -> {
-			System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
+			// System.out.println(fileMap.getCDNFileInMemory("recoeve-style.css"));
 			// System.out.println(fileMap.getFileWithLang("log-in.html", "ko"));
-			// System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
+			System.out.println(FileMap.replaceStr("[--Reco--] [--Edit--]", "ko"));
 			// System.out.println(FileMap.refererAllowed("localhost"));
 			// System.out.println(Pattern.quote("[a-d]"));
 			// System.out.println(fileMap.getCDNFileInMemory("link.png"));
