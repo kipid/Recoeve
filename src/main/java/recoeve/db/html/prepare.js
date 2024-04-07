@@ -106,6 +106,19 @@ window.m = window.m || {};
 		return vars;
 	};
 
+	m.arrayToSearch = function (searchVars) {
+	  let res = "";
+	  for (let i = 0; i < searchVars.length; i++) {
+	    res += `&${encodeURIComponent(searchVars[i].key)}=${encodeURIComponent(searchVars[i].val)}`;
+	  }
+	  if (res.length > 1) {
+	    return `?${res.substring(1)}`;
+	  }
+	  else {
+	    return "";
+	  }
+	};
+
 	m.pathOfCat = function (cat, mode, lang, hashURI, args) {
 		let argsSearch = "";
 		if (args) {
