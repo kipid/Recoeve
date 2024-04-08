@@ -75,6 +75,7 @@ public class FileMap {
   private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
   private static final String[] txtFileNames = {
       "prepare.js", "robots.txt", "ads.txt",
+      "bundle-user-page.js", // "user-page.html" in FileMapWithVar.java
       "log-in.html", "bundle-log-in.js",
       "verify.html",
       "changePwd.html", "bundle-changePwd.js",
