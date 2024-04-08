@@ -17,7 +17,7 @@
     <script src="/prepare.js"></script>
   </head>
   <body>
-    <div id="error-msg">You are being verified.</div>
+    <div id="error-msg">[--You are being verified.--]</div>
   </body>
   <script>
     (function (m, $, undefined) {
@@ -29,7 +29,7 @@
           console.log(err);
           return;
         }
-        args.$result.html("Sending a verification key.");
+        args.$result.html("[--Sending a verification key.--]");
         $.ajax({
           type: "POST",
           url: args.fullPath,
@@ -37,7 +37,7 @@
         })
           .fail(function (resp) {
             console.log(resp);
-            args.$result.html("Verification is failed. " + resp);
+            args.$result.html("[--Verification is failed.--] " + resp);
           })
           .done(function (resp) {
             args.$result.html(resp);
