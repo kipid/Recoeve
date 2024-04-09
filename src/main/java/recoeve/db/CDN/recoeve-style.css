@@ -358,6 +358,7 @@ a.seekTo {
 }
 
 .fs-container>.move {
+  z-index: 10000;
   position: absolute;
   display: inline-block;
   left: 0;

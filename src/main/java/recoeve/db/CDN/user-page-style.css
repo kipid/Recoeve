@@ -1,0 +1,636 @@
+#block-touch {
+  display: -webkit-flex;
+  display: flex
+}
+
+#block-touch-exit {
+  display: none;
+  z-index: 31000;
+  position: fixed
+}
+
+.block-touch {
+  display:-webkit-flex;
+  display:flex;
+  position: fixed;
+  z-index: 30000;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgb(0, 0, 0, 0.3)
+}
+
+.block-touch>.center {
+  display:inline-block;
+  margin:auto;
+  color:wheat;
+  background:black;
+  border:5px solid wheat;
+  padding:1em
+}
+
+.block-touch-exit {
+  z-index: 31000;
+  position: fixed
+}
+
+#user-noti {
+  padding: .3em .2em;
+  font-size: 1.1em;
+  color: rgb(150, 150, 240)
+}
+
+.bright #user-noti {
+  color: rgb(50, 50, 190)
+}
+
+#catList {
+  margin-bottom: 1em
+}
+
+#catList .cat {
+  border: 1px solid transparent;
+  margin-bottom: 2px
+}
+
+.bright #catList .cat {
+  color: black
+}
+
+.pink #catList .cat {
+  color: wheat
+}
+
+#catList .cat .baseCat.down {
+  color: rgb(100, 150, 100)
+}
+
+#catList .cat.deleted {
+  color: rgb(150, 100, 100)
+}
+
+#catList .cat.selected,
+#catList .cat.selected .baseCat.down {
+  color: rgb(255, 210, 210)
+}
+
+.bright #catList .cat.selected,
+.bright #catList .cat.selected .baseCat.down {
+  color: rgb(50, 0, 0)
+}
+
+.pink #catList .cat.selected,
+.pink #catList .cat.selected .baseCat.down {
+  color: white
+}
+
+#cat-to-here {
+  border: 1px solid rgb(130, 130, 130);
+  margin: .5em
+}
+
+#catList .cat.edit {
+  position: relative;
+  border: 1px solid rgb(150, 150, 225);
+  padding: 0 1.3em
+}
+
+#catList .cat.edit.move {
+  position: fixed;
+  z-index: 101
+}
+
+#catList .cat.edit>.edit-bar {
+  position: absolute;
+  width: 1.3em;
+  top: 0;
+  bottom: 0;
+  background: rgb(150, 150, 225)
+}
+
+#catList .cat.edit>.edit-bar:first-child {
+  left: 0
+}
+
+#catList .cat.edit>.edit-bar:last-child {
+  right: 0
+}
+
+#catList .cat.selected {
+  border: 1px solid white
+}
+
+.bright #catList .cat.selected {
+  border-color: black
+}
+
+.pink #catList .cat.selected {
+  border-color: wheat
+}
+
+#catList .cat>.baseCat,
+#catList .cat>.EC {
+  cursor: pointer
+}
+
+#catList .cat.selected>.baseCat {
+  pointer-events: none
+}
+
+#catList .cat>.noEC,
+#catList .cat>.EC {
+  display: inline-block;
+  font-size: .5em;
+  margin-top: -.5em;
+  width: 2em;
+  text-align: center;
+  vertical-align: middle
+}
+
+#sidebar-toggle>g {
+  stroke: white;
+  stroke-width: 20%;
+  stroke-linecap: round
+}
+
+.timezone {
+  background-color: #f8f9fa;
+  color: #202122;
+  margin: 1em 0;
+  border: 1px solid #a2a9b1;
+  border-collapse: collapse
+}
+
+.timezone>tr>th,
+.timezone>tr>td,
+.timezone>*>tr>th,
+.timezone>*>tr>td {
+  border: 1px solid #a2a9b1;
+  padding: 0.2em 0.4em !important
+}
+
+#shortkeys {
+  border: 3px solid wheat;
+  padding: .5em 0
+}
+
+.tip {
+  color: rgb(250, 150, 100)
+}
+
+#textarea-gs {
+  padding: .3em;
+  font-size: 1em;
+  font-family: '맑은 고딕', 'Malgun Gothic', 'Coutier New';
+  background: white;
+  color: black;
+  width: 30em;
+  max-width: 100%;
+  min-width: 50%;
+  height: 2.3em;
+}
+
+#sort-list {
+  position: absolute;
+  z-index: 5000
+}
+
+#sort-list .button {
+  display: table;
+  min-width: max-content;
+  width: 100%;
+  margin: 0
+}
+
+#sort-list .button:nth-child(even) {
+  background: darkslategray
+}
+
+#new-reco {
+  z-index: 21000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  overflow: auto;
+  color: white
+}
+
+.button-mode,
+.bright .button-mode,
+.pink .button-mode {
+  background: darkolivegreen
+}
+
+.button-Go,
+.button-ToR,
+.button-goto-cats,
+.bright .button-Go,
+.bright .button-ToR,
+.bright .button-goto-cats,
+.pink .button-Go,
+.pink .button-ToR,
+.pink .button-goto-cats {
+  background: cornflowerblue
+}
+
+.button.darkgoldenrod,
+.bight .button.darkgoldenrod,
+.pink .button.darkgoldenrod {
+  background: darkgoldenrod
+}
+
+.button-new-reco,
+.pink .button-new-reco {
+  background: black
+}
+
+.bright .button-new-reco {
+  background: white
+}
+
+.button.button-recostat {
+  margin: 0 .5em 0 0;
+  padding: 0 2px;
+  color: #ffe3af;
+  background: #808000
+}
+
+.bright .button.button-recostat {
+  color: #fff2da;
+  background: #bebe84
+}
+
+.pink .button.button-recostat {
+  color: #f5deb3;
+  background: #555521
+}
+
+.point-range {
+  margin: 1em 2.5em;
+  padding: 0;
+  position: relative;
+  float: right;
+  width: 270px;
+  max-width: 80%;
+  height: 30px;
+  background: rgb(200, 100, 100)
+}
+
+.point-range-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: rgb(100, 200, 100)
+}
+
+.point-range-left,
+.point-range-right {
+  position: absolute;
+  width: 33px;
+  top: 0;
+  bottom: 0;
+  background: rgba(150, 150, 150, 0.7);
+  border: .15em solid rgb(50, 50, 50)
+}
+
+.point-range-left {
+  left: -23px
+}
+
+.point-range-right {
+  right: -23px
+}
+
+.point-range-result {
+  margin: 1em;
+  text-align: center;
+  float: right;
+  border: .15em solid white;
+  padding: .1em .5em;
+  vertical-align: top
+}
+
+.bright .point-range-result {
+  border-color: black
+}
+
+.pink .point-range-result {
+  border-color: pink
+}
+
+#floating-key .point-range-con {
+  position: sticky;
+  left: 0;
+  right: 0;
+  width: 9em;
+  height: 23px;
+  background: wheat;
+  border-bottom: 1px solid wheat
+}
+
+.bright #floating-key .point-range-con {
+  border-color: black
+}
+
+.pink #floating-key .point-range-con {
+  border-color: pink
+}
+
+#floating-key .point-range {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  left: 10%;
+  width: 80%;
+  height: 100%;
+  background: rgb(200, 100, 100)
+}
+
+#floating-key .point-range-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgb(100, 200, 100)
+}
+
+#floating-key .point-range-left,
+#floating-key .point-range-right {
+  position: absolute;
+  width: 23px;
+  top: 0;
+  bottom: 0;
+  background: rgba(150, 150, 150, 0.7);
+  border: .15em solid rgb(50, 50, 50)
+}
+
+#floating-key .point-range-left {
+  left: 0
+}
+
+#floating-key .point-range-right {
+  right: 0
+}
+
+#floating-key .point-range-result {
+  margin: 0;
+  font-size: 13px;
+  background: black;
+  color: white;
+  text-align: center;
+  padding: .1em .5em;
+  width: 100%;
+  height: 1.6em;
+  border: 1px solid wheat
+}
+
+.bright #floating-key .point-range-result {
+  background: white;
+  color: black;
+  border-color: black
+}
+
+.pink #floating-key .point-range-result {
+  background: pink;
+  color: white;
+  border-color: pink
+}
+
+#time-limit line.bar {
+  stroke: darkgray;
+  stroke-width: 3
+}
+
+#time-limit text.tick {
+  fill: gray;
+  font-size: .7em
+}
+
+.vals-stat rect.column {
+  fill: rgb(255, 255, 0);
+  stroke-width: 1;
+  stroke: rgb(0, 150, 150)
+}
+
+.vals-stat line.bar {
+  stroke: darkgray;
+  stroke-width: 3
+}
+
+.vals-stat line.expected {
+  stroke: green;
+  stroke-width: 2
+}
+
+.vals-stat text.expected {
+  fill: green;
+  font-size: .9em
+}
+
+.vals-stat text.max-simSum {
+  fill: green;
+  font-size: .7em
+}
+
+.bright .vals-stat line.expected {
+  stroke: blue
+}
+
+.bright .vals-stat text.expected {
+  fill: blue
+}
+
+.bright .vals-stat text.max-simSum {
+  fill: blue
+}
+
+.vals-stat text.tick {
+  fill: gray;
+  font-size: .8em
+}
+
+.neighbor-con {
+  position: relative;
+  margin: 1em 0;
+  padding: 1.1em;
+  border: 2px solid rgb(150, 100, 100);
+  width: 100%;
+  background: black
+}
+
+.bright .neighbor-con {
+  background: wheat
+}
+
+.neighbor-sim {
+  background: yellow;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0
+}
+
+.neighbor-a {
+  position: absolute;
+  overflow-wrap: normal;
+  word-wrap: normal;
+  word-break: normal;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: .2em
+}
+
+.neighbor-tUpdate {
+  font-size: .5em;
+  color: cornflowerblue
+}
+
+#foot {
+  clear: both;
+  border-top: .15em solid white;
+  padding: 1em .5em
+}
+
+.bright #foot {
+  border-color: black
+}
+
+#floating-key {
+  display: flex;
+  flex-wrap: wrap;
+  bottom: 2.6em;
+  width: 9em;
+  height: auto
+}
+
+#floating-key div.button {
+  border-top: none;
+  min-width: max-content;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  width: 9em;
+  height: auto
+}
+
+#floating-key div.button:first-child {
+  border-top: 2px solid rgb(50, 50, 50)
+}
+
+.bright #floating-key div.button:first-child {
+  border-top: 2px solid rgb(200, 200, 200)
+}
+
+.pink #floating-key div.button:first-child {
+  border-top: 2px solid rgb(180, 0, 180)
+}
+
+#toggle-floating-key {
+  bottom: .2em;
+  text-align: center;
+  width: 2.2em;
+  height: 2.3em;
+  margin: 0;
+  padding: .1em
+}
+
+#SNS-floating {
+  width: 100%;
+  text-align: center
+}
+
+#SNS-floating .SNS-img {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  width: 1.285714286em;
+  height: 1.285714286em;
+  border: 1px gray solid;
+  border-left: 0;
+  cursor: pointer
+}
+
+#SNS-floating .SNS-img:first-child {
+  border-left: 1px gray solid
+}
+
+#floating-key,
+#toggle-floating-key {
+  font-size: 1.1em;
+  color: wheat;
+  z-index: 20000;
+  position: fixed;
+  right: .2em
+}
+
+.bright #floating-key,
+.bright #toggle-floating-key {
+  color: black
+}
+
+.pink #floating-key,
+.pink #toggle-floating-key {
+  color: wheat
+}
+
+#contents-recoms .msg,
+#contents .msg {
+  text-align: center;
+  display: block;
+  width: 100%;
+  padding: 1em;
+  margin: auto
+}
+
+@media all and (min-width:701px) {
+  #container {
+    margin-left: 15em
+  }
+
+  #sidebar {
+    margin: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 15em
+  }
+
+  #sidebar-dragger {
+    display: none
+  }
+
+  .side2 {
+    padding: .5em
+  }
+
+  #time-limit text.tick {
+    fill: gray;
+    font-size: .9em
+  }
+}
+
+@media all and (min-width:901px) {
+  #container {
+    margin-left: 20em
+  }
+
+  #sidebar {
+    width: 20em
+  }
+
+  #time-limit text.tick {
+    fill: gray;
+    font-size: 1em
+  }
+}
