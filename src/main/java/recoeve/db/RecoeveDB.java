@@ -1198,7 +1198,9 @@ public class RecoeveDB {
         ResultSet user = findUserByIndex(my_i);
         if (user.next()) {
           varMap.put("{--myId--}", HTMLString.escapeOnlyTag(user.getString("id")));
-          varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
+          varMap.put("{--myCatList--}",
+              HTMLString.escapeOnlyTag(getCatList(my_i).toString()).replaceAll("\n", "\\\\n").replaceAll("\t",
+                  "\\\\t"));
         }
       } catch (SQLException e) {
         err(e);
@@ -1210,7 +1212,8 @@ public class RecoeveDB {
         long user_i = user.getLong("i");
         varMap.put("{--userIndex--}", Long.toString(user_i, 16));
         varMap.put("{--userId--}", HTMLString.escapeOnlyTag(user.getString("id")));
-        varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
+        varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()).replaceAll("\n", "\\\\n")
+            .replaceAll("\t", "\\\\t"));
       }
     } catch (SQLException e) {
       err(e);

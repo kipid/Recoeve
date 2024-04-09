@@ -34,6 +34,7 @@ public class PrintLog implements Handler<RoutingContext> {
   public String ip;
   public String userAgent;
   public String absoluteURI;
+  public String userId = null;
 
   public PrintLog(RecoeveDB db) {
     this.db = db;
@@ -77,6 +78,11 @@ public class PrintLog implements Handler<RoutingContext> {
         String refererHost = null;
         if (l > 0) {
           refererHost = referer.substring(k, l);
+          String[] pathnames = referer.substring(l).split("/");
+          if (pathnames[1].equals("user")) {
+            userId = pathnames[2];
+            System.out.println("userId: " + userId);
+          }
         } else {
           refererHost = referer.substring(k);
         }
