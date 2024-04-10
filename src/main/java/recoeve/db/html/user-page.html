@@ -6186,12 +6186,12 @@ m.$document.ready(async function () {
         }
         return false;
       };
-      $("#log-out-do-container, #log-out-do-exit").show();
       $("#log-out-do-container>.center").html(`[--You should log-in | sign-up first with remember me option.--]`);
+      $("#log-out-do-container, #log-out-do-exit").show();
     }
-    // if (!m.doNotPushHistory) {
-    // 	window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", `/reco${m.initialSearch}${m.initialHashURI ? `#${encodeURIComponent(m.initialHashURI)}` : ""}`);
-    // } // TODO: delete this.
+    if (!m.doNotPushHistory) {
+    	window.history.replaceState({ cat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", `/reco${m.initialSearch}${m.initialHashURI ? `#${encodeURIComponent(m.initialHashURI)}` : ""}`);
+    } // TODO: delete this.
     m.doNotPushHistory = true;
   }
   $title.html(`${m.userId}'s recoeve.net`);
