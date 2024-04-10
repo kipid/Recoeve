@@ -1308,30 +1308,34 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 		});
 	};
 	m.formatURIAndGetAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
-		return new Promise(async function (resolve, reject) {
-			let elem = $input_uri[0];
-			let uriRendered = Object(await uriRendering(elem.value, true));
-			let originalURI = String(await m.formatURIFully(elem.value, uriRendered, true));
-			let uri = noFormatURI ? originalURI : String(await m.formatURIFully(originalURI, uriRendered, false));
-			elem.value = uri;
-			if (!noFormatURI) {
-				elem.value = uri = String(await m.formatURIFully(uri, uriRendered));
-				$input_uri.trigger("keyup");
-			}
-			m.uri = uri;
-			$show_URI.html(String(uriRendered.html));
-			let r = m.myRecos[uri];
-			if (!r) {
-				r = m.myRecos[uri] = { uri };
-				await m.getRecos([uri], m.myRecos);
-			}
-			if (!(r && r.has)) {
-				r = m.userRecos[uri];
-				if (!r) {
-					r = m.userRecos[uri] = { uri };
-					await m.getRecos([uri], m.userRecos);
-				}
-			}
+    return new Promise(async function (resolve, reject) {
+      let elem = $input_uri[0];
+      let uriRendered = Object(await uriRendering(elem.value, true));
+      let originalURI = String(await m.formatURIFully(elem.value, uriRendered, true));
+      let uri = noFormatURI ? originalURI : String(await m.formatURIFully(originalURI, uriRendered, false));
+      elem.value = uri;
+      if (!noFormatURI) {
+        elem.value = uri = String(await m.formatURIFully(uri, uriRendered));
+        $input_uri.trigger("keyup");
+      }
+      m.uri = uri;
+      $show_URI.html(String(uriRendered.html));
+      let r = m.myRecos[uri];
+      if (!r) {
+        r = m.myRecos[uri] = { uri };
+        if (m.myIndex) {
+          await m.getRecos([uri], m.myRecos);
+        }
+      }
+      if (!(r && r.has)) {
+        r = m.userRecos[uri];
+        if (!r) {
+          r = m.userRecos[uri] = { uri };
+          if (m.userIndex) {
+            await m.getRecos([uri], m.userRecos);
+          }
+        }
+      }
 			await m.getAndFillRecoInNewReco(r, fillDefs);
 			await m.getAndFillDefsInNewReco(r, fillDefs);
 			m.reNewAndReOn();
