@@ -50,6 +50,8 @@ window.m = {
   myPage: "{--userIndex--}" === "{--myIndex--}",
   userId: "{--userId--}",
   myId: "{--myId--}",
+  myCatListHTMLEscaped: `{--myCatList--}`,
+  catListHTMLEscaped: `{--catList--}`
 };
   </script>
   <!-- <script id="youtube-API" src="https://www.youtube.com/iframe_api"></script> -->
@@ -117,8 +119,8 @@ window.m = {
 <body>
 <div id="root">
   <h1 id="h1" class="none">{--userId--}'s Recoeve.net</h1>
-  <data id="data-myCatList">{--myCatList--}</data>
-  <data id="data-catList">{--catList--}</data>
+  <data id="data-myCatList"></data>
+  <data id="data-catList"></data>
   <div class="block-touch" id="block-touch"></div>
   <div class="block-touch-exit exit" id="block-touch-exit" onclick="$(`#block-touch, #block-touch-exit`).hide()"><svg>
       <g>
@@ -1115,7 +1117,9 @@ $block_touch = $("#block-touch");
 $block_touch_exit = $("#block-touch-exit");
 $block_touch_exit.trigger("click");
 $data_myCatList = $("#data-myCatList");
-$data_catList = m.myPage ? $data_myCatList : $("#data-catList");
+$data_myCatList.html(m.myCatListHTMLEscaped);
+$data_catList = $("#data-catList");
+$data_catList.html(m.catListHTMLEscaped);
 $choose_lang = $("#choose-lang");
 $choose_lang_list = $("#choose-lang-list");
 $data_lang = $("#data-lang");
