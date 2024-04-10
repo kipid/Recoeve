@@ -207,10 +207,16 @@
   stroke-linecap: round
 }
 
+#choose-timezone-list {
+  border: solid 1px gray
+}
+
 .timezone {
+  font-size: 1.2em;
+  line-height: 1.5;
   background-color: #f8f9fa;
   color: #202122;
-  margin: 1em 0;
+  margin: 0;
   border: 1px solid #a2a9b1;
   border-collapse: collapse
 }
@@ -569,7 +575,7 @@
   min-width: max-content;
   text-align: center;
   margin: 0;
-  padding: 0;
+  padding: .15em 0;
   width: 9em;
   height: auto
 }
