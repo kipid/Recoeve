@@ -948,19 +948,19 @@ window.m = window.m || {};
 					}
 				}
 			}
-			if (recos === m.myRecos) {
-				let strHeads = "uri\tdo\tcats";
-				for (let k = 1; k < resp.length; k++) {
-					let respK = resp[k];
-					let uri = respK.uri;
-					let r = recos[uri];
-					if (!r.deleted && !r.has) {
-						console.log(`Do delete in cat="${cat}" :: `, r)
-						let strContents = `${uri}\tdelete\t${cat}`;
-						await m.rmb_me(m.reco_delete_do, { strHeads, strContents, $result: $error, r, uri });
-					}
-				}
-			}
+			// if (recos === m.myRecos) {
+			// 	let strHeads = "uri\tdo\tcats";
+			// 	for (let k = 1; k < resp.length; k++) {
+			// 		let respK = resp[k];
+			// 		let uri = respK.uri;
+			// 		let r = recos[uri];
+			// 		if (!r.deleted && !r.has) {
+			// 			console.log(`Do delete in cat="${cat}" :: `, r)
+			// 			let strContents = `${uri}\tdelete\t${cat}`;
+			// 			await m.rmb_me(m.reco_delete_do, { strHeads, strContents, $result: $error, r, uri });
+			// 		}
+			// 	}
+			// }
 			resolve();
 		});
 	};
