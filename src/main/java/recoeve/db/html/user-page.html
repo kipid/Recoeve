@@ -1127,7 +1127,6 @@ $data_lang = $("#data-lang");
 $choose_timezone = $("#choose-timezone");
 $choose_timezone_list = $("#choose-timezone-list");
 $search_timezone_container = $("#search-timezone-container");
-$search_timezone_container_move = $("#search-timezone-container>.move");
 $search_timezone = $("#search-timezone");
 $search_timezone_list = $("#search-timezone-list");
 
@@ -1211,17 +1210,14 @@ $button_new_reco = $(".button-new-reco");
 
 $out_focus = $("#out-focus");
 $fuzzy_search_container = $("#fuzzy-search-container");
-$fuzzy_search_container_move = $("#fuzzy-search-container>.move");
 $fuzzy_search = $("#fuzzy-search");
 $fuzzy_search_list = $("#fuzzy-search-list");
 
 $table_of_recos_container = $("#table-of-recos-container");
-$table_of_recos_container_move = $("#table-of-recos-container>.move");
 $table_of_recos = $("#table-of-recos");
 $table_of_recos_list = $("#table-of-recos-list");
 
 $goto_cats_container = $("#goto-cats-container");
-$goto_cats_container_move = $("#goto-cats-container>.move");
 $goto_cats = $("#goto-cats");
 $goto_cats_list = $("#goto-cats-list");
 
@@ -1229,7 +1225,6 @@ $cat_fs_container = $("#cat-fs-container");
 $cat_fs_list = $("#cat-fs-list");
 
 $multireco_cats_container = $("#multireco-cats-container");
-$multireco_cats_container_move = $("#multireco-cats-container .move");
 $multireco_def_cats = $("#multireco-def-cats");
 $multireco_input_cats = $("#multireco-input-cats");
 $multireco_cat_fs_container = $("#multireco-cat-fs-container");
@@ -1777,22 +1772,29 @@ $sidebar_dragger_in.on("mousedown.sd touchstart.sd", function (e) {
   })
 });
 
-/* Fuzzy search */
 // Fuzzy search, Table of Recos move and reset
-$goto_cats_container_move.on("mousedown.move touchstart.move", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-  let relativeX = touch0.clientX - Math.round($goto_cats_container_move.offset().left) + m.$window.scrollLeft();
-  let relativeY = touch0.clientY - Math.round($goto_cats_container_move.offset().top) + m.$window.scrollTop();
-  $html.on("mousemove.move touchmove.move", function (e) {
-    window.getSelection().removeAllRanges();
+$(".fs-container>.move").each(function (index, elem) {
+  let $elem = $(elem);
+  $elem.on( "mousedown.move touchstart.move", function (e) {
     e.preventDefault();
     e.stopPropagation();
-    let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-    $goto_cats_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-    $html.on("mouseup.move touchend.move", function () {
-      $html.off("mouseup.move touchend.move mousemove.move touchmove.move");
+    let touch0 = e.type === "touchstart" ? e.originalEvent.touches[0] : e;
+    let relativeX = touch0.clientX - Math.round($elem.offset().left) + m.$window.scrollLeft();
+    let relativeY = touch0.clientY - Math.round($elem.offset().top) + m.$window.scrollTop();
+    m.$html.on("mousemove.move touchmove.move", function (e) {
+      window.getSelection().removeAllRanges();
+      e.preventDefault();
+      e.stopPropagation();
+      let touch0 = e.type === "touchmove" ? e.originalEvent.touches[0] : e;
+      $elem.parent(".fs-container").css({
+        left: touch0.clientX - relativeX,
+        top: touch0.clientY - relativeY,
+      });
+      m.$html.on("mouseup.move touchend.move", function () {
+        m.$html.off(
+          "mouseup.move touchend.move mousemove.move touchmove.move"
+        );
+      });
     });
   });
 });
@@ -1801,97 +1803,14 @@ $("#new-reco>form>.reset").on("click.reset", function (e) {
   $input_uri.focus();
   $input_uri.trigger("keyup.fs");
 });
-$("#goto-cats-container>.reset").on("click.reset", function (e) {
-  $goto_cats[0].value = "";
-  $goto_cats.focus();
-  $goto_cats.trigger("keyup.fs");
-});
-
-$fuzzy_search_container_move.on("mousedown.move touchstart.move", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-  let relativeX = touch0.clientX - Math.round($fuzzy_search_container_move.offset().left) + m.$window.scrollLeft();
-  let relativeY = touch0.clientY - Math.round($fuzzy_search_container_move.offset().top) + m.$window.scrollTop();
-  $html.on("mousemove.move touchmove.move", function (e) {
-    window.getSelection().removeAllRanges();
-    e.preventDefault();
-    e.stopPropagation();
-    let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-    $fuzzy_search_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-    $html.on("mouseup.move touchend.move", function () {
-      $html.off("mouseup.move touchend.move mousemove.move touchmove.move");
-    });
+$(".fs-container>.reset").each(function (index, elem) {
+  let $elem = $(elem);
+  $elem.on("click.reset", function (e) {
+    let $fsInput = $elem.parent(".fs-container").find(">.fs-input");
+    $fsInput[0].value = "";
+    $fsInput.trigger("focus");
+    $fsInput.trigger("keyup.fs");
   });
-});
-$("#fuzzy-search-container>.reset").on("click.reset", function (e) {
-  $fuzzy_search[0].value = "";
-  $fuzzy_search.focus();
-  $fuzzy_search.trigger("keyup.fs");
-});
-
-$multireco_cats_container_move.on("mousedown.move touchstart.move", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-  let relativeX = touch0.clientX - Math.round($multireco_cats_container_move.offset().left) + m.$window.scrollLeft();
-  let relativeY = touch0.clientY - Math.round($multireco_cats_container_move.offset().top) + m.$window.scrollTop();
-  $html.on("mousemove.move touchmove.move", function (e) {
-    window.getSelection().removeAllRanges();
-    e.preventDefault();
-    e.stopPropagation();
-    let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-    $multireco_cats_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-    $html.on("mouseup.move touchend.move", function () {
-      $html.off("mouseup.move touchend.move mousemove.move touchmove.move");
-    });
-  });
-});
-
-$table_of_recos_container_move.on("mousedown.move touchstart.move", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-  let relativeX = touch0.clientX - Math.round($table_of_recos_container_move.offset().left) + m.$window.scrollLeft();
-  let relativeY = touch0.clientY - Math.round($table_of_recos_container_move.offset().top) + m.$window.scrollTop();
-  $html.on("mousemove.move touchmove.move", function (e) {
-    window.getSelection().removeAllRanges();
-    e.preventDefault();
-    e.stopPropagation();
-    let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-    $table_of_recos_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-    $html.on("mouseup.move touchend.move", function () {
-      $html.off("mouseup.move touchend.move mousemove.move touchmove.move");
-    });
-  });
-});
-$("#table-of-recos-container>.reset").on("click.reset", function (e) {
-  $table_of_recos[0].value = "";
-  $table_of_recos.focus();
-  $table_of_recos.trigger("keyup.fs");
-});
-
-$search_timezone_container_move.on("mousedown.move touchstart.move", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  let touch0 = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-  let relativeX = touch0.clientX - Math.round($search_timezone_container_move.offset().left) + m.$window.scrollLeft();
-  let relativeY = touch0.clientY - Math.round($search_timezone_container_move.offset().top) + m.$window.scrollTop();
-  $html.on("mousemove.move touchmove.move", function (e) {
-    window.getSelection().removeAllRanges();
-    e.preventDefault();
-    e.stopPropagation();
-    let touch0 = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-    $search_timezone_container.css({ left: touch0.clientX - relativeX, top: touch0.clientY - relativeY });
-    $html.on("mouseup.move touchend.move", function () {
-      $html.off("mouseup.move touchend.move mousemove.move touchmove.move");
-    });
-  });
-});
-$("#search-timezone-container>.reset").on("click.reset", function (e) {
-  $search_timezone[0].value = "";
-  $search_timezone.focus();
-  $search_timezone.trigger("keyup.fs");
 });
 
 ////////////////////////////////////////////////////
