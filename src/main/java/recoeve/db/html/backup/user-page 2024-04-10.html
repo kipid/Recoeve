@@ -3361,7 +3361,7 @@ m.getUriList = function (catStrArray) {
         if (catUL.UriList?.length !== 0) {
           catUL.uris = catUL.UriList.split("\n").reverse(); // Newest has the maximum index i.
           catUL.UriList = catUL.uris.join("\n").trim();
-          for (k = 0; k < catUL.uris.length; k++) {
+          for (let k = 0; k < catUL.uris.length; k++) {
             let uri = catUL.uris[k];
             catUL.uris[uri] = { i: k, uri };
             if (!m.userRecos[uri]) {
