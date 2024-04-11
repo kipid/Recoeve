@@ -3640,7 +3640,7 @@ ${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== 
 			if (!str || str.constructor !== String) {
 				str = String(str);
 			}
-			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
+			let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";
