@@ -524,6 +524,7 @@ a.seekTo {
 }
 
 .list-index-id,
+#sidebar .list-index-id,
 .fs-list .list-item .list-index,
 .fs-list .list-item .list-index-id {
   display: none
