@@ -524,7 +524,6 @@ a.seekTo {
 }
 
 .list-index-id,
-#sidebar .list-index-id,
 .fs-list .list-item .list-index,
 .fs-list .list-item .list-index-id {
   display: none
@@ -643,7 +642,7 @@ a.seekTo {
 }
 
 textarea#input-uri {
-  padding: .2em 1.8em .2em .3em
+  padding: 0 1.8em .2em .3em
 }
 
 textarea.single-line {
