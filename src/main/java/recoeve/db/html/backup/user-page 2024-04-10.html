@@ -1005,29 +1005,31 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
             </div>
           </div>
         </div>
-        <div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyQ' })">[--Preceding(_Q_)--]</div>
-        <div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyW' })">[--Follo_w_ing--]</div>
-        <div style="display:inline-block">
-          <div class="button" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyS' })">▼ [--_S_ort--]</div>
-          <div id="sort-list" style="display:none">
-            <div class="button" onclick="m.doFSToRs('shuffle')">[--Shuffle--]</div>
-            <div class="button" onclick="m.doFSToRs('tFirst-desc')">[--Sort by tFirst, desc--]</div>
-            <div class="button" onclick="m.doFSToRs('tFirst-asc')">[--Sort by tFirst, asc--]</div>
-            <div class="button" onclick="m.doFSToRs('tLast-desc')">[--Sort by tLast, desc--]</div>
-            <div class="button" onclick="m.doFSToRs('tLast-asc')">[--Sort by tLast, asc--]</div>
-            <div class="button" onclick="m.doFSToRs('point-desc')">[--Sort by point, desc--]</div>
-            <div class="button" onclick="m.doFSToRs('point-asc')">[--Sort by point, asc--]</div>
-            <div class="button" onclick="m.doFSToRs('title-desc')">[--Sort by title, desc--]</div>
-            <div class="button" onclick="m.doFSToRs('title-asc')">[--Sort by title, asc--]</div>
-            <div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
-            <div id="result-of-change-order" style="display: table; font-size: .7em; width: 100%; max-width: max-content; background: black; color: white"></div>
-          </div>
-        </div>
-        <div class="button enabled button-auto-skip" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyK' })">[--Auto s_k_ip--]</div>
-        <div class="button button-loop" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyL' })">[--_L_oop--]</div>
-        <div class="button button-one-loop" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyP' })">[--One-loo_p_--]</div>
-        <div class="button button-ToR" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyT' })">[--_T_ofR--]</div>
-        <div class="button button-move-all" onclick="m.moveAllTo()">[--Move filtered all recos in ToRs to the different cats at once.--]</div>
+        <div id="headPlay-buttons">
+	        <div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyQ' })">[--Preceding(_Q_)--]</div>
+	        <div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyW' })">[--Follo_w_ing--]</div>
+	        <div style="display:inline-block">
+	          <div class="button" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyS' })">▼ [--_S_ort--]</div>
+	          <div id="sort-list" style="display:none">
+	            <div class="button" onclick="m.doFSToRs('shuffle')">[--Shuffle--]</div>
+	            <div class="button" onclick="m.doFSToRs('tFirst-desc')">[--Sort by tFirst, desc--]</div>
+	            <div class="button" onclick="m.doFSToRs('tFirst-asc')">[--Sort by tFirst, asc--]</div>
+	            <div class="button" onclick="m.doFSToRs('tLast-desc')">[--Sort by tLast, desc--]</div>
+	            <div class="button" onclick="m.doFSToRs('tLast-asc')">[--Sort by tLast, asc--]</div>
+	            <div class="button" onclick="m.doFSToRs('point-desc')">[--Sort by point, desc--]</div>
+	            <div class="button" onclick="m.doFSToRs('point-asc')">[--Sort by point, asc--]</div>
+	            <div class="button" onclick="m.doFSToRs('title-desc')">[--Sort by title, desc--]</div>
+	            <div class="button" onclick="m.doFSToRs('title-asc')">[--Sort by title, asc--]</div>
+	            <div class="button" id="button-save-this-order" style="margin-top:.3em; display:none">[--Save this order.--]</div>
+	            <div id="result-of-change-order" style="display: table; font-size: .7em; width: 100%; max-width: max-content; background: black; color: white"></div>
+	          </div>
+	        </div>
+	        <div class="button enabled button-auto-skip" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyK' })">[--Auto s_k_ip--]</div>
+	        <div class="button button-loop" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyL' })">[--_L_oop--]</div>
+	        <div class="button button-one-loop" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyP' })">[--One-loo_p_--]</div>
+	        <div class="button button-ToR" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyT' })">[--_T_ofR--]</div>
+	        <div class="button button-move-all" onclick="m.moveAllTo()">[--Move filtered all recos in ToRs to the different cats at once.--]</div>
+	       </div>
         <div id="reco-playing"></div>
       </div>
     </div><!-- div#headPlay -->
