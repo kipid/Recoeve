@@ -82,7 +82,7 @@
 
 .pink #catList .cat.selected,
 .pink #catList .cat.selected .baseCat.down {
-  color: rgb(150, 0, 0)
+  color: rgb(250, 100, 100)
 }
 
 #cat-to-here {
