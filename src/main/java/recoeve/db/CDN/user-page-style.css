@@ -77,12 +77,12 @@
 
 .bright #catList .cat.selected,
 .bright #catList .cat.selected .baseCat.down {
-  color: rgb(50, 0, 0)
+  color: rgb(200, 0, 0)
 }
 
 .pink #catList .cat.selected,
 .pink #catList .cat.selected .baseCat.down {
-  color: white
+  color: rgb(150, 0, 0)
 }
 
 #cat-to-here {
