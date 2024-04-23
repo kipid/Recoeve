@@ -30,7 +30,7 @@ public class FileMap {
 
   private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
   private static final String[] fileNames = {
-      "favicon.ico", "jquery.js", "recoeve-style.css", "user-page-style.css",
+      "favicon.ico", "jquery.js", "recoeve-style.css", "user-page-style.css", "main.css",
       "link.png", "icon-Tag.png", "icon-Twitter.png",
       "icon-X.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png", "icon-Whatsapp.png", "cc.png",
       "by.png", "nc.png", "nd.png", "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js",
@@ -75,7 +75,7 @@ public class FileMap {
   private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
   private static final String[] txtFileNames = {
       "prepare.js", "robots.txt", "ads.txt",
-      "bundle-user-page.js", // "user-page.html" in FileMapWithVar.java
+      "bundle-user-page.js", "bundle-tsx-user-page.js",// "user-page.html" in FileMapWithVar.java
       "log-in.html", "bundle-log-in.js",
       "verify.html",
       "changePwd.html", "bundle-changePwd.js",
