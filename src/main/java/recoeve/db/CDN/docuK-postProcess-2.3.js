@@ -40,6 +40,9 @@
 
 	// docuK process.
 	m.$docuK.has("script").addClass("noDIdHandle");
+	if (m.$docuK.length <= 2) {
+		m.$docuK.addClass("noDIdHandle");
+	}
 	let k = m.$docuK.length;
 	for (let i = 1; i < k; i++) {
 		m.docuKProcess(m, jQuery, i);
