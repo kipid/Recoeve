@@ -16,7 +16,7 @@ public class FileMapWithVar {
   public static final String version = "1.0.4";
   private static String filePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
   private static final String[] fileNames = {
-      "user-page.html", "bundle-user-page.js",
+      "user-page.html", "bundle-user-page.js", "bundle-tsx-user-page.js",
       "recostat.html", "log-in.html", "signed-up.html", "reco.html", "multireco.html"
       // , "redirect.html", "remember-me.html"
   };
