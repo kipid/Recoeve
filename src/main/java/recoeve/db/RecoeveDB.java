@@ -1972,7 +1972,7 @@ public class RecoeveDB {
         res += "uri\thas\tcats\ttitle\tdesc\tcmt\tval\ttFirst\ttLast";
         int size = uris.getRowSize();
         for (int i = 1; i < size; i++) {
-          String uri = uris.get(i, "uri");
+          String uri = uris.get(i, "uri").replaceAll("%2520", "%20");
           ResultSet reco = getReco(user_me, uri);
           if (reco.next()) {
             res += "\n" + uri
