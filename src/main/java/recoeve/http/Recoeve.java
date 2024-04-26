@@ -456,6 +456,10 @@ public class Recoeve extends AbstractVerticle {
             // pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8")
             // .end(fileMap.getFileWithLang("recoeve-style.css", pl.lang), ENCODING);
             // break;
+            case "bundle-tsx-log-out.js": // e.g. path=/service-summary
+              pl.req.response().putHeader("Content-Type", "text/html")
+                  .end(fileMap.getFileWithLang("bundle-tsx-log-out.js", pl.lang), ENCODING);
+              break;
             case "bundle-tsx-user-page.js": // e.g. path=/bundle-tsx-user-page.js
               if (pl.userId == null) {
                 pl.req.response().putHeader("Content-Type", "text/javascript")
