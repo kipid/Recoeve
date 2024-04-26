@@ -596,7 +596,7 @@ public class Recoeve extends AbstractVerticle {
             switch (wildcard) {
               case "get-Recos": // e.g. path=/user/kipid/get-Recos
                 pl.req.bodyHandler((Buffer data) -> {
-                  pl.req.response().end(db.getRecos(finalUserId, new StrArray(data.toString())),
+                  pl.req.response().end(db.getRecos(finalUserId, new StrArray(data.toString())).replaceAll("%2520", "%20"),
                       ENCODING);
                   System.out.println("Sended recos.");
                 });
@@ -734,7 +734,7 @@ public class Recoeve extends AbstractVerticle {
               pl.req.bodyHandler((Buffer data) -> {
                 final String recoStr = data.toString();
                 String res = db.recoDo(Long.parseLong(pl.cookie.get("I"), 16), recoStr, pl.tNow);
-                pl.req.response().end(FileMap.replaceStr(res, pl.lang));
+                pl.req.response().end(FileMap.replaceStr(res.replaceAll("%2520", "%20"), pl.lang));
                 System.out.println("Do reco:\n" + recoStr);
               });
             } else {
