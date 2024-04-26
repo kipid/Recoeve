@@ -941,6 +941,10 @@ public class Recoeve extends AbstractVerticle {
           case "log-out":
           case "log-out-from-all": // path=/account/log-out or /account/log-out-from-all
             pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
+            List<io.vertx.core.http.Cookie> setDelCookie0 = db.logout(pl.cookie, pl.sessionPassed);
+            for (io.vertx.core.http.Cookie singleCookie : setDelCookie0) {
+              pl.req.response().addCookie(singleCookie);
+            }
             pl.req.response().end(fileMap.getFileWithLang("log-out.html", pl.lang), ENCODING);
             System.out.println("Sended log-out.html with Set-Cookie of deleting all cookies.");
             break;
