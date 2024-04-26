@@ -3415,7 +3415,7 @@ public class RecoeveDB {
       for (int i = 1; i < sa.getRowSize(); i++) {
         res += "\n";
         String doStr = sa.get(i, "do");
-        String uri = sa.get(i, "uri");
+        String uri = sa.get(i, "uri").replaceAll("%2520", "%20");
         String originalURI = uri;
         String catsStr = sa.get(i, "cats");
         Categories cats = new Categories(catsStr);
