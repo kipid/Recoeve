@@ -596,7 +596,7 @@ public class Recoeve extends AbstractVerticle {
             switch (wildcard) {
               case "get-Recos": // e.g. path=/user/kipid/get-Recos
                 pl.req.bodyHandler((Buffer data) -> {
-                  pl.req.response().end(db.getRecos(finalUserId, new StrArray(data.toString())).replaceAll("%2520", "%20"),
+                  pl.req.response().end(db.getRecos(finalUserId, new StrArray(data.toString())).replaceAll("%20", "%2520"),
                       ENCODING);
                   System.out.println("Sended recos.");
                 });
@@ -604,7 +604,7 @@ public class Recoeve extends AbstractVerticle {
               case "get-UriList": // e.g. path=/user/kipid/get-UriList
                 pl.req.bodyHandler((Buffer data) -> {
                   pl.req.response().end(
-                      db.getStringCatUriList(finalUserId, new StrArray(data.toString())),
+                      db.getStringCatUriList(finalUserId, new StrArray(data.toString())).replaceAll("%20", "%2520"),
                       ENCODING);
                   System.out.println("Sended uriLists.\n" + data.toString());
                 });
