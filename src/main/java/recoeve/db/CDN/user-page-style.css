@@ -266,6 +266,22 @@
   background: darkslategray
 }
 
+#memo-container {
+  z-index: 20000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  overflow: auto;
+}
+
+#memo {
+  max-width: 100%;
+  width: 700px;
+}
+
 #new-reco {
   z-index: 21000;
   position: fixed;
