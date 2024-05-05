@@ -268,6 +268,7 @@
 
 #memo-container {
   z-index: 20000;
+  font-size: 1.8em;
   position: fixed;
   left: 0;
   top: 0;
@@ -277,9 +278,137 @@
   overflow: auto;
 }
 
+#memo-container .title {
+  height: 1.8em
+}
+
 #memo {
   max-width: 100%;
   width: 700px;
+  margin: 0 auto
+}
+
+#memo table {
+  border:2px solid gray
+}
+
+#memo table tbody tr td:first-child {
+  width: 10em
+}
+
+#memo table tbody tr td:nth-child(2) {
+  width: 7em
+}
+
+#memo table input {
+  width: 100%;
+  border: 2px solid white;
+  font: inherit;
+  background: black;
+  color: white;
+  text-align: right;
+}
+
+#memo-in-progress #progress-bars {
+  text-align: center;
+  overflow: visible;
+}
+
+#progress-bars {
+  position: absolute;
+  top:0;
+  bottom:90%;
+  left:0;
+  right:0;
+}
+
+#progress-bars>div {
+  display: inline-block;
+  overflow: visible
+}
+
+.vertical-container {
+  display:-webkit-flex;
+  display:flex;
+}
+
+.vertically-centered {
+  display:inline-block;
+  margin:auto;
+}
+
+#memo-question {
+  position: absolute;
+  top:10%;
+  bottom:50%;
+  left:0;
+  right:0;
+  overflow: auto;
+}
+
+#memo-answer {
+  position: absolute;
+  top:50%;
+  bottom:10%;
+  left:0;
+  right:0;
+  overflow: auto;
+}
+
+#memo .bottom-buttons {
+  position: fixed;
+  top: 90%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#memo .bottom-buttons>button {
+  font: inherit;
+  color: white;
+  display: inline-block
+}
+
+#memo .bottom-buttons>.full-width {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+#memo .bottom-buttons>:nth-child(2) {
+  left: 50%
+}
+
+#memo .bottom-buttons>.half-width {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+
+#memo .bottom-buttons>.green {
+  background: green;
+}
+
+#memo .bottom-buttons>.darkolivegreen {
+  background: darkolivegreen;
+}
+
+#memo .bottom-buttons>.darkred {
+  background: darkred;
+}
+
+#progress-bars>.correct {
+  background: darkolivegreen;
+}
+
+#progress-bars>.wrong {
+  background: darkred;
+}
+
+#progress-bars>.left {
+  background: gray;
 }
 
 #new-reco {
