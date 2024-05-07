@@ -1090,35 +1090,7 @@ textarea.multi-line {
   }
 }
 
-@keyframes spinPulse {
-   0% {
-     -moz-transform: rotate(160deg);
-     opacity: 0;
-     box-shadow: 0 0 1px #bdd73c
-   }
-
-   50% {
-     -moz-transform: rotate(145deg);
-     opacity: 1
-   }
-
-   100% {
-     -moz-transform: rotate(-320deg);
-     opacity: 0
-   }
- }
-
 @-moz-keyframes spinoffPulse {
-  0% {
-    -moz-transform: rotate(0deg)
-  }
-
-  100% {
-    -moz-transform: rotate(360deg)
-  }
-}
-
-@keyframes spinoffPulse {
   0% {
     -moz-transform: rotate(0deg)
   }
