@@ -309,6 +309,11 @@
   text-align: right;
 }
 
+#memo-in-setting .err-msg {
+  font-size: .7em;
+  padding-bottom: 10em;
+}
+
 #memo-in-progress #progress-bars {
   text-align: center;
   overflow: visible;
