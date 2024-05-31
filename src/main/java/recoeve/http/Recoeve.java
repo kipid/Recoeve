@@ -290,7 +290,7 @@ public class Recoeve extends AbstractVerticle {
         }
         if (fileName != null && !fileName.isEmpty()) {
           pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
-          pl.req.response().putHeader("ETag", "1.7.30");
+          pl.req.response().putHeader("ETag", "1.7.31");
           String[] fileNameSplit = fileName.split("\\.");
           switch (fileNameSplit[fileNameSplit.length - 1]) {
             case "ico":
@@ -483,6 +483,11 @@ public class Recoeve extends AbstractVerticle {
                         db.varMapUserPage(pl.cookie, pl.userId)), ENCODING);
               }
               System.out.println("Sended bundle-user-page.js.");
+              break;
+            case "esb-user-page.js": // e.g. path=/esb-user-page.js
+              pl.req.response().putHeader("Content-Type", "text/javascript")
+                  .end(fileMap.getFileWithLang("esb-user-page.js", pl.lang), ENCODING);
+              System.out.println("Sended esb-user-page.js.");
               break;
             case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
               pl.req.response().putHeader("Content-Type", "text/javascript")
