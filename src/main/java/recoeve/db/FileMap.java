@@ -20,7 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileMap {
-  public static final String version = "1.0.4";
+  public static final String version = "1.0.5";
   private static final String[] referersAllowed = {
       "localhost", "recoeve.net", "www.recoeve.net"
       // , "127.0.0.1"
@@ -30,7 +30,8 @@ public class FileMap {
 
   private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
   private static final String[] fileNames = {
-      "favicon.ico", "jquery.js", "recoeve-style.css", "user-page-style.css", "main.css",
+      "favicon.ico", "jquery.js", "recoeve-style.css", // "user-page-style.css", "main.css",
+      "esb-user-page.css",
       "link.png", "icon-Tag.png", "icon-Twitter.png",
       "icon-X.png", "icon-Facebook.png", "icon-Kakao.png", "icon-Recoeve.png", "icon-Whatsapp.png", "cc.png",
       "by.png", "nc.png", "nd.png", "docuK-2.3.css", "docuK-prepare-2.3.js", "docuK-postProcess-2.3.js",
@@ -76,6 +77,7 @@ public class FileMap {
   private static final String[] txtFileNames = {
       "prepare.js", "robots.txt", "ads.txt",
       "bundle-tsx-log-out.js",
+      "esb-user-page.js",
       // "bundle-user-page.js", "bundle-tsx-user-page.js", "user-page.html" in FileMapWithVar.java
       "log-in.html", "bundle-log-in.js",
       "verify.html",
