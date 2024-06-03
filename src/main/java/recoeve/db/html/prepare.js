@@ -208,9 +208,7 @@ m.pathOfCat = function (cat, mode, lang, hashURI, args) {
       }
     }
   }
-  return `${m.userPath}${mode ? `/mode/${mode}` : ""}?${
-    cat !== null && cat !== undefined ? `cat=${encodeURIComponent(cat)}` : ""
-  }${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
+  return `${m.userPath}${mode ? `/mode/${mode}` : ""}?${cat !== null && cat !== undefined ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
 };
 m.pathOfNeighbor = function (user_id, cat, mode, lang, hashURI, args) {
   let argsSearch = "";
@@ -223,9 +221,7 @@ m.pathOfNeighbor = function (user_id, cat, mode, lang, hashURI, args) {
       }
     }
   }
-  return `/user/${user_id}${mode ? `/mode/${mode}` : ""}?${
-    cat !== null && cat !== undefined ? `cat=${encodeURIComponent(cat)}` : ""
-  }${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
+  return `/user/${user_id}${mode ? `/mode/${mode}` : ""}?${cat !== null && cat !== undefined ? `cat=${encodeURIComponent(cat)}` : ""}${argsSearch}${hashURI ? `#${encodeURIComponent(hashURI)}` : ""}`;
 };
 m.pathOfRecoStat = function (uri, lang, hash, args) {
   let argsSearch = "";
@@ -234,11 +230,9 @@ m.pathOfRecoStat = function (uri, lang, hash, args) {
       argsSearch += `&${prop}=${encodeURIComponent(args[prop])}`;
     }
   }
-  return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${
-    hash ? `#${encodeURIComponent(hash)}` : ""
-  }`;
+  return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${hash ? `#${encodeURIComponent(hash)}` : ""}`;
 };
-
+  
 ////////////////////////////////////////////////////
 // URI rendering :: http link itself, videos, images, maps.
 ////////////////////////////////////////////////////
@@ -473,27 +467,27 @@ m.iterSessionFull = 1000;
 // Escape and Unescape HTML string.
 ////////////////////////////////////////////////////
 m.escapeHTML = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 m.escapeOnlyTag = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 m.unescapeHTML = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 };
 m.escapeAMP = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/%/g, '%25').replace(/&/g, '%26').replace(/#/g, '%23');
 };
 m.unescapeAMP = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/%23/g, '#').replace(/%26/g, '&').replace(/%25/g, '%');
 };
 m.escapeEncodePctg = function (str) {
-  if (!str || str.constructor !== String) { return ""; }
+  if (!str || str.constructor !== String) { str = String(str); }
   return str.replace(/([\!\@\#\$\%\^\&\*\(\)\[\]\{\}_\<\>\,\.\/\?\~])/g, "\\$1");
 };
 
@@ -621,18 +615,65 @@ m.arrayToTableHTML = function (txtArray) {
   if (!txtArray || txtArray.constructor !== Array) {
     return "";
   }
-  let tableStr = "<table>";
+  let tableStr = "<table><tbody>";
   for (let row = 0; row < txtArray.length; row++) {
     tableStr += "<tr>";
-    for (let col = 0; col < txtArray[row].length; col++) {
-      tableStr += `<td>${txtArray[row][col].replace(/\n/g, '<br />')}</td>`;
+    for (let col = 0; col < txtArray[0].length; col++) {
+      tableStr += `<td>${txtArray[row][col] ? m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g, '<br />') : ""}</td>`;
     }
     tableStr += "</tr>";
   }
-  tableStr += "</table>";
+  tableStr += "</tbody></table>";
   return tableStr;
 };
-m.JSONtoStr = function (json) {
+m.memoCalcCorrectRatio = function (str) {
+  let totalCount = 0;
+  let correctCount = 0;
+  for (let i = 0; i < str.length; i++) {
+    totalCount++;
+    if (str.charAt(i)==="O") {
+      correctCount++;
+    }
+  }
+  return totalCount === 0 ? 0 : correctCount/totalCount;
+};
+m.memoRGBColor = function (resultI) {
+  let correctRatio = resultI.Correct/resultI.Try;
+  let recentCorrectRatio = m.memoCalcCorrectRatio(resultI.Recentest);
+  let r = parseInt(128*(1.0-correctRatio) + 127*recentCorrectRatio);
+  let g = parseInt(128*correctRatio + 127*recentCorrectRatio);
+  let b = parseInt(127*recentCorrectRatio);
+  return `rgb(${r},${g},${b})`;
+};
+m.memoArrayToTableHTML = function (txtArray) {
+	if (!txtArray || txtArray.constructor !== Array) {
+    return "";
+  }
+  let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
+  tableStr += `<colgroup>
+  <col width="5%" />
+  <col width="15%" />
+  <col />
+  <col width="5%" />
+  <col width="5%" />
+  <col width="15%" style="font-family:monospace" />
+</colgroup>`;
+  tableStr += `<tr style="background:white">`;
+  for (let col = 0; col < txtArray[0].length; col++) {
+    tableStr += `<td>${m.escapeOnlyTag(txtArray[0][col]).replace(/\n/g, '<br />')}</td>`;
+  }
+  tableStr += "</tr>";
+  for (let row = 1; row < txtArray.length; row++) {
+    tableStr += `<tr style="background:${m.memoRGBColor(txtArray[row])}">`;
+    for (let col = 0; col < txtArray[0].length; col++) {
+      tableStr += `<td>${txtArray[row][txtArray[0][col]] || txtArray[row][txtArray[0][col]] === 0 ? m.escapeOnlyTag(txtArray[row][txtArray[0][col]]).replace(/\n/g, '<br />') : ""}</td>`;
+    }
+    tableStr += "</tr>";
+  }
+  tableStr += "</tbody></table>";
+  return tableStr;
+};
+m.JSONtoStr = async function (json) {
   if (!json || json.constructor !== Array) {
     return "";
   }
@@ -642,9 +683,9 @@ m.JSONtoStr = function (json) {
   }
   for (let i = 1; i < json.length; i++) {
     res += "\n" + m.encloseStr(json[i][json[0][0]]);
-    let jMax = json[0].length < json[i].length ? json[0].length : json[i].length;
+    let jMax = json[0].length; // < json[i].length ? json[0].length : json[i].length;
     for (let j = 1; j < jMax; j++) {
-      res += "\t" + m.encloseStr(json[i][json[0][j]]);
+      res += "\t" + (json[i][json[0][j]] ? m.encloseStr(json[i][json[0][j]]) : "");
     }
   }
   return Promise.resolve(res);
@@ -685,15 +726,15 @@ m.heapify = function (arr, key, sorted, n, i) {
   }
 };
 m.heapsort = function (arr, key, sorted, upto) {
-  let n = arr.length;
+  let n = sorted.length;
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     m.heapify(arr, key, sorted, n, i);
   }
-  if (upto) {
-    upto = upto > n ? n : upto;
-  }
-  else {
+  upto = Number(upto);
+  if (isNaN(upto)) {
     upto = n;
+  } else {
+    upto = upto > n ? n : upto;
   }
   let until = n - upto;
   for (let i = n - 1; i >= until; i--) {
@@ -828,7 +869,7 @@ m.delayedLogOut = function (msg, delayTime = 27, $result) {
   }, 1000);
   clearTimeout(m.setTimeoutDeleyedLogOut);
   m.setTimeoutDeleyedLogOut = setTimeout(function () {
-    window.location.href = `/account/log-out?goto=${m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)}`;
+    window.location.href = `/account/log-out?goto=${encodeURIComponent(m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args))}`;
   }, delay * 1000);
 };
 
@@ -1211,7 +1252,7 @@ m.getAndFillRecoInNewReco = function (r, fillDefs) {
       let getRecosStr = "uri" + "\n" + m.encloseStr(r.uri);
       if (m.myIndex) {
         $.ajax({
-          type: "POST", url: `/user/${m.myId}/get-Recos`, data: getRecosStr
+          type: "POST", url: `/user/${m.myId}/get-Recos`, data: getRecosStr.replace(/%20/gi, "%2520")
           , dataType: "text"
         }).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
           m.recoDowned(r.uri, m.myRecos);
@@ -1443,7 +1484,7 @@ m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
 /* Remember user */
 m.str_rmb_me = `log\tsW\tsH\nweb\t${m.sW}\t${m.sH}`;
-m.rmb_me = function (callback, args, saveNewRecoInputs) {
+m.rmb_me = async function (callback, args, saveNewRecoInputs) {
   return new Promise(async function (resolve, reject) {
     if (saveNewRecoInputs) {
       let uri = String(await m.formatURI(m.$input_uri[0].value));
@@ -1725,7 +1766,7 @@ m.fuzzySearch = function (ptnSH, fs) {
         if (!fs.fullList[uri].catAndI) {
           fs.fullList[uri].catAndI = {};
         }
-        fs.fullList[uri].catAndI[m.currentCat] = { cat: m.currentCat, i: m.fsToRs.fullList[uri]?.i ?? m.fsToRs.fullList.length - 1 }
+        fs.fullList[uri].catAndI[m.currentCat] = { cat: m.currentCat, i: m.catUriList[m.currentCat].uris[uri]?.i ?? m.catUriList[m.currentCat].uris.length }
       }
     }
   }
@@ -1760,10 +1801,7 @@ m.fuzzySearch = function (ptnSH, fs) {
       let maxMatchScore = 0;
       if (matched) {
         maxMatchScore = m.matchScoreFromIndices(txt, ptnSH, indices);
-        let indicesMMS = []; // indices of max match score
-        for (let p = 0; p < indices.length; p++) {
-          indicesMMS[p] = indices[p]; // hard copy of indices
-        }
+        let indicesMMS = [...indices]; // indices of max match score
         if (txt.length < m.fsLength) {
           for (let k = indices.length - 1; k >= 0;) {
             if (regExs[k].toString() === m.spaceRegExpStr) {
@@ -1788,10 +1826,7 @@ m.fuzzySearch = function (ptnSH, fs) {
               let matchScore = m.matchScoreFromIndices(txt, ptnSH, indices);
               if (matchScore > maxMatchScore) {
                 maxMatchScore = matchScore;
-                indicesMMS = [];
-                for (let p = 0; p < indices.length; p++) {
-                  indicesMMS[p] = indices[p]; // hard copy of indices
-                }
+                indicesMMS = [...indices];
               }
               k = indices.length - 2;
             }
@@ -1839,8 +1874,6 @@ m.fuzzySearch = function (ptnSH, fs) {
   }
   let sorted = fs[0].sorted = [];
   for (let i = 0; i < fs[0].length; i++) {
-    // sorted[i]=fs[0].length-1-i;
-    // sorted[i]=i;
     sorted.push(i);
   }
   for (let i = 1; i < sorted.length; i++) {
@@ -1916,7 +1949,10 @@ m.onKeydownInFS0 = function (e, shortKey, fs) {
           break;
       }
       if (!m.doNotPushHistory) {
-        window.history.pushState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+        window.history.pushState(
+          { cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn },
+          "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)
+        );
       }
       m.doNotPushHistory = false;
       break;
@@ -2113,7 +2149,7 @@ m.val = function (val) {
   str += `${xc},0 ${xc},${yc.toFixed(1)} ${pad0},${yc.toFixed(1)}`;
   m.starsWidth = xc - pad0 - 2;
   m.stars = function (val) {
-    if (!val || val.constructor !== Number || val === NaN) { val = -1; }
+    if (!val || val.constructor !== Number || isNaN(val)) { val = -1; }
     if (val < 0) { val = 0; }
     else if (val > 1) { val = 1; }
     return `<div class="stars-container" style="width:${xc + pad0}px; height:${yc.toFixed(1)}px"><div class="bar" style="left:${pad0 + 1}px; width:${(m.starsWidth * val).toFixed(1)}px"></div><svg class="out-stars"><polygon points="${str}"/></svg></div>`;
@@ -2247,7 +2283,7 @@ m.fsToRs.playNext = async function (increment, cue, first, byShortKey = false) {
       }
       m.setTimeoutPlayNextCount++;
       if (fs.fullList[fs.currentIndex]?.r?.has) {
-        m.fsViewAndScroll(fs, $toR0);
+        m.fsScrollToSelected(fs, $toR0);
         await fs.getAndPlayVideo(true);
       }
       else if (m.setTimeoutPlayNextCount < 8) {
@@ -2308,7 +2344,7 @@ m.fsToRs.playNext = async function (increment, cue, first, byShortKey = false) {
   }
   if ($next?.length) {
     $next.trigger("click");
-    m.fsViewAndScroll(fs, $next);
+    m.fsScrollToSelected(fs, $next);
   }
   else if (byShortKey) {
     m.playLi({ target: fs.$fsLis.filter(".selected")[0], byShortKey })
@@ -2332,7 +2368,12 @@ m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
   m.hashURI = hashURI;
   window.location.hash = `#${m.hashURI}`;
   m.$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
-  window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
+  if (!m.initialOpen && !m.doNotPushHistory) {
+    window.history.replaceState(
+      { cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn },
+      "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI)
+    );
+  }
 };
 m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
   if (hashURI && m.userIndex) {
@@ -2364,7 +2405,12 @@ m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
           m.fsGo.tryN = 0;
           m.hashURI = hashURI;
           window.location.hash = `#${m.escapeEncodePctg(encodeURIComponent(m.hashURI))}`;
-          window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args));
+          if (!m.initialOpen && !m.doNotPushHistory) {
+            window.history.replaceState(
+              { cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn },
+              "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI, m.args)
+            );
+          }
           m.$window.scrollTop($elem.offset().top);
         }
       }
@@ -2417,7 +2463,6 @@ m.fsToRs.prepareRecoListPlay = async function (ytAPINeeded, cue, uriRendered, in
                   p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
                 }
               }
-              m.finalizeInitialOpen();
             }
             , 'onError': function (e) {
               if (fs.skip) {
@@ -2437,7 +2482,6 @@ m.fsToRs.prepareRecoListPlay = async function (ytAPINeeded, cue, uriRendered, in
                 }
               }
               else if (e.data === YT.PlayerState.CUED) {}
-              m.finalizeInitialOpen();
             }
           }
         });
@@ -2514,7 +2558,6 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
                   }
                 }
                 else if (e.data === YT.PlayerState.CUED) {}
-                m.finalizeInitialOpen();
               }
             }
           });
@@ -2570,7 +2613,6 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
                 else {
                   p.loadPlaylist({ listType: "playlist", list: uriRendered.list });
                 }
-                m.finalizeInitialOpen();
               }
               , 'onError': function (e) {
                 if (fs.skip) {
@@ -2590,7 +2632,6 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
                   }
                 }
                 else if (e.data === YT.PlayerState.CUED) {}
-                m.finalizeInitialOpen();
               }
             }
           });
@@ -2638,7 +2679,6 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
       if (!cue) {
         m.$video[0].play();
       }
-      m.finalizeInitialOpen();
     }
     else {
       fs.pauseVideo();
@@ -2651,7 +2691,6 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
         fs.lastIndex = fs.currentIndex;
         m.lastCat = m.currentCat;
         m.lastRecoURIPlaying = m.recoURIPlaying;
-        m.finalizeInitialOpen();
       }
       if ((!cue) && fs.skip) {
         clearTimeout(m.setTimeoutPlayNext);
@@ -2774,13 +2813,13 @@ m.formatCats = function (cats) {
 m.catsContainsAllAnotCats = function (cats0, cats1) {
   let cats0Split = m.formatCats(cats0).split(";");
   let cats1Split = m.formatCats(cats1).split(";");
-  let setOfCats0 = [];
+  let setOfCats0 = {};
   for (let i = 0; i < cats0Split.length; i++) {
     setOfCats0[cats0Split[i]] = true;
   }
   let contains = true;
   for (let i = 0; i < cats1Split.length; i++) {
-    contains = contains && setOfCats0[cats1Split[i]];
+    contains = contains && Boolean(setOfCats0[cats1Split[i]]);
     if (!contains) {
       break;
     }
@@ -3244,12 +3283,12 @@ ptnURI.toIframe = function (uri, inListPlay) {
   return new Promise(function (resolve, reject) {
     let exec = m.ptnURI[2].regEx.exec(uri);
     if (exec !== null) {
-      return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+      return resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
     }
     else {
       exec = m.ptnURI[2].regEx1.exec(uri);
       if (exec !== null) {
-        return resolve({ html: `<a target="_blank" href="https://kr62.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr62.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+        return resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
       }
       else {
         return reject(false);
@@ -3435,6 +3474,10 @@ m.descCmtRToString = function (descCmtR) {
   }
   return res.trim();
 };
+m.memorizing = function (elem) {
+  $('#memo-container').show();
+  m.dict.memoSetting(elem);
+}
 m.descCmtRToHTML = async function (descR) {
   return new Promise(async function (resolve, reject) {
     let res = `<div class="desc">`;
@@ -3455,6 +3498,27 @@ m.descCmtRToHTML = async function (descR) {
 <div class="lyricsArrow"></div>
 <div class="lyrics">${val.trim().replace(/\n/g, "<br />").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>
 <div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide lyrics--]</div></div>
+</div>
+</div>`;
+          break;
+        case "#dictionary": case "#dictionary:":
+        case "#사전": case "#사전:":
+          res += `<div class="value">
+<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle dictionary--]</div> <div class="button memorizing" onclick="m.memorizing(this)">[--Memorizing--]</div></div>
+<div class="lyricsC" style="display:none">
+<div class="lyricsArrow"></div>
+<div class="lyrics">${m.arrayToTableHTML(await m.strToJSON(val.trim()))}</div>
+<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide dictionary--]</div></div>
+</div>
+</div>`;
+          break;
+        case "#memorizing-result":
+          res += `<div class="value">
+<div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle memorizing result--]</div></div>
+<div class="lyricsC" style="display:none">
+<div class="lyricsArrow"></div>
+<div class="lyrics">${m.memoArrayToTableHTML(await m.strToJSON(val.trim()))}</div>
+<div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide memorizing result--]</div></div>
 </div>
 </div>`;
           break;
@@ -3622,7 +3686,9 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
       let descR = r.descR;
       res += String(await m.descCmtRToHTML(descR));
     }
-    res += (r.cmt && r.cmt.length !== 0 ? (`<div class="cmt">${m.escapeOnlyTag(r?.cmt).replace(/\n/g, "<br />")}</div>`) : "");
+    if (r.cmt && r.cmt.length !== 0) {
+      res += String(await m.descCmtRToHTML(r.cmtR));
+    }
     if (r.tFirst && r.tLast && r.tFirst !== r.tLast) {
       res += `<div class="tFirst">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
       res += `<div class="tLast">Firstly Recoed at ${m.toLocalTime(r.tFirst)}</div><div class="cBoth"></div>`;
@@ -3667,7 +3733,6 @@ m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents,
       }
       m.myRecos[uri].tLast = res[1]?.tLast;
       args.$result?.html(res[1].result);
-      // m.refreshFSToRs(m.currentCat); // TODO: delete this.
       m.refresh(args.cats, "changed", uri);
     }
     else if (result.startsWith("recoed")) {
@@ -3704,7 +3769,6 @@ m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents,
       r.descR = m.renderStrDescCmt(r.desc);
       m.putCats_UriToLists(r.cats, uri);
       m.refresh(r.cats, "recoed", uri);
-      // m.refreshFSToRs(m.currentCat); // TODO: delete this.
     }
     else {
       m.delayedLogOut(result, 60 * 60 * 24, args.$result);
