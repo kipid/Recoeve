@@ -293,9 +293,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 
 		$right_top_log_in = $("#right-top-log-in");
-		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
-</div>`: `<div class="button darkred" onclick="$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+</div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>`}`);
 		$a_log_in = $(".a-log-in");
@@ -831,10 +831,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 				if (e.state.hash) {
 					if (m.state.hash === "new-reco") {
-						$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						m.$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 					}
 					else if (m.state.hash === "reco-stat") {
-						$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
+						m.$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
 					}
 				}
 			}
@@ -852,7 +852,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				e.preventDefault();
 				e.stopPropagation();
 				let x = (e.type == 'touchmove') ? e.originalEvent.touches[0].clientX : e.clientX;
-				let w = x - $bar.offset().left + $window.scrollLeft();
+				let w = x - $bar.offset().left + m.$window.scrollLeft();
 				if (w < -15) {
 					w = -1;
 				}
@@ -883,7 +883,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let $bar = $(this).find(".bar");
 			let barW = $bar.width();
 			let $val = $input_val[0];
-			let w = e.clientX - $bar.offset().left + $window.scrollLeft();
+			let w = e.clientX - $bar.offset().left + m.$window.scrollLeft();
 			if (w < 0) {
 				w = 0;
 			}
@@ -1219,7 +1219,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
 			m.hashURI = hashURI;
 			window.location.hash = `#${m.hashURI}`;
-			$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
+			m.$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
 			window.history.replaceState({ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn }, "", m.pathOfCat(m.currentCat, m.recoMode, null, m.hashURI));
 		};
 		m.$fdList = $("#right-top-log-in, #reco-stat, .reco, .to-be-executed"); // Ordered automatically by jQuery.
@@ -1245,7 +1245,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					break;
 				case 70: // F=70
 				case 68: // D=68
-					let scrollTop = $window.scrollTop();
+					let scrollTop = m.$window.scrollTop();
 					let i, k = m.$fdList.length;
 					let $hI;
 					if (e.keyCode === 70) { // F=70
@@ -1254,7 +1254,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							$hI = m.$fdList.eq(i);
 							let hIID = $hI[0].id;
 							if (hIID.startsWith("load-recos-")) {
-								if ($hI.is(":visible") && scrollTop + $window.height() < $hI.offset().top) { break; }
+								if ($hI.is(":visible") && scrollTop + m.$window.height() < $hI.offset().top) { break; }
 							}
 							if ($hI.is(":visible") && scrollTop < $hI.offset().top) { break; }
 						}
@@ -1276,16 +1276,16 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					if ($hI.hasClass("reco")) {
 						m.hashURI = m.unescapeHTML($hI.find(".textURI").html());
 						window.location.hash = `#${encodeURIComponent(m.hashURI)}`;
-						$window.scrollTop($hI.offset().top);
+						m.$window.scrollTop($hI.offset().top);
 						window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 					}
 					else if (hIID) {
 						m.hashURI = hIID;
 						if (e.keyCode === 70 && hIID.startsWith("load-recos-")) { // F=70
-							$window.scrollTop($hI.offset().top - $window.height() * 2.0 / 3.0);
+							m.$window.scrollTop($hI.offset().top - m.$window.height() * 2.0 / 3.0);
 						}
 						else { // F=70 (normal) and D=68
-							$window.scrollTop($hI.offset().top);
+							m.$window.scrollTop($hI.offset().top);
 						}
 						window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 					}
@@ -1300,7 +1300,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					break;
 			}
 		}
-		$window.on("keydown.sk", m.processShortKey);
+		m.$window.on("keydown.sk", m.processShortKey);
 
 		////////////////////////////////////////////////////
 		// Language/언어/語言
@@ -1364,10 +1364,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.setIntervalInitialN = 0;
 			m.setIntervalInitial = setInterval(function () {
 				if (m.initialHashURI === "new-reco") {
-					$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+					m.$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
 				}
 				else if (m.initialHashURI === "reco-stat") {
-					$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
+					m.$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
 				}
 				if (m.initialURI) {
 					m.lastURI="41kjIO아녜#@@";
