@@ -543,7 +543,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			else {
 				m.$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 				setTimeout(function () {
-					m.$input_cats[0].value = m.formatCats($input_cats[0].value);
+					m.$input_cats[0].value = m.formatCats(m.$input_cats[0].value);
 					m.$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 					m.previous = Date.now();
 					m.doFSCat(m.fsCat);
@@ -923,7 +923,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.$input_val_down = $("#input-val-down");
 		m.$input_val_up = $("#input-val-up");
 		m.$input_val_down.on("click", function (e) {
-			let val = m.val($input_val[0].value);
+			let val = m.val(m.$input_val[0].value);
 			if (val.valid) {
 				if (val.val === -1) {
 					m.$input_val[0].value = "0.0/10";
@@ -941,7 +941,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.$input_val.trigger("keyup");
 		});
 		m.$input_val_up.on("click", function (e) {
-			let val = m.val($input_val[0].value);
+			let val = m.val(m.$input_val[0].value);
 			if (val.valid) {
 				if (val.val === -1) {
 					m.$input_val[0].value = "10.0/10";
@@ -986,8 +986,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.$button_reco.on("click", function (e) {
 			m.$button_reco.addClass("disabled");
-			var uri = m.formatURI($input_uri[0].value);
-			var val = m.val($input_val[0].value.trim());
+			var uri = m.formatURI(m.$input_uri[0].value);
+			var val = m.val(m.$input_val[0].value.trim());
 			var errorMsg = "";
 			var valid = true;
 			if (uri.length === 0) {
@@ -1004,13 +1004,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				var strHeads = "do" + "\t" + "uri";
 				var strContents = "reco" + "\t" + m.encloseStr(uri);
 				strHeads += "\t" + "title";
-				strContents += "\t" + m.encloseStr(m.formatTitle($input_title[0].value.trim()));
+				strContents += "\t" + m.encloseStr(m.formatTitle(m.$input_title[0].value.trim()));
 				strHeads += "\t" + "cats";
-				strContents += "\t" + m.encloseStr(m.formatCats($input_cats[0].value.trim()));
+				strContents += "\t" + m.encloseStr(m.formatCats(m.$input_cats[0].value.trim()));
 				strHeads += "\t" + "desc";
-				strContents += "\t" + m.encloseStr($input_desc[0].value.trim());
+				strContents += "\t" + m.encloseStr(m.$input_desc[0].value.trim());
 				strHeads += "\t" + "cmt";
-				strContents += "\t" + m.encloseStr($input_cmt[0].value.trim());
+				strContents += "\t" + m.encloseStr(m.$input_cmt[0].value.trim());
 				strHeads += "\t" + "val";
 				strContents += "\t" + m.encloseStr(val.str);
 				var strRecoDo = strHeads + "\n" + strContents;
@@ -1072,19 +1072,19 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.$button_edit.on("click", function (e) {
 			m.$button_edit.addClass("disabled");
 			var uri = $input_uri[0].value;
-			var val = m.val($input_val[0].value.trim());
+			var val = m.val(m.$input_val[0].value.trim());
 			var r = m.myRecos[uri];
 			if (uri.length !== 0 && val.valid && r) {
 				var strHeads = "do" + "\t" + "uri";
 				var strContents = "change" + "\t" + m.encloseStr(uri);
 				var changed = false;
-				var title = m.formatTitle($input_title[0].value.trim());
+				var title = m.formatTitle(m.$input_title[0].value.trim());
 				if (title !== r["title"]) {
 					changed = true;
 					strHeads += "\t" + "title";
 					strContents += "\t" + m.encloseStr(title);
 				}
-				var cats = m.formatCats($input_cats[0].value.trim());
+				var cats = m.formatCats(m.$input_cats[0].value.trim());
 				if (cats !== r["cats"]) {
 					changed = true;
 					strHeads += "\t" + "cats";
@@ -1337,7 +1337,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 			m.$choose_lang_list.html(htmlLangs);
 			m.$choose_lang.on("click", function (e) {
-				if ($choose_lang.hasClass("enabled")) {
+				if (m.$choose_lang.hasClass("enabled")) {
 					m.$choose_lang.removeClass("enabled");
 					m.$choose_lang_list.hide();
 				}
