@@ -1330,7 +1330,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			return false;
 		};
 		(async function () {
-			let dataLang = await m.strToJSON($data_lang.html().trim());
+			let dataLang = await m.strToJSON(m.$data_lang.html().trim());
 			let htmlLangs = "";
 			for (let i = 0; i < dataLang[0].length; i++) {
 				htmlLangs += `<a href="${m.pathOfRecoStat(m.initialURI, m.lang, window.location.hash.substring(1))}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
