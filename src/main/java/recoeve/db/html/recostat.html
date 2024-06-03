@@ -215,6 +215,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		// Variables
 		//////////////////
 		m.$data_myCatList = $("#data-myCatList");
+		m.$data_myCatList.html(m.myCatListHTMLEscaped);
 		m.$choose_lang = $("#choose-lang");
 		m.$choose_lang_list = $("#choose-lang-list");
 		m.$data_lang = $("#data-lang");
@@ -431,7 +432,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		if (m.myIndex) {
-			m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+			m.strCatListToJSON(m.unescapeHTML(m.$data_myCatList.html()), m.myCatList);
 		}
 		m.catsToA = function (cats) {
 			if (!cats || cats.constructor !== String || cats.trim().length === 0) {
@@ -466,7 +467,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.updateCatFS = function () {
 			m.fsCat.fullList.splice(0, m.fsCat.fullList.length);
-			m.strCatListToJSON(m.unescapeHTML($data_myCatList.html()), m.myCatList);
+			m.strCatListToJSON(m.unescapeHTML(m.$data_myCatList.html()), m.myCatList);
 			let l = m.myCatList.length;
 			for (let i = l - 1; i > 0; i--) {
 				m.putCatToFSFullList(l - 1 - i, m.myCatList[i].cat, m.myCatList);
