@@ -15,15 +15,19 @@
 	<link rel="stylesheet" href="/CDN/recoeve-style.css">
 	<script>
 		window.m = {
-			initialPathname: window.location.pathname
-			, initialSearch: window.location.search
-			, initialHashURI: (window.location.hash ? decodeURIComponent(window.location.hash.substring(1)) : "")
-			, previous: 0
-			, tNow: new Date()
-			, fsLength: 300
-			, uri: ""
-			, lastURI: "i8@ㅏ%자DKW2!"
-			, currentCat: "18IJF83ㅏㅇ(@"
+			initialPathname: window.location.pathname,
+			initialSearch: window.location.search,
+			initialHashURI: (window.location.hash ? decodeURIComponent(window.location.hash.substring(1)) : ""),
+			previous: 0,
+			tNow: new Date(),
+			fsLength: 300,
+			uri: "",
+			lastURI: "i8@ㅏ%자DKW2!",
+			currentCat: "18IJF83ㅏㅇ(@",
+			myIndex: "{--myIndex--}",
+			myId: "{--myId--}",
+			myCatListHTMLEscaped: `{--myCatList--}`,
+			kipidCatListHTMLEscaped: `{--kipid-catList--}`,
 		};
 	</script>
 	<script src="/CDN/jquery.js"></script>
@@ -31,8 +35,7 @@
 	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 	<script>
 		(function (m, $, undefined) {
-			m.myIndex = "{--myIndex--}";
-			m.userId = m.myId = "{--myId--}";
+			m.userId = m.myId;
 
 			m.myPage = true;
 			m.userPath = `/user/${encodeURIComponent(m.userId)}`;
@@ -115,7 +118,7 @@
 </head>
 
 <body>
-	<data id="data-myCatList">{--myCatList--}</data>
+	<data id="data-myCatList"></data>
 	<div id="container" class="dark">
 		<div id="javascript-disable">
 			Your javascript on this page is disabled. Please enable javascipt to see this page properly.
@@ -211,40 +214,40 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		//////////////////
 		// Variables
 		//////////////////
-		$data_myCatList = $("#data-myCatList");
-		$choose_lang = $("#choose-lang");
-		$choose_lang_list = $("#choose-lang-list");
-		$data_lang = $("#data-lang");
+		m.$data_myCatList = $("#data-myCatList");
+		m.$choose_lang = $("#choose-lang");
+		m.$choose_lang_list = $("#choose-lang-list");
+		m.$data_lang = $("#data-lang");
 
-		$new_reco = $("#new-reco");
-		$my_reco = $("#my-reco");
-		$input_uri = $("#input-uri");
-		$input_uri[0].value = m.initialURI;
-		$show_URI = $("#show-URI");
-		$def_titles = $("#def-titles");
-		$input_title = $("#input-title");
-		$def_cats = $("#def-cats");
-		$input_cats = $("#input-cats");
-		$input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
-		$def_descs = $("#def-descs");
-		$input_desc = $("#input-desc");
-		$input_cmt = $("#input-cmt");
-		$input_val = $("#input-val");
+		m.$new_reco = $("#new-reco");
+		m.$my_reco = $("#my-reco");
+		m.$input_uri = $("#input-uri");
+		m.$input_uri[0].value = m.initialURI;
+		m.$show_URI = $("#show-URI");
+		m.$def_titles = $("#def-titles");
+		m.$input_title = $("#input-title");
+		m.$def_cats = $("#def-cats");
+		m.$input_cats = $("#input-cats");
+		m.$input_cats.attr("placeholder", "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]");
+		m.$def_descs = $("#def-descs");
+		m.$input_desc = $("#input-desc");
+		m.$input_cmt = $("#input-cmt");
+		m.$input_val = $("#input-val");
 
-		$error = $("#error-msg");
+		m.$error = $("#error-msg");
 
-		$button_reco = $("#button-reco");
-		$button_edit = $("#button-edit");
-		$button_del = $("#button-del");
-		$button_back = $("#button-back");
-		$button_close = $("#button-close");
+		m.$button_reco = $("#button-reco");
+		m.$button_edit = $("#button-edit");
+		m.$button_del = $("#button-del");
+		m.$button_back = $("#button-back");
+		m.$button_close = $("#button-close");
 
-		$cat_fs_container = $("#cat-fs-container");
-		$cat_fs_list = $("#cat-fs-list");
+		m.$cat_fs_container = $("#cat-fs-container");
+		m.$cat_fs_list = $("#cat-fs-list");
 
-		$html = $("html");
-		$title = $("title");
-		$body = $("body");
+		m.$html = $("html");
+		m.$title = $("title");
+		m.$body = $("body");
 
 		m.myCatList = [];
 		m.myRecos = {};
@@ -255,8 +258,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 
 		m.reNewFSsOn = async function () {
 			return new Promise(async function (resolve, reject) {
-				$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
-				$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+				m.$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
+				m.$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 				if (m.initialOpen) {
 					await m.reTriggerFS(m.fsCat);
 				}
@@ -270,7 +273,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let fullPath = m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 			let href = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 			if (e && e.which === 2) {
-				$a_log_in.attr("href", href);
+				m.$a_log_in.attr("href", href);
 				return true;
 			}
 			else {
@@ -283,7 +286,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			let fullPath = m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 			let href = `/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 			if (e && e.which === 2) {
-				$a_log_out.attr("href", href);
+				m.$a_log_out.attr("href", href);
 				return true;
 			}
 			else {
@@ -292,26 +295,26 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 
-		$right_top_log_in = $("#right-top-log-in");
-		$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		m.$right_top_log_in = $("#right-top-log-in");
+		m.$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
 </div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>`}`);
-		$a_log_in = $(".a-log-in");
-		$a_log_out = $(".a-log-out");
-		$my_id = $("#my-id");
+		m.$a_log_in = $(".a-log-in");
+		m.$a_log_out = $(".a-log-out");
+		m.$my_id = $("#my-id");
 		if (m.myIndex) {
-			$my_id.html(m.myId + " ▾");
+			m.$my_id.html(m.myId + " ▾");
 		}
 		else {
-			$my_id.hide();
+			m.$my_id.hide();
 		}
 		if (m.myIndex) {
-			$a_log_in.hide();
+			m.$a_log_in.hide();
 		}
 		else {
-			$a_log_out.hide();
+			m.$a_log_out.hide();
 		}
 
 		/* Fuzzy search */
@@ -537,17 +540,17 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.doFSCat(m.fsCat);
 			}
 			else {
-				$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
+				m.$input_cats.off("keyup.fs cut.fs paste.fs click.fs");
 				setTimeout(function () {
-					$input_cats[0].value = m.formatCats($input_cats[0].value);
-					$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+					m.$input_cats[0].value = m.formatCats($input_cats[0].value);
+					m.$input_cats.on("keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 					m.previous = Date.now();
 					m.doFSCat(m.fsCat);
 				}, m.wait * 1.5 - passed);
 			}
 		};
-		$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
-		$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
+		m.$input_cats.off("input.fs keyup.fs cut.fs paste.fs click.fs");
+		m.$input_cats.on("input.fs keyup.fs cut.fs paste.fs click.fs", m.fsCatOn);
 		m.onKeydownInFS = function (e, fs) {
 			clearTimeout(m.setTimeoutTargetOn);
 			e.stopPropagation();
@@ -578,7 +581,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					break;
 				case 27: // ESC=27
 					e.preventDefault();
-					$fs_container.hide();
+					m.$fs_container.hide();
 					break;
 				case 38: // up=38
 				case 40: // down=40
@@ -621,7 +624,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.reNewAndReOn();
 			}, m.wait);
 		};
-		$input_cats.on("keydown.fs", function (e) {
+		m.$input_cats.on("keydown.fs", function (e) {
 			m.onKeydownInFS(e, m.fsCat);
 		});
 		if (m.myIndex) {
@@ -631,14 +634,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				m.fsCat.fullList[l - 1 - i] = { i: l - 1 - i, txt: m.splitHangul(cat), cat: cat, html: m.escapeHTML(cat) };
 			}
 		}
-		$input_cats.trigger("keyup.fs");
-		$input_cats.on("focus", function () {
-			$cat_fs_container.show();
+		m.$input_cats.trigger("keyup.fs");
+		m.$input_cats.on("focus", function () {
+			m.$cat_fs_container.show();
 		});
 
-		$def_cmd = $("#def-cmds").find(".def-cmd");
-		$def_cmd.on("click", function (e) {
-			$input_desc.focus();
+		m.$def_cmd = $("#def-cmds").find(".def-cmd");
+		m.$def_cmd.on("click", function (e) {
+			m.$input_desc.focus();
 			let sStart = $input_desc[0].selectionStart;
 			let sEnd = $input_desc[0].selectionEnd;
 			let inputValue = $input_desc[0].value;
@@ -647,13 +650,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$target = $target.parents(".def-cmd");
 			}
 			let inserted = m.unescapeHTML($target.html());
-			$input_desc[0].value = `${inputValue.substring(0, sStart)}${inserted}${inputValue.substring(sEnd)}`;
-			$input_desc.focus();
+			m.$input_desc[0].value = `${inputValue.substring(0, sStart)}${inserted}${inputValue.substring(sEnd)}`;
+			m.$input_desc.focus();
 			sEnd = sStart + inserted.length;
-			$input_desc[0].setSelectionRange(sEnd, sEnd);
+			m.$input_desc[0].setSelectionRange(sEnd, sEnd);
 		});
 
-		$reco_stat = $("#reco-stat");
+		m.$reco_stat = $("#reco-stat");
 		m.nOfPointsToPlot = 101;
 		m.plotPointsStatChart = function (stat, maxN) {
 			let chartHTML = `<div class="rC"><div class="rSC"><div><svg width="100%" height="100%">`;
@@ -684,7 +687,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 </text>`;
 			}
 			chartHTML += `</svg></div></div></div>`;
-			$reco_stat.html(chartHTML);
+			m.$reco_stat.html(chartHTML);
 		};
 		m.recoToEve = async function (resp, recos, cat, conciseURIs) { // disable conciseURIs
 			return new Promise(async function (resolve, reject) {
@@ -739,8 +742,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 							type: "POST", url: postURL, data: getRecosStr
 							, dataType: "text"
 						}).fail(function () {
-							$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(m.currentCat)} has failed.`);
-							$contents.html("");
+							m.$numbers_of_recos.html(`get-Recos of UriList on cat=${m.escapeOnlyTag(m.currentCat)} has failed.`);
+							m.$contents.html("");
 							reject();
 						}).done(async function (resp) {
 							m.recoDowned(getRecosStr.substring(4), recos);
@@ -800,19 +803,19 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				resolve();
 			});
 		};
-		$new_reco.find("input, textarea").on("keydown.common", function (e) {
+		m.$new_reco.find("input, textarea").on("keydown.common", function (e) {
 			if (e.ctrlKey && e.keyCode === 13) { // Ctrl+Enter
 				let r = m.myRecos[$input_uri[0].value];
 				if (r.has) {
-					$button_edit.trigger("click");
+					m.$button_edit.trigger("click");
 				}
 				else {
-					$button_reco.trigger("click");
+					m.$button_reco.trigger("click");
 				}
 			}
 		});
-		$input_cats.off("keydown.common");
-		$input_uri.on("input keyup keydown cut paste click focus", function (e) {
+		m.$input_cats.off("keydown.common");
+		m.$input_uri.on("input keyup keydown cut paste click focus", function (e) {
 			m.uri = $input_uri[0].value;
 			if (m.uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
@@ -826,8 +829,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		window.onpopstate = function (e) {
 			if (e.state) {
 				if (e.state.uri) {
-					$input_uri[0].value = e.state.uri;
-					$input_uri.trigger("keyup");
+					m.$input_uri[0].value = e.state.uri;
+					m.$input_uri.trigger("keyup");
 				}
 				if (e.state.hash) {
 					if (m.state.hash === "new-reco") {
@@ -841,13 +844,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 
 		m.lastVal = m.val("10.0/10");
-		$input_val_stars = $("#input-val-stars");
-		$input_val_stars.html(m.stars(0));
-		$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
+		m.$input_val_stars = $("#input-val-stars");
+		m.$input_val_stars.html(m.stars(0));
+		m.$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
 			let $bar = $input_val_stars.find(".bar");
 			let barW = $bar.width();
 			let $val = $input_val[0];
-			$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
+			m.$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
 				e.stopPropagation();
@@ -872,14 +875,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						$val.value = (w / m.starsWidth * m.fullPts).toFixed(1) + "/" + m.fullPts;
 					}
 					$bar.css({ width: w });
-					$input_val.trigger("keyup");
+					m.$input_val.trigger("keyup");
 				}
 			});
-			$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
-				$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
+			m.$html.on("mouseup.mdInStars touchend.mdInStars", function (e) {
+				m.$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 			});
 		});
-		$input_val_stars.on("click", function (e) {
+		m.$input_val_stars.on("click", function (e) {
 			let $bar = $(this).find(".bar");
 			let barW = $bar.width();
 			let $val = $input_val[0];
@@ -894,10 +897,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				$bar.css({ width: w });
 				$val.value = (w / m.starsWidth * m.fullPts).toFixed(1) + "/" + m.fullPts;
 				m.lastVal = m.val($val.value);
-				$input_val.trigger("keyup");
+				m.$input_val.trigger("keyup");
 			}
 		});
-		$input_val.on("input keyup keydown cut paste click focus", function (e) {
+		m.$input_val.on("input keyup keydown cut paste click focus", function (e) {
 			if (this.value !== m.lastVal.str) {
 				let uri = $input_uri[0].value;
 				clearTimeout(m.timeout[uri]);
@@ -916,45 +919,45 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}, 2048);
 			}
 		});
-		$input_val_down = $("#input-val-down");
-		$input_val_up = $("#input-val-up");
-		$input_val_down.on("click", function (e) {
+		m.$input_val_down = $("#input-val-down");
+		m.$input_val_up = $("#input-val-up");
+		m.$input_val_down.on("click", function (e) {
 			let val = m.val($input_val[0].value);
 			if (val.valid) {
 				if (val.val === -1) {
-					$input_val[0].value = "0.0/10";
+					m.$input_val[0].value = "0.0/10";
 				}
 				else {
 					val.num -= 0.1;
 					if (val.num < 0) {
 						val.num = 0;
 					}
-					$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
+					m.$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
 				}
 			} else {
-				$input_val[0].value = "0.0/10";
+				m.$input_val[0].value = "0.0/10";
 			}
-			$input_val.trigger("keyup");
+			m.$input_val.trigger("keyup");
 		});
-		$input_val_up.on("click", function (e) {
+		m.$input_val_up.on("click", function (e) {
 			let val = m.val($input_val[0].value);
 			if (val.valid) {
 				if (val.val === -1) {
-					$input_val[0].value = "10.0/10";
+					m.$input_val[0].value = "10.0/10";
 				}
 				else {
 					val.num += 0.1;
 					if (val.num > val.divisor) {
 						val.num = val.divisor;
 					}
-					$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
+					m.$input_val[0].value = `${val.num.toFixed(1)}/${val.divisor}`;
 				}
 			} else {
-				$input_val[0].value = "10.0/10";
+				m.$input_val[0].value = "10.0/10";
 			}
-			$input_val.trigger("keyup");
+			m.$input_val.trigger("keyup");
 		});
-		$button_back.on("click", function (e) {
+		m.$button_back.on("click", function (e) {
 			m.fillRecoInNewReco(m.myRecos[$input_uri[0].value]);
 		});
 
@@ -963,25 +966,25 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				type: "POST", url: "/reco/do", data: args.strRecoDo
 				, dataType: "text"
 			}).fail(function () {
-				$error.html("Reco failed. You may be not logged-in.");
+				m.$error.html("Reco failed. You may be not logged-in.");
 			}).done(function (resp) {
 				var res = m.strToJSON(resp);
 				if (res[1]["result"] === "recoed") {
-					$error.html("recoed");
+					m.$error.html("recoed");
 					m.recoDowned(args.uri, m.myRecos);
 					m.recoToEve(args.strRecoDo, m.myRecos);
 					var cats = m.myRecos[args.uri]["cats"];
 					m.putCats_UriToLists(cats, args.uri);
 					m.refresh(cats, "recoed", args.uri);
 				} else {
-					$error.html(res[1]["result"]);
+					m.$error.html(res[1]["result"]);
 				}
 			}).always(function () {
-				$button_reco.removeClass("disabled");
+				m.$button_reco.removeClass("disabled");
 			});
 		};
-		$button_reco.on("click", function (e) {
-			$button_reco.addClass("disabled");
+		m.$button_reco.on("click", function (e) {
+			m.$button_reco.addClass("disabled");
 			var uri = m.formatURI($input_uri[0].value);
 			var val = m.val($input_val[0].value.trim());
 			var errorMsg = "";
@@ -1010,30 +1013,30 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				strHeads += "\t" + "val";
 				strContents += "\t" + m.encloseStr(val.str);
 				var strRecoDo = strHeads + "\n" + strContents;
-				$error.html("Being recoed.");
+				m.$error.html("Being recoed.");
 				m.rmb_me(m.reco_do, { strRecoDo: strRecoDo, uri: uri });
 
 			} else {
-				$error.html(errorMsg);
-				$button_reco.removeClass("disabled");
+				m.$error.html(errorMsg);
+				m.$button_reco.removeClass("disabled");
 			}
 		});
 		m.reco_change_do = function (args, err) {
 			if (err) {
 				m.delayedLogOut(`[--Failed change. You may not be logged-in.--] ${err}`, 60 * 60 * 24);
-				$button_edit.removeClass("disabled");
+				m.$button_edit.removeClass("disabled");
 				return;
 			}
 			$.ajax({
 				type: "POST", url: "/reco/do", data: args.strHeads + "\n" + args.strContents
 				, dataType: "text"
 			}).fail(function (resp) {
-				$error.html("[--Failed change. You may not be logged-in.--] " + resp);
+				m.$error.html("[--Failed change. You may not be logged-in.--] " + resp);
 			}).done(async function (resp) {
 				let res = await m.strToJSON(resp);
 				let result = String(res[1]?.result)
 				if (result.startsWith("changed")) {
-					$error.html(m.escapeHTML(result));
+					m.$error.html(m.escapeHTML(result));
 					if (args.cats !== args.r.cats) {
 						m.catsChangedOnUri(args.r.cats, args.cats, args.uri);
 						args.r.cats = args.cats;
@@ -1051,7 +1054,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					m.refresh(args.cats, "changed", args.uri);
 				}
 				else if (result.startsWith("recoed")) {
-					$error.html("recoed");
+					m.$error.html("recoed");
 					m.recoDowned(args.uri, m.myRecos);
 					m.recoToEve(args.strRecoDo, m.myRecos);
 					var cats = m.myRecos[args.uri]["cats"];
@@ -1062,11 +1065,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					m.delayedLogOut(res[1]?.result, 60 * 60 * 24, args.$result);
 				}
 			}).always(function () {
-				$button_edit.removeClass("disabled");
+				m.$button_edit.removeClass("disabled");
 			});
 		};
-		$button_edit.on("click", function (e) {
-			$button_edit.addClass("disabled");
+		m.$button_edit.on("click", function (e) {
+			m.$button_edit.addClass("disabled");
 			var uri = $input_uri[0].value;
 			var val = m.val($input_val[0].value.trim());
 			var r = m.myRecos[uri];
@@ -1104,11 +1107,11 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					strContents += "\t" + m.encloseStr(val.str);
 				}
 				if (changed) {
-					$error.html("Being changed.");
+					m.$error.html("Being changed.");
 					m.rmb_me(m.reco_change_do, { strHeads: strHeads, strContents: strContents, cats: cats, r: r, uri: uri, title: title, desc: desc, cmt: cmt, val: val });
 				} else {
-					$error.html("You have made no change.");
-					$button_edit.removeClass("disabled");
+					m.$error.html("You have made no change.");
+					m.$button_edit.removeClass("disabled");
 				}
 			} else {
 				var errorMsg = "";
@@ -1119,8 +1122,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				} else {
 					errorMsg = "You have no reco on this URI.";
 				}
-				$error.html(errorMsg);
-				$button_edit.removeClass("disabled");
+				m.$error.html(errorMsg);
+				m.$button_edit.removeClass("disabled");
 			}
 		});
 		m.reco_delete_do = function (args) {
@@ -1131,7 +1134,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				console.log(resp);
 				var res = m.strToJSON(resp);
 				if (res[1]["result"] === "deleted") {
-					$error.html("Deleted");
+					m.$error.html("Deleted");
 					var cats = args.r["cats"];
 					delete m.myRecos[args.uri];
 					m.delCats_UriFromLists(cats, args.uri);
@@ -1140,18 +1143,18 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					setTimeout(function () {
 						// $button_del.removeClass("disabled");
-						$button_close.trigger("click");
+						m.$button_close.trigger("click");
 					}, 1000);
 				} else {
-					$error.html(res[1]["result"]);
+					m.$error.html(res[1]["result"]);
 					// $button_del.removeClass("disabled");
 				}
 			}).always(function () {
-				$button_del.removeClass("disabled");
+				m.$button_del.removeClass("disabled");
 			});
 		};
-		$button_del.on("click", function (e) {
-			$button_del.addClass("disabled");
+		m.$button_del.on("click", function (e) {
+			m.$button_del.addClass("disabled");
 			var uri = $input_uri[0].value;
 			var r = m.myRecos[uri];
 			if (uri.length !== 0 && r) {
@@ -1165,8 +1168,8 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				} else {
 					errorMsg = "You have no reco on this URI.";
 				}
-				$error.html(errorMsg);
-				$button_del.removeClass("disabled");
+				m.$error.html(errorMsg);
+				m.$button_del.removeClass("disabled");
 			}
 		});
 		m.refresh = async function (cats, option, uri) {
@@ -1177,7 +1180,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			switch (option) {
 				case "recoed":
 					let recoHTML = await m.recoHTML(r);
-					$contents.prepend(String(recoHTML));
+					m.$contents.prepend(String(recoHTML));
 					break;
 				case "changed": case "deleted":
 					let changed = false;
@@ -1193,7 +1196,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					if (!changed) {
 						let recoHTML = await m.recoHTML(r);
-						$contents.prepend(String(recoHTML));
+						m.$contents.prepend(String(recoHTML));
 					}
 					if (option === "deleted") {
 						let r = m.myRecos[uri];
@@ -1291,10 +1294,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					break;
 				case 73: // I=73
-					$a_log_in.trigger("click");
+					m.$a_log_in.trigger("click");
 					break;
 				case 79: // O=79
-					$a_log_out.trigger("click");
+					m.$a_log_out.trigger("click");
 					break;
 				default:
 					break;
@@ -1331,15 +1334,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			for (let i = 0; i < dataLang[0].length; i++) {
 				htmlLangs += `<a href="${m.pathOfRecoStat(m.initialURI, m.lang, window.location.hash.substring(1))}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
 			}
-			$choose_lang_list.html(htmlLangs);
-			$choose_lang.on("click", function (e) {
+			m.$choose_lang_list.html(htmlLangs);
+			m.$choose_lang.on("click", function (e) {
 				if ($choose_lang.hasClass("enabled")) {
-					$choose_lang.removeClass("enabled");
-					$choose_lang_list.hide();
+					m.$choose_lang.removeClass("enabled");
+					m.$choose_lang_list.hide();
 				}
 				else {
-					$choose_lang.addClass("enabled");
-					$choose_lang_list.show();
+					m.$choose_lang.addClass("enabled");
+					m.$choose_lang_list.show();
 				}
 			});
 		})();
@@ -1347,7 +1350,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		////////////////////////////////////////////////
 		// Initial open :: Lang: set cookie, uri: get and show RecoStat.
 		////////////////////////////////////////////////
-		$document.ready(function () {
+		m.$document.ready(function () {
 			setTimeout(function () {
 				let blogStat = `URI\treferer\tREACTION_GUEST\n${window.location.href}\t${document.referrer}\t${m.myId}`;
 				$.ajax({
@@ -1372,7 +1375,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				if (m.initialURI) {
 					m.lastURI="41kjIO아녜#@@";
 					m.uri = $input_uri[0].value = m.initialURI;
-					$input_uri.trigger("keyup");
+					m.$input_uri.trigger("keyup");
 				}
 				window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
 				if (m.setIntervalInitialN++ > 2) {
