@@ -270,7 +270,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			});
 		};
 		m.a_log_in = function (e, elem) {
-			let uri = $input_uri[0].value;
+			let uri = m.$input_uri[0].value;
 			let fullPath = m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 			let href = `/account/log-in?goto=${encodeURIComponent(fullPath)}`;
 			if (e && e.which === 2) {
@@ -283,7 +283,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		m.a_log_out = function (e, elem) {
-			let uri = $input_uri[0].value;
+			let uri = m.$input_uri[0].value;
 			let fullPath = m.pathOfRecoStat(uri, m.lang, window.location.hash.substring(1));
 			let href = `/account/log-out?goto=${encodeURIComponent(fullPath)}`;
 			if (e && e.which === 2) {
@@ -297,9 +297,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 
 		m.$right_top_log_in = $("#right-top-log-in");
-		m.$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'I'.charCodeAt(0)})">
+		m.$right_top_log_in.append(`${m.myIndex === "" ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyI'})">
 	<a class="a-log-in" href="/account/log-in" onclick="return m.a_log_in(event,this)">[--Log _i_n--]</a>
-</div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', keyCode:'O'.charCodeAt(0)})">
+</div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyO'})">
 	<a class="a-log-out" href="/account/log-out" onclick="return m.a_log_out(event,this)">[--Log _o_ut--]</a>
 </div>`}`);
 		m.$a_log_in = $(".a-log-in");
@@ -643,9 +643,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.$def_cmd = $("#def-cmds").find(".def-cmd");
 		m.$def_cmd.on("click", function (e) {
 			m.$input_desc.focus();
-			let sStart = $input_desc[0].selectionStart;
-			let sEnd = $input_desc[0].selectionEnd;
-			let inputValue = $input_desc[0].value;
+			let sStart = m.$input_desc[0].selectionStart;
+			let sEnd = m.$input_desc[0].selectionEnd;
+			let inputValue = m.$input_desc[0].value;
 			let $target = $(event.target);
 			if (!$target.hasClass("def-cmd")) {
 				$target = $target.parents(".def-cmd");
@@ -817,7 +817,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		});
 		m.$input_cats.off("keydown.common");
 		m.$input_uri.on("input keyup keydown cut paste click focus", function (e) {
-			m.uri = $input_uri[0].value;
+			m.uri = m.$input_uri[0].value;
 			if (m.uri !== m.lastURI) {
 				clearTimeout(m.timeOutGetInfos);
 				m.timeOutGetInfos = setTimeout(async function () {
@@ -835,10 +835,10 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				}
 				if (e.state.hash) {
 					if (m.state.hash === "new-reco") {
-						m.$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+						m.$window.trigger({ type: 'keydown', code: 'KeyZ' });
 					}
 					else if (m.state.hash === "reco-stat") {
-						m.$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
+						m.$window.trigger({ type: 'keydown', code: 'KeyX' })
 					}
 				}
 			}
@@ -848,9 +848,9 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.$input_val_stars = $("#input-val-stars");
 		m.$input_val_stars.html(m.stars(0));
 		m.$input_val_stars.on("mousedown.mdInStars touchstart.mdInStars", function (e) {
-			let $bar = $input_val_stars.find(".bar");
+			let $bar = m.$input_val_stars.find(".bar");
 			let barW = $bar.width();
-			let $val = $input_val[0];
+			let $val = m.$input_val[0];
 			m.$html.on("mousemove.mdInStars touchmove.mdInStars", function (e) {
 				window.getSelection().removeAllRanges();
 				e.preventDefault();
@@ -886,7 +886,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		m.$input_val_stars.on("click", function (e) {
 			let $bar = $(this).find(".bar");
 			let barW = $bar.width();
-			let $val = $input_val[0];
+			let $val = m.$input_val[0];
 			let w = e.clientX - $bar.offset().left + m.$window.scrollLeft();
 			if (w < 0) {
 				w = 0;
@@ -903,7 +903,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		});
 		m.$input_val.on("input keyup keydown cut paste click focus", function (e) {
 			if (this.value !== m.lastVal.str) {
-				let uri = $input_uri[0].value;
+				let uri = m.$input_uri[0].value;
 				clearTimeout(m.timeout[uri]);
 				let val = m.val(this.value);
 				let $bar = $("#input-val-stars .bar");
@@ -1071,7 +1071,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.$button_edit.on("click", function (e) {
 			m.$button_edit.addClass("disabled");
-			var uri = $input_uri[0].value;
+			var uri = m.$input_uri[0].value;
 			var val = m.val(m.$input_val[0].value.trim());
 			var r = m.myRecos[uri];
 			if (uri.length !== 0 && val.valid && r) {
@@ -1090,13 +1090,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					strHeads += "\t" + "cats";
 					strContents += "\t" + m.encloseStr(cats);
 				}
-				var desc = $input_desc[0].value.trim();
+				var desc = m.$input_desc[0].value.trim();
 				if (desc !== r["desc"]) {
 					changed = true;
 					strHeads += "\t" + "desc";
 					strContents += "\t" + m.encloseStr(desc);
 				}
-				var cmt = $input_cmt[0].value.trim();
+				var cmt = m.$input_cmt[0].value.trim();
 				if (cmt !== r["cmt"]) {
 					changed = true;
 					strHeads += "\t" + "cmt";
@@ -1156,7 +1156,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 		};
 		m.$button_del.on("click", function (e) {
 			m.$button_del.addClass("disabled");
-			var uri = $input_uri[0].value;
+			var uri = m.$input_uri[0].value;
 			var r = m.myRecos[uri];
 			if (uri.length !== 0 && r) {
 				var strHeads = "do" + "\t" + "uri";
@@ -1232,27 +1232,27 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			switch (e.target.nodeName) {
 				case "INPUT": case "SELECT": case "TEXTAREA": return;
 			}
-			switch (e.keyCode) {
-				case 90: // Z=90 To new-reco
+			switch (e.code) {
+				case "KeyZ": // Z=90 To new-reco
 					m.goDirectlyToHash("new-reco");
 					break;
-				case 88: // X=88 To reco-stat
+				case "KeyX": // X=88 To reco-stat
 					m.goDirectlyToHash("reco-stat");
 					break;
-				// case 69: // E=69 Expand/Hide floating keys
+				// case "KeyE": // E=69 Expand/Hide floating keys
 				// 	m.toggleFK();
 				// 	break;
-				case 65: // A=65 To my page
+				case "KeyA": // A=65 To my page
 					if (m.myIndex) {
 						window.location.href = m.pathOfNeighbor(m.myId, m.currentCat, m.recoMode, m.lang, m.hashURI, m.args);
 					}
 					break;
-				case 70: // F=70
-				case 68: // D=68
+				case "KeyF": // F=70
+				case "KeyD": // D=68
 					let scrollTop = m.$window.scrollTop();
 					let i, k = m.$fdList.length;
 					let $hI;
-					if (e.keyCode === 70) { // F=70
+					if (e.code === "KeyF") { // F=70
 						scrollTop += 25;
 						for (i = 0; i < k; i++) {
 							$hI = m.$fdList.eq(i);
@@ -1285,7 +1285,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 					}
 					else if (hIID) {
 						m.hashURI = hIID;
-						if (e.keyCode === 70 && hIID.startsWith("load-recos-")) { // F=70
+						if (e.code === "KeyF" && hIID.startsWith("load-recos-")) { // F=70
 							m.$window.scrollTop($hI.offset().top - m.$window.height() * 2.0 / 3.0);
 						}
 						else { // F=70 (normal) and D=68
@@ -1294,16 +1294,16 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 						window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfCat(m.currentCat, m.recoMode, m.lang, m.hashURI));
 					}
 					break;
-				case 73: // I=73
+				case "KeyI": // I=73
 					m.$a_log_in.trigger("click");
 					break;
-				case 79: // O=79
+				case "KeyO": // O=79
 					m.$a_log_out.trigger("click");
 					break;
 				default:
 					break;
 			}
-		}
+		};
 		m.$window.on("keydown.sk", m.processShortKey);
 
 		////////////////////////////////////////////////////
@@ -1368,14 +1368,14 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			m.setIntervalInitialN = 0;
 			m.setIntervalInitial = setInterval(function () {
 				if (m.initialHashURI === "new-reco") {
-					m.$window.trigger({ type: 'keydown', keyCode: 'Z'.charCodeAt(0) });
+					m.$window.trigger({ type: 'keydown', code: 'KeyZ' });
 				}
 				else if (m.initialHashURI === "reco-stat") {
-					m.$window.trigger({ type: 'keydown', keyCode: 'X'.charCodeAt(0) })
+					m.$window.trigger({ type: 'keydown', code: 'KeyX' })
 				}
 				if (m.initialURI) {
 					m.lastURI="41kjIO아녜#@@";
-					m.uri = $input_uri[0].value = m.initialURI;
+					m.uri = m.$input_uri[0].value = m.initialURI;
 					m.$input_uri.trigger("keyup");
 				}
 				window.history.replaceState({ uri: m.uri, hash: window.location.hash.substring(1) }, "", m.pathOfRecoStat(m.uri, m.lang, window.location.hash.substring(1)));
