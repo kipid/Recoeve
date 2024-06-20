@@ -20,47 +20,47 @@ m.myId="kipid";
 #print-logs table, #print-logs tbody, #print-logs tr {max-width:100%; width:100%}
 #print-logs * {word-break:break-all}
 #print-logs tbody td {padding:0.3em 0.3em}
-#print-logs tbody tr td:first-child { // user_i
+#print-logs tbody tr td:first-child { /* user_i */
 	width:4em;
 	min-width:4em;
 	max-width:6em;
 }
-#print-logs tbody tr td:nth-child(2) { // index
+#print-logs tbody tr td:nth-child(2) { /* index */
 	width:6em;
 	min-width:6em;
 	max-width:8em;
 }
-#print-logs tbody tr td:nth-child(3) { // user_id
+#print-logs tbody tr td:nth-child(3) { /* user_id */
 	width:9em;
 	min-width:9em;
 	max-width:12em;
 }
-#print-logs tbody tr td:nth-child(4) { // email
+#print-logs tbody tr td:nth-child(4) { /* email */
 	width:11em;
 	min-width:11em;
 	max-width:14em;
 }
-#print-logs tbody tr td:nth-child(5) { // t
+#print-logs tbody tr td:nth-child(5) { /* t */
 	width:11em;
 	min-width:11em;
 	max-width:14em;
 }
-#print-logs tbody tr td:nth-child(6) { // ip
+#print-logs tbody tr td:nth-child(6) { /* ip */
 	width:11em;
 	min-width:11em;
 	max-width:14em;
 }
-#print-logs tbody tr td:nth-child(7) { // log
+#print-logs tbody tr td:nth-child(7) { /* log */
 	width:2em;
 	min-width:2em;
 	max-width:3em;
 }
-#print-logs tbody tr td:nth-child(8) { // success
+#print-logs tbody tr td:nth-child(8) { /* success */
 	width:4em;
 	min-width:4em;
 	max-width:5em;
 }
-#print-logs tbody tr td:last-child { // desc
+#print-logs tbody tr td:last-child { /* desc */
 	width:22em;
 	min-width:22em;
 	max-width:30em;
@@ -94,7 +94,7 @@ m.printLogs=function (args, err) {
 			txtArray[i].splice(2, 1, `<a target="_blank" href="https://recoeve.net/user/${txtArray[i].user_id}">${txtArray[i].user_id}</a>`);
 			txtArray[i].splice(3, 1, `<a target="_blank" href="https://mail.google.com/mail/?view=cm&fs=1&to=${txtArray[i].email}">${txtArray[i].email}</a>`);
 		}
-		$print_logs.html(m.arrayToTableHTML(txtArray));
+		$print_logs.html(m.arrayToTableHTML(txtArray, false));
 	});
 };
 m.rmb_me(m.printLogs, {});
