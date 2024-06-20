@@ -611,7 +611,7 @@ m.csvToJSON = function (str, colMap = true, rowMap = false) {
   }
   return Promise.resolve(rows);
 };
-m.arrayToTableHTML = function (txtArray) {
+m.arrayToTableHTML = function (txtArray, escapeTag = true) {
   if (!txtArray || txtArray.constructor !== Array) {
     return "";
   }
@@ -619,7 +619,7 @@ m.arrayToTableHTML = function (txtArray) {
   for (let row = 0; row < txtArray.length; row++) {
     tableStr += "<tr>";
     for (let col = 0; col < txtArray[0].length; col++) {
-      tableStr += `<td>${txtArray[row][col] ? m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g, '<br />') : ""}</td>`;
+      tableStr += `<td>${txtArray[row][col] ? (escapeTag ? m.escapeOnlyTag(txtArray[row][col]) : txtArray[row][col]).replace(/\n/g, '<br />') : ""}</td>`;
     }
     tableStr += "</tr>";
   }
@@ -645,7 +645,7 @@ m.memoRGBColor = function (resultI) {
   let b = parseInt(127*recentCorrectRatio);
   return `rgb(${r},${g},${b})`;
 };
-m.memoArrayToTableHTML = function (txtArray) {
+m.memoArrayToTableHTML = function (txtArray, escapeTag = true) {
 	if (!txtArray || txtArray.constructor !== Array) {
     return "";
   }
@@ -660,13 +660,13 @@ m.memoArrayToTableHTML = function (txtArray) {
 </colgroup>`;
   tableStr += `<tr style="background:white">`;
   for (let col = 0; col < txtArray[0].length; col++) {
-    tableStr += `<td>${m.escapeOnlyTag(txtArray[0][col]).replace(/\n/g, '<br />')}</td>`;
+    tableStr += `<td>${(escapeTag ? m.escapeOnlyTag(txtArray[0][col]) : txtArray[0][col]).replace(/\n/g, '<br />')}</td>`;
   }
   tableStr += "</tr>";
   for (let row = 1; row < txtArray.length; row++) {
     tableStr += `<tr style="background:${m.memoRGBColor(txtArray[row])}">`;
     for (let col = 0; col < txtArray[0].length; col++) {
-      tableStr += `<td>${txtArray[row][txtArray[0][col]] || txtArray[row][txtArray[0][col]] === 0 ? m.escapeOnlyTag(txtArray[row][txtArray[0][col]]).replace(/\n/g, '<br />') : ""}</td>`;
+      tableStr += `<td>${txtArray[row][txtArray[0][col]] || txtArray[row][txtArray[0][col]] === 0 ? (escapeTag ? m.escapeOnlyTag(txtArray[row][txtArray[0][col]]) : txtArray[row][txtArray[0][col]]).replace(/\n/g, '<br />') : ""}</td>`;
     }
     tableStr += "</tr>";
   }
@@ -3507,7 +3507,7 @@ m.descCmtRToHTML = async function (descR) {
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle dictionary--]</div> <div class="button memorizing" onclick="m.memorizing(this)">[--Memorizing--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
-<div class="lyrics">${m.arrayToTableHTML(await m.strToJSON(val.trim()))}</div>
+<div class="lyrics">${m.arrayToTableHTML(await m.strToJSON(val.trim()), true)}</div>
 <div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide dictionary--]</div></div>
 </div>
 </div>`;
@@ -3517,7 +3517,7 @@ m.descCmtRToHTML = async function (descR) {
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle memorizing result--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
-<div class="lyrics">${m.memoArrayToTableHTML(await m.strToJSON(val.trim()))}</div>
+<div class="lyrics">${m.memoArrayToTableHTML(await m.strToJSON(val.trim()), true)}</div>
 <div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide memorizing result--]</div></div>
 </div>
 </div>`;
