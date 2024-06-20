@@ -80,7 +80,8 @@ public class PrintLog implements Handler<RoutingContext> {
           refererHost = referer.substring(k, l);
           String[] pathnames = referer.substring(l).split("/");
           if (pathnames.length >= 3 && pathnames[1].equals("user")) {
-            userId = pathnames[2];
+            pathnames = pathnames[2].split("\\?");
+            userId = pathnames[0];
             System.out.println("userId: " + userId);
           }
         } else {
