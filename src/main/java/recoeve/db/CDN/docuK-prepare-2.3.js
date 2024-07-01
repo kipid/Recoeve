@@ -1787,7 +1787,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		m.timerHideBRQueue = setTimeout(function () { $(elem).find(">.bubbleRef").hide(); }, 1000);
 	};
 	m.HideBR = function (elem) {
-		$(elem).parent().hide();
+		$(elem).parents(".bubbleRef").hide();
 	};
 
 	// Changing Styles of docuK
