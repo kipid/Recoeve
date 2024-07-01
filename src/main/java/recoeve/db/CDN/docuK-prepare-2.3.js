@@ -1,6 +1,6 @@
 window.m = {};
 (function (m, $, undefined) {
-	m.version0 = "2.7";
+	m.version0 = "2.8";
 	m.$window = $(window);
 	m.$document = $(document);
 	m.$html = $("html");
@@ -2280,7 +2280,7 @@ document.referrer: ${referrerHTML}`
 		}
 		let refN = "", preRefHtml = "", refHtml = "", citeN = "";
 		function fCiteHtml() {
-			let str = `<div class="inRef" onmouseover="m.ShowBR(this)" onmouseout="m.timerHideBR(this)">${refN}<div class="bubbleRef"><div class="content">${preRefHtml}${refHtml}</div><div class="arrow"></div><div class="exit" onclick="m.HideBR(this)"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"/><line x1="80%" y1="20%" x2="20%" y2="80%"/></g>✖</svg></div></div></div>`;
+			let str = `<div class="inRef" onmouseover="m.ShowBR(this)" onmouseout="m.timerHideBR(this)">${refN}<div class="bubbleRef"><div class="content">${preRefHtml}${refHtml}<div class="exit" onclick="m.HideBR(this)"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"/><line x1="80%" y1="20%" x2="20%" y2="80%"/></g>✖</svg></div></div><div class="arrow"></div></div></div>`;
 			if (m.browserWidth < 321) {
 				str = str.replace(/<iframe[^>]*>[^<]*<\/iframe>/ig, '<span class="emph">In bubble refs, iframe (or youtube video) is intentionally NOT supported for various reasons (security, and cross browsing). See it in the original position of the iframe (video).</span>'); // 말풍선에서 비디오 등의 iframe을 의도적으로 지원하지 않았습니다. 원래의 위치에서 보세요.
 			}
