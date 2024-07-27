@@ -1,6 +1,6 @@
 window.m = {};
 (function (m, $, undefined) {
-	m.version0 = "2.8";
+	m.version0 = "2.9";
 	m.$window = $(window);
 	m.$document = $(document);
 	m.$html = $("html");
