@@ -1,5 +1,5 @@
 (function (m, $, undefined) {
-	m.version1 = ".11";
+	m.version1 = ".12";
 	// SEE (Super Easy Edit)
 	let $SEE = $("codeprint.SEE");
 	m.SEEHTMLs = m.SEEHTMLs || [];
@@ -184,7 +184,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 </div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyO'})">
 	Log <span class="bold underline">o</span>ut
 </div>`}
-<div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
+<div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
 		$floating_key = $("#floating-key");
 		if (m.docCookies.getItem("hideFK") === "y") {
 			$floating_key.hide();
