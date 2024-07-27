@@ -709,7 +709,7 @@ window.m = {};
 	|*|	https://developer.mozilla.org/en-US/docs/DOM/document.cookie
 	|*|
 	|*|	This framework is released under the GNU Public License, version 3 or later.
-	|*|	http://www.gnu.org/licenses/gpl-3.0-standalone.html
+	|*|	https://www.gnu.org/licenses/gpl-3.0-standalone.html
 	|*|
 	|*|	Syntaxes:
 	|*|	* docCookies.setItem(name, value[, end[, path[, domain[, secure]]]]) // end :: Number: max-age in seconds
@@ -2168,7 +2168,7 @@ document.referrer: ${referrerHTML}`
 	<form><button class="button-log" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
 	<form><button class="button-Go" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
 	<div class="deviceInfo"></div>
-	<div class="promoting-docuK">This document is rendered by <a href="http://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="http://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit)</a>).</div>
+	<div class="promoting-docuK">This document is rendered by <a href="https://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="https://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit) of docuK</a> and <a href="https://kipid.tistory.com/entry/pure-SEE">pure SEE</a>).</div>
 	</div>
 <div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://recoeve.net/CDN/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Tag.png"></a><img class="SNS-img" src="https://recoeve.net/CDN/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://recoeve.net/CDN/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
 		);
