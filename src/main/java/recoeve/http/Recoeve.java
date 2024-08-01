@@ -398,7 +398,7 @@ public class Recoeve extends AbstractVerticle {
     router.get("/admin/:query").handler(ctx -> { // path=/admin/...
       PrintLog pl = new PrintLog(db);
       pl.printLog(ctx);
-      if (pl.cookie.get("I").equals("5f5e100")) {
+      if (pl.cookie.get("I") != null && pl.cookie.get("I").equals("5f5e100")) {
         String query = ctx.pathParam("query");
         switch (query) {
           case "logs":
