@@ -6,10 +6,10 @@
 <codeprint id="docuK-style">
 <div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
 
-<!-- From recoeve.net CDN -->
-<script src="https://recoeve.net/CDN/jquery.js"></script>
-<link rel="stylesheet" href="https://recoeve.net/CDN/docuK-2.3.css">
-<script src="https://recoeve.net/CDN/docuK-prepare-2.3.js" charset="utf-8"></script>
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/jquery.js"></script>
+<link rel="stylesheet" href="https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css">
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js" charset="utf-8"></script>
 </codeprint><!-- docuK-style -->
 
 <meta charset="utf-8" name="description" content="Recoeve progress">
@@ -239,6 +239,43 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 ### 정리하기 전
 
 
+
+```
+// 로그아웃 되는 현상 로그.
+Time: 2024-08-01 07:12:38
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36
+User-Agent.length: 111
+Referer: https://recoeve.net/user/kipid/mode/multireco?cat=[IT/Programming]--국비 지원 코딩/공부&PRL=0.80&PRR=1.00
+userId: kipid
+Referer Host: recoeve.net
+Referer Allowed: true
+query: null
+Method: GET
+Absolute URI: https://recoeve.net/sessionIter
+User IP: 175.212.158.53:1325
+Local Address: 172.31.35.249:443
+Session passed?: false
+Accept-Language:ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+Lang: ko
+/:fileName :: fileName=sessionIter
+tNow:2024-08-01 07:12:38.0
+from:2024-07-31 06:16:00.0
+lessThanInSeconds:604800
+result0:false
+result:true
+iter: Expired.
+```/
+
+React 로 간단한 것부터 천천히 다 바꾸기.
+
+Daily-mix 도 ToR 에서 검색 되도록... daily-mix 한계치 두지 말기. (이건 너무 복잡해져서 포기.)
+
+Share a URI through button 으로 reco 할 때, URI 길이가 길면 이상하게 동작.
+예시: https://kipid.tistory.com/entry/브라우저에서-자동-비밀번호-완성-Auto-password-completion-일-때-이를-파악해서-바로-로그인-시켜주는-방법
+
+maxMatchScore 계산할때 space, tab, enter 뛰어넘으면서 빠르게 찾기. (효율 극대화.)
+
+뒤로가기 앞으로 가기 눌렀을때, multireco mode toggle 이 제대로 안됨. (제대로 해결됐나? 의문이...)
 
 Space 두개 이상일때 "&amp;nbsp; " 로 교체해서 띄어쓰기랑 코드 블록 같은거 제대로 표현하기. Tab 도 마찬가지로 2 space 처리.
 
@@ -1770,6 +1807,7 @@ Lock-in 효과 지양 : 유명한 사람이 더 유명해지도록 하는 시스
 <codeprint id="docuK-script">
 <script>
 m.printMode=false;
+m.recoeveUserId="kipid";
 m.recoCats="[Recoeve]";
 m.wait=1024;
 m.delayPad=512;
@@ -1785,6 +1823,6 @@ window.disqus_config=function () {
 };
 </script>
 
-<!-- From recoeve.net CDN -->
-<script src="https://recoeve.net/CDN/docuK-postProcess-2.3.js" charset="utf-8"></script>
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
 </codeprint><!-- docuK-script -->
