@@ -56,9 +56,15 @@ public class RecoeveDB {
   public static final int port = 80;
   public static final String domain = "recoeve.net";
   // "localhost:"+port;
-
   // domain="localhost" does not works in cookie.
-  public static final int hoursSSN = 24 * 7 * 50; // 50 weeks ~ 1 year
+
+  public static final int minsChangePwdToken = 10; // 10 minutes
+  public static final long secondsChangePwdToken = 60L * minsChangePwdToken;
+
+  public static final long secondsVerifyUser = 24 * 60 * 60; // 24 hours
+
+  public static final int daysSSN = 7 * 50; // 50 weeks ~ 1 year
+  public static final int hoursSSN = 24 * daysSSN;
   public static final long secondsSSN = hoursSSN * 60 * 60L;
 
   public static final int daysRMB = 365;
@@ -225,7 +231,7 @@ public class RecoeveDB {
           pstmtNow = con.prepareStatement("SELECT utc_timestamp();");
           pstmtTimeDiff = con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
           pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
-          pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < 1;");
+          pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < ?;");
           pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
 
           pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
@@ -450,7 +456,7 @@ public class RecoeveDB {
     return true;
   }
 
-  public boolean checkTimeDiff(Timestamp tNow, String from, int lessThanInSeconds) {
+  public boolean checkTimeDiff(Timestamp tNow, String from, long lessThanInSeconds) {
     try {
       System.out.println("tNow:" + tNow);
       System.out.println("from:" + from);
@@ -458,11 +464,12 @@ public class RecoeveDB {
 
       pstmtCheckDayDiffLessThan1.setTimestamp(1, Timestamp.valueOf(from));
       pstmtCheckDayDiffLessThan1.setTimestamp(2, tNow);
+      pstmtCheckDayDiffLessThan1.setLong(3, lessThanInSeconds / 60 / 60);
       ResultSet rs0 = pstmtCheckDayDiffLessThan1.executeQuery();
 
       pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(from));
       pstmtCheckTimeDiff.setTimestamp(2, tNow);
-      pstmtCheckTimeDiff.setInt(3, lessThanInSeconds); // in seconds.
+      pstmtCheckTimeDiff.setLong(3, lessThanInSeconds); // in seconds.
       ResultSet rs = pstmtCheckTimeDiff.executeQuery();
 
       if (rs0.next() && rs.next()) {
@@ -715,7 +722,7 @@ public class RecoeveDB {
       if (rs.next()) {
         boolean newC = rs.getBoolean("new");
         boolean tokenC = Arrays.equals(rs.getBytes("token"), hexStrToBytes(token));
-        boolean timeC = checkTimeDiff(tNow, tToken, 30);
+        boolean timeC = checkTimeDiff(tNow, tToken, 30L);
         System.out.println("newC:" + newC + ", tokenC:" + tokenC + ", timeC:" + timeC);
         if (newC && tokenC && timeC) {
           pstmtUpdateAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
@@ -763,7 +770,7 @@ public class RecoeveDB {
         String from = user.getString("tChangePwd");
         System.out.println(tNow + "\t" + from);
         return from != null
-            && checkTimeDiff(tNow, from, 10 * 60)
+            && checkTimeDiff(tNow, from, secondsChangePwdToken)
             && Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
       }
     } catch (SQLException e) {
@@ -779,7 +786,7 @@ public class RecoeveDB {
         String from = user.getString("tChangePwd");
         System.out.println(tNow + "\t" + from);
         return from != null
-            && checkTimeDiff(tNow, from, 10 * 60)
+            && checkTimeDiff(tNow, from, secondsChangePwdToken)
             && Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
       }
     } catch (SQLException e) {
@@ -1001,7 +1008,7 @@ public class RecoeveDB {
           && user.getString("id").equals(id)
           && user.getString("veriKey").equals(veriKey)
           && user.getInt("class") == 0
-          && checkTimeDiff(tNow, user.getString("tReg"), 24 * 60 * 60)) {
+          /*&& checkTimeDiff(tNow, user.getString("tReg"), secondsVerifyUser)*/) {
         // IP check is needed???
         updateUserClass(0, -1); // 0: Not verified yet
         user.updateInt("class", 6);
@@ -1138,15 +1145,15 @@ public class RecoeveDB {
         id = user.getString("id");
         String email = user.getString("email");
         String from = user.getString("tChangePwd");
-        if (from != null && checkTimeDiff(tNow, from, 10 * 60)) {
+        if (from != null && checkTimeDiff(tNow, from, secondsChangePwdToken)) {
           return FileMap.replaceStr("[--pre already sended email to--] " + encryptEmail(email)
               + "[--post already sended email to--]", lang);
         }
-        System.out.println("from=null or checkTimeDiff(tNow, from, 10*60)=false.");
+        System.out.println("from=null or checkTimeDiff(tNow, from, " + secondsChangePwdToken + ")=false.");
         System.out.println("tNow:" + tNow);
         if (from != null) {
           System.out.println("from:" + from);
-          System.out.println("checkTimeDiff(tNow, from, 10*60):" + checkTimeDiff(tNow, from, 10 * 60));
+          System.out.println("checkTimeDiff(tNow, from, " + secondsChangePwdToken + "):" + checkTimeDiff(tNow, from, secondsChangePwdToken));
         }
         user.updateTimestamp("tChangePwd", tNow);
         byte[] token = randomBytes(32);
@@ -1277,7 +1284,7 @@ public class RecoeveDB {
       long user_me = Long.parseLong(cookie.get("I"), 16);
       String tCreate = cookie.get("tCreate").replaceAll("_", " ");
       if (tCreate != null) {
-        if (checkTimeDiff(tNow, tCreate, hoursSSN * 60 * 60)) {
+        if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
           try {
             pstmtSession.setLong(1, user_me);
             pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
@@ -1306,7 +1313,7 @@ public class RecoeveDB {
       }
       String session = cookie.get("SSN");
       if (tCreate != null && session != null) {
-        if (checkTimeDiff(tNow, tCreate, hoursSSN * 60 * 60)) {
+        if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
           try {
             con.setAutoCommit(true);
             pstmtSession.setLong(1, user_me);
