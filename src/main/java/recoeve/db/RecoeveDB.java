@@ -58,7 +58,7 @@ public class RecoeveDB {
   // "localhost:"+port;
 
   // domain="localhost" does not works in cookie.
-  public static final int hoursSSN = 24 * 7;
+  public static final int hoursSSN = 24 * 7 * 50; // 50 weeks ~ 1 year
   public static final long secondsSSN = hoursSSN * 60 * 60L;
 
   public static final int daysRMB = 365;
