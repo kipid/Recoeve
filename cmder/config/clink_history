@@ -679,8 +679,8 @@ git config alias.history "log --pretty=oneline"
 |it history
 |d \Recoeve
 |it history
-cd \Recoeve
-git history
+|d \Recoeve
+|it history
 |it status
 |it add .
 git commit -m "Cmder settings"
@@ -692,4 +692,9 @@ git add cmder\config\
 |it status
 git commit -m ".gitignore update: cmder settings added"
 git push
+|it status
+|d \Recoeve
+|it status
+cd \Recoeve
+git history
 git status
