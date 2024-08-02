@@ -156,9 +156,9 @@ mysql_config_editor set --login-path=backup --host=localhost --user=root --passw
 
 mysql_config_editor print --all
 
-mysqldump recoeve0.1 -u root -p &gt; mydump.sql
+mysqldump --extended-insert=true -u root -p recoeve0.1 &gt; mydump.sql
 
-mysql recoeve0.1 -u root -p &lt; mydump.sql
+mysql -u root -p recoeve0.1 &lt; mydump.sql
 ```/
 
 Time error 나는거 해결해야 함.
