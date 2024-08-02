@@ -608,7 +608,7 @@ git pull
 git push -u origin temp
 |it status
 |it history
-git push
+|it push
 git merge main
 git branch origin/temp
 |it push -u origin main
@@ -663,13 +663,13 @@ git remote add origin https://github.com/kipid/Microsoft-VS-Code.git
 |it push -u origin main
 |it push -u origin main
 git reset Code.exe
-git status
+|it status
 |it rm -r --cached .
 |it add .
 |it commit -m "Apply .gitignore"
 |it push -u origin main
 git rm -r --cached .
-git add .
+|it add .
 git commit -m "Apply .gitignore"
 git push -u origin main
 |it history
@@ -677,5 +677,19 @@ git push -u origin main
 |it history
 git config alias.history "log --pretty=oneline"
 |it history
+|d \Recoeve
+|it history
 cd \Recoeve
 git history
+|it status
+|it add .
+git commit -m "Cmder settings"
+git add .
+|it status
+git add .gitignore 
+|it status
+git add cmder\config\
+|it status
+git commit -m ".gitignore update: cmder settings added"
+git push
+git status
