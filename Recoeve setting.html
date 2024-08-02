@@ -27,13 +27,13 @@ AWS 같은 cloud server 에다가 인스턴스를 만들어서 windows server �
 
 원격 접속한 다음 chrome browser <cite class="ref-chrome"><a target="_blank" href="https://www.google.com/intl/ko/chrome/">https://www.google.com/intl/ko/chrome/</a></cite> 를 우선 깔고,
 
-Github 깔고 <cite class="ref-github"><a target="_blank" href="https://desktop.github.com/">https://desktop.github.com/</a></cite> clone Recoeve 하고,
+Github 깔고 <cite class="ref-github"><a target="_blank" href="https://desktop.github.com/">https://desktop.github.com/</a></cite> Recoeve 및 여러 Repository 를 적절한 폴더/디렉토리에 clone/add 하고. SourceTree <cite class="ref-sourcetree"><a target="_blank" href="https://www.sourcetreeapp.com/">https://www.sourcetreeapp.com/</a></cite> 도 깔고...
 
-MySQL 깔고 <cite class="ref-mysql"><a target="_blank" href="https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language">https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language</a></cite> (Connector-J 를 깔아야 하는데, 버전이 다른가? MysqlConnectionPoolDataSource 가 없는 class 라는듯.)
+MySQL 깔고 <cite class="ref-mysql"><a target="_blank" href="https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language">https://kipid.tistory.com/entry/Studying-SQL-Structured-Query-Language</a></cite> (Connector-J 를 깔아야 하는데, 버전이 다른가? MysqlConnectionPoolDataSource 가 없는 class 라는듯.) 수동설치 말고 자동설치로 까는게 맘편하긴 한듯. 더 쉽고.
 
-JAVA 깔고 <cite class="ref-java-install"><a target="_blank" href="https://kipid.tistory.com/entry/Installing-and-Learning-JAVA">https://kipid.tistory.com/entry/Installing-and-Learning-JAVA</a></cite><cite class="ref-java"><a target="_blank" href="https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh">https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh</a></cite>
+JAVA 깔고 <cite class="ref-java-install"><a target="_blank" href="https://kipid.tistory.com/entry/Installing-and-Learning-JAVA">https://kipid.tistory.com/entry/Installing-and-Learning-JAVA</a></cite>, Compiling and Running setting 도 해주고 <cite class="ref-java"><a target="_blank" href="https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh">https://kipid.tistory.com/entry/Compiling-and-Running-JAVA-Build-System-through-batch-bat-and-shell-script-sh</a></cite>.
 
-Sublimetext 깔고 <cite class="ref-sublimetext"><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor">https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor</a></cite>. 설정도 충분히 바꿔주고.
+Sublimetext 깔고 <cite class="ref-sublimetext"><a target="_blank" href="https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor">https://kipid.tistory.com/entry/Introducing-Sublime-Text-editor</a></cite>. 설정도 충분히 바꿔주고. 중고 컴퓨터에서는 Help - Remove License 해주고. 다시 새 컴퓨터에 License 등록. 이메일에 온거 활용. Sublime license 로 검색. (Sublime-text 를 GitHub 에 올리는게 나을듯.)
 
 특히나 sublime-snippet.
 
@@ -105,7 +105,17 @@ Vert.X 도 깔고 <cite class="ref-vertx"><a target="_blank" href="https://kipid
 
 팟플레이어 <cite class="ref-potplayer"><a target="_blank" href="https://tv.kakao.com/guide/potplayer">https://tv.kakao.com/guide/potplayer</a></cite>.
 
-다 적당히 깔았는데, 에러가 뜨네 뭐지?
+디스코드 (Discord) <cite class="ref-discord"><a target="_blank" href="https://discord.com/">https://discord.com/</a></cite>, 줌 (Zoom) <cite class="ref-zoom"><a target="_blank" href="https://zoom.us/">https://zoom.us/</a></cite> 깔고.
+
+카카오톡 <cite class="ref-kakao"><a target="_blank" href="https://www.kakaocorp.com/page/service/service/KakaoTalk">https://www.kakaocorp.com/page/service/service/KakaoTalk</a></cite> 깔고.
+
+피그마 (Figma.com) <cite class="ref-figma"><a target="_blank" href="https://www.figma.com/">https://www.figma.com/</a></cite> 깔고.
+
+Console Emulator (x64) <cite class="ref-console"><a target="_blank" href="https://conemu.github.io/">https://conemu.github.io/</a></cite> 깔고. (C:\Recoeve\cmder\vendor\conemu-maximus5\ConEmu64.exe)
+
+AWS 원격 데스크탑 깔고 (Downloads 폴더에 있음.).
+
+Node.js 랑 Python 도 깔자.
 
 
 
@@ -146,9 +156,9 @@ mysql_config_editor set --login-path=backup --host=localhost --user=root --passw
 
 mysql_config_editor print --all
 
-mysqldump recoeve0.1 -u root -p > mydump.sql
+mysqldump recoeve0.1 -u root -p &gt; mydump.sql
 
-mysql recoeve0.1 -u root -p < mydump.sql
+mysql recoeve0.1 -u root -p &lt; mydump.sql
 ```/
 
 Time error 나는거 해결해야 함.
@@ -164,7 +174,7 @@ SELECT @@SESSION.sql_mode;
 ### Timezone
 
 ```[.lang-sql]
-mysql> status;
+mysql&gt; status;
 --------------
 mysql  Ver 8.0.30 for Win64 on x86_64 (MySQL Community Server - GPL)
 
@@ -191,7 +201,7 @@ Threads: 3  Questions: 122383  Slow queries: 0  Opens: 537  Flush tables: 3  Ope
 
 
 ```[.lang-sql]
-mysql> SHOW variables like 'c%';
+mysql&gt; SHOW variables like 'c%';
 +----------------------------------------------+---------------------------------------------------------+
 | Variable_name                                | Value                                                   |
 +----------------------------------------------+---------------------------------------------------------+
@@ -233,11 +243,12 @@ SET time_zone='+00:00';
 ```/
 
 
+
 ## Windows firewall
 
-Windows firewall 에서 port 80 access 를 풀어줘야 함. Inbound, Outbound 둘 다 풀어줌.
+Windows firewall 에서 port 80, 443 access 를 풀어줘야 함. Inbound, Outbound 둘 다 풀어줌.
 
-AWS security group 에서도 Inbound Custom TCP port 80 풀어줘야 함.
+AWS security group 에서도 Inbound Custom TCP port 80, 443 풀어줘야 함.
 
 Outbound 는 all traffic 을 풀어줘야 할듯?
 
@@ -261,7 +272,7 @@ Font 도 한글 보이는 걸로 바꿔줘야 함.
 <codeprint id="docuK-script">
 <script>
 (function(m, $, undefined) {
-m.printMode=false;
+m.printMode=true;
 m.recoCats="[Recoeve]";
 m.wait=1024;
 m.delayPad=512;
