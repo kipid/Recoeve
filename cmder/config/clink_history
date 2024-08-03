@@ -450,7 +450,7 @@ pip install --upgrade pip
 cd \Algorithm\
 pip install tensorflow
 |d \Recoeve
-gradlew run
+|radlew run
 python -v
 |ython
 |ython
@@ -646,7 +646,7 @@ git remote add origin https://github.com/kipid/Sublime-text.git
 cd AppData\Local\Programs\Microsoft-VS-Code\
 |it history
 |it config alias.history "log --pretty=oneline"
-git
+|it
 git init
 |it config alias.history "log --pretty=oneline"
 |it history
@@ -660,11 +660,11 @@ git remote add origin https://github.com/kipid/Microsoft-VS-Code.git
 |it history
 |it push -u origin main
 |it status
-|it push -u origin main
+|it pus| -u origin main
 |it push -u origin main
 git reset Code.exe
 |it status
-|it rm -r --cached .
+|it rm -r --cached .|
 |it add .
 |it commit -m "Apply .gitignore"
 |it push -u origin main
@@ -695,6 +695,30 @@ git push
 |it status
 |d \Recoeve
 |it status
+|d \Recoeve
+|it history
+git status
+|d \Recoeve
+pkill -f '.*GradleDaemon.*'
+WMIC PROCESS where "Name like 'java%' AND CommandLine like '%GradleDaemon%'" Call Terminate
+gradlew --stop
+|radlew run --status
+gradlew run --status
+gradlew build --status
+|radlew run
+git
+|it history
 cd \Recoeve
 git history
-git status
+gradlew run
+cd \kipid\
+|sh-keygen -t ed25519 -C "kipacti@gmail.com"
+mkdir .ssh
+ssh-keygen -t ed25519 -C "kipacti@gmail.com"
+Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+Start-Service ssh-agent
+ssh-add c:\kipid\.ssh\github-ssh
+|sh-add C:\kipid\.ssh\github-ssh
+ssh-add C:\\kipid\\.ssh\\github-ssh
+ssh-add C:\kipid\.ssh\github-ssh.pub
+ssh-add C:\kipid\.ssh\github-ssh
