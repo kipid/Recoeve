@@ -159,7 +159,7 @@ SELECT CCSA.character_set_name FROM information_schema.`TABLES` T,
 	information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` CCSA
 WHERE CCSA.collation_name = T.table_collation
 	AND T.table_schema = "recoeve0.1"
-	AND T.table_name = "recos";
+	AND T.table_name = "recos1";
 
 # Character set 바꾸기.
 # For each database:
@@ -168,15 +168,17 @@ ALTER DATABASE
 	CHARACTER SET = utf8mb4
 	COLLATE = utf8mb4_unicode_ci;
 
+USE `recoeve0.1`;
+
 # For each table:
 ALTER TABLE
-	`recos`
+	`recos1`
 	CONVERT TO CHARACTER SET utf8mb4
 	COLLATE utf8mb4_unicode_ci;
 
 # For each column:
 ALTER TABLE
-	`recos`
+	`recos1`
 	CHANGE uri uri varchar(191)
 	CHARACTER SET utf8mb4
 	COLLATE utf8mb4_unicode_ci;
@@ -187,8 +189,16 @@ ALTER TABLE
 각 table 의 character set & collate 변환.
 
 ```[.linenums.scrollable]
+SET NAMES utf8mb4 COLLATE utf8mb4_general_ci;
+
+ALTER DATABASE `recoeve0.1` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+SHOW VARIABLES LIKE 'character_set%';
+SHOW VARIABLES LIKE 'collation%';
+
+# 이 아래것들은 필요 없을듯?
 ALTER TABLE
-	`recos`
+	`recos1`
 	CONVERT TO CHARACTER SET utf8mb4
 	COLLATE utf8mb4_unicode_ci;
 
