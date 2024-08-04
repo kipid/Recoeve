@@ -626,7 +626,7 @@ window.MathJax={
 					resultHTML += contentsText.substring(start, exec.index);
 					let uri = exec[0];
 					start = exec.index + uri.length;
-					let uriRendered = await uriRendering(uri, true, false);
+					let uriRendered = await relatedRendering(uri);
 					if (uriRendered?.html) {
 						resultHTML += uriRendered.html;
 					}
