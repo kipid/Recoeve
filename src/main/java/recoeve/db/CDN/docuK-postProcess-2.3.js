@@ -296,32 +296,26 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 					}).done(async function (resp) {
 						m.logPrint("<br><br>BlogStat is got.");
 						m.blogStatRes = await m.strToJSON(resp);
-						let promise = Promise.all(m.blogStatRes);
+
 						for (let i = 1; i < m.blogStatRes.length; i++) {
-							promise = promise.then(async function (blogStatRes) {
-								let statI = blogStatRes[i];
-								statI.splice(2, 1);
-								let id = `${statI.from}\t${statI.to}`;
-								statI.id = id;
-								m.blogStatRes[id] = statI;
-								statI.stats = await m.strToJSON(statI.stats);
-								return Promise.all(m.blogStatRes);
-							});
-							promise = promise.then(async function (blogStatRes) {
-								let statI = blogStatRes[i];
-								let stats = statI.stats; // =await m.strToJSON(statI.stats);
-								let pageViews = 0;
-								for (let k = 1; k < stats.length; k++) {
-									let ip = stats[k].ip.split(":")[0];
-									if (m.ignoreMe && (ip === m.myIPs[0] || ip === m.myIPs[1])) {
-										continue;
-									}
-									pageViews++;
+							let statI = m.blogStatRes[i];
+							statI.splice(2, 1);
+							let id = `${statI.from}\t${statI.to}`;
+							statI.id = id;
+							m.blogStatRes[id] = statI;
+							statI.stats = await m.strToJSON(statI.stats);
+
+							let pageViews = 0;
+							for (let k = 1; k < statI.stats.length; k++) {
+								let ip = statI.stats[k].ip.split(":")[0];
+								if (m.ignoreMe && (ip === m.myIPs[0] || ip === m.myIPs[1])) {
+									continue;
 								}
-								m.blogStatRes[i].pageViews = pageViews;
-								return Promise.all(m.blogStatRes);
-							});
+								pageViews++;
+							}
+							statI.pageViews = pageViews;
 						}
+
 						resolve();
 					});
 				});
@@ -619,70 +613,55 @@ window.MathJax={
 		m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
 
 		m.handleAhrefInComment = function () {
-			let promise = Promise.resolve(0);
 			let $ps = $("div.comments>.comment-list").find("p");
-			let toBeAdded = [];
-			for (let k = 0; k < $ps.length; k++) {
-				let $elem = $ps.eq(k);
-				let contents = $elem.contents();
-				let elemHTML = "";
-				toBeAdded[k] = [];
-				promise = promise.then(function () {
-					return Promise.all(toBeAdded[k]);
-				});
-				for (let i = 0; i < contents.length; i++) {
-					promise = promise.then(function (toBeAddedK) {
-						toBeAdded[k][i] = "";
-						return Promise.all(toBeAdded[k]);
-					});
-					if (contents[i].nodeType === Node.TEXT_NODE) { // Node.TEXT_NODE=3
-						let contentsText = contents[i].wholeText;
-						let start = 0;
-						let exec = null;
-						let ptnURL = /https?:\/\/\S+/ig;
-						if ((exec = ptnURL.exec(contentsText)) !== null) { // TODO: multiple https links should be handled. Here only the first one is handled.
-							promise = promise.then(async function (toBeAddedK) {
-								toBeAdded[k][i] += contentsText.substring(start, exec.index);
-								let uri = exec[0];
-								start = exec.lastIndex;
-								if (!start) {
-									start = contentsText.length;
-								}
-								let uriRendered = await uriRendering(uri, true, false);
-								return Promise.resolve(uriRendered);
-							});
-							promise = promise.then(function (uriRendered) {
-								if (uriRendered?.html) {
-									toBeAdded[k][i] += uriRendered.html;
-								}
-								return Promise.all(toBeAdded[k]);
-							});
-						}
-						promise = promise.then(function (toBeAddedK) {
-							toBeAdded[k][i] += contentsText.substring(start);
-							return Promise.all(toBeAdded[k]);
-						})
-					}
-					else {
-						promise = promise.then(function (toBeAddedK) {
-							toBeAdded[k][i] += contents[i].outerHTML;
-							return Promise.all(toBeAdded[k]);
-						});
+
+			async function processTextNode(textNode) {
+				let contentsText = textNode.wholeText;
+				let start = 0;
+				let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
+				let exec = null;
+				let resultHTML = "";
+
+				while ((exec = ptnURL.exec(contentsText)) !== null) {
+					resultHTML += contentsText.substring(start, exec.index);
+					let uri = exec[0];
+					start = exec.index + uri.length;
+					let uriRendered = await uriRendering(uri, true, false);
+					if (uriRendered?.html) {
+						resultHTML += uriRendered.html;
 					}
 				}
-				promise = promise.then(function (toBeAddedK) {
-					for (let i = 0; i < toBeAdded[k].length; i++) {
-						elemHTML += toBeAdded[k][i];
-					}
-					$elem.html(elemHTML);
-					return Promise.all(toBeAdded[k]);
-				});
+				resultHTML += contentsText.substring(start);
+				return resultHTML;
 			}
-			promise = promise.then(function (toBeAddedK) {
+
+			async function processElement($elem) {
+				let contents = $elem.contents();
+				let elemHTML = "";
+
+				for (let i = 0; i < contents.length; i++) {
+					let content = contents[i];
+					if (content.nodeType === Node.TEXT_NODE) {
+						elemHTML += await processTextNode(content);
+					} else {
+						elemHTML += content.outerHTML;
+					}
+				}
+
+				$elem.html(elemHTML);
+			}
+
+			async function processAllElements() {
+				for (let k = 0; k < $ps.length; k++) {
+					await processElement($ps.eq(k));
+				}
 				m.reNewAndReOn();
-				return Promise.all(toBeAdded);
-			})
+			}
+
+			processAllElements();
 		};
+
+
 
 		m.$window.on("resize.menubar", function (e) {
 			$("#menubar_wrapper").parents().show();
