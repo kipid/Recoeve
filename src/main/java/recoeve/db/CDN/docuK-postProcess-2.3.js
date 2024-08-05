@@ -1,5 +1,5 @@
 (function (m, $, undefined) {
-	m.version1 = ".13";
+	m.version1 = ".14";
 	// SEE (Super Easy Edit)
 	let $SEE = $("codeprint.SEE");
 	m.SEEHTMLs = m.SEEHTMLs || [];
@@ -613,7 +613,7 @@ window.MathJax={
 		m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
 
 		m.handleAhrefInComment = function () {
-			let $ps = $("div.comments>.comment-list").find("p");
+			let $ps = $(".comments .comment-list li p");
 
 			async function processTextNode(textNode) {
 				let contentsText = textNode.wholeText;
@@ -623,15 +623,15 @@ window.MathJax={
 				let resultHTML = "";
 
 				while ((exec = ptnURL.exec(contentsText)) !== null) {
-					resultHTML += contentsText.substring(start, exec.index);
+					resultHTML += contentsText.substring(start, exec.index).replace(/(?:  |\t)/g, "&nbsp; ");
 					let uri = exec[0];
 					start = exec.index + uri.length;
-					let uriRendered = await relatedRendering(uri);
-					if (uriRendered?.html) {
-						resultHTML += uriRendered.html;
+					let uriRendered = String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
+					if (uriRendered) {
+						resultHTML += uriRendered;
 					}
 				}
-				resultHTML += contentsText.substring(start);
+				resultHTML += contentsText.substring(start).replace(/(?:  |\t)/g, "&nbsp; ");
 				return resultHTML;
 			}
 
