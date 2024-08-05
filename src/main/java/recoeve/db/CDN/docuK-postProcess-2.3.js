@@ -1,5 +1,5 @@
 (function (m, $, undefined) {
-	m.version1 = ".12";
+	m.version1 = ".13";
 	// SEE (Super Easy Edit)
 	let $SEE = $("codeprint.SEE");
 	m.SEEHTMLs = m.SEEHTMLs || [];
