@@ -114,8 +114,8 @@ window.m = {};
 	// URI rendering :: http link itself, videos, images, maps.
 	////////////////////////////////////////////////////
 	m.ptnURI = [];
-	m.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
-	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+/i;
+	m.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
+	m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
 	m.ptnTag = /^<\w+[\s\S]+>/i;
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
@@ -177,8 +177,9 @@ window.m = {};
 
 	let ptnURI;
 	ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)?\/?([\w\-]+)?(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
-	ptnURI.regEx1 = /^([\w\-]+)(\?[^\"\'\`\<\>\(\)\[\]\s\t\n\r]+)?/i;
+	ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+	ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+	ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 	ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
@@ -206,32 +207,37 @@ window.m = {};
 					list = vars?.list?.val;
 				}
 				if (list) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 				}
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 				}
 			}
 			else {
-				exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
+				exec = m.ptnURI["youtu.be"].regEx0.exec(uriRest);
 				if (exec !== null) {
-					let v = exec[1];
 					let vars = null;
+					if (exec[2]) { vars = m.getSearchVars(exec[2]); }
+					let v = null;
 					let list = null;
-					if (exec[2]) {
-						vars = m.getSearchVars(exec[2]);
-						if (vars?.list?.val) {
-							list = vars.list.val;
-						}
-						if (vars?.v?.val) {
-							v = vars.v.val;
-						}
+					if (exec[1]) {
+						v = exec[1];
+					}
+					if (vars?.v?.val) {
+						v = vars.v.val;
+					}
+					if (vars?.list?.val) {
+						list = vars.list.val;
 					}
 					if (list) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 					}
-					if (v) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+				}
+				else {
+					exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
+					if (exec !== null) {
+						return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/${exec[0]}">https://www.youtube.com/${exec[0]}</a>` : ``), from: "-youtube-link"})
 					}
 				}
 			}
@@ -529,7 +535,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[0] = {};
-	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^(https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
@@ -543,7 +549,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[1] = {};
-	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avif|avi)(?=$|\?|\s)/i;
+	ptnURI.regEx = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+\.(?:mp4|ogg|webm|avif|avi)(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		return new Promise(function (resolve, reject) {
 			let config = {};
@@ -569,8 +575,8 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[2] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
-	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.sogirl\.so(\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]*)?/i;
+	ptnURI.regEx1 = /^https?:\/\/kr[\d]+\.sogirl\.co(\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[2].regEx.exec(uri);
@@ -590,7 +596,7 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[3] = {};
-	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/[^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]*)?/i;
+	ptnURI.regEx = /^https?:\/\/kr[\d]+\.topgirl\.co(\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]*)?/i;
 	ptnURI.toIframe = function (uri, inListPlay) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[3].regEx.exec(uri);
@@ -604,9 +610,9 @@ window.m = {};
 	};
 
 	ptnURI = m.ptnURI[4] = {};
-	ptnURI.regEx = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
-	ptnURI.regEx1 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
-	ptnURI.regEx2 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\(\)\{\}\[\]]+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
+	ptnURI.regEx = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\{\}\[\]]+\.(?:jpg|jpeg|bmp|gif|png|webp|svg|tif))(?=$|\?|\s)/i;
+	ptnURI.regEx1 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\{\}\[\]]+\.(?:mp4|ogg|webm|avi))(?=$|\?|\s)/i;
+	ptnURI.regEx2 = /^file:\/\/\/([^\s\t\n\r\"\'\`\<\>\{\}\[\]]+\.(?:pdf|html|htm))(?=$|\?|\s)/i;
 	ptnURI.toIframe = function (uri, inListPlay, toA) {
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[4].regEx.exec(uri);
@@ -732,7 +738,7 @@ window.m = {};
 			if (!str || typeof str !== "string") {
 				str = String(str);
 			}
-			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
+			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\[\]]+/ig;
 			let exec = ptnURL.exec(str);
 			let start = 0;
 			let res = "";
@@ -1755,7 +1761,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	};
 	m.escapeEncodePctg = function (str) {
 		if (!str || typeof str !== "string") { return ""; }
-		return str.replace(/([\!\@\#\$\%\^\&\*\(\)\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
+		return str.replace(/([\!\@\#\$\%\^\&\*\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
 	};
 
 	m.printCode = function (codeId) {

@@ -618,7 +618,7 @@ window.MathJax={
 			async function processTextNode(textNode) {
 				let contentsText = textNode.wholeText;
 				let start = 0;
-				let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
+				let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\[\]]+/ig;
 				let exec = null;
 				let resultHTML = "";
 
