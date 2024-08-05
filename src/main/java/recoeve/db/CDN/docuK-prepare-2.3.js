@@ -2184,7 +2184,7 @@ document.referrer: ${referrerHTML}`
 	<ul class="ul-short-key">
 		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
 		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyH'})"><span class="bold underline">H</span>: <span class="bold underline">H</span>andle URI links in Tistory comments.</span></li>
+		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyN'})"><span class="bold underline">N</span>: Ha<span class="bold underline">n</span>dle URI links in Tistory comments.</span></li>
 		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
 	</ul>
 	<ul class="ul-short-key">
