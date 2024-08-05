@@ -120,7 +120,7 @@ window.m = {};
 	m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
 
 	m.uriToA = function (uri) {
-		if (!uri || uri.constructor !== String) {
+		if (!uri || typeof uri !== "string") {
 			uri = String(uri);
 		}
 		let exec = m.ptnURL.exec(uri);
@@ -729,7 +729,7 @@ window.m = {};
 	};
 	window.relatedRendering = function (str) {
 		return new Promise(async function (resolve, reject) {
-			if (!str || str.constructor !== String) {
+			if (!str || typeof str !== "string") {
 				str = String(str);
 			}
 			ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\(\)\[\]]+/ig;
@@ -1357,13 +1357,13 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 
 	// String to Array
 	m.encloseStr = function (str) {
-		if (!str || str.constructor !== String) { return ''; }
+		if (!str || typeof str !== "string") { return ''; }
 		if (str.charAt(0) === '"' || /[\n\t]/.test(str)) {
 			return `"${str.replace(/"/g, '""')}"`;
 		} return str;
 	};
 	m.strToJSON = function (str, colMap = true, rowMap = false) {
-		if (!str || str.constructor !== String) {
+		if (!str || typeof str !== "string") {
 			return Promise.resolve(str);
 		}
 		if (str.charAt(str.length - 1) !== "\n") {
@@ -1437,7 +1437,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		return Promise.resolve(ret);
 	};
 	m.csvToJSON = function (str, colMap = true, rowMap = false) {
-		if (!str || str.constructor !== String) {
+		if (!str || typeof str !== "string") {
 			return Promise.resolve(str);
 		}
 		let rows = str.split("\n");
@@ -1734,27 +1734,27 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	// Escape and Unescape HTML string.
 	////////////////////////////////////////////////////
 	m.escapeHTML = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	};
 	m.escapeOnlyTag = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	};
 	m.unescapeHTML = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 	};
 	m.escapeAMP = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/%/g, '%25').replace(/&/g, '%26').replace(/#/g, '%23');
 	};
 	m.unescapeAMP = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/%23/g, '#').replace(/%26/g, '&').replace(/%25/g, '%');
 	};
 	m.escapeEncodePctg = function (str) {
-		if (!str || str.constructor !== String) { return ""; }
+		if (!str || typeof str !== "string") { return ""; }
 		return str.replace(/([\!\@\#\$\%\^\&\*\(\)\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
 	};
 
