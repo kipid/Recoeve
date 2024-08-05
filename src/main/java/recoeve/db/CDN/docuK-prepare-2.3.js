@@ -1,6 +1,6 @@
 window.m = {};
 (function (m, $, undefined) {
-	m.version0 = "2.10";
+	m.version0 = "2.11";
 	m.$window = $(window);
 	m.$document = $(document);
 	m.$html = $("html");
@@ -636,6 +636,50 @@ window.m = {};
 		});
 	};
 
+	m.getConciseURI = function (uri) {
+		return new Promise(function (resolve, reject) {
+			$.ajax({
+				type: "POST", url: "https://recoeve.net/reco/getConciseURI", data: uri.trim(), dataType: "text"
+			}).fail(function (resp) {
+				reject(resp);
+			}).done(function (resp) {
+				console.log(`https://recoeve.net/reco/getConciseURI ::\nuri: ${uri}\nresp: ${resp}`); // TODO: delete this.
+				resolve(resp);
+			})
+		});
+	};
+	m.formatURI = async function (uri, keepOriginal) {
+		return new Promise(async function (resolve, reject) {
+			if (uri && uri.constructor === String) {
+				uri = uri.trim().replace(/[\s\t\n]+/g, " ");
+				let exec = m.ptnTag.exec(uri);
+				if (exec !== null) {
+					try {
+						let $uri = $(uri);
+						let src = $uri.attr("src");
+						if (src) {
+							uri = src;
+						}
+						else {
+							src = $uri.find("[src]").attr("src");
+							if (src) { uri = src; }
+						}
+					} catch (err) {
+						console.log(err);
+					}
+				}
+				exec = m.ptnPureNumber.exec(uri);
+				if (exec !== null) {
+					uri = "Number: " + uri;
+				}
+				if (!keepOriginal && m.getUTF8Length(uri) > 255) {
+					return resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
+				}
+				return resolve(m.unescapeHTML(uri).trim());
+			}
+			return resolve("");
+		});
+	};
 	window.uriRendering = function (uri, toA, inListPlay, descR) {
 		return new Promise(async function (resolve, reject) {
 			if (uri?.constructor === String) {
