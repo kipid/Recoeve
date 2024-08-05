@@ -648,6 +648,7 @@ window.m = {};
 			})
 		});
 	};
+	m.ptnPureNumber = /^\d+$/;
 	m.formatURI = async function (uri, keepOriginal) {
 		return new Promise(async function (resolve, reject) {
 			if (uri && uri.constructor === String) {
