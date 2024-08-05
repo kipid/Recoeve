@@ -176,8 +176,8 @@
 <div class="button darkgoldenrod" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyX'})">
 	Cmt<span class="bold underline">X</span>
 </div>
-<div class="button" onclick="m.$window.trigger({type:'keydown', code:'KeyH'})">
-	<span class="bold underline">H</span>andle CmtZ
+<div class="button" onclick="m.$window.trigger({type:'keydown', code:'KeyN'})">
+	Ha<span class="bold underline">n</span>dle CmtZ
 </div>
 ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyI'})">
 	Log <span class="bold underline">i</span>n
@@ -478,13 +478,13 @@ window.MathJax={
 			let scrollTop = null;
 			let i, k;
 			switch (event.code) {
-				case 'KeyA': // A=65 Toggle a mess
+				case 'KeyA': // Toggle a mess
 					$(".toggle-a-mess").eq(0).trigger("click");
 					break;
-				case 'KeyE': // E=69 Expand/Hide floating keys
+				case 'KeyE': // Expand/Hide floating keys
 					m.toggleFK();
 					break;
-				case 'KeyG': // G=71
+				case 'KeyG':
 					event.preventDefault();
 					if ($fuzzy_search_container.is(":visible")) {
 						$fuzzy_search_container.hide();
@@ -501,7 +501,7 @@ window.MathJax={
 						window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 					}
 					break;
-				case 'KeyK': // K=75
+				case 'KeyK':
 					event.preventDefault();
 					if (m.$log.is(":visible")) {
 						m.$logAll.hide();
@@ -517,13 +517,13 @@ window.MathJax={
 						window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 					}
 					break;
-				case 'KeyF': // F=70
-				case 'KeyD': // D=68
+				case 'KeyF':
+				case 'KeyD':
 					scrollTop = m.$window.scrollTop();
 					k = m.$fdList.length;
 					let $hI;
 
-					if (event.code === 'KeyF') { // F=70
+					if (event.code === 'KeyF') {
 						scrollTop += 10;
 						for (i = 0; i < k; i++) {
 							$hI = m.$fdList.eq(i);
@@ -533,7 +533,7 @@ window.MathJax={
 							return;
 						}
 					}
-					else { // D=68
+					else {
 						scrollTop -= 10;
 						for (i = k - 1; i >= 0; i--) {
 							$hI = m.$fdList.eq(i);
@@ -549,7 +549,7 @@ window.MathJax={
 					}
 					m.$window.scrollTop($hI.offset().top);
 					break;
-				case 'KeyT': // T=84
+				case 'KeyT':
 					scrollTop = m.$window.scrollTop();
 					k = m.tocs.length;
 					let tocI;
@@ -563,7 +563,7 @@ window.MathJax={
 					}
 					m.$window.scrollTop(tocI.offset().top);
 					break;
-				case 'KeyR': // R=82
+				case 'KeyR':
 					scrollTop = m.$window.scrollTop();
 					k = m.rras.length;
 					let rraI;
@@ -577,7 +577,7 @@ window.MathJax={
 					}
 					m.$window.scrollTop(rraI.offset().top);
 					break;
-				case 'KeyL': // L=76
+				case 'KeyL':
 					if (window.location.pathname === "/entry/Lists") {
 						window.location = "/category";
 					}
@@ -585,20 +585,20 @@ window.MathJax={
 						window.location = "/entry/Lists";
 					}
 					break;
-				case 'KeyZ': // Z=90
+				case 'KeyZ':
 					if ($("div.comments").length) m.$window.scrollTop($("div.comments").offset().top);
 					break;
-				case 'KeyH': // H=72
+				case 'KeyN':
 					m.handleAhrefInComment();
 					break;
-				case 'KeyX': // X=88
+				case 'KeyX':
 					if ($("#disqus_thread").length) m.$window.scrollTop($("#disqus_thread").offset().top);
 					break;
-				case 'KeyI': // I=73
+				case 'KeyI':
 					m.docCookies.removeItem("REACTION_GUEST", "/");
 					window.location.href = "https://www.tistory.com/auth/login";
 					break;
-				case 'KeyO': // O=79
+				case 'KeyO':
 					window.location.href = "https://www.tistory.com/auth/logout";
 					break;
 				default:
@@ -626,10 +626,7 @@ window.MathJax={
 					resultHTML += contentsText.substring(start, exec.index).replace(/(?:  |\t)/g, "&nbsp; ");
 					let uri = exec[0];
 					start = exec.index + uri.length;
-					let uriRendered = String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
-					if (uriRendered) {
-						resultHTML += uriRendered;
-					}
+					resultHTML += String(await relatedRendering(uri)).replace(/(?:  |\t)/g, "&nbsp; ");
 				}
 				resultHTML += contentsText.substring(start).replace(/(?:  |\t)/g, "&nbsp; ");
 				return resultHTML;
