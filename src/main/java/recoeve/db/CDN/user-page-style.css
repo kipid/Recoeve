@@ -429,27 +429,33 @@
 }
 
 .button-mode,
-.bright .button-mode,
 .pink .button-mode {
   background: darkolivegreen
+}
+.bright .button-mode {
+	background: #93be49;
 }
 
 .button-Go,
 .button-ToR,
 .button-goto-cats,
-.bright .button-Go,
-.bright .button-ToR,
-.bright .button-goto-cats,
 .pink .button-Go,
 .pink .button-ToR,
 .pink .button-goto-cats {
   background: cornflowerblue
 }
+.bright .button-Go,
+.bright .button-ToR,
+.bright .button-goto-cats {
+	background: #91b3f1;
+}
 
 .button.darkgoldenrod,
-.bight .button.darkgoldenrod,
 .pink .button.darkgoldenrod {
   background: darkgoldenrod
+}
+.bight .button.darkgoldenrod {
+	background: #f3be3d;
 }
 
 .button-new-reco,
