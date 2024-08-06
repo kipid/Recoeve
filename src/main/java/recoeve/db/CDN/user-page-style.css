@@ -432,6 +432,7 @@
 .pink .button-mode {
   background: darkolivegreen
 }
+
 .bright .button-mode {
 	background: #93be49;
 }
@@ -444,6 +445,7 @@
 .pink .button-goto-cats {
   background: cornflowerblue
 }
+
 .bright .button-Go,
 .bright .button-ToR,
 .bright .button-goto-cats {
@@ -454,6 +456,7 @@
 .pink .button.darkgoldenrod {
   background: darkgoldenrod
 }
+
 .bight .button.darkgoldenrod {
 	background: #f3be3d;
 }
