@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+
+<codeprint id="docuK-style">
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/jquery.js"></script>
+<link rel="stylesheet" href="https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css">
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-style -->
+
+<meta charset="utf-8" name="description" content="Recoeve.net Personal Info Handle"/>
+
+<codeprint class="SEE">
+# Recoeve.net Personal Info Handle
+
+We only collect your e-mail. Password is strongly encrypted by hashing 10,000 times with a random salt per one user.
+
+In network flow, we also encrypt the password with decreasing hash. So no one can break our security system.
+
+우리는 당신의 이메일만을 수집합니다. 암호/비밀번호는 강력하게 보안하여 저장하고 있습니다. 10,000번의 hash 를 돌리고 유저별로 랜덤한 salt 를 추가하여 강력하게 그 누구도, 심지어 양자 컴퓨터도 못뚫도록 보안을 철저히 하였습니다.
+
+네트워크 단에서도 암호를 감소하는 hash 를 통해 철저히 그 누구도 우리의 안전 시스템을 못뚫도록 보안에 신경쓰고 있습니다.
+
+## PH
+
+<ul>
+<li>2024-08-06 : First posting.</li>
+</ul>
+
+
+
+## TOC
+
+
+
+## RRA
+
+<ol class="refs">
+<li><a target="_blank" href="https://recoeve.net/">https://recoeve.net/</a></li>
+</ol>
+</codeprint><!-- SEE -->
+
+<codeprint id="docuK-script">
+<script>
+(function(m, $, undefined) {
+m.printMode=false;
+m.recoeveUserId="kipid";
+m.recoCats="";
+m.wait=1024;
+m.delayPad=512;
+
+/**
+ *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+ *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+**/
+window.disqus_config=function () {
+	this.page.identifier=""; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	this.page.url=`https://kipid.tistory.com/entry/${this.page.identifier}`; // Replace PAGE_URL with your page's canonical URL variable
+};
+})(window.m, jQuery);
+</script>
+
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-script -->
