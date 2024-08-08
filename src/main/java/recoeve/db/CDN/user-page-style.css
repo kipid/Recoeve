@@ -542,7 +542,7 @@
 }
 
 #floating-key .point-range-con {
-  position: sticky;
+  position: relative;
   left: 0;
   right: 0;
   width: 9em;
@@ -726,7 +726,9 @@
   flex-wrap: wrap;
   bottom: 2.6em;
   width: 9em;
-  height: auto
+  height: auto;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 #floating-key div.button {
@@ -737,6 +739,11 @@
   padding: .03em 0;
   width: 9em;
   height: auto
+}
+
+#floating-key div.button.button-Go,
+#floating-key div.button.button-ToR {
+	width: 50%
 }
 
 #floating-key div.button:first-child {
