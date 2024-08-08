@@ -139,10 +139,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 		<div class="button button-mode button-multireco-mode" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyM' })">
 		[--_M_ultireco mode--]
 		</div>
-		<div class="button button-Go" style="width:4.5em; border-right:none" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyG' })">
+		<div class="button button-Go" style="border-right:none" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyG' })">
 		[--_G_o (FS)--]
 		</div>
-		<div class="button button-ToR" style="width:4.5em" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyT' })">
+		<div class="button button-ToR" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyT' })">
 		[--_T_ofR--]
 		</div>
 		<div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyZ' })">
