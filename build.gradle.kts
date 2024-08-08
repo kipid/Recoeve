@@ -14,7 +14,7 @@ repositories {
   mavenCentral()
 }
 
-val vertxVersion = "4.5.1"
+val vertxVersion = "4.5.9"
 val junitJupiterVersion = "5.9.1"
 
 val mainVerticleName = "recoeve.http.MainVerticle"
