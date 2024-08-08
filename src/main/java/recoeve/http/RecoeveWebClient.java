@@ -112,7 +112,7 @@ public class RecoeveWebClient {
 					if (followedURIs.size() > 0) {
 						fullURI = followedURIs.get(followedURIs.size() - 1);
 					}
-					else {
+					if (fullURI == null) {
 						fullURI = uri;
 					}
 					if (fullURI != null && RecoeveDB.getutf8mb4Length(fullURI) > 255) {
