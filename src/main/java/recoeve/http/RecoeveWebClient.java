@@ -31,7 +31,7 @@ import org.openqa.selenium.WebDriver;
 // import org.w3c.dom.Element;
 
 import recoeve.db.RecoeveDB;
-// import recoeve.db.StrArray;
+import recoeve.db.StrArray;
 
 public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions().setMaxHeaderSize(16384)
@@ -125,28 +125,33 @@ public class RecoeveWebClient {
 					Elements h2Elements = document.select("h2");
 					Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
 					Elements naverElements = document.select(".se-fs-");
+					Elements youtubeElements = document.select(".ytd-watch-metadata");
 
 					String heads = "redirectedURI";
 					String contents = fullURI;
 					if (!titleElements.isEmpty()) {
 						heads += "\ttitle";
-						contents += "\t" + titleElements.first().text();
+						contents += "\t" + StrArray.enclose(titleElements.first().text());
 					}
 					if (!h1Elements.isEmpty()) {
 						heads += "\th1";
-						contents += "\t" + h1Elements.first().text();
+						contents += "\t" + StrArray.enclose(h1Elements.first().text());
 					}
 					if (!h2Elements.isEmpty()) {
 						heads += "\th2";
-						contents += "\t" + h2Elements.first().text();
+						contents += "\t" + StrArray.enclose(h2Elements.first().text());
 					}
 					if (!tiktokElements.isEmpty()) {
 						heads += "\ttiktok";
-						contents += "\t" + tiktokElements.first().text();
+						contents += "\t" + StrArray.enclose(tiktokElements.first().text());
 					}
 					if (!naverElements.isEmpty()) {
 						heads += "\tnaver";
-						contents += "\t" + naverElements.first().text();
+						contents += "\t" + StrArray.enclose(naverElements.first().text());
+					}
+					if (!youtubeElements.isEmpty()) {
+						heads += "\tyoutube";
+						contents += "\t" + StrArray.enclose(youtubeElements.first().text());
 					}
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end(heads + "\n" + contents, Recoeve.ENCODING);
