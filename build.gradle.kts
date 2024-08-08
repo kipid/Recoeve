@@ -35,7 +35,7 @@ dependencies {
   implementation("com.mysql:mysql-connector-j:8.1.0")
   // https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api
   implementation("com.sun.mail:jakarta.mail:2.0.1")
-  implementation("org.jsoup:jsoup:1.17.1")
+  implementation("org.jsoup:jsoup:1.18.1")
   // https://mvnrepository.com/artifact/io.vertx/vertx-core
   implementation("io.vertx:vertx-core:$vertxVersion")
   //Thanks for using https://jar-download.com
