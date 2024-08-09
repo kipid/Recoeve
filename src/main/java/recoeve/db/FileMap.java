@@ -29,7 +29,7 @@ public class FileMap {
   };
 
   private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
-  private static final String[] fileNames = (new File(filePath)).list();
+  private static final File[] fileNames = (new File(filePath)).listFiles();
   // private static final String[] fileNames = {
   //     "favicon.ico", "jquery.js", "recoeve-style.css", // "user-page-style.css", "main.css",
   //     "esb-user-page.css",
@@ -48,14 +48,13 @@ public class FileMap {
     FileSystem fileSystem = vertx.fileSystem();
 
     // Example: Reading a file and storing it in memory
-    for (String fileName : fileNames) {
-      String fileFullPath = filePath + fileName;
+    for (File fileName : fileNames) {
+      String fileFullPath = filePath + fileName.getName();
       fileSystem.readFile(fileFullPath)
           .onComplete(ar -> {
             if (ar.succeeded()) {
               Buffer fileContent = ar.result();
-              fileStorage.put(fileName, fileContent);
-              // System.out.println("File stored in memory: "+fileName);
+              fileStorage.put(fileName.getName(), fileContent);
             } else {
               System.err.println("Error reading file: " + ar.cause());
             }
@@ -75,16 +74,17 @@ public class FileMap {
   }
 
   private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
-  private static final String[] txtFileNames = {
-      "prepare.js", "robots.txt", "ads.txt",
-      "bundle-tsx-log-out.js",
-      "esb-user-page.js",
-      // "bundle-user-page.js", "bundle-tsx-user-page.js", "user-page.html" in FileMapWithVar.java
-      "log-in.html", "bundle-log-in.js",
-      "verify.html",
-      "changePwd.html", "bundle-changePwd.js",
-      "log-out.html", "user-page.html", "remember-me.html"
-  };
+  private static final File[] txtFileNames = (new File(txtFilePath)).listFiles();
+  // private static final String[] txtFileNames = {
+  //     "prepare.js", "robots.txt", "ads.txt",
+  //     "bundle-tsx-log-out.js",
+  //     "esb-user-page.js",
+  //     // "bundle-user-page.js", "bundle-tsx-user-page.js", "user-page.html" in FileMapWithVar.java
+  //     "log-in.html", "bundle-log-in.js",
+  //     "verify.html",
+  //     "changePwd.html", "bundle-changePwd.js",
+  //     "log-out.html", "user-page.html", "remember-me.html"
+  // };
   private static final int txtFileMapSize = 30;
   private static final int fileLangMapSize = 20; // # of languages translated to support.
 
@@ -126,8 +126,8 @@ public class FileMap {
     // System.out.println(langMap);
     fileStr = null;
 
-    for (String txtFileName : txtFileNames) {
-      file = new File(txtFilePath + txtFileName);
+    for (File txtFileName : txtFileNames) {
+      file = new File(txtFilePath + txtFileName.getName());
       if (file.exists()) {
         try {
           StringBuilder sb = new StringBuilder();
@@ -146,8 +146,8 @@ public class FileMap {
       }
 
       if (fileStr != null) {
-        txtFileMap.put(txtFileName, new HashMap<String, String>(fileLangMapSize));
-        Map<String, String> fileLangMap = txtFileMap.get(txtFileName);
+        txtFileMap.put(txtFileName.getName(), new HashMap<String, String>(fileLangMapSize));
+        Map<String, String> fileLangMap = txtFileMap.get(txtFileName.getName());
         fileLangMap.put("df", fileStr); // default.
         ArrayList<String> strList = strToList(fileStr);
         if (strList.size() > 1) {
