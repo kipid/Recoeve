@@ -825,15 +825,15 @@ textarea.multi-line {
 }
 
 .reco.recoed {
-	border: .5em solid rgb(50, 50, 200);
+	border: .3em solid rgb(50, 50, 200);
 }
 
 .reco.changed {
-	border: .5em solid rgb(50, 200, 50);
+	border: .3em solid rgb(50, 200, 50);
 }
 
 .reco.deleted {
-  border: .5em solid rgb(168, 50, 0)
+  border: .3em solid rgb(168, 50, 0)
 }
 
 .bright .reco {
