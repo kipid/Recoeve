@@ -15,7 +15,7 @@ import java.io.IOException;
 public class FileMapWithVar {
   public static final String version = "1.0.4";
   private static String filePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
-  private static final String[] fileNames = (new File(filePath)).list();
+  private static final File[] fileNames = (new File(filePath)).listFiles();
   // private static final String[] fileNames = {
   //     "user-page.html", "bundle-user-page.js", "bundle-tsx-user-page.js",
   //     "recostat.html", "log-in.html", "signed-up.html", "reco.html", "multireco.html"
@@ -56,8 +56,8 @@ public class FileMapWithVar {
     // System.out.println(langMap);
     fileStr = null;
 
-    for (String fileName : fileNames) {
-      file = new File(filePath + fileName);
+    for (File fileName : fileNames) {
+      file = new File(filePath + fileName.getName());
       if (file.exists()) {
         try {
           StringBuilder sb = new StringBuilder();
@@ -76,9 +76,8 @@ public class FileMapWithVar {
       }
 
       if (fileStr != null) {
-        // System.out.println("\nfileName : "+fileName);
-        fileMap.put(fileName, new HashMap<String, ArrayList<String>>(fileLangMapSize));
-        Map<String, ArrayList<String>> fileLangMap = fileMap.get(fileName);
+        fileMap.put(fileName.getName(), new HashMap<String, ArrayList<String>>(fileLangMapSize));
+        Map<String, ArrayList<String>> fileLangMap = fileMap.get(fileName.getName());
 
         ArrayList<String> strListVars = new ArrayList<String>();
         Matcher matchVariable = ptnVariable.matcher(fileStr); // default
