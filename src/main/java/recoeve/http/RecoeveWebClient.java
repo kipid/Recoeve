@@ -161,6 +161,14 @@ public class RecoeveWebClient {
 						}
 					}
 
+					Elements leetCodeElements = document.select(".text-title-large");
+					if (!leetCodeElements.isEmpty()) {
+						for (int i = 0; i < leetCodeElements.size(); i = i + 1) {
+							heads += "\tLeetCode-" + i;
+							contents += "\t" + StrArray.enclose(leetCodeElements.get(i).text());
+						}
+					}
+
 					System.out.println(heads + "\n" + contents);
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end(heads + "\n" + contents, Recoeve.ENCODING);
