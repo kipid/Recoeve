@@ -115,47 +115,52 @@ public class RecoeveWebClient {
 					if (fullURI == null) {
 						fullURI = uri;
 					}
-					if (fullURI != null && RecoeveDB.getutf8mb4Length(fullURI) > 255) {
-						fullURI = db.getConciseURI(fullURI);
-					}
 					System.out.println("The last redirected URL: " + fullURI);
 					String body = response.bodyAsString();
 					Document document = Jsoup.parse(body);
 
-					// Select the first <h1> element and extract its text content
-					Elements titleElements = document.select("title");
-					Elements h1Elements = document.select("h1");
-					Elements h2Elements = document.select("h2");
-					Elements tiktokElements = document.select("h1.css-1fbzdvh-H1Container.ejg0rhn1");
-					Elements naverElements = document.select(".se-fs-");
-					Elements youtubeElements = document.select(".ytd-watch-metadata");
-
 					String heads = "redirectedURI";
 					String contents = fullURI;
-					if (!titleElements.isEmpty()) {
+
+					String conciseURI = null;
+					if (RecoeveDB.getutf8mb4Length(fullURI) > 255) {
+						conciseURI = db.getConciseURI(fullURI);
+					}
+					if (conciseURI != null) {
+						heads += "\tconciseURI";
+						contents += "\t" + conciseURI;
+					}
+
+					String title = document.title();
+					if (!title.isEmpty()) {
 						heads += "\ttitle";
-						contents += "\t" + StrArray.enclose(titleElements.first().text());
+						contents += "\t" + StrArray.enclose(title);
 					}
+
+					Elements h1Elements = document.select("h1");
 					if (!h1Elements.isEmpty()) {
-						heads += "\th1";
-						contents += "\t" + StrArray.enclose(h1Elements.first().text());
+						for (int i = 0; i < h1Elements.size(); i++) {
+							heads += "\th1-" + i;
+							contents += "\t" + StrArray.enclose(h1Elements.get(i).text());
+						}
 					}
+
+					Elements h2Elements = document.select("h2");
 					if (!h2Elements.isEmpty()) {
-						heads += "\th2";
-						contents += "\t" + StrArray.enclose(h2Elements.first().text());
+						for (int i = 0; i < h2Elements.size(); i++) {
+							heads += "\th2-" + i;
+							contents += "\t" + StrArray.enclose(h2Elements.get(i).text());
+						}
 					}
-					if (!tiktokElements.isEmpty()) {
-						heads += "\ttiktok";
-						contents += "\t" + StrArray.enclose(tiktokElements.first().text());
-					}
+
+					Elements naverElements = document.select(".se-fs-, .se-ff-");
 					if (!naverElements.isEmpty()) {
-						heads += "\tnaver";
-						contents += "\t" + StrArray.enclose(naverElements.first().text());
+						for (int i = 0; i < Math.min(5, naverElements.size()); i = i + 1) {
+							heads += "\tnaver-" + i;
+							contents += "\t" + StrArray.enclose(naverElements.get(i).text());
+						}
 					}
-					if (!youtubeElements.isEmpty()) {
-						heads += "\tyoutube";
-						contents += "\t" + StrArray.enclose(youtubeElements.first().text());
-					}
+
 					System.out.println(heads + "\n" + contents);
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end(heads + "\n" + contents, Recoeve.ENCODING);
