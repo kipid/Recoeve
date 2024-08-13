@@ -197,3 +197,5 @@ build/libs/http-1.0.0-SNAPSHOT-fat.jar
 build/libs/http-1.0.0-SNAPSHOT.jar
 build/distributions/http-shadow-1.0.0-SNAPSHOT.tar
 build/distributions/http-shadow-1.0.0-SNAPSHOT.zip
+build/scripts/*
+apache-maven-*
