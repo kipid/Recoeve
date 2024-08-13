@@ -412,6 +412,10 @@ a.seekTo {
   position: relative
 }
 
+#show-URI {
+	margin: 2.5em 0
+}
+
 #multireco-cat-fs-container {
   position: relative;
   width: 25em;
