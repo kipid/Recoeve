@@ -202,3 +202,4 @@ apache-maven-*
 
 bin/main/recoeve/db/html/*
 bin/main/recoeve/db/CDN/*
+*.class
