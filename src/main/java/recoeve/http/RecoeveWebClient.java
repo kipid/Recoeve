@@ -105,7 +105,8 @@ public class RecoeveWebClient {
 		webClient.getAbs(uri).putHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
-				if (response.statusCode() == 200) {
+				System.out.println("response.statusCode(): " + response.statusCode());
+				if (response.statusCode() >= 200 && response.statusCode() < 300) {
 					// If the response is a redirect, so get the followedRedirects().
 					List<String> followedURIs = response.followedRedirects();
 					String fullURI = null;
