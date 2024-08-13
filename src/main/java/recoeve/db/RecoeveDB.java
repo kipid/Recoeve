@@ -12,22 +12,10 @@ import java.lang.StringBuilder;
 
 import java.nio.ByteBuffer;
 
-// import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.sql.*;
-// java.sql.Timestamp;
-// java.sql.PreparedStatement
-// import javax.sql.DataSource; // http://docs.oracle.com/javase/8/docs/api/index.html
 
 import java.math.BigInteger;
-
-// import java.net.URI;
-// import java.net.URISyntaxException;
-// import java.net.URL;
-// import java.net.URLDecoder;
-// import java.net.URLDecoder;
-
-// import java.io.UnsupportedEncodingException;
 
 import java.text.Normalizer;
 
@@ -37,23 +25,18 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
-// import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-// import java.util.regex.Pattern;
-// import java.util.regex.Matcher;
-
 import recoeve.http.Gmail;
 import recoeve.http.Cookie;
-// import recoeve.http.BodyData;
 
 public class RecoeveDB {
   public static final String encoding = "UTF-8";
-  public static final int port = 80;
+  public static final int port = 443;
   public static final String domain = "recoeve.net";
   // "localhost:"+port;
   // domain="localhost" does not works in cookie.
@@ -1484,7 +1467,7 @@ public class RecoeveDB {
           ResultSet rs = pstmtCheckUserRemember.executeQuery();
           String errMsg = "Error: ";
           if (rs.next()) {
-            // TODO: ip check or not?
+            // ip check or not?
             if ( /*
                   * ip.startsWith(rs.getString("ip").split(":")[0])
                   * &&

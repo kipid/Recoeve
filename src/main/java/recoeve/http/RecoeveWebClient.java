@@ -7,8 +7,8 @@ import io.vertx.core.VertxException;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
-import java.util.concurrent.CompletableFuture;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.xpath.XPath;
@@ -80,7 +80,9 @@ public class RecoeveWebClient {
 		return completableFuture;
 	}
 
-	public void findTitles(String uri, PrintLog pl) {
+	public CompletableFuture<String> findTitles(String uri, PrintLog pl) {
+		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+
 		System.out.println("findTitles :: uri : " + uri);
 		String heads = "uri";
 		String contents = StrArray.enclose(uri);
@@ -104,8 +106,8 @@ public class RecoeveWebClient {
 			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
 			Wait<WebDriver> wait = new FluentWait<>(chromeDriver)
-				.withTimeout(Duration.ofMillis(21000))
-				.pollingEvery(Duration.ofMillis(7000))
+				.withTimeout(Duration.ofMillis(512L))
+				.pollingEvery(Duration.ofMillis(128L))
 				.ignoreAll(expectedExceptions);
 
 			List<WebElement> titles = wait.until(d -> d.findElements(By.cssSelector("title")));
@@ -150,12 +152,14 @@ public class RecoeveWebClient {
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
-			chromeDriver.quit();
+			// chromeDriver.quit();
 		}
 
-		pl.req.response()
-				.putHeader("Content-Type", "text/plain; charset=utf-8")
-				.end(heads + "\n" + contents, Recoeve.ENCODING);
+		completableFuture.complete(heads + "\n" + contents);
+		return completableFuture;
+		// pl.req.response()
+		// 		.putHeader("Content-Type", "text/plain; charset=utf-8")
+		// 		.end(heads + "\n" + contents, Recoeve.ENCODING);
 	}
 
 	public static void main(String... args) {
