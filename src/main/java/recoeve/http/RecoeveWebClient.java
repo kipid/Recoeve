@@ -49,7 +49,7 @@ public class RecoeveWebClient {
 		webClient = WebClient.create(vertx, options);
 		xpath = XPathFactory.newInstance().newXPath();
 		chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new");
+		// chromeOptions.addArguments("--headless=new");
 	}
 
 	public CompletableFuture<String> redirected(String shortURI) {
@@ -106,8 +106,8 @@ public class RecoeveWebClient {
 			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
 			Wait<WebDriver> wait = new FluentWait<>(chromeDriver)
-				.withTimeout(Duration.ofMillis(512L))
-				.pollingEvery(Duration.ofMillis(128L))
+				.withTimeout(Duration.ofMillis(4096L))
+				.pollingEvery(Duration.ofMillis(256L))
 				.ignoreAll(expectedExceptions);
 
 			List<WebElement> titles = wait.until(d -> d.findElements(By.cssSelector("title")));
@@ -128,7 +128,7 @@ public class RecoeveWebClient {
 
 			List<WebElement> h2Elements = wait.until(d -> d.findElements(By.cssSelector("h2")));
 			if (!h2Elements.isEmpty()) {
-				for (int i = 0; i < h2Elements.size(); i++) {
+				for (int i = 0; i < Math.min(3, h2Elements.size()); i++) {
 					heads += "\th2-" + i;
 					contents += "\t" + StrArray.enclose(h2Elements.get(i).getText());
 				}
@@ -136,7 +136,7 @@ public class RecoeveWebClient {
 
 			List<WebElement> naverElements = wait.until(d -> d.findElements(By.cssSelector(".se-fs-, .se-ff-")));
 			if (!naverElements.isEmpty()) {
-				for (int i = 0; i < Math.min(5, naverElements.size()); i = i + 1) {
+				for (int i = 0; i < Math.min(3, naverElements.size()); i = i + 1) {
 					heads += "\tnaver-" + i;
 					contents += "\t" + StrArray.enclose(naverElements.get(i).getText());
 				}
@@ -144,7 +144,7 @@ public class RecoeveWebClient {
 
 			List<WebElement> leetCodeElements = wait.until(d -> d.findElements(By.cssSelector(".text-title-large")));
 			if (!leetCodeElements.isEmpty()) {
-				for (int i = 0; i < leetCodeElements.size(); i = i + 1) {
+				for (int i = 0; i < Math.min(3, leetCodeElements.size()); i = i + 1) {
 					heads += "\tLeetCode-" + i;
 					contents += "\t" + StrArray.enclose(leetCodeElements.get(i).getText());
 				}
@@ -152,7 +152,7 @@ public class RecoeveWebClient {
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
-			// chromeDriver.quit();
+			chromeDriver.quit();
 		}
 
 		completableFuture.complete(heads + "\n" + contents);
