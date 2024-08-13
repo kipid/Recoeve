@@ -104,8 +104,8 @@ public class RecoeveWebClient {
 			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
 			Wait<WebDriver> wait = new FluentWait<>(chromeDriver)
-				.withTimeout(Duration.ofMillis(2048))
-				.pollingEvery(Duration.ofMillis(512))
+				.withTimeout(Duration.ofMillis(21000))
+				.pollingEvery(Duration.ofMillis(7000))
 				.ignoreAll(expectedExceptions);
 
 			List<WebElement> titles = wait.until(d -> d.findElements(By.cssSelector("title")));
