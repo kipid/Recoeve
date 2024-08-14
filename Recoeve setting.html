@@ -19,7 +19,105 @@
 
 
 
+## PH
+
+<ul>
+<li>2024-08-14 : Ubuntu server settings 추가.</li>
+</ul>
+
+
+
 ## TOC
+
+
+
+## Ubuntu Server 에 setting 하기.
+
+Azure (Microsoft) <a target="_blank" href="https://portal.azure.com/#@Recoevenet.onmicrosoft.com/resource/subscriptions/3657313f-8102-43db-b6f4-7fbbc39b6210/resourcegroups/Recoeve.net/providers/Microsoft.Compute/virtualMachines/Recoeve.net-VM/overview">portal.azure.com/#@Recoevenet.onmicrosoft.com</a> 에서 Sidebar 에 있는 Connect 클릭.
+
+
+
+### Remote Server (Virtual Server) 접속하기.
+
+Ubuntu WSL (Windows Subsystem for Linux) 을 켜고
+
+```
+ssh -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15
+
+// Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+```/
+
+
+```
+sshfs -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15:/ ~/remote_storage
+```/
+
+
+
+
+### gitconfig.sh 만들기.
+
+```
+cd ~/.config/
+sudo touch gitconfig.sh
+
+sudo chmod u+rw gitconfig.sh
+// 소유자에게 읽기, 쓰기, 실행 권한을 부여하고 그룹과 다른 사용자에게 읽기 권한만 부여하려면:
+chmod 744 gitconfig.sh
+
+sudo vim gitconfig.sh
+```/
+
+아래와 같은 명령어들을 넣어놓고 저장 (:wq)
+
+```
+sudo git config alias.history "log --pretty=oneline" --global
+sudo git config user.name "kipid" --global
+sudo git config user.email "kipacti@google.com" --global
+sudo git config --global init.defaultBranch main --global
+```/
+
+
+
+### git clone
+
+```
+sudo git clone https://github.com/kipid/Recoeve.git
+
+Username for 'https://github.com': kipid
+Password for 'https://kipid@github.com':
+
+
+
+sudo git clone https://github.com/kipid/PortableGit.git
+```/
+
+
+
+### Installing JAVA
+
+```
+wget https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.tar.gz
+
+tar -xvzf jdk-22_linux-x64_bin.tar.gz
+
+sudo mv jdk-22.0.2/ /usr/local/jdk-22
+
+echo 'export JAVA_HOME=/usr/local/jdk-22' >> ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+```/
+
+
+
+### RDP (Remote Desktop Protocol)
+
+<div class="p">
+<code>rdpclip.exe</code> 실행해야 복붙이 됨.
+</div>
+
+
+
 
 ## AWS 및 깔아야할 Softwares.
 
@@ -148,8 +246,8 @@ mysqld --initialize --user=mysql --console
 
 mysql -u root -p
 
-ALTER USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
-
+CREATE USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
+GRANT ALL ON `Recoeve0.1`.* TO 'eve'@'localhost';
 FLUSH PRIVILEGES;
 
 
