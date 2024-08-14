@@ -248,7 +248,8 @@ mysql -u root -p
 
 CREATE USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
 ALTER USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
-GRANT ALL ON `Recoeve0.1`.* TO 'eve'@'localhost';
+GRANT ALL PRIVILEGES ON recoeve0.1.* TO 'eve'@'localhost';
+// 이걸로 하면 안되는듯? GRANT ALL ON `Recoeve0.1`.* TO 'eve'@'localhost';
 FLUSH PRIVILEGES;
 
 
