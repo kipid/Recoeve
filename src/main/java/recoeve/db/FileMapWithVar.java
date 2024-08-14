@@ -15,7 +15,11 @@ import java.io.IOException;
 
 public class FileMapWithVar {
 	public static final String version = "1.1.0";
+<<<<<<< Updated upstream
 	private static String filePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
+=======
+	private static String filePath = "/home/kipid/Recoeve/src/main/java/recoeve/db/html/";
+>>>>>>> Stashed changes
 	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
