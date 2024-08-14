@@ -205,7 +205,7 @@ public class RecoeveDB {
       ds.setDatabaseName("recoeve0.1");
       // ds.setURL("localhost:3306/recoeve0.1?serverTimezone=UTC");
       ds.setUser("eve");
-      ds.setPassword("$repakeoco#eve");
+      ds.setPassword("$Re7pAkeoCo#ev3e");
       ds.setServerTimezone("UTC");
       vertx.executeBlocking(new Callable<Void>() {
         @Override
