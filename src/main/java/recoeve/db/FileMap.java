@@ -29,11 +29,7 @@ public class FileMap {
 			, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
 
-<<<<<<< Updated upstream
-	private static final String filePath = "C:/Recoeve/src/main/java/recoeve/db/CDN/";
-=======
 	private static final String filePath = "/home/kipid/Recoeve/src/main/java/recoeve/db/CDN/";
->>>>>>> Stashed changes
 	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
@@ -75,11 +71,7 @@ public class FileMap {
 		return retrievedFile;
 	}
 
-<<<<<<< Updated upstream
-	private static final String txtFilePath = "C:/Recoeve/src/main/java/recoeve/db/html/";
-=======
 	private static final String txtFilePath = "/home/kipid/Recoeve/src/main/java/recoeve/db/html/";
->>>>>>> Stashed changes
 	private static final File[] txtFileNames = (new File(txtFilePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
