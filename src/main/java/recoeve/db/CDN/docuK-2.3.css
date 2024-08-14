@@ -223,7 +223,7 @@ codeprint.SEE {
 .docuK {
 	font-size:10px;
 	line-height:1.6;
-	font-family:'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif;
+	font-family:'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif;
 	text-align:justify;
 	max-width:1000px;
 	margin:.5em auto;
