@@ -247,6 +247,7 @@ mysqld --initialize --user=mysql --console
 mysql -u root -p
 
 CREATE USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
+ALTER USER 'eve'@'localhost' IDENTIFIED BY '{--pwd--}';
 GRANT ALL ON `Recoeve0.1`.* TO 'eve'@'localhost';
 FLUSH PRIVILEGES;
 
