@@ -45,11 +45,14 @@ Ubuntu WSL (Windows Subsystem for Linux) 을 켜고
 ssh -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15
 
 // Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+
+sudo -i
+// root 계정으로 전환.
 ```/
 
 
 ```
-sshfs -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15:/ ~/remote_storage
+sshfs -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15:/home/kipid/ ~/remote_storage/
 ```/
 
 
