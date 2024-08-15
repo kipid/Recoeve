@@ -36,7 +36,7 @@ public class FileMap {
 		if (os.contains("win")) {
 			preFilePath = "C:";
 		}
-		else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+		else {
 			preFilePath = "/home/kipid";
 		}
 	}
