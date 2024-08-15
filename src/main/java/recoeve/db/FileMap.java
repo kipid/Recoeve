@@ -30,7 +30,7 @@ public class FileMap {
 			// , "172.30.1.18"
 			, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
-	private static String preFilePath = "";
+	public static String preFilePath = "";
 	static {
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("win")) {

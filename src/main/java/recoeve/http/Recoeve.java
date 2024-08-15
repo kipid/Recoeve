@@ -29,12 +29,12 @@ import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
 public class Recoeve extends AbstractVerticle {
-	final public static String HOST = "recoeve.net";
+	public static final String HOST = "recoeve.net";
 	// ="0.0.0.0";
 	// ="localhost";
-	final public static String ENCODING = "UTF-8";
-	final public static String INVALID_ACCESS = "INVALID ACCESS";
-	final public static long day31InMs = 31 * 24 * 60 * 60 * 1000;
+	public static final String ENCODING = "UTF-8";
+	public static final String INVALID_ACCESS = "INVALID ACCESS";
+	public static final long day31InMs = 31 * 24 * 60 * 60 * 1000;
 
 	public Vertx vertx;
 	public FileMap fileMap;
@@ -241,7 +241,7 @@ public class Recoeve extends AbstractVerticle {
 		StaticHandler staticHandler = StaticHandler.create("/CDN/*")
 				.setCachingEnabled(true)
 				.setDirectoryListing(true)
-				// .setDirectoryTemplate("/home/kipid/Recoeve/src/main/java/recoeve/db/CDN/template.html")
+				// .setDirectoryTemplate(FileMap.preFilePath + "/Recoeve/src/main/java/recoeve/db/CDN/template.html")
 				.setFilesReadOnly(true)
 				.setDefaultContentEncoding("UTF-8")
 				.setAlwaysAsyncFS(true)
@@ -1100,7 +1100,7 @@ public class Recoeve extends AbstractVerticle {
 						.setUseAlpn(true)
 						.setSsl(true)
 						.setKeyCertOptions(new JksOptions()
-								.setPath("/home/kipid/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
+								.setPath(FileMap.preFilePath + "/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
 								.setPassword("q63kewmf")))
 				.requestHandler(req -> {
 					Router routerK = req.path().startsWith("/BlogStat") ? router0

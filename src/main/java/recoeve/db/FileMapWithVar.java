@@ -1,5 +1,7 @@
 package recoeve.db;
 
+
+
 import java.lang.StringBuilder;
 
 import java.util.ArrayList;
@@ -15,17 +17,7 @@ import java.io.IOException;
 
 public class FileMapWithVar {
 	public static final String version = "1.1.1";
-	private static String preFilePath = "";
-	static {
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("win")) {
-			preFilePath = "C:";
-		}
-		else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
-			preFilePath = "/home/kipid";
-		}
-	}
-	private static final String filePath = preFilePath + "/Recoeve/src/main/java/recoeve/db/html/";
+	private static final String filePath = FileMap.preFilePath + "/Recoeve/src/main/java/recoeve/db/html/";
 	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
