@@ -239,7 +239,7 @@ public class Recoeve extends AbstractVerticle {
 		StaticHandler staticHandler = StaticHandler.create("/CDN/*")
 				.setCachingEnabled(true)
 				.setDirectoryListing(true)
-				.setDirectoryTemplate("C:/Recoeve/src/main/java/recoeve/db/CDN/template.html")
+				// .setDirectoryTemplate("/home/kipid/Recoeve/src/main/java/recoeve/db/CDN/template.html")
 				.setFilesReadOnly(true)
 				.setDefaultContentEncoding("UTF-8")
 				.setAlwaysAsyncFS(true)
@@ -1098,7 +1098,7 @@ public class Recoeve extends AbstractVerticle {
 						.setUseAlpn(true)
 						.setSsl(true)
 						.setKeyCertOptions(new JksOptions()
-								.setPath("C:/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
+								.setPath("/home/kipid/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
 								.setPassword("q63kewmf")))
 				.requestHandler(req -> {
 					Router routerK = req.path().startsWith("/BlogStat") ? router0
