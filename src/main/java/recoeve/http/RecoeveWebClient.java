@@ -30,7 +30,15 @@ public class RecoeveWebClient {
 			.setMaxHeaderSize(16384)
 			.setFollowRedirects(true);
 	static {
-		System.setProperty("webdriver.chrome.driver", "C:\\Recoeve\\chromedriver-win64\\chromedriver.exe");
+		String preFilePath = "";
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("win")) {
+			preFilePath = "C:";
+		}
+		else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+			preFilePath = "/home/kipid";
+		}
+		System.setProperty("webdriver.chrome.driver", preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
 
 	public Vertx vertx;
