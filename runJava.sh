@@ -5,7 +5,7 @@ DC="/home/kipid/Recoeve/bin/main"
 
 # The whole CLASSPATH list split by ":"
 # The whole classes are integrated into /Recoeve/gradle/wrapper/gradle-wrapper.jar
-CLASSPATH=/home/kipid/Recoeve/bin/main:$CLASSPATH
+# CLASSPATH=/home/kipid/Recoeve/bin/main:$CLASSPATH
 
 # $1 expands to the first argument (filename with extension). e.g. "HelloWorld.java"
 echo "Compiling $(basename $1)"
