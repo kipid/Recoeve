@@ -1,5 +1,7 @@
 package recoeve.db;
 
+
+
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
@@ -21,15 +23,24 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileMap {
-	public static final String version = "1.1.0";
+	public static final String version = "1.1.1";
 	private static final String[] referersAllowed = {
 			"localhost", "recoeve.net", "www.recoeve.net"
 			// , "127.0.0.1"
 			// , "172.30.1.18"
 			, "kipid.tistory.com", "tistory1.daumcdn.net"
 	};
-
-	private static final String filePath = "/home/kipid/Recoeve/src/main/java/recoeve/db/CDN/";
+	private static String preFilePath = "";
+	static {
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("win")) {
+			preFilePath = "C:";
+		}
+		else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+			preFilePath = "/home/kipid";
+		}
+	}
+	private static final String filePath = preFilePath + "/Recoeve/src/main/java/recoeve/db/CDN/";
 	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
@@ -71,7 +82,7 @@ public class FileMap {
 		return retrievedFile;
 	}
 
-	private static final String txtFilePath = "/home/kipid/Recoeve/src/main/java/recoeve/db/html/";
+	private static final String txtFilePath = preFilePath + "/Recoeve/src/main/java/recoeve/db/html/";
 	private static final File[] txtFileNames = (new File(txtFilePath)).listFiles(new FileFilter() {
 		@Override
 		public boolean accept(File pathname) {
