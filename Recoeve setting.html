@@ -39,6 +39,8 @@ Azure (Microsoft) <a target="_blank" href="https://portal.azure.com/#@Recoevenet
 
 ### Remote Server (Virtual Server) 접속하기.
 
+#### CLI (Command Line Interface)
+
 Ubuntu WSL (Windows Subsystem for Linux) 을 켜고
 
 ```
@@ -51,11 +53,68 @@ sudo -i
 ```/
 
 
+
+#### SFTP 설정
+
 ```
 sshfs -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15:/home/kipid/ ~/remote_storage/
 ```/
 
 
+
+#### RDP (Remote Desktop Protocol) from Windows 11
+
+<div class="p">
+<code>Win+R</code> 로 <code>rdpclip.exe</code> 실행해야 복붙이 됨.
+</div>
+
+Remote desktop from windows to linux with xRDP / fix black screen: <cite class="ref-rdp-youtube"><a target="_blank" href="https://www.youtube.com/watch?v=2ZFFIy70C8Y">Remote desktop from windows to linux with xRDP / fix black screen</a>, by UFO ACADEMY, at 2023</cite>
+
+```
+sudo apt install xrdp -y
+
+sudo systemctl enable xrdp
+
+sudo systemctl restart xrdp
+
+sudo systemctl status xrdp
+
+sudo adduser xrdp ssl-cert
+
+sudo ufw enable
+
+sudo ufw allow 3389/tcp
+
+sudo ufw reload
+
+sudo ufw status
+
+sudo ip -br a
+
+sudo vim /etc/xrdp/startwm.sh
+
+unset DBUS_SESSION_BUS_ADDRESS
+unset XDG_RUNTIME_DIR
+
+sudo systemctl restart xrdp
+
+curl ifconfig.me
+// This command will display the public IP address of your server.
+```/
+
+
+
+#### Graphic card settings
+
+```
+sudo lshw -c video
+  *-graphics
+       product: hyperv_drmdrmfb
+       physical id: 1
+       logical name: /dev/fb0
+       capabilities: fb
+       configuration: depth=32 resolution=1024,768
+```/
 
 
 ### gitconfig.sh 만들기.
@@ -110,15 +169,6 @@ echo 'export JAVA_HOME=/usr/local/jdk-22' >> ~/.bashrc
 echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```/
-
-
-
-### RDP (Remote Desktop Protocol)
-
-<div class="p">
-<code>rdpclip.exe</code> 실행해야 복붙이 됨.
-</div>
-
 
 
 
