@@ -1,3 +1,4 @@
+@rem copy to java\bin directory.
 @REM encoding must be EUC-KR with Korean folder name.
 @ECHO OFF
 
@@ -6,7 +7,7 @@ SET DC=C:\\Recoeve\\bin\\main
 
 :: The whole CLASSPATH list splited by ";"
 :: The whole classes are integrated into C:\Recoeve\gradle\wrapper\gradle-wrapper.jar
-rem SET CLASSPATH=C:\\Recoeve\\bin\\main;%CLASSPATH%
+SET CLASSPATH=%CLASSPATH%;%RECOEVE_HOME%\\bin\\main;%RECOEVE_HOME%\\gradle\\wrapper\\gradle-wrapper.jar;%JAVA_HOME%\\lib;%VERTX_HOME%\target\\vertx-core-aggregator-5.0.0-SNAPSHOT-tests.jar
 
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
