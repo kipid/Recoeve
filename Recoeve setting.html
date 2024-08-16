@@ -117,7 +117,15 @@ sudo lshw -c video
 ```/
 
 
+
 ### gitconfig.sh 만들기.
+
+```
+curl -sS https://webi.sh/gh | sh
+// 이건 동작 안하는듯.
+```/
+
+
 
 ```
 cd ~/.config/
@@ -152,6 +160,36 @@ Password for 'https://kipid@github.com':
 
 
 sudo git clone https://github.com/kipid/PortableGit.git
+```/
+
+
+
+#### sudo git push/pull 매번 로그인하지 않게 만들어주기. Using ssh.
+
+```
+ssh-keygen -t rsa -b 4096 -C "kipacti@gmail.com"
+// Follow the prompts to save the key in the default location (~/RecoeveNet/.ssh/github-recoeve-rsa).
+
+
+
+eval "$(ssh-agent -s)"
+ssh-add ~/RecoeveNet/.ssh/github-recoeve-rsa
+
+
+
+cat ~/RecoeveNet/.ssh/github-recoeve-rsa.pub
+
+
+
+cd ~/Recoeve/
+sudo git remote set-url origin git@github.com:kipid/Recoeve.git
+cd ~/RecoeveNet/
+sudo git remote set-url origin git@github.com:kipid/RecoeveNet.git
+
+
+
+cd ~/Recoeve/
+sudo git config --global credential.helper cache
 ```/
 
 
