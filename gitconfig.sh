@@ -6,4 +6,5 @@ sudo git config alias.history "log --pretty=oneline" --global
 sudo git config user.name "kipid" --global
 sudo git config user.email "kipacti@google.com" --global
 sudo git config --global init.defaultBranch main --global
+sudo git config pull.rebase true --global
 
