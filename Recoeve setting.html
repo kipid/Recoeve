@@ -70,6 +70,8 @@ sshfs -i ~/.ssh/Recoeve.net-VM_key.pem kipid@4.218.23.15:/home/kipid/ ~/remote_s
 
 Remote desktop from windows to linux with xRDP / fix black screen: <cite class="ref-rdp-youtube"><a target="_blank" href="https://www.youtube.com/watch?v=2ZFFIy70C8Y">Remote desktop from windows to linux with xRDP / fix black screen</a>, by UFO ACADEMY, at 2023</cite>
 
+여기 <cite class="ref-xrdp-black-screen"><a target="_blank" href="https://c-nergy.be/blog/?p=16682">Griffon's IT Library :: xRDP – xRDP shows only black screen after authentication windows – How To Fix !</a>, 2021-04-12</cite> 가 제대로 설명 해놓은듯.
+
 ```
 sudo apt install xrdp -y
 
@@ -138,13 +140,15 @@ chmod 744 gitconfig.sh
 sudo vim gitconfig.sh
 ```/
 
+
+
 아래와 같은 명령어들을 넣어놓고 저장 (:wq)
 
 ```
 sudo git config alias.history "log --pretty=oneline" --global
 sudo git config user.name "kipid" --global
-sudo git config user.email "kipacti@google.com" --global
-sudo git config --global init.defaultBranch main --global
+sudo git config user.email "kipacti@gmail.com" --global
+sudo git config init.defaultBranch main --global
 ```/
 
 
@@ -155,7 +159,7 @@ sudo git config --global init.defaultBranch main --global
 sudo git clone https://github.com/kipid/Recoeve.git
 
 Username for 'https://github.com': kipid
-Password for 'https://kipid@github.com':
+Password for 'https://kipid@github.com': // 발급 받은 password 를 쳐야 함. 계정 pwd 가 아니라.
 
 
 
