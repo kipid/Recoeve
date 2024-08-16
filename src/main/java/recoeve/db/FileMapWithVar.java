@@ -16,7 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileMapWithVar {
-	public static final String version = "1.1.1";
+	public static final String version = "1.2.0";
 	private static final String filePath = FileMap.preFilePath + "/Recoeve/src/main/java/recoeve/db/html/";
 	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
 		@Override

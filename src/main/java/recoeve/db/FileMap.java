@@ -23,7 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileMap {
-	public static final String version = "1.1.1";
+	public static final String version = "1.2.0";
 	private static final String[] referersAllowed = {
 			"localhost", "recoeve.net", "www.recoeve.net"
 			// , "127.0.0.1"
