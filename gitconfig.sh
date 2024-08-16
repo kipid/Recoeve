@@ -3,16 +3,16 @@
 
 cd ~/Recoeve/
 
-sudo git config core.editor "vim" --global
+sudo git config --global core.editor "vim"
 export GIT_EDITOR=vim
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-sudo git config alias.history "log --pretty=oneline" --global
-sudo git config user.name "kipid" --global
-sudo git config user.email "kipacti@gmail.com" --global
-sudo git config init.defaultBranch main --global
-sudo git config pull.rebase true --global
+sudo git config --global alias.history "log --pretty=oneline"
+sudo git config --global user.name "kipid"
+sudo git config --global user.email "kipacti@gmail.com"
+sudo git config --global init.defaultBranch main
+sudo git config --global pull.rebase true
 
 eval "$(ssh-agent -s)"
 ssh-add ~/RecoeveNet/.ssh/github-recoeve-rsa
