@@ -1,5 +1,7 @@
 rem copy to C:\kipid\PortableGit\bin
 
+cd C:/Recoeve/
+
 git config --global core.editor "vim"
 export GIT_EDITOR=vim
 export VISUAL=vim
@@ -10,3 +12,4 @@ git config --global user.name "kipid"
 git config --global user.email "kipacti@gmail.com"
 git config --global init.defaultBranch main
 git config --global pull.rebase true
+git pull
