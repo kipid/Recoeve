@@ -11,7 +11,7 @@ export EDITOR="$VISUAL"
 sudo git config --global alias.history "log --pretty=oneline"
 sudo git config --global user.name "kipid"
 sudo git config --global user.email "kipacti@gmail.com"
-sudo git config --global init.defaultBranch main
+sudo git config --global --replace-all init.defaultBranch main
 sudo git config --global pull.rebase true
 
 sudo git pull origin main
