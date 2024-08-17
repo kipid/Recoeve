@@ -81,6 +81,7 @@ sudo systemctl restart xrdp
 
 sudo systemctl status xrdp
 
+su - kipid-rdp
 sudo adduser xrdp ssl-cert
 
 sudo ufw enable
@@ -92,6 +93,8 @@ sudo ufw reload
 sudo ufw status
 
 sudo ip -br a
+curl ifconfig.me
+// This command will display the public IP address of your server.
 
 sudo vim /etc/xrdp/startwm.sh
 
@@ -99,9 +102,6 @@ unset DBUS_SESSION_BUS_ADDRESS
 unset XDG_RUNTIME_DIR
 
 sudo systemctl restart xrdp
-
-curl ifconfig.me
-// This command will display the public IP address of your server.
 ```/
 
 
