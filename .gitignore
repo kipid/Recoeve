@@ -205,3 +205,5 @@ bin/main/recoeve/db/CDN/*
 *.class
 
 build/scriptsShadow/*
+All-Projects.git/*
+All-Users.git/*
