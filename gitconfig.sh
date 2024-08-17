@@ -14,11 +14,9 @@ sudo git config --global user.email "kipacti@gmail.com"
 sudo git config --global init.defaultBranch main
 sudo git config --global pull.rebase true
 
-eval "$(ssh-agent -s)"
-ssh-add ~/RecoeveNet/.ssh/github-recoeve-rsa
-
-
-
-
-
 sudo git pull origin main
+
+cd ~/RecoeveNet/
+sudo git pull origin main
+
+cd ~/Recoeve/
