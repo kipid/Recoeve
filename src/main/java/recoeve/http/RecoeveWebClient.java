@@ -22,23 +22,16 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
 public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions()
-			.setMaxHeaderSize(16384)
+			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
 	static {
-		String preFilePath = "";
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("win")) {
-			preFilePath = "C:";
-		}
-		else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
-			preFilePath = "/home/kipid";
-		}
-		System.setProperty("webdriver.chrome.driver", preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
 
 	public Vertx vertx;
@@ -57,7 +50,7 @@ public class RecoeveWebClient {
 		webClient = WebClient.create(vertx, options);
 		xpath = XPathFactory.newInstance().newXPath();
 		chromeOptions = new ChromeOptions();
-		// chromeOptions.addArguments("--headless=new");
+		chromeOptions.addArguments("--headless=new");
 	}
 
 	public CompletableFuture<String> redirected(String shortURI) {
