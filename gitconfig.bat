@@ -22,21 +22,21 @@ rem ssh-add C:/RecoeveNet/.ssh/github-recoeve-rsa
 rem git config --global credential.helper cache
 
 rem git remote set-url origin git@github.com:kipid/Recoeve.git
-rem git pull origin main
+rem git pull
 
 rem cd C:/RecoeveNet/
 rem git remote set-url origin git@github.com:kipid/RecoeveNet.git
-rem git pull origin main
+rem git pull
 
 
 
 git config --global credential.helper C:/RecoeveNet/.ssh/github-pwd
 git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
-git pull origin main
+git pull
 
 cd C:/RecoeveNet/
 git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
-git pull origin main
+git pull
 
 :: Back to current directory
 cd %BASEDIR%
