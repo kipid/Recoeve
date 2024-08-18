@@ -514,7 +514,14 @@ public class RecoeveDB {
       String html0 = getLogAccess(now);
       pstmtLogAccess.setTimestamp(1, now);
       pstmtLogAccess.setLong(2, user_i);
-      pstmtLogAccess.setString(3, html0 + html);
+      String htmlTotal = html0 + html;
+      if (!htmlTotal.startsWith("<div")) {
+        htmlTotal = "<div class=\"access\">" + htmlTotal;
+      }
+      if (!htmlTotal.endsWith("</div>")) {
+        htmlTotal = htmlTotal + "</div>";
+      }
+      pstmtLogAccess.setString(3, htmlTotal);
       return pstmtLogAccess.executeUpdate() > 0;
     } catch (SQLException err) {
       err(err);
