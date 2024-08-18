@@ -7,13 +7,20 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+// import io.vertx.sqlclient.PreparedStatement;
 
 import java.lang.StringBuilder;
 
 import java.nio.ByteBuffer;
 
 import java.security.MessageDigest;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Timestamp;
 
 import java.math.BigInteger;
 
@@ -118,6 +125,8 @@ public class RecoeveDB {
   // HH:mm:ss");
   // String currentTime=sdf.format(dt);
 
+  private PreparedStatement pstmtLogAccess;
+
   private PreparedStatement pstmtGetRedirect;
   private PreparedStatement pstmtGetRedirectHashpath;
   private PreparedStatement pstmtPutRedirect;
@@ -216,6 +225,8 @@ public class RecoeveDB {
           pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
           pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < ?;");
           pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
+
+          pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `html`) VALUES (?, ?)");
 
           pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
           pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
