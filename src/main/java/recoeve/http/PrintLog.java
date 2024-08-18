@@ -27,7 +27,7 @@ public class PrintLog implements Handler<RoutingContext> {
 	public Cookie cookie;
 	public boolean sessionPassed = false;
 	public String user_i_str;
-	public long user_i;
+	public long user_i = 0;
 	public HttpMethod method;
 	public String now;
 	public Timestamp tNow;
@@ -163,6 +163,9 @@ public class PrintLog implements Handler<RoutingContext> {
 					msg = "User ID: " + user.getString("id");
 					System.out.println(msg);
 					html.append("User ID: <a target=\"_blank\" href=\"/user/" + user.getString("id") + "\">" + user.getString("id") + "</a><br/>");
+				}
+				else {
+					user_i = 0;
 				}
 			} catch (SQLException e) {
 				RecoeveDB.err(e);
