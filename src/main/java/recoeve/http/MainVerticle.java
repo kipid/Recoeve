@@ -2,6 +2,7 @@ package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
+import io.vertx.core.DeploymentOptions;
 // import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
@@ -14,6 +15,7 @@ public class MainVerticle extends AbstractVerticle {
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
+	private String verticleId;
 
 	@Override
 	public void start() {
@@ -22,8 +24,27 @@ public class MainVerticle extends AbstractVerticle {
 		fileMapWithVar = new FileMapWithVar();
 		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		db = new RecoeveDB(vertx);
-		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db));
+		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
+				new DeploymentOptions().setInstances(2), (h) -> {
+					if (h.succeeded()) {
+						verticleId = h.result();
+					}
+					else {
+						System.out.println("Cause " + h.cause());
+					}
+				});
 		// vertx.deployVerticle(new UnderConstruction(vertx, db));
+	}
+
+	@Override
+	public void stop() {
+		vertx.undeploy(verticleId);
+		context = null;
+		vertx = null;
+		fileMap = null;
+		fileMapWithVar = null;
+		recoeveWebClient = null;
+		db = null;
 	}
 
 	public static void main(String... args) {
