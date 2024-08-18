@@ -3,11 +3,11 @@
 @ECHO OFF
 
 :: destination of class to be created
-SET DC=C:\\Recoeve\\bin\\main
+SET DC=C:\Recoeve\bin\main
 
 :: The whole CLASSPATH list splited by ";"
 :: The whole classes are integrated into C:\Recoeve\gradle\wrapper\gradle-wrapper.jar
-SET CLASSPATH=%CLASSPATH%;%RECOEVE_HOME%\\bin\\main;%RECOEVE_HOME%\\gradle\\wrapper\\gradle-wrapper.jar;%JAVA_HOME%\\lib;%VERTX_HOME%\target\\vertx-core-aggregator-5.0.0-SNAPSHOT-tests.jar
+SET CLASSPATH=%CLASSPATH%;%RECOEVE_HOME%\bin\main;%RECOEVE_HOME%\gradle\wrapper\gradle-wrapper.jar;%JAVA_HOME%\lib;%VERTX_HOME%\target\vertx-core-aggregator-5.0.0-SNAPSHOT-tests.jar
 
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
@@ -35,7 +35,7 @@ ECHO --- OUTPUT: %CN% %2 %3 %4 %5 %6 %7 %8 %9 ---
 :: Change directory to the %DC% [destination of class to be created].
 CD %DC%
 
-:: Run/Execute the class created.
+:: Run\Execute the class created.
 java -Dfile.encoding=UTF-8 -classpath "%CLASSPATH%" %CN% %2 %3 %4 %5 %6 %7 %8 %9
 
 :: Back to source directory
