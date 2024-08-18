@@ -4,7 +4,7 @@ import java.io.File;
 	// http://docs.oracle.com/javase/8/docs/api/java/io/File.html
 import java.io.FileReader;
 import java.io.FileInputStream;
-import java.io.IOException;
+// import java.io.IOException;
 import java.lang.StringBuffer;
 import java.nio.CharBuffer;
 
@@ -17,15 +17,15 @@ public class FileInfos {
 		File file=new File("data/test.txt");
 		FileReader reader;
 		FileInputStream in;
-		
+
 		if (file.exists()){
 			try{
 				System.out.println("getName : "+file.getName());
 				System.out.println("getPath : "+file.getPath());
-				
+
 				System.out.println("pathSeparator : "+File.pathSeparator);
 				System.out.println("separator : "+File.separator);
-				
+
 				// 파일 절대 경로 출력
 				System.out.println("getAbsolutePath : "+file.getAbsolutePath());
 				// 파일 정규 경로 출력
@@ -49,11 +49,11 @@ public class FileInfos {
 				// 파일 내용 길이 출력
 				int len=(int)file.length();
 				System.out.println("length() : "+len);
-				
+
 				reader=new FileReader(file);
 				System.out.println("encoding : "+reader.getEncoding());
 				reader.close();
-				
+
 				////////////////////////////////////
 				// Using StringBuffer
 				// 이게 가장 무난한듯.
@@ -66,7 +66,7 @@ public class FileInfos {
 				}
 				reader.close();
 				System.out.println("\n\tStringBuffer : \n"+sb);
-				
+
 				////////////////////////////////////
 				// Using char[]
 				////////////////////////////////////
@@ -78,7 +78,7 @@ public class FileInfos {
 				reader.close();
 				System.out.println("\n\tchar[] : \n"+new String(cbuf, 0, len).trim());
 					// UTF8 인코딩이라 한글이 3 byte로 처리되는데, JAVA에서는 UTF16으로 한글 한글자가 char 하나만 차지하는듯?
-				
+
 				////////////////////////////////////
 				// Using CharBuffer (not working)
 				////////////////////////////////////
@@ -88,7 +88,7 @@ public class FileInfos {
 				reader.close();
 				System.out.println("\n\tCharBuffer : \n"+cb.toString().trim());
 					// not working
-				
+
 				////////////////////////////////////
 				// Using FileInputStream and byte[]
 				// This is used generally for image files or data files, not text files.

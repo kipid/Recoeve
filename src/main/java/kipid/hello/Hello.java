@@ -1,6 +1,6 @@
 package kipid.hello;
 
-import static java.lang.Math.*;
+// import static java.lang.Math.*;
 
 class Hello {
 	public static void main(String... args) {
