@@ -1,4 +1,4 @@
-rem copy to C:\kipid\PortableGit\bin
+rem copy to C:/kipid/PortableGit/bin
 
 :: Current directory
 SET BASEDIR=%CD%
@@ -15,15 +15,27 @@ git config --global user.email "kipacti@gmail.com"
 git config --global --replace-all init.defaultBranch main
 git config --global pull.rebase true
 
+
+
 rem call ssh-agent
-rem ssh-add C:\RecoeveNet\.ssh\github-recoeve-rsa
+rem ssh-add C:/RecoeveNet/.ssh/github-recoeve-rsa
 rem git config --global credential.helper cache
 
 rem git remote set-url origin git@github.com:kipid/Recoeve.git
+rem git pull origin main
+
+rem cd C:/RecoeveNet/
+rem git remote set-url origin git@github.com:kipid/RecoeveNet.git
+rem git pull origin main
+
+
+
+git config --global credential.helper C:/RecoeveNet/.ssh/github-pwd
+git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
 git pull origin main
 
 cd C:/RecoeveNet/
-rem git remote set-url origin git@github.com:kipid/RecoeveNet.git
+git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
 git pull origin main
 
 :: Back to current directory
