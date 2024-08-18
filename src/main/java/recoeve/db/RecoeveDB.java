@@ -125,6 +125,7 @@ public class RecoeveDB {
   // HH:mm:ss");
   // String currentTime=sdf.format(dt);
 
+  private PreparedStatement pstmtGetLogAccess;
   private PreparedStatement pstmtLogAccess;
 
   private PreparedStatement pstmtGetRedirect;
@@ -226,7 +227,8 @@ public class RecoeveDB {
           pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < ?;");
           pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
 
-          pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `html`) VALUES (?, ?)");
+          pstmtGetLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`=?;");
+          pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `user_i`, `html`) VALUES (?, ?, ?);");
 
           pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
           pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
@@ -379,8 +381,8 @@ public class RecoeveDB {
               System.err.println("Database operation failed: " + res.cause());
             }
           });
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
   }
 
@@ -430,8 +432,8 @@ public class RecoeveDB {
       if (rs.next()) {
         now = rs.getString(1);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return now; // utc_timestamp()
   }
@@ -444,8 +446,8 @@ public class RecoeveDB {
       if (rs.next()) {
         return rs.getBoolean(1);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return true;
   }
@@ -473,8 +475,8 @@ public class RecoeveDB {
         System.out.println("result:" + res);
         return res0 && res;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -488,8 +490,34 @@ public class RecoeveDB {
       if (rs.next()) {
         return rs.getBoolean(1);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
+    }
+    return false;
+  }
+
+  public String getLogAccess(Timestamp t) {
+    try {
+      pstmtGetLogAccess.setTimestamp(1, t);
+      ResultSet rs = pstmtGetLogAccess.executeQuery();
+      if (rs != null && rs.next()) {
+        return rs.getString("html");
+      }
+    } catch (SQLException err) {
+      err(err);
+    }
+    return "";
+  }
+
+  public boolean putLogAccess(Timestamp now, long user_i, String html) {
+    try {
+      String html0 = getLogAccess(now);
+      pstmtLogAccess.setTimestamp(1, now);
+      pstmtLogAccess.setLong(2, user_i);
+      pstmtLogAccess.setString(3, html0 + html);
+      return pstmtLogAccess.executeUpdate() > 0;
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -501,8 +529,8 @@ public class RecoeveDB {
       if (rs.next()) {
         return rs.getString("originalURI");
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return null;
   }
@@ -514,8 +542,8 @@ public class RecoeveDB {
       if (rs.next()) {
         return longToHexString(rs.getLong("hashpath"));
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return null;
   }
@@ -535,8 +563,8 @@ public class RecoeveDB {
           }
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -597,8 +625,8 @@ public class RecoeveDB {
         contents += "\tNot put blogstat.";
         return heads + "\n" + contents;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     heads += "\terror";
     contents += "\terror ocurred!";
@@ -637,8 +665,8 @@ public class RecoeveDB {
           contents += "\t" + StrArray.enclose(stats.trim());
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return heads + contents;
   }
@@ -650,8 +678,8 @@ public class RecoeveDB {
       calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 32 days from the current date
       pstmtDelBlogStat1.setTimestamp(1, new Timestamp(calendar.getTimeInMillis()));
       return pstmtDelBlogStat1.executeUpdate() > 0;
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -659,8 +687,8 @@ public class RecoeveDB {
   public boolean idExists(String id) {
     try {
       return findUserById(id).next();
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false; // if error occurs.
   }
@@ -668,8 +696,8 @@ public class RecoeveDB {
   public boolean idAvailable(String id) {
     try {
       return !(findUserById(id).next());
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false; // if error occurs.
   }
@@ -677,8 +705,8 @@ public class RecoeveDB {
   public boolean emailAvailable(String email) {
     try {
       return !(findUserByEmail(email).next());
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false; // if error occurs.
   }
@@ -691,8 +719,8 @@ public class RecoeveDB {
       pstmtCreateAuthToken.setString(2, ip);
       pstmtCreateAuthToken.setBytes(3, token);
       done = (pstmtCreateAuthToken.executeUpdate() > 0);
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
@@ -746,8 +774,8 @@ public class RecoeveDB {
       System.out.println(errMsg);
       logsCommit(1, tNow, ip, "tkn", false, errMsg);
       con.commit();
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
       try {
         con.rollback();
       } catch (SQLException e1) {
@@ -767,8 +795,8 @@ public class RecoeveDB {
             && checkTimeDiff(tNow, from, secondsChangePwdToken)
             && Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -783,8 +811,8 @@ public class RecoeveDB {
             && checkTimeDiff(tNow, from, secondsChangePwdToken)
             && Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -793,8 +821,8 @@ public class RecoeveDB {
   static {
     try {
       sha512 = MessageDigest.getInstance("SHA-512");
-    } catch (Exception e) {
-      err(e);
+    } catch (Exception err) {
+      err(err);
     }
   }
 
@@ -832,8 +860,8 @@ public class RecoeveDB {
       pstmtPutPreGoogle.setString(4, dataStr);
       pstmtPutPreGoogle.executeUpdate();
       return "IP and state are saved.";
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return "Not saved.";
   }
@@ -846,8 +874,8 @@ public class RecoeveDB {
       if (rs.next()) {
         return rs.getString("data");
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return "/";
   }
@@ -860,8 +888,8 @@ public class RecoeveDB {
       if (rs.next()) {
         return tNow.before(new Timestamp(rs.getTimestamp("t").getTime() + 300000L));
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -894,10 +922,10 @@ public class RecoeveDB {
           done = true;
         }
       }
-    } catch (SQLException e) {
-      err(e);
-    } catch (Exception e) {
-      System.out.println(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (Exception err) {
+      System.out.println(err);
     }
     try {
       System.out.println("createUser done : " + done);
@@ -906,8 +934,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
@@ -941,10 +969,10 @@ public class RecoeveDB {
           done = true;
         }
       }
-    } catch (SQLException e) {
-      err(e);
-    } catch (Exception e) {
-      System.out.println(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (Exception err) {
+      System.out.println(err);
     }
     try {
       System.out.println("createUser done : " + done);
@@ -953,8 +981,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
@@ -974,10 +1002,10 @@ public class RecoeveDB {
         user.updateRow();
         done = true;
       }
-    } catch (SQLException e) {
-      err(e);
-    } catch (Exception e) {
-      System.out.println(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (Exception err) {
+      System.out.println(err);
     }
     try {
       System.out.println("Change password done : " + done);
@@ -986,8 +1014,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
@@ -1014,8 +1042,8 @@ public class RecoeveDB {
         logsCommit(user_me, tNow, ip, "vrf", true); // verified.
         done = true;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     try {
       if (!done) {
@@ -1023,8 +1051,8 @@ public class RecoeveDB {
         logsCommit(user_me, tNow, ip, "vrf", false); // not verified.
       }
       con.commit();
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
@@ -1061,8 +1089,8 @@ public class RecoeveDB {
         result = "Cannot find a user from id/email.";
         return result;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     result = "SQL Exception.";
     return result;
@@ -1094,8 +1122,8 @@ public class RecoeveDB {
         con.rollback();
         return result;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
       try {
         if (!done) {
           con.rollback();
@@ -1157,10 +1185,10 @@ public class RecoeveDB {
         return FileMap.replaceStr(
             "[--pre sended email to--] " + encryptEmail(email) + "[--post sended email to--]", lang);
       }
-    } catch (SQLException e) {
-      err(e);
-    } catch (Exception e) {
-      System.out.println(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (Exception err) {
+      System.out.println(err);
     }
     return "Error occurred.";
   }
@@ -1204,8 +1232,8 @@ public class RecoeveDB {
                   .replaceAll("\n", "\\\\n")
                   .replaceAll("\t", "\\\\t"));
         }
-      } catch (SQLException e) {
-        err(e);
+      } catch (SQLException err) {
+        err(err);
       }
     }
     try {
@@ -1221,8 +1249,8 @@ public class RecoeveDB {
       varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString())
           .replaceAll("\n", "\\\\n")
           .replaceAll("\t", "\\\\t"));
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     varMap.putIfAbsent("{--userIndex--}", "");
     varMap.putIfAbsent("{--userId--}", "");
@@ -1259,8 +1287,8 @@ public class RecoeveDB {
         varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString())
             .replaceAll("\n", "\\\\n")
             .replaceAll("\t", "\\\\t"));
-      } catch (SQLException e) {
-        err(e);
+      } catch (SQLException err) {
+        err(err);
       }
     }
     varMap.putIfAbsent("{--userIndex--}", "");
@@ -1287,8 +1315,8 @@ public class RecoeveDB {
               return Integer.toString(rs.getInt("iter"));
             }
             return "No session.";
-          } catch (SQLException e) {
-            err(e);
+          } catch (SQLException err) {
+            err(err);
           }
         }
         return "Expired.";
@@ -1322,8 +1350,8 @@ public class RecoeveDB {
               return true;
             }
             // No log for sessionCheck. Too much.
-          } catch (Exception e) {
-            err(e);
+          } catch (Exception err) {
+            err(err);
           }
         }
       }
@@ -1375,8 +1403,8 @@ public class RecoeveDB {
           done = false;
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     try {
       if (done) {
@@ -1384,8 +1412,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return setCookie;
   }
@@ -1442,10 +1470,10 @@ public class RecoeveDB {
                                                      // before log-in request.
       }
       done = true;
-    } catch (SQLException e) {
-      err(e);
-    } catch (Exception e) {
-      System.out.println(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (Exception err) {
+      System.out.println(err);
     }
     try {
       if (done) {
@@ -1453,8 +1481,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return setCookie;
   }
@@ -1546,8 +1574,8 @@ public class RecoeveDB {
           System.out.println(errMsg);
           logsCommit(user_me, tNow, ip, "rmb", false, errMsg);
           con.commit();
-        } catch (SQLException e) {
-          err(e);
+        } catch (SQLException err) {
+          err(err);
           try {
             con.rollback();
           } catch (SQLException e1) {
@@ -1591,8 +1619,8 @@ public class RecoeveDB {
         setCookie.add(io.vertx.core.http.Cookie.cookie("salt", bytesToHexString(salt)).setSecure(true)
             .setPath("/").setMaxAge(-100L));
       }
-    } catch (Exception e) {
-      err(e);
+    } catch (Exception err) {
+      err(err);
     }
     return setCookie;
   }
@@ -1647,8 +1675,8 @@ public class RecoeveDB {
           if (rs.next()) {
             rs.deleteRow();
           }
-        } catch (SQLException e) {
-          err(e);
+        } catch (SQLException err) {
+          err(err);
         }
       }
     }
@@ -1664,8 +1692,8 @@ public class RecoeveDB {
           if (rs.next()) {
             rs.deleteRow();
           }
-        } catch (SQLException e) {
-          err(e);
+        } catch (SQLException err) {
+          err(err);
         }
       }
     }
@@ -1701,8 +1729,8 @@ public class RecoeveDB {
           pstmtDelUserRemember.setLong(1, user_me);
           System.out.println("Session deleted: " + pstmtDelUserSession1.executeUpdate());
           System.out.println("Remember deleted: " + pstmtDelUserRemember.executeUpdate());
-        } catch (SQLException e) {
-          err(e);
+        } catch (SQLException err) {
+          err(err);
         }
       }
     }
@@ -1746,8 +1774,8 @@ public class RecoeveDB {
   public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success) {
     try {
       return logs(user_me, tNow, ip, log, success, null);
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -1755,8 +1783,8 @@ public class RecoeveDB {
   public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success, String desc) {
     try {
       return logs(user_me, tNow, ip, log, success, desc);
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -1796,8 +1824,8 @@ public class RecoeveDB {
         con.commit();
         return "cut";
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
       try {
         con.rollback();
       } catch (SQLException e2) {
@@ -1896,8 +1924,8 @@ public class RecoeveDB {
                           revNeighborListFrom, tNow);
                     }
                   }
-                } catch (SQLException e) {
-                  err(e);
+                } catch (SQLException err) {
+                  err(err);
                 }
               });
               updateNeighborListFrom(user_from, cat_from, neighborList, tNow);
@@ -1913,8 +1941,8 @@ public class RecoeveDB {
         delNeighborListTo(user_from, cat_from);
       }
       con.commit();
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
       try {
         con.rollback();
       } catch (SQLException e2) {
@@ -1958,8 +1986,8 @@ public class RecoeveDB {
           }
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -1991,8 +2019,8 @@ public class RecoeveDB {
           }
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -2060,8 +2088,8 @@ public class RecoeveDB {
       pstmtPutRecentests.setTimestamp(3, tNow);
       pstmtPutRecentests.setTimestamp(4, tNow);
       return pstmtPutRecentests.executeUpdate() > 0;
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -2110,8 +2138,8 @@ public class RecoeveDB {
           rs.updateTimestamp("tUpdate", tNow);
           rs.updateRow();
         }
-      } catch (SQLException e) {
-        err(e);
+      } catch (SQLException err) {
+        err(err);
       }
       return rs;
     } else {
@@ -2167,8 +2195,8 @@ public class RecoeveDB {
         }
         return heads + "\n" + contents;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     heads += "\nx";
     return heads;
@@ -2783,8 +2811,8 @@ public class RecoeveDB {
         long user_me = user.getLong("i");
         res = getStringCatList(user_me);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -2794,8 +2822,8 @@ public class RecoeveDB {
     try {
       CatList catL = getCatList(user_me);
       res = catL.toString();
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -2863,8 +2891,8 @@ public class RecoeveDB {
           return true;
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return false;
   }
@@ -2877,10 +2905,10 @@ public class RecoeveDB {
         if (user.next()) {
           res = getStringCatUriList(user.getLong("i"), catList);
         }
-      } catch (SQLException e) {
-        err(e);
-      } catch (NullPointerException e) {
-        err(e);
+      } catch (SQLException err) {
+        err(err);
+      } catch (NullPointerException err) {
+        err(err);
       }
     }
     return res;
@@ -2896,10 +2924,10 @@ public class RecoeveDB {
         res += "\n" + cat + "\t"
             + getUriList(user_me, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
       }
-    } catch (SQLException e) {
-      err(e);
-    } catch (NullPointerException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
+    } catch (NullPointerException err) {
+      err(err);
     }
     return res;
   }
@@ -3176,8 +3204,8 @@ public class RecoeveDB {
       byte[] descHash;
       try {
         descHash = sha512(desc);
-      } catch (Exception e) {
-        err(e);
+      } catch (Exception err) {
+        err(err);
         return;
       }
       pstmtGetRecoStatDefDesc.setBytes(2, descHash);
@@ -3228,8 +3256,8 @@ public class RecoeveDB {
                 byte[] descIHash;
                 try {
                   descIHash = sha512(descI);
-                } catch (Exception e) {
-                  err(e);
+                } catch (Exception err) {
+                  err(err);
                   return;
                 }
                 pstmtGetRecoStatDefDesc.setString(1, uri);
@@ -3267,8 +3295,8 @@ public class RecoeveDB {
             String descIHash = null;
             try {
               descIHash = bytesToHexString(sha512(sADescSetRaw.get(i, 0)));
-            } catch (Exception e) {
-              err(e);
+            } catch (Exception err) {
+              err(err);
               return;
             }
             ArrayList<String> arrayListI = new ArrayList<String>(
@@ -3328,8 +3356,8 @@ public class RecoeveDB {
       }
 
       res = heads + "\n" + contents;
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -3363,8 +3391,8 @@ public class RecoeveDB {
           res += StrArray.enclose(defDescs.getString("descSet"));
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -3400,8 +3428,8 @@ public class RecoeveDB {
           uri = "https://recoeve.net/redirect/" + longToHexString(longHashpath);
         }
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return uri;
   }
@@ -3611,9 +3639,9 @@ public class RecoeveDB {
           }
           updateCatList(user_me, catL);
           con.commit();
-        } catch (SQLException e) {
-          err(e);
-          res += "[--Error--]: [--" + e.getMessage() + "--]";
+        } catch (SQLException err) {
+          err(err);
+          res += "[--Error--]: [--" + err.getMessage() + "--]";
           catL.fullCats = previousCatListStr;
           try {
             con.rollback();
@@ -3623,8 +3651,8 @@ public class RecoeveDB {
         }
         res += "\t" + tNow + "\t" + StrArray.enclose(originalURI) + "\t" + uri;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return res;
   }
@@ -3647,8 +3675,8 @@ public class RecoeveDB {
         updateDefDesc(uri, desc, 1);
         updateRecoStat(user_me, uri, pts, tNow, 1);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
   }
 
@@ -3677,8 +3705,8 @@ public class RecoeveDB {
         pstmtPutReco.setString(9, rs.getString("val"));
         pstmtPutReco.executeUpdate();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
   }
 
@@ -3731,8 +3759,8 @@ public class RecoeveDB {
         sb.append("\t");
         sb.append(desc);
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return sb.toString();
   }
@@ -3751,8 +3779,8 @@ public class RecoeveDB {
             + ". Now Recoeve.net (Slow/Sexy/Sincere SNS) is in beta service stage.<br>Please visit <a target=\"_blank\" href=\"https://recoeve.net/\">https://recoeve.net/</a> again, and try to use/play with it please.</span>";
         Gmail.send(rs.getString("email"), "", title, msg);
       }
-    } catch (Exception e) {
-      err(e);
+    } catch (Exception err) {
+      err(err);
     }
   }
 
@@ -3797,8 +3825,8 @@ public class RecoeveDB {
         rsUser.deleteRow();
         done = true;
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     try {
       System.out.println("User with email:" + userEmail + " is deleted successfully. : " + done);
@@ -3807,8 +3835,8 @@ public class RecoeveDB {
       } else {
         con.rollback();
       }
-    } catch (SQLException e) {
-      err(e);
+    } catch (SQLException err) {
+      err(err);
     }
     return done;
   }
