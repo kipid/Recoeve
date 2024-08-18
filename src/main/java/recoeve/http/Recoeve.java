@@ -13,12 +13,9 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
-import java.io.UnsupportedEncodingException;
-
 import java.lang.StringBuilder;
 
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.URISyntaxException;
 
 import java.util.concurrent.CompletableFuture;
@@ -140,9 +137,7 @@ public class Recoeve extends AbstractVerticle {
 								else {
 									// Log-in failed.
 									pl.req.response()
-											.end(FileMap.replaceStr("[--Log-in failed.--] [--User of email--]:"
-													+ inputs.get(1, "email") + " [--does not exist.--]", pl.lang),
-													ENCODING);
+											.end(FileMap.replaceStr("[--Log-in failed.--] [--User of email--]:" + inputs.get(1, "email") + " [--does not exist.--]", pl.lang), ENCODING);
 									System.out.println("log-in fail: " + inputs.get(1, "email"));
 									pLHtml.append("log-in fail: <a target=\"_blank\" href=\"mailto:" + inputs.get(1, "email") + "\">" + inputs.get(1, "email") + "</a></div>");
 									db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
@@ -315,20 +310,13 @@ public class Recoeve extends AbstractVerticle {
 			StringBuilder pLHtml = pl.printLog(ctx);
 			if (pl.refererAllowed) { // referer check.
 				String fileName = null;
-				try {
-					fileName = URLDecoder.decode(ctx.pathParam("fileName"), "UTF-8");
-					String msg = "/CDN/:fileName :: fileName=" + fileName;
-					System.out.println(msg);
-					pLHtml.append(msg + "</div>");
-					db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
-				} catch (UnsupportedEncodingException err) {
-					System.out.println(err);
-					pLHtml.append(err + "</div>");
-					fileName = ctx.pathParam("fileName");
-				}
+				fileName = Encoder.decodeURIComponent(ctx.pathParam("fileName"));
+				String msg = "/CDN/:fileName :: fileName=" + fileName;
+				System.out.println(msg);
+				pLHtml.append(msg + "<br/>");
 				if (fileName != null && !fileName.isEmpty()) {
 					pl.req.response().putHeader("Cache-Control", "public, max-age=86400, immutable"); // 1 Day=86400 sec.
-					pl.req.response().putHeader("ETag", "1.8.2");
+					pl.req.response().putHeader("ETag", "1.8.3");
 					String[] fileNameSplit = fileName.split("\\.");
 					switch (fileNameSplit[fileNameSplit.length - 1]) {
 						case "ico":
@@ -359,7 +347,7 @@ public class Recoeve extends AbstractVerticle {
 					Buffer fileInMemory = fileMap.getCDNFileInMemory(fileName);
 					if (fileInMemory != null) {
 						pl.req.response().end(fileInMemory);
-						String msg = "Sended file in memory: " + fileName;
+						msg = "Sended file in memory: " + fileName;
 						System.out.println(msg);
 						pLHtml.append(msg + "</div>");
 						db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
@@ -367,7 +355,7 @@ public class Recoeve extends AbstractVerticle {
 					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
-						String msg = "No file in memory: " + fileName + ".";
+						msg = "No file in memory: " + fileName + ".";
 						System.out.println(msg);
 						pLHtml.append(msg + "</div>");
 						db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
@@ -376,7 +364,7 @@ public class Recoeve extends AbstractVerticle {
 				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
-					String msg = INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")";
+					msg = INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")";
 					System.out.println(msg);
 					pLHtml.append(msg + "</div>");
 					db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
@@ -511,17 +499,11 @@ public class Recoeve extends AbstractVerticle {
 			StringBuilder pLHtml = pl.printLog(ctx);
 			if (pl.refererAllowed) { // referer check.
 				String fileName = null;
-				try {
-					fileName = URLDecoder.decode(ctx.pathParam("fileName"), "UTF-8");
-					msg = "/:fileName :: fileName=" + fileName;
-					System.out.println(msg);
-					pLHtml.append(msg + "</div>");
-					db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
-				} catch (UnsupportedEncodingException err) {
-					System.out.println(err);
-					pLHtml.append(err + "</div>");
-					fileName = ctx.pathParam("fileName");
-				}
+				fileName = Encoder.decodeURIComponent(ctx.pathParam("fileName"));
+				msg = "/:fileName :: fileName=" + fileName;
+				System.out.println(msg);
+				pLHtml.append(msg + "</div>");
+				db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
 				if (fileName != null && !fileName.isEmpty()) {
 					switch (fileName) {
 						case "personal-info-handle": // e.g. path=/personal-info-handle
@@ -652,16 +634,10 @@ public class Recoeve extends AbstractVerticle {
 			pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (pl.refererAllowed) { // referer check.
 				String userId = null;
-				try {
-					userId = URLDecoder.decode(ctx.pathParam("param0"), "UTF-8");
-					msg = "/user/:userId :: userId=" + userId;
-					System.out.println(msg);
-					pLHtml.append(msg + "<br/>");
-				} catch (UnsupportedEncodingException err) {
-					System.out.println(err);
-					pLHtml.append(err + "<br/>");
-					userId = ctx.pathParam("userId");
-				}
+				userId = Encoder.decodeURIComponent(ctx.pathParam("param0"));
+				msg = "/user/:userId :: userId=" + userId;
+				System.out.println(msg);
+				pLHtml.append(msg + "<br/>");
 				if (userId != null && !userId.isEmpty() && db.idExists(userId)) {
 					pl.req.response().end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang,
 							db.varMapUserPage(pl.cookie, userId)), ENCODING);
@@ -692,16 +668,10 @@ public class Recoeve extends AbstractVerticle {
 			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 			if (pl.refererAllowed) { // referer check.
 				String userId = null;
-				try {
-					userId = URLDecoder.decode(ctx.pathParam("param0"), "UTF-8");
-					msg = "\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param0=" + userId;
-					System.out.println(msg);
-					pLHtml.append(msg + "<br/>");
-				} catch (UnsupportedEncodingException err) {
-					System.out.println(err);
-					pLHtml.append(err + "<br/>");
-					userId = ctx.pathParam("userId");
-				}
+				userId = Encoder.decodeURIComponent(ctx.pathParam("param0"));
+				msg = "\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param0=" + userId;
+				System.out.println(msg);
+				pLHtml.append(msg + "<br/>");
 				final String finalUserId = userId;
 				if (finalUserId != null && !finalUserId.isEmpty() && db.idExists(finalUserId)) {
 					String wildcard = pl.req.getParam("param1");
@@ -849,13 +819,7 @@ public class Recoeve extends AbstractVerticle {
 								pl.req.response().end(conciseURI, ENCODING);
 								String msg1 = "uri: " + uri + "conciseURI: " + conciseURI;
 								System.out.println(msg1);
-								try {
-									pLHtml.append("uri: <a target=\"_blank\" href=\"" + uri + "\">" + HTMLString.escapeOnlyTag(URLDecoder.decode(uri, "UTF-8")) + "</a><br/>conciseURI: <a target=\"_blank\" href=\"" + conciseURI + "\">" + conciseURI + "</a></div>");
-								} catch (UnsupportedEncodingException err) {
-									RecoeveDB.err(err);
-									pLHtml.append("uri: <a target=\"_blank\" href=\"" + uri + "\">" + HTMLString.escapeOnlyTag(uri) + "</a><br/>conciseURI: <a target=\"_blank\" href=\"" + conciseURI + "\">" + conciseURI + "</a></div>");
-								}
-
+								pLHtml.append("uri: <a target=\"_blank\" href=\"" + uri + "\">" + HTMLString.escapeOnlyTag(Encoder.decodeURIComponent(uri)) + "</a><br/>conciseURI: <a target=\"_blank\" href=\"" + conciseURI + "\">" + conciseURI + "</a></div>");
 							}
 						});
 						break;
@@ -985,20 +949,15 @@ public class Recoeve extends AbstractVerticle {
 							// VeriKey check.
 							String userId = ctx.pathParam("param1");
 							String token = ctx.pathParam("param2");
-							try {
-								userId = URLDecoder.decode(userId, "UTF-8");
-								// token=URLDecoder.decode(token, "UTF-8");
-								msg = "^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param1=" + userId;
-								System.out.println(msg);
-								pLHtml.append(msg + "<br/>");
-								msg = "^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param2=" + token;
-								System.out.println(msg);
-								pLHtml.append(msg + "</div>");
-								db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
-							} catch (UnsupportedEncodingException err) {
-								System.out.println(err);
-								pLHtml.append(err + "</div>");
-							}
+							userId = Encoder.decodeURIComponent(userId);
+							// token=Encoder.decodeURIComponent(token);
+							msg = "^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param1=" + userId;
+							System.out.println(msg);
+							pLHtml.append(msg + "<br/>");
+							msg = "^\\/account\\/verify\\/([^\\/]+)\\/([^\\/]+)$ :: param2=" + token;
+							System.out.println(msg);
+							pLHtml.append(msg + "</div>");
+							db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString());
 							boolean verified = db.verifyUser(pl.cookie.get("I"), userId, token, pl.ip, pl.tNow);
 							msg = "Verified: " + verified;
 							System.out.println(msg);
