@@ -23,20 +23,20 @@ sudo git config --global pull.rebase true
 # sudo git config --global credential.helper cache
 
 # sudo git remote set-url origin git@github.com:kipid/Recoeve.git
-# sudo git pull origin main
+# sudo git pull
 
 # cd ~/RecoeveNet/
 # sudo git remote set-url origin git@github.com:kipid/RecoeveNet.git
-# sudo git pull origin main
+# sudo git pull
 
 
 
 sudo git config --global credential.helper ~/RecoeveNet/.ssh/github-pwd
 sudo git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
-sudo git pull origin main
+sudo git pull
 
 cd ~/RecoeveNet/
 sudo git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
-sudo git pull origin main
+sudo git pull
 
 cd ${BASEDIR}
