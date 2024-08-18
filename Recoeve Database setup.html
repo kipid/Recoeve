@@ -120,7 +120,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 ### Tables
 
-우선 DATABASE 를 만든 후, TABLE <refer class="table-redirect"></refer> 를 만듬.
+우선 DATABASE 를 만든 후, TABLE <refer class="table-logAccess"></refer> 와 <refer class="table-redirect"></refer> 를 만듬.
 
 TABLE <refer class="table-UserClass"></refer>, <refer class="table-PreGoogle"></refer>, <refer class="table-Users"></refer> 를 만듬. Sign-up 자동화 방지를 위해서 <refer class="table-AuthToken"></refer> 도 만듬.
 
@@ -291,7 +291,7 @@ Encoding 설정 : <code>STATUS</code>
 
 ```[.linenums]
 mysql&gt; status;
---------------
+<code>--------------
 mysql  Ver 14.14 Distrib 5.6.21, for Win64 (x86_64)
 
 Connection id:          7
@@ -311,7 +311,7 @@ Uptime:                 2 days 15 hours 17 min 30 sec
 
 Threads: 1  Questions: 27  Slow queries: 0  Opens: 70  Flush tables: 1  Open tab
 les: 63  Queries per second avg: 0.000
---------------
+--------------</code>
 ```/
 
 <div class="p"></div>
@@ -350,59 +350,116 @@ mysql&gt; SHOW variables like 'c%';
 Server 에서 기본적으로 받는 data 들은...
 
 ```[.scrollable.lang-ruby]
-# GET a file, From chrome
-Host: localhost:1000
-Connection: keep-alive
-Cache-Control: max-age=0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.102 Safari/537.36
-DNT: 1
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
-Cookie:
+A client has connected!: 98
+Time: 2024-08-18 08:19:32
+User-Agent: Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)
+User-Agent.length: 75
+Referer: null
+Referer Allowed: true
+query: cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C
+Method: GET
+Absolute URI: https://recoeve.net/user/kipid?cat=[Recoeve]--Manual/설명서
+User IP: 85.208.96.194:10860
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:null
+Lang: en
+/user/:userId :: userId=kipid
+Sended user-page.html
 
-# GET favicon.ico, From chrome
-Host: localhost:1000
-Connection: keep-alive
-Accept: */*
-DNT: 1
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.102 Safari/537.36
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
-Cookie:
 
-# GET /, From chrome, iframe tag in http://kipid.tistory.com/entry/Access-from-other-hosts
-Host: localhost:1000
-Connection: keep-alive
-Cache-Control: max-age=0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.103 Safari/537.36
-DNT: 1
-Referer: http://kipid.tistory.com/entry/Access-from-other-hosts
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
+A client has connected!: 99
+Time: 2024-08-18 08:28:45
+User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.99 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+User-Agent.length: 199
+Referer: https://kipid.tistory.com/entry/2014-MAMA-in-HONG-KONG?category=759082
+Referer Host: kipid.tistory.com
+Referer Allowed: true
+query: null
+Method: GET
+Absolute URI: https://recoeve.net/CDN/jquery.js
+User IP: 34.64.82.75:56154
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:en-US
+Lang: en
+/CDN/:fileName :: fileName=jquery.js
+Retrieved file content: jquery.js
+Sended file in memory: jquery.js
 
-# GET /image/Tulips.jpg, From chrome, img tag in http://kipid.tistory.com/entry/Access-from-other-hosts
-Host: localhost:1000
-Connection: keep-alive
-Cache-Control: max-age=0
-Accept: image/webp,*/*;q=0.8
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.103 Safari/537.36
-DNT: 1
-Referer: http://kipid.tistory.com/entry/Access-from-other-hosts
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
 
-# GET /log-in.css, From chrome, link tag in http://kipid.tistory.com/entry/Access-from-other-hosts
-Host: localhost:1000
-Connection: keep-alive
-Cache-Control: max-age=0
-Accept: text/css,*/*;q=0.1
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.103 Safari/537.36
-DNT: 1
-Referer: http://kipid.tistory.com/entry/Access-from-other-hosts
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
+A client has connected!: 100
+Time: 2024-08-18 08:28:53
+User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.99 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+User-Agent.length: 199
+Referer: https://kipid.tistory.com/entry/webp-webm-avif-mp4-를-img-tag-video-tag-로-로딩-테스트-Loading-test
+Referer Host: kipid.tistory.com
+Referer Allowed: true
+query: null
+Method: GET
+Absolute URI: https://recoeve.net/CDN/docuK-2.3.css
+User IP: 34.64.82.71:52388
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:en-US
+Lang: en
+/CDN/:fileName :: fileName=docuK-2.3.css
+Retrieved file content: docuK-2.3.css
+Sended file in memory: docuK-2.3.css
+
+
+A client has connected!: 101
+Time: 2024-08-18 08:31:33
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3501.26 Safari/537.36 SE 2.X MetaSr 1.0
+User-Agent.length: 127
+Referer: null
+Referer Allowed: true
+query: null
+Method: GET
+Absolute URI: https://recoeve.net/robots.txt
+User IP: 223.72.27.110:35289
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:zh-CN,zh;q=0.9,en;q=0.1
+Lang: zh
+/:fileName :: fileName=robots.txt
+Sended robots.txt.
+
+
+A client has connected!: 102
+Time: 2024-08-18 08:54:42
+User-Agent: Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)
+User-Agent.length: 75
+Referer: null
+Referer Allowed: true
+query: PRL=0.70&PRR=1.00&ToR&cat=%5BMusic%2FBreak%5D--K-Pop&lang=ko
+Method: GET
+Absolute URI: https://recoeve.net/user/Music?PRL=0.70&PRR=1.00&ToR&cat=[Music/Break]--K-Pop&lang=ko
+User IP: 85.208.96.212:56572
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:null
+Lang: ko
+/user/:userId :: userId=Music
+Sended user-page.html
+
+
+A client has connected!: 103
+Time: 2024-08-18 08:57:38
+User-Agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36
+User-Agent.length: 144
+Referer: null
+Referer Allowed: true
+query: null
+Method: GET
+Absolute URI: https://www.recoeve.net/sitemap.txt
+User IP: 40.77.167.50:21286
+Local Address: 10.0.0.4:443
+Session passed?: false
+Accept-Language:null
+Lang: en
+/:fileName :: fileName=sitemap.txt
+INVALID ACCESS
 ```/
 
 어느 URI 에서 요청이 들어왔는지 나타내는게 <code>Referer</code> 인듯? <code>Cookie</code> 에 browser cookie 가 오는거고.
@@ -416,6 +473,26 @@ req.remoteAddress(): /0:0:0:0:0:0:0:1:5454
 ```/
 
 와 같이 뽑아낼 수 있는듯.
+
+
+
+## logAccess
+
+<div id="table-logAccess">
+
+```[.linenums.lang-sql]
+CREATE TABLE `logAccess` (
+	`t` TIMESTAMP NOT NULL
+	, `user_i` BIGINT NOT NULL
+	, `html` TEXT NOT NULL
+	, PRIMARY KEY (`t`)
+	, FOREIGN KEY (`user_i`) REFERENCES `Users`(`i`)
+);
+
+CREATE INDEX `t_desc` ON `logAccess` (`t` DESC);
+```/
+
+</div>
 
 
 
