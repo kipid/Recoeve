@@ -523,8 +523,8 @@ public class RecoeveDB {
 		return future;
 	}
 
-	public CompletableFuture<Void> putLogAccess(Timestamp tNow, long user_i, String html, CompletableFuture<String> futureGetLA) {
-		CompletableFuture<Void> future = futureGetLA.thenAcceptAsync((String html0) -> {
+	public CompletableFuture<String> putLogAccess(Timestamp tNow, long user_i, String html, CompletableFuture<String> futureGetLA) {
+		CompletableFuture<String> future = futureGetLA.thenComposeAsync((String html0) -> {
 			try {
 				pstmtLogAccess.setTimestamp(1, tNow);
 				pstmtLogAccess.setLong(2, user_i);
@@ -544,16 +544,22 @@ public class RecoeveDB {
 				String htmlTotal = html0 + html1;
 				pstmtLogAccess.setString(3, htmlTotal);
 				pstmtLogAccess.executeUpdate();
+				return CompletableFuture.supplyAsync(() -> {
+					return htmlTotal;
+				});
 			} catch (SQLException err) {
 				err(err);
 			}
+			return CompletableFuture.supplyAsync(() -> {
+				return "";
+			});
 		});
 		cfs.add(future);
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(cfs.toArray(new CompletableFuture[cfs.size()]));
 		allOf.thenAccept(v -> {
 				cfs.forEach(cf -> {
 					try {
-						System.out.println(cf.get());
+						// System.out.println(cf.get());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
