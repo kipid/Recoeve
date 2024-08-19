@@ -24,19 +24,22 @@ import java.sql.Timestamp;
 
 import java.math.BigInteger;
 
+import java.text.MessageFormat;
 import java.text.Normalizer;
 
+import java.util.concurrent.Callable;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
+import java.util.Set;
+import java.util.TimeZone;
 
 import recoeve.http.Gmail;
 import recoeve.http.Cookie;
@@ -129,6 +132,7 @@ public class RecoeveDB {
 
 	private PreparedStatement pstmtGetLogAccess;
 	private PreparedStatement pstmtLogAccess;
+	private PreparedStatement pstmtSelectLogAccess;
 
 	private PreparedStatement pstmtGetRedirect;
 	private PreparedStatement pstmtGetRedirectHashpath;
@@ -231,6 +235,7 @@ public class RecoeveDB {
 
 					pstmtGetLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`=?;");
 					pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `user_i`, `html`) VALUES (?, ?, ?);");
+					pstmtSelectLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`>=? AND `t`<?");
 
 					pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
 					pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
@@ -511,10 +516,10 @@ public class RecoeveDB {
 		return "";
 	}
 
-	public boolean putLogAccess(Timestamp now, long user_i, String html) {
+	public boolean putLogAccess(Timestamp tNow, long user_i, String html) {
 		try {
-			String html0 = getLogAccess(now);
-			pstmtLogAccess.setTimestamp(1, now);
+			String html0 = getLogAccess(tNow);
+			pstmtLogAccess.setTimestamp(1, tNow);
 			pstmtLogAccess.setLong(2, user_i);
 			String htmlTotal = html0 + html;
 			if (!htmlTotal.startsWith("<div")) {
@@ -529,6 +534,50 @@ public class RecoeveDB {
 			err(err);
 		}
 		return false;
+	}
+
+	public String getLogAccessInSEEForm(Timestamp tNow) {
+		StringBuilder sb = new StringBuilder();
+		Calendar cNow = Calendar.getInstance(TimeZone.getTimeZone("GMT+09:00"), Locale.ENGLISH);
+
+		for (int k = 0; k < 30; k++) {
+			if (k != 0) {
+				cNow.set(Calendar.DAY_OF_MONTH, cNow.get(Calendar.DAY_OF_MONTH)-1);
+				cNow.set(Calendar.HOUR_OF_DAY, 24);
+			}
+
+			sb.append(MessageFormat.format("\n\n\n\n## Date: {0}", String.format("%04d-%02d-%02d", cNow.get(Calendar.YEAR), (cNow.get(Calendar.MONTH) + 1), cNow.get(Calendar.DAY_OF_MONTH))));
+
+			for (int i = 7; i >= 0; i++) {
+				Calendar cFrom = Calendar.getInstance(TimeZone.getTimeZone("GMT+09:00"), Locale.ENGLISH);
+				cFrom.set(Calendar.YEAR, cNow.get(Calendar.YEAR));
+				cFrom.set(Calendar.MONTH, cNow.get(Calendar.MONTH));
+				cFrom.set(Calendar.DAY_OF_MONTH, cNow.get(Calendar.DAY_OF_MONTH));
+				cFrom.set(Calendar.HOUR_OF_DAY, 3*i);
+
+				Calendar cTo = Calendar.getInstance(TimeZone.getTimeZone("GMT+09:00"), Locale.ENGLISH);
+				cTo.set(Calendar.YEAR, cNow.get(Calendar.YEAR));
+				cTo.set(Calendar.MONTH, cNow.get(Calendar.MONTH));
+				cTo.set(Calendar.DAY_OF_MONTH, cNow.get(Calendar.DAY_OF_MONTH));
+				cTo.set(Calendar.HOUR_OF_DAY, 3*i + 3);
+
+				if (cNow.after(cFrom)) {
+					try {
+						pstmtSelectLogAccess.setTimestamp(1, new Timestamp(cFrom.getTimeInMillis()));
+						pstmtSelectLogAccess.setTimestamp(2, new Timestamp(cTo.getTimeInMillis()));
+						ResultSet rs = pstmtSelectLogAccess.executeQuery();
+						sb.append(String.format("\n\n\n\n### From %02d:00 To %02d:00\n\n", 3*i, 3*i + 3));
+						while (rs.next()) {
+							sb.append(rs.getString("html"));
+						}
+					} catch (SQLException err) {
+						err(err);
+					}
+				}
+			}
+		}
+
+		return sb.toString();
 	}
 
 	public String getRedirectURI(long hashpath) {
@@ -683,7 +732,7 @@ public class RecoeveDB {
 	public boolean delBlogVisitor() {
 		try {
 			con.setAutoCommit(true);
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+09:00"), Locale.ENGLISH);
 			calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 32 days from the current date
 			pstmtDelBlogStat1.setTimestamp(1, new Timestamp(calendar.getTimeInMillis()));
 			return pstmtDelBlogStat1.executeUpdate() > 0;
