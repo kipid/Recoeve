@@ -384,7 +384,8 @@ public class RecoeveDB {
 					res -> {
 						if (res.succeeded()) {
 							System.out.println("Database operation successful");
-						} else {
+						}
+						else {
 							System.err.println("Database operation failed: " + res.cause());
 						}
 					});
@@ -647,7 +648,8 @@ public class RecoeveDB {
 					|| refererFromServer != null && refererFromServer.length() > referer.length()) {
 				pstmtPutBlogStat1.setString(4, refererFromServer); // null is allowed.
 				contents += "\t" + refererFromServer;
-			} else {
+			}
+			else {
 				pstmtPutBlogStat1.setString(4, referer);
 				contents += "\t" + referer;
 			}
@@ -665,7 +667,8 @@ public class RecoeveDB {
 					int l = uri.indexOf("/", k);
 					if (l > 0) {
 						host = uri.substring(k, l);
-					} else {
+					}
+					else {
 						host = uri.substring(k);
 					}
 					if (host.equals("www.recoeve.net")) {
@@ -678,7 +681,8 @@ public class RecoeveDB {
 			contents += "\t" + host;
 			if (pstmtPutBlogStat1.executeUpdate() == 1) {
 				return heads + "\n" + contents;
-			} else {
+			}
+			else {
 				heads += "\terror";
 				contents += "\tNot put blogstat.";
 				return heads + "\n" + contents;
@@ -711,7 +715,8 @@ public class RecoeveDB {
 								+ "\t" + rs.getString("referer") + "\t" + rs.getString("REACTION_GUEST");
 					}
 					contents += "\t" + StrArray.enclose(stats.trim());
-				} else {
+				}
+				else {
 					pstmtGetBlogStat1WithHost.setTimestamp(1, Timestamp.valueOf(from));
 					pstmtGetBlogStat1WithHost.setTimestamp(2, Timestamp.valueOf(to));
 					pstmtGetBlogStat1WithHost.setString(3, host);
@@ -811,7 +816,8 @@ public class RecoeveDB {
 					done = (pstmtUpdateAuthToken.executeUpdate() > 0);
 					con.commit();
 					return done;
-				} else {
+				}
+				else {
 					if (!newC) {
 						errMsg += "used token";
 					}
@@ -825,7 +831,8 @@ public class RecoeveDB {
 					}
 					errMsg += ".";
 				}
-			} else {
+			}
+			else {
 				errMsg += "no token.";
 			}
 			errMsg += " ID: " + id + ", E-mail: " + email + ". tToken: " + tToken;
@@ -903,7 +910,8 @@ public class RecoeveDB {
 			long count = rs.getLong("count");
 			rs.updateLong("count", count + increment);
 			rs.updateRow();
-		} else {
+		}
+		else {
 			pstmtCreateEmailStat.setString(1, emailHost);
 			pstmtCreateEmailStat.executeUpdate();
 		}
@@ -989,7 +997,8 @@ public class RecoeveDB {
 			System.out.println("createUser done : " + done);
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -1036,7 +1045,8 @@ public class RecoeveDB {
 			System.out.println("createUser done : " + done);
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -1069,7 +1079,8 @@ public class RecoeveDB {
 			System.out.println("Change password done : " + done);
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -1136,14 +1147,16 @@ public class RecoeveDB {
 			ResultSet user = null;
 			if (idType.equals("id")) {
 				user = findUserById(id);
-			} else if (idType.equals("email")) {
+			}
+			else if (idType.equals("email")) {
 				user = findUserByEmail(id);
 			}
 			if (user != null && user.next()) {
 				result = Integer.toString(user.getInt("pwd_iteration"))
 						+ "\t" + bytesToHexString(user.getBytes("pwd_salt"));
 				return result;
-			} else {
+			}
+			else {
 				result = "Cannot find a user from id/email.";
 				return result;
 			}
@@ -1162,7 +1175,8 @@ public class RecoeveDB {
 			ResultSet user = null;
 			if (idType.equals("id")) {
 				user = findUserById(id);
-			} else if (idType.equals("email")) {
+			}
+			else if (idType.equals("email")) {
 				user = findUserByEmail(id);
 			}
 			if (user != null && user.next()) {
@@ -1175,7 +1189,8 @@ public class RecoeveDB {
 				con.commit();
 				done = true;
 				return result;
-			} else {
+			}
+			else {
 				result = "Cannot find a user from id/email.";
 				con.rollback();
 				return result;
@@ -1185,7 +1200,8 @@ public class RecoeveDB {
 			try {
 				if (!done) {
 					con.rollback();
-				} else {
+				}
+				else {
 					con.commit();
 				}
 			} catch (SQLException e1) {
@@ -1216,9 +1232,11 @@ public class RecoeveDB {
 			ResultSet user = null;
 			if (idType.equals("email")) {
 				user = findUserByEmail(id);
-			} else if (idType.equals("id")) {
+			}
+			else if (idType.equals("id")) {
 				user = findUserById(id);
-			} else {
+			}
+			else {
 				return "Invalid idType.";
 			}
 			if (user.next()) {
@@ -1258,7 +1276,8 @@ public class RecoeveDB {
 			rs.updateLong("count", indexToPut + 1);
 			rs.updateRow();
 			return indexToPut;
-		} else {
+		}
+		else {
 			throw new SQLException("User index to put (class=-1) is not found.");
 		}
 	}
@@ -1275,7 +1294,8 @@ public class RecoeveDB {
 		String myIndex = "";
 		if (cookie.get("rmbdI") != null) {
 			myIndex = cookie.get("rmbdI");
-		} else if (cookie.get("I") != null) {
+		}
+		else if (cookie.get("I") != null) {
 			myIndex = cookie.get("I");
 		}
 		if (!myIndex.isEmpty()) {
@@ -1325,7 +1345,8 @@ public class RecoeveDB {
 		String myIndex = "";
 		if (cookie.get("I") != null) {
 			myIndex = cookie.get("I");
-		} else if (cookie.get("rmbdI") != null) {
+		}
+		else if (cookie.get("rmbdI") != null) {
 			myIndex = cookie.get("rmbdI");
 		}
 		if (!myIndex.isEmpty()) {
@@ -1435,7 +1456,8 @@ public class RecoeveDB {
 				setCookie.addAll(createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
 				logsCommit(user_me, tNow, ip, "lgi", true, "Remembered with Google"); // log-in success
 				done = true;
-			} else {
+			}
+			else {
 				StrArray data = new StrArray(getDataPreGoogle(inputs.get(1, "state"), ip));
 				if (!data.get(1, "id").isEmpty()) {
 					if (createUserWithGoogle(data, inputs, ip, tNow, lang)) {
@@ -1451,13 +1473,15 @@ public class RecoeveDB {
 									createUserRemember(user_me, tNow, rmbdAuth, rmbdToken, inputs, ip, userAgent));
 							logsCommit(user_me, tNow, ip, "lgi", true, "Remembered with Google"); // log-in success
 							done = true;
-						} else {
+						}
+						else {
 							logsCommit(user_me, tNow, ip, "lgi", false,
 									"User does not exist. Email:" + inputs.get(1, "email")); // log-in fail
 							done = true;
 						}
 					}
-				} else {
+				}
+				else {
 					done = false;
 				}
 			}
@@ -1467,7 +1491,8 @@ public class RecoeveDB {
 		try {
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -1516,16 +1541,16 @@ public class RecoeveDB {
 					}
 					user.updateRow();
 					logsCommit(user_me, tNow, ip, "lgi", true, logDesc); // log-in success
-				} else {
+				}
+				else {
 					System.out.println(bytesToHexString(pwdEncrypt(salt,
 							Encrypt.encryptRest(bytesToHexString(salt), inputs.get(1, "userPwd"), iter))));
 					System.out.println(bytesToHexString(user.getBytes("pwd")));
 					logsCommit(user_me, tNow, ip, "lgi", false); // log-in fail
 				}
-			} else {
-				logsCommit(user_me, tNow, ip, "lgi", false); // user_me=1: anonymous (no id/email) log-in try. This must
-																										 // not happen, because of "account/pwd_iteration" check
-																										 // before log-in request.
+			}
+			else {
+				logsCommit(user_me, tNow, ip, "lgi", false); // user_me=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
 			}
 			done = true;
 		} catch (SQLException err) {
@@ -1536,7 +1561,8 @@ public class RecoeveDB {
 		try {
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -1591,7 +1617,8 @@ public class RecoeveDB {
 								con.commit();
 								return setCookie;
 							}
-						} else {
+						}
+						else {
 							// Failed: Delete rmbd cookie.
 							setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
 									.setPath("/").setMaxAge(-100L));
@@ -1626,7 +1653,8 @@ public class RecoeveDB {
 								errMsg += "userAgent. ";
 							}
 						}
-					} else {
+					}
+					else {
 						errMsg += "Not remembered.";
 					}
 					System.out.println(errMsg);
@@ -1667,7 +1695,8 @@ public class RecoeveDB {
 						.setPath("/").setMaxAge(secondsSSN));
 				setCookie.add(io.vertx.core.http.Cookie.cookie("salt", bytesToHexString(salt)).setSecure(true)
 						.setPath("/").setMaxAge(secondsSSN));
-			} else {
+			}
+			else {
 				setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_me, 16)).setSecure(true)
 						.setPath("/").setHttpOnly(true).setMaxAge(-100L));
 				setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_).setSecure(true)
@@ -1707,7 +1736,8 @@ public class RecoeveDB {
 					.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", bytesToHexString(rmbdToken)).setSecure(true)
 					.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
-		} else {
+		}
+		else {
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
 					.setPath("/").setMaxAge(-100L));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", "").setSecure(true)
@@ -1872,7 +1902,8 @@ public class RecoeveDB {
 					rSneighborListFrom.updateString("userCatList", sb.toString());
 					rSneighborListFrom.updateTimestamp("tUpdate", tNow);
 					rSneighborListFrom.updateRow();
-				} else {
+				}
+				else {
 					putNeighborListFrom(user_me, cat_from, new NeighborList(sb.toString()), tNow);
 				}
 				ResultSet rSneighborListTo = getRSNeighborListTo(user_me, cat_from);
@@ -1947,7 +1978,8 @@ public class RecoeveDB {
 						if (!nbExists) {
 							neighborList.mapArray.remove(user_to_str + "\t" + cat_to);
 						}
-					} else {
+					}
+					else {
 						neighborList.mapArray.remove(user_to_str + "\t" + cat_to);
 					}
 				}
@@ -1955,7 +1987,8 @@ public class RecoeveDB {
 				if (neighborList.mapArray.size() > 0) {
 					if (rSneighborListFrom == null) {
 						putNeighborListFrom(user_from, cat_from, neighborList, tNow);
-					} else {
+					}
+					else {
 						Timestamp tUpdate = rSneighborListFrom.getTimestamp("tUpdate");
 						if (tNow.getTime() - tUpdate.getTime() > DAY_IN_MS) {
 							neighborList.mapArray.forEach((k, aL) -> {
@@ -1966,7 +1999,8 @@ public class RecoeveDB {
 									if (revRSneighborListFrom != null) {
 										revNeighborListFrom = new NeighborList(
 												revRSneighborListFrom.getString("userCatList"), false, true);
-									} else {
+									}
+									else {
 										revNeighborListFrom = new NeighborList("", false, true);
 									}
 									if (revNeighborListFrom.mapArray.putIfAbsent(
@@ -1977,7 +2011,8 @@ public class RecoeveDB {
 													revNeighborListFrom.toStringRowMap());
 											revRSneighborListFrom.updateTimestamp("tUpdate", tNow);
 											revRSneighborListFrom.updateRow();
-										} else {
+										}
+										else {
 											putNeighborListFrom(Long.parseLong(aL.get(0), 16), aL.get(1),
 													revNeighborListFrom, tNow);
 										}
@@ -1987,11 +2022,13 @@ public class RecoeveDB {
 								}
 							});
 							updateNeighborListFrom(user_from, cat_from, neighborList, tNow);
-						} else {
+						}
+						else {
 							updateNeighborListFrom(user_from, cat_from, neighborList);
 						}
 					}
-				} else {
+				}
+				else {
 					if (rSneighborListFrom != null) {
 						rSneighborListFrom.deleteRow();
 					}
@@ -2071,7 +2108,8 @@ public class RecoeveDB {
 								+ "\t" + StrArray.enclose(reco.getString("val"))
 								+ "\t" + reco.getString("tFirst")
 								+ "\t" + reco.getString("tLast");
-					} else {
+					}
+					else {
 						res += "\n" + uri
 								+ "\t";
 					}
@@ -2112,7 +2150,8 @@ public class RecoeveDB {
 	public static long lastLongOfBytes(byte[] byteData) {
 		if (byteData.length < 8) {
 			return 0L;
-		} else {
+		}
+		else {
 			byte[] portion = new byte[8];
 			System.arraycopy(byteData, byteData.length - 8, portion, 0, 8);
 			ByteBuffer buffer = ByteBuffer.wrap(portion);
@@ -2185,7 +2224,8 @@ public class RecoeveDB {
 							recentestsCut[offset + i] = user_me_bytes[i];
 						}
 						rs.updateBytes("recentests", recentestsCut);
-					} else {
+					}
+					else {
 						byte[] recentestsNew = Arrays.copyOf(recentests, rsL + 8);
 						int offset = rsL;
 						for (int i = 0; i < 8; i++) {
@@ -2200,7 +2240,8 @@ public class RecoeveDB {
 				err(err);
 			}
 			return rs;
-		} else {
+		}
+		else {
 			putRecoRecentests(uri, user_me, tNow);
 			rs = pstmtGetRecoStat.executeQuery();
 			if (rs.next()) {
@@ -2265,7 +2306,8 @@ public class RecoeveDB {
 		ResultSet recoStat = null;
 		if (increment > 0) {
 			recoStat = putAndGetRecoRecentests(uri, user_me, tNow);
-		} else {
+		}
+		else {
 			recoStat = getRecoStat(uri);
 		}
 		recoStat.updateTimestamp("tUpdate", tNow);
@@ -2277,7 +2319,8 @@ public class RecoeveDB {
 			recoStat.updateLong("nV", nV);
 			String nVal100 = "n" + Long.toString(val100);
 			recoStat.updateLong(nVal100, recoStat.getLong(nVal100) + increment);
-		} else {
+		}
+		else {
 			recoStat.updateLong("nNull", recoStat.getLong("nNull") + increment);
 		}
 		recoStat.updateRow();
@@ -2477,7 +2520,8 @@ public class RecoeveDB {
 					}
 				}
 			}
-		} else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
+		}
+		else { // 좀 더 작은 uriListSet 으로부터 matching calculation.
 			for (String uri_to : uriListSet_to) {
 				if (uriListSet_from.contains(uri_to)) {
 					ResultSet reco_to = getReco(user_to, uri_to);
@@ -2564,7 +2608,8 @@ public class RecoeveDB {
 												if (tNow.getTime() - nbTScanAll.getTime() > HALF_YEAR_IN_MS) {
 													// 최신 tScanAll 이 6개월이 지났을 때.
 													putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
-												} else {
+												}
+												else {
 													neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 													neighbor.next();
 													Similarity sim = new Similarity(neighbor.getLong("sumSim"),
@@ -2585,11 +2630,13 @@ public class RecoeveDB {
 													neighborRev.updateRow();
 													neighborRev.close();
 												}
-											} else { // neighborRev 가 더 최신.
+											}
+											else { // neighborRev 가 더 최신.
 												if (tNow.getTime() - nbRevTScanAll.getTime() > HALF_YEAR_IN_MS) {
 													// 최신 tScanAll 이 6개월이 지났을 때.
 													putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
-												} else {
+												}
+												else {
 													neighborRev.close();
 													neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 													neighborRev.next();
@@ -2613,11 +2660,13 @@ public class RecoeveDB {
 													neighbor.close();
 												}
 											}
-										} else if (nbExists) {
+										}
+										else if (nbExists) {
 											if (tNow.getTime() - nbTScanAll.getTime() > HALF_YEAR_IN_MS) {
 												// 최신 tScanAll 이 6개월이 지났을 때.
 												putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
-											} else {
+											}
+											else {
 												neighbor.close();
 												neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 												neighbor.next();
@@ -2632,11 +2681,13 @@ public class RecoeveDB {
 												putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim,
 														tNow, tScanAll);
 											}
-										} else if (nbRevExists) {
+										}
+										else if (nbRevExists) {
 											if (tNow.getTime() - nbRevTScanAll.getTime() > HALF_YEAR_IN_MS) {
 												// 최신 tScanAll 이 6개월이 지났을 때.
 												putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
-											} else {
+											}
+											else {
 												neighborRev.close();
 												neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 												neighborRev.next();
@@ -2651,7 +2702,8 @@ public class RecoeveDB {
 												putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim,
 														tNow, tScanAll);
 											}
-										} else { // ScanAll
+										}
+										else { // ScanAll
 											putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 										}
 									}
@@ -2681,7 +2733,8 @@ public class RecoeveDB {
 													Arrays.asList(Long.toString(user_from, 16), cat_from)));
 									if (rSneighborListTo == null) {
 										putNeighborListTo(user_to, cat_to, neighborListTo, tNow);
-									} else {
+									}
+									else {
 										rSneighborListTo.updateString("userCatList", neighborListTo.toStringRowMap());
 										rSneighborListTo.updateTimestamp("tUpdate", tNow);
 										rSneighborListTo.updateInt("nUpdate", rSneighborListTo.getInt("nUpdate") + 1);
@@ -2694,7 +2747,8 @@ public class RecoeveDB {
 					if (rSneighborListFrom == null) {
 						System.out.println("neighborListFrom.toString() (null)\n" + neighborListFrom.toStringRowMap());
 						putNeighborListFrom(user_from, cat_from, neighborListFrom, tNow);
-					} else {
+					}
+					else {
 						System.out.println("neighborListFrom.toString()\n" + neighborListFrom.toStringRowMap());
 						rSneighborListFrom.updateString("userCatList", neighborListFrom.toStringRowMap());
 						rSneighborListFrom.updateTimestamp("tUpdate", tNow);
@@ -2702,7 +2756,8 @@ public class RecoeveDB {
 						rSneighborListFrom.updateRow();
 					}
 				}
-			} else if (increment == -1) {
+			}
+			else if (increment == -1) {
 				Set<Long> userSet = new HashSet<>(10 * N_SET);
 				for (String cat_from : cats.setOfCats) {
 					System.out.println("cat_from:" + cat_from);
@@ -2754,7 +2809,8 @@ public class RecoeveDB {
 											if (sim.nSim == 0) {
 												nbRemoved = true;
 												neighbor.deleteRow();
-											} else {
+											}
+											else {
 												neighbor.updateLong("sumSim", sim.sumSim);
 												neighbor.updateInt("nSim", sim.nSim);
 												neighbor.updateTimestamp("tUpdate", tNow);
@@ -2765,14 +2821,16 @@ public class RecoeveDB {
 											if (sim.nSim == 0) {
 												nbRevRemoved = true;
 												neighborRev.deleteRow();
-											} else {
+											}
+											else {
 												neighborRev.updateLong("sumSim", sim.sumSim);
 												neighborRev.updateInt("nSim", sim.nSim);
 												neighborRev.updateTimestamp("tUpdate", tNow);
 												neighborRev.updateTimestamp("tScanAll", tScanAll);
 												neighborRev.updateRow();
 											}
-										} else { // neighborRev 가 더 최신.
+										}
+										else { // neighborRev 가 더 최신.
 											neighborRev.close();
 											neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 											neighborRev.next();
@@ -2786,7 +2844,8 @@ public class RecoeveDB {
 												neighborRev.updateTimestamp("tUpdate", tNow);
 												nbRevRemoved = true;
 												neighborRev.deleteRow();
-											} else {
+											}
+											else {
 												neighborRev.updateRow();
 											}
 											neighbor.close();
@@ -2795,7 +2854,8 @@ public class RecoeveDB {
 											if (sim.nSim == 0) {
 												nbRemoved = true;
 												neighbor.deleteRow();
-											} else {
+											}
+											else {
 												neighbor.updateLong("sumSim", sim.sumSim);
 												neighbor.updateInt("nSim", sim.nSim);
 												neighbor.updateTimestamp("tUpdate", tNow);
@@ -2803,7 +2863,8 @@ public class RecoeveDB {
 												neighbor.updateRow();
 											}
 										}
-									} else if (nbExists) {
+									}
+									else if (nbExists) {
 										neighbor.close();
 										neighbor = getNeighbor(user_to, cat_to, user_from, cat_from);
 										neighbor.next();
@@ -2814,7 +2875,8 @@ public class RecoeveDB {
 										if (sim.nSim == 0) {
 											nbRemoved = true;
 											neighbor.deleteRow();
-										} else {
+										}
+										else {
 											neighbor.updateLong("sumSim", sim.sumSim);
 											neighbor.updateInt("nSim", sim.nSim);
 											neighbor.updateTimestamp("tUpdate", tNow);
@@ -2822,7 +2884,8 @@ public class RecoeveDB {
 											putNeighbor(user_from, cat_from, user_to, cat_to, sim.sumSim, sim.nSim,
 													tNow, tScanAll);
 										}
-									} else if (nbRevExists) {
+									}
+									else if (nbRevExists) {
 										neighborRev.close();
 										neighborRev = getNeighbor(user_from, cat_from, user_to, cat_to);
 										neighborRev.next();
@@ -2833,7 +2896,8 @@ public class RecoeveDB {
 										if (sim.nSim == 0) {
 											nbRevRemoved = true;
 											neighborRev.deleteRow();
-										} else {
+										}
+										else {
 											neighborRev.updateLong("sumSim", sim.sumSim);
 											neighborRev.updateInt("nSim", sim.nSim);
 											neighborRev.updateTimestamp("tUpdate", tNow);
@@ -2841,7 +2905,8 @@ public class RecoeveDB {
 											putNeighbor(user_to, cat_to, user_from, cat_from, sim.sumSim, sim.nSim,
 													tNow, tScanAll);
 										}
-									} else { // ScanAll
+									}
+									else { // ScanAll
 										putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 									}
 									if (nbRemoved) {
@@ -2927,7 +2992,8 @@ public class RecoeveDB {
 			rs.updateString("catList", catL.toString());
 			rs.updateRow();
 			return true;
-		} else {
+		}
+		else {
 			return putCatList(user_me, listName, catL);
 		}
 	}
@@ -3027,7 +3093,8 @@ public class RecoeveDB {
 				uriL.putURI(uri);
 				rs.updateString("uriList", uriL.toString());
 				rs.updateRow();
-			} else {
+			}
+			else {
 				catL.putCat(cat);
 				UriList uriL = new UriList();
 				uriL.putURI(uri);
@@ -3051,7 +3118,8 @@ public class RecoeveDB {
 					while (cat != null && getUriList(user_me, cat).isEmpty() && catL.deleteCat(cat)) {
 						cat = Categories.getSuperCat(cat);
 					}
-				} else {
+				}
+				else {
 					rs.updateString("uriList", uriL.toString());
 					rs.updateRow();
 				}
@@ -3103,13 +3171,15 @@ public class RecoeveDB {
 								String strCatSet = catSetArray.toString();
 								if (strCatSet.isEmpty()) {
 									catSet.deleteRow();
-								} else {
+								}
+								else {
 									catSet.updateString("catSet", strCatSet);
 									catSet.updateRow();
 								}
 							}
 						}
-					} else {
+					}
+					else {
 						rs.updateLong("count", count);
 						rs.updateRow();
 						if (catSet.next()) {
@@ -3130,7 +3200,8 @@ public class RecoeveDB {
 									ResultSet rsI = pstmtGetRecoStatDefCat.executeQuery();
 									if (rsI.next()) {
 										counts[i] = rsI.getLong("count");
-									} else {
+									}
+									else {
 										counts[i] = 0;
 									}
 								}
@@ -3147,7 +3218,8 @@ public class RecoeveDB {
 							catSet.updateRow();
 						}
 					}
-				} else if (increment == 1) {
+				}
+				else if (increment == 1) {
 					pstmtPutRecoStatDefCat.setString(1, uri);
 					pstmtPutRecoStatDefCat.setString(2, cat);
 					pstmtPutRecoStatDefCat.executeUpdate();
@@ -3157,7 +3229,8 @@ public class RecoeveDB {
 							catSet.updateString("catSet", sACatSet.toStringSet());
 							catSet.updateRow();
 						}
-					} else {
+					}
+					else {
 						pstmtPutRecoStatDefCatSet.setString(1, uri);
 						pstmtPutRecoStatDefCatSet.setString(2, StrArray.enclose(cat));
 						pstmtPutRecoStatDefCatSet.executeUpdate();
@@ -3193,13 +3266,15 @@ public class RecoeveDB {
 							String strTitleSet = titleSetArray.toString();
 							if (strTitleSet.isEmpty()) {
 								titleSet.deleteRow();
-							} else {
+							}
+							else {
 								titleSet.updateString("titleSet", strTitleSet);
 								titleSet.updateRow();
 							}
 						}
 					}
-				} else {
+				}
+				else {
 					rs.updateLong("count", count);
 					rs.updateRow();
 					if (titleSet.next()) {
@@ -3220,7 +3295,8 @@ public class RecoeveDB {
 								ResultSet rsI = pstmtGetRecoStatDefTitle.executeQuery();
 								if (rsI.next()) {
 									counts[i] = rsI.getLong("count");
-								} else {
+								}
+								else {
 									counts[i] = 0;
 								}
 							}
@@ -3237,7 +3313,8 @@ public class RecoeveDB {
 						titleSet.updateRow();
 					}
 				}
-			} else if (increment == 1) {
+			}
+			else if (increment == 1) {
 				pstmtPutRecoStatDefTitle.setString(1, uri);
 				pstmtPutRecoStatDefTitle.setString(2, title);
 				pstmtPutRecoStatDefTitle.executeUpdate();
@@ -3247,7 +3324,8 @@ public class RecoeveDB {
 						titleSet.updateString("titleSet", sATitleSet.toStringSet());
 						titleSet.updateRow();
 					}
-				} else {
+				}
+				else {
 					pstmtPutRecoStatDefTitleSet.setString(1, uri);
 					pstmtPutRecoStatDefTitleSet.setString(2, StrArray.enclose(title));
 					pstmtPutRecoStatDefTitleSet.executeUpdate();
@@ -3289,13 +3367,15 @@ public class RecoeveDB {
 							String strDescSet = descSetArray.toString();
 							if (strDescSet.isEmpty()) {
 								descSet.deleteRow();
-							} else {
+							}
+							else {
 								descSet.updateString("descSet", strDescSet);
 								descSet.updateRow();
 							}
 						}
 					}
-				} else {
+				}
+				else {
 					rs.updateLong("count", count);
 					rs.updateRow();
 					if (descSet.next()) {
@@ -3323,7 +3403,8 @@ public class RecoeveDB {
 								ResultSet rsI = pstmtGetRecoStatDefDesc.executeQuery();
 								if (rsI.next()) {
 									counts[i] = rsI.getLong("count");
-								} else {
+								}
+								else {
 									counts[i] = 0;
 								}
 							}
@@ -3340,7 +3421,8 @@ public class RecoeveDB {
 						descSet.updateRow();
 					}
 				}
-			} else if (increment == 1) {
+			}
+			else if (increment == 1) {
 				pstmtPutRecoStatDefDesc.setString(1, uri);
 				pstmtPutRecoStatDefDesc.setBytes(2, descHash);
 				pstmtPutRecoStatDefDesc.setString(3, desc);
@@ -3377,7 +3459,8 @@ public class RecoeveDB {
 						descSet.updateString("descSet", sb.toString());
 						descSet.updateRow();
 					}
-				} else {
+				}
+				else {
 					pstmtPutRecoStatDefDescSet.setString(1, uri);
 					pstmtPutRecoStatDefDescSet.setString(2, StrArray.enclose(desc));
 					pstmtPutRecoStatDefDescSet.executeUpdate();
@@ -3470,11 +3553,13 @@ public class RecoeveDB {
 						if (rs.getString("originalURI").equals(originalURI)) {
 							done = true;
 							break;
-						} else {
+						}
+						else {
 							longHashpath++;
 							continue;
 						}
-					} else {
+					}
+					else {
 						pstmtPutRedirect.setLong(1, longHashpath);
 						pstmtPutRedirect.setString(2, originalURI);
 						done = (pstmtPutRedirect.executeUpdate() == 1);
@@ -3524,11 +3609,13 @@ public class RecoeveDB {
 							if (rs.getString("originalURI").equals(originalURI)) {
 								done = true;
 								break;
-							} else {
+							}
+							else {
 								longHashpath++;
 								continue;
 							}
-						} else {
+						}
+						else {
 							pstmtPutRedirect.setLong(1, longHashpath);
 							pstmtPutRedirect.setString(2, originalURI);
 							done = (pstmtPutRedirect.executeUpdate() == 1);
@@ -3552,7 +3639,8 @@ public class RecoeveDB {
 							if (hasReco) {
 								// error.
 								res += "[--Reco on this uri exists already.--]";
-							} else {
+							}
+							else {
 								// put a reco.
 								toDo = "put";
 							}
@@ -3561,7 +3649,8 @@ public class RecoeveDB {
 							if (hasReco) {
 								// change a reco.
 								toDo = "change";
-							} else {
+							}
+							else {
 								// error.
 								res += "[--Reco on the uri does not exist.--]";
 							}
@@ -3570,7 +3659,8 @@ public class RecoeveDB {
 							if (hasReco) {
 								// change a reco.
 								toDo = "change";
-							} else {
+							}
+							else {
 								// put a reco.
 								toDo = "put";
 							}
@@ -3579,7 +3669,8 @@ public class RecoeveDB {
 							if (hasReco) {
 								// delete a reco.
 								toDo = "delete";
-							} else {
+							}
+							else {
 								// error.
 								res += "[--Reco on the uri does not exist.--]";
 							}
@@ -3602,7 +3693,8 @@ public class RecoeveDB {
 							pstmtPutReco.setString(8, cmt); // Null can be put?
 							if (pts.valid()) {
 								pstmtPutReco.setString(9, pts.str());
-							} else {
+							}
+							else {
 								pstmtPutReco.setString(9, null); // null is possible? yes maybe.
 							}
 							pstmtPutReco.executeUpdate();
@@ -3631,7 +3723,8 @@ public class RecoeveDB {
 							if (equalityOfStringOfCats && equalityOfTitle && equalityOfDesc && equalityOfCmt
 									&& equalityOfPts) {
 								res += "no change";
-							} else {
+							}
+							else {
 								reco.updateTimestamp("tLast", tNow);
 								if (!equalityOfStringOfCats) {
 									reco.updateString("cats", cats.toString());
@@ -3656,7 +3749,8 @@ public class RecoeveDB {
 								if (!equalityOfPts) {
 									if (pts.valid()) {
 										reco.updateString("val", pts.str());
-									} else {
+									}
+									else {
 										reco.updateString("val", null);
 									}
 								}
@@ -3890,7 +3984,8 @@ public class RecoeveDB {
 			System.out.println("User with email:" + userEmail + " is deleted successfully. : " + done);
 			if (done) {
 				con.commit();
-			} else {
+			}
+			else {
 				con.rollback();
 			}
 		} catch (SQLException err) {
@@ -3932,7 +4027,8 @@ public class RecoeveDB {
 		// , res -> {
 		// if (res.succeeded()) {
 		// System.out.println("Database operation successful");
-		// } else {
+		// }
+		// else {
 		// System.err.println("Database operation failed: " + res.cause());
 		// }
 		// });
