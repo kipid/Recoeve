@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -504,37 +505,61 @@ public class RecoeveDB {
 		return false;
 	}
 
-	public String getLogAccess(Timestamp t) {
-		try {
-			pstmtGetLogAccess.setTimestamp(1, t);
-			ResultSet rs = pstmtGetLogAccess.executeQuery();
-			if (rs != null && rs.next()) {
-				return rs.getString("html");
+	private List<CompletableFuture<?>> cfs = new ArrayList<>(20);
+	public CompletableFuture<String> getLogAccess(Timestamp t) {
+		CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+			try {
+				pstmtGetLogAccess.setTimestamp(1, t);
+				ResultSet rs = pstmtGetLogAccess.executeQuery();
+				if (rs != null && rs.next()) {
+					return rs.getString("html");
+				}
+			} catch (SQLException err) {
+				err(err);
 			}
-		} catch (SQLException err) {
-			err(err);
-		}
-		return "";
+			return "";
+		});
+		cfs.add(future);
+		return future;
 	}
 
-	public boolean putLogAccess(Timestamp tNow, long user_i, String html) {
-		try {
-			String html0 = getLogAccess(tNow);
-			pstmtLogAccess.setTimestamp(1, tNow);
-			pstmtLogAccess.setLong(2, user_i);
-			String htmlTotal = html0 + html;
-			if (!htmlTotal.startsWith("<div")) {
-				htmlTotal = "<div class=\"access\">" + htmlTotal;
+	public CompletableFuture<Void> putLogAccess(Timestamp tNow, long user_i, String html, CompletableFuture<String> futureGetLA) {
+		CompletableFuture<Void> future = futureGetLA.thenAcceptAsync((String html0) -> {
+			try {
+				pstmtLogAccess.setTimestamp(1, tNow);
+				pstmtLogAccess.setLong(2, user_i);
+				if (!html0.startsWith("<div class=\"access\">")) {
+					html0 = "<div class=\"access\">" + html0;
+				}
+				if (!html0.endsWith("</div>")) {
+					html0 = html0 + "</div>";
+				}
+				String html1 = html;
+				if (!html1.startsWith("<div class=\"access\">")) {
+					html1 = "<div class=\"access\">" + html1;
+				}
+				if (!html1.endsWith("</div>")) {
+					html1 = html1 + "</div>";
+				}
+				String htmlTotal = html0 + html1;
+				pstmtLogAccess.setString(3, htmlTotal);
+				pstmtLogAccess.executeUpdate();
+			} catch (SQLException err) {
+				err(err);
 			}
-			if (!htmlTotal.endsWith("</div>")) {
-				htmlTotal = htmlTotal + "</div>";
-			}
-			pstmtLogAccess.setString(3, htmlTotal);
-			return pstmtLogAccess.executeUpdate() > 0;
-		} catch (SQLException err) {
-			err(err);
-		}
-		return false;
+		});
+		cfs.add(future);
+		CompletableFuture<Void> allOf = CompletableFuture.allOf(cfs.toArray(new CompletableFuture[cfs.size()]));
+		allOf.thenAccept(v -> {
+				cfs.forEach(cf -> {
+					try {
+						System.out.println(cf.get());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}).join();
+		return future;
 	}
 
 	public String getLogAccessInSEEForm(Timestamp tNow) {
