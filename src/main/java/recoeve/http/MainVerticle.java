@@ -53,14 +53,14 @@ public class MainVerticle extends AbstractVerticle {
 
 	@Override
 	public void stop() {
-		vertx.undeploy(verticleId);
-		// vertx.undeploy(verticleId1);
-		context = null;
-		vertx = null;
-		fileMap = null;
-		fileMapWithVar = null;
-		recoeveWebClient = null;
-		db = null;
+		// vertx.undeploy(verticleId);
+		// // vertx.undeploy(verticleId1);
+		// context = null;
+		// vertx = null;
+		// fileMap = null;
+		// fileMapWithVar = null;
+		// recoeveWebClient = null;
+		// db = null;
 	}
 
 	public static void main(String... args) {
