@@ -16,7 +16,7 @@ public class MainVerticle extends AbstractVerticle {
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
 	private String verticleId;
-	private String verticleId1;
+	// private String verticleId1;
 
 	@Override
 	public void start() {
@@ -26,34 +26,35 @@ public class MainVerticle extends AbstractVerticle {
 		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		db = new RecoeveDB(vertx);
 		vertx.deployVerticle(
-				new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
-				new DeploymentOptions(),
-				(h) -> {
-					if (h.succeeded()) {
-						verticleId = h.result();
-					}
-					else {
-						System.out.println("Cause " + h.cause());
-					}
-				});
-		vertx.deployVerticle(
-				new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
-				new DeploymentOptions(),
-				(h) -> {
-					if (h.succeeded()) {
-						verticleId1 = h.result();
-					}
-					else {
-						System.out.println("Cause " + h.cause());
-					}
-				});
+				new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
+				// , new DeploymentOptions()
+				// , (h) -> {
+				// 	if (h.succeeded()) {
+				// 		verticleId = h.result();
+				// 	}
+				// 	else {
+				// 		System.out.println("Cause " + h.cause());
+				// 	}
+				// }
+			);
+		// vertx.deployVerticle(
+		// 		new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
+		// 		new DeploymentOptions(),
+		// 		(h) -> {
+		// 			if (h.succeeded()) {
+		// 				verticleId1 = h.result();
+		// 			}
+		// 			else {
+		// 				System.out.println("Cause " + h.cause());
+		// 			}
+		// 		});
 		// vertx.deployVerticle(new UnderConstruction(vertx, db));
 	}
 
 	@Override
 	public void stop() {
 		vertx.undeploy(verticleId);
-		vertx.undeploy(verticleId1);
+		// vertx.undeploy(verticleId1);
 		context = null;
 		vertx = null;
 		fileMap = null;
