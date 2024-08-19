@@ -74,9 +74,9 @@ public class RecoeveWebClient {
 					completableFuture.complete(shortURI);
 				});
 		}
-		catch (VertxException e) {
-			RecoeveDB.err(e);
-			completableFuture.completeExceptionally(e);
+		catch (VertxException err) {
+			RecoeveDB.err(err);
+			completableFuture.completeExceptionally(err);
 		}
 		return completableFuture;
 	}
