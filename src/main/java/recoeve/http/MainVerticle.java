@@ -25,7 +25,7 @@ public class MainVerticle extends AbstractVerticle {
 		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		db = new RecoeveDB(vertx);
 		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
-				new DeploymentOptions().setInstances(2), (h) -> {
+				new DeploymentOptions().setInstances(1), (h) -> {
 					if (h.succeeded()) {
 						verticleId = h.result();
 					}
