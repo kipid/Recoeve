@@ -1290,7 +1290,8 @@ dd {
 }
 
 .cmt,
-.bcf {
+.bcf,
+.access {
 	padding:.5em;
 	margin:0 0 1.3em;
 	background:rgb(15, 15, 15);
@@ -1298,7 +1299,8 @@ dd {
 }
 
 .docuK.bright .cmt,
-.docuK.bright .bcf {
+.docuK.bright .bcf,
+.docuK.bright .access {
 	background:rgb(200, 200, 200);
 	color:black
 }
@@ -1309,6 +1311,10 @@ dd {
 
 .bcf {
 	border-left:.5em solid rgb(0, 70, 70)
+}
+
+.access {
+	border-left:.5em solid rgb(70, 70, 0)
 }
 
 .cmt>.p:last-child,
