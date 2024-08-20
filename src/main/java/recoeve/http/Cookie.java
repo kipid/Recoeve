@@ -25,6 +25,9 @@ public class Cookie{
 				if (i>0) {
 					map.putIfAbsent(c.substring(0,i).trim(), c.substring(i+1).trim());
 				}
+				else {
+					map.putIfAbsent(c.trim(), "");
+				}
 			}
 		}
 	}
@@ -39,7 +42,7 @@ public class Cookie{
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
 		for (Map.Entry<String, String> entry: map.entrySet()) {
-			sb.append(" "+entry.getKey()+" : "+entry.getValue()+"\n");
+			sb.append("\t"+entry.getKey()+" : "+entry.getValue()+"\n");
 		}
 		return sb.toString();
 	}
