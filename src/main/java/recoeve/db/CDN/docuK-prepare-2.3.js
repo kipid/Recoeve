@@ -1,4 +1,4 @@
-window.m = {};
+window.k = {};
 (function (m, $, undefined) {
 	m.version0 = "2.11";
 	m.$window = $(window);
@@ -166,7 +166,7 @@ window.m = {};
 		}
 	};
 	m.rC = function (elemStr, option, id, noPc) {
-		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="m.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
+		return `<div class="rC${(option ? ` ${option}` : '')}"${!!id ? ` id="${id}"` : ""}><div class="rSC">${elemStr}</div>${noPc ? "" : `<div class="pc"><span onclick="k.togglePosition(this)">▲ [--stick to the left top--]</span></div>`}</div>`;
 	};
 	m.YTiframe = function (v, inListPlay, config, list) {
 		if (list && list.constructor === String) {
@@ -846,7 +846,7 @@ window.m = {};
 		else {
 			m.recoCat = "[Music/Break]--K-Pop";
 		}
-		return `<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+		return `<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="promoting order"${id ? ` id="${id}"` : ""}>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
@@ -887,7 +887,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	// logPrint function.
 	m.$log = $("#docuK-log");
 	m.$log.addClass("fixed");
-	m.$log.before(`<div class="docuK-log exit" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
+	m.$log.before(`<div class="docuK-log exit" onclick="k.$window.trigger({type:'keydown', code:'KeyK'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>`);
 	m.$logAll = $("#docuK-log, .docuK-log.exit");
 	m.logPrint = function (str) {
 		m.$log.append(str);
@@ -917,7 +917,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		<line x1="20%" y1="70%" x2="30%" y2="60%"></line>
 		<line x1="20%" y1="70%" x2="30%" y2="80%"></line>
 	</g></svg></div>
-	<div class="exit" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
+	<div class="exit" onclick="k.$window.trigger({type:'keydown', code:'KeyG'})"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"></line><line x1="80%" y1="20%" x2="20%" y2="80%"></line></g>✖</svg></div>
 </div>
 <a id="out-focus" class="none">out focus</a>`);
 
@@ -1337,7 +1337,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 			for (let i = 0; i < sorted.length; i++) {
 				let k = res[sorted[i]].i;
 				let fsFLk = fs.fullList[k];
-				str += `<div class="list-item" onclick="m.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight !== undefined ? `<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>` : ''}</div>`;
+				str += `<div class="list-item" onclick="k.gotoLi(event,this,${k},m.fsGo)">${fsFLk.html}${res[sorted[i]].highlight !== undefined ? `<div class="highlighted"><span class="maxMatchScore">${res[sorted[i]].maxMatchScore}</span> :: ${res[sorted[i]].highlight}</div>` : ''}</div>`;
 			}
 			fs.$fsl.html(str);
 			fs.$fsLis = fs.$fsl.find(".list-item");
@@ -2168,7 +2168,7 @@ document.referrer: ${referrerHTML}`
 
 		if (!m.printMode) {
 			// Copyright and Short Keys announcement.
-			$sDocuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+			$sDocuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
@@ -2179,23 +2179,23 @@ document.referrer: ${referrerHTML}`
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyA'})">Toggle <span class="bold underline">a</span> mess</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyG'})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyK'})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyF'})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyD'})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyT'})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyR'})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyA'})">Toggle <span class="bold underline">a</span> mess</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyG'})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyK'})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyF'})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyD'})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyT'})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyR'})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyN'})"><span class="bold underline">N</span>: Ha<span class="bold underline">n</span>dle URI links in Tistory comments.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyN'})"><span class="bold underline">N</span>: Ha<span class="bold underline">n</span>dle URI links in Tistory comments.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyI'})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
-		<li><span onclick="m.$window.trigger({type:'keydown', code:'KeyO'})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyI'})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
+		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyO'})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
 			$sDocuK.after(`<div class="copyright order"><ul>
@@ -2204,29 +2204,29 @@ document.referrer: ${referrerHTML}`
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div class="button toggle-a-mess fRight cBoth order" onclick="m.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>`);
 		}
 
 		// Style change widget, and SNS widget.
 		$sDocuK.prepend(`<div class="change-docuK-style">
-	<form><button type="button" onclick="m.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
-	<form><input id="button${docuKI}-Dark" type="radio" name="mode" value="Dark" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
-	</input><input id="button${docuKI}-Bright" type="radio" name="mode" value="Bright" onclick="m.Cmode(this.value)"><label for="button${docuKI}-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
+	<form><button type="button" onclick="k.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
+	<form><input id="button${docuKI}-Dark" type="radio" name="mode" value="Dark" onclick="k.Cmode(this.value)"><label for="button${docuKI}-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
+	</input><input id="button${docuKI}-Bright" type="radio" name="mode" value="Bright" onclick="k.Cmode(this.value)"><label for="button${docuKI}-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
 	<form><input id="input${docuKI}-font-family" class="bold" type="text" name="font" value="Noto Sans KR" style="font-size:1.2em; width:8em; height:1.8em; text-align:center" onchange="m.CfontFamily(this.value)"></input></form>
-	<form><button type="button" onclick="m.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="m.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
-	<form><button type="button" onclick="m.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="m.ClineHeight(1)" style="font-size:1.6em">=</button></form>
-	<form><button class="button-log" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
-	<form><button class="button-Go" type="button" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
+	<form><button type="button" onclick="k.CfontSize(-0.1)" style="font-size:1em">A</button><button type="button" onclick="k.CfontSize(0.1)" style="font-size:1.4em">A</button></form>
+	<form><button type="button" onclick="k.ClineHeight(-1)" style="font-size:1em">=</button><button type="button" onclick="k.ClineHeight(1)" style="font-size:1.6em">=</button></form>
+	<form><button class="button-log" type="button" onclick="k.$window.trigger({type:'keydown', code:'KeyK'})" style="width:auto; padding:0 .5em">DocuK Log</button></form>
+	<form><button class="button-Go" type="button" onclick="k.$window.trigger({type:'keydown', code:'KeyG'})" style="font:inherit; width:auto; padding:0 .5em">Fuzzy search</button></form>
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="https://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="https://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit) of docuK</a> and <a href="https://kipid.tistory.com/entry/pure-SEE">pure SEE</a>).</div>
 	</div>
-<div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`
+<div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`
 		);
-		$sDocuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div>`);
+		$sDocuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`);
 
 		// Scrollable switching of 'pre.prettyprint'.
-		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="m.toggleHeight(this)"></div>');
+		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
 		m.logPrint(`<br><br>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 		// Numbering section, making table of contents, and numbering eqq (formatting to MathJax also) and figure tags
@@ -2283,9 +2283,9 @@ document.referrer: ${referrerHTML}`
 
 				if (!$secI.is(".noToggleUI")) {
 					secContentsId = `sec${docuKI}-${secITxt}-contents`;
-					$secI.append(`<div class="cBoth"></div><div class="Hide" onclick="m.Hide(this)">▲ Hide</div><div class="cBoth"></div>`);
+					$secI.append(`<div class="cBoth"></div><div class="Hide" onclick="k.Hide(this)">▲ Hide</div><div class="cBoth"></div>`);
 					$secI.contents().slice(1).wrapAll(`<div class="sec-contents" id="${secContentsId}"></div>`);
-					$secIH2.after(`<div class="ShowHide" onclick="m.ShowHide(this)">▼ Show/Hide</div>`);
+					$secIH2.after(`<div class="ShowHide" onclick="k.ShowHide(this)">▼ Show/Hide</div>`);
 					$secI.append(`<div class="cBoth"></div>`);
 				}
 
@@ -2331,7 +2331,7 @@ document.referrer: ${referrerHTML}`
 		}
 		let refN = "", preRefHtml = "", refHtml = "", citeN = "";
 		function fCiteHtml() {
-			let str = `<div class="inRef" onmouseover="m.ShowBR(this)" onmouseout="m.timerHideBR(this)">${refN}<div class="bubbleRef"><div class="content">${preRefHtml}${refHtml}<div class="exit" onclick="m.HideBR(this)"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"/><line x1="80%" y1="20%" x2="20%" y2="80%"/></g>✖</svg></div></div><div class="arrow"></div></div></div>`;
+			let str = `<div class="inRef" onmouseover="m.ShowBR(this)" onmouseout="m.timerHideBR(this)">${refN}<div class="bubbleRef"><div class="content">${preRefHtml}${refHtml}<div class="exit" onclick="k.HideBR(this)"><svg><g style="stroke:white;stroke-width:23%"><line x1="20%" y1="20%" x2="80%" y2="80%"/><line x1="80%" y1="20%" x2="20%" y2="80%"/></g>✖</svg></div></div><div class="arrow"></div></div></div>`;
 			if (m.browserWidth < 321) {
 				str = str.replace(/<iframe[^>]*>[^<]*<\/iframe>/ig, '<span class="emph">In bubble refs, iframe (or youtube video) is intentionally NOT supported for various reasons (security, and cross browsing). See it in the original position of the iframe (video).</span>'); // 말풍선에서 비디오 등의 iframe을 의도적으로 지원하지 않았습니다. 원래의 위치에서 보세요.
 			}
@@ -2389,4 +2389,4 @@ document.referrer: ${referrerHTML}`
 
 		$sDocuK.addClass("rendered");
 	};
-})(window.m, jQuery);
+})(window.k, jQuery);
