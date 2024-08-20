@@ -560,34 +560,9 @@ public class Recoeve extends AbstractVerticle {
 							pl.req.response().putHeader("Content-Type", "text/html")
 									.end(fileMap.getFileWithLang("bundle-tsx-log-out.js", pl.lang), ENCODING);
 							break;
-						case "bundle-tsx-user-page.js": // e.g. path=/bundle-tsx-user-page.js
-							if (pl.userId == null) {
-								pl.req.response().putHeader("Content-Type", "text/javascript")
-										.end(FileMapWithVar.getFileWithLangAndVars("bundle-tsx-user-page.js", pl.lang,
-												db.varMapMyPage(pl.cookie)), ENCODING);
-							}
-							else {
-								pl.req.response().putHeader("Content-Type", "text/javascript")
-										.end(FileMapWithVar.getFileWithLangAndVars("bundle-tsx-user-page.js", pl.lang,
-												db.varMapUserPage(pl.cookie, pl.userId)), ENCODING);
-							}
-							break;
-						case "bundle-user-page.js": // e.g. path=/bundle-user-page.js
-							if (pl.userId == null) {
-								pl.req.response().putHeader("Content-Type", "text/javascript")
-										.end(FileMapWithVar.getFileWithLangAndVars("bundle-user-page.js", pl.lang,
-												db.varMapMyPage(pl.cookie)), ENCODING);
-							}
-							else {
-								pl.req.response().putHeader("Content-Type", "text/javascript")
-										.end(FileMapWithVar.getFileWithLangAndVars("bundle-user-page.js", pl.lang,
-												db.varMapUserPage(pl.cookie, pl.userId)), ENCODING);
-							}
-							break;
 						case "esb-user-page.js": // e.g. path=/esb-user-page.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
-									.end(FileMapWithVar.getFileWithLangAndVars("esb-user-page.js", pl.lang, db.varMapMyPage(pl.cookie)),
-									ENCODING);
+									.end(fileMap.getFileWithLang("esb-user-page.js", pl.lang), ENCODING);
 							break;
 						case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
@@ -603,7 +578,7 @@ public class Recoeve extends AbstractVerticle {
 							break;
 						case "prepare.js": // e.g. path=/prepare.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
-									.end(FileMapWithVar.getFileWithLangAndVars("prepare.js", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
+									.end(fileMap.getFileWithLang("prepare.js", pl.lang), ENCODING);
 							break;
 						case "sessionIter": // e.g. path=/sessionIter
 							String iter = db.sessionIter(pl.cookie, pl.tNow);
