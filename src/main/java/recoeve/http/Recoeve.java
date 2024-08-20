@@ -481,31 +481,31 @@ public class Recoeve extends AbstractVerticle {
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
 						break;
-					case "access-logs":
-						msg = "Sended access-logs.html";
-						System.out.println(msg);
-						// pLHtml.append(msg + "</div>");
-						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+					// case "access-logs":
+					// 	msg = "Sended access-logs.html";
+					// 	System.out.println(msg);
+					// 	// pLHtml.append(msg + "</div>");
+					// 	// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 
-						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-								.end(fileMap.getFileWithLang("access-logs.html", pl.lang), ENCODING);
-						break;
-					case "access-logs.do":
-						if (pl.sessionPassed) {
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.end(db.getLogAccessInSEEForm(pl.tNow));
-							msg = "Sended recent access logs in docuK SEE form.";
-							System.out.println(msg);
-						}
-						else {
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
-							msg = INVALID_ACCESS + " (You are not admin kipid. Invalid session.)";
-							System.out.println(msg);
-							// pLHtml.append(msg + "</div>");
-							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						}
-						break;
+					// 	pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
+					// 			.end(fileMap.getFileWithLang("access-logs.html", pl.lang), ENCODING);
+					// 	break;
+					// case "access-logs.do":
+					// 	if (pl.sessionPassed) {
+					// 		pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+					// 				.end(db.getLogAccessInSEEForm(pl.tNow));
+					// 		msg = "Sended recent access logs in docuK SEE form.";
+					// 		System.out.println(msg);
+					// 	}
+					// 	else {
+					// 		pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+					// 				.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+					// 		msg = INVALID_ACCESS + " (You are not admin kipid. Invalid session.)";
+					// 		System.out.println(msg);
+					// 		// pLHtml.append(msg + "</div>");
+					// 		// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+					// 	}
+					// 	break;
 				}
 			}
 			else {
