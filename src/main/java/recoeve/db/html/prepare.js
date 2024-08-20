@@ -1,4 +1,46 @@
-window.m = window.m || {};
+window.m = {
+	defaultStyles: {
+		mode: "dark",
+		fontFamily: "Noto Sans KR",
+		fontSize: 1.0,
+		lineHeight: 1.6,
+		innerWidth: window.innerWidth,
+		innerHeight: window.innerHeight,
+	},
+	initialPathname: window.location.pathname,
+	initialSearch: window.location.search,
+	initialHashURI: window.location.hash ? decodeURIComponent(window.location.hash.substring(1)) : "",
+	doNotPushHistory: true,
+	valsStatN: 20,
+	recosShown: false,
+	previous: 0,
+	tNow: new Date(),
+	fsLength: 300,
+	gotoCatsOn: false,
+	goOn: false,
+	ToRsOn: false,
+	newRecoOn: false,
+	lastRecoMode: "nothing",
+	lastCat: "i8@ㅏ%자DKW2!",
+	lastRecoURIPlaying: "8@i#탖3KS!",
+	args: {},
+	neighborUpto: 200,
+	dailyMixPer: 5,
+	recoedFromRecoms: 0,
+	deletedRecosCount: 0,
+	$recoDeleted: [],
+	showOnlyUnrecoed: false,
+	initialOpen: true,
+	userIndex: "{--userIndex--}",
+	myIndex: "{--myIndex--}",
+	myPage: "{--userIndex--}" === "{--myIndex--}",
+	userId: "{--userId--}",
+	myId: "{--myId--}",
+	myCatListHTMLEscaped: `{--myCatList--}`,
+	catListHTMLEscaped: `{--catList--}`,
+	kipidCatListHTMLEscaped: `{--kipid-catList--}`,
+};
+
 (function (m, $, undefined) {// Used in user-page.html, log-in.html, changePwd.html, verify.html
 m.$window = $(window);
 m.$document = $(document);
