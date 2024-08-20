@@ -492,7 +492,7 @@ public class Recoeve extends AbstractVerticle {
 					// 	break;
 					// case "access-logs.do":
 					// 	if (pl.sessionPassed) {
-					// 		pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+					// 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 					// 				.end(db.getLogAccessInSEEForm(pl.tNow));
 					// 		msg = "Sended recent access logs in docuK SEE form.";
 					// 		System.out.println(msg);
