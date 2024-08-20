@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 
 import java.security.MessageDigest;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -120,16 +119,6 @@ public class RecoeveDB {
 	private Connection con;
 	public Vertx vertx;
 
-	private PreparedStatement pstmtTimeDiff;
-	private PreparedStatement pstmtCheckTimeDiff;
-	private PreparedStatement pstmtCheckDayDiffLessThan1;
-	private PreparedStatement pstmtCheckDateDiff;
-	// java.sql.Timestamp class, and java.sql.Date class
-	// java.util.Date dt=new java.util.Date();
-	// java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd
-	// HH:mm:ss");
-	// String currentTime=sdf.format(dt);
-
 	private PreparedStatement pstmtGetLogAccess;
 	private PreparedStatement pstmtLogAccess;
 	private PreparedStatement pstmtSelectLogAccess;
@@ -227,10 +216,6 @@ public class RecoeveDB {
 						@Override
 						public Void call() throws Exception {
 							con = ds.getConnection();
-							pstmtTimeDiff = con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
-							pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
-							pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < ?;");
-							pstmtCheckDateDiff = con.prepareStatement("SELECT datediff(?, ?)<?;");
 
 							pstmtGetLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`=?;");
 							pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `user_i`, `html`) VALUES (?, ?, ?);");
@@ -429,62 +414,12 @@ public class RecoeveDB {
 		return new Timestamp(System.currentTimeMillis());
 	}
 
-	public boolean timeDiff(Timestamp tNow, Timestamp tFrom) { // SELECT TIMEDIFF(?, ?)>0;
-		try {
-			pstmtTimeDiff.setTimestamp(1, tNow);
-			pstmtTimeDiff.setTimestamp(2, tFrom);
-			ResultSet rs = pstmtTimeDiff.executeQuery(); // tNow-tFrom>0?
-			if (rs.next()) {
-				return rs.getBoolean(1);
-			}
-		} catch (SQLException err) {
-			err(err);
-		}
-		return true;
+	public boolean checkTimeDiff(Timestamp tNow, Timestamp tFrom, long lessThanInSeconds) {
+		return tNow.before(new Timestamp(tFrom.getTime() + lessThanInSeconds * 1000L));
 	}
 
-	public boolean checkTimeDiff(Timestamp tNow, String from, long lessThanInSeconds) {
-		try {
-			System.out.println("tNow:" + tNow);
-			System.out.println("from:" + from);
-			System.out.println("lessThanInSeconds:" + lessThanInSeconds);
-
-			pstmtCheckDayDiffLessThan1.setTimestamp(1, Timestamp.valueOf(from));
-			pstmtCheckDayDiffLessThan1.setTimestamp(2, tNow);
-			pstmtCheckDayDiffLessThan1.setLong(3, lessThanInSeconds / 60 / 60);
-			ResultSet rs0 = pstmtCheckDayDiffLessThan1.executeQuery();
-
-			pstmtCheckTimeDiff.setTimestamp(1, Timestamp.valueOf(from));
-			pstmtCheckTimeDiff.setTimestamp(2, tNow);
-			pstmtCheckTimeDiff.setLong(3, lessThanInSeconds); // in seconds.
-			ResultSet rs = pstmtCheckTimeDiff.executeQuery();
-
-			if (rs0.next() && rs.next()) {
-				boolean res0 = rs0.getBoolean(1);
-				boolean res = rs.getBoolean(1);
-				System.out.println("result0:" + res0);
-				System.out.println("result:" + res);
-				return res0 && res;
-			}
-		} catch (SQLException err) {
-			err(err);
-		}
-		return false;
-	}
-
-	public boolean checkDateDiff(Timestamp tNow, String from, int lessThanInDays) {
-		try {
-			pstmtCheckDateDiff.setDate(1, Date.valueOf(tNow.toString().substring(0, 10)));
-			pstmtCheckDateDiff.setDate(2, Date.valueOf(from.substring(0, 10)));
-			pstmtCheckDateDiff.setInt(3, lessThanInDays); // In days
-			ResultSet rs = pstmtCheckDateDiff.executeQuery();
-			if (rs.next()) {
-				return rs.getBoolean(1);
-			}
-		} catch (SQLException err) {
-			err(err);
-		}
-		return false;
+	public boolean checkDateDiff(Timestamp tNow, Timestamp tFrom, int lessThanInDays) {
+		return tNow.before(new Timestamp(tFrom.getTime() + lessThanInDays * 24L * 60L * 60L * 1000L));
 	}
 
 	private List<CompletableFuture<?>> cfs = new ArrayList<>(20);
@@ -803,7 +738,7 @@ public class RecoeveDB {
 
 	public boolean checkAuthToken(StrArray inputs, String ip, Timestamp tNow) {
 		boolean done = false;
-		String tToken = inputs.get(1, "tToken");
+		Timestamp tToken = Timestamp.valueOf(inputs.get(1, "tToken"));
 		System.out.println("tToken:" + tToken);
 		String token = inputs.get(1, "authToken");
 		System.out.println("token:" + token);
@@ -813,7 +748,7 @@ public class RecoeveDB {
 		System.out.println("email:" + email);
 		try {
 			con.setAutoCommit(false);
-			pstmtCheckAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
+			pstmtCheckAuthToken.setTimestamp(1, tToken);
 			pstmtCheckAuthToken.setString(2, ip);
 			ResultSet rs = pstmtCheckAuthToken.executeQuery();
 			String errMsg = "Sign-up error: ";
@@ -823,7 +758,7 @@ public class RecoeveDB {
 				boolean timeC = checkTimeDiff(tNow, tToken, 30L);
 				System.out.println("newC:" + newC + ", tokenC:" + tokenC + ", timeC:" + timeC);
 				if (newC && tokenC && timeC) {
-					pstmtUpdateAuthToken.setTimestamp(1, Timestamp.valueOf(tToken));
+					pstmtUpdateAuthToken.setTimestamp(1, tToken);
 					pstmtUpdateAuthToken.setString(2, ip);
 					logsCommit(1, tNow, ip, "tkn", true, "tToken: " + tToken);
 					done = (pstmtUpdateAuthToken.executeUpdate() > 0);
@@ -867,10 +802,10 @@ public class RecoeveDB {
 		try {
 			ResultSet user = findUserById(params.get("id"));
 			if (user.next()) {
-				String from = user.getString("tChangePwd");
-				System.out.println(tNow + "\t" + from);
-				return from != null
-						&& checkTimeDiff(tNow, from, secondsChangePwdToken)
+				Timestamp tFrom = Timestamp.valueOf(user.getString("tChangePwd"));
+				System.out.println(tNow + "\t" + tFrom);
+				return tFrom != null
+						&& checkTimeDiff(tNow, tFrom, secondsChangePwdToken)
 						&& Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
 			}
 		} catch (SQLException err) {
@@ -883,10 +818,10 @@ public class RecoeveDB {
 		try {
 			ResultSet user = findUserById(id);
 			if (user.next()) {
-				String from = user.getString("tChangePwd");
-				System.out.println(tNow + "\t" + from);
-				return from != null
-						&& checkTimeDiff(tNow, from, secondsChangePwdToken)
+				Timestamp tFrom = user.getTimestamp("tChangePwd");
+				System.out.println(tNow + "\t" + tFrom);
+				return tFrom != null
+						&& checkTimeDiff(tNow, tFrom, secondsChangePwdToken)
 						&& Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
 			}
 		} catch (SQLException err) {
@@ -1255,16 +1190,15 @@ public class RecoeveDB {
 			if (user.next()) {
 				id = user.getString("id");
 				String email = user.getString("email");
-				String from = user.getString("tChangePwd");
-				if (from != null && checkTimeDiff(tNow, from, secondsChangePwdToken)) {
-					return FileMap.replaceStr("[--pre already sended email to--] " + encryptEmail(email)
-							+ "[--post already sended email to--]", lang);
+				Timestamp tFrom = user.getTimestamp("tChangePwd");
+				if (tFrom != null && checkTimeDiff(tNow, tFrom, secondsChangePwdToken)) {
+					return FileMap.replaceStr("[--pre already sended email to--] " + encryptEmail(email) + "[--post already sended email to--]", lang);
 				}
 				System.out.println("from=null or checkTimeDiff(tNow, from, " + secondsChangePwdToken + ")=false.");
 				System.out.println("tNow:" + tNow);
-				if (from != null) {
-					System.out.println("from:" + from);
-					System.out.println("checkTimeDiff(tNow, from, " + secondsChangePwdToken + "):" + checkTimeDiff(tNow, from, secondsChangePwdToken));
+				if (tFrom != null) {
+					System.out.println("from:" + tFrom);
+					System.out.println("checkTimeDiff(tNow, from, " + secondsChangePwdToken + "):" + checkTimeDiff(tNow, tFrom, secondsChangePwdToken));
 				}
 				user.updateTimestamp("tChangePwd", tNow);
 				byte[] token = randomBytes(32);
@@ -1385,12 +1319,12 @@ public class RecoeveDB {
 	public String sessionIter(Cookie cookie, Timestamp tNow) {
 		if (cookie.get("I") != null) {
 			long user_me = Long.parseLong(cookie.get("I"), 16);
-			String tCreate = cookie.get("tCreate").replaceAll("_", " ");
+			Timestamp tCreate = Timestamp.valueOf(cookie.get("tCreate").replaceAll("_", " "));
 			if (tCreate != null) {
 				if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
 					try {
 						pstmtSession.setLong(1, user_me);
-						pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
+						pstmtSession.setTimestamp(2, tCreate);
 						ResultSet rs = pstmtSession.executeQuery();
 						if (rs.next()) {
 							return Integer.toString(rs.getInt("iter"));
@@ -1410,9 +1344,10 @@ public class RecoeveDB {
 	public boolean sessionCheck(Cookie cookie, Timestamp tNow) {
 		if (cookie.get("I") != null) {
 			long user_me = Long.parseLong(cookie.get("I"), 16);
-			String tCreate = cookie.get("tCreate");
-			if (tCreate != null) {
-				tCreate = tCreate.replaceAll("_", " ");
+			String strTCreate = cookie.get("tCreate");
+			Timestamp tCreate = OLD;
+			if (strTCreate != null) {
+				tCreate = Timestamp.valueOf(strTCreate.replaceAll("_", " "));
 			}
 			String session = cookie.get("SSN");
 			if (tCreate != null && session != null) {
@@ -1420,7 +1355,7 @@ public class RecoeveDB {
 					try {
 						con.setAutoCommit(true);
 						pstmtSession.setLong(1, user_me);
-						pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
+						pstmtSession.setTimestamp(2, tCreate);
 						ResultSet rs = pstmtSession.executeQuery();
 						if (rs.next()
 								&& Arrays.equals(rs.getBytes("encryptedSSN"),
@@ -1578,7 +1513,7 @@ public class RecoeveDB {
 		List<io.vertx.core.http.Cookie> setCookie = new ArrayList<>();
 		if (cookie.get("rmbdI") != null) {
 			long user_me = Long.parseLong(cookie.get("rmbdI"), 16);
-			String rmbdT = cookie.get("rmbdT").replaceAll("_", " ");
+			String rmbdT = cookie.get("rmbdT");
 			String rmbdAuth = cookie.get("rmbdAuth");
 			String rmbdToken = cookie.get("rmbdToken");
 			String log = inputs.get(1, "log");
@@ -1586,9 +1521,10 @@ public class RecoeveDB {
 			String sH = inputs.get(1, "sH");
 			if (rmbdT != null && rmbdAuth != null && rmbdToken != null && log != null && sW != null && sH != null) {
 				try {
+					Timestamp tRmbdT = Timestamp.valueOf(rmbdT.replaceAll("_", " "));
 					con.setAutoCommit(false);
 					pstmtCheckUserRemember.setLong(1, user_me);
-					pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
+					pstmtCheckUserRemember.setTimestamp(2, tRmbdT);
 					ResultSet rs = pstmtCheckUserRemember.executeQuery();
 					String errMsg = "Error: ";
 					if (rs.next()) {
@@ -1596,7 +1532,7 @@ public class RecoeveDB {
 						if ( /*
 									* ip.startsWith(rs.getString("ip").split(":")[0])
 									* &&
-									*/checkDateDiff(tNow, rmbdT, daysRMB)
+									*/checkDateDiff(tNow, tRmbdT, daysRMB)
 								&& Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))
 								&& Arrays.equals(rs.getBytes("token"), hexStrToBytes(rmbdToken))
 								&& rs.getString("log").equals(log)
@@ -1633,7 +1569,7 @@ public class RecoeveDB {
 							if (!ip.startsWith(rs.getString("ip").split(":")[0])) {
 								errMsg += "diff ip. " + rs.getString("ip") + " ";
 							}
-							if (!checkDateDiff(tNow, rmbdT, daysRMB)) {
+							if (!checkDateDiff(tNow, tRmbdT, daysRMB)) {
 								errMsg += "expired. ";
 							}
 							if (!Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))) {
@@ -1714,9 +1650,7 @@ public class RecoeveDB {
 		return setCookie;
 	}
 
-	public List<io.vertx.core.http.Cookie> createUserRemember(long user_me, Timestamp tNow, byte[] rmbdAuth,
-			byte[] rmbdToken, StrArray inputs, String ip, String userAgent)
-			throws SQLException {
+	public List<io.vertx.core.http.Cookie> createUserRemember(long user_me, Timestamp tNow, byte[] rmbdAuth, byte[] rmbdToken, StrArray inputs, String ip, String userAgent) throws SQLException {
 		pstmtCreateUserRemember.setLong(1, user_me);
 		pstmtCreateUserRemember.setTimestamp(2, tNow);
 		pstmtCreateUserRemember.setBytes(3, rmbdAuth);
