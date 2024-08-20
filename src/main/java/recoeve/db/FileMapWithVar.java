@@ -30,7 +30,7 @@ public class FileMapWithVar {
 	public static Map<String, Map<String, ArrayList<String>>> fileMap;
 	// fileMap.get("fileName").get("lang")
 
-	public static final Pattern ptnReplacer = Pattern.compile("\\[--[^\\[\\]]+?--\\]");
+	public static final Pattern ptnLanguage = Pattern.compile("\\[--[^\\[\\]]+?--\\]");
 	public static final Pattern ptnVariable = Pattern.compile("\\{--[^\\{\\}]+?--\\}");
 
 	static {
@@ -89,7 +89,8 @@ public class FileMapWithVar {
 						strListVars.add(fileStr.substring(start, matchVariable.start()));
 						strListVars.add(matchVariable.group());
 						start = matchVariable.end();
-					} else {
+					}
+					else {
 						strListVars.add(fileStr.substring(start));
 						start = fileStr.length();
 					}
@@ -97,14 +98,15 @@ public class FileMapWithVar {
 				fileLangMap.put("df", strListVars); // default.
 
 				ArrayList<String> strList = new ArrayList<String>();
-				Matcher matchReplacer = ptnReplacer.matcher(fileStr);
+				Matcher matchReplacer = ptnLanguage.matcher(fileStr);
 				start = 0;
 				while (start < fileStr.length()) {
 					if (matchReplacer.find(start)) {
 						strList.add(fileStr.substring(start, matchReplacer.start()));
 						strList.add(matchReplacer.group());
 						start = matchReplacer.end();
-					} else {
+					}
+					else {
 						strList.add(fileStr.substring(start));
 						start = fileStr.length();
 					}
@@ -120,13 +122,14 @@ public class FileMapWithVar {
 							for (int i = 0; i < strList.size(); i++) {
 								if (i % 2 == 0) {
 									strReplaced += strList.get(i);
-								} else {
+								}
+								else {
 									replaced = langMap.get(strList.get(i), lang);
 									if (replaced == null || replaced.isEmpty() || replaced.equals("-")) {
 										replaced = langMap.get(strList.get(i), "en"); // "en" is default lang.
 									}
 									if (replaced == null) {
-										replaced = strList.get(i);
+										replaced = strList.get(i); // If there is no default "en" lang, use literal [--Var--].
 									}
 									strReplaced += replaced;
 								}
@@ -139,7 +142,8 @@ public class FileMapWithVar {
 									strListVars.add(strReplaced.substring(start, matchVariable.start()));
 									strListVars.add(matchVariable.group());
 									start = matchVariable.end();
-								} else {
+								}
+								else {
 									strListVars.add(strReplaced.substring(start));
 									start = strReplaced.length();
 								}
@@ -170,7 +174,8 @@ public class FileMapWithVar {
 		for (int i = 0; i < strList.size(); i++) {
 			if (i % 2 == 0) {
 				res += strList.get(i);
-			} else {
+			}
+			else {
 				replaced = varMap.get(strList.get(i));
 				if (replaced == null) {
 					replaced = strList.get(i);
