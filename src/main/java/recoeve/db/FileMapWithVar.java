@@ -41,9 +41,9 @@ public class FileMapWithVar {
 		file = new File(filePath + "lang.txt");
 		if (file.exists()) {
 			try {
+				FileReader reader = new FileReader(file);
 				StringBuilder sb = new StringBuilder();
 				int ch;
-				FileReader reader = new FileReader(file);
 				while ((ch = reader.read()) != -1) {
 					sb.append((char) ch);
 				}
@@ -56,16 +56,15 @@ public class FileMapWithVar {
 			}
 		}
 		StrArray langMap = new StrArray(fileStr, true, true);
-		// System.out.println(langMap);
 		fileStr = null;
 
 		for (File fileName : fileNames) {
 			file = new File(filePath + fileName.getName());
 			if (file.exists()) {
 				try {
+					FileReader reader = new FileReader(file);
 					StringBuilder sb = new StringBuilder();
 					int ch;
-					FileReader reader = new FileReader(file);
 					while ((ch = reader.read()) != -1) {
 						sb.append((char) ch);
 					}
@@ -188,7 +187,26 @@ public class FileMapWithVar {
 		varMap.put("{--myId--}", "kipid");
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
-		varMap.put("{--user email--}", "id@email.com");
-		System.out.println(FileMapWithVar.getFileWithLangAndVars("multireco.html", "en", varMap));
+		varMap.put("{--user email--}", "id@gmail.com");
+		varMap.put("{--myCatList--}", """
+
+[Recoeve]
+	static
+	multiline
+[Music/Break]""");
+		varMap.put("{--catList--}", """
+
+[IT/Programming]
+	HTML
+	CSS
+	JavaScript""");
+		varMap.put("{--kipid-catList--}", """
+
+[Poop]
+[Ding Dong]""");
+		System.out.println(FileMapWithVar.getFileWithLangAndVars("user-page.html", "ko", varMap));
+		for (File fileName : fileNames) {
+			System.out.println(fileName.getName());
+		}
 	}
 }
