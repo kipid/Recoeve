@@ -1367,7 +1367,7 @@ public class RecoeveDB {
 					varMap.put("{--userId--}", varMap.get("{--myId--}"));
 					varMap.put("{--catList--}", varMap.get("{--myCatList--}"));
 				}
-				varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString()));
+				varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100_000_000L).toString()));
 			} catch (SQLException err) {
 				err(err);
 			}
