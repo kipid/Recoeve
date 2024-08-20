@@ -120,7 +120,6 @@ public class RecoeveDB {
 	private Connection con;
 	public Vertx vertx;
 
-	private PreparedStatement pstmtNow;
 	private PreparedStatement pstmtTimeDiff;
 	private PreparedStatement pstmtCheckTimeDiff;
 	private PreparedStatement pstmtCheckDayDiffLessThan1;
@@ -228,7 +227,6 @@ public class RecoeveDB {
 				@Override
 				public Void call() throws Exception {
 					con = ds.getConnection();
-					pstmtNow = con.prepareStatement("SELECT utc_timestamp();");
 					pstmtTimeDiff = con.prepareStatement("SELECT TIMEDIFF(?, ?)>0;");
 					pstmtCheckTimeDiff = con.prepareStatement("SELECT TIMESTAMPDIFF(SECOND, ?, ?) < ?;");
 					pstmtCheckDayDiffLessThan1 = con.prepareStatement("SELECT TIMESTAMPDIFF(DAY, ?, ?) < ?;");
@@ -434,17 +432,8 @@ public class RecoeveDB {
 		}
 	}
 
-	public String now() {
-		String now = "";
-		try {
-			ResultSet rs = pstmtNow.executeQuery();
-			if (rs.next()) {
-				now = rs.getString(1);
-			}
-		} catch (SQLException err) {
-			err(err);
-		}
-		return now; // utc_timestamp()
+	public Timestamp now() {
+		return new Timestamp(System.currentTimeMillis());
 	}
 
 	public boolean timeDiff(Timestamp tNow, Timestamp tFrom) { // SELECT TIMEDIFF(?, ?)>0;
@@ -3968,7 +3957,7 @@ public class RecoeveDB {
 	}
 
 	private boolean deleteUser(String userEmail) { // DELETE `User` after DELETE TABLES which references `User`.
-		Timestamp tNow = Timestamp.valueOf(this.now());
+		Timestamp tNow = this.now();
 		boolean done = false;
 		try {
 			con.setAutoCommit(false);
