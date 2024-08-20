@@ -482,14 +482,29 @@ public class Recoeve extends AbstractVerticle {
 						}
 						break;
 					case "access-logs":
-						msg = "Sended recent access logs.";
+						msg = "Sended access-logs.html";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 
-						String docu = "<!DOCTYPE html>\n\n<meta charset=\"UTF-8\"/>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes\"/>\n\n<codeprint id=\"docuK-style\">\n<div class=\"docuK rendered\"><div class=\"sec\" id=\"docuK-log\"></div></div>\n\n<!-- From kipid.tistory CDN -->\n<script src=\"https://tistory1.daumcdn.net/tistory/1468360/skin/images/jquery.js\"></script>\n<link rel=\"stylesheet\" href=\"https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css\">\n<script src=\"https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js\" charset=\"utf-8\"></script>\n</codeprint><!-- docuK-style -->\n\n<codeprint class=\"SEE\">\n# Access Logs\n\n\n\n## PH\n\n<ul>\n<li>2024-08-19 : First implementation.</li>\n</ul>\n\n\n\n## TOC" + db.getLogAccessInSEEForm(pl.tNow) + "\n\n\n\n## RRA\n\n<ol class=\"refs\">\n<li><a target=\"_blank\" href=\"https://recoeve.net/admin/logs\">https://recoeve.net/admin/logs</a></li>\n</ol>\n</codeprint><!-- SEE -->\n\n<codeprint id=\"docuK-script\">\n<script>\n(function(m, $, undefined) {\nm.printMode=false;\nm.recoeveUserId=\"kipid\";\nm.recoCats=\"\";\nm.wait=1024;\nm.delayPad=512;\n\n/**\n *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.\n *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables\n**/\nwindow.disqus_config=function () {\n	this.page.identifier=\"Recoeve-Access-Log\"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable\n	this.page.url=`https://kipid.tistory.com/entry/${this.page.identifier}`; // Replace PAGE_URL with your page's canonical URL variable\n};\n})(window.m, jQuery);\n</script>\n\n<!-- From kipid.tistory CDN -->\n<script src=\"https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js\" charset=\"utf-8\"></script>\n</codeprint><!-- docuK-script -->\n";
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-								.end(docu);
+								.end(fileMap.getFileWithLang("access-logs.html", pl.lang), ENCODING);
+						break;
+					case "access-logs.do":
+						if (pl.sessionPassed) {
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+									.end(db.getLogAccessInSEEForm(pl.tNow));
+							msg = "Sended recent access logs in docuK SEE form.";
+							System.out.println(msg);
+						}
+						else {
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							msg = INVALID_ACCESS + " (You are not admin kipid. Invalid session.)";
+							System.out.println(msg);
+							// pLHtml.append(msg + "</div>");
+							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+						}
 						break;
 				}
 			}
