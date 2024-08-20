@@ -86,8 +86,7 @@ DELETE FROM `urilist` WHERE user_i=100000029;
 
 ```[.lang-java]
 RecoeveDB db=new RecoeveDB();
-String now=db.now();
-db.updateDefsAll(Timestamp.valueOf(now));
+Timestamp tNow=db.now();
 ```/
 
 
@@ -484,10 +483,10 @@ req.remoteAddress(): /0:0:0:0:0:0:0:1:5454
 DROP TABLE `logAccess`;
 
 CREATE TABLE `logAccess` (
-	`i` BIGINT AUTO_INCREMENT
-	, `t` TIMESTAMP NOT NULL
-	, `user_i` BIGINT NOT NULL
-	, `html` TEXT NOT NULL
+	`i` bigint AUTO_INCREMENT
+	, `t` datetime NOT NULL
+	, `user_i` bigint NOT NULL
+	, `html` text NOT NULL
 	, PRIMARY KEY (`i`)
 	, FOREIGN KEY (`user_i`) REFERENCES `Users`(`i`)
 );
@@ -717,8 +716,8 @@ CREATE TABLE `Users` (
 	, `pwd_iteration` int NOT NULL DEFAULT 10000
 	, `veriKey` varchar(64) #DEFAULT hex(random_bytes(32))
 	, `ipReg` varchar(32) NOT NULL
-	, `tReg` datetime NOT NULL #DEFAULT utc_timestamp()
-	, `tLastVisit` datetime NOT NULL #DEFAULT utc_timestamp()
+	, `tReg` datetime NOT NULL
+	, `tLastVisit` datetime NOT NULL
 	, `rmbdC` int DEFAULT 0
 	, `ssnC` int DEFAULT 0
 	, `class` int NOT NULL DEFAULT 0 #0: Not verified yet
@@ -983,7 +982,7 @@ One-time token 같은거 이용해서 프로그래밍적으로 계정 무한정 
 
 ```[.linenums.lang-sql]
 CREATE TABLE `AuthToken` (
-	`t` datetime NOT NULL #DEFAULT utc_timestamp()
+	`t` datetime NOT NULL
 	, `ip` varchar(32) NOT NULL
 	, `token` binary(128) NOT NULL #DEFAULT random_bytes(128)
 	, `new` boolean NOT NULL DEFAULT true
@@ -1185,7 +1184,7 @@ Set-Cookie: rmbdToken=;max-age=-100
 ```[.linenums.lang-sql]
 CREATE TABLE `UserSession` (
 	`user_i` bigint NOT NULL
-	, `tCreate` datetime NOT NULL #DEFAULT utc_timestamp()
+	, `tCreate` datetime NOT NULL
 	, `session` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `token` binary(32) NOT NULL #DEFAULT hex(random_bytes(32))
 	, `ip` char(32) NOT NULL
@@ -1255,7 +1254,7 @@ CREATE TABLE `UserRemember` (
 	, `log` char(3)
 	, `sW` smallint unsigned
 	, `sH` smallint unsigned
-	, `tCreate` datetime NOT NULL #DEFAULT utc_timestamp()
+	, `tCreate` datetime NOT NULL
 	, `tLast` datetime
 	, PRIMARY KEY (`user_i`, `tCreate`)
 	, FOREIGN KEY (`user_i`) REFERENCES `Users` (`i`)
