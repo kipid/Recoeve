@@ -1318,10 +1318,7 @@ public class RecoeveDB {
 				ResultSet user = findUserByIndex(my_i);
 				if (user.next()) {
 					varMap.put("{--myId--}", HTMLString.escapeOnlyTag(user.getString("id")));
-					varMap.put("{--myCatList--}",
-							HTMLString.escapeOnlyTag(getCatList(my_i).toString())
-									.replaceAll("\n", "\\\\n")
-									.replaceAll("\t", "\\\\t"));
+					varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 				}
 			} catch (SQLException err) {
 				err(err);
@@ -1333,13 +1330,9 @@ public class RecoeveDB {
 				long user_i = user.getLong("i");
 				varMap.put("{--userIndex--}", Long.toString(user_i, 16));
 				varMap.put("{--userId--}", HTMLString.escapeOnlyTag(user.getString("id")));
-				varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString())
-						.replaceAll("\n", "\\\\n")
-						.replaceAll("\t", "\\\\t"));
+				varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
 			}
-			varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString())
-					.replaceAll("\n", "\\\\n")
-					.replaceAll("\t", "\\\\t"));
+			varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100_000_000L).toString()));
 		} catch (SQLException err) {
 			err(err);
 		}
@@ -1370,15 +1363,11 @@ public class RecoeveDB {
 				ResultSet user = findUserByIndex(my_i);
 				if (user.next()) {
 					varMap.put("{--myId--}", user.getString("id"));
-					varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()).replaceAll("\n", "\\\\n")
-							.replaceAll("\t",
-									"\\\\t"));
+					varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 					varMap.put("{--userId--}", varMap.get("{--myId--}"));
 					varMap.put("{--catList--}", varMap.get("{--myCatList--}"));
 				}
-				varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString())
-						.replaceAll("\n", "\\\\n")
-						.replaceAll("\t", "\\\\t"));
+				varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100000000L).toString()));
 			} catch (SQLException err) {
 				err(err);
 			}
