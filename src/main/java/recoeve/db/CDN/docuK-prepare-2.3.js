@@ -1,4 +1,4 @@
-window.k = {};
+window.m = window.k = {};
 (function (m, $, undefined) {
 	m.version0 = "2.11";
 	m.$window = $(window);
