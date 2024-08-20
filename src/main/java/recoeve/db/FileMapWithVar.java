@@ -31,7 +31,7 @@ public class FileMapWithVar {
 	// fileMap.get("fileName").get("lang")
 
 	public static final Pattern ptnReplacer = Pattern.compile("\\[--[^\\[\\]]+--\\]");
-	public static final Pattern ptnVariable = Pattern.compile("\\{--[^\\[\\]]+--\\}");
+	public static final Pattern ptnVariable = Pattern.compile("\\{--[^\\{\\}]+--\\}");
 
 	static {
 		fileMap = new HashMap<String, Map<String, ArrayList<String>>>(fileMapSize);
@@ -184,6 +184,8 @@ public class FileMapWithVar {
 
 	public static void main(String... args) {
 		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put("{--myIndex--}", "11111");
+		varMap.put("{--myId--}", "kipid");
 		varMap.put("{--userIndex--}", "10000");
 		varMap.put("{--userId--}", "id");
 		varMap.put("{--user email--}", "id@email.com");
