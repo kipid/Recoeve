@@ -97,7 +97,7 @@ public class FileMap {
 	// txtFileMap.get("txtFileName").get("lang")
 	public static StrArray langMap;
 
-	public static final Pattern ptnReplacer = Pattern.compile("\\[--[\\s\\S]+?--\\]");
+	public static final Pattern ptnReplacer = Pattern.compile("\\[--[^\\[\\]]+--\\]");
 
 	static {
 		refererSet = new HashSet<String>();
