@@ -1,4 +1,4 @@
-window.m = window.m || {};
+const m = window.m = window.m || {};
 
 (function (m, $, undefined) {// Used in user-page.html, log-in.html, changePwd.html, verify.html
 m.$window = $(window);
