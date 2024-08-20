@@ -478,14 +478,17 @@ req.remoteAddress(): /0:0:0:0:0:0:0:1:5454
 
 ## logAccess
 
-<div id="table-logAccess">
+<div id="table-logAccess"><div class="number none">logAccess</div>
 
 ```[.linenums.lang-sql]
+DROP TABLE `logAccess`;
+
 CREATE TABLE `logAccess` (
-	`t` TIMESTAMP NOT NULL
+	`i` BIGINT AUTO_INCREMENT
+	, `t` TIMESTAMP NOT NULL
 	, `user_i` BIGINT NOT NULL
 	, `html` TEXT NOT NULL
-	, PRIMARY KEY (`t`)
+	, PRIMARY KEY (`i`)
 	, FOREIGN KEY (`user_i`) REFERENCES `Users`(`i`)
 );
 
