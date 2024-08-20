@@ -145,6 +145,12 @@ public class Recoeve extends AbstractVerticle {
 							}
 						});
 						break;
+					default:
+						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						msg = INVALID_ACCESS;
+						System.out.println(msg);
+						break;
 				}
 			}
 		});
@@ -506,6 +512,12 @@ public class Recoeve extends AbstractVerticle {
 					// 		// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 					// 	}
 					// 	break;
+					default:
+						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						msg = INVALID_ACCESS;
+						System.out.println(msg);
+						break;
 				}
 			}
 			else {
