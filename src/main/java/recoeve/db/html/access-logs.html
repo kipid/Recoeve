@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes"/>
+
+<codeprint id="docuK-style">
+<div class="docuK rendered"><div class="sec" id="docuK-log"></div></div>
+
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/jquery.js"></script>
+<link rel="stylesheet" href="https://tistory1.daumcdn.net/tistory/1468360/skin/images/docuK-2.3.css">
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-prepare-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-style -->
+
+<codeprint class="SEE">
+# Access Logs
+
+<script></script>
+
+## PH
+
+<ul>
+<li>2024-08-19 : First implementation.</li>
+</ul>
+
+
+
+## TOC
+
+
+
+<div id="access-logs-SEE"></div>
+
+
+
+## RRA
+
+<ol class="refs">
+<li><a target="_blank" href="https://recoeve.net/admin/logs">https://recoeve.net/admin/logs</a></li>
+</ol>
+</codeprint><!-- SEE -->
+
+<script src="/prepare.js" charset="utf-8"></script>
+
+<codeprint id="docuK-script">
+<script>
+(function(m, $, undefined) {
+m.rmb_me(function () {
+	$.ajax({
+		type: "GET",
+		url: "/admin/access-logs.do",
+		dataType: "text",
+	})
+	.done(function (resp) {
+		$("#access-logs-SEE")[0].outerHTML = resp;
+	})
+	.fail(function (resp) {
+		$("#access-logs-SEE")[0].outerHTML = resp;
+	});
+})
+
+m.printMode=true;
+m.recoeveUserId="kipid";
+m.recoCats="";
+m.wait=1024;
+m.delayPad=512;
+
+/**
+ *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+ *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+**/
+window.disqus_config=function () {
+	this.page.identifier="Recoeve-Access-Log"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	this.page.url=`https://kipid.tistory.com/entry/${this.page.identifier}`; // Replace PAGE_URL with your page's canonical URL variable
+};
+})(window.m, jQuery);
+</script>
+
+<!-- From kipid.tistory CDN -->
+<script src="https://tistory3.daumcdn.net/tistory/1468360/skin/images/docuK-postProcess-2.3.js" charset="utf-8"></script>
+</codeprint><!-- docuK-script -->
