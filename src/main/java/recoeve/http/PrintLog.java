@@ -5,7 +5,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 
-import java.lang.StringBuilder;
+// import java.lang.StringBuilder;
 
 import java.sql.*;
 
@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 
 import recoeve.db.RecoeveDB;
 import recoeve.db.FileMap;
-import recoeve.db.HTMLString;
+// import recoeve.db.HTMLString;
 
 public class PrintLog implements Handler<RoutingContext> {
 	private static long numberOfClients = 0;
@@ -29,8 +29,8 @@ public class PrintLog implements Handler<RoutingContext> {
 	public String user_i_str;
 	public long user_i = 1;
 	public HttpMethod method;
-	public String now;
 	public Timestamp tNow;
+	public String now;
 	public String referer;
 	public String ip;
 	public String userAgent;
@@ -50,8 +50,8 @@ public class PrintLog implements Handler<RoutingContext> {
 		String msg = "\n\nA client has connected!: " + (++numberOfClients);
 		System.out.println(msg);
 		// html.append("<div class=\"access\">" + msg.trim() + "<br/>");
-		now = db.now();
-		tNow = Timestamp.valueOf(now);
+		tNow = db.now();
+		now = tNow.toString();
 		userAgent = req.getHeader("User-Agent");
 		referer = req.headers().get("Referer");
 		msg = "Time: " + now;
