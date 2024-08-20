@@ -41,8 +41,6 @@
 </codeprint><!-- SEE -->
 
 <script src="/prepare.js" charset="utf-8"></script>
-
-<codeprint id="docuK-script">
 <script>
 (function(m, $, undefined) {
 m.rmb_me(function () {
@@ -57,8 +55,13 @@ m.rmb_me(function () {
 	.fail(function (resp) {
 		$("#access-logs-SEE")[0].outerHTML = resp;
 	});
-})
+});
+})(window.m, jQuery)
+</script>
 
+<codeprint id="docuK-script">
+<script>
+(function(m, $, undefined) {
 m.printMode=true;
 m.recoeveUserId="kipid";
 m.recoCats="";
@@ -73,7 +76,7 @@ window.disqus_config=function () {
 	this.page.identifier="Recoeve-Access-Log"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 	this.page.url=`https://kipid.tistory.com/entry/${this.page.identifier}`; // Replace PAGE_URL with your page's canonical URL variable
 };
-})(window.m, jQuery);
+})(window.k, jQuery);
 </script>
 
 <!-- From kipid.tistory CDN -->
