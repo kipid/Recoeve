@@ -1349,20 +1349,20 @@ public class RecoeveDB {
 	public Map<String, String> varMapMyPage(Cookie cookie) {
 		Map<String, String> varMap = new HashMap<String, String>();
 		String myIndex = "";
-		if (cookie.get("I") != null) {
-			myIndex = cookie.get("I");
-		}
-		else if (cookie.get("rmbdI") != null) {
+		if (cookie.get("rmbdI") != null) {
 			myIndex = cookie.get("rmbdI");
+		}
+		else if (cookie.get("I") != null) {
+			myIndex = cookie.get("I");
 		}
 		if (!myIndex.isEmpty()) {
 			varMap.put("{--myIndex--}", myIndex);
 			varMap.put("{--userIndex--}", myIndex);
 			long my_i = Long.parseLong(myIndex, 16);
 			try {
-				ResultSet user = findUserByIndex(my_i);
-				if (user.next()) {
-					varMap.put("{--myId--}", user.getString("id"));
+				ResultSet user_me = findUserByIndex(my_i);
+				if (user_me.next()) {
+					varMap.put("{--myId--}", user_me.getString("id"));
 					varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 					varMap.put("{--userId--}", varMap.get("{--myId--}"));
 					varMap.put("{--catList--}", varMap.get("{--myCatList--}"));
