@@ -655,8 +655,18 @@ public class Recoeve extends AbstractVerticle {
 				System.out.println(msg);
 				// pLHtml.append(msg + "<br/>");
 				if (userId != null && !userId.isEmpty() && db.idExists(userId)) {
+					Map<String, String> varMapUser = db.varMapUserPage(pl.cookie, userId);
+					String userPageMapped = FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, varMapUser);
+					for (Map.Entry<String, String> entry: varMapUser.entrySet()) {
+						System.out.println("\t"+entry.getKey()+" : "+entry.getValue()+"\n");
+					}
+					System.out.println("====================================================");
+					System.out.println("====================================================");
+					System.out.println("====================================================");
+					System.out.println(userPageMapped);
+					System.out.flush();
 					pl.req.response()
-							.end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapUserPage(pl.cookie, userId)), ENCODING);
+							.end(userPageMapped, ENCODING);
 				}
 				else {
 					String res = FileMap.replaceStr("<h1>[--User does not exist.--] UserID=" + userId + "</h1>",
