@@ -27,15 +27,15 @@ public class MainVerticle extends AbstractVerticle {
 		db = new RecoeveDB(vertx);
 		vertx.deployVerticle(
 				new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
-				// , new DeploymentOptions()
-				// , (h) -> {
-				// 	if (h.succeeded()) {
-				// 		verticleId = h.result();
-				// 	}
-				// 	else {
-				// 		System.out.println("Cause " + h.cause());
-				// 	}
-				// }
+				, new DeploymentOptions()
+				, (h) -> {
+					if (h.succeeded()) {
+						verticleId = h.result();
+					}
+					else {
+						System.out.println("Cause " + h.cause());
+					}
+				}
 			);
 		// vertx.deployVerticle(
 		// 		new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db),
@@ -53,14 +53,14 @@ public class MainVerticle extends AbstractVerticle {
 
 	@Override
 	public void stop() {
-		// vertx.undeploy(verticleId);
-		// // vertx.undeploy(verticleId1);
-		// context = null;
-		// vertx = null;
-		// fileMap = null;
-		// fileMapWithVar = null;
-		// recoeveWebClient = null;
-		// db = null;
+		vertx.undeploy(verticleId);
+		// vertx.undeploy(verticleId1);
+		context = null;
+		vertx = null;
+		fileMap = null;
+		fileMapWithVar = null;
+		recoeveWebClient = null;
+		db = null;
 	}
 
 	public static void main(String... args) {
