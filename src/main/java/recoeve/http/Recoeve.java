@@ -586,7 +586,8 @@ public class Recoeve extends AbstractVerticle {
 							break;
 						case "esb-user-page.js": // e.g. path=/esb-user-page.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
-									.end(fileMap.getFileWithLang("esb-user-page.js", pl.lang), ENCODING);
+									.end(FileMapWithVar.getFileWithLangAndVars("esb-user-page.js", pl.lang, db.varMapMyPage(pl.cookie)),
+									ENCODING);
 							break;
 						case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
 							pl.req.response().putHeader("Content-Type", "text/javascript")
