@@ -13,7 +13,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
-import java.lang.StringBuilder;
+// import java.lang.StringBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
-import recoeve.db.HTMLString;
+// import recoeve.db.HTMLString;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
