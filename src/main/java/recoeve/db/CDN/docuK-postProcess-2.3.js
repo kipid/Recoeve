@@ -148,43 +148,43 @@
 		m.$title.html(m.$title.html() + ` at ${window.location.host}`);
 
 		m.$log.after(`<div id="floating-key">
-<div id="button-hideFK" class="button" onclick="m.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
-<div class="button button-Go" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyG'})">
+<div id="button-hideFK" class="button" onclick="k.toggleFK()">▼ Hid<span class="bold underline">e</span></div>
+<div class="button button-Go" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyG'})">
 	<span class="bold underline">G</span>o (FS)
 </div>
-<div class="button darkgoldenrod" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyT'})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyT'})">
 	<span class="bold underline">T</span>ofC
 </div>
-<div class="button button-log" onclick="m.$window.trigger({type:'keydown', code:'KeyK'})">
+<div class="button button-log" onclick="k.$window.trigger({type:'keydown', code:'KeyK'})">
 	Docu<span class="bold underline">K</span> Log
 </div>
-<div class="button darkgoldenrod" onclick="m.$window.trigger({type:'keydown', code:'KeyD'})">
+<div class="button darkgoldenrod" onclick="k.$window.trigger({type:'keydown', code:'KeyD'})">
 	Backwar<span class="bold underline">d</span>
 </div>
-<div class="button darkgoldenrod" onclick="m.$window.trigger({type:'keydown', code:'KeyF'})">
+<div class="button darkgoldenrod" onclick="k.$window.trigger({type:'keydown', code:'KeyF'})">
 	<span class="bold underline">F</span>orward
 </div>
-<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyR'})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyR'})">
 	<span class="bold underline">R</span>RA
 </div>
-<div class="button" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyL'})">
+<div class="button" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyL'})">
 	<span class="bold underline">L</span>ists
 </div>
-<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="m.$window.trigger({type:'keydown', code:'KeyZ'})">
+<div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyZ'})">
 	Cmt<span class="bold underline">Z</span>
 </div>
-<div class="button darkgoldenrod" style="width:4.5em" onclick="m.$window.trigger({type:'keydown', code:'KeyX'})">
+<div class="button darkgoldenrod" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyX'})">
 	Cmt<span class="bold underline">X</span>
 </div>
-<div class="button" onclick="m.$window.trigger({type:'keydown', code:'KeyN'})">
+<div class="button" onclick="k.$window.trigger({type:'keydown', code:'KeyN'})">
 	Ha<span class="bold underline">n</span>dle CmtZ
 </div>
-${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyI'})">
+${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="k.$window.trigger({type:'keydown', code:'KeyI'})">
 	Log <span class="bold underline">i</span>n
-</div>`: `<div class="button darkred" onclick="m.$window.trigger({type:'keydown', code:'KeyO'})">
+</div>`: `<div class="button darkred" onclick="k.$window.trigger({type:'keydown', code:'KeyO'})">
 	Log <span class="bold underline">o</span>ut
 </div>`}
-<div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="m.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="m.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="m.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="m.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="m.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="m.toggleFK()">▲</div>`);
+<div id="SNS-floating"><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div></div><div class="button" id="toggle-floating-key" onclick="k.toggleFK()">▲</div>`);
 		$floating_key = $("#floating-key");
 		if (m.docCookies.getItem("hideFK") === "y") {
 			$floating_key.hide();
@@ -375,7 +375,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			};
 			$page_views_chart = $("#page-views-chart");
 			if (!($page_views_chart.length)) {
-				$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed" onclick="m.loadPageViewsStat()">Get page views</div>`);
+				$disqus_thread.after(`<div id="page-views-chart" class="to-be-executed" onclick="k.loadPageViewsStat()">Get page views</div>`);
 				$page_views_chart = $("#page-views-chart");
 			}
 		}
@@ -677,4 +677,4 @@ window.MathJax={
 		m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
 		setTimeout(function () { m.$logAll.hide(); }, 2048);
 	});
-})(window.m, jQuery);
+})(window.k, jQuery);
