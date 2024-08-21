@@ -12,6 +12,7 @@ package kipid.hello;
 
 public class Test {
 	public static String numAndCount(int n) {
+		System.out.println(1999L/1000L);
 		if (n<1) {
 			return "";
 		} else if (n==1) {
