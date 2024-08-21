@@ -1319,7 +1319,7 @@ public class RecoeveDB {
 	public String sessionIter(Cookie cookie, Timestamp tNow) {
 		if (cookie.get("I") != null) {
 			long user_me = Long.parseLong(cookie.get("I"), 16);
-			Timestamp tCreate = Timestamp.valueOf(cookie.get("tCreate").replaceAll("_", " "));
+			Timestamp tCreate = Timestamp.valueOf(cookie.get("tCreate").replaceAll("_", " ").substring(0, 19));
 			if (tCreate != null) {
 				if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
 					try {
@@ -1347,7 +1347,7 @@ public class RecoeveDB {
 			String strTCreate = cookie.get("tCreate");
 			Timestamp tCreate = OLD;
 			if (strTCreate != null) {
-				tCreate = Timestamp.valueOf(strTCreate.replaceAll("_", " "));
+				tCreate = Timestamp.valueOf(strTCreate.replaceAll("_", " ").substring(0, 19));
 			}
 			String session = cookie.get("SSN");
 			if (tCreate != null && session != null) {
@@ -1521,7 +1521,7 @@ public class RecoeveDB {
 			String sH = inputs.get(1, "sH");
 			if (rmbdT != null && rmbdAuth != null && rmbdToken != null && log != null && sW != null && sH != null) {
 				try {
-					Timestamp tRmbdT = Timestamp.valueOf(rmbdT.replaceAll("_", " "));
+					Timestamp tRmbdT = Timestamp.valueOf(rmbdT.replaceAll("_", " ").substring(0, 19));
 					con.setAutoCommit(false);
 					pstmtCheckUserRemember.setLong(1, user_me);
 					pstmtCheckUserRemember.setTimestamp(2, tRmbdT);
@@ -1689,12 +1689,12 @@ public class RecoeveDB {
 	public List<io.vertx.core.http.Cookie> logout(Cookie cookie, boolean sessionPassed) {
 		if (cookie.get("I") != null) {
 			long user_me = Long.parseLong(cookie.get("I"), 16);
-			String tCreate = cookie.get("tCreate").replaceAll("_", " ");
+			String tCreate = cookie.get("tCreate");
 			if (tCreate != null && sessionPassed) {
 				try {
 					con.setAutoCommit(true);
 					pstmtSession.setLong(1, user_me);
-					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate));
+					pstmtSession.setTimestamp(2, Timestamp.valueOf(tCreate.replaceAll("_", " ").substring(0, 19)));
 					ResultSet rs = pstmtSession.executeQuery();
 					if (rs.next()) {
 						rs.deleteRow();
@@ -1706,12 +1706,12 @@ public class RecoeveDB {
 		}
 		if (cookie.get("rmbdI") != null) {
 			long user_me = Long.parseLong(cookie.get("rmbdI"), 16);
-			String rmbdT = cookie.get("rmbdT").replaceAll("_", " ");
+			String rmbdT = cookie.get("rmbdT");
 			if (rmbdT != null && sessionPassed) {
 				try {
 					con.setAutoCommit(true);
 					pstmtCheckUserRemember.setLong(1, user_me);
-					pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT));
+					pstmtCheckUserRemember.setTimestamp(2, Timestamp.valueOf(rmbdT.replaceAll("_", " ").substring(0, 19)));
 					ResultSet rs = pstmtCheckUserRemember.executeQuery();
 					if (rs.next()) {
 						rs.deleteRow();
