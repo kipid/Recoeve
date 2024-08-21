@@ -411,7 +411,7 @@ public class RecoeveDB {
 	}
 
 	public Timestamp now() {
-		return new Timestamp(System.currentTimeMillis());
+		return new Timestamp(System.currentTimeMillis()/1000L*1000L);
 	}
 
 	public boolean checkTimeDiff(Timestamp tNow, Timestamp tFrom, long lessThanInSeconds) {
