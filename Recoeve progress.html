@@ -240,6 +240,59 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+유튜브 타이틀 안 긁어지는 거 해결해야 함
+
+뉴 레코 카테고리 아래 마진 주기
+
+```
+A client has connected!: 32
+Time: 2024-08-13 00:01:36
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36
+User-Agent.length: 111
+Referer: https://recoeve.net/user/kipid/mode/multireco?cat=[IT/Programming]--코딩 테스트 (Coding Test)&PRL=0.80&PRR=1.00
+userId: kipid
+Referer Host: recoeve.net
+Referer Allowed: true
+query: null
+Method: POST
+Absolute URI: https://recoeve.net/reco/getH1
+User IP: 175.212.158.53:4713
+Local Address: 172.31.35.249:443
+Session passed?: false
+User ID: kipid
+Accept-Language:ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+Lang: ko
+/reco/:toDo :: toDo=getH1
+https://leetcode.com/problems/number-of-1-bits/description/
+Aug 13, 2024 12:01:37 AM io.vertx.core.impl.ContextImpl
+SEVERE: Unhandled exception
+java.lang.NullPointerException: Cannot invoke "java.lang.Throwable.getMessage()" because the return value of "io.vertx.core.AsyncResult.cause()" is null
+        at recoeve.http.RecoeveWebClient.lambda$findTitles$2(RecoeveWebClient.java:177)
+        at io.vertx.ext.web.client.impl.HttpContext.handleDispatchResponse(HttpContext.java:402)
+        at io.vertx.ext.web.client.impl.HttpContext.execute(HttpContext.java:384)
+        at io.vertx.ext.web.client.impl.HttpContext.next(HttpContext.java:362)
+        at io.vertx.ext.web.client.impl.HttpContext.fire(HttpContext.java:329)
+        at io.vertx.ext.web.client.impl.HttpContext.dispatchResponse(HttpContext.java:291)
+        at io.vertx.ext.web.client.impl.HttpContext.lambda$null$7(HttpContext.java:512)
+        at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:279)
+        at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:261)
+        at io.vertx.core.impl.ContextInternal.lambda$runOnContext$0(ContextInternal.java:59)
+        at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+        at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:469)
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+```/
+
+OS 별로 파일 위치 다르게 설정하기
+
+클래스 패스 추가하기
+
+Moving to the azure cloud from AWS.
+
 ```
 // 아직도 로그인 풀림.
 A client has connected!: 154
