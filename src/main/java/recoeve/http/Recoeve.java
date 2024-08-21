@@ -850,53 +850,53 @@ public class Recoeve extends AbstractVerticle {
 							}
 						});
 						break;
-					case "getH1": // path=/reco/getH1
-						pl.req.bodyHandler((Buffer data) -> {
-							final String uri = data.toString();
-							String msg1 = uri;
-							System.out.println(uri);
-							// pLHtml.append(msg1 + "<br/>");
-							if (uri == null) {
-								pl.req.response()
-										.end("No http-URI.", ENCODING);
-								msg1 = "Sended \"No http-URI.\".";
-								System.out.println(msg1);
-								// pLHtml.append(msg1 + "</div>");
-							}
-							else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
-								int k = 4;
-								if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
-									k++;
-								}
-								if (uri.startsWith("://", k)) {
-									k += 3;
-									CompletableFuture<String> completableFuture = recoeveWebClient.findTitles(uri, pl);
-									completableFuture.thenAccept((result) -> {
-										pl.req.response()
-												.putHeader("Content-Type", "text/plain; charset=utf-8")
-												.end(result, Recoeve.ENCODING);
-										String msg2 = "Find Titles: \n" + result;
-										System.out.println(msg2);
-										// pLHtml.append(msg2 + "</div>");
-									});
-								}
-								else {
-									pl.req.response()
-											.end("No http-URI.", ENCODING);
-									String msg2 = "Sended \"No http-URI.\".";
-									System.out.println(msg2);
-									// pLHtml.append(msg2 + "</div>");
-								}
-							}
-							else {
-								pl.req.response()
-										.end("No http-URI.", ENCODING);
-								String msg2 = "Sended \"No http-URI.\".";
-								System.out.println(msg2);
-								// pLHtml.append(msg2 + "</div>");
-							}
-						});
-						break;
+					// case "getH1": // path=/reco/getH1
+					// 	pl.req.bodyHandler((Buffer data) -> {
+					// 		final String uri = data.toString();
+					// 		String msg1 = uri;
+					// 		System.out.println(uri);
+					// 		// pLHtml.append(msg1 + "<br/>");
+					// 		if (uri == null) {
+					// 			pl.req.response()
+					// 					.end("No http-URI.", ENCODING);
+					// 			msg1 = "Sended \"No http-URI.\".";
+					// 			System.out.println(msg1);
+					// 			// pLHtml.append(msg1 + "</div>");
+					// 		}
+					// 		else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
+					// 			int k = 4;
+					// 			if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
+					// 				k++;
+					// 			}
+					// 			if (uri.startsWith("://", k)) {
+					// 				k += 3;
+					// 				CompletableFuture<String> completableFuture = recoeveWebClient.findTitles(uri, pl);
+					// 				completableFuture.thenAccept((result) -> {
+					// 					pl.req.response()
+					// 							.putHeader("Content-Type", "text/plain; charset=utf-8")
+					// 							.end(result, Recoeve.ENCODING);
+					// 					String msg2 = "Find Titles: \n" + result;
+					// 					System.out.println(msg2);
+					// 					// pLHtml.append(msg2 + "</div>");
+					// 				});
+					// 			}
+					// 			else {
+					// 				pl.req.response()
+					// 						.end("No http-URI.", ENCODING);
+					// 				String msg2 = "Sended \"No http-URI.\".";
+					// 				System.out.println(msg2);
+					// 				// pLHtml.append(msg2 + "</div>");
+					// 			}
+					// 		}
+					// 		else {
+					// 			pl.req.response()
+					// 					.end("No http-URI.", ENCODING);
+					// 			String msg2 = "Sended \"No http-URI.\".";
+					// 			System.out.println(msg2);
+					// 			// pLHtml.append(msg2 + "</div>");
+					// 		}
+					// 	});
+					// 	break;
 					case "defs": // path=/reco/defs
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
