@@ -397,6 +397,47 @@ textarea {
 	color:rgb(170, 250, 170)
 }
 
+.block-touch {
+	display:flex;
+	position:fixed;
+	z-index:30000;
+	inset:0;
+	background:rgba(0, 0, 0, .5);
+}
+
+.block-touch>div {
+	display:inline-block;
+	margin:auto;
+	border:5px solid wheat;
+	width:30em;
+	maxWidth:100%
+}
+
+.block-touch>div>div {
+	padding:.5em 1em;
+	width:100%;
+	background:black;
+	color:white
+}
+
+.block-touch>div>textarea {
+	padding:.5em 1em;
+	width:100%;
+	height:20em;
+	background:white;
+	color:black
+}
+
+.block-touch-exit {
+	zIndex:31000;
+	position:fixed
+}
+
+.block-touch-exit g {
+	stroke:white;
+	strokeWidth:23%
+}
+
 .exit {
 	z-index:10010;
 	position:absolute;
@@ -404,11 +445,10 @@ textarea {
 	right:0;
 	top:0;
 	margin:0;
-	width:1.8em;
-	height:1.8em;
+	width:3em;
+	height:3em;
 	line-height:1.0;
 	text-align:center;
-	/*border-radius:.4em;*/
 	cursor:pointer;
 	border:.15em rgb(80, 80, 80) solid;
 	background-color:rgb(30, 30, 30);
@@ -418,7 +458,7 @@ textarea {
 .exit>svg {
 	width:100%;
 	height:100%;
-	font-size:1.8em;
+	font-size:3em;
 	line-height:1.0
 }
 
