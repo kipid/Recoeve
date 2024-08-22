@@ -27,7 +27,7 @@ codeprint.SEE {
 .promoting {
 	font-size:13px;
 	color:white;
-	background:black;
+	background-color:black;
 	max-width:1000px;
 	margin:1em auto;
 	padding:.5em .8em
@@ -156,36 +156,21 @@ codeprint.SEE {
 }
 
 .button.darkred {
-	background:darkred
-}
-
-.bright .button.darkred {
-	background:indianred
+	background-color:darkred
 }
 
 .button.cadetblue {
-	background:cadetblue
+	background-color:cadetblue
 }
 
 .button.darkgoldenrod,
 .bight .button.darkgoldenrod {
-	background:darkgoldenrod
+	background-color:darkgoldenrod
 }
 
 .button-Go,
-.button.button-Go,
-.bright .button-Go,
-.bright .button.button-Go {
-	background:cornflowerblue
-}
-
-#toggle-floating-key {
-	bottom:.2em;
-	text-align:center;
-	width:2.2em;
-	height:2.3em;
-	margin:0;
-	padding:.1em
+.button.button-Go {
+	background-color:cornflowerblue
 }
 
 #SNS-floating {
@@ -214,17 +199,21 @@ codeprint.SEE {
 	color:wheat;
 	z-index:19000;
 	position:fixed;
+	text-align:center;
 	right:.2em;
 }
 
-.docuK.bright #floating-key,
-.docuK.bright #toggle-floating-key {
-	color:black
+#toggle-floating-key {
+	bottom:.2em;
+	width:2.2em;
+	height:2.3em;
+	margin:0;
+	padding:.1em
 }
 
 .docuK ::selection,
 .docuK ::-moz-selection {
-	background:#aa0000;
+	background-color:#aa0000;
 	color:white
 }
 
@@ -259,20 +248,20 @@ textarea {
 .docuK ::-webkit-scrollbar-track {
 	-webkit-border-radius:5px;
 	border-radius:5px;
-	background:black
+	background-color:black
 }
 
 .docuK.bright ::-webkit-scrollbar-track {
-	background:white
+	background-color:white
 }
 
 .docuK ::-webkit-scrollbar-thumb {
-	background:rgb(0, 120, 120);
+	background-color:rgb(0, 120, 120);
 	-webkit-box-shadow:inset 0 0 3px rgb(0, 0, 0)
 }
 
 .docuK ::-webkit-scrollbar-corner {
-	background:transparent
+	background-color:transparent
 }
 
 .fs-container {
@@ -281,7 +270,7 @@ textarea {
 	left:0;
 	top:0;
 	z-index:10010;
-	background:black;
+	background-color:black;
 	width:21em;
 	max-width:100%;
 	height:auto;
@@ -289,7 +278,7 @@ textarea {
 }
 
 .bright .fs-container {
-	background:wheat
+	background-color:wheat
 }
 
 #cat-fs-container {
@@ -318,7 +307,7 @@ textarea {
 	width:100%;
 	padding:.1em;
 	border:.15em gray solid;
-	background:white
+	background-color:white
 }
 
 .fs-container textarea {
@@ -331,7 +320,7 @@ textarea {
 	overflow-x:hidden;
 	overflow-y:auto;
 	padding:0.2em 0.3em;
-	background:white;
+	background-color:white;
 	color:rgb(50, 50, 50)
 }
 
@@ -346,35 +335,35 @@ textarea {
 	max-height:15em;
 	overflow-y:auto;
 	border:.15em gray solid;
-	background:rgb(20, 20, 20)
+	background-color:rgb(20, 20, 20)
 }
 
 .fs-list .list-item {
-	background:black;
+	background-color:black;
 	color:white;
 	padding:.2em .5em .4em
 }
 
 .bright .fs-list .list-item {
-	background:rgb(240, 240, 240);
+	background-color:rgb(240, 240, 240);
 	color:black
 }
 
 .fs-list .list-item:nth-child(2n) {
-	background:rgb(40, 40, 40)
+	background-color:rgb(40, 40, 40)
 }
 
 .bright .fs-list .list-item:nth-child(2n) {
-	background:white
+	background-color:white
 }
 
 .fs-list .list-item.down {
-	background:rgb(30, 70, 30);
+	background-color:rgb(30, 70, 30);
 	border:1px solid rgb(120, 120, 70)
 }
 
 .fs-list .list-item.down:nth-child(2n) {
-	background:rgb(60, 100, 60)
+	background-color:rgb(60, 100, 60)
 }
 
 .fs-list .list-item.selected {
@@ -382,7 +371,7 @@ textarea {
 }
 
 .fs-list .list-item.deleted {
-	background:rgb(70, 30, 30);
+	background-color:rgb(70, 30, 30);
 	border:1px solid rgb(120, 120, 150)
 }
 
@@ -410,7 +399,7 @@ textarea {
 	position:fixed;
 	z-index:30000;
 	inset:0;
-	background:rgba(0, 0, 0, .5);
+	background-color:rgba(0, 0, 0, .5);
 }
 
 .block-touch>div {
@@ -424,7 +413,7 @@ textarea {
 .block-touch>div>div {
 	padding:.5em 1em;
 	width:100%;
-	background:black;
+	background-color:black;
 	color:white
 }
 
@@ -432,7 +421,7 @@ textarea {
 	padding:.5em 1em;
 	width:100%;
 	height:20em;
-	background:white;
+	background-color:white;
 	color:black
 }
 
@@ -469,7 +458,7 @@ textarea.multi-line {
 	margin:0;
 	width:36px;
 	height:36px;
-	background:white;
+	background-color:white;
 	border:2px gray solid;
 	border-left:0;
 	cursor:pointer
@@ -480,7 +469,7 @@ textarea.multi-line {
 }
 
 .docuK .SNS-img .icon-X {
-	background:#a92323;
+	background-color:#a92323;
 	position:absolute;
 	left:6.5%;
 	top:6.5%;
@@ -490,7 +479,7 @@ textarea.multi-line {
 
 .docuK>.sec {
 	position:relative;
-	background:black;
+	background-color:black;
 	color:white;
 	border-bottom:2px rgb(25, 60, 25) solid;
 	border-top:5px rgb(25, 60, 25) solid;
@@ -500,7 +489,7 @@ textarea.multi-line {
 }
 
 .docuK.bright>.sec {
-	background:white;
+	background-color:white;
 	color:black
 }
 
@@ -752,46 +741,33 @@ textarea.multi-line {
 	margin:0;
 	padding:.2em .5em;
 	border:2px solid rgb(50, 50, 50);
-	background:rgb(110, 110, 110)
+	background-color:rgb(110, 110, 110)
 }
 
-.bright .button {
-	border-color:rgb(200, 200, 200);
-	background:rgb(190, 190, 190)
+.button-log {
+	background-color:black
 }
 
 .button:active {
-	background:rgb(0, 80, 80)
-}
-
-.bright .button:active {
-	background:rgb(100, 180, 180)
+	background-color:rgb(0, 80, 80)
 }
 
 .button.enabled {
-	background:rgb(50, 140, 80)
-}
-
-.bright .button.enabled {
-	background:rgb(120, 210, 150)
+	background-color:rgb(50, 140, 80)
 }
 
 .docuK .change-docuK-style form button.enabled {
-	background:rgb(50, 140, 80);
+	background-color:rgb(50, 140, 80);
 	border:2px solid #a37070
 }
 
 .docuK.bright .change-docuK-style form button.enabled {
-	background:rgb(120, 210, 150);
+	background-color:rgb(120, 210, 150);
 	border:2px solid #f3a0a0
 }
 
 .button.enabled:active {
-	background:rgb(70, 70, 70)
-}
-
-.bright .button.enabled:active {
-	background:rgb(190, 190, 190)
+	background-color:rgb(70, 70, 70)
 }
 
 .docuK a.tJump {
@@ -828,7 +804,7 @@ textarea.multi-line {
 .docuK .borderByBackground {
 	display:inline-block;
 	padding:10px;
-	background:white
+	background-color:white
 }
 
 .docuK .ex {
@@ -937,11 +913,11 @@ img {
 	display:inline;
 	border:2px solid rgb(200, 150, 150);
 	border-radius:.2em;
-	background:rgb(30, 30, 30)
+	background-color:rgb(30, 30, 30)
 }
 
 .docuK.bright code {
-	background:rgb(230, 230, 230)
+	background-color:rgb(230, 230, 230)
 }
 
 /* r(S)C:Ratio (Sub)Container */
@@ -963,12 +939,12 @@ img {
 	max-width:100%;
 	margin:0;
 	padding:1px;
-	background:black;
+	background-color:black;
 	border-bottom:.15em solid white
 }
 
 .bright .rC.fixed {
-	background:white;
+	background-color:white;
 	border-color:black
 }
 
@@ -1058,11 +1034,11 @@ img {
 
 .docuK eqq {
 	display:block;
-	background:black
+	background-color:black
 }
 
 .docuK.bright eqq {
-	background:white
+	background-color:white
 }
 
 .docuK .eqCC {
@@ -1161,11 +1137,11 @@ img {
 	left:.3em;
 	right:.3em;
 	padding:1em;
-	background:rgb(30, 30, 30)
+	background-color:rgb(30, 30, 30)
 }
 
 .docuK.bright .bubbleRef>.content {
-	background:rgb(200, 200, 200)
+	background-color:rgb(200, 200, 200)
 }
 
 .docuK .bubbleRef>.arrow {
@@ -1320,14 +1296,14 @@ dd {
 .access {
 	padding:.5em;
 	margin:0 0 1.3em;
-	background:rgb(15, 15, 15);
+	background-color:rgb(15, 15, 15);
 	color:white
 }
 
 .docuK.bright .cmt,
 .docuK.bright .bcf,
 .docuK.bright .access {
-	background:rgb(200, 200, 200);
+	background-color:rgb(200, 200, 200);
 	color:black
 }
 
@@ -1382,11 +1358,11 @@ dd {
 	display:inline;
 	border:2px solid rgb(200, 150, 150);
 	border-radius:.2em;
-	background:rgb(30, 30, 30)
+	background-color:rgb(30, 30, 30)
 }
 
 .docuK.bright code {
-	background:rgb(230, 230, 230)
+	background-color:rgb(230, 230, 230)
 }
 
 .docuK pre code {
@@ -1465,11 +1441,11 @@ dd {
 }
 
 .docuK pre li:nth-child(2n) {
-	background:rgb(20, 20, 20)
+	background-color:rgb(20, 20, 20)
 }
 
 .docuK.bright pre li:nth-child(2n) {
-	background:rgb(90, 90, 90)
+	background-color:rgb(90, 90, 90)
 }
 
 .docuK pre .str,
@@ -1547,12 +1523,12 @@ dd {
 	margin-top:1.5em;
 	padding:.5em;
 	color:white;
-	background:black
+	background-color:black
 }
 
 .docuK.bright .change-docuK-style {
 	color:black;
-	background:white
+	background-color:white
 }
 
 .docuK .change-docuK-style form {
@@ -1584,7 +1560,7 @@ dd {
 }
 
 #disqus_thread {
-	background:black;
+	background-color:black;
 	padding:.2em .5em
 }
 
