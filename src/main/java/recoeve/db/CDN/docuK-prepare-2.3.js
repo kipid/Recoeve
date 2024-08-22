@@ -1977,10 +1977,11 @@ document.referrer: ${referrerHTML}`
 	m.shareSNS = async function (service) {
 		let title = m.$title.html();
 		let url = window.location.href;
+		let decodedURL = m.escapeOnlyTag(decodeURIComponent(url));
 		let open = "";
 		switch (service) {
 			case 'link':
-				let written = `${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
+				let written = `${title}\n${url}${url !== decodedURL ? `\n${decodedURL}` : ``}`;
 				navigator.clipboard.writeText(written).then(function () {
 						m.$textarea_copied[0].value = written;
 						$('#notify-copied, #notify-copied-exit').show();
@@ -1991,7 +1992,7 @@ document.referrer: ${referrerHTML}`
 					});
 				return false;
 			case 'tag':
-				let written1 = `${title}:<br/>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
+				let written1 = `${title}:<br/>\n<a target="_blank" href="${url}">${decodedURL}</a>`;
 				navigator.clipboard.writeText(written1).then(function () {
 						m.$textarea_copied[0].value = written1;
 						$('#notify-copied, #notify-copied-exit').show();
