@@ -251,7 +251,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br>` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false" frameborder="0" scrolling="auto"></iframe>`), from: "docs-google", docId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br/>` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false" frameborder="0" scrolling="auto"></iframe>`), from: "docs-google", docId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -265,7 +265,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -279,7 +279,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" frameborder="0" scrolling="auto" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -293,7 +293,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br/>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}" frameborder="no" scrolling="auto"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
@@ -327,7 +327,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
 			}
 			else {
 				return reject(false);
@@ -341,7 +341,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -355,7 +355,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["weverse.io"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br>` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br/>` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" frameborder="no" scrolling="auto" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
 			}
 			else {
 				return reject(false);
@@ -370,12 +370,12 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 			}
 			else {
 				exec = m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
 				if (exec !== null) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 				}
 				else {
 					return reject(false);
@@ -390,7 +390,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined" frameborder="0" scrolling="auto"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
 			}
 			return reject(false);
 		});
@@ -402,7 +402,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -416,7 +416,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" frameborder="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -456,7 +456,7 @@ window.m = window.k = {};
 				if (vars?.language) {
 					uriRest = "lang/" + vars.language.val + "/" + uriRest;
 				}
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" frameborder="0" scrolling="auto" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
 			}
 			else {
 				return reject(false);
@@ -480,7 +480,7 @@ window.m = window.k = {};
 						lastPath += vars[i].key + "=" + vars[i].val + "&";
 					}
 				}
-				return resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br>` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
+				return resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
 			}
 			else {
 				return reject(false);
@@ -499,7 +499,7 @@ window.m = window.k = {};
 				let vars = m.getSearchVars(exec[1]);
 				let v = vars.no?.val;
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br>` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
 				}
 				else {
 					return resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>` });
@@ -511,7 +511,7 @@ window.m = window.k = {};
 					let vars = m.getSearchVars(exec[1]);
 					let no = vars.no?.val;
 					if (no) {
-						return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br>` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`), from: "dcinside", voteId: no })
+						return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br/>` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}" scrolling="auto"></iframe>`), from: "dcinside", voteId: no })
 					}
 				}
 			}
@@ -527,7 +527,7 @@ window.m = window.k = {};
 			if (exec !== null) {
 				let v = exec[2];
 				if (v) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
+					return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}" scrolling="auto" frameborder="no"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
 				}
 			}
 			return reject(false);
@@ -540,7 +540,7 @@ window.m = window.k = {};
 		return new Promise(function (resolve, reject) {
 			let exec = m.ptnURI[0].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
 			}
 			else {
 				return reject(false);
@@ -566,7 +566,7 @@ window.m = window.k = {};
 			}
 			let exec = m.ptnURI[1].regEx.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
+				return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br/>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
 			}
 			else {
 				return reject(false);
@@ -627,14 +627,14 @@ window.m = window.k = {};
 				if (exec !== null) {
 					href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 					uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
+					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
 				}
 				else {
 					exec = m.ptnURI[4].regEx2.exec(uri);
 					if (exec !== null) {
 						href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 						uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-						return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br>` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
+						return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
 					}
 				}
 				return reject(false);
@@ -680,11 +680,11 @@ window.m = window.k = {};
 					uri = "Number: " + uri;
 				}
 				if (!keepOriginal && m.getUTF8Length(uri) > 255) {
-					return resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
+					m.getConciseURI(uri).then(conciseURI => resolve(m.unescapeHTML(conciseURI)));
 				}
-				return resolve(m.unescapeHTML(uri).trim());
+				resolve(m.unescapeHTML(uri).trim());
 			}
-			return resolve("");
+			resolve("");
 		});
 	};
 	window.uriRendering = function (uri, toA, inListPlay, descR) {
@@ -851,18 +851,18 @@ window.m = window.k = {};
 <div class="promoting order"${id ? ` id="${id}"` : ""}>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
 <div class="bcf">
-<a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop#headPlay">유튜브 음악 MV 들을 광고없이 목록재생</a> 해보세요.<br>
-접속하셔서 별점만 드레그 하시면 자신의 페이지에 저장 됩니다.<br>
-그리고 자신의 페이지로 이동한 뒤 추천 받기 (단축키 R) 를 누르시면 자신이 점수 메긴것들로 이웃 (이웃보기 단축키 B) 을 자동으로 찾아주고 그 이웃들로부터 추천을 받을 수 있습니다.<br>
-<br>
-Come <a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop#headPlay">here ([Music/Break]--Pop of kipid's Recoeve.net)</a> and just drag stars/points.<br>
+<a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--K-Pop#headPlay">유튜브 음악 MV 들을 광고없이 목록재생</a> 해보세요.<br/>
+접속하셔서 별점만 드레그 하시면 자신의 페이지에 저장 됩니다.<br/>
+그리고 자신의 페이지로 이동한 뒤 추천 받기 (단축키 R) 를 누르시면 자신이 점수 메긴것들로 이웃 (이웃보기 단축키 B) 을 자동으로 찾아주고 그 이웃들로부터 추천을 받을 수 있습니다.<br/>
+<br/>
+Come <a target="_blank" href="https://recoeve.net/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pop#headPlay">here ([Music/Break]--Pop of kipid's Recoeve.net)</a> and just drag stars/points.<br/>
 Based on your points on URIs (musics), you will be connected to your neighbors (See neighbors: shortkey 'B') of your kind. And you will get recoms (recommendations: shortkey 'R') from them, and also give recoms to them.
 </div>
 <div class="bcf">
-<span class="bold">평가와 기록</span>: 웹사이트에서 본 기사, 뉴스, 영상, 음악 등을 기록하고 평가하세요. 이 정보는 추천 알고리즘을 통해 사용자에게 맞춤형 추천을 제공하는 데 사용됩니다. 즉, 당신이 좋아하는 유형의 콘텐츠를 더 많이 발견할 수 있습니다.<br>
-<br>
-<span class="bold">Evaluate and Rate Content</span>: As you explore content on the platform, you can evaluate and rate it based on your preferences and interests. This could involve liking, rating, or commenting on articles, posts, or other types of content.<br>
-<br>
+<span class="bold">평가와 기록</span>: 웹사이트에서 본 기사, 뉴스, 영상, 음악 등을 기록하고 평가하세요. 이 정보는 추천 알고리즘을 통해 사용자에게 맞춤형 추천을 제공하는 데 사용됩니다. 즉, 당신이 좋아하는 유형의 콘텐츠를 더 많이 발견할 수 있습니다.<br/>
+<br/>
+<span class="bold">Evaluate and Rate Content</span>: As you explore content on the platform, you can evaluate and rate it based on your preferences and interests. This could involve liking, rating, or commenting on articles, posts, or other types of content.<br/>
+<br/>
 <span class="bold">Connect with Like-Minded Users</span>: The platform likely has features for connecting with other users who share your interests. You might follow or connect with these users to build your network.
 </div>
 <div class="caption p cmt" style="margin:1em 0 0">
@@ -1482,7 +1482,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		for (let row = 0; row < txtArray.length; row++) {
 			tableStr += "<tr>";
 			for (let col = 0; col < txtArray[row].length; col++) {
-				tableStr += `<td>${m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g, '<br>')}</td>`;
+				tableStr += `<td>${m.escapeOnlyTag(txtArray[row][col]).replace(/\n/g, '<br/>')}</td>`;
 			}
 			tableStr += "</tr>";
 		}
@@ -1853,10 +1853,10 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 			let referrer = document.referrer;
 			let referrerHTML = (referrer ? `<a target="_blank" href="${referrer}">${m.escapeOnlyTag(decodeURIComponent(referrer))}</a>` : `Empty`);
 			m.$deviceInfo.html(
-				`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize * 1.8).toFixed(1)}px (${m.fontSize.toFixed(1)}); line-height: ${(m.lineHeight10 / 10).toFixed(1)};<br>
-width: ${m.browserWidth}, height: ${window.innerHeight}, version: ${m.version0}${m.version1}<br>
-${m.canonicalURI ? `Canonical URI: <a target="_blank" href="${m.canonicalURI}">${m.escapeOnlyTag(decodeURIComponent(m.canonicalURI))}</a><br>` : ""}
-${m.plink ? `dg:plink (Document Global Permanent Link): <a target="_blank" href="${m.plink}">${m.plink}</a><br>` : ""}
+				`Mode: ${m.mode}; Font: ${m.fontFamily}; font-size: ${(m.fontSize * 1.8).toFixed(1)}px (${m.fontSize.toFixed(1)}); line-height: ${(m.lineHeight10 / 10).toFixed(1)};<br/>
+width: ${m.browserWidth}, height: ${window.innerHeight}, version: ${m.version0}${m.version1}<br/>
+${m.canonicalURI ? `Canonical URI: <a target="_blank" href="${m.canonicalURI}">${m.escapeOnlyTag(decodeURIComponent(m.canonicalURI))}</a><br/>` : ""}
+${m.plink ? `dg:plink (Document Global Permanent Link): <a target="_blank" href="${m.plink}">${m.plink}</a><br/>` : ""}
 document.referrer: ${referrerHTML}`
 			);
 		}
@@ -1955,6 +1955,24 @@ document.referrer: ${referrerHTML}`
 		}
 	});
 
+	$(`#docuK-style`).after(`<div id="notify-copied" class="block-touch">
+	<div>
+		<div>[--The following is copied!--]</div>
+		<textarea id="textarea-copied"></textarea>
+	</div>
+</div>
+<div id="notify-copied-exit" class="block-touch-exit exit" onclick="$('#notify-copied, #notify-copied-exit').hide()">
+	<svg>
+		<g>
+			<line x1="20%" y1="20%" x2="80%" y2="80%"></line>
+			<line x1="80%" y1="20%" x2="20%" y2="80%"></line>
+		</g>
+		✖
+	</svg>
+</div>`);
+	$('#notify-copied, #notify-copied-exit').hide();
+	m.$textarea_copied = $(`#textarea-copied`);
+
 	// Share a link through SNS
 	m.shareSNS = async function (service, elem) {
 		let title = m.$title.html();
@@ -1968,22 +1986,26 @@ document.referrer: ${referrerHTML}`
 					$elem.focus();
 					let written = `${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
 					navigator.clipboard.writeText(written).then(function () {
-							alert(`The following is copied!\n"${written}"`);
+							m.$textarea_copied[0].value = written;
+							$('#notify-copied, #notify-copied-exit').show();
 						}
 						, function (err) {
-							alert(`Could not copy text: ${err}`);
+							m.$textarea_copied[0].value = `Could not copy text: ${err}`;
+							$('#notify-copied, #notify-copied-exit').show();
 						});
 				}
 				return false;
 			case 'tag':
 				if ($elem) {
 					$elem.focus();
-					let written1 = `${title}:<br>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
+					let written1 = `${title}:<br/>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
 					navigator.clipboard.writeText(written1).then(function () {
-							alert(`The following is copied!\n"${written1}"`);
+							m.$textarea_copied[0].value = written1;
+							$('#notify-copied, #notify-copied-exit').show();
 						}
 						, function (err) {
-							alert(`Could not copy text: ${err}`);
+							m.$textarea_copied[0].value = `Could not copy text: ${err}`;
+							$('#notify-copied, #notify-copied-exit').show();
 						});
 				}
 				return false;
@@ -2054,18 +2076,18 @@ document.referrer: ${referrerHTML}`
 		return done;
 	};
 	m.delayedLoadAll = function () {
-		m.logPrint(`<br>Doing delayed-load. : ${m.$delayedElems.length}`);
+		m.logPrint(`<br/>Doing delayed-load. : ${m.$delayedElems.length}`);
 		if (m.$delayedElems.length > 0) {
 			m.$delayedElems.each(function () {
 				if ($(this).delayedLoad()) {
 					m.$delayedElems = m.$delayedElems.not(this);
-					m.logPrint(`<br><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br>${m.$delayedElems.length} of $delayedElems are remained.<br>`);
+					m.logPrint(`<br/><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br/>${m.$delayedElems.length} of $delayedElems are remained.<br/>`);
 				}
 			});
 			m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 		}
 		else {
-			m.logPrint(`<br><br>All delayedElem are loaded.`);
+			m.logPrint(`<br/><br/>All delayedElem are loaded.`);
 			m.$window.off("scroll.delayedLoad");
 		}
 		m.previous = Date.now();
@@ -2081,7 +2103,7 @@ document.referrer: ${referrerHTML}`
 			setTimeout(function () {
 				m.delayedLoadAll();
 			}, m.wait * 1.5 - passed);
-			m.logPrint(`<br>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
+			m.logPrint(`<br/>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
 		}
 	};
 	m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
@@ -2147,10 +2169,10 @@ document.referrer: ${referrerHTML}`
 	m.docuKProcess = function docuK(m, $, docuKI, undefined) {
 		// Possible duplicate id is handled.
 		docuKI = (isNaN(docuKI) || docuKI < 0) ? 0 : parseInt(docuKI);
-		m.logPrint(`<br><br>docuK-${docuKI} scripts started!<br><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
+		m.logPrint(`<br/><br/>docuK-${docuKI} scripts started!<br/><span class="emph">If this log is not closed automatically, there must be an error somewhere in your document or scripts.</span>`);
 		let $sDocuK = $(".docuK").eq(docuKI);
 		if ($sDocuK.is(".rendered")) {
-			m.logPrint(`<br><br>docuK-${docuKI} is already rendered.`);
+			m.logPrint(`<br/><br/>docuK-${docuKI} is already rendered.`);
 			return;
 		}
 
@@ -2227,7 +2249,7 @@ document.referrer: ${referrerHTML}`
 
 		// Scrollable switching of 'pre.prettyprint'.
 		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
-		m.logPrint(`<br><br>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
+		m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 		// Numbering section, making table of contents, and numbering eqq (formatting to MathJax also) and figure tags
 		let $secs = $sDocuK.find(">.sec");
@@ -2321,7 +2343,7 @@ document.referrer: ${referrerHTML}`
 			}
 		}
 		$secs.find(".toc").html(tocHtml);
-		m.logPrint(`<br><br>Table of Contents is filled out.<br><br>Auto numberings of sections (div.sec>h2, div.subsec>h3, div.subsubsec>h4), &lt;eqq&gt; tags, and &lt;figure&gt; tags are done.`);
+		m.logPrint(`<br/><br/>Table of Contents is filled out.<br/><br/>Auto numberings of sections (div.sec>h2, div.subsec>h3, div.subsubsec>h4), &lt;eqq&gt; tags, and &lt;figure&gt; tags are done.`);
 
 		// Make 'cite' tags bubble-refer references in ".docuK ol.refs>li".
 		// Make 'refer' tags bubble-refer equations (eqq tag) or figures (figure tag). Any tag with id can be bubble-refered with refer tag.
@@ -2385,7 +2407,7 @@ document.referrer: ${referrerHTML}`
 				}
 			}
 		}
-		m.logPrint(`<br><br>&lt;cite&gt; and &lt;refer&gt; tags are rendered to show bubble reference.`);
+		m.logPrint(`<br/><br/>&lt;cite&gt; and &lt;refer&gt; tags are rendered to show bubble reference.`);
 
 		$sDocuK.addClass("rendered");
 	};
