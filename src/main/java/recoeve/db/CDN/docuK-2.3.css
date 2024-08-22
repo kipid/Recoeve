@@ -745,7 +745,8 @@ textarea.multi-line {
 }
 
 .button-log {
-	background-color:black
+	background-color:black;
+	color:wheat
 }
 
 .button:active {
@@ -1210,6 +1211,11 @@ img {
 	border:2px rgb(80, 80, 80) solid;
 	background-color:rgb(30, 30, 30);
 	color:white
+}
+
+.fs-container .exit {
+	width:1.8em;
+	height:1.8em
 }
 
 .docuK-log.exit {
