@@ -1974,40 +1974,32 @@ document.referrer: ${referrerHTML}`
 	m.$textarea_copied = $(`#textarea-copied`);
 
 	// Share a link through SNS
-	m.shareSNS = async function (service, elem) {
+	m.shareSNS = async function (service) {
 		let title = m.$title.html();
 		let url = window.location.href;
 		let open = "";
-		let $elem = null;
-		if (elem) { $elem = $(elem); }
 		switch (service) {
 			case 'link':
-				if ($elem) {
-					$elem.focus();
-					let written = `${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
-					navigator.clipboard.writeText(written).then(function () {
-							m.$textarea_copied[0].value = written;
-							$('#notify-copied, #notify-copied-exit').show();
-						}
-						, function (err) {
-							m.$textarea_copied[0].value = `Could not copy text: ${err}`;
-							$('#notify-copied, #notify-copied-exit').show();
-						});
-				}
+				let written = `${title}\n${url}\n${m.escapeOnlyTag(decodeURIComponent(url))}`;
+				navigator.clipboard.writeText(written).then(function () {
+						m.$textarea_copied[0].value = written;
+						$('#notify-copied, #notify-copied-exit').show();
+					}
+					, function (err) {
+						m.$textarea_copied[0].value = `Could not copy text: ${err}`;
+						$('#notify-copied, #notify-copied-exit').show();
+					});
 				return false;
 			case 'tag':
-				if ($elem) {
-					$elem.focus();
-					let written1 = `${title}:<br/>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
-					navigator.clipboard.writeText(written1).then(function () {
-							m.$textarea_copied[0].value = written1;
-							$('#notify-copied, #notify-copied-exit').show();
-						}
-						, function (err) {
-							m.$textarea_copied[0].value = `Could not copy text: ${err}`;
-							$('#notify-copied, #notify-copied-exit').show();
-						});
-				}
+				let written1 = `${title}:<br/>\n<a target="_blank" href="${url}">${m.escapeOnlyTag(decodeURIComponent(url))}</a>`;
+				navigator.clipboard.writeText(written1).then(function () {
+						m.$textarea_copied[0].value = written1;
+						$('#notify-copied, #notify-copied-exit').show();
+					}
+					, function (err) {
+						m.$textarea_copied[0].value = `Could not copy text: ${err}`;
+						$('#notify-copied, #notify-copied-exit').show();
+					});
 				return false;
 			case 'X':
 				open = "https://X.com/intent/tweet?via=kipacti&text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(url);
@@ -2243,9 +2235,9 @@ document.referrer: ${referrerHTML}`
 	<div class="deviceInfo"></div>
 	<div class="promoting-docuK">This document is rendered by <a href="https://kipid.tistory.com/entry/HTML-docuK-format-ver-20">docuK</a> (See also <a href="https://kipid.tistory.com/entry/Super-Easy-Edit-SEE-of-docuK">SEE (Super Easy Edit) of docuK</a> and <a href="https://kipid.tistory.com/entry/pure-SEE">pure SEE</a>).</div>
 	</div>
-<div class="SNS-top"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`
+<div class="SNS-top"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="return m.shareSNS('link')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png" onclick="return m.shareSNS('tag')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`
 		);
-		$sDocuK.append(`<div class="SNS-bottom"><a onclick="return m.shareSNS('link',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png"></a><a onclick="return m.shareSNS('tag',this)"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png"></a><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`);
+		$sDocuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="return m.shareSNS('link')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png" onclick="return m.shareSNS('tag')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`);
 
 		// Scrollable switching of 'pre.prettyprint'.
 		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
