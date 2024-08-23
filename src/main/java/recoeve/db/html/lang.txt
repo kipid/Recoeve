@@ -318,4 +318,5 @@ ${m.userId} [--has--] ${l} [--recos--] (${nShown} [--to be shown,--] ${nHiden} [
 [--You have unrecoed: 1--]	3072		unrecoed recos of	개의 기록되지 않은 (unrecoed)
 [--You have unrecoed: 2--]	3073		\'s cat=	\'s cat=
 [--You have unrecoed: 3--]	3074		.	의 레고들을 가지고 있습니다.
-[--Footage--]	3100		© 2024 Recoeve.net  |  Business registration number : 492-09-00935<br/>\nCEO : KangSoo Lee  |  Address : Ansanchunamro 265, Danwon-gu Gojan-dong, Ansan city, Kyunggi-do, South Korea	© 2024 Recoeve.net  |  사업자 등록번호 : 492-09-00935<br/>\n대표 : 이강수  |  주소 : 대한민국 경기도 안산시 단원구 고잔동 안산천남로 265
+[--Footage 0--]	3100		© 2024 Recoeve.net  |  Business registration number : 492-09-00935	© 2024 Recoeve.net  |  사업자 등록번호 : 492-09-00935
+[--Footage 1--]			CEO : KangSoo Lee  |  Address : Ansanchunamro 265, Danwon-gu Gojan-dong, Ansan city, Kyunggi-do, South Korea	대표 : 이강수  |  주소 : 대한민국 경기도 안산시 단원구 고잔동 안산천남로 265
