@@ -1740,27 +1740,27 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	// Escape and Unescape HTML string.
 	////////////////////////////////////////////////////
 	m.escapeHTML = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	};
 	m.escapeOnlyTag = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	};
 	m.unescapeHTML = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 	};
 	m.escapeAMP = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/%/g, '%25').replace(/&/g, '%26').replace(/#/g, '%23');
 	};
 	m.unescapeAMP = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/%23/g, '#').replace(/%26/g, '&').replace(/%25/g, '%');
 	};
 	m.escapeEncodePctg = function (str) {
-		if (!str || typeof str !== "string") { return ""; }
+		if (!str || typeof str !== "string") { str = String(str); }
 		return str.replace(/([\!\@\#\$\%\^\&\*\[\]\{\}\_\<\>\,\.\/\?\~])/g, "\\$1");
 	};
 
@@ -1975,9 +1975,9 @@ document.referrer: ${referrerHTML}`
 
 	// Share a link through SNS
 	m.shareSNS = async function (service) {
-		let title = m.$title.html();
-		let url = window.location.href;
-		let decodedURL = m.escapeOnlyTag(decodeURIComponent(url));
+		const title = m.$title.html();
+		const url = window.location.href;
+		const decodedURL = m.escapeOnlyTag(decodeURIComponent(url));
 		let open = "";
 		switch (service) {
 			case 'link':
