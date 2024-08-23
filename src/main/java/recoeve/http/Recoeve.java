@@ -15,9 +15,6 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 // import java.lang.StringBuilder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.List;
@@ -149,7 +146,7 @@ public class Recoeve extends AbstractVerticle {
 						break;
 					default:
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS;
 						System.out.println(msg);
 						break;
@@ -207,11 +204,11 @@ public class Recoeve extends AbstractVerticle {
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
 			pl.req.bodyHandler((Buffer data) -> {
-				final String shortURI = data.toString();
-				String msg1 = shortURI;
+				final String originalURI = data.toString();
+				String msg1 = originalURI;
 				System.out.println(msg1);
 				// pLHtml.append(msg1 + "<br/>");
-				if (shortURI == null) {
+				if (originalURI == null) {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 							.end("No http-URI.", ENCODING);
 					msg1 = "Sended \"No http-URI.\".";
@@ -219,69 +216,33 @@ public class Recoeve extends AbstractVerticle {
 					// pLHtml.append(msg1 + "</div>");
 					// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 				}
-				else if (shortURI.substring(0, 4).toLowerCase().equals("http")) {
+				else if (originalURI.substring(0, 4).toLowerCase().equals("http")) {
 					int k = 4;
-					if (shortURI.charAt(k) == 's' || shortURI.charAt(k) == 'S') {
+					if (originalURI.charAt(k) == 's' || originalURI.charAt(k) == 'S') {
 						k++;
 					}
-					if (shortURI.startsWith("://", k)) {
+					if (originalURI.startsWith("://", k)) {
 						k += 3;
 						try {
-							URI uriAnalysed = new URI(shortURI);
-							String shortURIHost = uriAnalysed.getHost();
-							msg1 = "shortURIHost: " + shortURIHost;
-							System.out.println(msg1);
-							// pLHtml.append(msg1 + "<br/>");
-							recoeveWebClient.webClient.headAbs(shortURI)
-									.send()
-									.onSuccess(response -> {
-										if (response.statusCode() == 200) {
-											// If the response is a redirect, so get the followedRedirects().
-											List<String> followedURIs = response.followedRedirects();
-											String fullURI = followedURIs.get(followedURIs.size() - 1);
-											if (fullURI != null && RecoeveDB.getutf8mb4Length(fullURI) > 255) {
-												fullURI = db.getConciseURI(fullURI);
-											}
-											String msg2 = "Full redirected or concise URL: " + fullURI;
-											System.out.println(msg2);
-											// pLHtml.append(msg2 + "</div>");
-											// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-													.end(fullURI, ENCODING);
-										}
-										else {
-											String conciseURI = shortURI;
-											if (shortURI != null && RecoeveDB.getutf8mb4Length(shortURI) > 255) {
-												conciseURI = db.getConciseURI(shortURI);
-											}
-											String msg2 = "Sended shortURI or conciseURI.";
-											System.out.println(msg2);
-											// pLHtml.append(msg2 + "</div>");
-											// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-											pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-													.end(conciseURI, ENCODING);
-										}
-									})
-									.onFailure(throwable -> {
-										throwable.printStackTrace();
-										String conciseURI = shortURI;
-										if (shortURI != null && RecoeveDB.getutf8mb4Length(shortURI) > 255) {
-											conciseURI = db.getConciseURI(shortURI);
-										}
-										String msg2 = "Sended shortURI or conciseURI.";
-										System.out.println(msg2);
-										// pLHtml.append(msg2 + "</div>");
-										// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-										pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-												.end(conciseURI, ENCODING);
-									});
-						} catch (URISyntaxException err) {
+							CompletableFuture<String> cfRedirectedURI = recoeveWebClient.redirected(originalURI);
+							cfRedirectedURI.whenComplete((fullURI, ex) -> {
+								if (ex == null) {
+									pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+											.end(fullURI, ENCODING);
+								}
+								else {
+									pl.req.response().setStatusCode(StatusCode.NOT_FOUND.getCode()).putHeader("Content-Type", "text/plain; charset=utf-8")
+											.end(ex.getMessage(), ENCODING);
+									System.out.println("Exception :: " + ex.getMessage());
+								}
+							});
+						} catch (Exception err) {
 							RecoeveDB.err(err);
 						}
 					}
 					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.end(shortURI, ENCODING);
+								.end(originalURI, ENCODING);
 						msg1 = "Sended shortURI. No http-URI.";
 						System.out.println(msg1);
 						// pLHtml.append(msg1 + "</div>");
@@ -290,7 +251,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-							.end(shortURI, ENCODING);
+							.end(originalURI, ENCODING);
 					msg1 = "Sended shortURI.";
 					System.out.println(msg1);
 					// pLHtml.append(msg1 + "</div>");
@@ -363,7 +324,7 @@ public class Recoeve extends AbstractVerticle {
 					}
 					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = "No file in memory: " + fileName + ".";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
@@ -372,7 +333,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 					msg = INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")";
 					System.out.println(msg);
 					// pLHtml.append(msg + "</div>");
@@ -381,7 +342,7 @@ public class Recoeve extends AbstractVerticle {
 			}
 			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				String msg = INVALID_ACCESS + " (Referer not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -440,7 +401,7 @@ public class Recoeve extends AbstractVerticle {
 			System.out.println(msg);
 			// pLHtml.append(msg + "</div>");
 			// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-			pl.req.response().setStatusCode(302) // Set the HTTP status code for redirection
+			pl.req.response().setStatusCode(StatusCode.FOUND.getCode()) // ! Set the HTTP status code for redirection/FOUND
 					.putHeader("Location", originalURI) // Set the new location
 					.end();
 		});
@@ -484,7 +445,7 @@ public class Recoeve extends AbstractVerticle {
 						}
 						else {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+									.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (You are not admin kipid. Invalid session.)";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -509,7 +470,7 @@ public class Recoeve extends AbstractVerticle {
 					// 	}
 					// 	else {
 					// 		pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-					// 				.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+					// 				.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 					// 		msg = INVALID_ACCESS + " (You are not admin kipid. Invalid session.)";
 					// 		System.out.println(msg);
 					// 		// pLHtml.append(msg + "</div>");
@@ -518,7 +479,7 @@ public class Recoeve extends AbstractVerticle {
 					// 	break;
 					default:
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS;
 						System.out.println(msg);
 						break;
@@ -526,7 +487,7 @@ public class Recoeve extends AbstractVerticle {
 			}
 			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (You are not admin kipid.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -616,7 +577,7 @@ public class Recoeve extends AbstractVerticle {
 							break;
 						default:
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+									.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -625,7 +586,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 				else {
 					pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-							.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 					msg = INVALID_ACCESS + " (fileName is null or empty.: " + fileName + ")";
 					System.out.println(msg);
 					// pLHtml.append(msg + "</div>");
@@ -634,7 +595,7 @@ public class Recoeve extends AbstractVerticle {
 			}
 			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-						.setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (Referer is not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -670,7 +631,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 			}
 			else {
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (Referer is not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -782,7 +743,7 @@ public class Recoeve extends AbstractVerticle {
 								});
 								break;
 							default:
-								pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+								pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 								msg = INVALID_ACCESS;
 								System.out.println(msg);
 								// pLHtml.append(msg + "</div>");
@@ -809,7 +770,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 			}
 			else {
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (Referer is not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -850,53 +811,63 @@ public class Recoeve extends AbstractVerticle {
 							}
 						});
 						break;
-					// case "getH1": // path=/reco/getH1
-					// 	pl.req.bodyHandler((Buffer data) -> {
-					// 		final String uri = data.toString();
-					// 		String msg1 = uri;
-					// 		System.out.println(uri);
-					// 		// pLHtml.append(msg1 + "<br/>");
-					// 		if (uri == null) {
-					// 			pl.req.response()
-					// 					.end("No http-URI.", ENCODING);
-					// 			msg1 = "Sended \"No http-URI.\".";
-					// 			System.out.println(msg1);
-					// 			// pLHtml.append(msg1 + "</div>");
-					// 		}
-					// 		else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
-					// 			int k = 4;
-					// 			if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
-					// 				k++;
-					// 			}
-					// 			if (uri.startsWith("://", k)) {
-					// 				k += 3;
-					// 				CompletableFuture<String> completableFuture = recoeveWebClient.findTitles(uri, pl);
-					// 				completableFuture.thenAccept((result) -> {
-					// 					pl.req.response()
-					// 							.putHeader("Content-Type", "text/plain; charset=utf-8")
-					// 							.end(result, Recoeve.ENCODING);
-					// 					String msg2 = "Find Titles: \n" + result;
-					// 					System.out.println(msg2);
-					// 					// pLHtml.append(msg2 + "</div>");
-					// 				});
-					// 			}
-					// 			else {
-					// 				pl.req.response()
-					// 						.end("No http-URI.", ENCODING);
-					// 				String msg2 = "Sended \"No http-URI.\".";
-					// 				System.out.println(msg2);
-					// 				// pLHtml.append(msg2 + "</div>");
-					// 			}
-					// 		}
-					// 		else {
-					// 			pl.req.response()
-					// 					.end("No http-URI.", ENCODING);
-					// 			String msg2 = "Sended \"No http-URI.\".";
-					// 			System.out.println(msg2);
-					// 			// pLHtml.append(msg2 + "</div>");
-					// 		}
-					// 	});
-					// 	break;
+					case "getH1": // path=/reco/getH1
+						pl.req.bodyHandler((Buffer data) -> {
+							final String uri = data.toString();
+							String msg1 = "getH1 of uri: " + uri;
+							System.out.println(msg1);
+							// pLHtml.append(msg1 + "<br/>");
+							if (uri == null) {
+								pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
+										.end("No http-URI.", ENCODING);
+								msg1 = "Sended \"No http-URI.\".";
+								System.out.println(msg1);
+								// pLHtml.append(msg1 + "</div>");
+							}
+							else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
+								int k = 4;
+								if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
+									k++;
+								}
+								if (uri.startsWith("://", k)) {
+									k += 3;
+									CompletableFuture<String> completableFuture = recoeveWebClient.findTitles(uri);
+									completableFuture.whenComplete((result, ex) -> {
+										if(ex == null) {
+											String msg2 = "Found Titles:\n" + result;
+											System.out.println(msg2);
+											pl.req.response()
+													.putHeader("Content-Type", "text/plain; charset=utf-8")
+													.end(result, ENCODING);
+											// pLHtml.append(msg2 + "</div>");
+										}
+										else {
+											String msg2 = ex.getMessage();
+											System.out.println(msg2);
+											pl.req.response().setStatusCode(StatusCode.NOT_FOUND.getCode())
+													.putHeader("Content-Type", "text/plain; charset=utf-8")
+													.end(msg2, ENCODING);
+											// pLHtml.append(msg2 + "</div>");
+										}
+									});
+								}
+								else {
+									pl.req.response()
+											.end("No http-URI.", ENCODING);
+									String msg2 = "Sended \"No http-URI.\".";
+									System.out.println(msg2);
+									// pLHtml.append(msg2 + "</div>");
+								}
+							}
+							else {
+								pl.req.response()
+										.end("No http-URI.", ENCODING);
+								String msg2 = "Sended \"No http-URI.\".";
+								System.out.println(msg2);
+								// pLHtml.append(msg2 + "</div>");
+							}
+						});
+						break;
 					case "defs": // path=/reco/defs
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
@@ -951,7 +922,7 @@ public class Recoeve extends AbstractVerticle {
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						break;
 					default:
-						pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS + " (Invalid URI.)";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
@@ -959,7 +930,7 @@ public class Recoeve extends AbstractVerticle {
 				}
 			}
 			else {
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (Referer is not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
@@ -1028,7 +999,7 @@ public class Recoeve extends AbstractVerticle {
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (Wrong method:" + pl.method + ")";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1046,7 +1017,7 @@ public class Recoeve extends AbstractVerticle {
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1083,7 +1054,7 @@ public class Recoeve extends AbstractVerticle {
 									}
 								}
 								else {
-									pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+									pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 									String msg1 = INVALID_ACCESS + " (Invalid form: no tab.)";
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "</div>");
@@ -1091,7 +1062,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (Invalid method: " + pl.method + ")";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1141,7 +1112,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (Invalid method: " + pl.method + ")";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1201,7 +1172,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (Invalid method: " + pl.method + ")";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1237,7 +1208,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = INVALID_ACCESS + " (Invalid method: " + pl.method + ")";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1328,7 +1299,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = "check: invalid method " + pl.method;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1349,7 +1320,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = "forgotPwd: invalid method " + pl.method;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1397,7 +1368,7 @@ public class Recoeve extends AbstractVerticle {
 							});
 						}
 						else {
-							pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+							pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 							msg = "sign-up: invalid method " + pl.method;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1405,7 +1376,7 @@ public class Recoeve extends AbstractVerticle {
 						}
 						break;
 					default:
-						pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+						pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS + " (Invalid URI.)";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
@@ -1415,7 +1386,7 @@ public class Recoeve extends AbstractVerticle {
 			}
 			else {
 				pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
-				pl.req.response().setStatusCode(404).end(INVALID_ACCESS, ENCODING);
+				pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 				msg = INVALID_ACCESS + " (Referer is not allowed.)";
 				System.out.println(msg);
 				// pLHtml.append(msg + "</div>");
