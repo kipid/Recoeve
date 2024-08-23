@@ -7,7 +7,7 @@ import io.vertx.core.VertxException;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
-import java.time.Duration;
+// import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+// import org.openqa.selenium.support.ui.FluentWait;
+// import org.openqa.selenium.support.ui.Wait;
 
 import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
@@ -37,12 +37,12 @@ public class RecoeveWebClient {
 	public Vertx vertx;
 	public RecoeveDB db;
 	public WebClient webClient;
+	private final long[] pID = {0, 0, 0, 0, 0};
 
 	public XPath xpath;
 	public WebDriver driver;
 
 	public ChromeOptions chromeOptions;
-	public WebDriver chromeDriver;
 
 	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
 		this.vertx = vertx;
@@ -53,10 +53,10 @@ public class RecoeveWebClient {
 		chromeOptions.addArguments("--headless=new");
 	}
 
-	public CompletableFuture<String> redirected(String shortURI) {
+	public CompletableFuture<String> redirected(String originalURI) {
 		CompletableFuture<String> completableFuture = new CompletableFuture<>();
 		try {
-			webClient.headAbs(shortURI)
+			webClient.headAbs(originalURI)
 				.send()
 				.onSuccess(response -> {
 					if (response.statusCode() >= 200 && response.statusCode() < 300) {
@@ -70,8 +70,8 @@ public class RecoeveWebClient {
 				})
 				.onFailure(throwable -> {
 					throwable.printStackTrace();
-					System.out.println("Sended shortURI.");
-					completableFuture.complete(shortURI);
+					System.out.println("Sended originalURI.");
+					completableFuture.complete(originalURI);
 				});
 		}
 		catch (VertxException err) {
@@ -81,86 +81,206 @@ public class RecoeveWebClient {
 		return completableFuture;
 	}
 
-	public CompletableFuture<String> findTitles(String uri, PrintLog pl) {
-		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+	public CompletableFuture<List<WebElement>> asyncFindTitle(WebDriver chromeDriver) throws Exception {
+		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		System.out.println("findTitles :: uri : " + uri);
-		String heads = "uri";
-		String contents = StrArray.enclose(uri);
+		pID[0] = vertx.setPeriodic(256L, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("title"));
+				if (elements != null && !elements.isEmpty()) {
+					vertx.cancelTimer(pID[0]);
+					cfElements.complete(elements);
+				}
+			} catch (org.openqa.selenium.NoSuchElementException
+				| org.openqa.selenium.StaleElementReferenceException
+				| org.openqa.selenium.InvalidElementStateException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(2048L, id -> {
+			vertx.cancelTimer(pID[0]);
+			cfElements.complete(new ArrayList<WebElement>());
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<List<WebElement>> asyncFindH1s(WebDriver chromeDriver) throws Exception {
+		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+
+		pID[1] = vertx.setPeriodic(256L, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h1"));
+				if (elements != null && !elements.isEmpty()) {
+					vertx.cancelTimer(pID[1]);
+					cfElements.complete(elements);
+				}
+			} catch (org.openqa.selenium.NoSuchElementException
+				| org.openqa.selenium.StaleElementReferenceException
+				| org.openqa.selenium.InvalidElementStateException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(2048L, id -> {
+			vertx.cancelTimer(pID[1]);
+			cfElements.complete(new ArrayList<WebElement>());
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<List<WebElement>> asyncFindH2s(WebDriver chromeDriver) throws Exception {
+		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+
+		pID[2] = vertx.setPeriodic(256L, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h2"));
+				if (elements != null && !elements.isEmpty()) {
+					vertx.cancelTimer(pID[2]);
+					cfElements.complete(elements);
+				}
+			} catch (org.openqa.selenium.NoSuchElementException
+				| org.openqa.selenium.StaleElementReferenceException
+				| org.openqa.selenium.InvalidElementStateException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(2048L, id -> {
+			vertx.cancelTimer(pID[2]);
+			cfElements.complete(new ArrayList<WebElement>());
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<List<WebElement>> asyncFindNaverHeads(WebDriver chromeDriver) throws Exception {
+		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+
+		pID[4] = vertx.setPeriodic(256L, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".se-fs-, .se-ff-"));
+				if (elements != null && !elements.isEmpty()) {
+					vertx.cancelTimer(pID[4]);
+					cfElements.complete(elements);
+				}
+			} catch (org.openqa.selenium.NoSuchElementException
+				| org.openqa.selenium.StaleElementReferenceException
+				| org.openqa.selenium.InvalidElementStateException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(2048L, id -> {
+			vertx.cancelTimer(pID[3]);
+			cfElements.complete(new ArrayList<WebElement>());
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<List<WebElement>> asyncFindLeetCodeHeads(WebDriver chromeDriver) throws Exception {
+		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+
+		pID[4] = vertx.setPeriodic(256L, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".text-title-large"));
+				if (elements != null && !elements.isEmpty()) {
+					vertx.cancelTimer(pID[4]);
+					cfElements.complete(elements);
+				}
+			} catch (org.openqa.selenium.NoSuchElementException
+				| org.openqa.selenium.StaleElementReferenceException
+				| org.openqa.selenium.InvalidElementStateException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(2048L, id -> {
+			vertx.cancelTimer(pID[4]);
+			cfElements.complete(new ArrayList<WebElement>());
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<String> findTitles(String uri) {
+		CompletableFuture<String> cfTitles = new CompletableFuture<>();
+
+		final StringBuilder heads = new StringBuilder();
+		final StringBuilder contents = new StringBuilder();
+
+		heads.append("uri");
+		contents.append(StrArray.enclose(uri));
 
 		String conciseURI = null;
 		if (RecoeveDB.getutf8mb4Length(uri) > 255) {
 			conciseURI = db.getConciseURI(uri);
 		}
 		if (conciseURI != null) {
-			heads += "\tconciseURI";
-			contents += "\t" + StrArray.enclose(conciseURI);
+			heads.append("\tconciseURI");
+			contents.append("\t" + StrArray.enclose(conciseURI));
 		}
 
+		final WebDriver chromeDriver = new ChromeDriver(chromeOptions);
 		try {
-			ArrayList<Class<? extends Exception>> expectedExceptions = new ArrayList<>();
-			expectedExceptions.add(org.openqa.selenium.NoSuchElementException.class);
-			expectedExceptions.add(org.openqa.selenium.StaleElementReferenceException.class);
-			expectedExceptions.add(org.openqa.selenium.ElementNotInteractableException.class);
-			expectedExceptions.add(org.openqa.selenium.InvalidElementStateException.class);
-
-			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
-			Wait<WebDriver> wait = new FluentWait<>(chromeDriver)
-				.withTimeout(Duration.ofMillis(4096L))
-				.pollingEvery(Duration.ofMillis(256L))
-				.ignoreAll(expectedExceptions);
+			CompletableFuture<List<WebElement>> findTitle = asyncFindTitle(chromeDriver);
+			CompletableFuture<List<WebElement>> findH1s = asyncFindH1s(chromeDriver);
+			CompletableFuture<List<WebElement>> findH2s = asyncFindH2s(chromeDriver);
+			CompletableFuture<List<WebElement>> findNaverHeads = asyncFindNaverHeads(chromeDriver);
+			CompletableFuture<List<WebElement>> findLeetCodeHeads = asyncFindLeetCodeHeads(chromeDriver);
 
-			List<WebElement> titles = wait.until(d -> d.findElements(By.cssSelector("title")));
-			if (!titles.isEmpty()) {
-				for (int i = 0; i < titles.size(); i++) {
-					heads += "\ttitle-" + i;
-					contents += "\t" + StrArray.enclose(titles.get(i).getText());
-				}
-			}
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s, findNaverHeads, findLeetCodeHeads);
 
-			List<WebElement> h1Elements = wait.until(d -> d.findElements(By.cssSelector("h1")));
-			if (!h1Elements.isEmpty()) {
-				for (int i = 0; i < h1Elements.size(); i++) {
-					heads += "\th1-" + i;
-					contents += "\t" + StrArray.enclose(h1Elements.get(i).getText());
-				}
-			}
+			allOf.thenRun(() -> {
+				try {
+					List<WebElement> title = findTitle.get();
+					List<WebElement> h1s = findH1s.get();
+					List<WebElement> h2s = findH2s.get();
+					List<WebElement> naverHeads = findNaverHeads.get();
+					List<WebElement> leetCodeHeads = findLeetCodeHeads.get();
 
-			List<WebElement> h2Elements = wait.until(d -> d.findElements(By.cssSelector("h2")));
-			if (!h2Elements.isEmpty()) {
-				for (int i = 0; i < Math.min(3, h2Elements.size()); i++) {
-					heads += "\th2-" + i;
-					contents += "\t" + StrArray.enclose(h2Elements.get(i).getText());
-				}
-			}
+					List<WebElement> temp = title;
+					for (int i = 0; i < temp.size(); i++) {
+						heads.append("\ttitle-" + i);
+						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					}
+					temp = h1s;
+					for (int i = 0; i < temp.size(); i++) {
+						heads.append("\th1-" + i);
+						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					}
+					temp = h2s;
+					for (int i = 0; i < temp.size(); i++) {
+						heads.append("\th2-" + i);
+						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					}
+					temp = naverHeads;
+					for (int i = 0; i < temp.size(); i++) {
+						heads.append("\tnaver-" + i);
+						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					}
+					temp = leetCodeHeads;
+					for (int i = 0; i < temp.size(); i++) {
+						heads.append("\tleetcode-" + i);
+						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					}
 
-			List<WebElement> naverElements = wait.until(d -> d.findElements(By.cssSelector(".se-fs-, .se-ff-")));
-			if (!naverElements.isEmpty()) {
-				for (int i = 0; i < Math.min(3, naverElements.size()); i = i + 1) {
-					heads += "\tnaver-" + i;
-					contents += "\t" + StrArray.enclose(naverElements.get(i).getText());
+					cfTitles.complete(heads.toString() + "\n" + contents.toString());
+				} catch (Exception err) {
+					System.out.println(err);
+					cfTitles.completeExceptionally(err);
 				}
-			}
-
-			List<WebElement> leetCodeElements = wait.until(d -> d.findElements(By.cssSelector(".text-title-large")));
-			if (!leetCodeElements.isEmpty()) {
-				for (int i = 0; i < Math.min(3, leetCodeElements.size()); i = i + 1) {
-					heads += "\tLeetCode-" + i;
-					contents += "\t" + StrArray.enclose(leetCodeElements.get(i).getText());
-				}
-			}
+			});
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
 			chromeDriver.quit();
 		}
-
-		completableFuture.complete(heads + "\n" + contents);
-		return completableFuture;
-		// pl.req.response()
-		// 		.putHeader("Content-Type", "text/plain; charset=utf-8")
-		// 		.end(heads + "\n" + contents, Recoeve.ENCODING);
+		return cfTitles;
 	}
 
 	public static void main(String... args) {
