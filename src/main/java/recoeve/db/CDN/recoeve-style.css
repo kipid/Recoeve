@@ -29,6 +29,10 @@ data {
   display: none
 }
 
+.inline {
+	display:inline
+}
+
 .center {
   text-align: center
 }
