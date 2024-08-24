@@ -47,7 +47,7 @@ ${b}
 ${u.escapeOnlyTag(decodeURIComponent(b))}
 
 ${f}${f!==_?`
-${decodedURL}`:""}`;return navigator.clipboard.writeText(F).then(function(){u.notifyCopied(F)},function(C){u.notifyCopied(`[--Could not copy text--]: ${C}`)}),!1;case"tag":s.trigger("focus");let $=`${x}:<br/>
+${_}`:""}`;return navigator.clipboard.writeText(F).then(function(){u.notifyCopied(F)},function(C){u.notifyCopied(`[--Could not copy text--]: ${C}`)}),!1;case"tag":s.trigger("focus");let $=`${x}:<br/>
 <a target="_blank" href="${b}">${u.escapeOnlyTag(decodeURIComponent(b))}</a><br/>
 <br/>
 <a target="_blank" href="${f}">${_}</a>`;return navigator.clipboard.writeText($).then(function(){u.notifyCopied($)},function(C){u.notifyCopied(`[--Could not copy text--]: ${C}`)}),!1;case"recoeve":z=`/reco?uri=${encodeURIComponent(f)}&title=${encodeURIComponent(x)}&cats=${encodeURIComponent(u.currentCat)}`;break;case"X":z=`https://X.com/intent/tweet?text=${encodeURIComponent(x)}&url=${encodeURIComponent(b)}`;break;case"facebook":z=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(b)}`;break;case"whatsapp":z=`https://wa.me/?text=${encodeURIComponent(x)}%0A${encodeURIComponent(b)}`;break;case"kakao":Kakao.Share.sendDefault({objectType:"feed",content:{title:u.escapeOnlyTag(x),description:T?u.escapeOnlyTag(T):"",imageUrl:"",link:{mobileWebUrl:b,webUrl:b}}});return}return window.open(z,"_blank"),!1};u.slideToggle=function(t){let a=(0,Te.default)(t);a.addClass("disabled"),a.parent().next().slideToggle(1e3),setTimeout(function(){a.removeClass("disabled")},1e3)};u.slideUp=function(t){let a=(0,Te.default)(t).parent().parent();a.slideUp(1e3),window.scrollBy({left:0,top:-a.outerHeight(),behavior:"smooth"})};u.ptnDescCmt=/^#\S+/;u.renderStrDescCmt=function(t){let a=[],s=t.trim().split(`
