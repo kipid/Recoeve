@@ -946,7 +946,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 	$("#fuzzy-search-container>.reset").on("click.reset", function (e) {
 		$fuzzy_search[0].value = "";
 		$fuzzy_search.focus();
-		$fuzzy_search.trigger("input.fs");
+		$fuzzy_search.trigger("keyup.fs");
 	});
 
 	// Fuzzy Search
@@ -1260,7 +1260,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		return fs[0];
 	};
 
-	$fuzzy_search.on("keydown", function (e) {
+	$fuzzy_search.on("keydown.fs-move-exit", function (e) {
 		e.stopPropagation();
 		switch (e.code) {
 			case 'Escape': // ESC=27
