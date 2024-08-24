@@ -50,7 +50,8 @@ public class RecoeveWebClient {
 		webClient = WebClient.create(vertx, options);
 		xpath = XPathFactory.newInstance().newXPath();
 		chromeOptions = new ChromeOptions();
-		// chromeOptions.addArguments("--headless=new");
+		chromeOptions.addArguments("--remote-allow-origins=*");
+		chromeOptions.addArguments("--headless=new");
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
@@ -273,11 +274,14 @@ public class RecoeveWebClient {
 					cfTitles.complete(heads.toString() + "\n" + contents.toString());
 				}
 				catch (Exception err) {
+					if (chromeDriver != null) {
+						chromeDriver.quit();
+					}
 					System.out.println(err);
 					cfTitles.completeExceptionally(err);
 				}
 				finally {
-					if(chromeDriver != null) {
+					if (chromeDriver != null) {
 						chromeDriver.quit();
 					}
 				}
