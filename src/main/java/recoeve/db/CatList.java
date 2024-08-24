@@ -45,7 +45,7 @@ public class CatList {
 	}
 
 	public static String toFormat(String str) {
-		// "\nA\n\t\tB\n" 이런것도 error 이긴한데... 잡아내는 함수 하나 만들긴 해야할듯.
+		// TODO : "\nA\n\t\tB\n" 이런것도 error 이긴한데... 잡아내는 함수 하나 만들긴 해야할듯.
 		return "\n" + str.trim() + "\n";
 	}
 
