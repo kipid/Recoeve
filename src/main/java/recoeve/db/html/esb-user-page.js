@@ -46,7 +46,7 @@ ${b}
 
 ${u.escapeOnlyTag(decodeURIComponent(b))}
 
-${f}${url!==decodedURL?`
+${f}${f!==_?`
 ${decodedURL}`:""}`;return navigator.clipboard.writeText(F).then(function(){u.notifyCopied(F)},function(C){u.notifyCopied(`[--Could not copy text--]: ${C}`)}),!1;case"tag":s.trigger("focus");let $=`${x}:<br/>
 <a target="_blank" href="${b}">${u.escapeOnlyTag(decodeURIComponent(b))}</a><br/>
 <br/>
