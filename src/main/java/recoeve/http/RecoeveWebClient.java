@@ -50,7 +50,7 @@ public class RecoeveWebClient {
 		webClient = WebClient.create(vertx, options);
 		xpath = XPathFactory.newInstance().newXPath();
 		chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new");
+		// chromeOptions.addArguments("--headless=new");
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
@@ -84,7 +84,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindTitle(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[0] = vertx.setPeriodic(256L, id -> {
+		pID[0] = vertx.setPeriodic(128L, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("title"));
 				if (elements != null && !elements.isEmpty()) {
@@ -98,7 +98,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[0]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -109,7 +109,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindH1s(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[1] = vertx.setPeriodic(256L, id -> {
+		pID[1] = vertx.setPeriodic(128L, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h1"));
 				if (elements != null && !elements.isEmpty()) {
@@ -123,7 +123,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[1]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -134,7 +134,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindH2s(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[2] = vertx.setPeriodic(256L, id -> {
+		pID[2] = vertx.setPeriodic(128L, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h2"));
 				if (elements != null && !elements.isEmpty()) {
@@ -148,7 +148,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[2]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -159,7 +159,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindNaverHeads(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[4] = vertx.setPeriodic(256L, id -> {
+		pID[4] = vertx.setPeriodic(128L, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".se-fs-, .se-ff-"));
 				if (elements != null && !elements.isEmpty()) {
@@ -173,7 +173,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[3]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -184,7 +184,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindLeetCodeHeads(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[4] = vertx.setPeriodic(256L, id -> {
+		pID[4] = vertx.setPeriodic(128L, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".text-title-large"));
 				if (elements != null && !elements.isEmpty()) {
@@ -198,7 +198,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[4]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -226,6 +226,7 @@ public class RecoeveWebClient {
 
 		final WebDriver chromeDriver = new ChromeDriver(chromeOptions);
 		try {
+			chromeDriver.manage().window().maximize();
 			chromeDriver.get(uri);
 			CompletableFuture<List<WebElement>> findTitle = asyncFindTitle(chromeDriver);
 			CompletableFuture<List<WebElement>> findH1s = asyncFindH1s(chromeDriver);
@@ -270,15 +271,19 @@ public class RecoeveWebClient {
 					}
 
 					cfTitles.complete(heads.toString() + "\n" + contents.toString());
-				} catch (Exception err) {
+				}
+				catch (Exception err) {
 					System.out.println(err);
 					cfTitles.completeExceptionally(err);
+				}
+				finally {
+					if(chromeDriver != null) {
+						chromeDriver.quit();
+					}
 				}
 			});
 		} catch (Exception e) {
 			System.out.println(e);
-		} finally {
-			chromeDriver.quit();
 		}
 		return cfTitles;
 	}
