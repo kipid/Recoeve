@@ -266,12 +266,12 @@ textarea {
 
 .fs-container {
 	position:fixed;
-	font-size:1.2em;
+	font-size:2em;
 	left:0;
 	top:0;
 	z-index:10010;
 	background-color:black;
-	width:21em;
+	width:25em;
 	max-width:100%;
 	height:auto;
 	text-align:left
