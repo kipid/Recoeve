@@ -1,6 +1,7 @@
 const m = window.m = window.m || {};
 
-(function (m, $, undefined) {// Used in user-page.html, log-in.html, changePwd.html, verify.html
+(function (m, $, undefined) {
+// Used in user-page.html, log-in.html, changePwd.html, verify.html
 m.$window = $(window);
 m.$document = $(document);
 
@@ -576,7 +577,7 @@ m.strToJSON = async function (str, colMap = true, rowMap = false) {
 				ret[key] = ret[i];
 			}
 		}
-		return resolve(ret);
+		resolve(ret);
 	});
 };
 m.csvToJSON = async function (str, colMap = true, rowMap = false) {
@@ -613,14 +614,17 @@ m.csvToJSON = async function (str, colMap = true, rowMap = false) {
 				}
 			}
 		}
-		return resolve(rows);
+		resolve(rows);
 	});
 };
-m.arrayToTableHTML = function (txtArray, escapeTag = true) {
+m.arrayToTableHTML = function (txtArray, escapeTag = true, colgroup = []) {
 	if (!txtArray || txtArray.constructor !== Array) {
 		return "";
 	}
-	let tableStr = "<table><tbody>";
+	let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
+	for (const widthPctg of colgroup) {
+		tableStr += `<colgroup>${widthPctg ? `<col width="${widthPctg}%"/>` : `<col/>`}</colgroup>`;
+	}
 	for (let row = 0; row < txtArray.length; row++) {
 		tableStr += "<tr>";
 		for (let col = 0; col < txtArray[0].length; col++) {
@@ -659,7 +663,7 @@ m.memoArrayToTableHTML = function (txtArray, escapeTag = true) {
 	let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
 	tableStr += `<colgroup><col width="5%"/></colgroup>
 <colgroup><col width="15%"/></colgroup>
-<colgroup><col/></colgroup>
+<colgroup><col width="55%"/></colgroup>
 <colgroup><col width="5%"/></colgroup>
 <colgroup><col width="5%"/></colgroup>
 <colgroup><col width="15%" style="font-family:monospace"/></colgroup>`;
@@ -908,7 +912,8 @@ m.recoDowned = async function (urisStr, recos) {
 		r.down = true; // User's or My reco on the uri is downloaded.
 	}
 };
-m.recoToEve = async function (resp, recos, cat, conciseURIs) { // disable conciseURIs
+// * conciseURIs are disabled.
+m.recoToEve = async function (resp, recos, cat) {
 	return new Promise(async function (resolve, reject) {
 		resp = resp.replace(/%2520/gi, "%20");
 		resp = Object(await m.strToJSON(resp));
@@ -1071,13 +1076,13 @@ m.fillRecoInNewReco = function (r, fillDefs) {
 	}
 	else if (fillDefs) {
 		let recoDef = m.recoDefs[r?.uri];
-		if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
+		if (recoDef?.defTitles?.[0]?.[0]) {
 			m.$input_title[0].value = recoDef.defTitles[0][0];
 		}
-		if (recoDef?.defCats[0] && recoDef.defCats[0][0]) {
+		if (recoDef?.defCats[0]?.[0]) {
 			m.$input_cats[0].value = recoDef.defCats[0][0];
 		}
-		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
+		if (recoDef?.defDescs[0]?.[0]) {
 			m.$input_desc[0].value = recoDef.defDescs[0][0];
 		}
 	}
@@ -1144,17 +1149,35 @@ m.showDefs = async function (uri) {
 		if (!recoDef.heads) {
 			recoDef.heads = String(await m.getH1(uri));
 			recoDef.heads = Object(await m.strToJSON(recoDef.heads));
+			console.log(`recoDef.heads: `, recoDef.heads);
 		}
-		defTitlesHTML += `${String(recoDef.heads[1]?.title).trim() && String(recoDef.heads[1]?.title) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.title).trim())}</div>` : ""}
-${String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h1).trim())}</div>` : ""}
-${String(recoDef.heads[1]?.h2).trim() && String(recoDef.heads[1]?.h2) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.h2))}</div>` : ""}
-${String(recoDef.heads[1]?.tiktok).trim() && String(recoDef.heads[1]?.tiktok) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.tiktok))}</div>` : ""}
-${String(recoDef.heads[1]?.naver).trim() && String(recoDef.heads[1]?.naver) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.naver))}</div>` : ""}`;
+		if (recoDef.heads) {
+			for (let i = 0; i < recoDef.heads?.[1]?.length; i++) {
+				recoDef.heads[1][i] = recoDef.heads[1][i].trim().replace(/[\s\t\n\r]+/g, " ");
+			}
+			for (let i = 0; i < recoDef.heads?.[1]?.length; i++) {
+				for (let j = i + 1; j < recoDef.heads?.[1]?.length; j++) {
+					if (recoDef.heads[1][j] === recoDef.heads[1][i]) {
+						recoDef.heads[0].splice(j, 1);
+						recoDef.heads[1].splice(j, 1);
+						j--;
+					}
+				}
+			}
+			for (let i = 0; i < recoDef.heads?.[1]?.length; i++) {
+				defTitlesHTML += `${String(recoDef.heads[1]?.[i]) && String(recoDef.heads[1]?.[i]) !== "undefined" ? `<div class="def-title def-h1">${m.escapeOnlyTag(String(recoDef.heads[1]?.[i]).trim())}</div>` : ""}`;
+			}
+		}
 		for (let i = 0; i < defTitles.length; i++) {
-			let title = defTitles[i][0].trim();
-			if (title.length !== 0
-					&& !(String(recoDef.heads[1]?.h1).trim() && String(recoDef.heads[1]?.h1) !== "undefined" && title === String(recoDef.heads[1]?.h1).trim())
-					&& !(String(recoDef.heads[1]?.h2).trim() && String(recoDef.heads[1]?.h2) !== "undefined" && title === String(recoDef.heads[1]?.h2).trim())) {
+			let title = defTitles[i][0].trim().replace(/[\s\t\n\r]+/g, " ");
+			let duplicate = false;
+			for (let j = 0; j < recoDef.heads?.[1]?.length; j++) {
+				if (title === recoDef.heads[1][j]) {
+					duplicate = true;
+					break;
+				}
+			}
+			if (title.length !== 0 && !duplicate) {
 				defTitlesHTML += `<div class="def-title">${m.escapeOnlyTag(title)}</div>`;
 			}
 		}
@@ -1267,7 +1290,7 @@ m.getAndFillRecoInNewReco = function (r, fillDefs) {
 					, dataType: "text"
 				}).done(async function (resp) { // User reco 가 없으면 head 만 보냄.
 					m.recoDowned(r.uri, m.myRecos);
-					await m.recoToEve(resp, m.myRecos, m.currentCat, getRecosStr.split("\n"));
+					await m.recoToEve(resp, m.myRecos, m.currentCat);
 					m.fillRecoInNewReco(r, fillDefs);
 					resolve();
 				});
@@ -1278,7 +1301,7 @@ m.getAndFillRecoInNewReco = function (r, fillDefs) {
 		}
 	});
 };
-m.getAndFillDefsInNewReco = function (r, fillDefs) {
+m.getAndShowDefsInNewReco = function (r) {
 	return new Promise(function (resolve, reject) {
 		let uri = r.uri;
 		if (m.recoDefs[uri]?.down) {
@@ -1307,17 +1330,17 @@ m.getAndFillDefsInNewReco = function (r, fillDefs) {
 	});
 };
 m.formatNOfPoints = function (n) {
-	if (n < 1000) {
+	if (n < 1_000) {
 		return "" + n;
 	}
-	else if (n < 1000000) {
-		return (n / 1000.0).toFixed(2) + "K";
+	else if (n < 1_000_000) {
+		return (n / 1_000.0).toFixed(2) + "K";
 	}
-	else if (n < 1000000000) {
-		return (n / 1000000.0).toFixed(2) + "M";
+	else if (n < 1_000_000_000) {
+		return (n / 1_000_000.0).toFixed(2) + "M";
 	}
-	else if (n < 1000000000000) {
-		return (n / 1000000000.0).toFixed(2) + "B";
+	else if (n < 1_000_000_000_000) {
+		return (n / 1_000_000_000.0).toFixed(2) + "B";
 	}
 };
 m.formatURIFully = async function (uri, uriRendered, keepOriginal) {
@@ -1362,11 +1385,13 @@ m.formatURIFully = async function (uri, uriRendered, keepOriginal) {
 		}
 		if (!keepOriginal && m.getUTF8Length(uri) > 255) {
 			try {
-				return resolve(String(await m.getConciseURI(uri)));
+				resolve(String(await m.getConciseURI(uri)));
 			}
-			catch (err) {}
+			catch (err) {
+				console.log(err);
+			}
 		}
-		return resolve(uri);
+		resolve(uri);
 	});
 };
 m.formatURIAndGetAndShowDefsAndRecoInNewReco = async function (noFormatURI, fillDefs) {
@@ -1399,7 +1424,7 @@ m.formatURIAndGetAndShowDefsAndRecoInNewReco = async function (noFormatURI, fill
 			}
 		}
 		await m.getAndFillRecoInNewReco(r, fillDefs);
-		await m.getAndFillDefsInNewReco(r, fillDefs);
+		await m.getAndShowDefsInNewReco(r);
 		m.reNewAndReOn();
 		if (originalURI !== uri) {
 			let desc = m.$input_desc[0].value;
@@ -2232,10 +2257,7 @@ m.fsToRs.getAndPlayVideo = async function (cue, inListPlay = true) {
 				let uriRendered = Object(await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR));
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					clearTimeout(m.setTimeoutCueOrLoadUri);
-					m.setTimeoutCueOrLoadUri = setTimeout(function () {
-						m.cueOrLoadUri(cue, uriRendered, inListPlay);
-					}, m.wait / 2);
+					m.cueOrLoadUri(cue, uriRendered, inListPlay);
 				}
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
@@ -2261,7 +2283,9 @@ m.fsToRs.getAndPlayVideo = async function (cue, inListPlay = true) {
 			}
 			m.reNewAndReOn();
 		}
-		catch (err) {}
+		catch (err) {
+			console.log(err);
+		}
 		resolve();
 	});
 };
@@ -2768,11 +2792,11 @@ m.formatURI = async function (uri, keepOriginal) {
 				uri = "Number: " + uri;
 			}
 			if (!keepOriginal && m.getUTF8Length(uri) > 255) {
-				return resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
+				resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
 			}
-			return resolve(m.unescapeHTML(uri).trim());
+			resolve(m.unescapeHTML(uri).trim());
 		}
-		return resolve("");
+		resolve("");
 	});
 };
 m.formatTitle = function (title) {
@@ -2926,10 +2950,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 				list = vars?.list?.val;
 			}
 			if (list) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+				resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 			}
 			if (v) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+				resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 			}
 		}
 		else {
@@ -2949,14 +2973,14 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 					list = vars.list.val;
 				}
 				if (list) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
+					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?list=${list}">https://www.youtube.com/watch?list=${list}</a><br/>` : "") + m.YTiframe(v, inListPlay, config, list), from: "youtube-list", list, config });
 				}
-				return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
+				resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
 			}
 			else {
 				exec = m.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
 				if (exec !== null) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/${exec[0]}">https://www.youtube.com/${exec[0]}</a>` : ``), from: "-youtube-link"})
+					resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/${exec[0]}">https://www.youtube.com/${exec[0]}</a>` : ``), from: "-youtube-link"})
 				}
 			}
 		}
@@ -2971,14 +2995,14 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br/>` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false"></iframe>`), from: "docs-google", docId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br/>` : "") + m.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false"></iframe>`), from: "docs-google", docId: exec[1] });
 		}
 		else {
 			let exec = m.ptnURI["docs.google.com"].regEx1.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/${uriRest}">https://docs.google.com/${uriRest}</a>` : ``), from: "-docs-google", docId: exec[1] })
+				resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/${uriRest}">https://docs.google.com/${uriRest}</a>` : ``), from: "-docs-google", docId: exec[1] })
 			}
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -2989,10 +3013,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3003,10 +3027,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br/>` : "") + m.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3017,10 +3041,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br/>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br/>` : "") + m.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3051,10 +3075,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[0] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3065,10 +3089,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["tv.naver.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "naver", videoId: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3079,10 +3103,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["weverse.io"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br/>` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br/>` : "") + m.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "weverse", singer: exec[1], videoId: exec[2] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3094,15 +3118,15 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 		}
 		else {
 			exec = m.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
 			if (exec !== null) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
+				resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "kakao", videoId: exec[1] });
 			}
 			else {
-				return reject(false);
+				reject(false);
 			}
 		}
 	});
@@ -3114,9 +3138,9 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? '$' : ''}&play_loc=undefined"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "daum", videoId: exec[1] });
 		}
-		return reject(false);
+		reject(false);
 	});
 };
 
@@ -3126,10 +3150,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["vimeo.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "vimeo", videoId: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3140,10 +3164,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "dailymotion", videoId: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3155,10 +3179,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		let exec = m.ptnURI["namu.wiki"].regEx.exec(uriRest);
 		if (exec !== null) {
 			let pathname = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-			return resolve({ html: `<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from: "namu.wiki", pathname });
+			resolve({ html: `<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from: "namu.wiki", pathname });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3180,10 +3204,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 			if (vars?.language) {
 				uriRest = "lang/" + vars.language.val + "/" + uriRest;
 			}
-			return resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
+			resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" allowfullscreen></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: "ted", videoId: v });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3204,10 +3228,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 					lastPath += vars[i].key + "=" + vars[i].val + "&";
 				}
 			}
-			return resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
+			resolve({ html: (toA ? `<a target="_blank" href="https://w.soundcloud.com/${exec[1]}">https://w.soundcloud.com/${exec[1]}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://w.soundcloud.com/${lastPath.substring(0, lastPath.length - 1)}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed soundcloud" : "soundcloud")), from: "soundcloud", videoId: vars?.url?.val });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3223,10 +3247,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 			let vars = m.getSearchVars(exec[1]);
 			let v = vars.no?.val;
 			if (v) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
+				resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "dcinside", videoId: v });
 			}
 			else {
-				return resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>` });
+				resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m.escapeOnlyTag(decodeURIComponent(uriRest))}</a>` });
 			}
 		}
 		else {
@@ -3235,11 +3259,11 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 				let vars = m.getSearchVars(exec[1]);
 				let no = vars.no?.val;
 				if (no) {
-					return resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br/>` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}"></iframe>`), from: "dcinside", voteId: no })
+					resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/poll/vote?no=${no}">https://gall.dcinside.com/board/poll/vote?no=${no}</a><br/>` : "") + m.rC(`<iframe src="https://gall.dcinside.com/board/poll/vote?no=${no}"></iframe>`), from: "dcinside", voteId: no })
 				}
 			}
 		}
-		return reject(false);
+		reject(false);
 	});
 };
 
@@ -3251,10 +3275,10 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 		if (exec !== null) {
 			let v = exec[2];
 			if (v) {
-				return resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
+				resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br/>` : "") + m.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : "")), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
 			}
 		}
-		return reject(false);
+		reject(false);
 	});
 };
 
@@ -3264,10 +3288,10 @@ ptnURI.toIframe = function (uri, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI[0].regEx.exec(uri);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
+			resolve({ html: (toA ? `<a target="_blank" href="${exec[1]}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` : "") + `<div class="center"><img delayed-src="${exec[1]}"/></div>`, from: 'image', src: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3290,10 +3314,10 @@ ptnURI.toIframe = function (uri, inListPlay, toA, descR) {
 		}
 		let exec = m.ptnURI[1].regEx.exec(uri);
 		if (exec !== null) {
-			return resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br/>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
+			resolve({ html: (toA ? `<a target="_blank" href="${exec[0]}${config.hash ? config.hash : ""}">${m.escapeOnlyTag(decodeURIComponent(`${uri}${config.hash ? config.hash : ""}`))}</a><br/>` : "") + m.rC(`<video controls preload="metadata" delayed-src="${exec[0]}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'video', src: exec[0], config });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3305,15 +3329,15 @@ ptnURI.toIframe = function (uri, inListPlay) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI[2].regEx.exec(uri);
 		if (exec !== null) {
-			return resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+			resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 		}
 		else {
 			exec = m.ptnURI[2].regEx1.exec(uri);
 			if (exec !== null) {
-				return resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
+				resolve({ html: `<a target="_blank" href="https://kr65.sogirl.so${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr65.sogirl.so${exec[1] ? exec[1] : ""}`, from: 'sogirl', src: exec[1] });
 			}
 			else {
-				return reject(false);
+				reject(false);
 			}
 		}
 	});
@@ -3325,10 +3349,10 @@ ptnURI.toIframe = function (uri, inListPlay) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI[3].regEx.exec(uri);
 		if (exec !== null) {
-			return resolve({ html: `<a target="_blank" href="https://kr26.topgirl.co${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr26.topgirl.co${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr26.topgirl.co${exec[1] ? exec[1] : ""}`, from: 'topgirl', src: exec[1] });
+			resolve({ html: `<a target="_blank" href="https://kr26.topgirl.co${exec[1] ? exec[1] : ""}">${m.escapeOnlyTag(decodeURIComponent(`https://kr26.topgirl.co${exec[1] ? exec[1] : ""}`))}</a>`, newURI: `https://kr26.topgirl.co${exec[1] ? exec[1] : ""}`, from: 'topgirl', src: exec[1] });
 		}
 		else {
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3344,24 +3368,24 @@ ptnURI.toIframe = function (uri, inListPlay, toA) {
 		if (exec !== null) {
 			href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 			uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-			return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>` + m.rC(`<div class="center"><img delayed-src="${href}"/></div>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse")), from: 'file-image', src: href });
+			resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a>` + m.rC(`<div class="center"><img delayed-src="${href}"/></div>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse")), from: 'file-image', src: href });
 		}
 		else {
 			exec = m.ptnURI[4].regEx1.exec(uri);
 			if (exec !== null) {
 				href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 				uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-				return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
+				resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<video controls preload="metadata" delayed-src="${href}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-video', src: href });
 			}
 			else {
 				exec = m.ptnURI[4].regEx2.exec(uri);
 				if (exec !== null) {
 					href = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
 					uri = uri.replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
-					return resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
+					resolve({ html: `<a target="_blank" href="${href}">${m.escapeOnlyTag(decodeURIComponent(uri))}</a><br/>` + m.rC(`<iframe delayed-src="${href}"></iframe>`, (inListPlay && m.fsToRs.fixed ? "fixed" : null)), from: 'file-pdf', src: href });
 				}
 			}
-			return reject(false);
+			reject(false);
 		}
 	});
 };
@@ -3383,33 +3407,35 @@ window.uriRendering = function (uri, toA, inListPlay, descR) {
 						let uriRest = uriAnalysed.pathname.substring(1) + uriAnalysed.search + uriAnalysed.hash;
 						if (m.ptnURI[uriHost]) {
 							try {
-								let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
+								let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR)
 								if (Boolean(result) !== false) {
-									return resolve(result);
+									resolve(result);
 								}
+							} catch (err) {
+								console.log(err);
 							}
-							catch (error) {}
 						}
 					}
 				}
 				for (let i = 0; i < m.ptnURI.length; i++) {
 					try {
-						let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR); // img or video
+						let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR);
 						if (Boolean(result) !== false) {
-							return resolve(result);
+							resolve(result);
 						}
+					} catch (err) {
+						console.log(err);
 					}
-					catch (error) {}
 				}
 				if (toA) {
-					return resolve({ html: m.uriToA(uri) });
+					resolve({ html: m.uriToA(uri) });
 				}
 			}
 			else {
-				return resolve({ html: m.escapeOnlyTag(uri) });
+				resolve({ html: m.escapeOnlyTag(uri) });
 			}
 		}
-		return resolve({ html: "" });
+		resolve({ html: "" });
 	});
 };
 window.relatedRendering = function (str) {
@@ -3556,7 +3582,9 @@ m.descCmtRToHTML = async function (descR) {
 						try {
 							res += String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
 						}
-						catch (err) {}
+						catch (err) {
+							console.log(err);
+						}
 						res += '<br/>';
 					}
 					res += `</div>`;
@@ -3564,7 +3592,7 @@ m.descCmtRToHTML = async function (descR) {
 			}
 		}
 		res += `</div>`;
-		return resolve(res);
+		resolve(res);
 	});
 };
 m.stashReco = function (event) {
@@ -3584,11 +3612,11 @@ m.stashReco = function (event) {
 		let r = m.myRecos[uri];
 		let recoDef = m.recoDefs[uri];
 		if (!r) {
-			if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+			if (recoDef?.defTitles?.[0]?.[0]) {
 				strHeads += "\ttitle";
 				strContents += `\t${m.encloseStr(recoDef.defTitles[0][0])}`;
 			}
-			if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+			if (recoDef?.defDescs?.[0]?.[0]) {
 				strHeads += "\tdesc";
 				strContents += `\t${m.encloseStr(recoDef.defDescs[0][0])}`;
 			}
@@ -3600,11 +3628,11 @@ m.stashReco = function (event) {
 		m.rmb_me(m.reco_pointChange_do, { strHeads, strContents, $result, uri, cats, valStr, inRecoms });
 	}
 };
-m.recomHTML = async function (r, inListPlay) {
+m.recomHTML = async function (r, inListPlay, additionalClass) {
 	return new Promise(async function(resolve, reject) {
 		if (r?.has) {
-			let recoHTML = await m.recoHTML(r, inListPlay, true, true);
-			return resolve(String(recoHTML));
+			let recoHTML = await m.recoHTML(r, inListPlay, true, true, additionalClass);
+			resolve(String(recoHTML));
 		}
 		let recoDef = m.recoDefs[r?.uri];
 		if (r?.uri && !recoDef) {
@@ -3616,7 +3644,7 @@ m.recomHTML = async function (r, inListPlay) {
 				// Do nothing.
 			}
 		}
-		let res = `<div class="reco recom"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
+		let res = `<div class="reco recom${additionalClass ? ` ${additionalClass}` : ``}"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
 <div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>`;
@@ -3666,10 +3694,10 @@ m.recomHTML = async function (r, inListPlay) {
 		resolve(res);
 	});
 };
-m.recoHTML = async function (r, inListPlay, inRange, inRecoms) {
+m.recoHTML = async function (r, inListPlay, inRange, inRecoms, additionalClass) {
 	return new Promise(async function(resolve, reject) {
 		let res = "";
-		res += `<div class="reco${inRange && !r.deleted ? '' : ' none'}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+		res += `<div class="reco${additionalClass ? ` ${additionalClass}` : ``}${inRange ? `` : ` none`}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r?.uri]?.i}"` : `-${m.fsToRs.fullList[r?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onclick="m.editOrRecoToMine(this)">${m.myPage ? '[--Edit--]' : '[--Reco to mine--]'}</div>` : ''}
 <div class="textURI">${m.escapeOnlyTag(r?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r?.uri)}">RecoStat</a>${m.uriToA(r?.uri)}</div>
@@ -3776,7 +3804,7 @@ m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents,
 			if (args.title) {
 				r.title = args.title;
 			}
-			else if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+			else if (recoDef?.defTitles?.[0]?.[0]) {
 				r.title = recoDef.defTitles[0][0];
 			}
 			else {
@@ -3786,7 +3814,7 @@ m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents,
 			if (args.desc) {
 				r.desc = args.desc;
 			}
-			else if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+			else if (recoDef?.defDescs?.[0]?.[0]) {
 				r.desc = recoDef.defDescs[0][0];
 			}
 			else {
@@ -3819,11 +3847,11 @@ m.recoByOnlyStars = function ($str, uri, $result, inRecoms) {
 			let strContents = `${m.encloseStr(uri)}\treco\t${m.encloseStr(valStr)}`;
 			let r = m.myRecos[uri];
 			let recoDef = m.recoDefs[uri];
-			if (recoDef?.defTitles && recoDef.defTitles[0] && recoDef.defTitles[0][0]) {
+			if (recoDef?.defTitles?.[0]?.[0]) {
 				strHeads += "\ttitle";
 				strContents += `\t${m.encloseStr(recoDef.defTitles[0][0])}`;
 			}
-			if (recoDef?.defDescs && recoDef.defDescs[0] && recoDef.defDescs[0][0]) {
+			if (recoDef?.defDescs?.[0]?.[0]) {
 				strHeads += "\tdesc";
 				strContents += `\t${m.encloseStr(recoDef.defDescs[0][0])}`;
 			}
@@ -4092,8 +4120,8 @@ m.reNewAndReOn = async function () {
 			}, 2 * m.wait);
 		});
 	});
-	let $ups = $(".my-point>.up");
-	let $downs = $(".my-point>.down");
+	const $ups = $(".my-point>.up");
+	const $downs = $(".my-point>.down");
 	$ups.off("click.ud");
 	$downs.off("click.ud");
 	$ups.on("click.ud", m.starsOnUpClick);
