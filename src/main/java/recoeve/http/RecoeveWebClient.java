@@ -99,7 +99,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(512L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[0]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -124,7 +124,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(512L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[1]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -149,7 +149,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(512L, id -> {
+		vertx.setTimer(1024L, id -> {
 			vertx.cancelTimer(pID[2]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -174,7 +174,7 @@ public class RecoeveWebClient {
 	// 		}
 	// 	});
 
-	// 	vertx.setTimer(512L, id -> {
+	// 	vertx.setTimer(1024L, id -> {
 	// 		vertx.cancelTimer(pID[3]);
 	// 		cfElements.complete(new ArrayList<WebElement>());
 	// 	});
@@ -199,7 +199,7 @@ public class RecoeveWebClient {
 	// 		}
 	// 	});
 
-	// 	vertx.setTimer(512L, id -> {
+	// 	vertx.setTimer(1024L, id -> {
 	// 		vertx.cancelTimer(pID[4]);
 	// 		cfElements.complete(new ArrayList<WebElement>());
 	// 	});
