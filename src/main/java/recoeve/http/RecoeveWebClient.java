@@ -99,7 +99,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(1024L, id -> {
+		vertx.setTimer(512L, id -> {
 			vertx.cancelTimer(pID[0]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -124,7 +124,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(1024L, id -> {
+		vertx.setTimer(512L, id -> {
 			vertx.cancelTimer(pID[1]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -149,7 +149,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(1024L, id -> {
+		vertx.setTimer(512L, id -> {
 			vertx.cancelTimer(pID[2]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -157,55 +157,55 @@ public class RecoeveWebClient {
 		return cfElements;
 	}
 
-	public CompletableFuture<List<WebElement>> asyncFindNaverHeads(WebDriver chromeDriver) throws Exception {
-		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+	// public CompletableFuture<List<WebElement>> asyncFindNaverHeads(WebDriver chromeDriver) throws Exception {
+	// 	CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[4] = vertx.setPeriodic(128L, id -> {
-			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".se-fs-, .se-ff-"));
-				if (elements != null && !elements.isEmpty()) {
-					vertx.cancelTimer(pID[4]);
-					cfElements.complete(elements);
-				}
-			} catch (org.openqa.selenium.NoSuchElementException
-				| org.openqa.selenium.StaleElementReferenceException
-				| org.openqa.selenium.InvalidElementStateException err) {
-				System.out.println(err);
-			}
-		});
+	// 	pID[4] = vertx.setPeriodic(128L, id -> {
+	// 		try {
+	// 			List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".se-fs-, .se-ff-"));
+	// 			if (elements != null && !elements.isEmpty()) {
+	// 				vertx.cancelTimer(pID[4]);
+	// 				cfElements.complete(elements);
+	// 			}
+	// 		} catch (org.openqa.selenium.NoSuchElementException
+	// 			| org.openqa.selenium.StaleElementReferenceException
+	// 			| org.openqa.selenium.InvalidElementStateException err) {
+	// 			System.out.println(err);
+	// 		}
+	// 	});
 
-		vertx.setTimer(1024L, id -> {
-			vertx.cancelTimer(pID[3]);
-			cfElements.complete(new ArrayList<WebElement>());
-		});
+	// 	vertx.setTimer(512L, id -> {
+	// 		vertx.cancelTimer(pID[3]);
+	// 		cfElements.complete(new ArrayList<WebElement>());
+	// 	});
 
-		return cfElements;
-	}
+	// 	return cfElements;
+	// }
 
-	public CompletableFuture<List<WebElement>> asyncFindLeetCodeHeads(WebDriver chromeDriver) throws Exception {
-		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
+	// public CompletableFuture<List<WebElement>> asyncFindLeetCodeHeads(WebDriver chromeDriver) throws Exception {
+	// 	CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[4] = vertx.setPeriodic(128L, id -> {
-			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".text-title-large"));
-				if (elements != null && !elements.isEmpty()) {
-					vertx.cancelTimer(pID[4]);
-					cfElements.complete(elements);
-				}
-			} catch (org.openqa.selenium.NoSuchElementException
-				| org.openqa.selenium.StaleElementReferenceException
-				| org.openqa.selenium.InvalidElementStateException err) {
-				System.out.println(err);
-			}
-		});
+	// 	pID[4] = vertx.setPeriodic(128L, id -> {
+	// 		try {
+	// 			List<WebElement> elements = chromeDriver.findElements(By.cssSelector(".text-title-large"));
+	// 			if (elements != null && !elements.isEmpty()) {
+	// 				vertx.cancelTimer(pID[4]);
+	// 				cfElements.complete(elements);
+	// 			}
+	// 		} catch (org.openqa.selenium.NoSuchElementException
+	// 			| org.openqa.selenium.StaleElementReferenceException
+	// 			| org.openqa.selenium.InvalidElementStateException err) {
+	// 			System.out.println(err);
+	// 		}
+	// 	});
 
-		vertx.setTimer(1024L, id -> {
-			vertx.cancelTimer(pID[4]);
-			cfElements.complete(new ArrayList<WebElement>());
-		});
+	// 	vertx.setTimer(512L, id -> {
+	// 		vertx.cancelTimer(pID[4]);
+	// 		cfElements.complete(new ArrayList<WebElement>());
+	// 	});
 
-		return cfElements;
-	}
+	// 	return cfElements;
+	// }
 
 	public CompletableFuture<String> findTitles(String uri) {
 		CompletableFuture<String> cfTitles = new CompletableFuture<>();
@@ -232,18 +232,18 @@ public class RecoeveWebClient {
 			CompletableFuture<List<WebElement>> findTitle = asyncFindTitle(chromeDriver);
 			CompletableFuture<List<WebElement>> findH1s = asyncFindH1s(chromeDriver);
 			CompletableFuture<List<WebElement>> findH2s = asyncFindH2s(chromeDriver);
-			CompletableFuture<List<WebElement>> findNaverHeads = asyncFindNaverHeads(chromeDriver);
-			CompletableFuture<List<WebElement>> findLeetCodeHeads = asyncFindLeetCodeHeads(chromeDriver);
+			// CompletableFuture<List<WebElement>> findNaverHeads = asyncFindNaverHeads(chromeDriver);
+			// CompletableFuture<List<WebElement>> findLeetCodeHeads = asyncFindLeetCodeHeads(chromeDriver);
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s, findNaverHeads, findLeetCodeHeads);
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s/*, findNaverHeads, findLeetCodeHeads*/);
 
 			allOf.thenRun(() -> {
 				try {
 					List<WebElement> title = findTitle.get();
 					List<WebElement> h1s = findH1s.get();
 					List<WebElement> h2s = findH2s.get();
-					List<WebElement> naverHeads = findNaverHeads.get();
-					List<WebElement> leetCodeHeads = findLeetCodeHeads.get();
+					// List<WebElement> naverHeads = findNaverHeads.get();
+					// List<WebElement> leetCodeHeads = findLeetCodeHeads.get();
 
 					List<WebElement> temp = title;
 					for (int i = 0; i < temp.size(); i++) {
@@ -260,16 +260,16 @@ public class RecoeveWebClient {
 						heads.append("\th2-" + i);
 						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
 					}
-					temp = naverHeads;
-					for (int i = 0; i < temp.size(); i++) {
-						heads.append("\tnaver-" + i);
-						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
-					}
-					temp = leetCodeHeads;
-					for (int i = 0; i < temp.size(); i++) {
-						heads.append("\tleetcode-" + i);
-						contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
-					}
+					// temp = naverHeads;
+					// for (int i = 0; i < temp.size(); i++) {
+					// 	heads.append("\tnaver-" + i);
+					// 	contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					// }
+					// temp = leetCodeHeads;
+					// for (int i = 0; i < temp.size(); i++) {
+					// 	heads.append("\tleetcode-" + i);
+					// 	contents.append("\t" + StrArray.enclose(temp.get(i).getText()));
+					// }
 
 					cfTitles.complete(heads.toString() + "\n" + contents.toString());
 				}
