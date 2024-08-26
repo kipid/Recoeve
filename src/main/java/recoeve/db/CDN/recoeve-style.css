@@ -1,32 +1,32 @@
 @charset "utf-8";
 
 body {
-  margin: 0;
-  padding: 0;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  background: rgb(150, 150, 150);
-  overflow-x: hidden
+  margin:0;
+  padding:0;
+  overflow-wrap:break-word;
+  word-wrap:break-word;
+  word-break:break-word;
+  background:rgb(150, 150, 150);
+  overflow-x:hidden
 }
 
 * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  max-width: 100%
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  box-sizing:border-box;
+  max-width:100%
 }
 
 img {
-  box-sizing: content-box;
+  box-sizing:content-box;
 }
 
 data {
-  display: none
+  display:none
 }
 
 .none {
-  display: none
+  display:none
 }
 
 .inline {
@@ -34,1358 +34,1358 @@ data {
 }
 
 .center {
-  text-align: center
+  text-align:center
 }
 
 .right {
-  text-align: right
+  text-align:right
 }
 
 .fLeft {
-  float: left
+  float:left
 }
 
 .fRight {
-  float: right
+  float:right
 }
 
 .cBoth {
-  clear: both
+  clear:both
 }
 
 .bold {
-  font-weight: bold
+  font-weight:bold
 }
 
 .underline {
-  text-decoration: underline
+  text-decoration:underline
 }
 
 .p {
-  padding-bottom: 1em
+  padding-bottom:1em
 }
 
 img {
-  min-width: 1em;
-  min-height: 1em;
-  max-width: 100%;
-  max-height: 100%
+  min-width:1em;
+  min-height:1em;
+  max-width:100%;
+  max-height:100%
 }
 
 ul,
 ol {
-  margin: 0;
-  padding: 0
+  margin:0;
+  padding:0
 }
 
 li,
 dd {
-  margin: .3em 0 .5em 2em
+  margin:.3em 0 .5em 2em
 }
 
 code {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  word-break: break-all;
-  font-family: monospace;
-  font-size: .9em;
-  padding: .2em;
-  display: inline;
-  border: 2px solid rgb(200, 150, 150);
-  border-radius: .2em;
-  background: rgb(30, 30, 30)
+  overflow-wrap:break-word;
+  word-wrap:break-word;
+  white-space:pre-wrap;
+  word-break:break-all;
+  font-family:monospace;
+  font-size:.9em;
+  padding:.2em;
+  display:inline;
+  border:2px solid rgb(200, 150, 150);
+  border-radius:.2em;
+  background:rgb(30, 30, 30)
 }
 
 .bright code {
-  background: rgb(230, 230, 230);
-  color: black
+  background:rgb(230, 230, 230);
+  color:black
 }
 
 table {
-  background-color: #f8f9fa;
-  color: #202122;
-  margin: 1em 0;
-  border: 1px solid #a2a9b1;
-  border-collapse: collapse
+  background-color:#f8f9fa;
+  color:#202122;
+  margin:1em 0;
+  border:1px solid #a2a9b1;
+  border-collapse:collapse
 }
 
 table>tr>th,
 table>tr>td,
 table>*>tr>th,
 table>*>tr>td {
-  font-size: .7em;
-  border: 1px solid #a2a9b1;
-  padding: 0.2em 0.4em !important
+  font-size:.7em;
+  border:1px solid #a2a9b1;
+  padding:0.2em 0.4em !important
 }
 
 #error table tr td:nth-child(1) {
-  min-width: 6em
+  min-width:6em
 }
 
 .button {
-  display: inline-block;
-  cursor: pointer;
-  border-radius: .3em;
-  margin: 0 .1em .5em;
-  padding: .2em .5em;
-  border: .15em solid rgb(50, 50, 50);
-  background: rgb(110, 110, 110)
+  display:inline-block;
+  cursor:pointer;
+  border-radius:.3em;
+  margin:0 .1em .5em;
+  padding:.2em .5em;
+  border:.15em solid rgb(50, 50, 50);
+  background:rgb(110, 110, 110)
 }
 
 .button.darkred {
-  background: darkred
+  background:darkred
 }
 
 .bright .button.darkred {
-  background: indianred
+  background:indianred
 }
 
 .pink .button.darkred {
-  background: orangered
+  background:orangered
 }
 
 .button.cadetblue {
-  background: cadetblue
+  background:cadetblue
 }
 
 .bright .button {
-  border-color: rgb(200, 200, 200);
-  background: rgb(190, 190, 190)
+  border-color:rgb(200, 200, 200);
+  background:rgb(190, 190, 190)
 }
 
 .pink .button {
-  border-color: rgb(180, 0, 180);
-  background: rgb(138, 13, 106)
+  border-color:rgb(180, 0, 180);
+  background:rgb(138, 13, 106)
 }
 
 .reco .button {
-  margin: 0
+  margin:0
 }
 
 .reco .button.deleted {
-  background: rgb(255, 118, 0)
+  background:rgb(255, 118, 0)
 }
 
 .button.to-be-executed, .button.load-recos {
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin: 512px auto
+  display:block;
+  width:100%;
+  text-align:center;
+  margin:512px auto
 }
 
 .button.disabled {
-  pointer-events: none;
-  background: rgb(25, 25, 25);
-  color: rgb(120, 120, 120)
+  pointer-events:none;
+  background:rgb(25, 25, 25);
+  color:rgb(120, 120, 120)
 }
 
 .bright .button.disabled {
-  background: rgb(100, 100, 100);
-  color: rgb(25, 25, 25)
+  background:rgb(100, 100, 100);
+  color:rgb(25, 25, 25)
 }
 
 .button.fLeft {
-  margin-right: .5em
+  margin-right:.5em
 }
 
 .button:active {
-  background: rgb(0, 80, 80)
+  background:rgb(0, 80, 80)
 }
 
 .bright .button:active {
-  background: rgb(100, 180, 180)
+  background:rgb(100, 180, 180)
 }
 
 .button.enabled {
-  background: seagreen
+  background:seagreen
 }
 
 .bright .button.enabled {
-  background: palegreen
+  background:palegreen
 }
 
 .pink .button.enabled {
-  background: lightseagreen
+  background:lightseagreen
 }
 
 .button.enabled:active {
-  background: rgb(70, 70, 70)
+  background:rgb(70, 70, 70)
 }
 
 .bright .button.enabled:active {
-  background: rgb(190, 190, 190)
+  background:rgb(190, 190, 190)
 }
 
 .pink .button.enabled:active {
-  background: rgb(125, 125, 125)
+  background:rgb(125, 125, 125)
 }
 
 a {
-  text-decoration: none
+  text-decoration:none
 }
 
 a:link {
-  color: rgb(190, 190, 235)
+  color:rgb(190, 190, 235)
 }
 
 .bright a:link {
-  color: rgb(60, 60, 160)
+  color:rgb(60, 60, 160)
 }
 
 .pink a:link {
-  color: rgb(155, 195, 131)
+  color:rgb(155, 195, 131)
 }
 
 a:visited {
-  color: rgb(170, 170, 215)
+  color:rgb(170, 170, 215)
 }
 
 .bright a:visited {
-  color: rgb(40, 40, 140)
+  color:rgb(40, 40, 140)
 }
 
 .pink a:visited {
-  color: rgb(111, 146, 235)
+  color:rgb(111, 146, 235)
 }
 
 a:active {
-  color: rgb(100, 215, 215)
+  color:rgb(100, 215, 215)
 }
 
 .bright a:active {
-  color: rgb(0, 100, 100)
+  color:rgb(0, 100, 100)
 }
 
 .pink a:active {
-  color: rgb(70, 170, 170)
+  color:rgb(70, 170, 170)
 }
 
 a:hover {
-  color: rgb(170, 215, 170);
-  text-decoration: underline
+  color:rgb(170, 215, 170);
+  text-decoration:underline
 }
 
 .bright a:hover {
-  color: rgb(40, 140, 40)
+  color:rgb(40, 140, 40)
 }
 
 .pink a:hover {
-  color: rgb(70, 170, 70)
+  color:rgb(70, 170, 70)
 }
 
 a.seekTo {
-  color: rgb(170, 215, 170);
-  text-decoration: underline
+  color:rgb(170, 215, 170);
+  text-decoration:underline
 }
 
 .bright a.seekTo {
-  color: rgb(40, 140, 40)
+  color:rgb(40, 140, 40)
 }
 
 .pink a.seekTo {
-  color: rgb(70, 170, 70)
+  color:rgb(70, 170, 70)
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px
+  width:7px;
+  height:7px
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-border-radius: 5px;
-  border-radius: 5px
+  -webkit-border-radius:5px;
+  border-radius:5px
 }
 
 ::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  background: rgb(0, 120, 120);
-  -webkit-box-shadow: inset 0 0 3px rgb(0, 0, 0)
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  background:rgb(0, 120, 120);
+  -webkit-box-shadow:inset 0 0 3px rgb(0, 0, 0)
 }
 
 ::-webkit-scrollbar-corner {
-  background: transparent
+  background:transparent
 }
 
 #right-top-log-in .button {
-  float: right
+  float:right
 }
 
 #choose-lang-list {
-  border: solid 1px gray;
-  padding: .5em;
-  line-height: 1.5;
-  float: right
+  border:solid 1px gray;
+  padding:.5em;
+  line-height:1.5;
+  float:right
 }
 
 #recoeve-manual {
-  border: 3px solid #f5deb3
+  border:3px solid #f5deb3
 }
 
 #root {
-  font-size: 12px
+  font-size:12px
 }
 
 #container {
-  font-size: 1em;
-  max-width: 1400px;
-  line-height: 1.6;
-  font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif;
-  background: rgb(75, 75, 75);
-  color: white
+  font-size:1em;
+  max-width:1400px;
+  line-height:1.6;
+  font-family:'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif;
+  background:rgb(75, 75, 75);
+  color:white
 }
 
 #container.bright {
-  background: rgb(250, 250, 250);
-  color: black
+  background:rgb(250, 250, 250);
+  color:black
 }
 
 #container.pink {
-  background: rgb(68, 0, 59);
-  color: wheat
+  background:rgb(68, 0, 59);
+  color:wheat
 }
 
 .fs-container {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 10010;
-  background: black;
-  width: 20em;
-  max-width: 100%;
-  height: auto;
-  text-align: left
+  position:fixed;
+  left:0;
+  top:0;
+  z-index:10010;
+  background:black;
+  width:20em;
+  max-width:100%;
+  height:auto;
+  text-align:left
 }
 
 .bright .fs-container {
-  background: wheat
+  background:wheat
 }
 
 .fs-container>.move, .fs-container>.reset, .fs-container .exit {
-  z-index: 10010;
-  position: absolute;
-  display: inline-block;
-  margin: 0;
-  top: 0;
-  line-height: 1.0;
-  text-align: center;
-  border-radius: 0;
-  cursor: pointer;
-  border: 2px rgb(80, 80, 80) solid;
-  background-color: rgb(30, 30, 30);
-  color: white
+  z-index:10010;
+  position:absolute;
+  display:inline-block;
+  margin:0;
+  top:0;
+  line-height:1.0;
+  text-align:center;
+  border-radius:0;
+  cursor:pointer;
+  border:2px rgb(80, 80, 80) solid;
+  background-color:rgb(30, 30, 30);
+  color:white
 }
 
 .fs-container>.move {
-  left: 0;
-  width: 2.1em;
-  height: 2.1em
+  left:0;
+  width:2.1em;
+  height:2.1em
 }
 
 .fs-container>.reset {
-  right: 1.8em;
-  width: 1.8em;
-  height: 1.8em
+  right:1.8em;
+  width:1.8em;
+  height:1.8em
 }
 
 .fs-container .exit {
-  right: 0;
-  width: 1.8em;
-  height: 1.8em
+  right:0;
+  width:1.8em;
+  height:1.8em
 }
 
 .fs-container>.move>svg, .fs-container>.reset>svg, .fs-container .exit>svg {
-  display: inline-block;
-  width: 100%;
-  height: 100%
+  display:inline-block;
+  width:100%;
+  height:100%
 }
 
 .fs-container>.move>svg>g, .fs-container>.reset>svg>g {
-  stroke: white;
-  stroke-width: 10%;
-  stroke-linecap: round
+  stroke:white;
+  stroke-width:10%;
+  stroke-linecap:round
 }
 
 .fs-container .exit>svg>g {
-  stroke: white;
-  stroke-width: 23%
+  stroke:white;
+  stroke-width:23%
 }
 
 #cat-fs-container {
-  position: relative
+  position:relative
 }
 
 #show-URI {
-	margin: 2.5em 0
+	margin:2.5em 0
 }
 
 #multireco-cat-fs-container {
-  position: relative;
-  width: 25em;
-  max-width: 100%;
-  height: auto;
-  text-align: left
+  position:relative;
+  width:25em;
+  max-width:100%;
+  height:auto;
+  text-align:left
 }
 
 .fs-name {
-  display: inherit;
-  padding: .1em 3em;
-  color: white
+  display:inherit;
+  padding:.1em 3em;
+  color:white
 }
 
 .fs-input {
-  display: inherit;
-  height: 2em;
-  max-height: 5em;
-  overflow-y: auto;
-  font: inherit;
-  font-size: 1.3em;
-  color: black;
-  width: 100%;
-  padding: .1em;
-  border: .15em gray solid;
-  background: white
+  display:inherit;
+  height:2em;
+  max-height:5em;
+  overflow-y:auto;
+  font:inherit;
+  font-size:1.3em;
+  color:black;
+  width:100%;
+  padding:.1em;
+  border:.15em gray solid;
+  background:white
 }
 
 .fs-container textarea {
-  display: inherit;
-  max-width: 100%;
-  width: 100%;
-  resize: vertical;
-  font: inherit;
-  font-weight: bold;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 0.2em 0.3em;
-  background: white;
-  color: rgb(50, 50, 50)
+  display:inherit;
+  max-width:100%;
+  width:100%;
+  resize:vertical;
+  font:inherit;
+  font-weight:bold;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding:0.2em 0.3em;
+  background:white;
+  color:rgb(50, 50, 50)
 }
 
 #goto-cats {
-  height: 4em;
-  margin-bottom: -0.4em
+  height:4em;
+  margin-bottom:-0.4em
 }
 
 .fs-list {
-  display: inherit;
-  position: absolute;
-  width: 21em;
-  height: auto;
-  min-height: 2em;
-  max-height: 15em;
-  overflow-y: auto;
-  border: .15em gray solid;
-  background: rgb(20, 20, 20)
+  display:inherit;
+  position:absolute;
+  width:21em;
+  height:auto;
+  min-height:2em;
+  max-height:15em;
+  overflow-y:auto;
+  border:.15em gray solid;
+  background:rgb(20, 20, 20)
 }
 
 .fs-list .list-item {
-  display: inherit;
-  background: black;
-  color: white;
-  padding: .3em .5em
+  display:inherit;
+  background:black;
+  color:white;
+  padding:.3em .5em
 }
 
 .fs-list .list-item.from-recoms {
-  background: rgb(80, 80, 40)
+  background:rgb(80, 80, 40)
 }
 
 .bright .fs-list .list-item {
-  background: rgb(240, 240, 240);
-  color: black
+  background:rgb(240, 240, 240);
+  color:black
 }
 
 .bright .fs-list .list-item.from-recoms {
-  background: rgb(240, 240, 200)
+  background:rgb(240, 240, 200)
 }
 
 .fs-list .list-item:nth-child(2n) {
-  background: rgb(40, 40, 40)
+  background:rgb(40, 40, 40)
 }
 
 .fs-list .list-item.from-recoms:nth-child(2n) {
-  background: rgb(120, 120, 80)
+  background:rgb(120, 120, 80)
 }
 
 .bright .fs-list .list-item:nth-child(2n) {
-  background: white
+  background:white
 }
 
 .bright .fs-list .list-item.from-recoms:nth-child(2n) {
-  background: rgb(255, 255, 215)
+  background:rgb(255, 255, 215)
 }
 
 .fs-list .list-item.down {
-  background: rgb(30, 70, 30);
-  border: 1px solid rgb(120, 120, 70)
+  background:rgb(30, 70, 30);
+  border:1px solid rgb(120, 120, 70)
 }
 
 .fs-list .list-item.down:nth-child(2n) {
-  background: rgb(60, 100, 60)
+  background:rgb(60, 100, 60)
 }
 
 .fs-list .list-item.selected {
-  border: .15em solid rgb(210, 150, 150)
+  border:.15em solid rgb(210, 150, 150)
 }
 
 .fs-list .list-item.deleted {
-  background: rgb(70, 30, 30)
+  background:rgb(70, 30, 30)
 }
 
 .list-index-id,
 .fs-list .list-item .list-index,
 .fs-list .list-item .list-index-id {
-  display: none
+  display:none
 }
 
 .fs-list .list-item .cat {
-  display: inherit;
-  font-size: .9em
+  display:inherit;
+  font-size:.9em
 }
 
 .fs-list .list-item .highlighted {
-  display: inherit;
-  font-size: .5em;
-  color: rgb(150, 150, 150)
+  display:inherit;
+  font-size:.5em;
+  color:rgb(150, 150, 150)
 }
 
 .fs-list .list-item .highlighted .bold {
-  color: rgb(170, 250, 170)
+  color:rgb(170, 250, 170)
 }
 
 .exit {
-  z-index: 10010;
-  position: absolute;
-  display: inline-block;
-  right: 0;
-  top: 0;
-  margin: 0;
-  width: 3em;
-  height: 3em;
-  line-height: 1.0;
-  text-align: center;
-  cursor: pointer;
-  border: .15em rgb(80, 80, 80) solid;
-  background-color: rgb(30, 30, 30);
-  color: white
+  z-index:10010;
+  position:absolute;
+  display:inline-block;
+  right:0;
+  top:0;
+  margin:0;
+  width:3em;
+  height:3em;
+  line-height:1.0;
+  text-align:center;
+  cursor:pointer;
+  border:.15em rgb(80, 80, 80) solid;
+  background-color:rgb(30, 30, 30);
+  color:white
 }
 
 .exit>svg {
-  width: 100%;
-  height: 100%;
-  font-size: 3em;
-  line-height: 1.0
+  width:100%;
+  height:100%;
+  font-size:3em;
+  line-height:1.0
 }
 
 .exit>svg>g {
-  stroke: white;
-  stroke-width: 23%
+  stroke:white;
+  stroke-width:23%
 }
 
 #new-reco form {
-  position: relative;
-  width: 40em;
-  max-width: 100%;
-  margin: 1em auto;
-  padding: 1em;
-  background: black;
-  border: .2em solid rgb(120, 120, 130);
-  text-align: left
+  position:relative;
+  width:40em;
+  max-width:100%;
+  margin:1em auto;
+  padding:1em;
+  background:black;
+  border:.2em solid rgb(120, 120, 130);
+  text-align:left
 }
 
 #new-reco form .reset {
-  position: absolute;
-  display: inline-block;
-  right: 1em;
-  top: 2.5em;
-  width: 1.8em;
-  height: 1.8em;
-  line-height: 1.0;
-  text-align: center;
-  cursor: pointer;
-  border: 2px rgb(80, 80, 80) solid;
-  background-color: rgb(30, 30, 30);
-  color: white
+  position:absolute;
+  display:inline-block;
+  right:1em;
+  top:2.5em;
+  width:1.8em;
+  height:1.8em;
+  line-height:1.0;
+  text-align:center;
+  cursor:pointer;
+  border:2px rgb(80, 80, 80) solid;
+  background-color:rgb(30, 30, 30);
+  color:white
 }
 
 #new-reco form .reset>svg {
-  display: inline-block;
-  width: 100%;
-  height: 100%
+  display:inline-block;
+  width:100%;
+  height:100%
 }
 
 #new-reco form .reset>svg>g {
-  stroke: white;
-  stroke-width: 10%;
-  stroke-linecap: round
+  stroke:white;
+  stroke-width:10%;
+  stroke-linecap:round
 }
 
 #new-reco label {
-  display: inline-block;
-  font-weight: bold;
-  margin: .9em 0 .4em
+  display:inline-block;
+  font-weight:bold;
+  margin:.9em 0 .4em
 }
 
 #new-reco label:first-child {
-  margin-top: 0
+  margin-top:0
 }
 
 #new-reco label>.desc {
-  font-size: .8em
+  font-size:.8em
 }
 
 #new-reco input,
 #new-reco textarea {
-  display: block;
-  max-width: 100%;
-  width: 100%;
-  resize: vertical;
-  font: inherit;
-  font-weight: bold;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: .2em .3em;
-  background: white;
-  color: rgb(50, 50, 50)
+  display:block;
+  max-width:100%;
+  width:100%;
+  resize:vertical;
+  font:inherit;
+  font-weight:bold;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding:.2em .3em;
+  background:white;
+  color:rgb(50, 50, 50)
 }
 
 textarea#input-uri {
-  padding: .2em 1.8em .2em .3em
+  padding:.2em 1.8em .2em .3em
 }
 
 textarea.single-line {
-  min-height: 2.2em;
-  height: 3.8em
+  min-height:2.2em;
+  height:3.8em
 }
 
 textarea.multi-line {
-  font-size: .9em;
-  min-height: 10em
+  font-size:.9em;
+  min-height:10em
 }
 
 #new-reco input#input-val {
-  float: right;
-  width: 6.2em
+  float:right;
+  width:6.2em
 }
 
 .upDown {
-  float: right;
-  border: solid 1px white;
-  padding: 1px;
-  margin: 0 .3em
+  float:right;
+  border:solid 1px white;
+  padding:1px;
+  margin:0 .3em
 }
 
 .bright .upDown {
-  border-color: black
+  border-color:black
 }
 
 .up,
 .down {
-  vertical-align: top
+  vertical-align:top
 }
 
 #label-input-val {
-  float: right;
-  margin: .1em .5em
+  float:right;
+  margin:.1em .5em
 }
 
 #input-val-stars {
-  float: right;
-  vertical-align: text-bottom;
-  margin: 0 0 -.5em -.5em
+  float:right;
+  vertical-align:text-bottom;
+  margin:0 0 -.5em -.5em
 }
 
 #new-reco .def-title {
-  margin: .2em 0;
-  border: 1px solid rgb(130, 130, 130);
-  padding: 1px .5em;
-  font-size: .9em
+  margin:.2em 0;
+  border:1px solid rgb(130, 130, 130);
+  padding:1px .5em;
+  font-size:.9em
 }
 
 #new-reco .def-title.selected {
-  border-color: rgb(255, 180, 180)
+  border-color:rgb(255, 180, 180)
 }
 
 #new-reco .def-desc {
-  margin: .2em 0;
-  border: 1px solid rgb(130, 130, 130);
-  padding: 1px .5em;
-  font-size: .9em
+  margin:.2em 0;
+  border:1px solid rgb(130, 130, 130);
+  padding:1px .5em;
+  font-size:.9em
 }
 
 #new-reco .def-desc.selected {
-  border-color: rgb(255, 180, 180)
+  border-color:rgb(255, 180, 180)
 }
 
 #new-reco .buttons {
-  margin-top: 1em;
-  text-align: right
+  margin-top:1em;
+  text-align:right
 }
 
 #new-reco #error-msg {
-  margin: 0
+  margin:0
 }
 
 #new-reco .def-cat,
 #multireco-cats-container .def-cat {
-  display: inline-block;
-  margin: .2em 0;
-  border: 1px solid rgb(130, 130, 130);
-  padding: 1px .5em;
-  font-size: .9em
+  display:inline-block;
+  margin:.2em 0;
+  border:1px solid rgb(130, 130, 130);
+  padding:1px .5em;
+  font-size:.9em
 }
 
 #new-reco .def-cat.selected,
 #multireco-cats-container .def-cat.selected {
-  border-color: rgb(255, 180, 180)
+  border-color:rgb(255, 180, 180)
 }
 
 #delete-cat,
 #multireco-delete-cat {
-  background: #ff7600
+  background:#ff7600
 }
 
 #new-reco .def-cmd,
 #preview-desc,
 #formatting-lyrics {
-  display: inline-block;
-  margin: .2em 0;
-  border: 1px solid rgb(130, 130, 130);
-  padding: 1px .5em;
-  font-size: .9em
+  display:inline-block;
+  margin:.2em 0;
+  border:1px solid rgb(130, 130, 130);
+  padding:1px .5em;
+  font-size:.9em
 }
 
 #formatting-lyrics {
-  border-color: rgb(130, 130, 200)
+  border-color:rgb(130, 130, 200)
 }
 
 #preview-desc {
-  border-color: rgb(130, 200, 130)
+  border-color:rgb(130, 200, 130)
 }
 
 #previewed-desc {
-  font-size: .8em;
-  height: auto;
-  max-height: 20em;
-  overflow-y: scroll
+  font-size:.8em;
+  height:auto;
+  max-height:20em;
+  overflow-y:scroll
 }
 
 #javascript-disable {
-  font-size: 3em
+  font-size:3em
 }
 
 #change-style {
-  margin-top: 10em;
-  font-size: 12px;
-  line-height: 1.6;
-  text-align: right;
-  padding: .5em
+  margin-top:10em;
+  font-size:12px;
+  line-height:1.6;
+  text-align:right;
+  padding:.5em
 }
 
 #change-style form {
-  vertical-align: middle;
-  text-indent: 0;
-  display: inline-block;
-  border: 2px gray solid;
-  padding: 2px;
-  margin: 0
+  vertical-align:middle;
+  text-indent:0;
+  display:inline-block;
+  border:2px gray solid;
+  padding:2px;
+  margin:0
 }
 
 #change-style form * {
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  vertical-align: middle
+  margin:0;
+  padding:0;
+  text-align:center;
+  vertical-align:middle
 }
 
 #change-style form button {
-  width: 29px;
-  height: 25px;
-  padding: 0
+  width:29px;
+  height:25px;
+  padding:0
 }
 
 #change-style .deviceInfo {
-  font-size: 1em
+  font-size:1em
 }
 
 #shortkeys {
-  line-height: 1
+  line-height:1
 }
 
 .numbers-of-recos {
-  margin: 0;
-  padding: .5em;
-  width: 100%
+  margin:0;
+  padding:.5em;
+  width:100%
 }
 
 .multireco {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap
+  display:flex;
+  justify-content:space-evenly;
+  flex-wrap:wrap
 }
 
 .reco {
-  margin: 0 0 1em;
-  border-top: .15em solid rgb(100, 100, 100);
-  border-bottom: .15em solid rgb(100, 100, 100);
-  background: black
+  margin:0 0 1em;
+  border-top:.15em solid rgb(100, 100, 100);
+  border-bottom:.15em solid rgb(100, 100, 100);
+  background:black
 }
 
 .reco.recoed {
-	border: .3em solid rgb(50, 50, 200);
+	border:.3em solid rgb(50, 50, 200);
 }
 
 .reco.changed {
-	border: .3em solid rgb(50, 200, 50);
+	border:.3em solid rgb(50, 200, 50);
 }
 
 .reco.deleted {
-  border: .3em solid rgb(168, 50, 0)
+  border:.3em solid rgb(168, 50, 0)
 }
 
 .bright .reco {
-  border-color: black;
-  background: rgb(230, 230, 230)
+  border-color:black;
+  background:rgb(230, 230, 230)
 }
 
 .pink .reco {
-  border-color: wheat;
-  background: rgb(35, 0, 97)
+  border-color:wheat;
+  background:rgb(35, 0, 97)
 }
 
 .multireco .reco {
-  width: 49%
+  width:49%
 }
 
 .edit.fRight {
-  float: right;
-  padding: .1em .5em;
-  background: gray;
-  text-align: center;
-  font-weight: bold
+  float:right;
+  padding:.1em .5em;
+  background:gray;
+  text-align:center;
+  font-weight:bold
 }
 
 .SNS-img {
-  background: white
+  background:white
 }
 
 .reco .SNS-img {
-  position: relative;
-  box-sizing: border-box;
-  margin: 0;
-  float: left;
-  width: 27px;
-  height: 27px;
-  border: 2px gray solid;
-  border-left: 0;
-  cursor: pointer
+  position:relative;
+  box-sizing:border-box;
+  margin:0;
+  float:left;
+  width:27px;
+  height:27px;
+  border:2px gray solid;
+  border-left:0;
+  cursor:pointer
 }
 
 .reco .SNS-img:first-child {
-  border-left: 2px gray solid
+  border-left:2px gray solid
 }
 
 .reco .SNS-img .icon-X {
-  background: #a92323;
-  position: absolute;
-  left: 5%;
-  top: 5%;
-  width: 90%;
-  height: 90%
+  background:#a92323;
+  position:absolute;
+  left:5%;
+  top:5%;
+  width:90%;
+  height:90%
 }
 
 .reco>.textURI,
 .reco>.YTVideoId {
-  display: none
+  display:none
 }
 
 .reco>.uri {
-  font-size: .7em;
-  border: 2px solid rgb(100, 100, 150);
-  border-bottom: 0;
-  padding: .2em .5em
+  font-size:.7em;
+  border:2px solid rgb(100, 100, 150);
+  border-bottom:0;
+  padding:.2em .5em
 }
 
 .multireco .reco>.uri {
-  font-size: .7em
+  font-size:.7em
 }
 
 .reco>.title {
-  font-size: 1.1em;
-  border: 2px solid rgb(150, 100, 100);
-  padding: .2em .5em
+  font-size:1.1em;
+  border:2px solid rgb(150, 100, 100);
+  padding:.2em .5em
 }
 
 .multireco .reco>.title {
-  clear: both;
-  font-size: 0.9em
+  clear:both;
+  font-size:0.9em
 }
 
 .reco>.cats {
-  font-size: .8em;
-  border: 2px solid rgb(100, 150, 100);
-  border-top: 0;
-  padding: .2em .5em
+  font-size:.8em;
+  border:2px solid rgb(100, 150, 100);
+  border-top:0;
+  padding:.2em .5em
 }
 
 .multireco .reco>.cats {
-  font-size: .7em
+  font-size:.7em
 }
 
 .reco>.cats>a {
-  cursor: pointer;
-  color: rgb(130, 170, 130)
+  cursor:pointer;
+  color:rgb(130, 170, 130)
 }
 
 .reco>.cats>a.currentCat {
-  pointer-events: none;
-  color: rgb(140, 180, 140);
-  font-weight: bold;
-  text-decoration: none
+  pointer-events:none;
+  color:rgb(140, 180, 140);
+  font-weight:bold;
+  text-decoration:none
 }
 
 .reco>.desc {
-  margin: .5em 0;
-  padding: .5em
+  margin:.5em 0;
+  padding:.5em
 }
 
 .reco>.desc .value {
-  padding-bottom: 1em
+  padding-bottom:1em
 }
 
 .reco>.cmts {
-  margin: .5em 0;
-  padding: 0;
-  max-height: 20em;
-  overflow-y: scroll
+  margin:.5em 0;
+  padding:0;
+  max-height:20em;
+  overflow-y:scroll
 }
 
 .reco>.cmt,
 .reco>.cmts>.cmt {
-  font-size: .8em;
-  margin: 0;
-  padding: .3em;
-  background: rgb(30, 30, 30);
-  border-left: .3em solid rgb(10, 80, 80)
+  font-size:.8em;
+  margin:0;
+  padding:.3em;
+  background:rgb(30, 30, 30);
+  border-left:.3em solid rgb(10, 80, 80)
 }
 
 .bright .reco>.cmt,
 .bright .reco>.cmts>.cmt {
-  background: rgb(220, 220, 220)
+  background:rgb(220, 220, 220)
 }
 
 .multireco .reco>.desc,
 .multireco .reco>.cmt {
-  font-size: .7em;
-  margin: 0;
-  padding: .3em
+  font-size:.7em;
+  margin:0;
+  padding:.3em
 }
 
 .bright .reco>.cmt {
-  background: rgb(200, 200, 200)
+  background:rgb(200, 200, 200)
 }
 
 .pink .reco>.cmt {
-  background: rgb(75, 47, 47)
+  background:rgb(75, 47, 47)
 }
 
 .stars-container {
-  float: right;
-  position: relative;
-  cursor: text
+  float:right;
+  position:relative;
+  cursor:text
 }
 
 .stars-container>div.bar {
-  position: absolute;
-  top: 1px;
-  bottom: 1px;
-  background: rgb(232, 242, 80)
+  position:absolute;
+  top:1px;
+  bottom:1px;
+  background:rgb(232, 242, 80)
 }
 
 .stars-container>svg.out-stars {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%
 }
 
 .stars-container>svg.out-stars>polygon {
-  fill: rgb(50, 50, 50);
-  stroke-width: 0;
-  fill-rule: evenodd
+  fill:rgb(50, 50, 50);
+  stroke-width:0;
+  fill-rule:evenodd
 }
 
 .reco>.val {
-  margin: .5em 0 .3em
+  margin:.5em 0 .3em
 }
 
 .reco>.val>.str,
 .reco>.my-point>.str {
-  float: right;
-  font-size: .7em;
-  border: .15em solid white;
-  padding: .1em .5em;
-  margin: 0 .2em;
-  vertical-align: top
+  float:right;
+  font-size:.7em;
+  border:.15em solid white;
+  padding:.1em .5em;
+  margin:0 .2em;
+  vertical-align:top
 }
 
 .bright .reco>.val>.str,
 .bright .reco>.my-point>.str {
-  border-color: black
+  border-color:black
 }
 
 .reco .tFirst,
 .reco .tLast {
-  float: right;
-  margin: .2em 1em;
-  font-size: .8em
+  float:right;
+  margin:.2em 1em;
+  font-size:.8em
 }
 
 .multireco .reco .tFirst,
 .multireco .reco .tLast {
-  font-size: .5em
+  font-size:.5em
 }
 
 .reco .result {
-  font-size: .7em;
-  padding: .5em
+  font-size:.7em;
+  padding:.5em
 }
 
 .loading {
-  text-align: center
+  text-align:center
 }
 
 .loading .outerCircle {
-  background-color: transparent;
-  border: 8px solid rgba(97, 82, 72, 0.9);
-  opacity: .9;
-  border-right: 5px solid transparent;
-  border-left: 5px solid transparent;
-  border-radius: 100px;
-  width: 110px;
-  height: 110px;
-  margin: 5em auto 0;
-  animation: spinPulse 5s infinite ease-in-out;
-  -moz-animation: spinPulse 5s infinite ease-in-out;
-  -webkit-animation: spinPulse 5s infinite ease-in-out
+  background-color:transparent;
+  border:8px solid rgba(97, 82, 72, 0.9);
+  opacity:.9;
+  border-right:5px solid transparent;
+  border-left:5px solid transparent;
+  border-radius:100px;
+  width:110px;
+  height:110px;
+  margin:5em auto 0;
+  animation:spinPulse 5s infinite ease-in-out;
+  -moz-animation:spinPulse 5s infinite ease-in-out;
+  -webkit-animation:spinPulse 5s infinite ease-in-out
 }
 
 .loading .innerCircle {
-  background-color: transparent;
-  border: 5px solid rgba(189, 215, 60, 0.6);
-  opacity: .9;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-radius: 100px;
-  top: -100px;
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 20em;
-  position: relative;
-  animation: spinoffPulse 3s infinite linear;
-  -moz-animation: spinoffPulse 3s infinite linear;
-  -webkit-animation: spinoffPulse 3s infinite linear
+  background-color:transparent;
+  border:5px solid rgba(189, 215, 60, 0.6);
+  opacity:.9;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-radius:100px;
+  top:-100px;
+  width:90px;
+  height:90px;
+  margin:0 auto 20em;
+  position:relative;
+  animation:spinoffPulse 3s infinite linear;
+  -moz-animation:spinoffPulse 3s infinite linear;
+  -webkit-animation:spinoffPulse 3s infinite linear
 }
 
 @-moz-keyframes spinPulse {
   0% {
-    -moz-transform: rotate(160deg);
-    opacity: 0;
-    box-shadow: 0 0 1px #bdd73c
+    -moz-transform:rotate(160deg);
+    opacity:0;
+    box-shadow:0 0 1px #bdd73c
   }
 
   50% {
-    -moz-transform: rotate(145deg);
-    opacity: 1
+    -moz-transform:rotate(145deg);
+    opacity:1
   }
 
   100% {
-    -moz-transform: rotate(-320deg);
-    opacity: 0
+    -moz-transform:rotate(-320deg);
+    opacity:0
   }
 }
 
 @-moz-keyframes spinoffPulse {
   0% {
-    -moz-transform: rotate(0deg)
+    -moz-transform:rotate(0deg)
   }
 
   100% {
-    -moz-transform: rotate(360deg)
+    -moz-transform:rotate(360deg)
   }
 }
 
 @-webkit-keyframes spinPulse {
   0% {
-    -webkit-transform: rotate(160deg);
-    opacity: 0;
-    box-shadow: 0 0 1px #bdd73c
+    -webkit-transform:rotate(160deg);
+    opacity:0;
+    box-shadow:0 0 1px #bdd73c
   }
 
   50% {
-    -webkit-transform: rotate(145deg);
-    opacity: 1
+    -webkit-transform:rotate(145deg);
+    opacity:1
   }
 
   100% {
-    -webkit-transform: rotate(-320deg);
-    opacity: 0
+    -webkit-transform:rotate(-320deg);
+    opacity:0
   }
 }
 
 @-webkit-keyframes spinoffPulse {
   0% {
-    -webkit-transform: rotate(0deg)
+    -webkit-transform:rotate(0deg)
   }
 
   100% {
-    -webkit-transform: rotate(360deg)
+    -webkit-transform:rotate(360deg)
   }
 }
 
 .lyricsArrow {
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: 0 auto;
-  border-color: transparent transparent rgb(0, 30, 0);
-  border-style: solid;
-  border-width: 0.5em
+  width:0;
+  height:0;
+  padding:0;
+  margin:0 auto;
+  border-color:transparent transparent rgb(0, 30, 0);
+  border-style:solid;
+  border-width:0.5em
 }
 
 .lyrics {
-  border: 0.3em solid rgb(0, 30, 0);
-  padding: 1em .5em;
-  margin-top: -1px
+  border:0.3em solid rgb(0, 30, 0);
+  padding:1em .5em;
+  margin-top:-1px
 }
 
 .rC {
-  margin: .5em auto
+  margin:.5em auto
 }
 
 .rC.instagram {
-  max-width: 37em
+  max-width:37em
 }
 
 .rC.fixed {
-  position: fixed;
-  z-index: 10000;
-  top: 0;
-  left: 0;
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 1px;
-  background: black;
-  border-bottom: .15em solid white
+  position:fixed;
+  z-index:10000;
+  top:0;
+  left:0;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:1px;
+  background:black;
+  border-bottom:.15em solid white
 }
 
 .bright .rC.fixed {
-  background: white;
-  border-color: black
+  background:white;
+  border-color:black
 }
 
 .rC>.rSC {
-  position: relative;
-  height: 0;
-  padding-bottom: 63%
+  position:relative;
+  height:0;
+  padding-bottom:57%
 }
 
 .rC.soundcloud>.rSC {
-  padding-bottom: 20%
+  padding-bottom:20%
 }
 
 .rC.instagram>.rSC {
-  padding-bottom: 165%;
-  overflow: auto
+  padding-bottom:165%;
+  overflow:auto
 }
 
 .rC.imgur>.rSC {
-  padding-bottom: 185%;
-  overflow: auto
+  padding-bottom:185%;
+  overflow:auto
 }
 
 .rC.tiktok>.rSC {
-  height: 895px;
-  padding-bottom: 0;
-  overflow-x: hidden;
-  overflow-y: scroll
+  height:895px;
+  padding-bottom:0;
+  overflow-x:hidden;
+  overflow-y:scroll
 }
 
 .rC.eveElse>.rSC {
-  padding-bottom: 60%
+  padding-bottom:60%
 }
 
 .rC>.rSC>* {
-  position: absolute;
-  border: 0;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  left: 0;
-  top: 0;
-  overflow-x: hidden;
-  overflow-y: hidden
+  position:absolute;
+  border:0;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  left:0;
+  top:0;
+  overflow-x:hidden;
+  overflow-y:hidden
 }
 
 .rC>.rSC>.center {
-  position: absolute;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  left: 0;
-  top: 0;
-  overflow-x: hidden;
-  overflow-y: hidden
+  position:absolute;
+  text-align:center;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  left:0;
+  top:0;
+  overflow-x:hidden;
+  overflow-y:hidden
 }
 
 .rC>.rSC>.center>iframe {
-  position: absolute;
-  border: 0;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  left: 0;
-  top: 0;
-  overflow-x: hidden;
-  overflow-y: auto
+  position:absolute;
+  border:0;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  min-height:100%;
+  left:0;
+  top:0;
+  overflow-x:hidden;
+  overflow-y:auto
 }
 
 .rC>.rSC>.center>img {
-  display: inline-block;
-  max-width: 100%;
-  max-height: 100%
+  display:inline-block;
+  max-width:100%;
+  max-height:100%
 }
 
 .rC>.pc {
-  text-align: center;
-  font-size: 10px
+  text-align:center;
+  font-size:10px
 }
 
 /* position change */
 
 #footage {
-  padding: 20em 2em;
-  text-align: center;
-  border: 3px solid wheat
+  padding:20em 2em;
+  text-align:center;
+  border:3px solid wheat
 }
 
 @media all and (min-width:600px) {
   #root {
-    font-size: 13px
+    font-size:13px
   }
 
   .multireco .reco {
-    width: 33%
+    width:33%
   }
 
   .rC.imgur>.rSC {
-    padding-bottom: 145%
+    padding-bottom:145%
   }
 }
 
 @media all and (min-width:700px) {
   #root {
-    font-size: 14px
+    font-size:14px
   }
 
   .multireco .reco {
-    width: 49%
+    width:49%
   }
 
   #change-style {
-    margin-top: 0
+    margin-top:0
   }
 
   #my-id {
-    margin-left: 0
+    margin-left:0
   }
 
   .rC.fixed {
-    width: 50%;
-    border-right: .15em solid white
+    width:50%;
+    border-right:.15em solid white
   }
 
   .rC.imgur>.rSC {
-    padding-bottom: 180%
+    padding-bottom:180%
   }
 
   .rC.instagram.fixed,
   .rC.eveElse.fixed,
   .rC.tiktok.fixed {
-    width: 360px
+    width:360px
   }
 
   .rC.tiktok>.rSC {
-    width: 100%;
-    height: 895px;
-    padding-bottom: 0
+    width:100%;
+    height:895px;
+    padding-bottom:0
   }
 
   .lyrics {
-    text-align: right
+    text-align:right
   }
 
   ::-webkit-scrollbar {
-    width: 11px;
-    height: 11px
+    width:11px;
+    height:11px
   }
 }
 
 @media all and (min-width:900px) {
   #root {
-    font-size: 15px
+    font-size:15px
   }
 
   .multireco .reco {
-    width: 33%
+    width:33%
   }
 
   .rC.fixed {
-    width: 55%
+    width:55%
   }
 
   .rC.imgur>.rSC {
-    padding-bottom: 150%
+    padding-bottom:150%
   }
 }
 
 @media all and (min-width:1200px) {
   #root {
-    font-size: 17px
+    font-size:17px
   }
 
   .multireco .reco {
-    width: 24%
+    width:24%
   }
 
   .rC.imgur>.rSC {
-    padding-bottom: 90%
+    padding-bottom:90%
   }
 }
 
 @media all and (min-height:500px) {
   .fs-list {
-    max-height: 430px
+    max-height:430px
   }
 
   .rC.tiktok.fixed {
-    height: 480px
+    height:480px
   }
 }
 
 @media all and (min-height:900px) {
   .rC.tiktok.fixed {
-    height: 895px
+    height:895px
   }
 
   .rC.tiktok.fixed>.rSC {
-    height: 100%;
-    padding-bottom: 0
+    height:100%;
+    padding-bottom:0
   }
 }
