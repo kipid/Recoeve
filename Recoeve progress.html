@@ -240,6 +240,21 @@ docuK 활용한 블로그 서비스까지 통합적으로 제공하고 싶긴한
 
 
 
+<div class="bcf">
+
+현재 cat 과 다른 cat 에 reco 를 하면, 새 cat 이 제대로 open 이 안됨. 그리고 새 reco 가 ToR 에 2개가 나타남.<br/>
+reco 후 ToR 이 update 가 안됨.<br/>
+[IT/Programming]--Links cat 에서 https://kipid.tistory.com/entry/Lists cats 를 [Physics/Math/Science]--Links ; [My Blog] 에서 [Physics/Math/Science]--Links ; [My Blog] ; [IT/Programming]--Links 로 변경했는데, Current cat 에서 reco update 가 안됨.<br/>
+새 cat [정치/사회/경제]--중고거래 에 저장했는데, 치워진--중고거래 cat 이 생기는 경우가 있었음.<br/>
+삭제 눌러도 계속 reco 가 보이는 때가 있었음. 우선 cats 를 변경한 뒤, delete 한거긴 한데... 이럴때만 나는 에러인지는 모르겠음.<br/>
+새로운 cat 에 reco 하면 새 cat 이 제대로 만들어지지 않음. 많이 뜯어고쳐야 할듯.<br/>
+m.putCats_UriToLists, m.delCats_UriFromLists 확인하기.<br/>
+<br/>
+이거 다 한묶음으로 해결 가능할듯?<br/>
+자바랑 코드 비교해 보기.<br/>
+
+</div>
+
 RecoeveWebClient.lambda.findTitles 비동기 처리로 Non-Block 하게 만들기.
 
 async await Promise 제대로 사용하도록 코드 수정.
