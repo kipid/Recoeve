@@ -35,6 +35,8 @@ public class RecoeveWebClient {
 	public RecoeveDB db;
 	public WebClient webClient;
 	private final long[] pID = {0, 0, 0};
+	private final long timeout = 1024L;
+	private final long findPerSeconds = 256L;
 
 	public XPath xpath;
 	public WebDriver driver;
@@ -82,7 +84,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindTitle(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[0] = vertx.setPeriodic(256L, id -> {
+		pID[0] = vertx.setPeriodic(findPerSeconds, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("title"));
 				if (elements != null && !elements.isEmpty()) {
@@ -96,7 +98,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(timeout, id -> {
 			vertx.cancelTimer(pID[0]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -107,7 +109,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindH1s(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[1] = vertx.setPeriodic(256L, id -> {
+		pID[1] = vertx.setPeriodic(findPerSeconds, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h1"));
 				if (elements != null && !elements.isEmpty()) {
@@ -121,7 +123,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(timeout, id -> {
 			vertx.cancelTimer(pID[1]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
@@ -132,7 +134,7 @@ public class RecoeveWebClient {
 	public CompletableFuture<List<WebElement>> asyncFindH2s(WebDriver chromeDriver) throws Exception {
 		CompletableFuture<List<WebElement>> cfElements = new CompletableFuture<>();
 
-		pID[2] = vertx.setPeriodic(256L, id -> {
+		pID[2] = vertx.setPeriodic(findPerSeconds, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h2"));
 				if (elements != null && !elements.isEmpty()) {
@@ -146,7 +148,7 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(2048L, id -> {
+		vertx.setTimer(timeout, id -> {
 			vertx.cancelTimer(pID[2]);
 			cfElements.complete(new ArrayList<WebElement>());
 		});
