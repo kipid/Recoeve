@@ -675,6 +675,10 @@ window.MathJax={
 
 		// Closing docuK Log.
 		m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
-		setTimeout(function () { m.$logAll.hide(); }, 2048);
+		m.$window.scrollTop($(window.location.hash).offset().top);
+		setTimeout(function () {
+			m.$logAll.hide();
+			m.$window.scrollTop($(window.location.hash).offset().top);
+		}, 2048);
 	});
 })(window.k, jQuery);
