@@ -25,7 +25,7 @@ codeprint.SEE {
 }
 
 .promoting {
-	font-size:13px;
+	font-size:1em;
 	color:white;
 	background-color:black;
 	max-width:1000px;
@@ -44,7 +44,7 @@ codeprint.SEE {
 
 .promoting a,
 .promoting a.wheat {
-	color:wheat
+	color:wheat !important
 }
 
 .promoting .center {
@@ -58,7 +58,7 @@ codeprint.SEE {
 }
 
 .copyright {
-	font-size:13px;
+	font-size:.8em;
 	color:rgb(100, 255, 100);
 	background-color:rgb(0, 0, 0);
 	max-width:1000px;
@@ -105,7 +105,7 @@ codeprint.SEE {
 }
 
 .copyright li.license {
-	color:rgb(200, 200, 40) !important;
+	color:rgb(207, 207, 164) !important;
 	list-style:none;
 	position:relative;
 	margin:15px 0;
@@ -113,7 +113,7 @@ codeprint.SEE {
 }
 
 #shortkey.shortkey {
-	font-size:13px;
+	font-size:1em;
 	color:white;
 	background-color:black;
 	max-width:100%;
@@ -1246,7 +1246,7 @@ img {
 
 ol,
 ul {
-	margin:.3em 0 1.7em;
+	margin:1em 0;
 	padding:0
 }
 
