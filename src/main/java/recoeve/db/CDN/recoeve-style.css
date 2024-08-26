@@ -362,7 +362,7 @@ a.seekTo {
   background: wheat
 }
 
-.fs-container>.move, .fs-container>.reset, .fs-container>.exit {
+.fs-container>.move, .fs-container>.reset, .fs-container .exit {
   z-index: 10010;
   position: absolute;
   display: inline-block;
@@ -389,13 +389,13 @@ a.seekTo {
   height: 1.8em
 }
 
-.fs-container>.exit {
+.fs-container .exit {
   right: 0;
   width: 1.8em;
   height: 1.8em
 }
 
-.fs-container>.move>svg, .fs-container>.reset>svg, .fs-container>.exit>svg {
+.fs-container>.move>svg, .fs-container>.reset>svg, .fs-container .exit>svg {
   display: inline-block;
   width: 100%;
   height: 100%
@@ -407,7 +407,7 @@ a.seekTo {
   stroke-linecap: round
 }
 
-.fs-container>.exit>svg>g {
+.fs-container .exit>svg>g {
   stroke: white;
   stroke-width: 23%
 }
