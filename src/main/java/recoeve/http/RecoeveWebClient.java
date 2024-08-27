@@ -35,8 +35,8 @@ public class RecoeveWebClient {
 	public RecoeveDB db;
 	public WebClient webClient;
 	private final long[] pID = {0, 0, 0};
-	private final long timeout = 1024L;
-	private final long findPerSeconds = 256L;
+	private final long timeout = 512L;
+	private final long findPerSeconds = 128L;
 
 	public XPath xpath;
 	public WebDriver driver;
