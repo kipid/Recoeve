@@ -1226,10 +1226,6 @@ textarea.multi-line {
 	overflow-y:scroll
 }
 
-.rC.eveElse>.rSC {
-	padding-bottom:60%
-}
-
 .rC>.rSC>* {
 	position:absolute;
 	border:0;
@@ -1329,7 +1325,6 @@ textarea.multi-line {
 	}
 
 	.rC.instagram.fixed,
-	.rC.eveElse.fixed,
 	.rC.tiktok.fixed {
 		width:360px
 	}
