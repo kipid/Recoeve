@@ -248,6 +248,10 @@
 	height:2.3em;
 }
 
+.button.button-sort {
+	background-color:#ae51c5
+}
+
 #sort-list {
 	position:absolute;
 	z-index:5000
@@ -260,8 +264,12 @@
 	margin:0
 }
 
+#sort-list .button:nth-child(odd) {
+	background:#653c6f
+}
+
 #sort-list .button:nth-child(even) {
-	background:darkslategray
+	background:#ae51c5
 }
 
 #memo-container {
