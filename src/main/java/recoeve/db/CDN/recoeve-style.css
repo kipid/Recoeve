@@ -230,7 +230,7 @@ a:link {
 }
 
 .bright a:link {
-	color:rgb(60, 60, 160)
+	color:#0000a9
 }
 
 .pink a:link {
@@ -242,7 +242,7 @@ a:visited {
 }
 
 .bright a:visited {
-	color:rgb(40, 40, 140)
+	color:rgb(0, 0, 66)
 }
 
 .pink a:visited {
@@ -844,7 +844,7 @@ textarea.multi-line {
 }
 
 .bright .reco {
-	border-color:black;
+	border-color:#d3d3d3;
 	background:rgb(230, 230, 230)
 }
 
@@ -934,14 +934,23 @@ textarea.multi-line {
 
 .reco>.cats>a {
 	cursor:pointer;
-	color:rgb(130, 170, 130)
+	color:#82aa82
 }
 
 .reco>.cats>a.currentCat {
 	pointer-events:none;
-	color:rgb(140, 180, 140);
+	color:#8cb48c;
 	font-weight:bold;
 	text-decoration:none
+}
+
+.bright .reco>.cats>a {
+	cursor:pointer;
+	color:#016101
+}
+
+.bright .reco>.cats>a.currentCat {
+	color:#027102;
 }
 
 .reco>.desc {
@@ -1014,6 +1023,10 @@ textarea.multi-line {
 	fill:rgb(50, 50, 50);
 	stroke-width:0;
 	fill-rule:evenodd
+}
+
+.bright .stars-container>svg.out-stars>polygon {
+	fill:#c9c5c5
 }
 
 .reco>.val {
