@@ -434,6 +434,10 @@ a.seekTo {
 	color:white
 }
 
+.bright .fs-name {
+	color:black
+}
+
 .fs-input {
 	display:inherit;
 	height:2em;
