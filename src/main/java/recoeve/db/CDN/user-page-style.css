@@ -248,30 +248,6 @@
 	height:2.3em;
 }
 
-.button.button-sort {
-	background-color:#ae51c5
-}
-
-#sort-list {
-	position:absolute;
-	z-index:5000
-}
-
-#sort-list .button {
-	display:table;
-	min-width:max-content;
-	width:100%;
-	margin:0
-}
-
-#sort-list .button:nth-child(odd) {
-	background:#653c6f
-}
-
-#sort-list .button:nth-child(even) {
-	background:#ae51c5
-}
-
 #memo-container {
 	z-index:20000;
 	font-size:1.8em;
@@ -433,6 +409,46 @@
 	color:white
 }
 
+#sort-list {
+	position:absolute;
+	z-index:5000
+}
+
+#sort-list .button {
+	display:table;
+	min-width:max-content;
+	width:100%;
+	margin:0
+}
+
+#sort-list .button:nth-child(odd) {
+	background:#653c6f
+}
+
+.button-sort,
+#sort-list .button:nth-child(even) {
+	background:#ae51c5
+}
+
+.bright #sort-list .button:nth-child(odd) {
+	background-color:#e371ff
+}
+
+.bright .button-sort,
+.bright #sort-list .button:nth-child(even) {
+	background-color:#d17fe5
+}
+
+.button-loop,
+.button-one-loop {
+	background-color:#9b993a
+}
+
+.bright .button-loop,
+.bright .button-one-loop {
+	background-color:#dddb6d
+}
+
 .button-mode,
 .pink .button-mode {
 	background:darkolivegreen
@@ -440,6 +456,11 @@
 
 .bright .button-mode {
 	background:#93be49;
+}
+
+.button-loop,
+.button-one-loop {
+	background-color:#9b993a
 }
 
 .button-Go,
