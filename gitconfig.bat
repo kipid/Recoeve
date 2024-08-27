@@ -35,7 +35,7 @@ git remote set-url origin https://kipid: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
 git pull
 
 cd C:/RecoeveNet/
-git remote set-url origin https://kipid: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@github.com/kipid/Recoeve.git
+git remote set-url origin https://kipid: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@github.com/kipid/RecoeveNet.git
 git pull
 
 :: Back to current directory
