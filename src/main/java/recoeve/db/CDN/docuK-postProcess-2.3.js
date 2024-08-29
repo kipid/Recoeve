@@ -590,11 +590,10 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 				for (let i = 0; i < contents.length; i++) {
 					let content = contents[i];
 					if (content.nodeType === Node.TEXT_NODE) {
-						content = String(content);
 						let codeStarted = false;
 						let innerContents = "";
 						let emmet = "";
-						if (content.test(/^```/)) {
+						if (/^```/.test(content)) {
 							codeStarted = true;
 							let codeEnded = false;
 							emmet = content.substring(3);
