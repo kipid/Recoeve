@@ -590,6 +590,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 				for (let i = 0; i < contents.length; i++) {
 					let content = contents[i];
 					if (content.nodeType === Node.TEXT_NODE) {
+						content = content.data;
 						let codeStarted = false;
 						let innerContents = "";
 						let emmet = "";
