@@ -15,7 +15,6 @@
 		$SEEi.html("");
 		$SEEi.after(m.renderToDocuK(SEEHTMLi));
 	}
-	$("pre.prettyprint.scrollable").addClass("linenums");
 
 	m.$docuK = $(".docuK");
 
@@ -99,7 +98,7 @@
 	$button_log = $(".button-log");
 
 	// Scripts will be appended on this.
-	window.$headOrBody = $("head") || $("body") || $("#docuK-style");
+	m.$headOrBody = $("head") || $("body") || $("#docuK-style");
 
 	window.onpopstate = function (e) {
 		if (!!e.state) {
@@ -152,7 +151,7 @@
 <div class="button button-Go" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyG'})">
 	<span class="bold underline">G</span>o (FS)
 </div>
-<div class="button darkgoldenrod" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyT'})">
+<div class="button button-ToR" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyT'})">
 	<span class="bold underline">T</span>ofC
 </div>
 <div class="button button-log" onclick="k.$window.trigger({type:'keydown', code:'KeyK'})">
@@ -167,7 +166,7 @@
 <div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyR'})">
 	<span class="bold underline">R</span>RA
 </div>
-<div class="button" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyL'})">
+<div class="button button-list" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyL'})">
 	<span class="bold underline">L</span>ists
 </div>
 <div class="button darkgoldenrod" style="width:4.5em; border-right:none" onclick="k.$window.trigger({type:'keydown', code:'KeyZ'})">
@@ -176,7 +175,7 @@
 <div class="button darkgoldenrod" style="width:4.5em" onclick="k.$window.trigger({type:'keydown', code:'KeyX'})">
 	Cmt<span class="bold underline">X</span>
 </div>
-<div class="button" onclick="k.$window.trigger({type:'keydown', code:'KeyN'})">
+<div class="button button-cmt-handle" onclick="k.$window.trigger({type:'keydown', code:'KeyN'})">
 	Ha<span class="bold underline">n</span>dle CmtZ
 </div>
 ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick="k.$window.trigger({type:'keydown', code:'KeyI'})">
@@ -257,7 +256,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 				$disqus_thread = $("#disqus_thread");
 			}
 			let $disqus_js = $(`<script id="disqus-js" defer src="https://kipid.disqus.com/embed.js" data-timestamp="${new Date()}"></` + `script>`); // Avoid closing script
-			$headOrBody.append($disqus_js);
+			m.$headOrBody.append($disqus_js);
 			m.logPrint(`<br><br>disqus.js with id="disqus-js" is loaded.`);
 
 			m.myIPs = ["14.38.247.30", "175.212.158.53"];
@@ -384,7 +383,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 		m.kakao_js_id = 'kakao-jssdk';
 		if (!$(`#${m.kakao_js_id}`)) {
 			let $kakao_js = $(`<script id="${m.kakao_js_id}" src="https://developers.kakao.com/sdk/js/kakao.js"></` + `script>`); // Avoid closing script
-			$headOrBody.append($kakao_js);
+			m.$headOrBody.append($kakao_js);
 		}
 		m.logPrint(`<br><br>kakao.js with id="${m.kakao_js_id}" is loaded.`);
 		m.kakaoInitDo = function () {
@@ -415,55 +414,6 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			});
 		};
 
-		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-		if (m.$docuK.find('.prettyprint').length) {
-			let $gcp = $(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
-			$headOrBody.append($gcp);
-			m.logPrint(`<br><br>Google code prettyfy.js is loaded since ".prettyprint" is there in your document.`);
-		}
-
-		// MathJax js script (from cdn.mathjax.org) is added.
-		if (m.$docuK.find('eq, eqq').length) {
-			let $mjxConfig = $(`<script>
-window.MathJax={
-	startup: {
-		typeset: false, // Skip startup typeset.
-		ready: function () {
-			m.logPrint('<br><br>MathJax is loaded, but not yet initialized.');
-			MathJax.startup.defaultReady();
-			m.logPrint('<br><br>MathJax is initialized, and the initial typeset is queued.');
-		}
-	},
-	asciimath: {
-		delimiters: [['$','$']] // AsciiMath to Jax
-	},
-	tex: {
-		inlineMath: [['$','$'], ['\\\\(','\\\\)']], // Using $ for inline math.
-		displayMath: [['$$','$$'], ['\\\\[','\\\\]']], // Using $$ for outline math.
-		processEscapes: true, // Escape \\$
-		processEnvironments: false // Ignore \\begin{something} ... \\end{something}
-	},
-	svg: {
-		fontCache: 'global'
-	}
-};
-</`+ `script>`); // Avoid closing script
-			$headOrBody.append($mjxConfig);
-			let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
-			$headOrBody.append($mjx);
-			m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
-			// MathJax PreProcess after the above MathJax.js is loaded.
-			m.mathJaxPreProcessDo = function () {
-				if (MathJax.startup !== undefined && MathJax.typeset) {
-					MathJax.typeset();
-				}
-				else {
-					setTimeout(m.mathJaxPreProcessDo, 2048);
-				}
-			};
-			m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
-		}
-
 		// ShortKeys (including default 'processShortcut(event)' of tistory.)
 		m.$fdList = $("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer"); // Ordered automatically by jQuery.
 		m.tocs = $(".docuK>.sec").has(".toc");
@@ -478,6 +428,9 @@ window.MathJax={
 			let scrollTop = null;
 			let i, k;
 			switch (event.code) {
+				case 'KeyQ': // To manage
+					window.location.href = "/manage";
+					break;
 				case 'KeyA': // Toggle a mess
 					$(".toggle-a-mess").eq(0).trigger("click");
 					break;
@@ -485,7 +438,6 @@ window.MathJax={
 					m.toggleFK();
 					break;
 				case 'KeyG':
-					event.preventDefault();
 					if ($fuzzy_search_container.is(":visible")) {
 						$fuzzy_search_container.hide();
 						$out_focus.focus();
@@ -502,7 +454,6 @@ window.MathJax={
 					}
 					break;
 				case 'KeyK':
-					event.preventDefault();
 					if (m.$log.is(":visible")) {
 						m.$logAll.hide();
 						$out_focus.focus();
@@ -639,8 +590,46 @@ window.MathJax={
 				for (let i = 0; i < contents.length; i++) {
 					let content = contents[i];
 					if (content.nodeType === Node.TEXT_NODE) {
-						elemHTML += await processTextNode(content);
-					} else {
+						let codeStarted = false;
+						let innerContents = "";
+						let emmet = "";
+						if (content.test(/^```(?!\/)/)) {
+							codeStarted = true;
+							let codeEnded = false;
+							emmet = content.substring(3);
+							i++;
+							while (i < contents.length) {
+								let nextContent = contents[i];
+								codeEnded = nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContent);
+								while (!codeEnded) {
+									if (nextContent.nodeType === Node.TEXT_NODE) {
+										innerContents += await processTextNode(nextContent);
+									}
+									else {
+										innerContents += nextContent.outerHTML;
+									}
+									i++;
+									if (i === contents.length) {
+										break;
+									}
+									nextContent = contents[i];
+								}
+								if (codeEnded) {
+									innerContents = innerContents.substring(0, innerContents.length - 4)
+								}
+							}
+						}
+						if (codeStarted) {
+							emmet = m.getEmmetFromHead(emmet);
+							let classes = m.getClassesFromEmmet(emmet);
+							let elemId = m.getIdFromEmmet(emmet);
+							elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${innerContents.replace(/\<br(?:\s*\/?)\>/gi, "\n")}</pre>`;
+						}
+						else {
+							elemHTML += await processTextNode(content);
+						}
+					}
+					else {
 						elemHTML += content.outerHTML;
 					}
 				}
@@ -652,7 +641,6 @@ window.MathJax={
 				for (let k = 0; k < $ps.length; k++) {
 					await processElement($ps.eq(k));
 				}
-				m.reNewAndReOn();
 			}
 
 			processAllElements();
@@ -664,6 +652,7 @@ window.MathJax={
 			$("#menubar_wrapper").parents().show();
 		});
 
+		m.handleAhrefInComment();
 		m.reNewAndReOn = function () {
 			m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
 			m.$window.off("scroll.delayedLoad");
@@ -671,7 +660,55 @@ window.MathJax={
 			m.$window.trigger("scroll.delayedLoad");
 			m.$fdList = $("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer");
 		};
-		m.handleAhrefInComment();
+
+		// MathJax js script (from cdn.mathjax.org) is added.
+		let $mjxConfig = $(`<script>
+window.MathJax={
+	startup: {
+		typeset: false, // Skip startup typeset.
+		ready: function () {
+			m.logPrint('<br><br>MathJax is loaded, but not yet initialized.');
+			MathJax.startup.defaultReady();
+			m.logPrint('<br><br>MathJax is initialized, and the initial typeset is queued.');
+		}
+	},
+	asciimath: {
+		delimiters: [['$','$']] // AsciiMath to Jax
+	},
+	tex: {
+		inlineMath: [['$','$'], ['\\\\(','\\\\)']], // Using $ for inline math.
+		displayMath: [['$$','$$'], ['\\\\[','\\\\]']], // Using $$ for outline math.
+		processEscapes: true, // Escape \\$
+		processEnvironments: false // Ignore \\begin{something} ... \\end{something}
+	},
+	svg: {
+		fontCache: 'global'
+	}
+};
+</`+ `script>`); // Avoid closing script
+		m.$headOrBody.append($mjxConfig);
+		let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
+		m.$headOrBody.append($mjx);
+		m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
+		// MathJax PreProcess after the above MathJax.js is loaded.
+		m.mathJaxPreProcessDo = function () {
+			if (MathJax.startup !== undefined && MathJax.typeset) {
+				MathJax.typeset();
+			}
+			else {
+				setTimeout(m.mathJaxPreProcessDo, 2048);
+			}
+		};
+		m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
+
+		$("pre.prettyprint.scrollable").addClass("linenums");
+		// Scrollable switching of 'pre.prettyprint'.
+		$("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
+		m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
+		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
+		let $gcp = $(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
+		m.$headOrBody.append($gcp);
+		m.logPrint(`<br><br>Google code prettyfy.js is loaded.`);
 
 		// Closing docuK Log.
 		m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
