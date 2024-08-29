@@ -1569,6 +1569,10 @@ code .dec {
 	min-height:100px
 }
 
+div.comments form div.comment-form textarea {
+	resize:vertical
+}
+
 #disqus_thread {
 	background-color:black;
 	padding:.2em .5em
