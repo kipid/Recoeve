@@ -1597,7 +1597,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		let docuOn = false, secOn = false, subsecOn = false, subsubsecOn = false;
 		let str = '';
 
-		m.closeSec = function (hN) {
+		function closeSec(hN) {
 			switch (hN) {
 				case 1: if (docuOn) { str += '</div>'; docuOn = false; }
 				case 2: if (secOn) { str += '</div>'; secOn = false; }
@@ -1612,7 +1612,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 
 			if (hN = /^#+(?![#\/])/.exec(ps[i])) {
 				untilEnter.lastIndex = hN = hN[0].length;
-				m.closeSec(hN);
+				closeSec(hN);
 				headTotal = untilEnter.exec(ps[i]);
 				emmet = m.getEmmetFromHead(headTotal[0]);
 				head = headTotal[0].trim();
@@ -1671,7 +1671,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 			}
 			else if (hN = /^#+(?=\/)/.exec(ps[i])) {
 				hN = hN[0].length;
-				m.closeSec(hN);
+				closeSec(hN);
 				continue; // Text after '#/' is ignored. Use '#####/' for comment.
 			}
 
@@ -1701,7 +1701,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				}
 			}
 		}
-		m.closeSec(1);
+		closeSec(1);
 
 		return str;
 	};
