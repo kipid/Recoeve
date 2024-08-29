@@ -567,19 +567,19 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			let $ps = $(".comments .comment-list li p");
 
 			async function processTextNode(textNode) {
-				let contentsText = textNode.wholeText;
+				let contentText = textNode.wholeText;
 				let start = 0;
 				let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\[\]]+/ig;
 				let exec = null;
 				let resultHTML = "";
 
-				while ((exec = ptnURL.exec(contentsText)) !== null) {
-					resultHTML += contentsText.substring(start, exec.index).replace(/(?:  |\t)/g, "&nbsp; ");
+				while ((exec = ptnURL.exec(contentText)) !== null) {
+					resultHTML += contentText.substring(start, exec.index).replace(/(?:  |\t)/g, "&nbsp; ");
 					let uri = exec[0];
 					start = exec.index + uri.length;
 					resultHTML += String(await relatedRendering(uri)).replace(/(?:  |\t)/g, "&nbsp; ");
 				}
-				resultHTML += contentsText.substring(start).replace(/(?:  |\t)/g, "&nbsp; ");
+				resultHTML += contentText.substring(start).replace(/(?:  |\t)/g, "&nbsp; ");
 				return resultHTML;
 			}
 
@@ -590,18 +590,19 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 				for (let i = 0; i < contents.length; i++) {
 					let content = contents[i];
 					if (content.nodeType === Node.TEXT_NODE) {
-						content = content.data;
+						let contentText = content.wholeText;
 						let codeStarted = false;
 						let innerContents = "";
 						let emmet = "";
-						if (/^```/.test(content)) {
+						if (/^```/.test(contentText)) {
 							codeStarted = true;
 							let codeEnded = false;
-							emmet = content.substring(3);
+							emmet = contentText.substring(3);
 							i++;
 							while (i < contents.length) {
 								let nextContent = contents[i];
-								codeEnded = nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContent);
+								let nextContentText = nextContent.wholeText;
+								codeEnded = nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText);
 								while (!codeEnded) {
 									if (nextContent.nodeType === Node.TEXT_NODE) {
 										innerContents += await processTextNode(nextContent);
