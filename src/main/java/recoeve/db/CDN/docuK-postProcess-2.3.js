@@ -1,5 +1,5 @@
 (function (m, $, undefined) {
-	m.version1 = ".14";
+	m.version1 = ".15";
 	// SEE (Super Easy Edit)
 	let $SEE = $("codeprint.SEE");
 	m.SEEHTMLs = m.SEEHTMLs || [];
@@ -35,7 +35,7 @@
 	for (let i = 0; i < $eqqs.length; i++) {
 		$eqqs.eq(i).html(function (ith, orgTxt) { return "\\[ " + orgTxt.trim() + " \\]"; });
 	}
-	m.logPrint(`<br><br>&lt;eq&gt; and &lt;eqq&gt; tags are rendered to MathJax format, being enclosed by \\ ( and \\ ).`);
+	m.logPrint(`<br><br>&lt;eq&gt; and &lt;eqq&gt; tags are rendered to MathJax format, being enclosed by \\ ( \\ ) and \\ [ \\ ].`);
 
 	// docuK process.
 	m.$docuK.has("script").addClass("noDIdHandle");
@@ -695,7 +695,7 @@ window.MathJax={
 			m.$headOrBody.append($mjxConfig);
 			let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
 			m.$headOrBody.append($mjx);
-			m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
+			m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded.`);
 			// MathJax PreProcess after the above MathJax.js is loaded.
 			m.mathJaxPreProcessDo = function () {
 				if (MathJax.startup !== undefined && MathJax.typeset) {
