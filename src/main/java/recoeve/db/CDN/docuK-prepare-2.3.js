@@ -1,6 +1,6 @@
-window.m = window.k = {};
+window.m = window.k = {}; // window.m can be asigned another JSON or number/string and so on. But window.k must be kept.
 (function (m, $, undefined) {
-	m.version0 = "2.11";
+	m.version0 = "2.12";
 	m.$window = $(window);
 	m.$document = $(document);
 	m.$html = $("html");
