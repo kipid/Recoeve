@@ -593,7 +593,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 						let codeStarted = false;
 						let innerContents = "";
 						let emmet = "";
-						if (content.test(/^```(?!\/)?/)) {
+						if (content.test(/^```/)) {
 							codeStarted = true;
 							let codeEnded = false;
 							emmet = content.substring(3);
