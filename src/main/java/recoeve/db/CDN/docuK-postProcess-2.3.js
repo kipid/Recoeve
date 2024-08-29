@@ -601,8 +601,9 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 							i++;
 							while (i < contents.length) {
 								let nextContent = contents[i];
-								let nextContentText = "";
-								while (!(codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText = nextContent.wholeText)))) {
+								let nextContentText = nextContent.wholeText;
+								codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText));
+								while (!codeEnded) {
 									if (nextContent.nodeType === Node.TEXT_NODE) {
 										innerContents += await processTextNode(nextContent);
 									}
@@ -614,6 +615,8 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 										break;
 									}
 									nextContent = contents[i];
+									nextContentText = nextContent.wholeText;
+									codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText));
 								}
 								if (codeEnded) {
 									innerContents = innerContents.substring(0, innerContents.length - 4)
