@@ -830,13 +830,13 @@ window.m = window.k = {}; // window.m can be asigned another JSON or number/stri
 	};
 
 	m.toggleFK = function () {
-		if ($floating_key.is(":visible")) {
+		if (m.$floating_key.is(":visible")) {
 			m.docCookies.setItem("hideFK", "y", Infinity, "/", false, true);
 		}
 		else {
 			m.docCookies.removeItem("hideFK", "/", false, true);
 		}
-		$floating_key.toggle();
+		m.$floating_key.toggle();
 	};
 
 	m.promoting = function (id) {
@@ -1864,7 +1864,7 @@ document.referrer: ${referrerHTML}`
 		m.CfontFamily(m.defaultStyles.fontFamily);
 		m.CfontSize(m.defaultStyles.fontSize - m.fontSize);
 		m.ClineHeight(m.defaultStyles.lineHeight10 - m.lineHeight10);
-		if (!$floating_key.is(":visible")) {
+		if (!m.$floating_key.is(":visible")) {
 			m.toggleFK();
 		}
 	}
