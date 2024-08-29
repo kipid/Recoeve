@@ -1507,7 +1507,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 					subStr = SEE.substring(start, end).trim();
 				}
 			}
-			else if (/^```(?!\/)/.test(subStr)) {
+			else if (/^```/.test(subStr)) {
 				while (!/```\/$/.test(subStr)) {
 					re = dE.exec(SEE);
 					end = dE.lastIndex;
