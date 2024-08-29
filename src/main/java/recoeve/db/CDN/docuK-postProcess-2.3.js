@@ -425,6 +425,8 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			switch (event.target && event.target.nodeName) {
 				case "INPUT": case "SELECT": case "TEXTAREA": return;
 			}
+			event.preventDefault();
+			event.stopPropagation();
 			let scrollTop = null;
 			let i, k;
 			switch (event.code) {
@@ -583,7 +585,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 				return resultHTML;
 			}
 
-			async function processElement($elem) {
+			m.processElement = async function ($elem) {
 				let contents = $elem.contents();
 				let elemHTML = "";
 
@@ -627,7 +629,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 							emmet = m.getEmmetFromHead(emmet);
 							let classes = m.getClassesFromEmmet(emmet);
 							let elemId = m.getIdFromEmmet(emmet);
-							elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${innerContents.replace(/\<br(?:\s*\/?)\>/gi, "")}</pre>`;
+							elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${m.escapeOnlyTag(innerContents.replace(/\<br\s*\/?\>/gi, "").trim())}</pre>`;
 						}
 						else {
 							elemHTML += await processTextNode(content);
@@ -638,16 +640,16 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 					}
 				}
 
-				$elem.html(elemHTML);
+				$elem.html(elemHTML.trim());
 			}
 
-			async function processAllElements() {
+			m.processAllElements = async function () {
 				for (let k = 0; k < $ps.length; k++) {
-					await processElement($ps.eq(k));
+					await m.processElement($ps.eq(k));
 				}
 			}
 
-			processAllElements();
+			m.processAllElements();
 		};
 
 
@@ -656,7 +658,6 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			$("#menubar_wrapper").parents().show();
 		});
 
-		m.handleAhrefInComment();
 		m.reNewAndReOn = function () {
 			m.$delayedElems = $("[delayed-src], [delayed-bgimage], .to-be-executed");
 			m.$window.off("scroll.delayedLoad");
@@ -664,9 +665,13 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 			m.$window.trigger("scroll.delayedLoad");
 			m.$fdList = $("#header, #shortkey, .promoting, .change-docuK-style, #content, #container, #wrapContent, .docuK .sec>h1, .docuK .sec>h2, .docuK .subsec>h3, .docuK .subsubsec>h4, .comments, .comments>.comment-list>ul>li, #disqus_thread, #aside, #page-views-chart, #chartdiv, #recentComments, #tistorySidebarProfileLayer");
 		};
+		m.handleAhrefInComment();
 
-		// MathJax js script (from cdn.mathjax.org) is added.
-		let $mjxConfig = $(`<script>
+		setTimeout(function () {
+			m.handleAhrefInComment();
+
+			// MathJax js script (from cdn.mathjax.org) is added.
+			let $mjxConfig = $(`<script>
 window.MathJax={
 	startup: {
 		typeset: false, // Skip startup typeset.
@@ -687,36 +692,40 @@ window.MathJax={
 	}
 };
 </`+ `script>`); // Avoid closing script
-		m.$headOrBody.append($mjxConfig);
-		let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
-		m.$headOrBody.append($mjx);
-		m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
-		// MathJax PreProcess after the above MathJax.js is loaded.
-		m.mathJaxPreProcessDo = function () {
-			if (MathJax.startup !== undefined && MathJax.typeset) {
-				MathJax.typeset();
-			}
-			else {
-				setTimeout(m.mathJaxPreProcessDo, 2048);
-			}
-		};
-		m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
+			m.$headOrBody.append($mjxConfig);
+			let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
+			m.$headOrBody.append($mjx);
+			m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded since "&lt;eq&gt;, &lt;eqq&gt;" is there in your document.`);
+			// MathJax PreProcess after the above MathJax.js is loaded.
+			m.mathJaxPreProcessDo = function () {
+				if (MathJax.startup !== undefined && MathJax.typeset) {
+					MathJax.typeset();
+				}
+				else {
+					setTimeout(m.mathJaxPreProcessDo, 2048);
+				}
+			};
+			m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
 
-		$("pre.prettyprint.scrollable").addClass("linenums");
-		// Scrollable switching of 'pre.prettyprint'.
-		$("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
-		m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
-		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-		let $gcp = $(`<script id="prettyfy-js" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
-		m.$headOrBody.append($gcp);
-		m.logPrint(`<br><br>Google code prettyfy.js is loaded.`);
+			$("pre.prettyprint.scrollable").addClass("linenums");
+			// Scrollable switching of 'pre.prettyprint'.
+			$("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
+			m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
+			// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
+			let $gcp = $(`<script id="prettyfy-js" defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js" onload="PR.prettyPrint()"></` + `script>`); // Avoid closing script
 
-		// Closing docuK Log.
-		m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
-		m.$window.scrollTop($(window.location.hash)?.offset()?.top ?? m.$window.scrollTop());
-		setTimeout(function () {
-			m.$logAll.hide();
+			m.$headOrBody.append($gcp);
+			m.logPrint(`<br><br>Google code prettyfy.js is loaded.`);
+
+			// Closing docuK Log.
+			m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
 			m.$window.scrollTop($(window.location.hash)?.offset()?.top ?? m.$window.scrollTop());
+			setTimeout(function () {
+				m.$logAll.hide();
+				m.$window.scrollTop($(window.location.hash)?.offset()?.top ?? m.$window.scrollTop());
+			}, 2048);
+
+			m.reNewAndReOn();
 		}, 2048);
 	});
 })(window.k, jQuery);
