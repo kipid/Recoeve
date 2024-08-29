@@ -593,7 +593,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 						let codeStarted = false;
 						let innerContents = "";
 						let emmet = "";
-						if (content.test(/^```(?!\/)/)) {
+						if (content.test(/^```(?!\/)?/)) {
 							codeStarted = true;
 							let codeEnded = false;
 							emmet = content.substring(3);
@@ -672,12 +672,9 @@ window.MathJax={
 			m.logPrint('<br><br>MathJax is initialized, and the initial typeset is queued.');
 		}
 	},
-	asciimath: {
-		delimiters: [['$','$']] // AsciiMath to Jax
-	},
 	tex: {
-		inlineMath: [['$','$'], ['\\\\(','\\\\)']], // Using $ for inline math.
-		displayMath: [['$$','$$'], ['\\\\[','\\\\]']], // Using $$ for outline math.
+		inlineMath: [['\\\\(','\\\\)']], // Using $ for inline math.
+		displayMath: [['\\\\[','\\\\]']], // Using $$ for outline math.
 		processEscapes: true, // Escape \\$
 		processEnvironments: false // Ignore \\begin{something} ... \\end{something}
 	},
