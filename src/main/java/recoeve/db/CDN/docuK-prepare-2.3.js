@@ -2278,7 +2278,7 @@ document.referrer: ${referrerHTML}`
 			if ($secIH2 && $secIH2.length && !$secIH2.is(".notSec")) { // exclude ".sec>h1" and ".sec>h2.notSec" in ToC
 				hN = "2"; txt = $secIH2.html();
 				if ($secIH2.is(".no-sec-N") || $secI.is(".no-sec-N")) {
-					secPreTxt = secId = secITxt = ($secIH2.is("[id]")) ? $secIH2.attr('id').replace(/^sec-/i, '').replace(postIdRegEx, '') : `secPreTxt${docuKI}-${i}`;
+					secPreTxt = secId = secITxt = ($secIH2.is("[id]")) ? $secIH2.attr('id')?.replace(/^sec\-/i, '').replace(postIdRegEx, '') : `secPreTxt${docuKI}-${i}`;
 					tocHtml += fTocHtml(false);
 					$secIH2.html(fSecHtml(false));
 				}
