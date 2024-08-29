@@ -140,6 +140,32 @@ codeprint.SEE {
 	height:auto
 }
 
+.button {
+	display:inline-block;
+	cursor:pointer;
+	margin:0;
+	padding:.2em .5em;
+	border:2px solid rgb(50, 50, 50);
+	background-color:rgb(110, 110, 110)
+}
+
+.button-log {
+	background-color:black;
+	color:wheat
+}
+
+.button:active {
+	background-color:rgb(0, 80, 80)
+}
+
+.button.enabled {
+	background-color:rgb(50, 140, 80)
+}
+
+.button.enabled:active {
+	background-color:rgb(70, 70, 70)
+}
+
 #floating-key div.button {
 	cursor:pointer;
 	border-top:none;
@@ -155,22 +181,35 @@ codeprint.SEE {
 	border-top:2px solid rgb(50, 50, 50)
 }
 
-.button.darkred {
+.toggle-a-mess {
+	background-color:rgb(200, 240, 200);
+	color:#717171
+}
+
+.darkred {
 	background-color:darkred
 }
 
-.button.cadetblue {
+.cadetblue {
 	background-color:cadetblue
 }
 
-.button.darkgoldenrod,
-.bight .button.darkgoldenrod {
+.darkgoldenrod,
+.bight .darkgoldenrod {
 	background-color:darkgoldenrod
 }
 
 .button-Go,
-.button.button-Go {
+.button-ToR {
 	background-color:cornflowerblue
+}
+
+.button-list {
+	background-color:#0f5796
+}
+
+.button-cmt-handle {
+	background-color:#d95e05
 }
 
 #SNS-floating {
@@ -726,28 +765,6 @@ textarea.multi-line {
 	color:rgb(150, 150, 0)
 }
 
-.button {
-	display:inline-block;
-	cursor:pointer;
-	margin:0;
-	padding:.2em .5em;
-	border:2px solid rgb(50, 50, 50);
-	background-color:rgb(110, 110, 110)
-}
-
-.button-log {
-	background-color:black;
-	color:wheat
-}
-
-.button:active {
-	background-color:rgb(0, 80, 80)
-}
-
-.button.enabled {
-	background-color:rgb(50, 140, 80)
-}
-
 .docuK .change-docuK-style form button.enabled {
 	background-color:rgb(50, 140, 80);
 	border:2px solid #a37070
@@ -756,10 +773,6 @@ textarea.multi-line {
 .docuK.bright .change-docuK-style form button.enabled {
 	background-color:rgb(120, 210, 150);
 	border:2px solid #f3a0a0
-}
-
-.button.enabled:active {
-	background-color:rgb(70, 70, 70)
 }
 
 .docuK a.tJump {
