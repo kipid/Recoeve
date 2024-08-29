@@ -601,9 +601,8 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 							i++;
 							while (i < contents.length) {
 								let nextContent = contents[i];
-								let nextContentText = nextContent.wholeText;
-								codeEnded = nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText);
-								while (!codeEnded) {
+								let nextContentText = "";
+								while (!(codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText = nextContent.wholeText)))) {
 									if (nextContent.nodeType === Node.TEXT_NODE) {
 										innerContents += await processTextNode(nextContent);
 									}
@@ -625,7 +624,7 @@ ${m.docCookies.hasItem("REACTION_GUEST") ? `<div class="button darkred" onclick=
 							emmet = m.getEmmetFromHead(emmet);
 							let classes = m.getClassesFromEmmet(emmet);
 							let elemId = m.getIdFromEmmet(emmet);
-							elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${innerContents.replace(/\<br(?:\s*\/?)\>/gi, "\n")}</pre>`;
+							elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${innerContents.replace(/\<br(?:\s*\/?)\>/gi, "")}</pre>`;
 						}
 						else {
 							elemHTML += await processTextNode(content);
