@@ -846,7 +846,7 @@ window.m = window.k = {};
 		else {
 			m.recoCat = "[Music/Break]--K-Pop";
 		}
-		return `<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+		return `<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="promoting order"${id ? ` id="${id}"` : ""}>
 <div class="p">* 홍보/Promoting <span style="color:rgb(255,180,180)">Reco</span><span style="color:rgb(100,100,255)">eve</span>.net (3S | Slow/Sexy/Sincere SNS)</div>
@@ -1507,7 +1507,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 					subStr = SEE.substring(start, end).trim();
 				}
 			}
-			else if (/^```/.test(subStr)) {
+			else if (/^```(?!\/)/.test(subStr)) {
 				while (!/```\/$/.test(subStr)) {
 					re = dE.exec(SEE);
 					end = dE.lastIndex;
@@ -1558,6 +1558,29 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		return ps;
 	};
 
+	m.getEmmetFromHead = function (head) {
+		const exec = /^\[([^\s\t\n\]]+?)\]/.exec(head);
+		if (exec) {
+			return exec[1];
+		}
+	};
+	m.getClassesFromEmmet = function (str) {
+		const rexClasses = /\.([\w\:\-]+)/g;
+		let classes = "";
+		let res;
+		while (res = rexClasses.exec(str)) {
+			classes += res[1] + " ";
+		}
+		return classes.trim();
+	};
+	m.getIdFromEmmet = function (str) {
+		let res = /#([\w\:\-]+)/.exec(str);
+		if (res) {
+			return res[1];
+		}
+		return "";
+	};
+
 	m.renderToDocuK = function (toBeRendered) {
 		const ps = m.SEEToArray(toBeRendered);
 
@@ -1574,7 +1597,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		let docuOn = false, secOn = false, subsecOn = false, subsubsecOn = false;
 		let str = '';
 
-		function closeSec(hN) {
+		m.closeSec = function (hN) {
 			switch (hN) {
 				case 1: if (docuOn) { str += '</div>'; docuOn = false; }
 				case 2: if (secOn) { str += '</div>'; secOn = false; }
@@ -1583,43 +1606,21 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				default:
 			}
 		}
-		function getEmmetFromHead(head) {
-			const exec = /^\[([^\s\t\n\]]+?)\]/.exec(head);
-			if (exec) {
-				return exec[1];
-			}
-		}
-		function getClassesFromEmmet(str) {
-			const rexClasses = /\.([\w\:\-]+)/g;
-			let classes = "";
-			let res;
-			while (res = rexClasses.exec(str)) {
-				classes += res[1] + " ";
-			}
-			return classes.trim();
-		}
-		function getIdFromEmmet(str) {
-			let res = /#([\w\:\-]+)/.exec(str);
-			if (res) {
-				return res[1];
-			}
-			return "";
-		}
 
 		for (let i = 0; i < ps.length; i++) {
 			ps[i] = ps[i].trim();
 
 			if (hN = /^#+(?![#\/])/.exec(ps[i])) {
 				untilEnter.lastIndex = hN = hN[0].length;
-				closeSec(hN);
+				m.closeSec(hN);
 				headTotal = untilEnter.exec(ps[i]);
-				emmet = getEmmetFromHead(headTotal[0]);
+				emmet = m.getEmmetFromHead(headTotal[0]);
 				head = headTotal[0].trim();
 				classes = elemId = "";
 				if (emmet) {
 					head = headTotal[0].substring(emmet.length + 2).trim();
-					classes = getClassesFromEmmet(emmet);
-					elemId = getIdFromEmmet(emmet);
+					classes = m.getClassesFromEmmet(emmet);
+					elemId = m.getIdFromEmmet(emmet);
 					if (classes) {
 						classes = ` ${classes}`;
 					}
@@ -1670,7 +1671,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 			}
 			else if (hN = /^#+(?=\/)/.exec(ps[i])) {
 				hN = hN[0].length;
-				closeSec(hN);
+				m.closeSec(hN);
 				continue; // Text after '#/' is ignored. Use '#####/' for comment.
 			}
 
@@ -1680,12 +1681,12 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				}
 				else if (/^```/.test(ps[i])) {
 					ps[i] = ps[i].replace(/^```/, '').replace(/```\/$/, '');
-					emmet = getEmmetFromHead(ps[i]);
+					emmet = m.getEmmetFromHead(ps[i]);
 					classes = elemId = "";
 					if (emmet) {
 						ps[i] = ps[i].substring(emmet.length + 2).trim();
-						classes = getClassesFromEmmet(emmet);
-						elemId = getIdFromEmmet(emmet);
+						classes = m.getClassesFromEmmet(emmet);
+						elemId = m.getIdFromEmmet(emmet);
 						if (classes) {
 							classes = ` ${classes}`;
 						}
@@ -1700,7 +1701,7 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				}
 			}
 		}
-		closeSec(1);
+		m.closeSec(1);
 
 		return str;
 	};
@@ -1781,10 +1782,8 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 		let next = $(obj).next();
 		let toBeScrolledBy = 0;
 		let windowScrollTop = m.$window.scrollTop();
-		// (window.pageYOffset!==undefined)?window.pageYOffset:(document.documentElement||document.body.parentNode||document.body).scrollTop
 		let nOffsetTop = next.offset().top;
 		let nHeight = next.height();
-		// m.resultTest.append("before:\twindowScrollTop: "+windowScrollTop+";\tnOffsetTop: "+nOffsetTop+";\tnHeight: "+nHeight+"\n");
 
 		if (next.is(".scrollable")) { // becomes expanded.
 			toBeScrolledBy = next.scrollTop();
@@ -1806,8 +1805,6 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 				next[0].scrollTop = toBeScrolledBy;
 			}
 		}
-		// m.resultTest.append("after : \twindowScrollTop: "+m.$window.scrollTop()+";\tnOffsetTop: "+next.offset().top+";\tnHeight: "+next.height()+"\n\n");
-		// m.resultTest[0].scrollTop=m.resultTest[0].scrollHeight;
 	};
 
 	// section's show/hide functions
@@ -2183,7 +2180,7 @@ document.referrer: ${referrerHTML}`
 
 		if (!m.printMode) {
 			// Copyright and Short Keys announcement.
-			$sDocuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+			$sDocuK.before(`<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>
 <div class="copyright order"><ul>
 	<li class="license cc"><span class="bold">Creative Commons</span></li>
@@ -2194,23 +2191,23 @@ document.referrer: ${referrerHTML}`
 <div id="shortkey" class="shortkey bcf order">
 	Short Keys
 	<ul class="ul-short-key">
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyA'})">Toggle <span class="bold underline">a</span> mess</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyG'})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
+		<li class="toggle-a-mess" style="color:#717171 !important"><span onclick="k.$window.trigger({type:'keydown', code:'KeyA'})">Toggle <span class="bold underline">a</span> mess</span></li>
+		<li class="button-Go"><span onclick="k.$window.trigger({type:'keydown', code:'KeyG'})"><span class="bold underline">G</span>: <span class="bold underline">G</span>o (Fuzzy Search).</span></li>
+		<li class="button-ToR"><span onclick="k.$window.trigger({type:'keydown', code:'KeyT'})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
 		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyK'})"><span class="bold underline">K</span>: Docu<span class="bold underline">K</span> Log.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyF'})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyD'})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyT'})"><span class="bold underline">T</span>: <span class="bold underline">T</span>able of Contents.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyR'})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
+		<li class="darkgoldenrod"><span onclick="k.$window.trigger({type:'keydown', code:'KeyF'})"><span class="bold underline">F</span>: <span class="bold underline">F</span>orward Section.</span></li>
+		<li class="darkgoldenrod"><span onclick="k.$window.trigger({type:'keydown', code:'KeyD'})"><span class="bold underline">D</span>: Backwar<span class="bold underline">d</span> Section.</span></li>
+		<li class="darkgoldenrod"><span onclick="k.$window.trigger({type:'keydown', code:'KeyR'})"><span class="bold underline">R</span>: <span class="bold underline">R</span>eferences.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyN'})"><span class="bold underline">N</span>: Ha<span class="bold underline">n</span>dle URI links in Tistory comments.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
+		<li class="button-list"><span onclick="k.$window.trigger({type:'keydown', code:'KeyL'})"><span class="bold underline">L</span>: To 전체목록/[<span class="bold underline">L</span>ists].</span></li>
+		<li class="darkgoldenrod"><span onclick="k.$window.trigger({type:'keydown', code:'KeyZ'})"><span class="bold underline">Z</span>: Tistory comments.</span></li>
+		<li class="darkgoldenrod"><span onclick="k.$window.trigger({type:'keydown', code:'KeyX'})"><span class="bold underline">X</span>: DISQUS comments.</span></li>
+		<li class="button-cmt-handle"><span onclick="k.$window.trigger({type:'keydown', code:'KeyN'})"><span class="bold underline">N</span>: Ha<span class="bold underline">n</span>dle URI links in Tistory comments.</span></li>
 	</ul>
 	<ul class="ul-short-key">
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyI'})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
-		<li><span onclick="k.$window.trigger({type:'keydown', code:'KeyO'})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
+		<li class="darkred"><span onclick="k.$window.trigger({type:'keydown', code:'KeyI'})"><span class="bold underline">I</span>: Log <span class="bold underline">i</span>n to Tistory.</span></li>
+		<li class="darkred"><span onclick="k.$window.trigger({type:'keydown', code:'KeyO'})"><span class="bold underline">O</span>: Log <span class="bold underline">o</span>ut from Tistory.</span></li>
 	</ul>
 </div>`);
 			$sDocuK.after(`<div class="copyright order"><ul>
@@ -2219,7 +2216,7 @@ document.referrer: ${referrerHTML}`
 	<li class="license nc"><span class="bold">비영리</span> - 이 저작물은 영리 목적으로 이용할 수 없습니다.</li>
 	<li class="license nd"><span class="bold">변경금지</span> - 이 저작물을 리믹스, 변형하거나 2차적 저작물을 작성하였을 경우 그 결과물을 공유할 수 없습니다.</li>
 </ul></div>
-<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)" style="background:rgb(200,240,200); color:#717171; font-size:20px">Toggle <span class="bold underline">a</span> mess</div>
+<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)">Toggle <span class="bold underline">a</span> mess</div>
 <div class="cBoth"></div>`);
 		}
 
@@ -2239,10 +2236,6 @@ document.referrer: ${referrerHTML}`
 <div class="SNS-top"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="return m.shareSNS('link')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png" onclick="return m.shareSNS('tag')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`
 		);
 		$sDocuK.append(`<div class="SNS-bottom"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/link.png" onclick="return m.shareSNS('link')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Tag.png" onclick="return m.shareSNS('tag')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Recoeve.png" onclick="k.shareSNS('recoeve')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-X.png" onclick="k.shareSNS('X')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Facebook.png" onclick="k.shareSNS('facebook')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Kakao.png" onclick="k.shareSNS('kakao')"><img class="SNS-img" src="https://tistory1.daumcdn.net/tistory/1468360/skin/images/icon-Whatsapp.png" onclick="k.shareSNS('Whatsapp')"></div>`);
-
-		// Scrollable switching of 'pre.prettyprint'.
-		$sDocuK.find("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
-		m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 		// Numbering section, making table of contents, and numbering eqq (formatting to MathJax also) and figure tags
 		let $secs = $sDocuK.find(">.sec");
