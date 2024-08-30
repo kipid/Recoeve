@@ -831,28 +831,10 @@ public class Recoeve extends AbstractVerticle {
 								}
 								if (uri.startsWith("://", k)) {
 									k += 3;
-									CompletableFuture<String> completableFuture = recoeveWebClient.findTitles(uri);
-									completableFuture.whenComplete((result, ex) -> {
-										if(ex == null) {
-											String msg2 = "Found Titles:\n" + result;
-											System.out.println(msg2);
-											pl.req.response()
-													.putHeader("Content-Type", "text/plain; charset=utf-8")
-													.end(result, ENCODING);
-											// pLHtml.append(msg2 + "</div>");
-										}
-										else {
-											String msg2 = ex.getMessage();
-											System.out.println(msg2);
-											pl.req.response().setStatusCode(StatusCode.NOT_FOUND.getCode())
-													.putHeader("Content-Type", "text/plain; charset=utf-8")
-													.end(msg2, ENCODING);
-											// pLHtml.append(msg2 + "</div>");
-										}
-									});
+									recoeveWebClient.findTitles(uri, pl.req.response());
 								}
 								else {
-									pl.req.response()
+									pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
 											.end("No http-URI.", ENCODING);
 									String msg2 = "Sended \"No http-URI.\".";
 									System.out.println(msg2);
