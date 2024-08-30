@@ -181,7 +181,7 @@ public class RecoeveWebClient {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
-		final WebDriver chromeDriver = new ChromeDriver(chromeOptions);
+		WebDriver chromeDriver = new ChromeDriver(chromeOptions);
 		try {
 			chromeDriver.get(uri);
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver);
@@ -213,13 +213,11 @@ public class RecoeveWebClient {
 				catch (Exception err) {
 					System.out.println(err);
 				}
-				finally {
-					if (chromeDriver != null) {
-						chromeDriver.quit();
-					}
-					resp.end();
-				}
 			});
+		}
+		catch (org.openqa.selenium.NoSuchSessionException e) {
+			this.findTitles(uri, resp);
+			return;
 		}
 		catch (Exception e) {
 			System.out.println(e);
@@ -228,9 +226,9 @@ public class RecoeveWebClient {
 			if (chromeDriver != null) {
 				chromeDriver.quit();
 			}
-			if (!resp.ended()) {
-				resp.end();
-			}
+		}
+		if (!resp.ended()) {
+			resp.end();
 		}
 	}
 
