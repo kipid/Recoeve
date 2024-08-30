@@ -1694,7 +1694,7 @@ m.renderToDocuK = function (toBeRendered) {
 						elemId = ` id="${elemId}"`;
 					}
 				}
-				str += `<pre class="prettyprint${classes}"${elemId}>${ps[i].replace(/<\/pre>/ig, '/pre replaced>')}</pre>`;
+				str += `<pre class="prettyprint${classes}"${elemId}>${ps[i].replace(/\<\/pre\>/ig, '&lt;/pre replaced&gt;')}</pre>`;
 			}
 			else {
 				str += `<div class="p">${ps[i]}</div>`;
