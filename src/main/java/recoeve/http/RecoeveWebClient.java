@@ -9,6 +9,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.List;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
@@ -181,54 +182,59 @@ public class RecoeveWebClient {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
-		WebDriver chromeDriver = new ChromeDriver(chromeOptions);
+		WebDriver chromeDriver = null;
 		try {
+			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
-			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver);
-			CompletableFuture<String> findH1s = asyncFindH1s(chromeDriver);
-			CompletableFuture<String> findH2s = asyncFindH2s(chromeDriver);
+			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver)
+					.thenApply(result -> result);
+			CompletableFuture<String> findH1s = asyncFindH1s(chromeDriver)
+					.thenApply(result -> result);
+			CompletableFuture<String> findH2s = asyncFindH2s(chromeDriver)
+					.thenApply(result -> result);
 
-			CompletableFuture<Object> anyOf = CompletableFuture.anyOf(findTitle, findH1s, findH2s);
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s);
 
-			anyOf.thenAccept((titles) -> {
-				try {
-					resp.write(titles.toString(), Recoeve.ENCODING);
+			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+				if (error == null) {
+					try {
+						if (result.isEmpty()) {
+							System.out.println("Empty result.");
+						}
+						else {
+							resp.write(result, Recoeve.ENCODING);
+						}
+					} catch (Exception e) {
+						System.err.println("Error writing chunk: " + e.getMessage());
+					}
+				} else {
+					System.err.println("Error in future: " + error.getMessage());
 				}
-				catch (Exception err) {
-					System.out.println(err);
+			};
+
+			findTitle.whenComplete(writeChunk);
+			findH1s.whenComplete(writeChunk);
+			findH2s.whenComplete(writeChunk);
+
+			allOf.whenComplete((v, error) -> {
+				if (error != null) {
+					System.err.println("Error in futures: " + error.getMessage());
 				}
-			})
-			.thenAccept((titles) -> {
-				try {
-					resp.write(titles.toString(), Recoeve.ENCODING);
-				}
-				catch (Exception err) {
-					System.out.println(err);
-				}
-			})
-			.thenAccept((titles) -> {
-				try {
-					resp.write(titles.toString(), Recoeve.ENCODING);
-				}
-				catch (Exception err) {
-					System.out.println(err);
+				if (!resp.ended()) {
+					resp.end();
 				}
 			});
 		}
 		catch (org.openqa.selenium.NoSuchSessionException e) {
-			this.findTitles(uri, resp);
-			return;
+			resp.end("Error: No valid session. Please try again.");
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			resp.end("Error: " + e.getMessage());
 		}
 		finally {
 			if (chromeDriver != null) {
 				chromeDriver.quit();
 			}
-		}
-		if (!resp.ended()) {
-			resp.end();
 		}
 	}
 
