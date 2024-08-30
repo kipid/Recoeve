@@ -192,7 +192,7 @@ public class RecoeveWebClient {
 
 			anyOf.thenAccept((titles) -> {
 				try {
-					resp.write(titles.toString());
+					resp.write(titles.toString(), Recoeve.ENCODING);
 				}
 				catch (Exception err) {
 					System.out.println(err);
@@ -200,7 +200,7 @@ public class RecoeveWebClient {
 			})
 			.thenAccept((titles) -> {
 				try {
-					resp.write(titles.toString());
+					resp.write(titles.toString(), Recoeve.ENCODING);
 				}
 				catch (Exception err) {
 					System.out.println(err);
@@ -208,7 +208,7 @@ public class RecoeveWebClient {
 			})
 			.thenAccept((titles) -> {
 				try {
-					resp.write(titles.toString());
+					resp.write(titles.toString(), Recoeve.ENCODING);
 				}
 				catch (Exception err) {
 					System.out.println(err);
@@ -217,6 +217,7 @@ public class RecoeveWebClient {
 					if (chromeDriver != null) {
 						chromeDriver.quit();
 					}
+					resp.end();
 				}
 			});
 		}
@@ -226,6 +227,9 @@ public class RecoeveWebClient {
 		finally {
 			if (chromeDriver != null) {
 				chromeDriver.quit();
+			}
+			if (!resp.ended()) {
+				resp.end();
 			}
 		}
 	}
