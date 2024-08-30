@@ -1441,6 +1441,11 @@ li.L8 {
 	list-style-type:none
 }
 
+li.L4,
+li.L9 {
+	list-style-type:decimal !important
+}
+
 /* Alternate shading for lines */
 pre li {
 	background:inherit
@@ -1571,6 +1576,14 @@ code .dec {
 
 div.comments form div.comment-form textarea {
 	resize:vertical
+}
+
+.comments .comment-list pre.prettyprint {
+	font-size:.9em
+}
+
+.comments .comment-list pre.prettyprint li {
+	padding:0;
 }
 
 #disqus_thread {
