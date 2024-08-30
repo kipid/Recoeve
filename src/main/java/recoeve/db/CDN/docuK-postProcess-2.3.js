@@ -203,6 +203,7 @@ Log <span class="bold underline">o</span>ut
 			m.printCode(codeId);
 		}
 	}
+	m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 
 	// Hiding hiden sections.
 	m.$docuK.find(".sec.hiden").find(">.sec-contents").css({ display: "none" });
@@ -422,7 +423,7 @@ Log <span class="bold underline">o</span>ut
 	m.goOn = false;
 	m.logOn = false;
 	m.processShortKey = function (event) {
-		if (event.altKey || event.ctrlKey || event.metaKey) return;
+		if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 		switch (event.target && event.target.nodeName) {
 			case "INPUT": case "SELECT": case "TEXTAREA": return;
 		}
@@ -577,12 +578,12 @@ Log <span class="bold underline">o</span>ut
 			let resultHTML = "";
 
 			while ((exec = ptnURL.exec(contentText)) !== null) {
-				resultHTML += contentText.substring(start, exec.index).replace(/(?:  |\t)/g, "&nbsp; ");
+				resultHTML += contentText.substring(start, exec.index);
 				let uri = exec[0];
 				start = exec.index + uri.length;
-				resultHTML += String(await relatedRendering(uri)).replace(/(?:  |\t)/g, "&nbsp; ");
+				resultHTML += String(await relatedRendering(uri));
 			}
-			resultHTML += contentText.substring(start).replace(/(?:  |\t)/g, "&nbsp; ");
+			resultHTML += contentText.substring(start);
 			return resultHTML;
 		}
 
@@ -592,7 +593,7 @@ Log <span class="bold underline">o</span>ut
 
 			for (let i = 0; i < contents.length; i++) {
 				let content = contents[i];
-				if (content.nodeType === Node.TEXT_NODE) {
+				if (content?.nodeType === Node.TEXT_NODE) {
 					let contentText = content.wholeText;
 					let codeStarted = false;
 					let innerContents = "";
@@ -604,10 +605,10 @@ Log <span class="bold underline">o</span>ut
 						i++;
 						while (i < contents.length) {
 							let nextContent = contents[i];
-							let nextContentText = nextContent.wholeText;
-							codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText));
+							let nextContentText = nextContent?.wholeText;
+							codeEnded = (nextContent?.nodeType === Node.TEXT_NODE && typeof nextContentText === "string" && /```\/$/.test(nextContentText));
 							while (!codeEnded) {
-								if (nextContent.nodeType === Node.TEXT_NODE) {
+								if (nextContent?.nodeType === Node.TEXT_NODE) {
 									innerContents += await processTextNode(nextContent);
 								}
 								else {
@@ -618,19 +619,23 @@ Log <span class="bold underline">o</span>ut
 									break;
 								}
 								nextContent = contents[i];
-								nextContentText = nextContent.wholeText;
-								codeEnded = (nextContent.nodeType === Node.TEXT_NODE && /```\/$/.test(nextContentText));
+								nextContentText = nextContent?.wholeText;
+								codeEnded = (nextContent?.nodeType === Node.TEXT_NODE && typeof nextContentText === "string" && /```\/$/.test(nextContentText));
+								if (codeEnded) {
+									innerContents += await processTextNode(nextContent);
+								}
 							}
 							if (codeEnded) {
 								innerContents = innerContents.substring(0, innerContents.length - 4)
 							}
+							i++;
 						}
 					}
 					if (codeStarted) {
 						emmet = m.getEmmetFromHead(emmet);
 						let classes = m.getClassesFromEmmet(emmet);
 						let elemId = m.getIdFromEmmet(emmet);
-						elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${m.escapeOnlyTag(innerContents.replace(/\<br\s*\/?\>/gi, "").trim())}</pre>`;
+						elemHTML += `<pre${elemId ? ` id="${elemId}"` : ``} class="prettyprint${classes ? ` ${classes}` : ``}">${m.escapeOnlyTag(innerContents.replace(/\n{0,1}\<br\s*\/?\>\n{0,1}/gi, "\n").trim())}</pre>`;
 					}
 					else {
 						elemHTML += await processTextNode(content);
@@ -651,8 +656,17 @@ Log <span class="bold underline">o</span>ut
 		}
 
 		await m.processAllElements();
+		$("pre.prettyprint.scrollable").addClass("linenums");
+		// Scrollable switching of 'pre.prettyprint'.
+		m.$prePrettyScrollable = $("pre.prettyprint.scrollable");
+		for (let i = 0; i < m.$prePrettyScrollable.length; i++) {
+			if (!m.$prePrettyScrollable.eq(i).parents(".preC").length) {
+				m.$prePrettyScrollable.eq(i).wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
+			}
+		}
 		if ($(".comments").length) {
 			window?.MathJax?.typeset?.([$(".comments")[0]]);
+			window?.PR?.prettyPrint?.();
 		}
 	};
 
@@ -711,16 +725,19 @@ svg: {
 		};
 		m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
 
-		$("pre.prettyprint.scrollable").addClass("linenums");
-		// Scrollable switching of 'pre.prettyprint'.
-		$("pre.prettyprint.scrollable").wrap("<div class='preC'></div>").before('<div class="preSSE">On the left side of codes is there a hiden button to toggle/switch scrollability ({max-height:some} or {max-height:none}).</div><div class="preSS" onclick="k.toggleHeight(this)"></div>');
-		m.logPrint(`<br/><br/>&lt;codeprint&gt; tags are printed to corresponding &lt;pre&gt; tags, only when the tags exist in the document.`);
 		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-		let $gcp = $(`<script id="prettyfy-js" defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js" onload="PR.prettyPrint()"></` + `script>`); // Avoid closing script
+		let $gcp = $(`<script id="prettyfy-js" defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
 
 		m.$headOrBody.append($gcp);
 		m.logPrint(`<br><br>Google code prettyfy.js is loaded.`);
-
+		m.doPrettyPrint = function () {
+			if (window?.PR?.prettyPrint) {
+				PR.prettyPrint();
+			}
+			else {
+				setTimeout(m.doPrettyPrint, 2048);
+			}
+		};
 		// Closing docuK Log.
 		m.logPrint(`<br><br><span class='emph'>docuK scripts are all done. Then this log is closing in 1.0 sec.</span>`);
 		m.$window.scrollTop($(window.location.hash)?.offset()?.top ?? m.$window.scrollTop());
