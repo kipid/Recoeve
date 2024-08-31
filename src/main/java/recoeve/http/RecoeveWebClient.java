@@ -3,6 +3,7 @@ package recoeve.http;
 
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Context;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxException;
@@ -48,6 +49,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	private final Vertx vertx;
+	private final Context context;
 	private final RecoeveDB db;
 	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
@@ -59,6 +61,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
 		this.vertx = vertx;
+		context = vertx.getOrCreateContext();
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
