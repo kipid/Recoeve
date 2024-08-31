@@ -112,7 +112,7 @@ public class RecoeveWebClient {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("");
+			cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
 		});
 
 		return cfElements;
@@ -145,7 +145,7 @@ public class RecoeveWebClient {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("");
+			cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
 		});
 
 		return cfElements;
@@ -186,16 +186,19 @@ public class RecoeveWebClient {
 				if (error == null) {
 					try {
 						if (result.isEmpty()) {
-							System.out.println("Empty result.");
+							result = "\nError: Empty result.";
+							System.out.println(result);
 						}
-						else {
-							resp.write(result, Recoeve.ENCODING);
-						}
+						resp.write(result, Recoeve.ENCODING);
 					} catch (Exception e) {
-						System.err.println("Error writing chunk: " + e.getMessage());
+						result = "\nError: writing chunk: " + e.getMessage();
+						System.err.println(result);
+						resp.write(result, Recoeve.ENCODING);
 					}
 				} else {
-					System.err.println("Error in future: " + error.getMessage());
+					result = "\nError: in future: " + error.getMessage();
+					System.err.println(result);
+					resp.write(result, Recoeve.ENCODING);
 				}
 			};
 
@@ -219,10 +222,10 @@ public class RecoeveWebClient {
 			});
 		}
 		catch (NoSuchSessionException e) {
-			resp.end("Error: No valid session. Please try again.");
+			resp.end("\nError: No valid session. Please try again.");
 		}
 		catch (Exception e) {
-			resp.end("Error: " + e.getMessage());
+			resp.end("\nError: " + e.getMessage());
 		}
 	}
 
