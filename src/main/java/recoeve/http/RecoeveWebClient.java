@@ -37,8 +37,8 @@ public class RecoeveWebClient {
 	private final RecoeveDB db;
 	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
-	private final long timeout = 4096L;
-	private final long findPerSeconds = 512L;
+	private final long timeout = 20000L;
+	private final long findPerSeconds = 200L;
 	private final ChromeOptions chromeOptions;
 	private final WebDriver chromeDriver;
 
