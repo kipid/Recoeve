@@ -12,6 +12,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -31,8 +33,13 @@ public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
-	private static final int UNTIL_TOP = 7;
+	private static final int UNTIL_TOP = 20;
+	public static final Map<String, String> hostCSSMap;
 	static {
+		hostCSSMap = new HashMap<String, String>(10);
+		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
+		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
+		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
 
@@ -85,6 +92,10 @@ public class RecoeveWebClient {
 
 	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
+		if (cssSelector == null) {
+			cfElements.complete("Error: cssSelector is null.");
+			return cfElements;
+		}
 
 		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
 			try {
@@ -122,6 +133,10 @@ public class RecoeveWebClient {
 
 	public CompletableFuture<String> asyncFindTitleUntilEveryIsFound(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
+		if (cssSelector == null) {
+			cfElements.complete("Error: cssSelector is null.");
+			return cfElements;
+		}
 
 		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
 			try {
@@ -186,21 +201,17 @@ public class RecoeveWebClient {
 
 		try {
 			chromeDriver.get(uri);
-			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title")
+			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
 					.thenApply(applyFn);
-			CompletableFuture<String> findH1s = asyncFindTitle(chromeDriver, "h1")
-					.thenApply(applyFn);
-			CompletableFuture<String> findH2s = asyncFindTitle(chromeDriver, "h2")
+			CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver, hostCSSMap.get(uriHost))
 					.thenApply(applyFn);
 
-			CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title")
+			CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title, h1, h2")
 					.thenApply(applyFn);
-			CompletableFuture<String> findH1sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h1")
-					.thenApply(applyFn);
-			CompletableFuture<String> findH2sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h2")
+			CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, hostCSSMap.get(uriHost))
 					.thenApply(applyFn);
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s, findTitleUntil, findH1sUntil, findH2sUntil);
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
 
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
@@ -224,12 +235,10 @@ public class RecoeveWebClient {
 			};
 
 			findTitle.whenComplete(writeChunk);
-			findH1s.whenComplete(writeChunk);
-			findH2s.whenComplete(writeChunk);
+			findHostSpecific.whenComplete(writeChunk);
 
 			findTitleUntil.whenComplete(writeChunk);
-			findH1sUntil.whenComplete(writeChunk);
-			findH2sUntil.whenComplete(writeChunk);
+			findHostSpecificUntil.whenComplete(writeChunk);
 
 			allOf.whenComplete((v, error) -> {
 				String errorMsg = "";
