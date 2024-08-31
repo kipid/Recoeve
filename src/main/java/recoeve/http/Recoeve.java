@@ -839,7 +839,7 @@ public class Recoeve extends AbstractVerticle {
 									else {
 										uriHost = uri.substring(k);
 									}
-									recoeveWebClient.findTitles(uri, uriHost, pl.req.response());
+									recoeveWebClient.findTitles(uri, uriHost.toLowerCase(), pl.req.response());
 								}
 								else {
 									pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
