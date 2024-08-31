@@ -10,6 +10,7 @@ import io.vertx.ext.web.client.WebClientOptions;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -30,7 +31,7 @@ public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
-	private static final int UNTIL_TOP = 3;
+	private static final int UNTIL_TOP = 5;
 	static {
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
@@ -92,10 +93,11 @@ public class RecoeveWebClient {
 					StringBuilder sb = new StringBuilder();
 					boolean someIsNotEmpty = false;
 					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
-						if (!elements.get(i).getText().trim().isEmpty()) {
+						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						if (!text.isEmpty()) {
 							someIsNotEmpty = true;
 						}
-						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
+						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
 					}
 					if (someIsNotEmpty) {
 						vertx.cancelTimer(pID[0]);
@@ -127,10 +129,11 @@ public class RecoeveWebClient {
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
-						if (elements.get(i).getText().trim().isEmpty()) {
+						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						if (text.isEmpty()) {
 							return;
 						}
-						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
+						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
 					}
 					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
@@ -151,7 +154,7 @@ public class RecoeveWebClient {
 		return cfElements;
 	}
 
-	public void findTitles(String uri, HttpServerResponse resp) {
+	public void findTitles(String uri, String uriHost, HttpServerResponse resp) {
 		resp.putHeader("Content-Type", "text/plain; charset=utf-8")
 				.setChunked(true);
 		resp.write("\nuri\t" + StrArray.enclose(uri));
@@ -164,21 +167,25 @@ public class RecoeveWebClient {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
+		Function<String, String> applyFn = (result) -> {
+			return result.trim();
+		};
+
 		try {
 			chromeDriver.get(uri);
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 			CompletableFuture<String> findH1s = asyncFindTitle(chromeDriver, "h1")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 			CompletableFuture<String> findH2s = asyncFindTitle(chromeDriver, "h2")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 
 			CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 			CompletableFuture<String> findH1sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h1")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 			CompletableFuture<String> findH2sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h2")
-					.thenApply(result -> result);
+					.thenApply(applyFn);
 
 			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s, findTitleUntil, findH1sUntil, findH2sUntil);
 
