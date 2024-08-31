@@ -31,7 +31,7 @@ public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
-	private static final int UNTIL_TOP = 5;
+	private static final int UNTIL_TOP = 7;
 	static {
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
@@ -40,8 +40,8 @@ public class RecoeveWebClient {
 	private final RecoeveDB db;
 	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
-	private final long timeoutMilliSecs = 5000L;
-	private final long findPerMilliSecs = 200L;
+	private final long timeoutMilliSecs = 7000L;
+	private final long findPerMilliSecs = 500L;
 	private final ChromeOptions chromeOptions;
 	private final WebDriver chromeDriver;
 
@@ -96,8 +96,8 @@ public class RecoeveWebClient {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 						if (!text.isEmpty()) {
 							someIsNotEmpty = true;
+							sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
 						}
-						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
 					}
 					if (someIsNotEmpty) {
 						vertx.cancelTimer(pID[0]);
@@ -129,7 +129,7 @@ public class RecoeveWebClient {
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
-						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						String text = elements.get(i).getText();
 						if (text.isEmpty()) {
 							return;
 						}
@@ -148,7 +148,20 @@ public class RecoeveWebClient {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+			if (elements != null && !elements.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+					String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+					if (!text.isEmpty()) {
+						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
+					}
+				}
+				cfElements.complete(sb.toString());
+			}
+			else {
+				cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			}
 		});
 
 		return cfElements;
@@ -168,7 +181,7 @@ public class RecoeveWebClient {
 		}
 
 		Function<String, String> applyFn = (result) -> {
-			return result.trim();
+			return result;
 		};
 
 		try {
