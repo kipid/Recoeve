@@ -819,8 +819,8 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg1 + "<br/>");
 							if (uri == null) {
 								pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
-										.end("No http-URI.", ENCODING);
-								msg1 = "Sended \"No http-URI.\".";
+										.end("Error: No http-URI.", ENCODING);
+								msg1 = "Sended \"Error: No http-URI.\".";
 								System.out.println(msg1);
 								// pLHtml.append(msg1 + "</div>");
 							}
@@ -831,7 +831,15 @@ public class Recoeve extends AbstractVerticle {
 								}
 								if (uri.startsWith("://", k)) {
 									k += 3;
-									recoeveWebClient.findTitles(uri, pl.req.response());
+									int l = uri.indexOf("/", k);
+									String uriHost = null;
+									if (l > 0) {
+										uriHost = uri.substring(k, l);
+									}
+									else {
+										uriHost = uri.substring(k);
+									}
+									recoeveWebClient.findTitles(uri, uriHost, pl.req.response());
 								}
 								else {
 									pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
