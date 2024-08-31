@@ -185,6 +185,7 @@ public class RecoeveWebClient {
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
 					try {
+						result = result.trim();
 						if (result.isEmpty()) {
 							result = "\nError: Empty result.";
 							System.out.println(result);
