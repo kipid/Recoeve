@@ -2,10 +2,11 @@ package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
+import io.vertx.core.DeploymentOptions;
 // import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-
+import io.vertx.core.json.JsonObject;
 import recoeve.db.*;
 
 public class MainVerticle extends AbstractVerticle {
@@ -23,8 +24,21 @@ public class MainVerticle extends AbstractVerticle {
 		vertx = getVertx();
 		fileMap = new FileMap(vertx);
 		fileMapWithVar = new FileMapWithVar();
-		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		db = new RecoeveDB(vertx);
+		recoeveWebClient = new RecoeveWebClient(vertx, db);
+		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
+		vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
+			.onComplete(res -> {
+				if (res.succeeded()) {
+					verticleId = res.result();
+					System.out.println("Deployment id is: " + verticleId);
+					startPromise.complete();
+				}
+				else {
+					System.out.println("Deployment failed!");
+					startPromise.fail("Deployment failed!");
+				}
+			});
 		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
 			// 	, new DeploymentOptions()
 			// 	, (h) -> {
