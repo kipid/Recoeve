@@ -409,6 +409,12 @@
 	color:white
 }
 
+#def-titles {
+	width:100%;
+	max-width:7em;
+	overflow-y:auto
+}
+
 #sort-list {
 	position:absolute;
 	z-index:5000
