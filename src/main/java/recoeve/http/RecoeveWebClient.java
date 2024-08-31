@@ -67,7 +67,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments("--headless=new");
 		chromeOptions.addArguments("--remote-allow-origins=*");
-		maxDrivers = config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
+		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 	}
 
