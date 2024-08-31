@@ -397,28 +397,6 @@
 	background:gray;
 }
 
-#new-reco {
-	z-index:21000;
-	position:fixed;
-	left:0;
-	top:0;
-	right:0;
-	bottom:0;
-	background:rgba(0, 0, 0, 0.8);
-	overflow:auto;
-	color:white
-}
-
-#def-titles {
-	display:flex;
-	gap:.1em;
-	flex-direction:column;
-	justify-content:flex-start;
-	width:100%;
-	max-height:9em;
-	overflow-y:auto
-}
-
 #sort-list {
 	position:absolute;
 	z-index:5000
