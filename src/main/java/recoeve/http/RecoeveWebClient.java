@@ -56,8 +56,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	private final long timeoutMilliSecs = 7000L;
 	private final long findPerMilliSecs = 500L;
 	private final ChromeOptions chromeOptions;
-	private final ConcurrentLinkedQueue<WebDriver> driverPool;
-	private final int maxDrivers;
+	private int maxDrivers;
+	private ConcurrentLinkedQueue<WebDriver> driverPool;
 
 	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
 		this.vertx = vertx;
@@ -65,14 +65,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new");
+		chromeOptions.addArguments("--headless");
 		chromeOptions.addArguments("--remote-allow-origins=*");
-		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
-		driverPool = new ConcurrentLinkedQueue<>();
 	}
 
 	@Override
 	public void start(Promise<Void> startPromise) {
+		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
+		driverPool = new ConcurrentLinkedQueue<>();
 		startPromise.complete();
 	}
 
