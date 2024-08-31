@@ -20,6 +20,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.NoSuchSessionException;
 
 import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
@@ -29,6 +30,7 @@ public class RecoeveWebClient {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
+	private static final int UNTIL_TOP = 3;
 	static {
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
@@ -37,8 +39,8 @@ public class RecoeveWebClient {
 	private final RecoeveDB db;
 	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
-	private final long timeout = 20000L;
-	private final long findPerSeconds = 200L;
+	private final long timeoutMilliSecs = 5000L;
+	private final long findPerMilliSecs = 200L;
 	private final ChromeOptions chromeOptions;
 	private final WebDriver chromeDriver;
 
@@ -80,19 +82,55 @@ public class RecoeveWebClient {
 		return completableFuture;
 	}
 
-	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver) throws Exception {
+	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 
-		pID[0] = vertx.setPeriodic(findPerSeconds, id -> {
+		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
 			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("title"));
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(3, elements.size()); i++) {
+					boolean someIsNotEmpty = false;
+					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+						if (!elements.get(i).getText().trim().isEmpty()) {
+							someIsNotEmpty = true;
+						}
+						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
+					}
+					if (someIsNotEmpty) {
+						vertx.cancelTimer(pID[0]);
+						cfElements.complete(sb.toString());
+					}
+				}
+			} catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
+				System.out.println(err);
+			}
+		});
+
+		vertx.setTimer(timeoutMilliSecs, id -> {
+			vertx.cancelTimer(pID[0]);
+			cfElements.complete("");
+		});
+
+		return cfElements;
+	}
+
+	public CompletableFuture<String> asyncFindTitleUntilEveryIsFound(WebDriver chromeDriver, String cssSelector) throws Exception {
+		CompletableFuture<String> cfElements = new CompletableFuture<>();
+
+		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+				if (elements != null && !elements.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
 						if (elements.get(i).getText().trim().isEmpty()) {
 							return;
 						}
-						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
+						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
 					}
 					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
@@ -105,74 +143,8 @@ public class RecoeveWebClient {
 			}
 		});
 
-		vertx.setTimer(timeout, id -> {
+		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("");
-		});
-
-		return cfElements;
-	}
-
-	public CompletableFuture<String> asyncFindH1s(WebDriver chromeDriver) throws Exception {
-		CompletableFuture<String> cfElements = new CompletableFuture<>();
-
-		pID[1] = vertx.setPeriodic(findPerSeconds, id -> {
-			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h1"));
-				if (elements != null && !elements.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(3, elements.size()); i++) {
-						if (elements.get(i).getText().trim().isEmpty()) {
-							return;
-						}
-						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
-					}
-					vertx.cancelTimer(pID[1]);
-					cfElements.complete(sb.toString());
-				}
-			} catch (NoSuchElementException
-				| StaleElementReferenceException
-				| InvalidElementStateException
-				| VertxException err) {
-				System.out.println(err);
-			}
-		});
-
-		vertx.setTimer(timeout, id -> {
-			vertx.cancelTimer(pID[1]);
-			cfElements.complete("");
-		});
-
-		return cfElements;
-	}
-
-	public CompletableFuture<String> asyncFindH2s(WebDriver chromeDriver) throws Exception {
-		CompletableFuture<String> cfElements = new CompletableFuture<>();
-
-		pID[2] = vertx.setPeriodic(findPerSeconds, id -> {
-			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h2"));
-				if (elements != null && !elements.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(3, elements.size()); i++) {
-						if (elements.get(i).getText().trim().isEmpty()) {
-							return;
-						}
-						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
-					}
-					vertx.cancelTimer(pID[2]);
-					cfElements.complete(sb.toString());
-				}
-			} catch (NoSuchElementException
-				| StaleElementReferenceException
-				| InvalidElementStateException
-				| VertxException err) {
-				System.out.println(err);
-			}
-		});
-
-		vertx.setTimer(timeout, id -> {
-			vertx.cancelTimer(pID[2]);
 			cfElements.complete("");
 		});
 
@@ -194,14 +166,21 @@ public class RecoeveWebClient {
 
 		try {
 			chromeDriver.get(uri);
-			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver)
+			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title")
 					.thenApply(result -> result);
-			CompletableFuture<String> findH1s = asyncFindH1s(chromeDriver)
+			CompletableFuture<String> findH1s = asyncFindTitle(chromeDriver, "h1")
 					.thenApply(result -> result);
-			CompletableFuture<String> findH2s = asyncFindH2s(chromeDriver)
+			CompletableFuture<String> findH2s = asyncFindTitle(chromeDriver, "h2")
 					.thenApply(result -> result);
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s);
+			CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title")
+					.thenApply(result -> result);
+			CompletableFuture<String> findH1sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h1")
+					.thenApply(result -> result);
+			CompletableFuture<String> findH2sUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "h2")
+					.thenApply(result -> result);
+
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findH1s, findH2s, findTitleUntil, findH1sUntil, findH2sUntil);
 
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
@@ -224,16 +203,22 @@ public class RecoeveWebClient {
 			findH1s.whenComplete(writeChunk);
 			findH2s.whenComplete(writeChunk);
 
+			findTitleUntil.whenComplete(writeChunk);
+			findH1sUntil.whenComplete(writeChunk);
+			findH2sUntil.whenComplete(writeChunk);
+
 			allOf.whenComplete((v, error) -> {
+				String errorMsg = "";
 				if (error != null) {
-					System.err.println("Error in futures: " + error.getMessage());
+					errorMsg = "\nError in futures: " + error.getMessage();
+					System.err.println(errorMsg);
 				}
 				if (!resp.ended()) {
-					resp.end();
+					resp.end(errorMsg);
 				}
 			});
 		}
-		catch (org.openqa.selenium.NoSuchSessionException e) {
+		catch (NoSuchSessionException e) {
 			resp.end("Error: No valid session. Please try again.");
 		}
 		catch (Exception e) {
