@@ -51,7 +51,7 @@ public class RecoeveWebClient {
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments("--remote-allow-origins=*");
-		chromeOptions.addArguments("--headless=new");
+		// chromeOptions.addArguments("--headless=new");
 		chromeDriver = new ChromeDriver(chromeOptions);
 	}
 
