@@ -78,7 +78,7 @@ public class RecoeveDB {
 
 	// The below is from
 	// http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
-	final protected static char[] hexArray = "0123456789abcdef".toCharArray();
+	public static final char[] hexArray = "0123456789abcdef".toCharArray();
 
 	public static String bytesToHexString(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
