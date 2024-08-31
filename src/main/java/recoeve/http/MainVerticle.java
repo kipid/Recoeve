@@ -64,12 +64,12 @@ public class MainVerticle extends AbstractVerticle {
 					stopPromise.fail("Undeploy failed!");
 				}
 			});
-		context = null;
-		vertx = null;
-		fileMap = null;
-		fileMapWithVar = null;
-		recoeveWebClient = null;
-		db = null;
+		// context = null;
+		// vertx = null;
+		// fileMap = null;
+		// fileMapWithVar = null;
+		// recoeveWebClient = null;
+		// db = null;
 	}
 
 	public static void main(String... args) {
