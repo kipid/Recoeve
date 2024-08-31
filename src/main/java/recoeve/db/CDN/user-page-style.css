@@ -410,8 +410,12 @@
 }
 
 #def-titles {
+	display:flex;
+	flex-direction:column;
+	justify-content:flex-start;
+	gap:.1em;
 	width:100%;
-	max-width:7em;
+	max-height:9em;
 	overflow-y:auto
 }
 
