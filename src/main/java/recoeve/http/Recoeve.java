@@ -3,6 +3,7 @@ package recoeve.http;
 
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
@@ -35,14 +36,16 @@ public class Recoeve extends AbstractVerticle {
 	public static final long day31InMs = 31 * 24 * 60 * 60 * 1000;
 
 	public Vertx vertx;
+	public Context context;
 	public FileMap fileMap;
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
 
-	public Recoeve(Vertx vertx, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient,
+	public Recoeve(Vertx vertx, Context context, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient,
 			RecoeveDB db) {
 		this.vertx = vertx;
+		this.context = context;
 		this.fileMap = fileMap;
 		this.fileMapWithVar = fileMapWithVar;
 		this.recoeveWebClient = recoeveWebClient;
