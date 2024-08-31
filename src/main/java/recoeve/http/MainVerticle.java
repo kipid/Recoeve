@@ -21,8 +21,8 @@ public class MainVerticle extends AbstractVerticle {
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
-	private String verticleId0;
-	private String verticleId1;
+	public String verticleId0;
+	public String verticleId1;
 
 	@Override
 	public void start(Promise<Void> startPromise) {
@@ -31,7 +31,7 @@ public class MainVerticle extends AbstractVerticle {
 		fileMap = new FileMap(vertx);
 		fileMapWithVar = new FileMapWithVar();
 		db = new RecoeveDB(vertx);
-		recoeveWebClient = new RecoeveWebClient(vertx, db);
+		recoeveWebClient = new RecoeveWebClient(vertx, context, db);
 		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
 		Future<String> deploy1 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
 			.onComplete(res -> {
@@ -43,7 +43,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("Deployment failed!");
 				}
 			});
-		Future<String> deploy2 = vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
+		Future<String> deploy2 = vertx.deployVerticle(new Recoeve(vertx, context, fileMap, fileMapWithVar, recoeveWebClient, db)
 			// 	, new DeploymentOptions()
 			// 	, (h) -> {
 			// 		if (h.succeeded()) {
