@@ -11,8 +11,6 @@ import io.vertx.ext.web.client.WebClientOptions;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.List;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,26 +30,23 @@ public class RecoeveWebClient {
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
 
-	public Vertx vertx;
-	public RecoeveDB db;
-	public WebClient webClient;
+	private final Vertx vertx;
+	private final RecoeveDB db;
+	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
-	private final long timeout = 512L;
+	private final long timeout = 4096L;
 	private final long findPerSeconds = 128L;
-
-	public XPath xpath;
-	public WebDriver driver;
-
-	public ChromeOptions chromeOptions;
+	private final ChromeOptions chromeOptions;
+	private final WebDriver chromeDriver;
 
 	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
 		this.vertx = vertx;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
-		xpath = XPathFactory.newInstance().newXPath();
 		chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments("--remote-allow-origins=*");
 		chromeOptions.addArguments("--headless=new");
+		chromeDriver = new ChromeDriver(chromeOptions);
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
@@ -182,9 +177,7 @@ public class RecoeveWebClient {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
-		WebDriver chromeDriver = null;
 		try {
-			chromeDriver = new ChromeDriver(chromeOptions);
 			chromeDriver.get(uri);
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver)
 					.thenApply(result -> result);
@@ -230,11 +223,6 @@ public class RecoeveWebClient {
 		}
 		catch (Exception e) {
 			resp.end("Error: " + e.getMessage());
-		}
-		finally {
-			if (chromeDriver != null) {
-				chromeDriver.quit();
-			}
 		}
 	}
 
