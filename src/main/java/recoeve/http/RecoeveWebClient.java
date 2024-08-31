@@ -48,20 +48,20 @@ public class RecoeveWebClient extends AbstractVerticle {
 		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
 	}
 
-	private final Vertx vertx;
-	private final Context context;
-	private final RecoeveDB db;
-	private final WebClient webClient;
-	private final long[] pID = {0, 0, 0};
-	private final long timeoutMilliSecs = 7000L;
-	private final long findPerMilliSecs = 500L;
-	private final ChromeOptions chromeOptions;
-	private int maxDrivers;
-	private ConcurrentLinkedQueue<WebDriver> driverPool;
+	public Vertx vertx;
+	public Context context;
+	public RecoeveDB db;
+	public WebClient webClient;
+	public long[] pID = {0, 0, 0};
+	public long timeoutMilliSecs = 7000L;
+	public long findPerMilliSecs = 500L;
+	public ChromeOptions chromeOptions;
+	public int maxDrivers;
+	public ConcurrentLinkedQueue<WebDriver> driverPool;
 
-	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
+	public RecoeveWebClient(Vertx vertx, Context context, RecoeveDB db) {
 		this.vertx = vertx;
-		context = vertx.getOrCreateContext();
+		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
