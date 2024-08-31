@@ -90,7 +90,10 @@ public class RecoeveWebClient {
 					vertx.cancelTimer(pID[0]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
-						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
+						if (elements.get(i).getText().trim().isEmpty()) {
+							return;
+						}
+						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
 					}
 					cfElements.complete(sb.toString());
 				}
@@ -120,6 +123,9 @@ public class RecoeveWebClient {
 					vertx.cancelTimer(pID[1]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
+						if (elements.get(i).getText().trim().isEmpty()) {
+							return;
+						}
 						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
 					}
 					cfElements.complete(sb.toString());
@@ -150,6 +156,9 @@ public class RecoeveWebClient {
 					vertx.cancelTimer(pID[2]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
+						if (elements.get(i).getText().trim().isEmpty()) {
+							return;
+						}
 						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
 					}
 					cfElements.complete(sb.toString());
