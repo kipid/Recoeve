@@ -36,8 +36,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
-	private static final int DEFAULT_MAX_DRIVERS = 5;
-	private static final int UNTIL_TOP = 20;
+	public static final int DEFAULT_MAX_DRIVERS = 5;
+	public static final int UNTIL_TOP = 20;
 	public static final Map<String, String> hostCSSMap;
 	static {
 		hostCSSMap = new HashMap<String, String>(10);
