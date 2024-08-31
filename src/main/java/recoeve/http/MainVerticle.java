@@ -56,7 +56,7 @@ public class MainVerticle extends AbstractVerticle {
 		vertx.undeploy(verticleId)
 			.onComplete(res -> {
 				if (res.succeeded()) {
-					System.out.println("Undeployed ok");
+					System.out.println("Undeployed ok.");
 					stopPromise.complete();
 				}
 				else {
