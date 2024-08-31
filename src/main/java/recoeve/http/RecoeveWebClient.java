@@ -17,6 +17,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.InvalidElementStateException;
 
 import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
@@ -35,7 +38,7 @@ public class RecoeveWebClient {
 	private final WebClient webClient;
 	private final long[] pID = {0, 0, 0};
 	private final long timeout = 4096L;
-	private final long findPerSeconds = 128L;
+	private final long findPerSeconds = 512L;
 	private final ChromeOptions chromeOptions;
 	private final WebDriver chromeDriver;
 
@@ -91,9 +94,10 @@ public class RecoeveWebClient {
 					}
 					cfElements.complete(sb.toString());
 				}
-			} catch (org.openqa.selenium.NoSuchElementException
-				| org.openqa.selenium.StaleElementReferenceException
-				| org.openqa.selenium.InvalidElementStateException err) {
+			} catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
 				System.out.println(err);
 			}
 		});
@@ -120,9 +124,10 @@ public class RecoeveWebClient {
 					}
 					cfElements.complete(sb.toString());
 				}
-			} catch (org.openqa.selenium.NoSuchElementException
-				| org.openqa.selenium.StaleElementReferenceException
-				| org.openqa.selenium.InvalidElementStateException err) {
+			} catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
 				System.out.println(err);
 			}
 		});
@@ -149,9 +154,10 @@ public class RecoeveWebClient {
 					}
 					cfElements.complete(sb.toString());
 				}
-			} catch (org.openqa.selenium.NoSuchElementException
-				| org.openqa.selenium.StaleElementReferenceException
-				| org.openqa.selenium.InvalidElementStateException err) {
+			} catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
 				System.out.println(err);
 			}
 		});
