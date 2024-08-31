@@ -1,12 +1,17 @@
 package recoeve.http;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 // import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+
+import java.util.List;
+
 import recoeve.db.*;
 
 public class MainVerticle extends AbstractVerticle {
@@ -22,24 +27,23 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start(Promise<Void> startPromise) {
 		vertx = getVertx();
+		context = vertx.getOrCreateContext();
 		fileMap = new FileMap(vertx);
 		fileMapWithVar = new FileMapWithVar();
 		db = new RecoeveDB(vertx);
 		recoeveWebClient = new RecoeveWebClient(vertx, db);
 		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
-		vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
+		Future<String> deploy1 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId = res.result();
 					System.out.println("Deployment id is: " + verticleId);
-					startPromise.complete();
 				}
 				else {
 					System.out.println("Deployment failed!");
-					startPromise.fail("Deployment failed!");
 				}
 			});
-		vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
+		Future<String> deploy2 = vertx.deployVerticle(new Recoeve(vertx, fileMap, fileMapWithVar, recoeveWebClient, db)
 			// 	, new DeploymentOptions()
 			// 	, (h) -> {
 			// 		if (h.succeeded()) {
@@ -54,15 +58,21 @@ public class MainVerticle extends AbstractVerticle {
 				if (res.succeeded()) {
 					verticleId = res.result();
 					System.out.println("Deployment id is: " + verticleId);
-					startPromise.complete();
 				}
 				else {
 					System.out.println("Deployment failed!");
-					startPromise.fail("Deployment failed!");
 				}
 			});
 
-		// vertx.deployVerticle(new UnderConstruction(vertx, db));
+		CompositeFuture.all(List.of(deploy1, deploy2))
+			.onSuccess(results -> {
+				System.out.println("Result 1:" + results.resultAt(0));
+				System.out.println("Result 2:" + results.resultAt(1));
+				startPromise.complete();
+			})
+			.onFailure(throwable -> {
+				startPromise.fail(throwable);
+			});
 	}
 
 	@Override
