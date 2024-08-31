@@ -21,8 +21,8 @@ public class MainVerticle extends AbstractVerticle {
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
-	private String verticleId;
-	// private String verticleId1;
+	private String verticleId0;
+	private String verticleId1;
 
 	@Override
 	public void start(Promise<Void> startPromise) {
@@ -36,8 +36,8 @@ public class MainVerticle extends AbstractVerticle {
 		Future<String> deploy1 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
 			.onComplete(res -> {
 				if (res.succeeded()) {
-					verticleId = res.result();
-					System.out.println("Deployment id is: " + verticleId);
+					verticleId0 = res.result();
+					System.out.println("Deployment id is: " + verticleId0);
 				}
 				else {
 					System.out.println("Deployment failed!");
@@ -56,18 +56,18 @@ public class MainVerticle extends AbstractVerticle {
 			)
 			.onComplete(res -> {
 				if (res.succeeded()) {
-					verticleId = res.result();
-					System.out.println("Deployment id is: " + verticleId);
+					verticleId1 = res.result();
+					System.out.println("Deployment id is: " + verticleId1);
 				}
 				else {
 					System.out.println("Deployment failed!");
 				}
 			});
 
-		CompositeFuture.all(List.of(deploy1, deploy2))
+		CompositeFuture.all(deploy1, deploy2)
 			.onSuccess(results -> {
-				System.out.println("Result 1:" + results.resultAt(0));
-				System.out.println("Result 2:" + results.resultAt(1));
+				System.out.println("Result 0:" + results.resultAt(0));
+				System.out.println("Result 1:" + results.resultAt(1));
 				startPromise.complete();
 			})
 			.onFailure(throwable -> {
@@ -77,23 +77,37 @@ public class MainVerticle extends AbstractVerticle {
 
 	@Override
 	public void stop(Promise<Void> stopPromise) {
-		vertx.undeploy(verticleId)
+		Future<Void> undeploy0 = vertx.undeploy(verticleId0)
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					System.out.println("Undeployed ok.");
-					stopPromise.complete();
 				}
 				else {
 					System.out.println("Undeploy failed!");
-					stopPromise.fail("Undeploy failed!");
 				}
 			});
-		// context = null;
-		// vertx = null;
-		// fileMap = null;
-		// fileMapWithVar = null;
-		// recoeveWebClient = null;
-		// db = null;
+		Future<Void> undeploy1 = vertx.undeploy(verticleId1)
+			.onComplete(res -> {
+				if (res.succeeded()) {
+					System.out.println("Undeployed ok.");
+				}
+				else {
+					System.out.println("Undeploy failed!");
+				}
+			});
+		CompositeFuture.all(undeploy0, undeploy1)
+			.onSuccess(results -> {
+				stopPromise.complete();
+			})
+			.onFailure(throwable -> {
+				stopPromise.fail(throwable);
+			});
+		context = null;
+		vertx = null;
+		fileMap = null;
+		fileMapWithVar = null;
+		recoeveWebClient = null;
+		db = null;
 	}
 
 	public static void main(String... args) {
