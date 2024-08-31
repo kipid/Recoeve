@@ -73,7 +73,8 @@ public class PrintLog implements Handler<RoutingContext> {
 			} catch (UnsupportedEncodingException e) {
 				System.out.println(e);
 			}
-		} else {
+		}
+		else {
 			msg = "Referer: null";
 			System.out.println(msg);
 			// html.append(msg + "<br/>");
@@ -81,7 +82,8 @@ public class PrintLog implements Handler<RoutingContext> {
 
 		if (referer == null) {
 			refererAllowed = true;
-		} else if (referer.substring(0, 4).toLowerCase().equals("http")) {
+		}
+		else if (referer.substring(0, 4).toLowerCase().equals("http")) {
 			int k = 4;
 			if (referer.charAt(k) == 's' || referer.charAt(k) == 'S') {
 				k++;
@@ -100,7 +102,8 @@ public class PrintLog implements Handler<RoutingContext> {
 						System.out.println(msg);
 						// html.append(msg + "<br/>");
 					}
-				} else {
+				}
+				else {
 					refererHost = referer.substring(k);
 				}
 				if (refererHost.equals("www.recoeve.net")) {
@@ -182,7 +185,8 @@ public class PrintLog implements Handler<RoutingContext> {
 			if (tempLang == null) {
 				if (acceptLang != null && acceptLang.length() >= 2) {
 					tempLang = acceptLang.substring(0, 2);
-				} else {
+				}
+				else {
 					tempLang = "en";
 				}
 			}
