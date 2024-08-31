@@ -87,7 +87,6 @@ public class RecoeveWebClient {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("title"));
 				if (elements != null && !elements.isEmpty()) {
-					vertx.cancelTimer(pID[0]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
 						if (elements.get(i).getText().trim().isEmpty()) {
@@ -95,6 +94,7 @@ public class RecoeveWebClient {
 						}
 						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText().trim()));
 					}
+					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
 				}
 			} catch (NoSuchElementException
@@ -120,7 +120,6 @@ public class RecoeveWebClient {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h1"));
 				if (elements != null && !elements.isEmpty()) {
-					vertx.cancelTimer(pID[1]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
 						if (elements.get(i).getText().trim().isEmpty()) {
@@ -128,6 +127,7 @@ public class RecoeveWebClient {
 						}
 						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
 					}
+					vertx.cancelTimer(pID[1]);
 					cfElements.complete(sb.toString());
 				}
 			} catch (NoSuchElementException
@@ -153,7 +153,6 @@ public class RecoeveWebClient {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector("h2"));
 				if (elements != null && !elements.isEmpty()) {
-					vertx.cancelTimer(pID[2]);
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < Math.min(3, elements.size()); i++) {
 						if (elements.get(i).getText().trim().isEmpty()) {
@@ -161,6 +160,7 @@ public class RecoeveWebClient {
 						}
 						sb.append("\nh1-" + i + "\t" + StrArray.enclose(elements.get(i).getText()));
 					}
+					vertx.cancelTimer(pID[2]);
 					cfElements.complete(sb.toString());
 				}
 			} catch (NoSuchElementException
