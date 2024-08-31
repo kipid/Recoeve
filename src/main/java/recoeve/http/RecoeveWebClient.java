@@ -2,6 +2,8 @@ package recoeve.http;
 
 
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServerResponse;
@@ -9,6 +11,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.List;
@@ -29,10 +32,11 @@ import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
-public class RecoeveWebClient {
+public class RecoeveWebClient extends AbstractVerticle {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
+	private static final int DEFAULT_MAX_DRIVERS = 5;
 	private static final int UNTIL_TOP = 20;
 	public static final Map<String, String> hostCSSMap;
 	static {
@@ -50,7 +54,8 @@ public class RecoeveWebClient {
 	private final long timeoutMilliSecs = 7000L;
 	private final long findPerMilliSecs = 500L;
 	private final ChromeOptions chromeOptions;
-	private final WebDriver chromeDriver;
+	private ConcurrentLinkedQueue<WebDriver> driverPool;
+	private int maxDrivers;
 
 	public RecoeveWebClient(Vertx vertx, RecoeveDB db) {
 		this.vertx = vertx;
@@ -59,7 +64,29 @@ public class RecoeveWebClient {
 		chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments("--headless=new");
 		chromeOptions.addArguments("--remote-allow-origins=*");
-		chromeDriver = new ChromeDriver(chromeOptions);
+	}
+
+	@Override
+	public void start(Promise<Void> startPromise) {
+		maxDrivers = config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
+		driverPool = new ConcurrentLinkedQueue<>();
+		startPromise.complete();
+	}
+
+	private WebDriver getDriver() {
+		WebDriver driver = driverPool.poll();
+		if (driver == null && driverPool.size() < maxDrivers) {
+			driver = new ChromeDriver(chromeOptions);
+		}
+		return driver;
+	}
+
+	private void releaseDriver(WebDriver driver) {
+		if (driverPool.size() < maxDrivers) {
+			driverPool.offer(driver);
+		} else {
+			driver.quit();
+		}
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
@@ -200,6 +227,7 @@ public class RecoeveWebClient {
 		};
 
 		try {
+			WebDriver chromeDriver = getDriver();
 			chromeDriver.get(uri);
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
 					.thenApply(applyFn);
@@ -249,6 +277,7 @@ public class RecoeveWebClient {
 				if (!resp.ended()) {
 					resp.end(errorMsg);
 				}
+				releaseDriver(chromeDriver);
 			});
 		}
 		catch (NoSuchSessionException e) {
