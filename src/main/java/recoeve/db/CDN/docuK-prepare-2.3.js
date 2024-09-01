@@ -2021,7 +2021,7 @@ m.shareSNS = async function (service) {
 };
 
 // Delayed Loading. (Copied from user-page.html)
-m.delayPad = m.delayPad || 1024;
+m.delayPad = m.delayPad || 0;
 m.wait = m.wait || 1024;
 m.$delayedElems = $("#nothing");
 m.previous = Date.now();
@@ -2066,35 +2066,43 @@ $.fn.delayedLoad = function () {
 	return done;
 };
 m.delayedLoadAll = function () {
-	m.logPrint(`<br/>Doing delayed-load. : ${m.$delayedElems.length}`);
-	if (m.$delayedElems.length > 0) {
-		m.$delayedElems.each(function () {
-			if ($(this).delayedLoad()) {
-				m.$delayedElems = m.$delayedElems.not(this);
-				m.logPrint(`<br/><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br/>${m.$delayedElems.length} of $delayedElems are remained.<br/>`);
-			}
-		});
-		m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
-	}
-	else {
-		m.logPrint(`<br/><br/>All delayedElem are loaded.`);
-		m.$window.off("scroll.delayedLoad");
-	}
-	m.previous = Date.now();
+	return new Promise(async function (resolve, reject) {
+		m.logPrint(`<br/>Doing delayed-load. : ${m.$delayedElems.length}`);
+		if (m.$delayedElems.length > 0) {
+			m.$delayedElems.each(function () {
+				if ($(this).delayedLoad()) {
+					m.$delayedElems = m.$delayedElems.not(this);
+					m.logPrint(`<br/><span class="emph">${this} at vertical position of ${(100.0 * $(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br/>${m.$delayedElems.length} of $delayedElems are remained.<br/>`);
+				}
+			});
+			m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
+		}
+		else {
+			m.logPrint(`<br/><br/>All delayedElem are loaded.`);
+			m.$window.off("scroll.delayedLoad");
+		}
+		m.previous = Date.now();
+		resolve();
+	});
 };
 m.delayedLoadByScroll = function () {
-	m.$window.off("scroll.delayedLoad");
-	let now = Date.now();
-	let passed = now - m.previous;
-	if (passed > m.wait) {
-		m.delayedLoadAll();
-	}
-	else {
-		setTimeout(function () {
-			m.delayedLoadAll();
-		}, m.wait * 1.5 - passed);
-		m.logPrint(`<br/>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
-	}
+	return new Promise(async function (resolve, reject) {
+		m.$window.off("scroll.delayedLoad");
+		let now = Date.now();
+		let passed = now - m.previous;
+		if (passed > m.wait) {
+			await m.delayedLoadAll();
+			resolve();
+		}
+		else {
+			clearTimeout(m.setTimeoutDelayedLoad);
+			m.setTimeoutDelayedLoad = setTimeout(async function () {
+				await m.delayedLoadAll();
+				resolve();
+			}, m.wait * 1.5 - passed);
+			m.logPrint(`<br/>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
+		}
+	});
 };
 m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 
