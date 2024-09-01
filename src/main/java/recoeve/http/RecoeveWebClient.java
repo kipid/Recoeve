@@ -22,10 +22,10 @@ import java.util.HashMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-// import org.openqa.selenium.chrome.ChromeDriver;
-// import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+// import org.openqa.selenium.edge.EdgeDriver;
+// import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -58,8 +58,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public long[] pID = {0, 0, 0};
 	public long timeoutMilliSecs = 7000L;
 	public long findPerMilliSecs = 500L;
-	// public ChromeOptions chromeOptions;
-	public EdgeOptions edgeOptions;
+	public ChromeOptions chromeOptions;
+	// public EdgeOptions edgeOptions;
 	public int maxDrivers;
 	public ConcurrentLinkedQueue<WebDriver> driverPool;
 
@@ -68,12 +68,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
-		edgeOptions = new EdgeOptions();
-		edgeOptions.addArguments("--headless", "--remote-allow-origins=*");
-		edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		// chromeOptions = new ChromeOptions();
-		// chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-		// chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		// edgeOptions = new EdgeOptions();
+		// edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
+		// edgeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		chromeOptions = new ChromeOptions();
+		chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
+		chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
 	}
 
 	@Override
@@ -86,7 +86,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	private WebDriver getDriver() {
 		WebDriver driver = driverPool.poll();
 		if (driver == null && driverPool.size() < maxDrivers) {
-			driver = new EdgeDriver(edgeOptions);
+			// driver = new EdgeDriver(edgeOptions);
+			driver = new ChromeDriver(chromeOptions);
 		}
 		return driver;
 	}
