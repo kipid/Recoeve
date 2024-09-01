@@ -65,6 +65,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
+		chromeOptions.setBinary("C:/Recoeve/chromedriver-win64/chromedriver.exe");
 		chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
 	}
 
