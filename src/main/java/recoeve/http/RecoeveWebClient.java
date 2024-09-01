@@ -45,7 +45,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
-		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/chromedriver-win64/chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "\\Recoeve\\chromedriver-win64\\chromedriver.exe");
 	}
 
 	public Vertx vertx;
@@ -65,7 +65,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		chromeOptions = new ChromeOptions();
-		chromeOptions.setBinary("C:/Recoeve/chromedriver-win64/chromedriver.exe");
+		chromeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\chromedriver-win64\\chromedriver.exe");
 		chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
 	}
 
