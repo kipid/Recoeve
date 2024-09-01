@@ -749,7 +749,9 @@ textarea.multi-line {
 }
 
 #new-reco #error-msg {
-	margin:0
+	margin:0;
+	max-height:15em;
+	overflow-y:auto
 }
 
 #new-reco .def-cat,
