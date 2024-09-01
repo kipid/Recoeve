@@ -59,7 +59,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public long timeoutMilliSecs = 7000L;
 	public long findPerMilliSecs = 500L;
 	// public ChromeOptions chromeOptions;
-	public EdgeOptions options;
+	public EdgeOptions edgeOptions;
 	public int maxDrivers;
 	public ConcurrentLinkedQueue<WebDriver> driverPool;
 
@@ -68,7 +68,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
-		options = new EdgeOptions();
+		edgeOptions = new EdgeOptions();
+		edgeOptions.addArguments("--start-maximized", "--headless", "--user-data-dir=C:\\Users\\kipid\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default");
+		edgeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\webdriver\\msedgedriver.exe");
 		// chromeOptions = new ChromeOptions();
 		// chromeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\webdriver\\chromedriver.exe");
 		// chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
@@ -84,7 +86,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	private WebDriver getDriver() {
 		WebDriver driver = driverPool.poll();
 		if (driver == null && driverPool.size() < maxDrivers) {
-			driver = new ChromeDriver(chromeOptions);
+			driver = new EdgeDriver(edgeOptions);
 		}
 		return driver;
 	}
