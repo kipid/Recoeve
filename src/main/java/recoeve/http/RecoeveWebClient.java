@@ -47,8 +47,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
-		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "\\Recoeve\\webdriver\\msedgedriver.exe");
-		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "\\Recoeve\\webdriver\\chromedriver.exe");
+		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
+		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 	}
 
 	public Vertx vertx;
@@ -69,10 +69,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
 		edgeOptions = new EdgeOptions();
-		edgeOptions.addArguments("--start-maximized", "--headless", "--user-data-dir=C:\\Users\\kipid\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default");
-		edgeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\webdriver\\msedgedriver.exe");
+		edgeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
 		// chromeOptions = new ChromeOptions();
-		// chromeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\webdriver\\chromedriver.exe");
+		// chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 		// chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
 	}
 
