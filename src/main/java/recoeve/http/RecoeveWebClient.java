@@ -22,8 +22,10 @@ import java.util.HashMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+// import org.openqa.selenium.chrome.ChromeDriver;
+// import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -45,7 +47,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
-		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "\\Recoeve\\chromedriver-win64\\chromedriver.exe");
+		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "\\Recoeve\\webdriver\\msedgedriver.exe");
+		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "\\Recoeve\\webdriver\\chromedriver.exe");
 	}
 
 	public Vertx vertx;
@@ -55,7 +58,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public long[] pID = {0, 0, 0};
 	public long timeoutMilliSecs = 7000L;
 	public long findPerMilliSecs = 500L;
-	public ChromeOptions chromeOptions;
+	// public ChromeOptions chromeOptions;
+	public EdgeOptions options;
 	public int maxDrivers;
 	public ConcurrentLinkedQueue<WebDriver> driverPool;
 
@@ -64,9 +68,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
-		chromeOptions = new ChromeOptions();
-		chromeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\chromedriver-win64\\chromedriver.exe");
-		chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		options = new EdgeOptions();
+		// chromeOptions = new ChromeOptions();
+		// chromeOptions.setBinary(FileMap.preFilePath + "\\Recoeve\\webdriver\\chromedriver.exe");
+		// chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
 	}
 
 	@Override
