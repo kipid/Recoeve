@@ -551,7 +551,7 @@ Log <span class="bold underline">o</span>ut
 				break;
 			case 'KeyI':
 				m.docCookies.removeItem("REACTION_GUEST", "/");
-				window.location.href = "https://www.tistory.com/auth/login";
+				window.location.href = `https://www.tistory.com/auth/login?redirectUrl=${encodeURIComponent(window.location.href)}&isPopup=true`;
 				break;
 			case 'KeyO':
 				window.location.href = "https://www.tistory.com/auth/logout";
