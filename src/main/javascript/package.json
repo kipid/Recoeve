@@ -1,5 +1,10 @@
 {
+  "type": "module",
   "dependencies": {
     "selenium-webdriver": "^4.24.0"
+  },
+  "devDependencies": {
+    "@types/selenium-webdriver": "^4.1.26",
+    "esbuild": "0.23.1"
   }
 }
