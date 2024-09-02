@@ -301,7 +301,7 @@ m.reco_do = function (args, err) {
 			res[0].push(res[0]["cats"]);
 		}
 		console.log(strRecoDoJSON, res);
-		$error.html(m.arrayToTableHTML(res, true, [10, 10, 35, 35, 10]));
+		$error.html(m.arrayToTableHTML(res, true, [35, 35, 10, 10, 10]));
 	}).always(function () {
 		$button_multireco.removeClass("disabled");
 	});
