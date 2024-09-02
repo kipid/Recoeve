@@ -2,6 +2,24 @@ package recoeve.http;
 
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Promise;
@@ -10,27 +28,6 @@ import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-// import org.openqa.selenium.edge.EdgeDriver;
-// import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.InvalidElementStateException;
-import org.openqa.selenium.NoSuchSessionException;
-
 import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
@@ -43,16 +40,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int UNTIL_TOP = 20;
 	public static final Map<String, String> hostCSSMap;
 	static {
-		hostCSSMap = new HashMap<String, String>(10);
+		hostCSSMap = new HashMap<>(10);
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
-		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 	}
 
-	public Vertx vertx;
-	public Context context;
+	public final Vertx vertx;
+	public final Context context;
 	public RecoeveDB db;
 	public WebClient webClient;
 	public long[] pID = {0, 0, 0};
@@ -61,19 +56,22 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public ChromeOptions chromeOptions;
 	// public EdgeOptions edgeOptions;
 	public int maxDrivers;
-	public ConcurrentLinkedQueue<WebDriver> driverPool;
+	private ConcurrentLinkedQueue<TimestampedDriver> driverPool;
+	private final long driverTimeout = 300000; // 5 minutes in milliseconds
 
 	public RecoeveWebClient(Vertx vertx, Context context, RecoeveDB db) {
 		this.vertx = vertx;
 		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
+		// System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
 		// edgeOptions = new EdgeOptions();
 		// edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
 		// edgeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
 		chromeOptions = new ChromeOptions();
-		chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-		chromeOptions.addArguments("--headless", "--remote-allow-origins=*");
+		chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
+		chromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
 	}
 
 	@Override
@@ -83,20 +81,58 @@ public class RecoeveWebClient extends AbstractVerticle {
 		startPromise.complete();
 	}
 
-	private WebDriver getDriver() {
-		WebDriver driver = driverPool.poll();
-		if (driver == null && driverPool.size() < maxDrivers) {
-			// driver = new EdgeDriver(edgeOptions);
-			driver = new ChromeDriver(chromeOptions);
+	private static class TimestampedDriver {
+		final WebDriver driver;
+		final long timestamp;
+
+		TimestampedDriver(WebDriver driver, long timestamp) {
+			this.driver = driver;
+			this.timestamp = timestamp;
 		}
-		return driver;
 	}
 
-	private void releaseDriver(WebDriver driver) {
+	private WebDriver getDriver() {
+		TimestampedDriver timestampedDriver;
+		while ((timestampedDriver = driverPool.poll()) != null) {
+			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
+				quitDriver(timestampedDriver.driver);
+			} else {
+				return timestampedDriver.driver;
+			}
+		}
+
 		if (driverPool.size() < maxDrivers) {
-			driverPool.offer(driver);
-		} else {
+			try {
+				return new ChromeDriver(chromeOptions);
+			} catch (Exception err) {
+				System.out.println("Failed to create new WebDriver: " + err);
+			}
+		}
+		return new ChromeDriver(chromeOptions);
+	}
+
+	private void quitDriver(WebDriver driver) {
+		try {
 			driver.quit();
+		} catch (Exception e) {
+			System.out.println("Error quitting WebDriver: " + e);
+		}
+	}
+
+	private synchronized void releaseDriver(WebDriver driver) {
+		if (driver != null) {
+			if (driverPool.size() < maxDrivers) {
+				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+			} else {
+				quitDriver(driver);
+			}
+		}
+	}
+
+	public void cleanupDrivers() {
+		TimestampedDriver timestampedDriver;
+		while ((timestampedDriver = driverPool.poll()) != null) {
+			quitDriver(timestampedDriver.driver);
 		}
 	}
 
@@ -108,7 +144,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				.onSuccess(response -> {
 					if (response.statusCode() >= 200 && response.statusCode() < 300) {
 						List<String> followedURIs = response.followedRedirects();
-						if (followedURIs.size() > 0) {
+						if (!followedURIs.isEmpty()) {
 							String fullURI = followedURIs.get(followedURIs.size() - 1);
 							System.out.println("The last redirected URL: " + fullURI);
 							completableFuture.complete(fullURI);
@@ -116,8 +152,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					}
 				})
 				.onFailure(throwable -> {
-					throwable.printStackTrace();
-					System.out.println("Sended originalURI.");
+					System.out.println("Sended originalURI.: " + throwable.getMessage());
 					completableFuture.complete(originalURI);
 				});
 		}
@@ -145,7 +180,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 						if (!text.isEmpty()) {
 							someIsNotEmpty = true;
-							sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
+							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
 						}
 					}
 					if (someIsNotEmpty) {
@@ -186,7 +221,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 						if (text.isEmpty()) {
 							return;
 						}
-						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
+						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
 					}
 					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
@@ -207,7 +242,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
 					String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 					if (!text.isEmpty()) {
-						sb.append("\n" + cssSelector+"-"+i + "\t" + StrArray.enclose(text));
+						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
 					}
 				}
 				cfElements.complete(sb.toString());
@@ -297,6 +332,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		catch (Exception e) {
 			resp.end("\nError: " + e.getMessage());
 		}
+	}
+
+	@Override
+	public void stop(Promise<Void> stopPromise) {
+		cleanupDrivers();
+		stopPromise.complete();
 	}
 
 	public static void main(String... args) {
