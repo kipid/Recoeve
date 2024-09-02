@@ -45,35 +45,54 @@ var selenium_webdriver_1 = require("selenium-webdriver");
                 case 0: return [4 /*yield*/, new selenium_webdriver_1.Builder().forBrowser(selenium_webdriver_1.Browser.CHROME).build()];
                 case 1:
                     driver = _a.sent();
-                    try {
-                        driver.get('https://kipid.tistory.com/entry/Lists')
-                            .then(function findHeads() {
-                            var _this = this;
-                            var heads = driver.findElements(selenium_webdriver_1.By.css('title, h1, h2'));
-                            heads.then(function (heads) {
-                                if (!heads.some(function (head) { return __awaiter(_this, void 0, void 0, function () {
-                                    var headText;
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, head.getText()];
-                                            case 1:
-                                                headText = _a.sent();
-                                                headText = headText.replace(/\s/g, " ").trim();
-                                                console.log(headText);
-                                                return [2 /*return*/, !!headText.length];
-                                        }
-                                    });
-                                }); })) {
-                                    setTimeout(findHeads, 200);
-                                }
-                            });
-                        });
-                    }
-                    finally {
-                        driver.quit();
-                    }
-                    return [2 /*return*/];
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, , 5, 7]);
+                    return [4 /*yield*/, driver.get('https://kipid.tistory.com/entry/Lists')];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, findHeads(driver)];
+                case 4:
+                    _a.sent();
+                    return [3 /*break*/, 7];
+                case 5: return [4 /*yield*/, driver.quit()];
+                case 6:
+                    _a.sent();
+                    return [7 /*endfinally*/];
+                case 7: return [2 /*return*/];
             }
         });
     });
 })();
+function findHeads(driver) {
+    return __awaiter(this, void 0, void 0, function () {
+        var heads, _i, heads_1, head, headText;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.css('title, h1, h2'))];
+                case 1:
+                    heads = _a.sent();
+                    _i = 0, heads_1 = heads;
+                    _a.label = 2;
+                case 2:
+                    if (!(_i < heads_1.length)) return [3 /*break*/, 5];
+                    head = heads_1[_i];
+                    return [4 /*yield*/, head.getText()];
+                case 3:
+                    headText = _a.sent();
+                    headText = headText.replace(/\s/g, ' ').trim();
+                    console.log(headText);
+                    if (headText.length) {
+                        return [2 /*return*/]; // Exit the loop if we find a non-empty headText
+                    }
+                    _a.label = 4;
+                case 4:
+                    _i++;
+                    return [3 /*break*/, 2];
+                case 5:
+                    setTimeout(function () { return findHeads(driver); }, 200);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
