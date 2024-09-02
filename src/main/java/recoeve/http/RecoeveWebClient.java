@@ -18,8 +18,8 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -37,6 +37,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final WebClientOptions options = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
+	public static final int MIN_PORT = 50000;
+	public static final int MAX_PORT = 60000;
 	public static final int DEFAULT_MAX_DRIVERS = 5;
 	public static final int UNTIL_TOP = 20;
 	public static final Map<String, String> hostCSSMap;
@@ -47,77 +49,100 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 	}
 
-	public final Vertx vertx;
-	public final Context context;
 	public RecoeveDB db;
 	public WebClient webClient;
 	public long[] pID = {0, 0, 0};
 	public long timeoutMilliSecs = 7000L;
 	public long findPerMilliSecs = 500L;
-	public EdgeOptions edgeOptions;
-	// public ChromeOptions chromeOptions;
+	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
-	private ConcurrentLinkedQueue<TimestampedDriver> driverPool;
-	private final long driverTimeout = 300000; // 5 minutes in milliseconds
+	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
+	public final long driverTimeout = 300000; // 5 minutes in milliseconds
+	public final int RECURSE_MAX = 10;
+	public int recurseCount;
+	public int curPort;
 
 	public RecoeveWebClient(Vertx vertx, Context context, RecoeveDB db) {
 		this.vertx = vertx;
 		this.context = context;
 		this.db = db;
+		curPort = MIN_PORT;
 		webClient = WebClient.create(vertx, options);
-		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		edgeOptions = new EdgeOptions();
-		edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		edgeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
-		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
-		// chromeOptions = new ChromeOptions();
-		// chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
-		// chromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
+		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
+		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
+		driverPool = new ConcurrentLinkedQueue<>();
+		recurseCount = 0;
 	}
 
 	@Override
 	public void start(Promise<Void> startPromise) {
-		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
-		driverPool = new ConcurrentLinkedQueue<>();
-		startPromise.complete();
 	}
 
 	private static class TimestampedDriver {
-		final WebDriver driver;
-		final long timestamp;
+		public final WebDriver driver;
+		public final long timestamp;
 
-		TimestampedDriver(WebDriver driver, long timestamp) {
+		public TimestampedDriver(WebDriver driver, long timestamp) {
 			this.driver = driver;
 			this.timestamp = timestamp;
 		}
 	}
 
-	private WebDriver getDriver() {
+	private WebDriver getDriver() throws RuntimeException {
+		recurseCount++;
+		if (recurseCount >= RECURSE_MAX) {
+			recurseCount = 0;
+			throw new RuntimeException("Error: Too many recursive!");
+		}
 		TimestampedDriver timestampedDriver;
 		while ((timestampedDriver = driverPool.poll()) != null) {
 			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
 				quitDriver(timestampedDriver.driver);
 			} else {
+				recurseCount = 0;
 				return timestampedDriver.driver;
 			}
 		}
 
 		if (driverPool.size() < maxDrivers) {
 			try {
-				return new EdgeDriver(edgeOptions);
-				// return new ChromeDriver(chromeOptions);
-			} catch (Exception err) {
+				curChromeOptions = new ChromeOptions();
+				curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
+				curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curPort++;
+				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
+				return this.getDriver();
+			}
+			catch (RuntimeException err) {
+				System.out.println(err.getMessage());
+			}
+			catch (Exception err) {
 				System.out.println("Failed to create new WebDriver: " + err);
 			}
 		}
-		return new EdgeDriver(edgeOptions);
-		// return new ChromeDriver(chromeOptions);
+		else {
+			cleanupDrivers();
+			curChromeOptions = new ChromeOptions();
+			curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
+			curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curPort++;
+			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
+		}
+		if (recurseCount >= RECURSE_MAX) {
+			return this.getDriver();
+		}
+		else {
+			throw new RuntimeException("Error: Too many recursive!");
+		}
 	}
 
 	private void quitDriver(WebDriver driver) {
 		try {
 			driver.quit();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.out.println("Error quitting WebDriver: " + e);
 		}
 	}
@@ -191,7 +216,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 						cfElements.complete(sb.toString());
 					}
 				}
-			} catch (NoSuchElementException
+			}
+			catch (NoSuchElementException
 				| StaleElementReferenceException
 				| InvalidElementStateException
 				| VertxException err) {
@@ -229,7 +255,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
 				}
-			} catch (NoSuchElementException
+			}
+			catch (NoSuchElementException
 				| StaleElementReferenceException
 				| InvalidElementStateException
 				| VertxException err) {
@@ -277,7 +304,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		try {
 			WebDriver chromeDriver = getDriver();
-			// chromeDriver.get("https://www.youtube.com/watch?v=IsCk4-b-c2E");
 			vertx.setTimer(200, id -> {
 				try {
 					chromeDriver.get((new URI(uri.trim())).toString());
@@ -302,7 +328,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 									System.out.println(result);
 								}
 								resp.write(result, Recoeve.ENCODING);
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								result = "\nError: writing chunk: " + e.getMessage();
 								System.err.println(result);
 								resp.write(result, Recoeve.ENCODING);
@@ -343,6 +370,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 		catch (NoSuchSessionException e) {
 			resp.end("\nError: No valid session. Please try again.");
 		}
+		catch (RuntimeException e) {
+			resp.end("\n" + e.getMessage());
+		}
 		catch (Exception e) {
 			resp.end("\nError: " + e.getMessage());
 		}
@@ -351,10 +381,28 @@ public class RecoeveWebClient extends AbstractVerticle {
 	@Override
 	public void stop(Promise<Void> stopPromise) {
 		cleanupDrivers();
-		stopPromise.complete();
 	}
 
 	public static void main(String... args) {
-		// Do nothing.
+		MainVerticle verticle = new MainVerticle();
+		try {
+			verticle.start();
+			verticle.getVertx().setTimer(1000, id -> {
+				WebDriver chromeDriver = verticle.recoeveWebClient.getDriver();
+				chromeDriver.get("https://www.youtube.com/watch?v=1MhugHxbhGE");
+				try {
+					verticle.recoeveWebClient.asyncFindTitle(chromeDriver, "h1")
+							.thenAccept(result -> {
+								System.out.println(result);
+							});
+				}
+				catch (Exception err0) {
+					System.out.println("Error: " + err0.getMessage());
+				}
+			});
+		}
+		catch (Exception err) {
+			System.out.println("Error: " + err.getMessage());
+		}
 	}
 }
