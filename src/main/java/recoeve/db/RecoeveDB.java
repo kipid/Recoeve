@@ -9,8 +9,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 // import io.vertx.sqlclient.PreparedStatement;
 
-import java.lang.StringBuilder;
-
 import java.nio.ByteBuffer;
 
 import java.security.MessageDigest;
@@ -26,7 +24,6 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -45,26 +42,26 @@ import recoeve.http.Gmail;
 import recoeve.http.Cookie;
 
 public class RecoeveDB {
-	public static final String encoding = "UTF-8";
-	public static final int port = 443;
-	public static final String domain = "recoeve.net";
-	// "localhost:"+port;
-	// domain="localhost" does not works in cookie.
+	public static final String ENCODING = "UTF-8";
+	public static final int PORT = 443;
+	public static final String DOMAIN = "recoeve.net";
+	// "localhost:"+PORT;
+	// DOMAIN="localhost" does not works in cookie.
 
-	public static final int minsChangePwdToken = 10; // 10 minutes
-	public static final long secondsChangePwdToken = 60L * minsChangePwdToken;
+	public static final int MINUTES_CHANGE_PWD_TOKEN = 10; // 10 minutes
+	public static final long SECONDS_CHANGE_PWD_TOKEN = 60L * MINUTES_CHANGE_PWD_TOKEN;
 
-	public static final long secondsVerifyUser = 24 * 60 * 60; // 24 hours
+	public static final long SECONDS_VERIFY_USER = 24 * 60 * 60; // 24 hours
 
-	public static final int daysSSN = 7 * 50; // 50 weeks ~ 1 year
-	public static final int hoursSSN = 24 * daysSSN;
-	public static final long secondsSSN = hoursSSN * 60 * 60L;
+	public static final int DAYS_SSN = 7 * 50; // 50 weeks ~ 1 year
+	public static final int HOURS_SSN = 24 * DAYS_SSN;
+	public static final long SECONDS_SSN = HOURS_SSN * 60 * 60L;
 
-	public static final int daysRMB = 365;
-	public static final long secondsRMB = daysRMB * 24 * 60 * 60L;
+	public static final int DAYS_RMB = 365;
+	public static final long SECONDS_RMB = DAYS_RMB * 24 * 60 * 60L;
 
-	public static final int daysRMBtoken = 90;
-	public static final long secondsRMBtoken = daysRMBtoken * 24 * 60 * 60L;
+	public static final int DAYS_RMB_TOKEN = 90;
+	public static final long SECONDS_RMB_TOKEN = DAYS_RMB_TOKEN * 24 * 60 * 60L;
 
 	public static final Timestamp OLD = Timestamp.valueOf("2000-01-01 00:00:00");
 
@@ -212,161 +209,165 @@ public class RecoeveDB {
 			ds.setUser("eve");
 			ds.setPassword("$Re7pAkeoCo#ev3e");
 			ds.setServerTimezone("UTC");
-			vertx.executeBlocking(new Callable<Void>() {
-						@Override
-						public Void call() throws Exception {
-							con = ds.getConnection();
+			vertx.executeBlocking(() -> {
+				con = ds.getConnection();
 
-							pstmtGetLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`=?;");
-							pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `user_i`, `html`) VALUES (?, ?, ?);");
-							pstmtSelectLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`>=? AND `t`<?");
+				pstmtGetLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`=?;");
+				pstmtLogAccess = con.prepareStatement("INSERT INTO `logAccess` (`t`, `user_i`, `html`) VALUES (?, ?, ?);");
+				pstmtSelectLogAccess = con.prepareStatement("SELECT * FROM `logAccess` WHERE `t`>=? AND `t`<?");
 
-							pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
-							pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
-							pstmtPutRedirect = con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
+				pstmtGetRedirect = con.prepareStatement("SELECT `originalURI` FROM `redirect` WHERE `hashpath`=?;");
+				pstmtGetRedirectHashpath = con.prepareStatement("SELECT `hashpath` FROM `redirect` WHERE `originalURI`=?;");
+				pstmtPutRedirect = con.prepareStatement("INSERT INTO `redirect` (`hashpath`, `originalURI`) VALUES (?, ?);");
 
-							pstmtPutBlogStat1 = con.prepareStatement(
-									"INSERT INTO `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
-							pstmtGetBlogStat1 = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<?;");
-							pstmtGetBlogStat1WithHost = con
-									.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
-							pstmtDelBlogStat1 = con.prepareStatement("DELETE FROM `BlogStat1` WHERE `t`<?;");
+				pstmtPutBlogStat1 = con.prepareStatement(
+						"INSERT INTO `BlogStat1` (`t`, `ip`, `URI`, `referer`, `REACTION_GUEST`, `host`) VALUES (?, ?, ?, ?, ?, ?);");
+				pstmtGetBlogStat1 = con.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<?;");
+				pstmtGetBlogStat1WithHost = con
+						.prepareStatement("SELECT * FROM `BlogStat1` WHERE `t`>=? AND `t`<? AND `host`=?;");
+				pstmtDelBlogStat1 = con.prepareStatement("DELETE FROM `BlogStat1` WHERE `t`<?;");
 
-							pstmtPutPreGoogle = con
-									.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
-							pstmtGetPreGoogle = con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
+				pstmtPutPreGoogle = con
+						.prepareStatement("INSERT INTO `PreGoogle` (`t`, `ip`, `state`, `data`) VALUES (?, ?, ?, ?);");
+				pstmtGetPreGoogle = con.prepareStatement("SELECT * FROM `PreGoogle` WHERE `ip`=? and `state`=?;");
 
-							pstmtSession = con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtCreateAuthToken = con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
-							pstmtCheckAuthToken = con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtUpdateAuthToken = con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
-							pstmtCreateUser = con.prepareStatement(
-									"INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				pstmtSession = con.prepareStatement("SELECT * FROM `UserSession1` WHERE `user_i`=? and `tCreate`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtCreateAuthToken = con.prepareStatement("INSERT INTO `AuthToken` (`t`, `ip`, `token`) VALUES (?, ?, ?);");
+				pstmtCheckAuthToken = con.prepareStatement("SELECT * FROM `AuthToken` WHERE `t`=? and `ip`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtUpdateAuthToken = con.prepareStatement("UPDATE `AuthToken` SET `new`=false WHERE `t`=? and `ip`=?;");
+				pstmtCreateUser = con.prepareStatement(
+						"INSERT INTO `Users` (`i`, `id`, `email`, `pwd_salt`, `pwd`, `veriKey`, `ipReg`, `tReg`, `tLastVisit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-							pstmtDeleteUserCatList = con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
-							pstmtCreateEmailStat = con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
-							pstmtFindEmailStat = con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtCreateUserSession = con.prepareStatement(
-									"INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
-							pstmtCreateUserRemember = con.prepareStatement(
-									"INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-							pstmtCheckUserRemember = con.prepareStatement(
-									"SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-									ResultSet.CONCUR_UPDATABLE);
+				pstmtDeleteUserCatList = con.prepareStatement("DELETE FROM `CatList` WHERE `user_i`=?");
+				pstmtCreateEmailStat = con.prepareStatement("INSERT INTO `EmailStat` (`emailHost`) VALUES (?);");
+				pstmtFindEmailStat = con.prepareStatement("SELECT * FROM `EmailStat` WHERE `emailHost`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtCreateUserSession = con.prepareStatement(
+						"INSERT INTO `UserSession1` (`user_i`, `tCreate`, `encryptedSSN`, `salt`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?);");
+				pstmtCreateUserRemember = con.prepareStatement(
+						"INSERT INTO `UserRemember` (`user_i`, `tCreate`, `auth`, `token`, `log`, `sW`, `sH`, `ip`, `userAgent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				pstmtCheckUserRemember = con.prepareStatement(
+						"SELECT * FROM `UserRemember` WHERE `user_i`=? and `tCreate`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
 
-							pstmtDelUserSession1 = con.prepareStatement("DELETE FROM `UserSession1` WHERE `user_i`=?;");
-							pstmtDelUserRemember = con.prepareStatement("DELETE FROM `UserRemember` WHERE `user_i`=?;");
+				pstmtDelUserSession1 = con.prepareStatement("DELETE FROM `UserSession1` WHERE `user_i`=?;");
+				pstmtDelUserRemember = con.prepareStatement("DELETE FROM `UserRemember` WHERE `user_i`=?;");
 
-							pstmtFindUserByIndex = con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtFindUserById = con.prepareStatement("SELECT * FROM `Users` WHERE `id`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtFindUserByEmail = con.prepareStatement("SELECT * FROM `Users` WHERE `email`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtFindUserByIndex = con.prepareStatement("SELECT * FROM `Users` WHERE `i`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtFindUserById = con.prepareStatement("SELECT * FROM `Users` WHERE `id`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtFindUserByEmail = con.prepareStatement("SELECT * FROM `Users` WHERE `email`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-							pstmtGetUserIndexToPut = con.prepareStatement("SELECT * FROM `UserClass` WHERE `class`=-1;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtUpdateUserClass = con.prepareStatement("UPDATE `UserClass` SET `count`=`count`+? WHERE `class`=?;");
-							pstmtLog = con.prepareStatement(
-									"INSERT INTO `LogInLogs` (`user_i`, `t`, `ip`, `log`, `success`, `desc`) VALUES (?, ?, ?, ?, ?, ?);");
+				pstmtGetUserIndexToPut = con.prepareStatement("SELECT * FROM `UserClass` WHERE `class`=-1;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtUpdateUserClass = con.prepareStatement("UPDATE `UserClass` SET `count`=`count`+? WHERE `class`=?;");
+				pstmtLog = con.prepareStatement(
+						"INSERT INTO `LogInLogs` (`user_i`, `t`, `ip`, `log`, `success`, `desc`) VALUES (?, ?, ?, ?, ?, ?);");
 
-							// pstmtGetWholeRecos = con.prepareStatement("SELECT * FROM `Recos1` WHERE
-							// `user_i`=?;",
-							// ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtGetReco = con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=? and `uri`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutReco = con.prepareStatement(
-									"INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				// pstmtGetWholeRecos = con.prepareStatement("SELECT * FROM `Recos1` WHERE
+				// `user_i`=?;",
+				// ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtGetReco = con.prepareStatement("SELECT * FROM `Recos1` WHERE `user_i`=? and `uri`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutReco = con.prepareStatement(
+						"INSERT INTO `Recos1` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`, `cmt`, `val`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-							pstmtGetCatList = con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutCatList = con
-									.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
-							pstmtGetUriList = con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutUriList = con
-									.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
+				pstmtGetCatList = con.prepareStatement("SELECT * FROM `CatList` WHERE `user_i`=? and `listName`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutCatList = con
+						.prepareStatement("INSERT INTO `CatList` (`user_i`, `listName`, `catList`) VALUES (?, ?, ?);");
+				pstmtGetUriList = con.prepareStatement("SELECT * FROM `UriList` WHERE `user_i`=? and `cat`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutUriList = con
+						.prepareStatement("INSERT INTO `UriList` (`user_i`, `cat`, `uriList`) VALUES (?, ?, ?);");
 
-							pstmtPutRecentests = con.prepareStatement(
-									"INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
-							// pstmtCutAndPutRecentests = con.prepareStatement(
-							// "UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?),
-							// ?), `N`=? WHERE `uri`=?;");
+				pstmtPutRecentests = con.prepareStatement(
+						"INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
+				// pstmtCutAndPutRecentests = con.prepareStatement(
+				// "UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?),
+				// ?), `N`=? WHERE `uri`=?;");
 
-							pstmtPutNeighbor = con.prepareStatement(
-									"INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-							pstmtGetNeighbor = con.prepareStatement(
-									"SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtDelNeighbor = con.prepareStatement(
-									"DELETE FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;");
-							pstmtPutNeighborListFrom = con.prepareStatement(
-									"INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
-							pstmtUpdateNeighborListFrom0 = con.prepareStatement(
-									"UPDATE `NeighborListFrom` SET `userCatList`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
-							pstmtUpdateNeighborListFrom = con.prepareStatement(
-									"UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
-							pstmtGetNeighborListFrom = con.prepareStatement(
-									"SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutNeighborListTo = con.prepareStatement(
-									"INSERT INTO `NeighborListTo` (`user_to`, `cat_to`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
-							pstmtUpdateNeighborListTo = con.prepareStatement(
-									"UPDATE `NeighborListTo` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_to`=? and `cat_to`=?;");
-							pstmtGetNeighborListTo = con.prepareStatement(
-									"SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-									ResultSet.CONCUR_UPDATABLE);
-							pstmtDelNeighborListTo = con
-									.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
+				pstmtPutNeighbor = con.prepareStatement(
+						"INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+				pstmtGetNeighbor = con.prepareStatement(
+						"SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtDelNeighbor = con.prepareStatement(
+						"DELETE FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;");
+				pstmtPutNeighborListFrom = con.prepareStatement(
+						"INSERT INTO `NeighborListFrom` (`user_from`, `cat_from`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+				pstmtUpdateNeighborListFrom0 = con.prepareStatement(
+						"UPDATE `NeighborListFrom` SET `userCatList`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
+				pstmtUpdateNeighborListFrom = con.prepareStatement(
+						"UPDATE `NeighborListFrom` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_from`=? and `cat_from`=?;");
+				pstmtGetNeighborListFrom = con.prepareStatement(
+						"SELECT * FROM `NeighborListFrom` WHERE `user_from`=? and `cat_from`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutNeighborListTo = con.prepareStatement(
+						"INSERT INTO `NeighborListTo` (`user_to`, `cat_to`, `userCatList`, `tUpdate`) VALUES (?, ?, ?, ?);");
+				pstmtUpdateNeighborListTo = con.prepareStatement(
+						"UPDATE `NeighborListTo` SET `userCatList`=?, `tUpdate`=?, `nUpdate`=`nUpdate`+1 WHERE `user_to`=? and `cat_to`=?;");
+				pstmtGetNeighborListTo = con.prepareStatement(
+						"SELECT * FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+				pstmtDelNeighborListTo = con
+						.prepareStatement("DELETE FROM `NeighborListTo` WHERE `user_to`=? and `cat_to`=?;");
 
-							// pstmtPutRecoStat = con.prepareStatement(
-							// "INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?,
-							// ?, 1);");
-							pstmtGetRecoStat = con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				// pstmtPutRecoStat = con.prepareStatement(
+				// "INSERT INTO `RecoStat` (`uri`, `recentests`, `tUpdate`, `N`) VALUES (?, ?,
+				// ?, 1);");
+				pstmtGetRecoStat = con.prepareStatement("SELECT * FROM `RecoStat` WHERE `uri`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-							pstmtPutRecoStatDefCat = con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
-							pstmtGetRecoStatDefCat = con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutRecoStatDefTitle = con
-									.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
-							pstmtGetRecoStatDefTitle = con.prepareStatement(
-									"SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-									ResultSet.CONCUR_UPDATABLE);
-							pstmtPutRecoStatDefDesc = con
-									.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
-							pstmtGetRecoStatDefDesc = con.prepareStatement(
-									"SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
-									ResultSet.CONCUR_UPDATABLE);
+				pstmtPutRecoStatDefCat = con.prepareStatement("INSERT INTO `RecoStatDefCat` (`uri`, `cat`) VALUES (?, ?);");
+				pstmtGetRecoStatDefCat = con.prepareStatement("SELECT * FROM `RecoStatDefCat` WHERE `uri`=? and `cat`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutRecoStatDefTitle = con
+						.prepareStatement("INSERT INTO `RecoStatDefTitle` (`uri`, `title`) VALUES (?, ?);");
+				pstmtGetRecoStatDefTitle = con.prepareStatement(
+						"SELECT * FROM `RecoStatDefTitle` WHERE `uri`=? and `title`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+				pstmtPutRecoStatDefDesc = con
+						.prepareStatement("INSERT INTO `RecoStatDefDesc` (`uri`, `descHash`, `desc`) VALUES (?, ?, ?);");
+				pstmtGetRecoStatDefDesc = con.prepareStatement(
+						"SELECT * FROM `RecoStatDefDesc` WHERE `uri`=? and `descHash`=?;", ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
 
-							pstmtPutRecoStatDefCatSet = con
-									.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
-							pstmtGetRecoStatDefCatSet = con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutRecoStatDefTitleSet = con
-									.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
-							pstmtGetRecoStatDefTitleSet = con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							pstmtPutRecoStatDefDescSet = con
-									.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
-							pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
-									ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-							return null;
-						}
-					},
-					true,
-					res -> {
-						if (res.succeeded()) {
-							System.out.println("Database operation successful");
-						}
-						else {
-							System.err.println("Database operation failed: " + res.cause());
-						}
-					});
-		} catch (SQLException err) {
+				pstmtPutRecoStatDefCatSet = con
+						.prepareStatement("INSERT INTO `RecoStatDefCatSet` (`uri`, `catSet`) VALUES (?, ?);");
+				pstmtGetRecoStatDefCatSet = con.prepareStatement("SELECT * FROM `RecoStatDefCatSet` WHERE `uri`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutRecoStatDefTitleSet = con
+						.prepareStatement("INSERT INTO `RecoStatDefTitleSet` (`uri`, `titleSet`) VALUES (?, ?);");
+				pstmtGetRecoStatDefTitleSet = con.prepareStatement("SELECT * FROM `RecoStatDefTitleSet` WHERE `uri`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				pstmtPutRecoStatDefDescSet = con
+						.prepareStatement("INSERT INTO `RecoStatDefDescSet` (`uri`, `descSet`) VALUES (?, ?);");
+				pstmtGetRecoStatDefDescSet = con.prepareStatement("SELECT * FROM `RecoStatDefDescSet` WHERE `uri`=?;",
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				return null;
+			},
+			true,
+			res -> {
+				try {
+					if (res.succeeded()) {
+						System.out.println("Database operation successful");
+					}
+					else {
+						System.err.println("Database operation failed: " + res.cause());
+						res.failed();
+					}
+				}
+				catch (Exception err) {
+					System.out.println(err.getMessage());
+				}
+			});
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 	}
@@ -431,7 +432,8 @@ public class RecoeveDB {
 				if (rs != null && rs.next()) {
 					return rs.getString("html");
 				}
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
 			}
 			return "";
@@ -464,7 +466,8 @@ public class RecoeveDB {
 				return CompletableFuture.supplyAsync(() -> {
 					return htmlTotal;
 				});
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
 			}
 			return CompletableFuture.supplyAsync(() -> {
@@ -477,7 +480,8 @@ public class RecoeveDB {
 				cfs.forEach(cf -> {
 					try {
 						// System.out.println(cf.get());
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 					}
 				});
@@ -519,7 +523,8 @@ public class RecoeveDB {
 						while (rs.next()) {
 							sb.append(rs.getString("html"));
 						}
-					} catch (SQLException err) {
+					}
+					catch (SQLException err) {
 						err(err);
 					}
 				}
@@ -536,7 +541,8 @@ public class RecoeveDB {
 			if (rs.next()) {
 				return rs.getString("originalURI");
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return null;
@@ -549,7 +555,8 @@ public class RecoeveDB {
 			if (rs.next()) {
 				return longToHexString(rs.getLong("hashpath"));
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return null;
@@ -570,7 +577,8 @@ public class RecoeveDB {
 					}
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -635,7 +643,8 @@ public class RecoeveDB {
 				contents += "\tNot put blogstat.";
 				return heads + "\n" + contents;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		heads += "\terror";
@@ -676,7 +685,8 @@ public class RecoeveDB {
 					contents += "\t" + StrArray.enclose(stats.trim());
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return heads + contents;
@@ -689,7 +699,8 @@ public class RecoeveDB {
 			calendar.add(Calendar.DAY_OF_MONTH, -32); // Subtract 32 days from the current date
 			pstmtDelBlogStat1.setTimestamp(1, new Timestamp(calendar.getTimeInMillis()));
 			return pstmtDelBlogStat1.executeUpdate() > 0;
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -698,7 +709,8 @@ public class RecoeveDB {
 	public boolean idExists(String id) {
 		try {
 			return findUserById(id).next();
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false; // if error occurs.
@@ -707,7 +719,8 @@ public class RecoeveDB {
 	public boolean idAvailable(String id) {
 		try {
 			return !(findUserById(id).next());
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false; // if error occurs.
@@ -716,7 +729,8 @@ public class RecoeveDB {
 	public boolean emailAvailable(String email) {
 		try {
 			return !(findUserByEmail(email).next());
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false; // if error occurs.
@@ -730,7 +744,8 @@ public class RecoeveDB {
 			pstmtCreateAuthToken.setString(2, ip);
 			pstmtCreateAuthToken.setBytes(3, token);
 			done = (pstmtCreateAuthToken.executeUpdate() > 0);
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
@@ -787,11 +802,13 @@ public class RecoeveDB {
 			System.out.println(errMsg);
 			logsCommit(1, tNow, ip, "tkn", false, errMsg);
 			con.commit();
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 			try {
 				con.rollback();
-			} catch (SQLException e1) {
+			}
+			catch (SQLException e1) {
 				err(e1);
 			}
 		}
@@ -805,10 +822,11 @@ public class RecoeveDB {
 				Timestamp tFrom = Timestamp.valueOf(user.getString("tChangePwd"));
 				System.out.println(tNow + "\t" + tFrom);
 				return tFrom != null
-						&& checkTimeDiff(tNow, tFrom, secondsChangePwdToken)
+						&& checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)
 						&& Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -821,10 +839,11 @@ public class RecoeveDB {
 				Timestamp tFrom = user.getTimestamp("tChangePwd");
 				System.out.println(tNow + "\t" + tFrom);
 				return tFrom != null
-						&& checkTimeDiff(tNow, tFrom, secondsChangePwdToken)
+						&& checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)
 						&& Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -834,7 +853,8 @@ public class RecoeveDB {
 	static {
 		try {
 			sha512 = MessageDigest.getInstance("SHA-512");
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			err(err);
 		}
 	}
@@ -874,7 +894,8 @@ public class RecoeveDB {
 			pstmtPutPreGoogle.setString(4, dataStr);
 			pstmtPutPreGoogle.executeUpdate();
 			return "IP and state are saved.";
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return "Not saved.";
@@ -888,7 +909,8 @@ public class RecoeveDB {
 			if (rs.next()) {
 				return rs.getString("data");
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return "/";
@@ -902,7 +924,8 @@ public class RecoeveDB {
 			if (rs.next()) {
 				return tNow.before(new Timestamp(rs.getTimestamp("t").getTime() + 300000L));
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -936,9 +959,11 @@ public class RecoeveDB {
 					done = true;
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println(err);
 		}
 		try {
@@ -949,7 +974,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
@@ -984,9 +1010,11 @@ public class RecoeveDB {
 					done = true;
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println(err);
 		}
 		try {
@@ -997,7 +1025,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
@@ -1018,9 +1047,11 @@ public class RecoeveDB {
 				user.updateRow();
 				done = true;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println(err);
 		}
 		try {
@@ -1031,7 +1062,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
@@ -1047,7 +1079,7 @@ public class RecoeveDB {
 					&& user.getString("id").equals(id)
 					&& user.getString("veriKey").equals(veriKey)
 					&& user.getInt("class") == 0
-					/*&& checkTimeDiff(tNow, user.getString("tReg"), secondsVerifyUser)*/) {
+					/*&& checkTimeDiff(tNow, user.getString("tReg"), SECONDS_VERIFY_USER)*/) {
 				// IP check is needed???
 				updateUserClass(0, -1); // 0: Not verified yet
 				user.updateInt("class", 6);
@@ -1059,7 +1091,8 @@ public class RecoeveDB {
 				logsCommit(user_me, tNow, ip, "vrf", true); // verified.
 				done = true;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		try {
@@ -1068,7 +1101,8 @@ public class RecoeveDB {
 				logsCommit(user_me, tNow, ip, "vrf", false); // not verified.
 			}
 			con.commit();
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
@@ -1108,7 +1142,8 @@ public class RecoeveDB {
 				result = "Cannot find a user from id/email.";
 				return result;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		result = "SQL Exception.";
@@ -1143,7 +1178,8 @@ public class RecoeveDB {
 				con.rollback();
 				return result;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 			try {
 				if (!done) {
@@ -1152,11 +1188,13 @@ public class RecoeveDB {
 				else {
 					con.commit();
 				}
-			} catch (SQLException e1) {
+			}
+			catch (SQLException e1) {
 				err(e1);
 				try {
 					con.rollback();
-				} catch (SQLException e2) {
+				}
+				catch (SQLException e2) {
 					err(e2);
 				}
 			}
@@ -1191,14 +1229,14 @@ public class RecoeveDB {
 				id = user.getString("id");
 				String email = user.getString("email");
 				Timestamp tFrom = user.getTimestamp("tChangePwd");
-				if (tFrom != null && checkTimeDiff(tNow, tFrom, secondsChangePwdToken)) {
+				if (tFrom != null && checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)) {
 					return FileMap.replaceStr("[--pre already sended email to--] " + encryptEmail(email) + "[--post already sended email to--]", lang);
 				}
-				System.out.println("from=null or checkTimeDiff(tNow, from, " + secondsChangePwdToken + ")=false.");
+				System.out.println("from=null or checkTimeDiff(tNow, from, " + SECONDS_CHANGE_PWD_TOKEN + ")=false.");
 				System.out.println("tNow:" + tNow);
 				if (tFrom != null) {
 					System.out.println("from:" + tFrom);
-					System.out.println("checkTimeDiff(tNow, from, " + secondsChangePwdToken + "):" + checkTimeDiff(tNow, tFrom, secondsChangePwdToken));
+					System.out.println("checkTimeDiff(tNow, from, " + SECONDS_CHANGE_PWD_TOKEN + "):" + checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN));
 				}
 				user.updateTimestamp("tChangePwd", tNow);
 				byte[] token = randomBytes(32);
@@ -1208,9 +1246,11 @@ public class RecoeveDB {
 				return FileMap.replaceStr(
 						"[--pre sended email to--] " + encryptEmail(email) + "[--post sended email to--]", lang);
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println(err);
 		}
 		return "Error occurred.";
@@ -1254,7 +1294,8 @@ public class RecoeveDB {
 					varMap.put("{--myId--}", HTMLString.escapeOnlyTag(user.getString("id")));
 					varMap.put("{--myCatList--}", HTMLString.escapeOnlyTag(getCatList(my_i).toString()));
 				}
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
 			}
 		}
@@ -1267,7 +1308,8 @@ public class RecoeveDB {
 				varMap.put("{--catList--}", HTMLString.escapeOnlyTag(getCatList(user_i).toString()));
 			}
 			varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100_000_000L).toString()));
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		varMap.putIfAbsent("{--userIndex--}", "");
@@ -1302,7 +1344,8 @@ public class RecoeveDB {
 					varMap.put("{--catList--}", varMap.get("{--myCatList--}"));
 				}
 				varMap.put("{--kipid-catList--}", HTMLString.escapeOnlyTag(getCatList(100_000_000L).toString()));
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
 			}
 		}
@@ -1321,7 +1364,7 @@ public class RecoeveDB {
 			long user_me = Long.parseLong(cookie.get("I"), 16);
 			Timestamp tCreate = Timestamp.valueOf(cookie.get("tCreate").replaceAll("_", " ").substring(0, 19));
 			if (tCreate != null) {
-				if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
+				if (checkTimeDiff(tNow, tCreate, SECONDS_SSN)) {
 					try {
 						pstmtSession.setLong(1, user_me);
 						pstmtSession.setTimestamp(2, tCreate);
@@ -1330,7 +1373,8 @@ public class RecoeveDB {
 							return Integer.toString(rs.getInt("iter"));
 						}
 						return "No session.";
-					} catch (SQLException err) {
+					}
+					catch (SQLException err) {
 						err(err);
 					}
 				}
@@ -1351,7 +1395,7 @@ public class RecoeveDB {
 			}
 			String session = cookie.get("SSN");
 			if (tCreate != null && session != null) {
-				if (checkTimeDiff(tNow, tCreate, secondsSSN)) {
+				if (checkTimeDiff(tNow, tCreate, SECONDS_SSN)) {
 					try {
 						con.setAutoCommit(true);
 						pstmtSession.setLong(1, user_me);
@@ -1366,7 +1410,8 @@ public class RecoeveDB {
 							return true;
 						}
 						// No log for sessionCheck. Too much.
-					} catch (Exception err) {
+					}
+					catch (Exception err) {
 						err(err);
 					}
 				}
@@ -1422,7 +1467,8 @@ public class RecoeveDB {
 					done = false;
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		try {
@@ -1432,7 +1478,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return setCookie;
@@ -1490,9 +1537,11 @@ public class RecoeveDB {
 				logsCommit(user_me, tNow, ip, "lgi", false); // user_me=1: anonymous (no id/email) log-in try. This must not happen, because of "account/pwd_iteration" check before log-in request.
 			}
 			done = true;
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println(err);
 		}
 		try {
@@ -1502,7 +1551,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return setCookie;
@@ -1529,10 +1579,7 @@ public class RecoeveDB {
 					String errMsg = "Error: ";
 					if (rs.next()) {
 						// ip check or not?
-						if ( /*
-									* ip.startsWith(rs.getString("ip").split(":")[0])
-									* &&
-									*/checkDateDiff(tNow, tRmbdT, daysRMB)
+						if ( checkDateDiff(tNow, tRmbdT, DAYS_RMB)
 								&& Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))
 								&& Arrays.equals(rs.getBytes("token"), hexStrToBytes(rmbdToken))
 								&& rs.getString("log").equals(log)
@@ -1548,7 +1595,7 @@ public class RecoeveDB {
 								rs.updateTimestamp("tLast", tNow);
 								rs.updateBytes("token", newToken);
 								setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", bytesToHexString(newToken)).setSecure(true)
-										.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+										.setPath("/account").setHttpOnly(true).setMaxAge(SECONDS_RMB_TOKEN));
 								System.out.println("Remembered.");
 								logsCommit(user_me, tNow, ip, "rmb", true);
 								rs.updateRow();
@@ -1569,7 +1616,7 @@ public class RecoeveDB {
 							if (!ip.startsWith(rs.getString("ip").split(":")[0])) {
 								errMsg += "diff ip. " + rs.getString("ip") + " ";
 							}
-							if (!checkDateDiff(tNow, tRmbdT, daysRMB)) {
+							if (!checkDateDiff(tNow, tRmbdT, DAYS_RMB)) {
 								errMsg += "expired. ";
 							}
 							if (!Arrays.equals(rs.getBytes("auth"), hexStrToBytes(rmbdAuth))) {
@@ -1598,11 +1645,13 @@ public class RecoeveDB {
 					System.out.println(errMsg);
 					logsCommit(user_me, tNow, ip, "rmb", false, errMsg);
 					con.commit();
-				} catch (SQLException err) {
+				}
+				catch (SQLException err) {
 					err(err);
 					try {
 						con.rollback();
-					} catch (SQLException e1) {
+					}
+					catch (SQLException e1) {
 						err(e1);
 					}
 				}
@@ -1626,13 +1675,13 @@ public class RecoeveDB {
 			String now_ = tNow.toString().replaceAll("\\s", "_");
 			if (pstmtCreateUserSession.executeUpdate() > 0) {
 				setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_me, 16)).setSecure(true)
-						.setPath("/").setHttpOnly(true).setMaxAge(secondsSSN));
+						.setPath("/").setHttpOnly(true).setMaxAge(SECONDS_SSN));
 				setCookie.add(io.vertx.core.http.Cookie.cookie("tCreate", now_).setSecure(true)
-						.setPath("/").setMaxAge(secondsSSN - 30));
+						.setPath("/").setMaxAge(SECONDS_SSN - 30));
 				setCookie.add(io.vertx.core.http.Cookie.cookie("session", bytesToHexString(session)).setSecure(true)
-						.setPath("/").setMaxAge(secondsSSN));
+						.setPath("/").setMaxAge(SECONDS_SSN));
 				setCookie.add(io.vertx.core.http.Cookie.cookie("salt", bytesToHexString(salt)).setSecure(true)
-						.setPath("/").setMaxAge(secondsSSN));
+						.setPath("/").setMaxAge(SECONDS_SSN));
 			}
 			else {
 				setCookie.add(io.vertx.core.http.Cookie.cookie("I", Long.toString(user_me, 16)).setSecure(true)
@@ -1644,7 +1693,8 @@ public class RecoeveDB {
 				setCookie.add(io.vertx.core.http.Cookie.cookie("salt", bytesToHexString(salt)).setSecure(true)
 						.setPath("/").setMaxAge(-100L));
 			}
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			err(err);
 		}
 		return setCookie;
@@ -1665,13 +1715,13 @@ public class RecoeveDB {
 		if (pstmtCreateUserRemember.executeUpdate() > 0) {
 			// user.updateInt("rmbdC", user.getInt("rmbdC")+1);
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", Long.toString(user_me, 16)).setSecure(true)
-					.setPath("/").setMaxAge(secondsRMB));
+					.setPath("/").setMaxAge(SECONDS_RMB));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdT", now_).setSecure(true)
-					.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
+					.setPath("/account").setHttpOnly(true).setMaxAge(SECONDS_RMB));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdAuth", bytesToHexString(rmbdAuth)).setSecure(true)
-					.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMB));
+					.setPath("/account").setHttpOnly(true).setMaxAge(SECONDS_RMB));
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdToken", bytesToHexString(rmbdToken)).setSecure(true)
-					.setPath("/account").setHttpOnly(true).setMaxAge(secondsRMBtoken));
+					.setPath("/account").setHttpOnly(true).setMaxAge(SECONDS_RMB_TOKEN));
 		}
 		else {
 			setCookie.add(io.vertx.core.http.Cookie.cookie("rmbdI", "").setSecure(true)
@@ -1699,7 +1749,8 @@ public class RecoeveDB {
 					if (rs.next()) {
 						rs.deleteRow();
 					}
-				} catch (SQLException err) {
+				}
+				catch (SQLException err) {
 					err(err);
 				}
 			}
@@ -1716,7 +1767,8 @@ public class RecoeveDB {
 					if (rs.next()) {
 						rs.deleteRow();
 					}
-				} catch (SQLException err) {
+				}
+				catch (SQLException err) {
 					err(err);
 				}
 			}
@@ -1753,7 +1805,8 @@ public class RecoeveDB {
 					pstmtDelUserRemember.setLong(1, user_me);
 					System.out.println("Session deleted: " + pstmtDelUserSession1.executeUpdate());
 					System.out.println("Remember deleted: " + pstmtDelUserRemember.executeUpdate());
-				} catch (SQLException err) {
+				}
+				catch (SQLException err) {
 					err(err);
 				}
 			}
@@ -1798,7 +1851,8 @@ public class RecoeveDB {
 	public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success) {
 		try {
 			return logs(user_me, tNow, ip, log, success, null);
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -1807,7 +1861,8 @@ public class RecoeveDB {
 	public boolean logsCommit(long user_me, Timestamp tNow, String ip, String log, boolean success, String desc) {
 		try {
 			return logs(user_me, tNow, ip, log, success, desc);
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -1849,11 +1904,13 @@ public class RecoeveDB {
 				con.commit();
 				return "cut";
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 			try {
 				con.rollback();
-			} catch (SQLException e2) {
+			}
+			catch (SQLException e2) {
 				err(e2);
 			}
 		}
@@ -1953,7 +2010,8 @@ public class RecoeveDB {
 													revNeighborListFrom, tNow);
 										}
 									}
-								} catch (SQLException err) {
+								}
+								catch (SQLException err) {
 									err(err);
 								}
 							});
@@ -1972,11 +2030,13 @@ public class RecoeveDB {
 				delNeighborListTo(user_from, cat_from);
 			}
 			con.commit();
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 			try {
 				con.rollback();
-			} catch (SQLException e2) {
+			}
+			catch (SQLException e2) {
 				err(e2);
 			}
 		}
@@ -2017,7 +2077,8 @@ public class RecoeveDB {
 					}
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -2051,7 +2112,8 @@ public class RecoeveDB {
 					}
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -2121,7 +2183,8 @@ public class RecoeveDB {
 			pstmtPutRecentests.setTimestamp(3, tNow);
 			pstmtPutRecentests.setTimestamp(4, tNow);
 			return pstmtPutRecentests.executeUpdate() > 0;
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -2172,7 +2235,8 @@ public class RecoeveDB {
 					rs.updateTimestamp("tUpdate", tNow);
 					rs.updateRow();
 				}
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
 			}
 			return rs;
@@ -2230,7 +2294,8 @@ public class RecoeveDB {
 				}
 				return heads + "\n" + contents;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		heads += "\nx";
@@ -2870,7 +2935,8 @@ public class RecoeveDB {
 				long user_me = user.getLong("i");
 				res = getStringCatList(user_me);
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -2881,7 +2947,8 @@ public class RecoeveDB {
 		try {
 			CatList catL = getCatList(user_me);
 			res = catL.toString();
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -2951,7 +3018,8 @@ public class RecoeveDB {
 					return true;
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return false;
@@ -2965,9 +3033,11 @@ public class RecoeveDB {
 				if (user.next()) {
 					res = getStringCatUriList(user.getLong("i"), catList);
 				}
-			} catch (SQLException err) {
+			}
+			catch (SQLException err) {
 				err(err);
-			} catch (NullPointerException err) {
+			}
+			catch (NullPointerException err) {
 				err(err);
 			}
 		}
@@ -2984,9 +3054,11 @@ public class RecoeveDB {
 				res += "\n" + cat + "\t"
 						+ getUriList(user_me, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
-		} catch (NullPointerException err) {
+		}
+		catch (NullPointerException err) {
 			err(err);
 		}
 		return res;
@@ -3256,7 +3328,7 @@ public class RecoeveDB {
 				pstmtPutRecoStatDefTitle.executeUpdate();
 				if (titleSet.next()) {
 					StrArray sATitleSet = new StrArray(titleSet.getString("titleSet"), false, true);
-					if (sATitleSet.mapArray.putIfAbsent(title, new ArrayList<String>(Arrays.asList(title))) == null) {
+					if (sATitleSet.mapArray.putIfAbsent(title, new ArrayList<>(Arrays.asList(title))) == null) {
 						titleSet.updateString("titleSet", sATitleSet.toStringSet());
 						titleSet.updateRow();
 					}
@@ -3276,7 +3348,8 @@ public class RecoeveDB {
 			byte[] descHash;
 			try {
 				descHash = sha512(desc);
-			} catch (Exception err) {
+			}
+			catch (Exception err) {
 				err(err);
 				return;
 			}
@@ -3330,7 +3403,8 @@ public class RecoeveDB {
 								byte[] descIHash;
 								try {
 									descIHash = sha512(descI);
-								} catch (Exception err) {
+								}
+								catch (Exception err) {
 									err(err);
 									return;
 								}
@@ -3368,20 +3442,21 @@ public class RecoeveDB {
 					StrArray sADescSet = new StrArray(false, true);
 					int iMax = sADescSetRaw.getRowSize();
 					for (int i = 0; i < iMax; i++) {
-						String descIHash = null;
+						String descIHash;
 						try {
 							descIHash = bytesToHexString(sha512(sADescSetRaw.get(i, 0)));
-						} catch (Exception err) {
+						}
+						catch (Exception err) {
 							err(err);
 							return;
 						}
-						ArrayList<String> arrayListI = new ArrayList<String>(
+						ArrayList<String> arrayListI = new ArrayList<>(
 								Arrays.asList(descIHash, sADescSetRaw.get(i, 0)));
 						sADescSet.arrayArray.add(arrayListI);
 						sADescSet.mapArray.putIfAbsent(descIHash, arrayListI);
 					}
 					String strDescHash = bytesToHexString(descHash);
-					ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(strDescHash, desc));
+					ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(strDescHash, desc));
 					if (sADescSet.mapArray.putIfAbsent(strDescHash, arrayList) == null) {
 						sADescSet.arrayArray.add(arrayList);
 						StringBuilder sb = new StringBuilder();
@@ -3433,7 +3508,8 @@ public class RecoeveDB {
 			}
 
 			res = heads + "\n" + contents;
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -3468,7 +3544,8 @@ public class RecoeveDB {
 					res += StrArray.enclose(defDescs.getString("descSet"));
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return res;
@@ -3506,7 +3583,8 @@ public class RecoeveDB {
 					uri = "https://recoeve.net/redirect/" + longToHexString(longHashpath);
 				}
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return uri;
@@ -3725,19 +3803,22 @@ public class RecoeveDB {
 					}
 					updateCatList(user_me, catL);
 					con.commit();
-				} catch (SQLException err) {
+				}
+				catch (SQLException err) {
 					err(err);
 					sb.append(StrArray.enclose("[--Error--]: [--" + err.getMessage() + "--]"));
 					catL.fullCats = previousCatListStr;
 					try {
 						con.rollback();
-					} catch (SQLException e2) {
+					}
+					catch (SQLException e2) {
 						err(e2);
 					}
 				}
 				sb.append("\t").append(tNow);
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return sb.toString();
@@ -3761,7 +3842,8 @@ public class RecoeveDB {
 				updateDefDesc(uri, desc, 1);
 				updateRecoStat(user_me, uri, pts, tNow, 1);
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 	}
@@ -3791,7 +3873,8 @@ public class RecoeveDB {
 				pstmtPutReco.setString(9, rs.getString("val"));
 				pstmtPutReco.executeUpdate();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 	}
@@ -3845,7 +3928,8 @@ public class RecoeveDB {
 				sb.append("\t");
 				sb.append(desc);
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return sb.toString();
@@ -3865,7 +3949,8 @@ public class RecoeveDB {
 						+ ". Now Recoeve.net (Slow/Sexy/Sincere SNS) is in beta service stage.<br>Please visit <a target=\"_blank\" href=\"https://recoeve.net/\">https://recoeve.net/</a> again, and try to use/play with it please.</span>";
 				Gmail.send(rs.getString("email"), "", title, msg);
 			}
-		} catch (Exception err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 	}
@@ -3911,7 +3996,8 @@ public class RecoeveDB {
 				rsUser.deleteRow();
 				done = true;
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		try {
@@ -3922,7 +4008,8 @@ public class RecoeveDB {
 			else {
 				con.rollback();
 			}
-		} catch (SQLException err) {
+		}
+		catch (SQLException err) {
 			err(err);
 		}
 		return done;
