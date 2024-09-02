@@ -3492,7 +3492,6 @@ public class RecoeveDB {
 						}
 						else {
 							longHashpath++;
-							continue;
 						}
 					}
 					else {
@@ -3515,13 +3514,12 @@ public class RecoeveDB {
 
 	public String recoDo(long user_me, String recoStr, Timestamp tNow) {
 		System.out.println(recoStr);
-		String res = "result\ttLast\toriginalURI\turi";
+		StringBuilder sb = new StringBuilder("uri\toriginalURI\tresult\ttLast");
 		StrArray sa = new StrArray(recoStr);
 		try {
 			con.setAutoCommit(false);
 			CatList catL = getCatList(user_me);
 			for (int i = 1; i < sa.getRowSize(); i++) {
-				res += "\n";
 				String doStr = sa.get(i, "do");
 				String uri = sa.get(i, "uri").replaceAll("%2520", "%20");
 				String originalURI = uri;
@@ -3548,7 +3546,6 @@ public class RecoeveDB {
 							}
 							else {
 								longHashpath++;
-								continue;
 							}
 						}
 						else {
@@ -3566,6 +3563,7 @@ public class RecoeveDB {
 						System.out.println("originalURI: " + originalURI);
 					}
 				}
+				sb.append("\n").append(uri).append("\t").append(originalURI).append("\t");
 				try {
 					ResultSet reco = getReco(user_me, uri);
 					boolean hasReco = reco.next();
@@ -3574,7 +3572,7 @@ public class RecoeveDB {
 						case "reco":
 							if (hasReco) {
 								// error.
-								res += "[--Reco on this uri exists already.--]";
+								sb.append("[--Reco on this uri exists already.--]");
 							}
 							else {
 								// put a reco.
@@ -3588,7 +3586,7 @@ public class RecoeveDB {
 							}
 							else {
 								// error.
-								res += "[--Reco on the uri does not exist.--]";
+								sb.append("[--Reco on the uri does not exist.--]");
 							}
 							break;
 						case "overwrite":
@@ -3608,7 +3606,7 @@ public class RecoeveDB {
 							}
 							else {
 								// error.
-								res += "[--Reco on the uri does not exist.--]";
+								sb.append("[--Reco on the uri does not exist.--]");
 							}
 							break;
 					}
@@ -3636,7 +3634,7 @@ public class RecoeveDB {
 							pstmtPutReco.executeUpdate();
 							updateRecoStat(user_me, uri, pts, tNow, 1);
 							updateNeighbors(user_me, uri, cats, pts, catL, tNow, 1);
-							res += "recoed";
+							sb.append("recoed");
 							break;
 						case "change":
 							Categories oldCats = new Categories(reco.getString("cats"));
@@ -3658,7 +3656,7 @@ public class RecoeveDB {
 							}
 							if (equalityOfStringOfCats && equalityOfTitle && equalityOfDesc && equalityOfCmt
 									&& equalityOfPts) {
-								res += "no change";
+								sb.append("no change");
 							}
 							else {
 								reco.updateTimestamp("tLast", tNow);
@@ -3697,9 +3695,9 @@ public class RecoeveDB {
 									updateRecoStat(user_me, uri, pts, tNow, 1);
 									updateNeighbors(user_me, uri, cats, pts, catL, tNow, 1);
 								}
-								res += "changed.";
+								sb.append("changed.");
 								if (!equalityOfCats) {
-									res += " Cats is changed to \"" + cats.toString() + "\".";
+									sb.append(StrArray.enclose("Cats is changed to \"" + cats.toString() + "\"."));
 								}
 							}
 							break;
@@ -3719,7 +3717,7 @@ public class RecoeveDB {
 								updateNeighbors(user_me, uri, oldCats, oldPts, catL, tNow, -1);
 							}
 							deleteCatsUriFromList(user_me, oldCats, uri, catL);
-							res += "deleted";
+							sb.append("deleted");
 							break;
 						case "nothing":
 						default:
@@ -3729,7 +3727,7 @@ public class RecoeveDB {
 					con.commit();
 				} catch (SQLException err) {
 					err(err);
-					res += "[--Error--]: [--" + err.getMessage() + "--]";
+					sb.append(StrArray.enclose("[--Error--]: [--" + err.getMessage() + "--]"));
 					catL.fullCats = previousCatListStr;
 					try {
 						con.rollback();
@@ -3737,12 +3735,12 @@ public class RecoeveDB {
 						err(e2);
 					}
 				}
-				res += "\t" + tNow + "\t" + StrArray.enclose(originalURI) + "\t" + uri;
+				sb.append("\t").append(tNow);
 			}
 		} catch (SQLException err) {
 			err(err);
 		}
-		return res;
+		return sb.toString();
 	}
 
 	public void updateDefsAll(Timestamp tNow) {
@@ -3960,12 +3958,12 @@ public class RecoeveDB {
 		// }
 		// }
 		// , true
-		// , res -> {
-		// if (res.succeeded()) {
+		// , sb -> {
+		// if (sb.succeeded()) {
 		// System.out.println("Database operation successful");
 		// }
 		// else {
-		// System.err.println("Database operation failed: " + res.cause());
+		// System.err.println("Database operation failed: " + sb.cause());
 		// }
 		// });
 
