@@ -275,6 +275,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		try {
 			WebDriver chromeDriver = getDriver();
+			chromeDriver.get("https://recoeve.net/CDN/empty.html");
 			chromeDriver.get((new URI(uri.trim())).toString());
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
 					.thenApply(applyFn);
