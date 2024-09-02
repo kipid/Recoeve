@@ -3,18 +3,17 @@
 
 <head>
 	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=AW-11407455434"></script>
-	<script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-11407455434');</script>
+	<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11407455434"></script>
+	<script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-11407455434');</script> -->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3, user-scalable=yes" />
 	<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico">
-	<meta name="google-adsense-account" content="ca-pub-9843810906985249">
+	<!-- <meta name="google-adsense-account" content="ca-pub-9843810906985249"> -->
 	<title>Multireco</title>
 	<link rel="stylesheet" href="/CDN/recoeve-style.css">
 	<script src="/CDN/jquery.js"></script>
-	<script src="/prepare.js"></script>
 	<script>
 		(function (m, undefined) {
 			m.saveSSN();
@@ -33,6 +32,7 @@
 			}
 		})(window.m);
 	</script>
+	<script src="/prepare.js"></script>
 	<style>
 		.block-touch {
 			position: fixed;
@@ -287,14 +287,15 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}).done(async function (resp) {
 				clearInterval(m.deleyedLogOutInterval);
 				clearTimeout(m.deleyedLogOutTimeout);
-				console.log(resp);
 				const strRecoDoJSON = await m.strToJSON(args.strRecoDo);
 				let res = await m.strToJSON(resp);
+				console.log(strRecoDoJSON, res);
 				for (let i = 0; i < strRecoDoJSON.length; i++) {
 					const reco = strRecoDoJSON[i];
+					res[reco.uri]?.cats = reco.cats;
 					res[reco.uri]?.push(reco.cats);
 				}
-				$error.html(m.arrayToTableHTML(res, [10, 10, 35, 35, 10]));
+				$error.html(m.arrayToTableHTML(res, true, [10, 10, 35, 35, 10]));
 			}).always(function () {
 				$button_multireco.removeClass("disabled");
 			});
@@ -347,7 +348,7 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 			}
 		};
 		$window.on("keydown.sk", m.processShortKey);
-		gtag('config', 'AW-11407455434');
+		// gtag('config', 'AW-11407455434');
 	})(window.m, jQuery);
 </script>
 
