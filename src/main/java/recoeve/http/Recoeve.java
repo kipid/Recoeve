@@ -2,6 +2,11 @@ package recoeve.http;
 
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -13,17 +18,8 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-
-// import java.lang.StringBuilder;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
-// import recoeve.db.HTMLString;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
@@ -76,7 +72,7 @@ public class Recoeve extends AbstractVerticle {
 		router2.route().handler(corsHandler2);
 
 		router2.route("/account/log-in/with/:authenticater").handler((RoutingContext ctx) -> {
-			String msg = "";
+			String msg;
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
 			pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
