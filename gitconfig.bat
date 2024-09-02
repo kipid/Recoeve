@@ -38,5 +38,13 @@ cd C:/RecoeveNet/
 git remote set-url origin https://kipid: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@github.com/kipid/RecoeveNet.git
 git pull
 
+cd C:/Codeit-FS2/2-Sprint-Mission-FE
+git remote set-url origin https://kipid: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@github.com/kipid/2-Sprint-Mission-FE.git
+git pull
+
+cd C:/Codeit-FS2/2-Sprint-Mission-BE
+git remote set-url origin https://kipid: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@github.com/kipid/2-Sprint-Mission-BE.git
+git pull
+
 :: Back to current directory
 cd %BASEDIR%
