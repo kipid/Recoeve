@@ -108,7 +108,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			try {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-				curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.setAcceptInsecureCerts(true);
+				curChromeOptions.setBrowserVersion("128.0.6613.114");
+				curChromeOptions.setExperimentalOption("headless", true);
+				curChromeOptions.setExperimentalOption("detach", true);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -124,7 +128,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
 			curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-			curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.setAcceptInsecureCerts(true);
+			curChromeOptions.setBrowserVersion("128.0.6613.114");
+			curChromeOptions.setExperimentalOption("headless", true);
+			curChromeOptions.setExperimentalOption("detach", true);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -139,7 +147,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		curChromeOptions = new ChromeOptions();
 		curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-		curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.setAcceptInsecureCerts(true);
+		curChromeOptions.setBrowserVersion("128.0.6613.114");
+		curChromeOptions.setExperimentalOption("headless", true);
+		curChromeOptions.setExperimentalOption("detach", true);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		WebDriver webDriver = new ChromeDriver(curChromeOptions);
