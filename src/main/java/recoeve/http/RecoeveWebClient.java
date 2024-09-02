@@ -18,8 +18,8 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -54,8 +54,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public long[] pID = {0, 0, 0};
 	public long timeoutMilliSecs = 7000L;
 	public long findPerMilliSecs = 500L;
-	public ChromeOptions chromeOptions;
-	// public EdgeOptions edgeOptions;
+	public EdgeOptions edgeOptions;
+	// public ChromeOptions chromeOptions;
 	public int maxDrivers;
 	private ConcurrentLinkedQueue<TimestampedDriver> driverPool;
 	private final long driverTimeout = 300000; // 5 minutes in milliseconds
@@ -65,14 +65,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.context = context;
 		this.db = db;
 		webClient = WebClient.create(vertx, options);
-		// System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		// edgeOptions = new EdgeOptions();
-		// edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
-		// edgeOptions.addArguments("--headless", "--remote-allow-origins=*");
-		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
-		chromeOptions = new ChromeOptions();
-		chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
-		chromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
+		System.setProperty("webdriver.edge.driver", FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
+		edgeOptions = new EdgeOptions();
+		edgeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/msedgedriver.exe");
+		edgeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
+		// System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
+		// chromeOptions = new ChromeOptions();
+		// chromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chrome-headless-shell.exe");
+		// chromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
 	}
 
 	@Override
@@ -104,12 +104,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		if (driverPool.size() < maxDrivers) {
 			try {
-				return new ChromeDriver(chromeOptions);
+				return new EdgeDriver(edgeOptions);
+				// return new ChromeDriver(chromeOptions);
 			} catch (Exception err) {
 				System.out.println("Failed to create new WebDriver: " + err);
 			}
 		}
-		return new ChromeDriver(chromeOptions);
+		return new EdgeDriver(edgeOptions);
+		// return new ChromeDriver(chromeOptions);
 	}
 
 	private void quitDriver(WebDriver driver) {
