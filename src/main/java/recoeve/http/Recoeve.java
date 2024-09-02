@@ -29,10 +29,8 @@ public class Recoeve extends AbstractVerticle {
 	// ="localhost";
 	public static final String ENCODING = "UTF-8";
 	public static final String INVALID_ACCESS = "INVALID ACCESS";
-	public static final long day31InMs = 31 * 24 * 60 * 60 * 1000;
+	public static final long DAY31_IN_MS = 31 * 24 * 60 * 60 * 1000;
 
-	public Vertx vertx;
-	public Context context;
 	public FileMap fileMap;
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
@@ -277,7 +275,7 @@ public class Recoeve extends AbstractVerticle {
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
 			if (pl.refererAllowed) { // referer check.
-				String fileName = null;
+				String fileName;
 				fileName = Encoder.decodeURIComponent(ctx.pathParam("fileName"));
 				String msg = "/CDN/:fileName :: fileName=" + fileName;
 				System.out.println(msg);
@@ -420,7 +418,7 @@ public class Recoeve extends AbstractVerticle {
 
 		router.get("/admin/:query").handler((RoutingContext ctx) -> { // path=/admin/...
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			if (pl.cookie.get("I") != null && pl.cookie.get("I").equals("5f5e100")) {
 				String query = ctx.pathParam("query");
@@ -496,10 +494,10 @@ public class Recoeve extends AbstractVerticle {
 
 		router.get("/:fileName").handler((RoutingContext ctx) -> {
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			if (pl.refererAllowed) { // referer check.
-				String fileName = null;
+				String fileName;
 				fileName = Encoder.decodeURIComponent(ctx.pathParam("fileName"));
 				msg = "/:fileName :: fileName=" + fileName;
 				System.out.println(msg);
@@ -605,11 +603,11 @@ public class Recoeve extends AbstractVerticle {
 		router.getWithRegex("\\/user\\/([^\\/]+)(?:\\/mode\\/[^\\/]+)?").handler((RoutingContext ctx) -> { // e.g.
 			// path=/user/kipid[/mode/multireco]?cat=...
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 			if (pl.refererAllowed) { // referer check.
-				String userId = null;
+				String userId;
 				userId = Encoder.decodeURIComponent(ctx.pathParam("param0"));
 				msg = "/user/:userId :: userId=" + userId;
 				System.out.println(msg);
@@ -640,11 +638,11 @@ public class Recoeve extends AbstractVerticle {
 
 		router.postWithRegex("\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+)").handler((RoutingContext ctx) -> { // e.g. path=/user/kipid/get-Recos
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 			if (pl.refererAllowed) { // referer check.
-				String userId = null;
+				String userId;
 				userId = Encoder.decodeURIComponent(ctx.pathParam("param0"));
 				msg = "\\/user\\/([^\\/]+)\\/([a-zA-Z-_.]+) :: param0=" + userId;
 				System.out.println(msg);
@@ -779,7 +777,7 @@ public class Recoeve extends AbstractVerticle {
 
 		router.post("/reco/:toDo").handler((RoutingContext ctx) -> {
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 			if (pl.refererAllowed) { // referer check.
@@ -831,7 +829,7 @@ public class Recoeve extends AbstractVerticle {
 								if (uri.startsWith("://", k)) {
 									k += 3;
 									int l = uri.indexOf("/", k);
-									String uriHost = null;
+									String uriHost;
 									if (l > 0) {
 										uriHost = uri.substring(k, l);
 									}
@@ -930,7 +928,7 @@ public class Recoeve extends AbstractVerticle {
 		router.routeWithRegex("^\\/account\\/([^\\/]+)(?:\\/([^\\/]+)\\/([^\\/]+))?$").handler((RoutingContext ctx) -> { // e.g.
 			// path=/account/...
 			PrintLog pl = new PrintLog(db);
-			String msg = "";
+			String msg;
 			pl.printLog(ctx);
 			if (pl.refererAllowed) { // referer check.
 				String param0 = ctx.pathParam("param0");
@@ -1326,7 +1324,7 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "<br/>");
 									if (db.createUser(inputs, pl.ip, pl.tNow, pl.lang)) {
-										Map<String, String> varMap = new HashMap<String, String>();
+										Map<String, String> varMap = new HashMap<>();
 										varMap.put("{--user id--}", inputs.get(1, "userId"));
 										varMap.put("{--user email--}", inputs.get(1, "userEmail"));
 										pl.req.response()
@@ -1397,7 +1395,7 @@ public class Recoeve extends AbstractVerticle {
 					System.out.println(msg1);
 					// pLHtml.append(msg1 + "</div>");
 				}
-				if (setCookieRMB.size() > 0 && setCookieRMB.get(0).getName() == "I") {
+				if (!setCookieRMB.isEmpty() && setCookieRMB.get(0).getName().equals("I")) {
 					// Success: Session cookie and New token.
 					pl.req.response()
 							.end(FileMap.replaceStr(
