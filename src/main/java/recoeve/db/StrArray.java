@@ -1,31 +1,29 @@
 package recoeve.db;
 
-import java.lang.StringBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.net.URLDecoder;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StrArray {
-	public static final Pattern delimiter;
-	public static final Pattern lastQuote;
+	public static final Pattern DELIMITER;
+	public static final Pattern LAST_QUOTE;
 	static {
-		delimiter = Pattern.compile("[\\t\\n]");
-		lastQuote = Pattern.compile("[^\"](?:\"\")*\"([\\t\\n])");
+		DELIMITER = Pattern.compile("[\\t\\n]");
+		LAST_QUOTE = Pattern.compile("[^\"](?:\"\")*\"([\\t\\n])");
 	}
 
 	public static String enclose(String str) {
 		if (str == null) {
 			return "";
 		}
-		if (str.startsWith("\"") || str.indexOf("\n") != -1 || str.indexOf("\t") != -1) {
+		if (str.startsWith("\"") || str.contains("\n") || str.contains("\t")) {
 			return "\"" + str.replaceAll("\"", "\"\"") + "\"";
 		} else {
 			return str;
@@ -61,19 +59,19 @@ public class StrArray {
 		this.colMap = colMap;
 		this.rowMap = rowMap;
 		str = "";
-		arrayArray = new ArrayList<ArrayList<String>>();
+		arrayArray = new ArrayList<>();
 		if (colMap) {
-			arrayMap = new ArrayList<Map<String, String>>();
+			arrayMap = new ArrayList<>();
 		} else {
 			arrayMap = null;
 		}
 		if (rowMap) {
-			mapArray = new HashMap<String, ArrayList<String>>();
+			mapArray = new HashMap<>();
 		} else {
 			mapArray = null;
 		}
 		if (colMap && rowMap) {
-			mapMap = new HashMap<String, Map<String, String>>();
+			mapMap = new HashMap<>();
 		} else {
 			mapMap = null;
 		}
@@ -109,28 +107,28 @@ public class StrArray {
 			return true;
 		} else if (delim.equals("\n")) {
 			row++;
-			arrayArray.add(new ArrayList<String>());
+			arrayArray.add(new ArrayList<>());
 			return true;
 		}
 		return false;
 	}
 
-	public void updateLists() {
-		updateLists(true, false);
-	}
+	// public void updateLists() {
+	// 	updateLists(true, false);
+	// }
 
-	public void updateLists(boolean colMap) {
-		updateLists(colMap, false);
-	}
+	// public void updateLists(boolean colMap) {
+	// 	updateLists(colMap, false);
+	// }
 
-	public void updateLists(boolean colMap, boolean rowMap) {
+	private void updateLists(boolean colMap, boolean rowMap) {
 		if (str != null && !str.isEmpty()) {
 			String delim = "\n";
-			String strElem = "";
+			String strElem;
 			int start = 0;
-			int end = 0;
-			Matcher matchDelim = delimiter.matcher(str);
-			Matcher matchLastQuote = lastQuote.matcher(str);
+			int end;
+			Matcher matchDelim = DELIMITER.matcher(str);
+			Matcher matchLastQuote = LAST_QUOTE.matcher(str);
 			while (start < str.length() && this.increaseRC(delim)) {
 				if (str.substring(start, start + 1).equals("\"")) {
 					if (matchLastQuote.find(start + 1)) {
@@ -141,7 +139,6 @@ public class StrArray {
 					} else {
 						strElem = str.substring(start + 1);
 						delim = "";
-						start = end = str.length();
 					}
 					strElem = strElem.replaceAll("\"\"", "\"");
 				} else {
@@ -153,7 +150,6 @@ public class StrArray {
 					} else {
 						delim = "";
 						strElem = str.substring(start);
-						start = end = str.length();
 					}
 				}
 				arrayArray.get(row).add(strElem);
@@ -161,7 +157,7 @@ public class StrArray {
 			if (colMap) {
 				int firstColSize = arrayArray.get(0).size();
 				for (int i = 0; i < arrayArray.size(); i++) {
-					arrayMap.add(new HashMap<String, String>());
+					arrayMap.add(new HashMap<>());
 					int jMax = arrayArray.get(i).size();
 					for (int j = 0; j < firstColSize; j++) {
 						String key = arrayArray.get(0).get(j);
@@ -196,6 +192,7 @@ public class StrArray {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		int rowSize = this.getRowSize();
@@ -203,7 +200,7 @@ public class StrArray {
 			int colSize = this.getColSizeAtRow(i);
 			sb.append(enclose(arrayArray.get(i).get(0)));
 			for (int j = 1; j < colSize; j++) {
-				sb.append("\t" + enclose(arrayArray.get(i).get(j)));
+				sb.append("\t").append(enclose(arrayArray.get(i).get(j)));
 			}
 			sb.append("\n");
 		}
@@ -221,7 +218,7 @@ public class StrArray {
 				int colSize = this.getColSizeAtRow(i);
 				sb.append(enclose(arrayArray.get(i).get(0)));
 				for (int j = 1; j < colSize; j++) {
-					sb.append("\t" + enclose(arrayArray.get(i).get(j)));
+					sb.append("\t").append(enclose(arrayArray.get(i).get(j)));
 				}
 				sb.append("\n");
 			}
@@ -240,7 +237,7 @@ public class StrArray {
 				int colSize = this.getColSizeAtRow(i);
 				sb.append(enclose(arrayArray.get(i).get(0)));
 				for (int j = 1; j < colSize; j++) {
-					sb.append("\t" + enclose(arrayArray.get(i).get(j)));
+					sb.append("\t").append(enclose(arrayArray.get(i).get(j)));
 				}
 				sb.append("\n");
 			}
@@ -255,7 +252,7 @@ public class StrArray {
 			int colSize = this.getColSizeAtRow(i);
 			sb.append(enclose(arrayArray.get(i).get(0)));
 			for (int j = 1; j < colSize; j++) {
-				sb.append("\t" + enclose(arrayArray.get(i).get(j)));
+				sb.append("\t").append(enclose(arrayArray.get(i).get(j)));
 			}
 			sb.append("\n");
 		}
@@ -278,7 +275,7 @@ public class StrArray {
 			int colSize = this.getColSizeAtRow(sorted[i]);
 			sb.append(enclose(arrayArray.get(sorted[i]).get(0)));
 			for (int j = 1; j < colSize; j++) {
-				sb.append("\t" + enclose(arrayArray.get(sorted[i]).get(j)));
+				sb.append("\t").append(enclose(arrayArray.get(sorted[i]).get(j)));
 			}
 			sb.append("\n");
 		}
@@ -296,7 +293,7 @@ public class StrArray {
 			if (counts[sorted[i]] != 0L && mapArray.remove(arrayArray.get(i).get(0)) != null) {
 				sb.append(enclose(arrayArray.get(sorted[i]).get(0)));
 				for (int j = 1; j < colSize; j++) {
-					sb.append("\t" + enclose(arrayArray.get(sorted[i]).get(j)));
+					sb.append("\t").append(enclose(arrayArray.get(sorted[i]).get(j)));
 				}
 				sb.append("\n");
 			}
@@ -310,11 +307,11 @@ public class StrArray {
 		for (int i = 0; i < rowSize; i++) {
 			int colSize = this.getColSizeAtRow(i);
 			for (int j = 0; j < colSize; j++) {
-				sb.append(" " + i + "," + j + " : " + enclose(arrayArray.get(i).get(j)) + "\n");
+				sb.append(" ").append(i).append(",").append(j).append(" : ").append(enclose(arrayArray.get(i).get(j))).append("\n");
 			}
 			if (arrayMap != null) {
 				for (Map.Entry<String, String> entry : arrayMap.get(i).entrySet()) {
-					sb.append(" " + i + "," + enclose(entry.getKey()) + " : " + enclose(entry.getValue()) + "\n");
+					sb.append(" ").append(i).append(",").append(enclose(entry.getKey())).append(" : ").append(enclose(entry.getValue())).append("\n");
 				}
 			}
 			sb.append("\n");
