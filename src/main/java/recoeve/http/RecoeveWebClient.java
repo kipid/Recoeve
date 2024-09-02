@@ -2,6 +2,7 @@ package recoeve.http;
 
 
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,7 +275,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		try {
 			WebDriver chromeDriver = getDriver();
-			chromeDriver.get(uri);
+			chromeDriver.get((new URI(uri.trim())).toString());
 			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
 					.thenApply(applyFn);
 			CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver, hostCSSMap.get(uriHost))
