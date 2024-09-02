@@ -210,3 +210,4 @@ All-Users.git/*
 java_pid*
 webdriver/*
 src/main/javascript/node_modules/*
+src/main/python/node_modules/*
