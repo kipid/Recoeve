@@ -58,7 +58,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
 	public final long driverTimeout = 300000; // 5 minutes in milliseconds
-	public final int RECURSE_MAX = 10;
+	public final int RECURSE_MAX = 100;
 	public int recurseCount;
 	public int curPort;
 
@@ -97,7 +97,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		TimestampedDriver timestampedDriver;
 		while ((timestampedDriver = driverPool.poll()) != null) {
 			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
-				quitDriver(timestampedDriver.driver);
+				closeDriver(timestampedDriver.driver);
 			} else {
 				recurseCount = 0;
 				return timestampedDriver.driver;
@@ -108,11 +108,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 			try {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-				curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
-				return this.getDriver();
 			}
 			catch (RuntimeException err) {
 				System.out.println(err.getMessage());
@@ -125,25 +124,34 @@ public class RecoeveWebClient extends AbstractVerticle {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
 			curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
-			curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
 		}
-		if (recurseCount >= RECURSE_MAX) {
-			return this.getDriver();
+		while ((timestampedDriver = driverPool.poll()) != null) {
+			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
+				closeDriver(timestampedDriver.driver);
+			} else {
+				recurseCount = 0;
+				return timestampedDriver.driver;
+			}
 		}
-		else {
-			throw new RuntimeException("Error: Too many recursive!");
-		}
+		curChromeOptions = new ChromeOptions();
+		curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
+		curChromeOptions.addArguments("--headless=new", "--disable-gpu", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curPort++;
+		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+		WebDriver webDriver = new ChromeDriver(curChromeOptions);
+		return webDriver;
 	}
 
-	private void quitDriver(WebDriver driver) {
+	private void closeDriver(WebDriver driver) {
 		try {
-			driver.quit();
+			driver.close();
 		}
 		catch (Exception e) {
-			System.out.println("Error quitting WebDriver: " + e);
+			System.out.println("Error closing WebDriver: " + e);
 		}
 	}
 
@@ -152,7 +160,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			if (driverPool.size() < maxDrivers) {
 				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 			} else {
-				quitDriver(driver);
+				closeDriver(driver);
 			}
 		}
 	}
@@ -160,7 +168,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public void cleanupDrivers() {
 		TimestampedDriver timestampedDriver;
 		while ((timestampedDriver = driverPool.poll()) != null) {
-			quitDriver(timestampedDriver.driver);
+			closeDriver(timestampedDriver.driver);
 		}
 	}
 
@@ -387,7 +395,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		MainVerticle verticle = new MainVerticle();
 		try {
 			verticle.start();
-			verticle.getVertx().setTimer(1000, id -> {
+			verticle.getVertx().setTimer(10, id -> {
 				WebDriver chromeDriver = verticle.recoeveWebClient.getDriver();
 				chromeDriver.get("https://www.youtube.com/watch?v=1MhugHxbhGE");
 				try {
