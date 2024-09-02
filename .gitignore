@@ -209,3 +209,4 @@ All-Projects.git/*
 All-Users.git/*
 java_pid*
 webdriver/*
+*/node_modules/*
