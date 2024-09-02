@@ -1,9 +1,14 @@
 package recoeve.http;
 
-import jakarta.mail.*;
+import java.util.Properties;
+
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.util.Properties;
 
 public class Gmail {
   public static void sendChangePwd(String id, String email, String token, String lang) {
@@ -32,8 +37,8 @@ public class Gmail {
     Gmail.send(email, "", title, msg);
   }
 
-  private static final String username = "recoeve";
-  private static final String amho = "qoqrrwivnimrgwbf";
+  private static final String USERNAME = "recoeve";
+  private static final String AMHO = "qoqrrwivnimrgwbf";
   private static final Properties prop = new Properties();
   static {
     prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -42,10 +47,10 @@ public class Gmail {
     prop.put("mail.smtp.socketFactory.port", "465");
     prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
   }
-  private static final Session session = Session.getInstance(
-      prop, new jakarta.mail.Authenticator() {
+  private static final Session session = Session.getInstance(prop, new jakarta.mail.Authenticator() {
+        @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-          return new PasswordAuthentication(username, amho);
+          return new PasswordAuthentication(USERNAME, AMHO);
         }
       });
 
