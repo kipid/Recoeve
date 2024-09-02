@@ -288,8 +288,13 @@ English/영어/英語/en	Korean/한국어/韓語/ko	Chinese/중국어(번체)/�
 				clearInterval(m.deleyedLogOutInterval);
 				clearTimeout(m.deleyedLogOutTimeout);
 				console.log(resp);
+				const strRecoDoJSON = await m.strToJSON(args.strRecoDo);
 				let res = await m.strToJSON(resp);
-				$error.html(m.arrayToTableHTML(res));
+				for (let i = 0; i < strRecoDoJSON.length; i++) {
+					const reco = strRecoDoJSON[i];
+					res[reco.uri]?.push(reco.cats);
+				}
+				$error.html(m.arrayToTableHTML(res, [10, 10, 35, 35, 10]));
 			}).always(function () {
 				$button_multireco.removeClass("disabled");
 			});
