@@ -6,15 +6,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import asyncio
 
-async def my_function():
+async def my_function(waitSecs):
     try:
-        await asyncio.sleep(5)
+        await asyncio.sleep(waitSecs)
         print("This won't be printed if cancelled.")
     except asyncio.CancelledError:
         print("Task was cancelled.")
 
-async def main(func, waitSecs:number):
-    task = asyncio.create_task(func())
+async def main(func:function, waitSecs:float):
+    task = asyncio.create_task(func(waitSecs))
     await asyncio.sleep(waitSecs)  # Cancel the task after 2 seconds
     task.cancel()
 
