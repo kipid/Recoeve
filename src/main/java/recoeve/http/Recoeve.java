@@ -219,7 +219,7 @@ public class Recoeve extends AbstractVerticle {
 						k++;
 					}
 					if (originalURI.startsWith("://", k)) {
-						k += 3;
+						// k += 3;
 						try {
 							CompletableFuture<String> cfRedirectedURI = recoeveWebClient.redirected(originalURI);
 							cfRedirectedURI.whenComplete((fullURI, ex) -> {
@@ -1450,7 +1450,7 @@ public class Recoeve extends AbstractVerticle {
 					} catch (IllegalStateException err) {
 						RecoeveDB.err(err);
 					}
-				}).listen(RecoeveDB.port);
+				}).listen(RecoeveDB.PORT);
 
 		// vertx.createHttpServer()
 		// .requestHandler(router).listen(80);
