@@ -4,15 +4,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import threading
+import asyncio
 
-def set_interval(func, sec):
-	def func_wrapper():
-		set_interval(func, sec)
-		func()
-	t = threading.Timer(sec, func_wrapper)
-	t.start()
-	return t
+async def my_function():
+    try:
+        await asyncio.sleep(5)
+        print("This won't be printed if cancelled.")
+    except asyncio.CancelledError:
+        print("Task was cancelled.")
+
+async def main(func, waitSecs:number):
+    task = asyncio.create_task(func())
+    await asyncio.sleep(waitSecs)  # Cancel the task after 2 seconds
+    task.cancel()
+
+asyncio.run(main())
 
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
@@ -27,4 +33,4 @@ def findTitles():
 	for head in heads:
 		print(f"{head.text}")
 
-set_interval(findTitles, 1)
+set_interval(findTitles, 0.2)
