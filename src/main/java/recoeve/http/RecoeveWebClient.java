@@ -2,6 +2,7 @@ package recoeve.http;
 
 
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,57 +275,67 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		try {
 			WebDriver chromeDriver = getDriver();
-			chromeDriver.get("https://www.youtube.com/watch?v=IsCk4-b-c2E");
-			// chromeDriver.get((new URI(uri.trim())).toString());
-			CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
-					.thenApply(applyFn);
-			CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver, hostCSSMap.get(uriHost))
-					.thenApply(applyFn);
+			// chromeDriver.get("https://www.youtube.com/watch?v=IsCk4-b-c2E");
+			vertx.setTimer(200, id -> {
+				try {
+					chromeDriver.get((new URI(uri.trim())).toString());
+					CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
+							.thenApply(applyFn);
+					CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver, hostCSSMap.get(uriHost))
+							.thenApply(applyFn);
 
-			CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title, h1, h2")
-					.thenApply(applyFn);
-			CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, hostCSSMap.get(uriHost))
-					.thenApply(applyFn);
+					CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title, h1, h2")
+							.thenApply(applyFn);
+					CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, hostCSSMap.get(uriHost))
+							.thenApply(applyFn);
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+					CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
 
-			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
-				if (error == null) {
-					try {
-						result = result.trim();
-						if (result.isEmpty()) {
-							result = "\nError: Empty result.";
-							System.out.println(result);
+					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+						if (error == null) {
+							try {
+								result = result.trim();
+								if (result.isEmpty()) {
+									result = "\nError: Empty result.";
+									System.out.println(result);
+								}
+								resp.write(result, Recoeve.ENCODING);
+							} catch (Exception e) {
+								result = "\nError: writing chunk: " + e.getMessage();
+								System.err.println(result);
+								resp.write(result, Recoeve.ENCODING);
+							}
+						} else {
+							result = "\nError: in future: " + error.getMessage();
+							System.err.println(result);
+							resp.write(result, Recoeve.ENCODING);
 						}
-						resp.write(result, Recoeve.ENCODING);
-					} catch (Exception e) {
-						result = "\nError: writing chunk: " + e.getMessage();
-						System.err.println(result);
-						resp.write(result, Recoeve.ENCODING);
-					}
-				} else {
-					result = "\nError: in future: " + error.getMessage();
-					System.err.println(result);
-					resp.write(result, Recoeve.ENCODING);
-				}
-			};
+					};
 
-			findTitle.whenComplete(writeChunk);
-			findHostSpecific.whenComplete(writeChunk);
+					findTitle.whenComplete(writeChunk);
+					findHostSpecific.whenComplete(writeChunk);
 
-			findTitleUntil.whenComplete(writeChunk);
-			findHostSpecificUntil.whenComplete(writeChunk);
+					findTitleUntil.whenComplete(writeChunk);
+					findHostSpecificUntil.whenComplete(writeChunk);
 
-			allOf.whenComplete((v, error) -> {
-				String errorMsg = "";
-				if (error != null) {
-					errorMsg = "\nError in futures: " + error.getMessage();
-					System.err.println(errorMsg);
+					allOf.whenComplete((v, error) -> {
+						String errorMsg = "";
+						if (error != null) {
+							errorMsg = "\nError in futures: " + error.getMessage();
+							System.err.println(errorMsg);
+						}
+						if (!resp.ended()) {
+							resp.end(errorMsg);
+						}
+						releaseDriver(chromeDriver);
+					});
 				}
-				if (!resp.ended()) {
-					resp.end(errorMsg);
+				catch (NoSuchSessionException e) {
+					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 				}
-				releaseDriver(chromeDriver);
+				catch (Exception e) {
+					resp.end("\nError: " + e.getMessage());
+				}
 			});
 		}
 		catch (NoSuchSessionException e) {
