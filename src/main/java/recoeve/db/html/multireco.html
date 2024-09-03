@@ -123,7 +123,7 @@ m.changeLang = function (lang, e, elem) {
 	}
 };
 (async function () {
-	let dataLang = await m.strToJSON($data_lang.html().trim());
+	let dataLang = await m.strToJSON($data_lang.html().trim()); // * (str, colMap = true, rowMap = false)
 	let htmlLangs = "";
 	for (let i = 0; i < dataLang[0].length; i++) {
 		htmlLangs += `<a href="?lang=${dataLang[0][i]}" onclick="return m.changeLang('${dataLang[0][i]}', event, this)">${dataLang[1][i]}</a><br>`;
@@ -287,32 +287,34 @@ m.reco_do = function (args, err) {
 	}).done(async function (resp) {
 		clearInterval(m.deleyedLogOutInterval);
 		clearTimeout(m.deleyedLogOutTimeout);
-		const strRecoDoJSON = await m.strToJSON(args.strRecoDo);
-		let res = await m.strToJSON(resp);
-		for (let i = 0; i < strRecoDoJSON.length; i++) {
-			const reco = strRecoDoJSON[i];
+		let res = await m.strToJSON(resp, true, true); // * (str, colMap = true, rowMap = false)
+		for (let i = 0; i < recosJSON.length; i++) {
+			const reco = recosJSON[i];
 			if (res[reco.uri]) {
 				res[reco.uri].cats = reco.cats;
 				res[reco.uri].push(reco.cats);
+				res[reco.uri][0] = uriRendering(res[reco.uri].uri, true); // * (uri, toA, inListPlay, descR)
+				res[reco.uri][1] = uriRendering(res[reco.uri].originalURI, true); // * (uri, toA, inListPlay, descR)
 			}
 		}
 		if (!res[0].cats) {
 			res[0]["cats"] = "cats";
 			res[0].push(res[0]["cats"]);
 		}
-		console.log(strRecoDoJSON, res);
-		$error.html(m.arrayToTableHTML(res, true, [35, 35, 10, 10, 10]));
+		console.log(recosJSON, res);
+		$error.html(m.arrayToTableHTML(res, false, [35, 35, 10, 10, 10])); // * (txtArray, escapeTag = true, colgroup = [])
 	}).always(function () {
 		$button_multireco.removeClass("disabled");
 	});
 };
 $button_multireco.on("click", async function (e) {
-	let recosJSON = await m.strToJSON($textarea_recos[0].value);
+	let recosJSON = await m.strToJSON($textarea_recos[0].value, true, true); // * (str, colMap = true, rowMap = false)
 	for (let i = 1; i < recosJSON.length; i++) {
 		let recosJSONi = recosJSON[i];
-		let originalURI = String(await m.formatURI(recosJSONi.uri, true));
-		let uriRendered = Object(await uriRendering(originalURI, true));
-		let uri = recosJSONi.uri = String(await m.formatURIFully(originalURI, uriRendered));
+		let originalURI = String(await m.formatURI(recosJSONi.uri, true)); // * (uri, keepOriginal)
+		let uriRendered = Object(await uriRendering(originalURI, true)); // * (uri, toA, inListPlay, descR)
+		recosJSONi.uriRendered = uriRendered;
+		let uri = recosJSONi.uri = String(await m.formatURIFully(originalURI, uriRendered)); // * (uri, uriRendered, keepOriginal)
 		if (recosJSONi.title) {
 			recosJSONi.title = m.formatTitle(recosJSONi.title);
 		}
@@ -339,7 +341,7 @@ $button_multireco.on("click", async function (e) {
 		}
 	}
 	let strRecoDo = String(await m.JSONtoStrRev(recosJSON));
-	m.rmb_me(m.reco_do, { strRecoDo: strRecoDo });
+	m.rmb_me(m.reco_do, { strRecoDo, recosJSON });
 });
 
 m.processShortKey = function (e) {
