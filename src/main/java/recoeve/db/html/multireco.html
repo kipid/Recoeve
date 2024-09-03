@@ -288,8 +288,8 @@ m.reco_do = function (args, err) {
 		clearInterval(m.deleyedLogOutInterval);
 		clearTimeout(m.deleyedLogOutTimeout);
 		let res = await m.strToJSON(resp, true, true); // * (str, colMap = true, rowMap = false)
-		for (let i = 0; i < recosJSON.length; i++) {
-			const reco = recosJSON[i];
+		for (let i = 0; i < args.recosJSON.length; i++) {
+			const reco = args.recosJSON[i];
 			if (res[reco.uri]) {
 				res[reco.uri].cats = reco.cats;
 				res[reco.uri].push(reco.cats);
@@ -301,7 +301,7 @@ m.reco_do = function (args, err) {
 			res[0]["cats"] = "cats";
 			res[0].push(res[0]["cats"]);
 		}
-		console.log(recosJSON, res);
+		console.log(args.recosJSON, res);
 		$error.html(m.arrayToTableHTML(res, false, [35, 35, 10, 10, 10])); // * (txtArray, escapeTag = true, colgroup = [])
 	}).always(function () {
 		$button_multireco.removeClass("disabled");
