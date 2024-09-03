@@ -621,23 +621,25 @@ m.csvToJSON = function (str, colMap = true, rowMap = false) {
 		resolve(rows);
 	});
 };
-m.arrayToTableHTML = function (txtArray, escapeTag = true, colgroup = []) {
-	if (!txtArray || txtArray.constructor !== Array) {
-		return "";
-	}
-	let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
-	for (const widthPctg of colgroup) {
-		tableStr += `<colgroup>${widthPctg ? `<col width="${widthPctg}%"/>` : `<col/>`}</colgroup>`;
-	}
-	for (let row = 0; row < txtArray.length; row++) {
-		tableStr += "<tr>";
-		for (let col = 0; col < txtArray[0].length; col++) {
-			tableStr += `<td>${txtArray[row][col] ? (escapeTag ? m.escapeOnlyTag(txtArray[row][col]) : txtArray[row][col]).replace(/\n/g, '<br/>') : ""}</td>`;
+m.arrayToTableHTML = async function (txtArray, escapeTag = true, colgroup = []) {
+	return new Promise((resolve, reject) => {
+		if (!txtArray || txtArray.constructor !== Array) {
+			return "";
 		}
-		tableStr += "</tr>";
-	}
-	tableStr += "</tbody></table>";
-	return tableStr;
+		let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
+		for (const widthPctg of colgroup) {
+			tableStr += `<colgroup>${widthPctg ? `<col width="${widthPctg}%"/>` : `<col/>`}</colgroup>`;
+		}
+		for (let row = 0; row < txtArray.length; row++) {
+			tableStr += "<tr>";
+			for (let col = 0; col < txtArray[0].length; col++) {
+				tableStr += `<td>${txtArray[row][col] ? (escapeTag ? m.escapeOnlyTag(txtArray[row][col]) : txtArray[row][col]).replace(/\n/g, '<br/>') : ""}</td>`;
+			}
+			tableStr += "</tr>";
+		}
+		tableStr += "</tbody></table>";
+		resolve(tableStr);
+	});
 };
 m.memoCalcCorrectRatio = function (str) {
 	let totalCount = 0;
@@ -3992,7 +3994,7 @@ m.descCmtRToHTML = function (descR) {
 <div class="center"><div class="button" onclick="m.slideToggle(this)">▼ [--Toggle dictionary--]</div> <div class="button memorizing" onclick="m.memorizing(this)">[--Memorizing--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
-<div class="lyrics">${m.arrayToTableHTML(valToJSON, true).replace(/(?:  |\t)/g, "&nbsp; ")}</div>
+<div class="lyrics">${(await m.arrayToTableHTML(valToJSON, true)).replace(/(?:  |\t)/g, "&nbsp; ")}</div>
 <div class="right"><div class="button" onclick="m.slideUp(this)">▲ [--Hide dictionary--]</div></div>
 </div>
 </div>`;
