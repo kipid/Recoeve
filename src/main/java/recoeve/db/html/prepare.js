@@ -626,7 +626,7 @@ m.arrayToTableHTML = async function (txtArray, escapeTag = true, colgroup = []) 
 		if (!txtArray || txtArray.constructor !== Array) {
 			return "";
 		}
-		let tableStr = `<table style="background:white; color:black; border:1px solid white; width:100%"><tbody>`;
+		let tableStr = `<table style="background:black; color:white; border:1px solid white; width:100%"><tbody>`;
 		for (const widthPctg of colgroup) {
 			tableStr += `<colgroup>${widthPctg ? `<col width="${widthPctg}%"/>` : `<col/>`}</colgroup>`;
 		}
