@@ -293,8 +293,8 @@ m.reco_do = function (args, err) {
 			if (res[reco.uri]) {
 				res[reco.uri].cats = reco.cats;
 				res[reco.uri].push(reco.cats);
-				res[reco.uri][0] = uriRendering(String(res[reco.uri].uri), true); // * (uri, toA, inListPlay, descR)
-				res[reco.uri][1] = uriRendering(String(res[reco.uri].originalURI), true); // * (uri, toA, inListPlay, descR)
+				res[reco.uri][0] = uriRendering(String(await res[reco.uri].uri), true); // * (uri, toA, inListPlay, descR)
+				res[reco.uri][1] = uriRendering(String(await res[reco.uri].originalURI), true); // * (uri, toA, inListPlay, descR)
 			}
 		}
 		if (!res[0].cats) {
