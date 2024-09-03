@@ -633,7 +633,7 @@ m.arrayToTableHTML = async function (txtArray, escapeTag = true, colgroup = []) 
 		for (let row = 0; row < txtArray.length; row++) {
 			tableStr += "<tr>";
 			for (let col = 0; col < txtArray[0].length; col++) {
-				tableStr += `<td>${txtArray[row][col] ? (escapeTag ? m.escapeOnlyTag(txtArray[row][col]) : txtArray[row][col]).replace(/\n/g, '<br/>') : ""}</td>`;
+				tableStr += `<td>${txtArray[row][col] ? (escapeTag ? m.escapeOnlyTag(txtArray[row][col]) : String(txtArray[row][col])).replace(/\n/g, '<br/>') : ""}</td>`;
 			}
 			tableStr += "</tr>";
 		}
