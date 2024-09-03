@@ -1,4 +1,3 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -13,12 +12,10 @@ async def my_function(waitSecs):
     except asyncio.CancelledError:
         print("Task was cancelled.")
 
-async def main(func:function, waitSecs:float):
+async def setTimeout(func:function, waitSecs:float):
     task = asyncio.create_task(func(waitSecs))
     await asyncio.sleep(waitSecs)  # Cancel the task after 2 seconds
     task.cancel()
-
-asyncio.run(main())
 
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
@@ -33,4 +30,4 @@ def findTitles():
 	for head in heads:
 		print(f"{head.text}")
 
-set_interval(findTitles, 0.2)
+asyncio.run(setTimeout(findTitles, 0.2))
