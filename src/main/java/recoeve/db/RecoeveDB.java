@@ -2,31 +2,20 @@ package recoeve.db;
 
 // import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 // http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlDataSource.html
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-// http://www.docjar.com/docs/api/com/mysql/jdbc/jdbc2/optional/MysqlConnectionPoolDataSource.html
-
-import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
-// import io.vertx.sqlclient.PreparedStatement;
-
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
-
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Timestamp;
-
-import java.math.BigInteger;
-
 import java.text.MessageFormat;
 import java.text.Normalizer;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,9 +26,14 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
 
-import recoeve.http.Gmail;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+
+import io.vertx.core.MultiMap;
+import io.vertx.core.Vertx;
 import recoeve.http.Cookie;
+import recoeve.http.Gmail;
 
 public class RecoeveDB {
 	public static final String ENCODING = "UTF-8";
@@ -358,8 +352,7 @@ public class RecoeveDB {
 						System.out.println("Database operation successful");
 					}
 					else {
-						System.err.println("Database operation failed: " + res.cause());
-						res.failed();
+						System.err.println("Database operation failed: " + (res.cause() == null ? "No Error" : res.cause()));
 					}
 				}
 				catch (Exception err) {
@@ -373,25 +366,25 @@ public class RecoeveDB {
 	}
 
 	public static void err(Exception ex) {
-		System.out.println("Exception: " + ex);
-		if (ex instanceof SQLException) {
-			for (Throwable e : (SQLException) ex) {
-				e.printStackTrace(System.err);
-				String strSQLState = ((SQLException) e).getSQLState();
-				System.err.println("SQLState: " + strSQLState);
-				if (strSQLState.equalsIgnoreCase("X0Y32"))
-					System.err.println("Jar file already exists in schema");
-				if (strSQLState.equalsIgnoreCase("42Y55"))
-					System.err.println("Table already exists in schema");
-				System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-				System.err.println("Message: " + e.getMessage());
-				Throwable t = ex.getCause();
-				while (t != null) {
-					System.out.println("Cause: " + t);
-					t = t.getCause();
-				}
-			}
-		}
+		System.out.println("Exception: " + ex.getMessage());
+		// if (ex instanceof SQLException) {
+		// 	for (Throwable e : (SQLException) ex) {
+		// 		e.printStackTrace(System.err);
+		// 		String strSQLState = ((SQLException) e).getSQLState();
+		// 		System.err.println("SQLState: " + strSQLState);
+		// 		if (strSQLState.equalsIgnoreCase("X0Y32"))
+		// 			System.err.println("Jar file already exists in schema");
+		// 		if (strSQLState.equalsIgnoreCase("42Y55"))
+		// 			System.err.println("Table already exists in schema");
+		// 		System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+		// 		System.err.println("Message: " + e.getMessage());
+		// 		Throwable t = ex.getCause();
+		// 		while (t != null) {
+		// 			System.out.println("Cause: " + t);
+		// 			t = t.getCause();
+		// 		}
+		// 	}
+		// }
 	}
 
 	// ResultSet rs; rs.getWarnings();
@@ -854,7 +847,7 @@ public class RecoeveDB {
 		try {
 			sha512 = MessageDigest.getInstance("SHA-512");
 		}
-		catch (Exception err) {
+		catch (NoSuchAlgorithmException err) {
 			err(err);
 		}
 	}
@@ -935,7 +928,7 @@ public class RecoeveDB {
 		boolean done = false;
 		String id = preInputs.get(1, "id");
 		String email = inputs.get(1, "email");
-		ResultSet user = null;
+		ResultSet user;
 		String veriKey = bytesToHexString(randomBytes(32));
 		try {
 			con.setAutoCommit(false);
@@ -988,7 +981,7 @@ public class RecoeveDB {
 		String pwd = inputs.get(1, "userPwd");
 		String email = inputs.get(1, "userEmail");
 		String veriKey = bytesToHexString(randomBytes(32));
-		ResultSet user = null;
+		ResultSet user;
 		try {
 			con.setAutoCommit(false);
 			pstmtCreateUser.setLong(1, getUserIndexToPut());
@@ -1036,7 +1029,7 @@ public class RecoeveDB {
 		boolean done = false;
 		String id = inputs.get(1, "userId");
 		String pwd = inputs.get(1, "userPwd");
-		ResultSet user = null;
+		ResultSet user;
 		try {
 			con.setAutoCommit(false);
 			user = findUserById(id);
@@ -1124,7 +1117,7 @@ public class RecoeveDB {
 	}
 
 	public String getPwdIteration(String idType, String id) { // idType "id or email"
-		String result = "";
+		String result;
 		try {
 			ResultSet user = null;
 			if (idType.equals("id")) {
@@ -1152,7 +1145,7 @@ public class RecoeveDB {
 
 	public String getNewPwdSalt(String idType, String id) { // idType "id or email"
 		boolean done = false;
-		String result = "Wrong";
+		String result;
 		try {
 			con.setAutoCommit(false);
 			ResultSet user = null;
@@ -1215,7 +1208,7 @@ public class RecoeveDB {
 		String idType = inputs.get(1, "idType");
 		String id = inputs.get(1, "userId");
 		try {
-			ResultSet user = null;
+			ResultSet user;
 			if (idType.equals("email")) {
 				user = findUserByEmail(id);
 			}
@@ -1276,8 +1269,8 @@ public class RecoeveDB {
 	}
 
 	public Map<String, String> varMapUserPage(Cookie cookie, String userId) {
-		Map<String, String> varMap = new HashMap<String, String>();
-		long my_i = -1;
+		Map<String, String> varMap = new HashMap<>();
+		long my_i;
 		String myIndex = "";
 		if (cookie.get("rmbdI") != null) {
 			myIndex = cookie.get("rmbdI");
@@ -1323,7 +1316,7 @@ public class RecoeveDB {
 	}
 
 	public Map<String, String> varMapMyPage(Cookie cookie) {
-		Map<String, String> varMap = new HashMap<String, String>();
+		Map<String, String> varMap = new HashMap<>();
 		String myIndex = "";
 		if (cookie.get("rmbdI") != null) {
 			myIndex = cookie.get("rmbdI");
@@ -1977,7 +1970,7 @@ public class RecoeveDB {
 					}
 				}
 				ResultSet rSneighborListFrom = getRSNeighborListFrom(user_from, cat_from);
-				if (neighborList.mapArray.size() > 0) {
+				if (!neighborList.mapArray.isEmpty()) {
 					if (rSneighborListFrom == null) {
 						putNeighborListFrom(user_from, cat_from, neighborList, tNow);
 					}
@@ -1997,7 +1990,7 @@ public class RecoeveDB {
 										revNeighborListFrom = new NeighborList("", false, true);
 									}
 									if (revNeighborListFrom.mapArray.putIfAbsent(
-											Long.toString(user_from, 16) + "\t" + cat_from, new ArrayList<String>(
+											Long.toString(user_from, 16) + "\t" + cat_from, new ArrayList<>(
 													Arrays.asList(Long.toString(user_from, 16), cat_from))) == null) {
 										if (revRSneighborListFrom != null) {
 											revRSneighborListFrom.updateString("userCatList",
@@ -2060,8 +2053,7 @@ public class RecoeveDB {
 						String user_id = user_j.getString("id");
 						UriList uriList = getUriList(neighborJ, neighborList.get(j, 1));
 						String[] uris = uriList.listOfURIs();
-						for (int k = 0; k < uris.length; k++) {
-							String uri = uris[k];
+						for (String uri: uris) {
 							ResultSet reco_from = getReco(user_from, uri);
 							if (!reco_from.next()) {
 								ResultSet neighborReco = getReco(neighborJ, uri);
@@ -2198,10 +2190,10 @@ public class RecoeveDB {
 		pstmtGetRecoStat.setString(1, uri);
 		ResultSet rs = pstmtGetRecoStat.executeQuery();
 		if (rs.next()) {
-			boolean equalityOfRecentest = false;
+			boolean equalityOfRecentest;
 			byte[] recentests = rs.getBytes("recentests");
 			byte[] user_me_bytes = longToBytes(user_me);
-			int rsL = 0;
+			int rsL;
 			try {
 				if (recentests != null) {
 					rsL = recentests.length;
@@ -2269,7 +2261,7 @@ public class RecoeveDB {
 				heads += "\turi";
 				String contents = "o\t" + uri;
 				String recentests = "index\tid\tval\tcmt";
-				Set<Long> recentestsSet = new HashSet<Long>(N_MAX);
+				Set<Long> recentestsSet = new HashSet<>(N_MAX);
 				long[] recentestsArray = convertByteArrayToLongArray(rs.getBytes("recentests"));
 				for (int i = recentestsArray.length - 1; i >= 0; i--) {
 					long rI = recentestsArray[i];
@@ -2726,11 +2718,11 @@ public class RecoeveDB {
 								for (String cat_to : cats_to.setOfCats) {
 									putNeighborWithScanAll(user_to, cat_to, user_from, cat_from, tNow);
 									neighborListFrom.mapArray.putIfAbsent(Long.toString(user_to, 16) + "\t" + cat_to,
-											new ArrayList<String>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
+											new ArrayList<>(Arrays.asList(Long.toString(user_to, 16), cat_to)));
 									NeighborList neighborListTo = getNeighborListTo(user_to, cat_to);
 									ResultSet rSneighborListTo = getRSNeighborListTo(user_to, cat_to);
 									neighborListTo.mapArray.putIfAbsent(Long.toString(user_from, 16) + "\t" + cat_from,
-											new ArrayList<String>(
+											new ArrayList<>(
 													Arrays.asList(Long.toString(user_from, 16), cat_from)));
 									if (rSneighborListTo == null) {
 										putNeighborListTo(user_to, cat_to, neighborListTo, tNow);
@@ -3034,10 +3026,8 @@ public class RecoeveDB {
 					res = getStringCatUriList(user.getLong("i"), catList);
 				}
 			}
-			catch (SQLException err) {
-				err(err);
-			}
-			catch (NullPointerException err) {
+			catch (SQLException
+				| NullPointerException err) {
 				err(err);
 			}
 		}
@@ -3055,10 +3045,8 @@ public class RecoeveDB {
 						+ getUriList(user_me, cat).toStringEnclosed(catList.get(i, "from"), catList.get(i, "check"));
 			}
 		}
-		catch (SQLException err) {
-			err(err);
-		}
-		catch (NullPointerException err) {
+		catch (SQLException
+			| NullPointerException err) {
 			err(err);
 		}
 		return res;
@@ -3233,7 +3221,7 @@ public class RecoeveDB {
 					pstmtPutRecoStatDefCat.executeUpdate();
 					if (catSet.next()) {
 						StrArray sACatSet = new StrArray(catSet.getString("catSet"), false, true);
-						if (sACatSet.mapArray.putIfAbsent(cat, new ArrayList<String>(Arrays.asList(cat))) == null) {
+						if (sACatSet.mapArray.putIfAbsent(cat, new ArrayList<>(Arrays.asList(cat))) == null) {
 							catSet.updateString("catSet", sACatSet.toStringSet());
 							catSet.updateRow();
 						}
