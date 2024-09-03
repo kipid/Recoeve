@@ -716,7 +716,7 @@ m.JSONtoStrRev = function (json) {
 	}
 	for (let i = json.length - 1; i > 0; i--) {
 		res += "\n" + m.encloseStr(json[i][json[0][0]]);
-		let jMax = json[0].length < json[i].length ? json[0].length : json[i].length;
+		let jMax = (json[0].length < json[i].length) ? json[0].length : json[i].length;
 		for (let j = 1; j < jMax; j++) {
 			res += "\t" + m.encloseStr(json[i][json[0][j]]);
 		}
