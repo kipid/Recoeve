@@ -206,7 +206,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
-			cfElements.complete("Error: cssSelector is null.");
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
 			return cfElements;
 		}
 
@@ -248,7 +248,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public CompletableFuture<String> asyncFindTitleUntilEveryIsFound(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
-			cfElements.complete("Error: cssSelector is null.");
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
 			return cfElements;
 		}
 
