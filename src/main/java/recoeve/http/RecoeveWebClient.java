@@ -29,7 +29,6 @@ import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
-import recoeve.db.FileMap;
 import recoeve.db.RecoeveDB;
 import recoeve.db.StrArray;
 
@@ -68,7 +67,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		curPort = MIN_PORT;
 		webClient = WebClient.create(vertx, options);
-		System.setProperty("webdriver.chrome.driver", FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
@@ -107,7 +105,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 				curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
@@ -127,7 +124,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 			curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.114");
@@ -146,7 +142,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		curChromeOptions = new ChromeOptions();
-		curChromeOptions.setBinary(FileMap.preFilePath + "/Recoeve/webdriver/chromedriver.exe");
 		curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		curChromeOptions.setAcceptInsecureCerts(true);
 		curChromeOptions.setBrowserVersion("128.0.6613.114");
