@@ -105,10 +105,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
-				curChromeOptions.setExperimentalOption("headless", true);
 				curChromeOptions.setExperimentalOption("detach", true);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
@@ -124,10 +123,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.114");
-			curChromeOptions.setExperimentalOption("headless", true);
 			curChromeOptions.setExperimentalOption("detach", true);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
@@ -142,10 +140,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		curChromeOptions = new ChromeOptions();
-		curChromeOptions.addArguments("--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		curChromeOptions.setAcceptInsecureCerts(true);
 		curChromeOptions.setBrowserVersion("128.0.6613.114");
-		curChromeOptions.setExperimentalOption("headless", true);
 		curChromeOptions.setExperimentalOption("detach", true);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
