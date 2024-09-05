@@ -43,8 +43,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final Map<String, String> hostCSSMap;
 	static {
 		hostCSSMap = new HashMap<>(10);
-		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-");
-		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-");
+		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
+		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 	}
 
