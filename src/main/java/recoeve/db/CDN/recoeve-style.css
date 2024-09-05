@@ -1246,7 +1246,8 @@ textarea.multi-line {
 	margin:.5em auto
 }
 
-.rC.instagram {
+.rC.instagram,
+.rC.imgur {
 	max-width:37em
 }
 
@@ -1284,7 +1285,7 @@ textarea.multi-line {
 }
 
 .rC.imgur>.rSC {
-	padding-bottom:185%;
+	padding-bottom:220%;
 	overflow:auto
 }
 
@@ -1363,7 +1364,7 @@ textarea.multi-line {
 	}
 
 	.rC.imgur>.rSC {
-		padding-bottom:145%
+		padding-bottom:212%
 	}
 }
 
@@ -1390,7 +1391,7 @@ textarea.multi-line {
 	}
 
 	.rC.imgur>.rSC {
-		padding-bottom:180%
+		padding-bottom:212%
 	}
 
 	.rC.instagram.fixed,
@@ -1428,7 +1429,7 @@ textarea.multi-line {
 	}
 
 	.rC.imgur>.rSC {
-		padding-bottom:150%
+		padding-bottom:180%
 	}
 }
 
@@ -1439,10 +1440,6 @@ textarea.multi-line {
 
 	.multireco .reco {
 		width:24%
-	}
-
-	.rC.imgur>.rSC {
-		padding-bottom:90%
 	}
 }
 
