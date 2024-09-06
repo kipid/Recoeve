@@ -165,14 +165,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
-	private synchronized void releaseDriver(WebDriver driver) {
-		if (driver != null) {
-			if (driverPool.size() < maxDrivers) {
-				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
-			}
-			closeDriver(driver);
-		}
-	}
+	// private synchronized void releaseDriver(WebDriver driver) {
+	// 	if (driver != null) {
+	// 		if (driverPool.size() < maxDrivers) {
+	// 			driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+	// 		}
+	// 		closeDriver(driver);
+	// 	}
+	// }
 
 	public void cleanupDrivers() {
 		TimestampedDriver timestampedDriver;
@@ -406,7 +406,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 						if (!resp.ended()) {
 							resp.end(errorMsg);
 						}
-						releaseDriver(chromeDriver);
+						closeDriver(chromeDriver);
 					});
 				}
 				catch (NoSuchSessionException e) {
