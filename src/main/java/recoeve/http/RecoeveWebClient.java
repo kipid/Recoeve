@@ -46,6 +46,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
+		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
+		hostCSSMap.put("codeit.kr", "#header p:first-child");
 	}
 
 	public RecoeveDB db;
