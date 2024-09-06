@@ -301,6 +301,9 @@ public class Recoeve extends AbstractVerticle {
 						case "js":
 							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8");
 							break;
+						case "map":
+							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8");
+							break;
 						case "webm":
 							pl.req.response().putHeader("Content-Type", "video/webm");
 							break;
@@ -506,45 +509,49 @@ public class Recoeve extends AbstractVerticle {
 				if (fileName != null && !fileName.isEmpty()) {
 					switch (fileName) {
 						case "personal-info-handle": // e.g. path=/personal-info-handle
-							pl.req.response().putHeader("Content-Type", "text/html")
+							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 									.end(fileMap.getFileWithLang("personal-info-handle.html", pl.lang), ENCODING);
 							break;
 						case "service-summary": // e.g. path=/service-summary
-							pl.req.response().putHeader("Content-Type", "text/html")
+							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 									.end(fileMap.getFileWithLang("service-summary.html", pl.lang), ENCODING);
 							break;
 						case "multireco": // e.g. path=/multireco
-							pl.req.response().putHeader("Content-Type", "text/html")
+							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 									.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
 							break;
 						case "bundle-tsx-log-out.js": // e.g. path=/service-summary
-							pl.req.response().putHeader("Content-Type", "text/html")
+							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 									.end(fileMap.getFileWithLang("bundle-tsx-log-out.js", pl.lang), ENCODING);
 							break;
 						case "esb-user-page.js": // e.g. path=/esb-user-page.js
-							pl.req.response().putHeader("Content-Type", "text/javascript")
+							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
 									.end(fileMap.getFileWithLang("esb-user-page.js", pl.lang), ENCODING);
 							break;
+						case "esb-user-page.js.map": // e.g. path=/esb-user-page.js.map
+							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8")
+									.end(fileMap.getFileWithLang("esb-user-page.js.map", pl.lang), ENCODING);
+							break;
 						case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
-							pl.req.response().putHeader("Content-Type", "text/javascript")
+							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
 									.end(fileMap.getFileWithLang("bundle-log-in.js", pl.lang), ENCODING);
 							break;
 						case "bundle-changePwd.js": // e.g. path=/bundle-changePwd.js
-							pl.req.response().putHeader("Content-Type", "text/javascript")
+							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
 									.end(fileMap.getFileWithLang("bundle-changePwd.js", pl.lang), ENCODING);
 							break;
 						case "jquery.js": // e.g. path=/jquery.js
-							pl.req.response().putHeader("Content-Type", "text/javascript")
+							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
 									.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
 							break;
 						case "prepare.js": // e.g. path=/prepare.js
-							pl.req.response().putHeader("Content-Type", "text/javascript")
+							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
 									.end(fileMap.getFileWithLang("prepare.js", pl.lang), ENCODING);
 							break;
 						case "sessionIter": // e.g. path=/sessionIter
 							String iter = db.sessionIter(pl.cookie, pl.tNow);
-							pl.req.response().putHeader("Content-Type", "text/plain")
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(iter);
 							msg = "iter: " + iter;
 							System.out.println(msg);
@@ -569,7 +576,7 @@ public class Recoeve extends AbstractVerticle {
 									.end(fileMap.getFileWithLang("robots.txt", "df"), ENCODING);
 							break;
 						case "ads.txt": // e.g. path=/ads.txt
-							pl.req.response().putHeader("Content-Type", "text/plain")
+							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(fileMap.getFileWithLang("ads.txt", "df"), ENCODING);
 							break;
 						default:
