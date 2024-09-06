@@ -154,10 +154,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	private void closeDriver(WebDriver driver) {
 		try {
-			driver.close();
+			if (driver != null) { driver.close(); }
 		}
 		catch (Exception e) {
-			System.out.println("Error closing WebDriver: " + e);
+			System.out.println("Error closing WebDriver: " + e.getMessage());
 		}
 	}
 
