@@ -1,0 +1,782 @@
+Sep 02, 2024 4:10:26 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 5306 ms, time limitis 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:27 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 6405 ms, time limitis 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:28 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 7414 ms, time limitis 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:29 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 8418 ms, time limitis 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:30 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 9421 ms, time limitis 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:31 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 10433 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:32 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 11450 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:33 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 12453 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:34 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 13462 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:35 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 14466 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:36 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 15469 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:37 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 16473 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:38 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 17482 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:39 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 18487 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:40 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 19496 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:41 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 20503 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:42 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 21513 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:43 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 22523 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:44 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 23530 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:45 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 24542 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:46 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 25549 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:47 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 26559 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:48 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 27570 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:49 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 28573 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:50 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 29583 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:51 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 30594 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:52 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 31605 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:54 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 32618 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:55 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 33623 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:56 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 34635 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:57 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 35647 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:58 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 36691 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:10:59 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 37719 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:00 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 38732 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:01 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 39739 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:02 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 40766 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:03 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 41789 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:04 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 42820 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:05 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 43837 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:06 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 44852 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:07 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 45902 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:08 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 46971 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:09 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 47977 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:10 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 49017 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:11 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 50066 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:12 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 51114 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:13 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 52165 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:14 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 53178 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:15 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 54229 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:16 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 55229 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:17 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 56240 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:18 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 57241 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:19 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 58269 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:20 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 59269 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:106)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Failed to create new WebDriver: org.openqa.selenium.SessionNotCreatedException: Could not start a new session. Possiblecauses are invalid address of the remote server or browser start-up failure.
+Host info: host: 'Recoeve-net-VM', ip: '10.0.0.4'
+Sep 02, 2024 4:11:21 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 60296 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:22 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 61323 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:23 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 62324 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:24 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 63324 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:25 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 64325 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:26 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 65325 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+Sep 02, 2024 4:11:27 AM io.vertx.core.impl.BlockedThreadChecker
+WARNING: Thread Thread[Forwarding newSession on session null to remote,5,main] has been blocked for 66328 ms, time limit is 2000 ms
+        at org.openqa.selenium.remote.service.DriverService.start(DriverService.java:234)
+        at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:117)
+        at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+        at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:245)
+        at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:174)
+        at org.openqa.selenium.chromium.ChromiumDriver.<init>(ChromiumDriver.java:114)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:88)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:83)
+        at org.openqa.selenium.chrome.ChromeDriver.<init>(ChromeDriver.java:72)
+        at recoeve.http.RecoeveWebClient.getDriver(RecoeveWebClient.java:111)
+        at recoeve.http.RecoeveWebClient.findTitles(RecoeveWebClient.java:276)
+
+<=========----> 75% EXECUTING [2m 50s]
+> :run
