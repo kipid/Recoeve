@@ -38,6 +38,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 60000;
+	public static final int MAX_TRIES = 10;
 	public static final int DEFAULT_MAX_DRIVERS = 5;
 	public static final int UNTIL_TOP = 20;
 	public static final Map<String, String> hostCSSMap;
@@ -76,6 +77,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	@Override
 	public void start(Promise<Void> startPromise) {
+		// * Do nothing.
 	}
 
 	private static class TimestampedDriver {
@@ -107,12 +109,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
 				curChromeOptions.setExperimentalOption("detach", true);
-				curPort++;
-				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
 			}
 			catch (RuntimeException err) {
@@ -125,31 +125,35 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.114");
 			curChromeOptions.setExperimentalOption("detach", true);
-			curPort++;
-			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
 		}
+		recurseCount = 0;
 		while ((timestampedDriver = driverPool.poll()) != null) {
+			recurseCount++;
+			if (recurseCount > MAX_TRIES) {
+				curChromeOptions = new ChromeOptions();
+				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
+				curChromeOptions.setAcceptInsecureCerts(true);
+				curChromeOptions.setBrowserVersion("128.0.6613.114");
+				curChromeOptions.setExperimentalOption("detach", true);
+				return new ChromeDriver(curChromeOptions);
+			}
 			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
 				closeDriver(timestampedDriver.driver);
 			} else {
-				recurseCount = 0;
 				return timestampedDriver.driver;
 			}
 		}
 		curChromeOptions = new ChromeOptions();
-		curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
 		curChromeOptions.setAcceptInsecureCerts(true);
 		curChromeOptions.setBrowserVersion("128.0.6613.114");
 		curChromeOptions.setExperimentalOption("detach", true);
-		curPort++;
-		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-		WebDriver webDriver = new ChromeDriver(curChromeOptions);
-		return webDriver;
+		return new ChromeDriver(curChromeOptions);
 	}
 
 	private void closeDriver(WebDriver driver) {
@@ -165,9 +169,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driver != null) {
 			if (driverPool.size() < maxDrivers) {
 				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
-			} else {
-				closeDriver(driver);
 			}
+			closeDriver(driver);
 		}
 	}
 
@@ -241,7 +244,30 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+				if (elements != null && !elements.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						if (!text.isEmpty()) {
+							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+						}
+					}
+					vertx.cancelTimer(pID[0]);
+					cfElements.complete(sb.toString());
+				}
+			}
+			catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
+				System.out.println(err);
+			}
+			finally {
+				closeDriver(chromeDriver);
+				cfElements.completeExceptionally(new Exception("Error: In finally, completeExceptionally."));
+			}
 		});
 
 		return cfElements;
@@ -280,19 +306,29 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
-			if (elements != null && !elements.isEmpty()) {
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
-					String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
-					if (!text.isEmpty()) {
-						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+			try {
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+				if (elements != null && !elements.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+						String text = elements.get(i).getText();
+						if (!text.isEmpty()) {
+							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+						}
 					}
+					vertx.cancelTimer(pID[0]);
+					cfElements.complete(sb.toString());
 				}
-				cfElements.complete(sb.toString());
 			}
-			else {
-				cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
+				System.out.println(err);
+			}
+			finally {
+				closeDriver(chromeDriver);
+				cfElements.completeExceptionally(new Exception("Error: In finally, completeExceptionally."));
 			}
 		});
 
