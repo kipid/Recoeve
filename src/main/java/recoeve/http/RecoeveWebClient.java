@@ -92,7 +92,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		recurseCount++;
 		if (recurseCount >= RECURSE_MAX) {
 			recurseCount = 0;
-			throw new RuntimeException("Error: Too many recursive!");
+			throw new RuntimeException("\nError: Too many recursive!");
 		}
 		TimestampedDriver timestampedDriver;
 		while ((timestampedDriver = driverPool.poll()) != null) {
@@ -161,12 +161,25 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
-	private synchronized void releaseDriver(WebDriver driver) {
+	private synchronized void releaseOrOfferDriver(WebDriver driver) {
 		if (driver != null) {
 			if (driverPool.size() < maxDrivers) {
 				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 			} else {
 				closeDriver(driver);
+			}
+		}
+		else {
+			if (driverPool.size() < maxDrivers) {
+				curChromeOptions = new ChromeOptions();
+				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.setAcceptInsecureCerts(true);
+				curChromeOptions.setBrowserVersion("128.0.6613.114");
+				curChromeOptions.setExperimentalOption("detach", true);
+				curPort++;
+				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+				driver = new ChromeDriver(curChromeOptions);
+				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 			}
 		}
 	}
@@ -318,6 +331,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		try {
 			WebDriver chromeDriver = getDriver();
+			if (chromeDriver == null) {
+				if (!resp.ended()) {
+					resp.end("Error: null WebDriver.");
+				}
+				releaseOrOfferDriver(chromeDriver);
+				return;
+			}
 			vertx.setTimer(200, id -> {
 				try {
 					chromeDriver.get((new URI(uri.trim())).toString());
@@ -370,11 +390,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 						if (!resp.ended()) {
 							resp.end(errorMsg);
 						}
-						releaseDriver(chromeDriver);
+						releaseOrOfferDriver(chromeDriver);
 					});
 				}
 				catch (NoSuchSessionException e) {
 					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
+					closeDriver(chromeDriver);
 				}
 				catch (Exception e) {
 					resp.end("\nError: " + e.getMessage());
