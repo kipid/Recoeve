@@ -667,7 +667,7 @@ textarea.multi-line {
 	min-height:10em
 }
 
-#new-reco input#input-val {
+#new-reco input.input-val {
 	float:right;
 	width:6.2em
 }
