@@ -688,12 +688,12 @@ textarea.multi-line {
 	vertical-align:top
 }
 
-#label-input-val {
+.label-input-val {
 	float:right;
 	margin:.1em .5em
 }
 
-#input-val-stars {
+.input-val-stars {
 	float:right;
 	vertical-align:text-bottom;
 	margin:0 0 -.5em -.5em
