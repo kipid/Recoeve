@@ -394,8 +394,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 					});
 				}
 				catch (NoSuchSessionException e) {
-					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 					closeDriver(chromeDriver);
+					System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
+					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 				}
 				catch (Exception e) {
 					resp.end("\nError: " + e.getMessage());
@@ -403,6 +404,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			});
 		}
 		catch (NoSuchSessionException e) {
+			System.out.println("Didn't close chromeDriver\nNoSuchSessionException: " + e.getMessage());
 			resp.end("\nError: No valid session. Please try again.");
 		}
 		catch (RuntimeException e) {
