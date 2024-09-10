@@ -55,13 +55,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public RecoeveDB db;
 	public WebClient webClient;
 	public long[] pID = {0, 0, 0};
-	public long timeoutMilliSecs = 7000L;
+	public long timeoutMilliSecs = 10000L;
 	public long findPerMilliSecs = 500L;
 	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
-	public final long driverTimeout = 300000; // 5 minutes in milliseconds
-	public final int RECURSE_MAX = 100;
+	public final long driverTimeout = 600000; // 10 minutes in milliseconds
+	public final int RECURSE_MAX = 10;
 	public int recurseCount;
 	public int curPort;
 
