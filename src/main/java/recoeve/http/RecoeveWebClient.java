@@ -38,16 +38,18 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 60000;
-	public static final int DEFAULT_MAX_DRIVERS = 5;
-	public static final int UNTIL_TOP = 20;
+	public static final int DEFAULT_MAX_DRIVERS = 4;
+	public static final int UNTIL_TOP = 10;
 	public static final Map<String, String> hostCSSMap;
 	static {
-		hostCSSMap = new HashMap<>(10);
+		hostCSSMap = new HashMap<>(20);
 		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
 		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
 		hostCSSMap.put("codeit.kr", "#header p:first-child");
+		hostCSSMap.put("www.instagram.com", "section main span");
+		hostCSSMap.put("instagram.com", "section main span");
 	}
 
 	public RecoeveDB db;
@@ -329,26 +331,26 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return result;
 		};
 
+		final WebDriver[] chromeDriver = new WebDriver[]{ getDriver() };
 		try {
-			WebDriver chromeDriver = getDriver();
-			if (chromeDriver == null) {
+			if (chromeDriver[0] == null) {
 				if (!resp.ended()) {
 					resp.end("Error: null WebDriver.");
 				}
-				releaseOrOfferDriver(chromeDriver);
+				releaseOrOfferDriver(chromeDriver[0]);
 				return;
 			}
 			vertx.setTimer(200, id -> {
 				try {
-					chromeDriver.get((new URI(uri.trim())).toString());
-					CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver, "title, h1, h2")
+					chromeDriver[0].get((new URI(uri.trim())).toString());
+					CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2")
 							.thenApply(applyFn);
-					CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver, hostCSSMap.get(uriHost))
+					CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
 							.thenApply(applyFn);
 
-					CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, "title, h1, h2")
+					CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
 							.thenApply(applyFn);
-					CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver, hostCSSMap.get(uriHost))
+					CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
 							.thenApply(applyFn);
 
 					CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
@@ -390,28 +392,34 @@ public class RecoeveWebClient extends AbstractVerticle {
 						if (!resp.ended()) {
 							resp.end(errorMsg);
 						}
-						releaseOrOfferDriver(chromeDriver);
+						releaseOrOfferDriver(chromeDriver[0]);
 					});
 				}
 				catch (NoSuchSessionException e) {
-					closeDriver(chromeDriver);
+					closeDriver(chromeDriver[0]);
 					System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
 					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 				}
 				catch (Exception e) {
+					closeDriver(chromeDriver[0]);
 					resp.end("\nError: " + e.getMessage());
 				}
 			});
 		}
 		catch (NoSuchSessionException e) {
-			System.out.println("Didn't close chromeDriver\nNoSuchSessionException: " + e.getMessage());
-			resp.end("\nError: No valid session. Please try again.");
+			closeDriver(chromeDriver[0]);
+			System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
+			resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 		}
 		catch (RuntimeException e) {
-			resp.end("\n" + e.getMessage());
+			closeDriver(chromeDriver[0]);
+			System.out.println("Closed chromeDriver\nRuntimeException: " + e.getMessage());
+			resp.end("\nError: RuntimeException: " + e.getMessage());
 		}
 		catch (Exception e) {
-			resp.end("\nError: " + e.getMessage());
+			closeDriver(chromeDriver[0]);
+			System.out.println("Closed chromeDriver\nException: " + e.getMessage());
+			resp.end("\nError: Exception: " + e.getMessage());
 		}
 	}
 
