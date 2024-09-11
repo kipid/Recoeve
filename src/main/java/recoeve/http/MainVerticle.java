@@ -2,6 +2,8 @@ package recoeve.http;
 
 
 
+import java.sql.SQLException;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Promise;
@@ -16,6 +18,7 @@ public class MainVerticle extends AbstractVerticle {
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
+	public Recoeve recoeve;
 	public String verticleId0;
 	public String verticleId1;
 
@@ -26,6 +29,7 @@ public class MainVerticle extends AbstractVerticle {
 		fileMapWithVar = new FileMapWithVar();
 		db = new RecoeveDB(vertx);
 		recoeveWebClient = new RecoeveWebClient(vertx, context, db);
+		recoeve = new Recoeve(vertx, context, fileMap, fileMapWithVar, recoeveWebClient, db);
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("Deployment failed!");
 				}
 			});
-		vertx.deployVerticle(new Recoeve(vertx, context, fileMap, fileMapWithVar, recoeveWebClient, db))
+		vertx.deployVerticle(recoeve)
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId1 = res.result();
@@ -77,7 +81,24 @@ public class MainVerticle extends AbstractVerticle {
 		vertx = null;
 		fileMap = null;
 		fileMapWithVar = null;
+		recoeveWebClient.cleanupDrivers();
 		recoeveWebClient = null;
+		recoeve.httpServer.close(ar -> {
+			if (ar.succeeded()) {
+				System.out.println("HTTP server closed successfully.");
+				stopPromise.complete();
+			} else {
+				System.err.println("Failed to close HTTP server: " + ar.cause());
+				stopPromise.fail(ar.cause());
+			}
+		});
+		try {
+			if (db.con != null) {
+				db.con.close();
+			}
+		} catch (SQLException err) {
+			System.out.println("SQLException: " + err.getMessage());
+		}
 		db = null;
 	}
 
