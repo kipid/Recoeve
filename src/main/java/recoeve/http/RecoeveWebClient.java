@@ -38,7 +38,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 60000;
-	public static final int DEFAULT_MAX_DRIVERS = 4;
+	public static final int DEFAULT_MAX_DRIVERS = 8;
 	public static final int UNTIL_TOP = 10;
 	public static final Map<String, String> hostCSSMap;
 	static {
@@ -55,7 +55,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public RecoeveDB db;
 	public WebClient webClient;
 	public long[] pID = {0, 0, 0};
-	public long timeoutMilliSecs = 10000L;
+	public long timeoutMilliSecs = 4000L;
 	public long findPerMilliSecs = 500L;
 	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
@@ -166,7 +166,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	private synchronized void releaseOrOfferDriver(WebDriver driver) {
 		if (driver != null) {
 			if (driverPool.size() < maxDrivers) {
-				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis())); // * offer(E e) : Inserts the specified element at the tail of this queue.
 			} else {
 				closeDriver(driver);
 			}
@@ -181,7 +181,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driver = new ChromeDriver(curChromeOptions);
-				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+				driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis())); // * offer(E e) : Inserts the specified element at the tail of this queue.
 			}
 		}
 	}
@@ -246,6 +246,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 					}
 				}
 			}
+			catch (NoSuchSessionException err) {
+				closeDriver(chromeDriver);
+				System.out.println(err);
+				cfElements.completeExceptionally(new NoSuchSessionException("\nError: No valid session. Please try again.: " + err.getMessage()));
+			}
 			catch (NoSuchElementException
 				| StaleElementReferenceException
 				| InvalidElementStateException
@@ -256,7 +261,20 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		vertx.setTimer(timeoutMilliSecs, id -> {
 			vertx.cancelTimer(pID[0]);
-			cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+			if (elements != null && !elements.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+					String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+					if (!text.isEmpty()) {
+						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+					}
+				}
+				cfElements.complete(sb.toString());
+			}
+			else {
+				cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+			}
 		});
 
 		return cfElements;
@@ -284,6 +302,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 					vertx.cancelTimer(pID[0]);
 					cfElements.complete(sb.toString());
 				}
+			}
+			catch (NoSuchSessionException err) {
+				closeDriver(chromeDriver);
+				System.out.println(err);
+				cfElements.completeExceptionally(new NoSuchSessionException("\nError: No valid session. Please try again.: " + err.getMessage()));
 			}
 			catch (NoSuchElementException
 				| StaleElementReferenceException
