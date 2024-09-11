@@ -106,8 +106,8 @@ public class RecoeveDB {
 		return utf8mb4Length;
 	}
 
-	private MysqlConnectionPoolDataSource ds;
-	private Connection con;
+	public MysqlConnectionPoolDataSource ds;
+	public Connection con;
 	public Vertx vertx;
 
 	private PreparedStatement pstmtGetLogAccess;
