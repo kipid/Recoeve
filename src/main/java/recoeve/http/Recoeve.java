@@ -12,6 +12,7 @@ import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
@@ -35,6 +36,7 @@ public class Recoeve extends AbstractVerticle {
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
 	public RecoeveDB db;
+	public HttpServer httpServer;
 
 	public Recoeve(Vertx vertx, Context context, FileMap fileMap, FileMapWithVar fileMapWithVar, RecoeveWebClient recoeveWebClient,
 			RecoeveDB db) {
@@ -233,7 +235,8 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println("Exception :: " + ex.getMessage());
 								}
 							});
-						} catch (Exception err) {
+						}
+						catch (Exception err) {
 							RecoeveDB.err(err);
 						}
 					}
@@ -1439,25 +1442,39 @@ public class Recoeve extends AbstractVerticle {
 			});
 		});
 
-		vertx.createHttpServer(
-				new HttpServerOptions()
-						.setUseAlpn(true)
-						.setSsl(true)
-						.setKeyCertOptions(new JksOptions()
-								.setPath(FileMap.preFilePath + "/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
-								.setPassword("q63kewmf")))
-				.requestHandler(req -> {
-					Router routerK = req.path().startsWith("/BlogStat") ? router0
-							: req.path().startsWith("/CDN/") ? router1
-									: req.path().startsWith("/account/log-in/with/") ? router2 : router;
-					try {
-						routerK.handle(req);
-					} catch (NullPointerException err) {
-						System.out.println(err);
-					} catch (IllegalStateException err) {
-						RecoeveDB.err(err);
-					}
-				}).listen(RecoeveDB.PORT);
+		httpServer = vertx.createHttpServer(
+			new HttpServerOptions()
+				.setUseAlpn(true)
+				.setSsl(true)
+				.setKeyCertOptions(
+					new JksOptions()
+						.setPath(FileMap.preFilePath + "/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
+						.setPassword("q63kewmf")
+				)
+		)
+		.requestHandler(req -> {
+			Router routerK = req.path().startsWith("/BlogStat")
+				? router0 : req.path().startsWith("/CDN/")
+				? router1 : req.path().startsWith("/account/log-in/with/")
+				? router2 : router;
+			try {
+				routerK.handle(req);
+			}
+			catch (NullPointerException err) {
+				System.out.println(err);
+			}
+			catch (IllegalStateException err) {
+				RecoeveDB.err(err);
+			}
+		});
+		httpServer.listen(RecoeveDB.PORT).andThen(ar -> {
+			if (ar.succeeded()) {
+				System.out.println("Server is listening on "  + RecoeveDB.PORT + ".");
+			}
+			else {
+				System.out.println("Server is failed to listen on "  + RecoeveDB.PORT + ".");
+			}
+		});
 
 		// vertx.createHttpServer()
 		// .requestHandler(router).listen(80);
