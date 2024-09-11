@@ -52,6 +52,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("instagram.com", "section main article h1");
 	}
 
+	public static final Map<String, String> mobileEmulation;
+	static {
+		mobileEmulation = new HashMap<>();
+		mobileEmulation.put("deviceName", "iPhone SE");
+	}
+
 	public RecoeveDB db;
 	public WebClient webClient;
 	public long[] pID = {0, 0, 0};
@@ -110,6 +116,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			try {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
 				curChromeOptions.setExperimentalOption("detach", true);
@@ -128,6 +135,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
 			curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.114");
 			curChromeOptions.setExperimentalOption("detach", true);
@@ -145,6 +153,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		curChromeOptions = new ChromeOptions();
 		curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 		curChromeOptions.setAcceptInsecureCerts(true);
 		curChromeOptions.setBrowserVersion("128.0.6613.114");
 		curChromeOptions.setExperimentalOption("detach", true);
@@ -175,6 +184,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			if (driverPool.size() < maxDrivers) {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
 				curChromeOptions.setExperimentalOption("detach", true);
