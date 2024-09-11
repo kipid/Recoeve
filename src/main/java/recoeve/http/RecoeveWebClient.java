@@ -48,8 +48,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
 		hostCSSMap.put("codeit.kr", "#header p:first-child");
-		hostCSSMap.put("www.instagram.com", "section main span");
-		hostCSSMap.put("instagram.com", "section main span");
+		hostCSSMap.put("www.instagram.com", "section main article h1");
+		hostCSSMap.put("instagram.com", "section main article h1");
 	}
 
 	public RecoeveDB db;
@@ -109,7 +109,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
 				curChromeOptions.setExperimentalOption("detach", true);
@@ -127,7 +127,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.114");
 			curChromeOptions.setExperimentalOption("detach", true);
@@ -144,7 +144,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		curChromeOptions = new ChromeOptions();
-		curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		curChromeOptions.setAcceptInsecureCerts(true);
 		curChromeOptions.setBrowserVersion("128.0.6613.114");
 		curChromeOptions.setExperimentalOption("detach", true);
@@ -174,7 +174,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			if (driverPool.size() < maxDrivers) {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.114");
 				curChromeOptions.setExperimentalOption("detach", true);
