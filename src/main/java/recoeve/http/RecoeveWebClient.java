@@ -167,6 +167,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 		try {
 			if (driver != null) { driver.close(); }
 		}
+		catch (NoSuchSessionException e) {
+			System.out.println("Error NoSuchSessionException: " + e.getMessage());
+			driver.quit();
+			System.out.println("driver.quit();");
+		}
 		catch (Exception e) {
 			System.out.println("Error closing WebDriver: " + e.getMessage());
 		}
