@@ -79,12 +79,6 @@ tasks.withType<Test> {
 	}
 }
 
-tasks.register("cleanRun") {
-    dependsOn("clean")
-    doLast {
-        tasks.withType<JavaExec> {
-            args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")
-            exec()
-        }
-    }
+tasks.withType<JavaExec> {
+	args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")
 }
