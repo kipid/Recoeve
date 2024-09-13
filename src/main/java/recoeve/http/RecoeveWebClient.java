@@ -458,12 +458,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return;
 			}
 			try {
-				chromeDriver[0].getTitle(); // * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-
 				CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
 				CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
 
-				chromeDriver[0].get((new URI(uri.trim())).toString());
+				chromeDriver[0].get(uri);
+				chromeDriver[0].getTitle(); // * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 				CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2")
 						.thenApply(applyFn);
 				CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
