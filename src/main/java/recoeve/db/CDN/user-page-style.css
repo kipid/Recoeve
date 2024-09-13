@@ -39,6 +39,13 @@
 	color:rgb(150, 150, 240)
 }
 
+#logs {
+	font-size:.8em;
+	border:1px solid red;
+	max-height:10em;
+	overflow-y:auto
+}
+
 .bright #user-noti {
 	color:rgb(50, 50, 190)
 }
