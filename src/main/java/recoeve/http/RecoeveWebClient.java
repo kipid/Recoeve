@@ -11,6 +11,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.NoSuchElementException;
@@ -59,7 +62,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public RecoeveDB db;
-	public WebClient webClient;
+	public WebClient[] webClient;
+	public int curWebClientI;
 	public long[] pID = {0, 0, 0};
 	public long timeoutMilliSecs = 4000L;
 	public long findPerMilliSecs = 500L;
@@ -76,7 +80,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.context = context;
 		this.db = db;
 		curPort = MIN_PORT;
-		webClient = WebClient.create(vertx, options);
+		curWebClientI = -1;
+		webClient = new WebClient[]{WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options)};
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
@@ -209,9 +214,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
-		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+		CompletableFuture<String> cf = new CompletableFuture<>();
 		try {
-			webClient.headAbs(originalURI)
+			curWebClientI++;
+			curWebClientI %= DEFAULT_MAX_DRIVERS;
+			webClient[curWebClientI].headAbs(originalURI)
 				.send()
 				.onSuccess(response -> {
 					if (response.statusCode() >= 200 && response.statusCode() < 300) {
@@ -219,20 +226,92 @@ public class RecoeveWebClient extends AbstractVerticle {
 						if (!followedURIs.isEmpty()) {
 							String fullURI = followedURIs.get(followedURIs.size() - 1);
 							System.out.println("The last redirected URL: " + fullURI);
-							completableFuture.complete(fullURI);
+							cf.complete(fullURI);
 						}
 					}
 				})
 				.onFailure(throwable -> {
 					System.out.println("Sended originalURI.: " + throwable.getMessage());
-					completableFuture.complete(originalURI);
+					cf.complete(originalURI);
 				});
 		}
-		catch (VertxException err) {
+		catch (Exception err) {
 			RecoeveDB.err(err);
-			completableFuture.completeExceptionally(err);
+			cf.completeExceptionally(err);
 		}
-		return completableFuture;
+		return cf;
+	}
+
+	public CompletableFuture<String> findTitleByVertXWebClient(String uri) {
+		CompletableFuture<String> cf = new CompletableFuture<>();
+		try {
+			curWebClientI++;
+			curWebClientI %= DEFAULT_MAX_DRIVERS;
+			webClient[curWebClientI].get(uri)
+				.send()
+				.onSuccess(html -> {
+					if (html.statusCode() >= 200 && html.statusCode() < 300) {
+						Document doc = Jsoup.parse(html.bodyAsString());
+						String title = doc.title();
+						Elements headings = doc.select("h1, h2");
+						StringBuilder sb = new StringBuilder();
+						if (!title.trim().isEmpty()) {
+							sb.append("\ntitle\t").append(StrArray.enclose(title.trim()));
+						}
+						headings.forEach((heading) -> {
+							if (!heading.text().trim().isEmpty()) {
+								sb.append("\n").append(heading.tagName())
+									.append("\t").append(StrArray.enclose(heading.text().trim()));
+							}
+						});
+						cf.complete(sb.toString());
+					}
+					else {
+						cf.completeExceptionally(new Exception("Not 2xx response."));
+					}
+				})
+				.onFailure(resp -> {
+					cf.completeExceptionally(new Exception("Getting your uri has failed."));
+				});
+		} catch (Exception err) {
+			RecoeveDB.err(err);
+			cf.completeExceptionally(err);
+		}
+		return cf;
+	}
+
+	public CompletableFuture<String> findTitleByVertXWebClient(String uri, String cssSelector) {
+		CompletableFuture<String> cf = new CompletableFuture<>();
+		try {
+			curWebClientI++;
+			curWebClientI %= DEFAULT_MAX_DRIVERS;
+			webClient[curWebClientI].get(uri)
+				.send()
+				.onSuccess(html -> {
+					if (html.statusCode() >= 200 && html.statusCode() < 300) {
+						Document doc = Jsoup.parse(html.bodyAsString());
+						Elements headings = doc.select(cssSelector);
+						StringBuilder sb = new StringBuilder();
+						headings.forEach((heading) -> {
+							if (!heading.text().trim().isEmpty()) {
+								sb.append("\n").append(heading.tagName())
+									.append("\t").append(StrArray.enclose(heading.text().trim()));
+							}
+						});
+						cf.complete(sb.toString());
+					}
+					else {
+						cf.completeExceptionally(new Exception("Not 2xx response."));
+					}
+				})
+				.onFailure(resp -> {
+					cf.completeExceptionally(new Exception("Getting your uri has failed."));
+				});
+		} catch (Exception err) {
+			RecoeveDB.err(err);
+			cf.completeExceptionally(err);
+		}
+		return cf;
 	}
 
 	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
@@ -378,71 +457,77 @@ public class RecoeveWebClient extends AbstractVerticle {
 				releaseOrOfferDriver(chromeDriver[0]);
 				return;
 			}
-			vertx.setTimer(200, id -> {
-				try {
-					chromeDriver[0].get((new URI(uri.trim())).toString());
-					CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2")
-							.thenApply(applyFn);
-					CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
-							.thenApply(applyFn);
+			try {
+				chromeDriver[0].getTitle(); // * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
-					CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
-							.thenApply(applyFn);
-					CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
-							.thenApply(applyFn);
+				CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
+				CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
 
-					CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+				chromeDriver[0].get((new URI(uri.trim())).toString());
+				CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2")
+						.thenApply(applyFn);
+				CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
+						.thenApply(applyFn);
 
-					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
-						if (error == null) {
-							try {
-								result = result.trim();
-								if (result.isEmpty()) {
-									result = "\nError: Empty result.";
-									System.out.println(result);
-								}
-								resp.write(result, Recoeve.ENCODING);
+				CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
+						.thenApply(applyFn);
+				CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
+						.thenApply(applyFn);
+
+				CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+
+				BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+					if (error == null) {
+						try {
+							result = result.trim();
+							if (result.isEmpty()) {
+								result = "\nError: Empty result.";
+								System.out.println(result);
 							}
-							catch (Exception e) {
-								result = "\nError: writing chunk: " + e.getMessage();
-								System.err.println(result);
-								resp.write(result, Recoeve.ENCODING);
-							}
-						} else {
-							result = "\nError: in future: " + error.getMessage();
+							resp.write(result, Recoeve.ENCODING);
+						}
+						catch (Exception e) {
+							result = "\nError: writing chunk: " + e.getMessage();
 							System.err.println(result);
 							resp.write(result, Recoeve.ENCODING);
 						}
-					};
+					} else {
+						result = "\nError: in future: " + error.getMessage();
+						System.err.println(result);
+						resp.write(result, Recoeve.ENCODING);
+					}
+				};
 
-					findTitle.whenComplete(writeChunk);
-					findHostSpecific.whenComplete(writeChunk);
+				findTitleByVertXWebClient0.whenComplete(writeChunk);
+				findTitleByVertXWebClient1.whenComplete(writeChunk);
 
-					findTitleUntil.whenComplete(writeChunk);
-					findHostSpecificUntil.whenComplete(writeChunk);
+				findTitle.whenComplete(writeChunk);
+				findHostSpecific.whenComplete(writeChunk);
 
-					allOf.whenComplete((v, error) -> {
-						String errorMsg = "";
-						if (error != null) {
-							errorMsg = "\nError in futures: " + error.getMessage();
-							System.err.println(errorMsg);
-						}
-						if (!resp.ended()) {
-							resp.end(errorMsg);
-						}
-						releaseOrOfferDriver(chromeDriver[0]);
-					});
-				}
-				catch (NoSuchSessionException e) {
-					closeDriver(chromeDriver[0]);
-					System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
-					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
-				}
-				catch (Exception e) {
-					closeDriver(chromeDriver[0]);
-					resp.end("\nError: " + e.getMessage());
-				}
-			});
+				findTitleUntil.whenComplete(writeChunk);
+				findHostSpecificUntil.whenComplete(writeChunk);
+
+				allOf.whenComplete((v, error) -> {
+					String errorMsg = "";
+					if (error != null) {
+						errorMsg = "\nError in futures: " + error.getMessage();
+						System.err.println(errorMsg);
+					}
+					if (!resp.ended()) {
+						resp.end(errorMsg);
+					}
+					releaseOrOfferDriver(chromeDriver[0]);
+				});
+			}
+			catch (NoSuchSessionException e) {
+				closeDriver(chromeDriver[0]);
+				System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
+				resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
+			}
+			catch (Exception e) {
+				closeDriver(chromeDriver[0]);
+				resp.end("\nError: " + e.getMessage());
+			}
 		}
 		catch (NoSuchSessionException e) {
 			closeDriver(chromeDriver[0]);
