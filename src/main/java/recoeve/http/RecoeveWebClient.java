@@ -2,7 +2,6 @@ package recoeve.http;
 
 
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -461,6 +460,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				releaseOrOfferDriver(chromeDriver[0]);
 				return;
 			}
+			CompletableFuture<Void> allOf = new CompletableFuture<>();
 			try {
 				CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
 				CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
@@ -477,7 +477,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
 						.thenApply(applyFn);
 
-				CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+				allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
 
 				BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 					if (error == null) {
@@ -524,11 +524,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 			catch (NoSuchSessionException e) {
 				closeDriver(chromeDriver[0]);
+				allOf.completeExceptionally(e);
 				System.out.println("Closed chromeDriver\nNoSuchSessionException: " + e.getMessage());
 				resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 			}
 			catch (Exception e) {
 				closeDriver(chromeDriver[0]);
+				allOf.completeExceptionally(e);
 				resp.end("\nError: " + e.getMessage());
 			}
 		}
