@@ -282,6 +282,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	public CompletableFuture<String> findTitleByVertXWebClient(String uri, String cssSelector) {
 		CompletableFuture<String> cf = new CompletableFuture<>();
+		if (cssSelector == null) {
+			cf.completeExceptionally(new Exception("cssSelector is null."));
+			return cf;
+		}
 		try {
 			curWebClientI++;
 			curWebClientI %= DEFAULT_MAX_DRIVERS;
