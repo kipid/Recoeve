@@ -40,7 +40,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 60000;
-	public static final int DEFAULT_MAX_DRIVERS = 8;
+	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
 	public static final Map<String, String> hostCSSMap;
 	static {
@@ -80,7 +80,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		curPort = MIN_PORT;
 		curWebClientI = -1;
-		webClient = new WebClient[]{WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options)};
+		webClient = new WebClient[]{WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options)};
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
