@@ -15232,6 +15232,7 @@
       }
       let from = uriRendered?.from;
       m2.lastURI = uri = uriRendered?.uri;
+      console.log("uriRendered: ", uriRendered);
       switch (from) {
         case "youtube":
           uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
