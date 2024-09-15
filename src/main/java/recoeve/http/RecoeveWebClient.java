@@ -80,7 +80,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.db = db;
 		curPort = MIN_PORT;
 		curWebClientI = -1;
-		webClient = new WebClient[]{WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options)};
+		webClient = new WebClient[]{ WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options) };
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
