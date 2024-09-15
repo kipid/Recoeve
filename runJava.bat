@@ -7,7 +7,7 @@ SET DC=C:\Recoeve\bin\main
 
 :: The whole CLASSPATH list splited by ";"
 :: The whole classes are integrated into C:\Recoeve\gradle\wrapper\gradle-wrapper.jar
-SET CLASSPATH=%CLASSPATH%;%RECOEVE_HOME%\build\classes\java\main;%RECOEVE_HOME%\build\libs\http-1.0.0-SNAPSHOT-fat.jar;%RECOEVE_HOME%\gradle\wrapper\gradle-wrapper.jar;%JAVA_HOME%\lib
+SET CLASSPATH=.;%CLASSPATH%;%RECOEVE_HOME%\build\classes\java\main;%RECOEVE_HOME%\build\libs\http-1.0.0-SNAPSHOT-fat.jar;%RECOEVE_HOME%\gradle\wrapper\gradle-wrapper.jar;%JAVA_HOME%\lib
 
 :: %~nx1 expands %1 [arg 1] to "file name + extension". e.g. "HelloWorld.java"
 ECHO Compiling %~nx1
