@@ -711,7 +711,10 @@ svg: {
 };
 </`+ `script>`); // Avoid closing script
 		m.$headOrBody.append($mjxConfig);
-		let $mjx = $(`<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></` + `script>`); // Avoid closing script
+		let $mjx = document.createElement("script");
+		$mjx.id = "MathJax-script";
+		$mjx.defer = true;
+		$mjx.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js";
 		m.$headOrBody.append($mjx);
 		m.logPrint(`<br><br>MathJax.js (mathjax@3/es5/tex-chtml.js) is loaded.`);
 		// MathJax PreProcess after the above MathJax.js is loaded.
@@ -726,8 +729,10 @@ svg: {
 		m.mathJaxPreProcess = setTimeout(m.mathJaxPreProcessDo, 2048);
 
 		// google code prettify js script (from cdn.jsdelivr.net CDN) is added.
-		let $gcp = $(`<script id="prettyfy-js" defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></` + `script>`); // Avoid closing script
-
+		let $gcp = document.createElement("script");
+		$gcp.id = "prettyfy-js";
+		$gcp.defer = true;
+		$gcp.src = "https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js";
 		m.$headOrBody.append($gcp);
 		m.logPrint(`<br><br>Google code prettyfy.js is loaded.`);
 		m.doPrettyPrint = function () {
