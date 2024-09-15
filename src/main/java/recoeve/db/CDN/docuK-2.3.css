@@ -1346,8 +1346,8 @@ code {
 }
 
 pre {
-	font-family:inherit;
-	font-size:.7em;
+	font-family:"Nanum Gothic Coding", "D2 Coding", Consolas, monospace;
+	font-size:.8em;
 	line-height:1.5;
 	display:block;
 	margin:.6em 0 2em;
