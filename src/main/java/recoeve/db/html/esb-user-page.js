@@ -14793,8 +14793,8 @@
         } else {
           r2.deleted = false;
         }
-        r2.descR = m2.renderStrDescCmt(String(r2.desc));
-        r2.cmtR = m2.renderStrDescCmt(String(r2.cmt));
+        r2.descR = m2.renderStrDescCmt(r2.desc);
+        r2.cmtR = m2.renderStrDescCmt(r2.cmt);
         if (r2.val === void 0 || r2.val === null || typeof r2.val === "string") {
           r2.val = m2.val(String(r2.val));
         }
@@ -15227,8 +15227,11 @@
   };
   m2.formatURIFully = function(uri, uriRendered, keepOriginal) {
     return new Promise(async function(resolve, reject) {
-      let from = String(uriRendered?.from);
-      console.log(`uriRendered: `, uriRendered);
+      if (!uri || typeof uri !== "string" || !uri.length) {
+        resolve("");
+      }
+      uri = uri.replace(/\s+/g, " ").trim();
+      let from = uriRendered?.from;
       m2.lastURI = uri;
       switch (from) {
         case "youtube":
@@ -15268,7 +15271,7 @@
       }
       if (!keepOriginal && m2.getUTF8Length(uri) > 255) {
         try {
-          resolve(String(await m2.getConciseURI(uri)));
+          resolve(await m2.getConciseURI(uri));
         } catch (err) {
           console.error(err);
         }
@@ -15321,6 +15324,25 @@ ${originalURI}
 ${originalURI}
 ` };
           descR.splice(0, 0, descR["#originaluri"]);
+          for (let i3 = 0; i3 < descR.length; i3++) {
+            descR[i3].i = i3;
+          }
+        }
+        m2.$input_desc.val(m2.descCmtRToString(descR));
+      }
+      if (uriRendered.uriHash) {
+        let desc = m2.$input_desc.val();
+        let descR = m2.renderStrDescCmt(desc);
+        if (descR["#uriwithhash"]) {
+          descR["#uriwithhash"].key = "#URIwithHash";
+          descR["#uriwithhash"].val += `
+${originalURI + uriRendered.uriHash}
+`;
+        } else {
+          descR["#uriwithhash"] = { key: "#URIwithHash", val: `
+${originalURI + uriRendered.uriHash}
+` };
+          descR.splice(0, 0, descR["#uriwithhash"]);
           for (let i3 = 0; i3 < descR.length; i3++) {
             descR[i3].i = i3;
           }
@@ -17153,6 +17175,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   window.uriRendering = function(uri, toA, inListPlay, descR) {
     return new Promise(async function(resolve, reject) {
+      let uriHost = null;
+      let uriRest = null;
+      let uriHash = null;
       if (typeof uri === "string") {
         if (uri.length > 6) {
           uri = m2.unescapeHTML(uri);
@@ -17161,19 +17186,28 @@ m.initialOpen: ${m2.initialOpen}`);
             if (uri.charAt(k).toLowerCase() === "s") {
               k++;
             }
-            if (uri.substring(k, k + 3) === "://") {
-              let uriAnalysed = new URL(uri);
+            if (uri.startsWith("://", k)) {
               k += 3;
-              let uriHost = uriAnalysed.host;
-              let uriRest = uriAnalysed.pathname.substring(1) + uriAnalysed.search + uriAnalysed.hash;
+              let l = uri.indexOf("#", k);
+              if (l > 0) {
+                uriHash = uri.substring(l);
+                uri = uri.substring(0, l);
+              }
+              l = uri.indexOf("/", k);
+              if (l > 0) {
+                uriHost = uri.substring(k, l);
+                uriRest = uri.substring(l + 1);
+              } else {
+                uriHost = uri.substring(k);
+                uriRest = "";
+              }
               if (m2.ptnURI[uriHost]) {
                 try {
                   let result = await m2.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
                   if (Boolean(result) !== false) {
-                    resolve(result);
+                    resolve({ ...result, uriHost, uriHash });
                   }
                 } catch (err) {
-                  console.error("toIframe rejected: ", err);
                 }
               }
             }
@@ -17182,20 +17216,19 @@ m.initialOpen: ${m2.initialOpen}`);
             try {
               let result = await m2.ptnURI[i3]?.toIframe(uri, inListPlay, toA, descR);
               if (Boolean(result) !== false) {
-                resolve(result);
+                resolve({ ...result, uriHost, uriHash });
               }
             } catch (err) {
-              console.error("toIframe rejected: ", err);
             }
           }
           if (toA) {
-            resolve({ html: m2.uriToA(uri) });
+            resolve({ html: m2.uriToA(uri), uriHost, uriHash });
           }
         } else {
-          resolve({ html: m2.escapeOnlyTag(uri) });
+          resolve({ html: m2.escapeOnlyTag(uri), uriHost, uriHash });
         }
       }
-      resolve({ html: "" });
+      resolve({ html: "", uriHost, uriHash });
     });
   };
   window.relatedRendering = function(str) {
@@ -17425,6 +17458,8 @@ ${decodedURI}` : ``}`;
     let res = "";
     for (let i3 = 0; i3 < descCmtR.length; i3++) {
       res += `${descCmtR[i3].key}${descCmtR[i3].val}
+
+
 `;
     }
     return res.trim();
@@ -17442,9 +17477,6 @@ ${decodedURI}` : ``}`;
         switch (key.toLowerCase()) {
           case "#start":
           case "#end":
-          case "#":
-          case "":
-          default:
             res += `<div class="value"><span class="key">${key}</span> ${val.replace(/(?:  |\t)/g, "&nbsp; ").replace(/\n/g, "<br/>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
             break;
           case "#lyrics":
@@ -17493,6 +17525,11 @@ ${decodedURI}` : ``}`;
           case "#related:":
           case "#originaluri":
           case "#originaluri:":
+          case "#uriwithhash":
+          case "#uriwithhash:":
+          case "#":
+          case "":
+          default:
             res += `<div class="value"><span class="key">${key}</span> `;
             let relateds = val.split("\n");
             for (let p = 0; p < relateds.length; p++) {
@@ -17599,7 +17636,7 @@ ${decodedURI}` : ``}`;
       res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
       if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
         let descR = m2.renderStrDescCmt(recoDef.defDescs[0][0]);
-        res += String(await m2.descCmtRToHTML(descR));
+        res += await m2.descCmtRToHTML(descR);
       }
       if (recomsI?.cmtsHTML) {
         res += recomsI.cmtsHTML;
@@ -17647,10 +17684,10 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
       if (r2.desc) {
         let descR = r2.descR;
-        res += String(await m2.descCmtRToHTML(descR));
+        res += await m2.descCmtRToHTML(descR);
       }
       if (r2.cmt && r2.cmt.length !== 0) {
-        res += `<div class="cmt">${String(await m2.descCmtRToHTML(r2.cmtR))}</div>`;
+        res += `<div class="cmt">${await m2.descCmtRToHTML(r2.cmtR)}</div>`;
       }
       if (r2.tFirst && r2.tLast && r2.tFirst !== r2.tLast) {
         res += `<div class="tFirst">Lastly Editted at ${m2.toLocalTime(r2.tLast)}</div><div class="cBoth"></div>`;
@@ -24972,7 +25009,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   init_react_shim();
   var import_jsx_runtime19 = __toESM(require_jsx_runtime(), 1);
   function Tip() {
-    return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "tip", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "p tip", children: [
       "[--Tip0: You can reco simply by dragging stars/points in well-organized other user's Recoeve.net.--]",
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("br", {}),
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("br", {}),
@@ -25004,6 +25041,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "side2", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "button enabled", id: "toggle-manual", onClick: () => m.toggleManual(), children: "\u25BC [--Showing Recoeve.net Manual--]" }) }),
       /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "side2", id: "recoeve-manual", children: [
         /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Tip, {}),
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "p" }),
         /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "p", children: [
           "Recoeve.net Manual collection | \uC0AC\uC6A9\uC124\uBA85\uC11C \uBAA8\uC74C\uC9D1: ",
           /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("a", { className: "wheat", target: "_blank", href: "https://recoeve.net/user/kipid?cat=%5BRecoeve%5D--Manual%2F%EC%84%A4%EB%AA%85%EC%84%9C&PRL=0.60&PRR=1.00#headPlay", children: "[Recoeve]--Manual/\uC124\uBA85\uC11C" }),
@@ -29002,7 +29040,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           clearTimeout(prepare_default.setTimeoutGetAndShowDefs);
           prepare_default.setTimeoutGetAndShowDefs = setTimeout(async function() {
             await prepare_default.formatURIAndGetAndShowDefsAndRecoInNewReco(false, false);
-          }, prepare_default.wait);
+          }, prepare_default.wait / 2);
         }
       };
       prepare_default.$input_uri.on("input.change keyup.change keydown.change cut.change paste.change click.change focus.change", prepare_default.input_uriOn);
