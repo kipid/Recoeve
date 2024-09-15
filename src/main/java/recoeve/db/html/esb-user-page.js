@@ -15230,9 +15230,8 @@
       if (!uri || typeof uri !== "string" || !uri.length) {
         resolve("");
       }
-      uri = uri.replace(/\s+/g, " ").trim();
       let from = uriRendered?.from;
-      m2.lastURI = uri;
+      m2.lastURI = uri = uriRendered?.uri;
       switch (from) {
         case "youtube":
           uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
@@ -17205,7 +17204,7 @@ m.initialOpen: ${m2.initialOpen}`);
                 try {
                   let result = await m2.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
                   if (Boolean(result) !== false) {
-                    resolve({ ...result, uriHost, uriHash });
+                    resolve({ ...result, uri, uriHost, uriHash });
                   }
                 } catch (err) {
                 }
@@ -17216,19 +17215,19 @@ m.initialOpen: ${m2.initialOpen}`);
             try {
               let result = await m2.ptnURI[i3]?.toIframe(uri, inListPlay, toA, descR);
               if (Boolean(result) !== false) {
-                resolve({ ...result, uriHost, uriHash });
+                resolve({ ...result, uri, uriHost, uriHash });
               }
             } catch (err) {
             }
           }
           if (toA) {
-            resolve({ html: m2.uriToA(uri), uriHost, uriHash });
+            resolve({ html: m2.uriToA(uri), uri, uriHost, uriHash });
           }
         } else {
-          resolve({ html: m2.escapeOnlyTag(uri), uriHost, uriHash });
+          resolve({ html: m2.escapeOnlyTag(uri), uri, uriHost, uriHash });
         }
       }
-      resolve({ html: "", uriHost, uriHash });
+      resolve({ html: "", uri, uriHost, uriHash });
     });
   };
   window.relatedRendering = function(str) {
