@@ -39,7 +39,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
-	public static final int MAX_PORT = 60000;
+	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
 	public static final Map<String, String> hostCSSMap;
