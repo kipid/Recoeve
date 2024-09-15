@@ -15437,9 +15437,11 @@ ${originalURI + uriRendered.uriHash}
 web	${m2.sW}	${m2.sH}`;
   m2.rmb_me = function(callback, args, saveNewRecoInputs) {
     return new Promise(async function(resolve, reject) {
+      let uri = await m2.formatURI(m2.$input_uri.val());
+      let uriRendered = await uriRendering(uri, true);
+      uri = await m2.formatURIFully(uri, uriRendered);
       if (saveNewRecoInputs) {
-        let uri = String(await m2.formatURI(m2.$input_uri.val()));
-        m2.localStorage.setItem("uri", String(await m2.formatURIFully(uri, Object(await uriRendering(uri)))));
+        m2.localStorage.setItem("uri", uri);
         m2.localStorage.setItem("title", m2.formatTitle(m2.$input_title.val().trim()));
         m2.localStorage.setItem("cats", m2.formatCats(m2.$input_cats.val().trim()));
         m2.localStorage.setItem("desc", m2.$input_desc.val().trim());
