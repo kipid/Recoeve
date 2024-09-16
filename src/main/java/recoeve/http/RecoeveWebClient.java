@@ -42,22 +42,22 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 7000L;
+	public static final long TIMEOUT_MS = 10000L;
 	public static final long FIND_PER_MS = 2000L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
-	public static final Map<String, String> hostCSSMap;
+	public static final Map<String, String> HOST_TO_CSS;
 	static {
-		hostCSSMap = new HashMap<>(20);
-		hostCSSMap.put("www.youtube.com", "h1");
-		hostCSSMap.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
-		hostCSSMap.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
-		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
-		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
-		hostCSSMap.put("codeit.kr", "#header p:first-child");
-		hostCSSMap.put("www.instagram.com", "section main article h1");
-		hostCSSMap.put("instagram.com", "section main article h1");
+		HOST_TO_CSS = new HashMap<>(20);
+		HOST_TO_CSS.put("www.youtube.com", "h1");
+		HOST_TO_CSS.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
+		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
+		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
+		HOST_TO_CSS.put("www.codeit.kr", "#header p:first-child");
+		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
+		HOST_TO_CSS.put("www.instagram.com", "section main article h1");
+		HOST_TO_CSS.put("instagram.com", "section main article h1");
 	}
 
 	// public static final Map<String, String> mobileEmulation;
@@ -497,21 +497,18 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return;
 			}
 			try {
-				// CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
-				// CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
-
 				chromeDriver[0].get(uri);
-				// chromeDriver[0].getTitle();
+				chromeDriver[0].getTitle();
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
-				if (hostCSSMap.get(uriHost) == null) {
-					findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+				if (HOST_TO_CSS.get(uriHost) == null) {
+					findTitle = asyncFindTitle(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
 				}
 				else {
-					findTitle = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
 				}
 
 				allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
@@ -615,13 +612,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 			CompletableFuture<String> findTitle;
 			CompletableFuture<String> findTitleUntil;
-			if (RecoeveWebClient.hostCSSMap.get(uriHost) == null) {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+			if (RecoeveWebClient.HOST_TO_CSS.get(uriHost) == null) {
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
 			}
 			else {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
 			}
 
 			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
@@ -654,7 +651,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				if (error != null) {
 					errorMsg = "\nError in futures: " + error.getMessage();
 				}
-				System.err.println(errorMsg);
+				System.err.println(errorMsg + v);
 				recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
 			});
 		}
