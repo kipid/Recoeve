@@ -29040,6 +29040,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         let uri = prepare_default.$input_uri.val();
         if (uri === "") {
           prepare_default.myRecos[""].cats = prepare_default.currentCat;
+          prepare_default.emptifyRecoInNewReco();
         }
         if (uri !== prepare_default.lastURI) {
           clearTimeout(prepare_default.setTimeoutGetAndShowDefs);
