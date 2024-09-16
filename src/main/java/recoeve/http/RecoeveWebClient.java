@@ -43,8 +43,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 10000L;
-	public static final long FIND_PER_MS = 200L;
+	public static final long TIMEOUT_MS = 7000L;
+	public static final long FIND_PER_MS = 1000L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
