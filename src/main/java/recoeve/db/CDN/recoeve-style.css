@@ -471,6 +471,10 @@ a.seekTo {
 	margin-bottom:-0.4em
 }
 
+#cat-fs-list {
+	max-height:22em
+}
+
 .fs-list {
 	display:inherit;
 	position:absolute;
