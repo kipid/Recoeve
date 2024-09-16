@@ -56,8 +56,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
 		hostCSSMap.put("codeit.kr", "#header p:first-child");
-		hostCSSMap.put("www.instagram.com", "h1");
-		hostCSSMap.put("instagram.com", "h1");
+		hostCSSMap.put("www.instagram.com", "section main article h1");
+		hostCSSMap.put("instagram.com", "section main article h1");
 	}
 
 	// public static final Map<String, String> mobileEmulation;
@@ -601,7 +601,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
 
-			String uri = "https://www.instagram.com/p/C_2sjq_yKKa/";
+			String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
 			String uriHost = "www.instagram.com";
 
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
@@ -655,7 +655,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			findHostSpecificUntil.whenComplete(writeChunk);
 
 			allOf.whenComplete((v, error) -> {
-				String errorMsg = "";
+				String errorMsg = "\nComplete with no error.";
 				if (error != null) {
 					errorMsg = "\nError in futures: " + error.getMessage();
 				}
