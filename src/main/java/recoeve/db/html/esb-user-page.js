@@ -29037,6 +29037,8 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         let uri = prepare_default.$input_uri.val();
         if (uri === "") {
           prepare_default.myRecos[""].cats = prepare_default.currentCat;
+          prepare_default.$input_val.val("10.0/10");
+          prepare_default.$input_val.trigger("keyup.change-number");
         }
         if (uri !== prepare_default.lastURI) {
           clearTimeout(prepare_default.setTimeoutGetAndShowDefs);
