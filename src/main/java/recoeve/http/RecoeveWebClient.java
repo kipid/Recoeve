@@ -607,7 +607,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 			// String uriHost = "kipid.tistory.com";
 
-			String uri = "https://www.youtube.com/watch?v=Gt40VneLdX4";
+			String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
 			String uriHost = "www.youtube.com";
 
 			chromeDriver[0].get(uri);
