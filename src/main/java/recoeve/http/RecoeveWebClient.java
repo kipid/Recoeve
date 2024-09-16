@@ -123,7 +123,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.138");
 				curChromeOptions.setExperimentalOption("detach", true);
@@ -138,7 +138,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.138");
 			curChromeOptions.setExperimentalOption("detach", true);
@@ -156,7 +156,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		// curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 		// curChromeOptions.setAcceptInsecureCerts(true);
 		// curChromeOptions.setBrowserVersion("128.0.6613.138");
 		// curChromeOptions.setExperimentalOption("detach", true);
@@ -206,7 +206,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+					curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 					curChromeOptions.setAcceptInsecureCerts(true);
 					curChromeOptions.setBrowserVersion("128.0.6613.138");
 					curChromeOptions.setExperimentalOption("detach", true);
