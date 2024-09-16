@@ -480,7 +480,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return result;
 		};
 
-		final WebDriver[] chromeDriver = new WebDriver[]{ getDriver() };
+		final WebDriver[] chromeDriver = new WebDriver[1];
+		try {
+			chromeDriver[0] = getDriver();
+		} catch (Exception err) {
+			System.out.println(err.getMessage());
+		}
 		CompletableFuture<Void> allOf = new CompletableFuture<>();
 		try {
 			if (chromeDriver[0] == null) {
@@ -589,16 +594,16 @@ public class RecoeveWebClient extends AbstractVerticle {
 		try {
 			verticle.start();
 			verticle.getVertx().setTimer(10, id -> {
-				WebDriver chromeDriver = verticle.recoeveWebClient.getDriver();
-				chromeDriver.get("https://www.youtube.com/watch?v=1MhugHxbhGE");
 				try {
+					WebDriver chromeDriver = verticle.recoeveWebClient.getDriver();
+					chromeDriver.get("https://www.youtube.com/watch?v=1MhugHxbhGE");
 					verticle.recoeveWebClient.asyncFindTitle(chromeDriver, "h1")
 							.thenAccept(result -> {
 								System.out.println(result);
 							});
 				}
-				catch (Exception err0) {
-					System.out.println("Error: " + err0.getMessage());
+				catch (Exception err) {
+					System.out.println("Error: " + err.getMessage());
 				}
 			});
 		}
