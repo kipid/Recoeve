@@ -1,20 +1,17 @@
 package recoeve.http;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
-
-// import java.lang.StringBuilder;
-
-import java.sql.*;
-
-import java.net.URLDecoder;
-
-import java.io.UnsupportedEncodingException;
-
-import recoeve.db.RecoeveDB;
 import recoeve.db.FileMap;
+import recoeve.db.RecoeveDB;
 // import recoeve.db.HTMLString;
 
 public class PrintLog implements Handler<RoutingContext> {
@@ -91,7 +88,7 @@ public class PrintLog implements Handler<RoutingContext> {
 			if (referer.startsWith("://", k)) {
 				k += 3;
 				int l = referer.indexOf("/", k);
-				String refererHost = null;
+				String refererHost;
 				if (l > 0) {
 					refererHost = referer.substring(k, l);
 					String[] pathnames = referer.substring(l).split("/");
