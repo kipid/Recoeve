@@ -120,28 +120,23 @@ public class RecoeveWebClient extends AbstractVerticle {
 			try {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-				curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 				curChromeOptions.setAcceptInsecureCerts(true);
-				curChromeOptions.setBrowserVersion("128.0.6613.114");
+				curChromeOptions.setBrowserVersion("128.0.6613.138");
 				curChromeOptions.setExperimentalOption("detach", true);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
 			}
-			catch (RuntimeException err) {
-				System.out.println(err.getMessage());
-			}
 			catch (Exception err) {
-				System.out.println("Failed to create new WebDriver: " + err);
+				System.out.println("Failed to create new WebDriver: " + err.getMessage());
 			}
 		}
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
 			curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-			curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 			curChromeOptions.setAcceptInsecureCerts(true);
-			curChromeOptions.setBrowserVersion("128.0.6613.114");
+			curChromeOptions.setBrowserVersion("128.0.6613.138");
 			curChromeOptions.setExperimentalOption("detach", true);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
@@ -157,9 +152,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		curChromeOptions = new ChromeOptions();
 		curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-		curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 		curChromeOptions.setAcceptInsecureCerts(true);
-		curChromeOptions.setBrowserVersion("128.0.6613.114");
+		curChromeOptions.setBrowserVersion("128.0.6613.138");
 		curChromeOptions.setExperimentalOption("detach", true);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
@@ -193,9 +187,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			if (driverPool.size() < maxDrivers) {
 				curChromeOptions = new ChromeOptions();
 				curChromeOptions.addArguments("--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-				curChromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
 				curChromeOptions.setAcceptInsecureCerts(true);
-				curChromeOptions.setBrowserVersion("128.0.6613.114");
+				curChromeOptions.setBrowserVersion("128.0.6613.138");
 				curChromeOptions.setExperimentalOption("detach", true);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
