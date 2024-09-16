@@ -126,7 +126,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+				curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.138");
 				curChromeOptions.setExperimentalOption("detach", true);
@@ -141,7 +141,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+			curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.138");
 			curChromeOptions.setExperimentalOption("detach", true);
@@ -159,7 +159,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+		// curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 		// curChromeOptions.setAcceptInsecureCerts(true);
 		// curChromeOptions.setBrowserVersion("128.0.6613.138");
 		// curChromeOptions.setExperimentalOption("detach", true);
@@ -209,7 +209,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+					curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 					curChromeOptions.setAcceptInsecureCerts(true);
 					curChromeOptions.setBrowserVersion("128.0.6613.138");
 					curChromeOptions.setExperimentalOption("detach", true);
