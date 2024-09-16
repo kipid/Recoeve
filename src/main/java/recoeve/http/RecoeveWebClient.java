@@ -42,36 +42,37 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
+	public static final long TIMEOUT_MS = 5000L;
+	public static final long FIND_PER_MS = 500L;
+	public static final long TIMEOUT_DRIVER = 600000;
+		// * 10 minutes in milliseconds
+	public static final int RECURSE_MAX = 10;
 	public static final Map<String, String> hostCSSMap;
 	static {
 		hostCSSMap = new HashMap<>(20);
-		hostCSSMap.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
-		hostCSSMap.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
+		hostCSSMap.put("www.youtube.com", "h1");
+		hostCSSMap.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
+		hostCSSMap.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
 		hostCSSMap.put("apod.nasa.gov", "center>b:first-child");
 		hostCSSMap.put("www.codeit.kr", "#header p:first-child");
 		hostCSSMap.put("codeit.kr", "#header p:first-child");
-		hostCSSMap.put("www.instagram.com", "section main article h1");
-		hostCSSMap.put("instagram.com", "section main article h1");
+		hostCSSMap.put("www.instagram.com", "h1");
+		hostCSSMap.put("instagram.com", "h1");
 	}
 
-	public static final Map<String, String> mobileEmulation;
-	static {
-		mobileEmulation = new HashMap<>();
-		mobileEmulation.put("deviceName", "iPhone SE");
-	}
+	// public static final Map<String, String> mobileEmulation;
+	// static {
+	// 	mobileEmulation = new HashMap<>();
+	// 	mobileEmulation.put("deviceName", "iPhone SE");
+	// }
 
 	public RecoeveDB db;
 	public WebClient[] webClient;
 	public int curWebClientI;
 	public long[] pID = {0, 0, 0};
-	public long timeoutMilliSecs = 4000L;
-	public long findPerMilliSecs = 500L;
 	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
-	public final long driverTimeout = 600000;
-		// 10 minutes in milliseconds
-	public final int RECURSE_MAX = 10;
 	public int recurseCount;
 	public int curPort;
 
@@ -79,12 +80,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.vertx = vertx;
 		this.context = context;
 		this.db = db;
-		curPort = MIN_PORT;
-		curWebClientI = -1;
 		webClient = new WebClient[]{ WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options) };
+		curWebClientI = -1;
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
+		curPort = MIN_PORT;
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		TimestampedDriver timestampedDriver;
 		while ((timestampedDriver = driverPool.poll()) != null) {
-			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
+			if (System.currentTimeMillis() - timestampedDriver.timestamp > TIMEOUT_DRIVER) {
 				releaseOrOfferDriver(timestampedDriver.driver);
 			}
 			else {
@@ -147,7 +148,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
 		}
 		while ((timestampedDriver = driverPool.poll()) != null) {
-			if (System.currentTimeMillis() - timestampedDriver.timestamp > driverTimeout) {
+			if (System.currentTimeMillis() - timestampedDriver.timestamp > TIMEOUT_DRIVER) {
 				releaseOrOfferDriver(timestampedDriver.driver);
 			}
 			else {
@@ -305,7 +306,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public CompletableFuture<String> findTitleByVertXWebClient(String uri, String cssSelector) {
 		CompletableFuture<String> cf = new CompletableFuture<>();
 		if (cssSelector == null) {
-			cf.completeExceptionally(new Exception("cssSelector is null."));
+			cf.completeExceptionally(new Exception("\ncssSelector is null."));
 			return cf;
 		}
 		try {
@@ -347,7 +348,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return cfElements;
 		}
 
-		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
+		pID[0] = vertx.setPeriodic(FIND_PER_MS, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
@@ -378,7 +379,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		});
 
-		vertx.setTimer(timeoutMilliSecs, id -> {
+		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
 				vertx.cancelTimer(pID[0]);
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
@@ -393,7 +394,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					cfElements.complete(sb.toString());
 				}
 				else {
-					cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
 				}
 			} catch (Exception err) {
 				cfElements.completeExceptionally(err);
@@ -410,7 +411,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return cfElements;
 		}
 
-		pID[0] = vertx.setPeriodic(findPerMilliSecs, id -> {
+		pID[1] = vertx.setPeriodic(FIND_PER_MS, id -> {
 			try {
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
@@ -422,7 +423,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 						}
 						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
 					}
-					vertx.cancelTimer(pID[0]);
+					vertx.cancelTimer(pID[1]);
 					cfElements.complete(sb.toString());
 				}
 			}
@@ -438,9 +439,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		});
 
-		vertx.setTimer(timeoutMilliSecs, id -> {
+		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
-				vertx.cancelTimer(pID[0]);
+				vertx.cancelTimer(pID[1]);
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
@@ -453,7 +454,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					cfElements.complete(sb.toString());
 				}
 				else {
-					cfElements.complete("\nError: timeout " + timeoutMilliSecs+"ms.");
+					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
 				}
 			} catch (Exception err) {
 				cfElements.completeExceptionally(err);
@@ -529,7 +530,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 							System.err.println(result);
 							resp.write(result, Recoeve.ENCODING);
 						}
-					} else {
+					}
+					else {
 						result = "\nError: in future: " + error.getMessage();
 						System.err.println(result);
 						resp.write(result, Recoeve.ENCODING);
@@ -546,11 +548,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 				findHostSpecificUntil.whenComplete(writeChunk);
 
 				allOf.whenComplete((v, error) -> {
-					String errorMsg = "";
+					String errorMsg = "\nComplete with no error.";
 					if (error != null) {
 						errorMsg = "\nError in futures: " + error.getMessage();
-						System.err.println(errorMsg);
 					}
+					System.err.println(errorMsg);
 					if (!resp.ended()) {
 						resp.end(errorMsg);
 					}
@@ -590,21 +592,75 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public static void main(String... args) {
-		MainVerticle verticle = new MainVerticle();
+		Function<String, String> applyFn = (result) -> {
+			return result;
+		};
+
 		try {
-			verticle.start();
-			verticle.getVertx().setTimer(10, id -> {
-				try {
-					WebDriver chromeDriver = verticle.recoeveWebClient.getDriver();
-					chromeDriver.get("https://www.youtube.com/watch?v=1MhugHxbhGE");
-					verticle.recoeveWebClient.asyncFindTitle(chromeDriver, "h1")
-							.thenAccept(result -> {
-								System.out.println(result);
-							});
+			Vertx vertx = Vertx.vertx();
+			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
+			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
+
+			String uri = "https://www.instagram.com/p/C_2sjq_yKKa/";
+			String uriHost = "www.instagram.com";
+
+			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
+			// String uriHost = "kipid.tistory.com";
+
+			CompletableFuture<String> findTitleByVertXWebClient0 = recoeveWebClient.findTitleByVertXWebClient(uri);
+			CompletableFuture<String> findTitleByVertXWebClient1 = recoeveWebClient.findTitleByVertXWebClient(uri, RecoeveWebClient.hostCSSMap.get(uriHost));
+
+			chromeDriver[0].get(uri);
+			chromeDriver[0].getTitle();
+				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			CompletableFuture<String> findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, h1, h2")
+					.thenApply(applyFn);
+			CompletableFuture<String> findHostSpecific = recoeveWebClient.asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
+					.thenApply(applyFn);
+
+			CompletableFuture<String> findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
+					.thenApply(applyFn);
+			CompletableFuture<String> findHostSpecificUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
+					.thenApply(applyFn);
+
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+
+			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+				if (error == null) {
+					try {
+						result = result.trim();
+						if (result.isEmpty()) {
+							result = "Error: Empty result.";
+						}
+						System.out.println(result);
+					}
+					catch (Exception e) {
+						result = "\nError: writing chunk: " + e.getMessage();
+						System.err.println(result);
+					}
 				}
-				catch (Exception err) {
-					System.out.println("Error: " + err.getMessage());
+				else {
+					result = "\nError: in future: " + error.getMessage();
+					System.err.println(result);
 				}
+			};
+
+			findTitleByVertXWebClient0.whenComplete(writeChunk);
+			findTitleByVertXWebClient1.whenComplete(writeChunk);
+
+			findTitle.whenComplete(writeChunk);
+			findHostSpecific.whenComplete(writeChunk);
+
+			findTitleUntil.whenComplete(writeChunk);
+			findHostSpecificUntil.whenComplete(writeChunk);
+
+			allOf.whenComplete((v, error) -> {
+				String errorMsg = "";
+				if (error != null) {
+					errorMsg = "\nError in futures: " + error.getMessage();
+				}
+				System.err.println(errorMsg);
+				recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
 			});
 		}
 		catch (Exception err) {
