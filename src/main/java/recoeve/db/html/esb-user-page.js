@@ -14916,7 +14916,7 @@
       m2.$input_desc.val(r2.desc);
       m2.$input_cmt.val(r2.cmt);
       m2.$input_val.val(r2.val.str);
-      m2.$input_val.trigger("keyup");
+      m2.$input_val.trigger("keyup.change-point");
     } else if (fillDefs) {
       let recoDef = m2.recoDefs[r2?.uri];
       if (recoDef?.defTitles?.[0]?.[0]) {
@@ -14956,7 +14956,6 @@
   m2.emptifyRecoInNewReco = function() {
     m2.localStorage.clear();
     m2.$input_uri.val("");
-    m2.$input_val.trigger("keyup");
     m2.formatURIAndGetAndShowDefsAndRecoInNewReco(true, false);
   };
   m2.getFullURI = function(shortURI) {
@@ -15291,7 +15290,7 @@
       let uriRendered = await uriRendering(elem.value, true);
       let originalURI = await m2.formatURIFully(elem.value, uriRendered, true);
       let uri = noFormatURI ? originalURI : await m2.formatURIFully(originalURI, uriRendered, false);
-      m2.$input_uri.trigger("keyup");
+      m2.$input_uri.val(uri);
       m2.uri = uri;
       m2.$show_URI.html(uriRendered.html.replace(/\sdelayed-src=/gi, " src="));
       let r2 = m2.myRecos[uri];
@@ -17459,7 +17458,9 @@ ${decodedURI}` : ``}`;
   m2.descCmtRToString = function(descCmtR) {
     let res = "";
     for (let i3 = 0; i3 < descCmtR.length; i3++) {
-      res += `${descCmtR[i3].key}${descCmtR[i3].val}
+      res += `${descCmtR[i3].key}
+${descCmtR[i3].val.trim()}
+
 
 
 `;
@@ -17478,7 +17479,9 @@ ${decodedURI}` : ``}`;
         let val = m2.escapeOnlyTag(descR[l].val);
         switch (key.toLowerCase()) {
           case "#start":
+          case "#start:":
           case "#end":
+          case "#end:":
             res += `<div class="value"><span class="key">${key}</span> ${val.replace(/(?:  |\t)/g, "&nbsp; ").replace(/\n/g, "<br/>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
             break;
           case "#lyrics":
@@ -29037,14 +29040,12 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         let uri = prepare_default.$input_uri.val();
         if (uri === "") {
           prepare_default.myRecos[""].cats = prepare_default.currentCat;
-          prepare_default.$input_val.val("10.0/10");
-          prepare_default.$input_val.trigger("keyup.change-number");
         }
         if (uri !== prepare_default.lastURI) {
           clearTimeout(prepare_default.setTimeoutGetAndShowDefs);
           prepare_default.setTimeoutGetAndShowDefs = setTimeout(async function() {
             await prepare_default.formatURIAndGetAndShowDefsAndRecoInNewReco(false, false);
-          }, prepare_default.wait / 2);
+          }, prepare_default.wait);
         }
       };
       prepare_default.$input_uri.on("input.change keyup.change keydown.change cut.change paste.change click.change focus.change", prepare_default.input_uriOn);
@@ -29127,23 +29128,32 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
       };
       prepare_default.$input_val.on("keydown.change-number", function(e2) {
-        const val = prepare_default.val(this.value);
+        const val = e2.target.value;
+        const cursorPosition = this.selectionEnd;
         switch (e2.code) {
           case "Enter":
             e2.preventDefault();
-            return;
+            break;
           case "ArrowUp":
           case "ArrowDown":
             e2.preventDefault();
-            const cursorPosition = this.selectionEnd;
-            let value = val.numStr;
-            let newValue;
-            if (e2.code === "ArrowUp") {
-              newValue = prepare_default.changeAtPosition(value, cursorPosition, 1);
-            } else if (e2.code === "ArrowDown") {
-              newValue = prepare_default.changeAtPosition(value, cursorPosition, -1);
+            e2.stopPropagation();
+            if (cursorPosition === 0) {
+              this.setSelectionRange(cursorPosition, cursorPosition);
+              return;
             }
-            this.value = newValue;
+            let numAtCursor = Number(val.charAt(cursorPosition - 1));
+            if (!isNaN(numAtCursor)) {
+              if (e2.code === "ArrowUp") {
+                numAtCursor = (numAtCursor + 1) % 10;
+              } else if (e2.code === "ArrowDown") {
+                numAtCursor = (numAtCursor - 1 + 10) % 10;
+              }
+              const valSplit = val.split("");
+              valSplit.splice(cursorPosition - 1, 1, String(numAtCursor));
+              e2.target.value = valSplit.join("");
+              prepare_default.$input_val.trigger("keyup.change-point");
+            }
             this.setSelectionRange(cursorPosition, cursorPosition);
             break;
           default:
