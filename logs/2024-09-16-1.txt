@@ -1,0 +1,34 @@
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$8(RecoeveWebClient.java:358)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$8(RecoeveWebClient.java:358)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$8(RecoeveWebClient.java:358)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$8(RecoeveWebClient.java:358)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$8(RecoeveWebClient.java:358)
+title, h1, h2-1	kipid's blog
+title, h1, h2-2	터미널 (Terminal) | Cmd (Command|커맨드) 창 | Sublime text build results 창 에서의 한글 깨짐 해결 방법. (Windows)
+title, h1, h2-3	터미널 (Terminal) | Cmd (Command|커맨드) 창 | Sublime text build results 창 에서의 한글 깨짐 해결 방법. (Windows)
+title, h1, h2-4	TPosting History
+title, h1, h2-5	Table of Contents
+title, h1, h2-6	Posting History
+title, h1, h2-7	1.runJava.bat and runJavaC.sublime-build
+title, h1, h2-8	2.Build results of Sublime text
+title, h1, h2-9	3.Windows language settings (위도우 언어 설정)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$9(RecoeveWebClient.java:389)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$9(RecoeveWebClient.java:389)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$9(RecoeveWebClient.java:389)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$9(RecoeveWebClient.java:389)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitle$9(RecoeveWebClient.java:389)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitleUntilEveryIsFound$10(RecoeveWebClient.java:420)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitleUntilEveryIsFound$10(RecoeveWebClient.java:420)
+
+	at recoeve.http.RecoeveWebClient.lambda$asyncFindTitleUntilEveryIsFound$10(RecoeveWebClient.java:420)
