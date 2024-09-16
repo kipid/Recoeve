@@ -3,19 +3,28 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import asyncio
+import threading
 
-async def my_function(waitSecs):
-    try:
-        await asyncio.sleep(waitSecs)
-        print("This won't be printed if cancelled.")
-    except asyncio.CancelledError:
-        print("Task was cancelled.")
+class RepeatedTimer:
+	def __init__(self, interval, function, *args, **kwargs):
+		self.interval = interval
+		self.function = function
+		self.args = args
+		self.kwargs = kwargs
+		self.start()
 
-async def setTimeout(func:function, waitSecs:float):
-    task = asyncio.create_task(func(waitSecs))
-    await asyncio.sleep(waitSecs)  # Cancel the task after 2 seconds
-    task.cancel()
+	def start(self):
+		self.stop_event = threading.Event()
+		self.thread = threading.Thread(target=self._run)
+		self.thread.start()
+
+	def _run(self):
+		while not self.stop_event.wait(self.interval):
+			self.function(*self.args, **self.kwargs)
+
+	def stop(self):
+		self.stop_event.set()
+		self.thread.join()
 
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
@@ -23,11 +32,19 @@ chrome_options.add_argument('--headless=new')
 
 browser = webdriver.Chrome(options = chrome_options) # "./chromedriver.exe"
 
-browser.get("https://www.youtube.com/watch?v=XlF2FpmHIM8")
+browser.get("https://www.youtube.com/watch?v=OUlCf8WlUVg")
 
+found = False
+timer = 0
 def findTitles():
+	global found
+	global timer
+	if found:
+		timer.stop()
 	heads = browser.find_elements(By.CSS_SELECTOR, "title, h1, h2")
 	for head in heads:
-		print(f"{head.text}")
+		if (head.text.strip()):
+			found = True
+			print(f"title\t{head.text}")
 
-asyncio.run(setTimeout(findTitles, 0.2))
+timer = RepeatedTimer(1, findTitles)
