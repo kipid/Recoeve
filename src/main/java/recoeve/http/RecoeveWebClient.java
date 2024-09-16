@@ -505,7 +505,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
-				if (hostCSSMap(uriHost) == null) {
+				if (hostCSSMap.get(uriHost) == null) {
 					findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
 					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
 				}
@@ -521,7 +521,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 						try {
 							result = result.trim();
 							if (result.isEmpty()) {
-								result = "Error: Empty result.";
+								result = "\nError: Empty result.";
 								System.out.println(result);
 							}
 							resp.write("\n" + result, Recoeve.ENCODING);
@@ -615,37 +615,34 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 			CompletableFuture<String> findTitle;
 			CompletableFuture<String> findTitleUntil;
-			if (hostCSSMap(uriHost) == null) {
-				findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
-				findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+			if (RecoeveWebClient.hostCSSMap.get(uriHost) == null) {
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
 			}
 			else {
-				findTitle = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
-				findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
 			}
 
-			allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
 
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
 					try {
 						result = result.trim();
 						if (result.isEmpty()) {
-							result = "Error: Empty result.";
+							result = "\nError: Empty result.";
 							System.out.println(result);
 						}
-						resp.write("\n" + result, Recoeve.ENCODING);
 					}
 					catch (Exception e) {
 						result = "\nError: writing chunk: " + e.getMessage();
 						System.err.println(result);
-						resp.write(result, Recoeve.ENCODING);
 					}
 				}
 				else {
 					result = "\nError: in future: " + error.getMessage();
 					System.err.println(result);
-					resp.write(result, Recoeve.ENCODING);
 				}
 			};
 
