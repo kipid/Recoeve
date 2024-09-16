@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,7 +42,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 7000L;
+	public static final long TIMEOUT_MS = 7700L;
 	public static final long FIND_PER_MS = 1000L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
@@ -87,7 +86,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
-		curPort = MIN_PORT;
+		curPort = MIN_PORT + (int)((MAX_PORT - MIN_PORT) * Math.random());
 	}
 
 	@Override
@@ -126,10 +125,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
-				curChromeOptions.setAcceptInsecureCerts(true);
-				curChromeOptions.setBrowserVersion("128.0.6613.138");
-				curChromeOptions.setExperimentalOption("detach", true);
+				curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -141,10 +137,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
-			curChromeOptions.setAcceptInsecureCerts(true);
-			curChromeOptions.setBrowserVersion("128.0.6613.138");
-			curChromeOptions.setExperimentalOption("detach", true);
+			curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -159,10 +152,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
-		// curChromeOptions.setAcceptInsecureCerts(true);
-		// curChromeOptions.setBrowserVersion("128.0.6613.138");
-		// curChromeOptions.setExperimentalOption("detach", true);
+		// curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		// curPort++;
 		// if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		// WebDriver webDriver = new ChromeDriver(curChromeOptions);
@@ -209,10 +199,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--blink-settings=imagesEnabled=false", "incognito", "--lang=ko_KR", "--user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\"", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
-					curChromeOptions.setAcceptInsecureCerts(true);
-					curChromeOptions.setBrowserVersion("128.0.6613.138");
-					curChromeOptions.setExperimentalOption("detach", true);
+					curChromeOptions.addArguments("--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 					curPort++;
 					if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 					driver = new ChromeDriver(curChromeOptions);
@@ -479,9 +466,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
-		Function<String, String> applyFn = (result) -> {
-			return result;
-		};
+		// Function<String, String> applyFn = (result) -> {
+		// 	return result;
+		// };
 
 		final WebDriver[] chromeDriver = new WebDriver[1];
 		try {
@@ -511,12 +498,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
 				if (HOST_TO_CSS.get(uriHost) == null) {
-					findTitle = asyncFindTitle(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
+					findTitle = asyncFindTitle(chromeDriver[0], "title,h1,h2");
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2");
 				}
 				else {
-					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
+					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost));
 				}
 
 				allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
@@ -592,9 +579,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public static void main(String... args) {
-		Function<String, String> applyFn = (result) -> {
-			return result;
-		};
+		// Function<String, String> applyFn = (result) -> {
+		// 	return result;
+		// };
 
 		try {
 			Vertx vertx = Vertx.vertx();
@@ -607,20 +594,23 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 			// String uriHost = "kipid.tistory.com";
 
-			String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
-			String uriHost = "www.youtube.com";
+			String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+			String uriHost = "tistory1.daumcdn.net";
+
+			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
+			// String uriHost = "www.youtube.com";
 
 			chromeDriver[0].get(uri);
 
 			CompletableFuture<String> findTitle;
 			CompletableFuture<String> findTitleUntil;
 			if (RecoeveWebClient.HOST_TO_CSS.get(uriHost) == null) {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2").thenApply(applyFn);
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title,h1,h2");
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2");
 			}
 			else {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost)).thenApply(applyFn);
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost));
 			}
 
 			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
