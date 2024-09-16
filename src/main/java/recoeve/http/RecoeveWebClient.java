@@ -101,7 +101,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
-	private WebDriver getDriver() throws RuntimeException {
+	private WebDriver getDriver() throws Exception {
 		recurseCount++;
 		if (recurseCount >= RECURSE_MAX) {
 			recurseCount = 0;
@@ -114,6 +114,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 			else {
 				recurseCount = 0;
+				timestampedDriver.driver.getTitle();
+					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 				return timestampedDriver.driver;
 			}
 		}
