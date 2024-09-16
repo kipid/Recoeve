@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -35,7 +36,7 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start(Promise<Void> startPromise) {
 		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
-		vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
+		Future<String> deploy0 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId0 = res.result();
@@ -45,7 +46,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("Deployment failed!");
 				}
 			});
-		vertx.deployVerticle(recoeve)
+		Future<String> deploy1 = vertx.deployVerticle(recoeve)
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId1 = res.result();
@@ -55,11 +56,14 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("Deployment failed!");
 				}
 			});
+		Future.all(deploy0, deploy1).onComplete((res) -> {
+			startPromise.complete();
+		});
 	}
 
 	@Override
 	public void stop(Promise<Void> stopPromise) {
-		vertx.undeploy(verticleId0)
+		Future<Void> undeploy0 = vertx.undeploy(verticleId0)
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					System.out.println("Undeployed ok.");
@@ -68,7 +72,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("Undeploy failed!");
 				}
 			});
-		vertx.undeploy(verticleId1)
+		Future<Void> undeploy1 = vertx.undeploy(verticleId1)
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					System.out.println("Undeployed ok.");
@@ -83,15 +87,6 @@ public class MainVerticle extends AbstractVerticle {
 		fileMapWithVar = null;
 		recoeveWebClient.cleanupDrivers();
 		recoeveWebClient = null;
-		recoeve.httpServer.close(ar -> {
-			if (ar.succeeded()) {
-				System.out.println("HTTP server closed successfully.");
-				stopPromise.complete();
-			} else {
-				System.err.println("Failed to close HTTP server: " + ar.cause());
-				stopPromise.fail(ar.cause());
-			}
-		});
 		try {
 			if (db.con != null) {
 				db.con.close();
@@ -100,6 +95,19 @@ public class MainVerticle extends AbstractVerticle {
 			System.out.println("SQLException: " + err.getMessage());
 		}
 		db = null;
+		Future.all(undeploy0, undeploy1).onComplete(res -> {
+			recoeve.httpServer.close(ar -> {
+				if (ar.succeeded()) {
+					System.out.println("HTTP server closed successfully.");
+					stopPromise.complete();
+				} else {
+					System.err.println("Failed to close HTTP server: " + ar.cause());
+					stopPromise.fail(ar.cause());
+				}
+				stopPromise.complete();
+			});
+			recoeve = null;
+		});
 	}
 
 	public static void main(String... args) {
