@@ -42,8 +42,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 5000L;
-	public static final long FIND_PER_MS = 500L;
+	public static final long TIMEOUT_MS = 7000L;
+	public static final long FIND_PER_MS = 2000L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
@@ -497,23 +497,24 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return;
 			}
 			try {
-				CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
-				CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
+				// CompletableFuture<String> findTitleByVertXWebClient0 = findTitleByVertXWebClient(uri);
+				// CompletableFuture<String> findTitleByVertXWebClient1 = findTitleByVertXWebClient(uri, hostCSSMap.get(uriHost));
 
 				chromeDriver[0].get(uri);
-				chromeDriver[0].getTitle();
+				// chromeDriver[0].getTitle();
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-				CompletableFuture<String> findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2")
-						.thenApply(applyFn);
-				CompletableFuture<String> findHostSpecific = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
-						.thenApply(applyFn);
+				CompletableFuture<String> findTitle;
+				CompletableFuture<String> findTitleUntil;
+				if (hostCSSMap(uriHost) == null) {
+					findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+				}
+				else {
+					findTitle = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+				}
 
-				CompletableFuture<String> findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
-						.thenApply(applyFn);
-				CompletableFuture<String> findHostSpecificUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
-						.thenApply(applyFn);
-
-				allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+				allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
 
 				BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 					if (error == null) {
@@ -538,14 +539,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 					}
 				};
 
-				findTitleByVertXWebClient0.whenComplete(writeChunk);
-				findTitleByVertXWebClient1.whenComplete(writeChunk);
+				// findTitleByVertXWebClient0.whenComplete(writeChunk);
+				// findTitleByVertXWebClient1.whenComplete(writeChunk);
 
 				findTitle.whenComplete(writeChunk);
-				findHostSpecific.whenComplete(writeChunk);
+				// findHostSpecific.whenComplete(writeChunk);
 
 				findTitleUntil.whenComplete(writeChunk);
-				findHostSpecificUntil.whenComplete(writeChunk);
+				// findHostSpecificUntil.whenComplete(writeChunk);
 
 				allOf.whenComplete((v, error) -> {
 					String errorMsg = "\nComplete with no error.";
@@ -601,29 +602,29 @@ public class RecoeveWebClient extends AbstractVerticle {
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
 
-			String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
-			String uriHost = "www.instagram.com";
+			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
+			// String uriHost = "www.instagram.com";
 
-			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-			// String uriHost = "kipid.tistory.com";
+			String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
+			String uriHost = "kipid.tistory.com";
 
-			CompletableFuture<String> findTitleByVertXWebClient0 = recoeveWebClient.findTitleByVertXWebClient(uri);
-			CompletableFuture<String> findTitleByVertXWebClient1 = recoeveWebClient.findTitleByVertXWebClient(uri, RecoeveWebClient.hostCSSMap.get(uriHost));
+			// String uri = "https://www.youtube.com/shorts/pqek98cx0XA";
+			// String uriHost = "www.youtube.com";
 
 			chromeDriver[0].get(uri);
-			chromeDriver[0].getTitle();
-				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-			CompletableFuture<String> findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, h1, h2")
-					.thenApply(applyFn);
-			CompletableFuture<String> findHostSpecific = recoeveWebClient.asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost))
-					.thenApply(applyFn);
 
-			CompletableFuture<String> findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2")
-					.thenApply(applyFn);
-			CompletableFuture<String> findHostSpecificUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost))
-					.thenApply(applyFn);
+			CompletableFuture<String> findTitle;
+			CompletableFuture<String> findTitleUntil;
+			if (hostCSSMap(uriHost) == null) {
+				findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+				findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2").thenApply(applyFn);
+			}
+			else {
+				findTitle = asyncFindTitle(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+				findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], hostCSSMap.get(uriHost)).thenApply(applyFn);
+			}
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitleByVertXWebClient0, findTitleByVertXWebClient1, findTitle, findHostSpecific, findTitleUntil, findHostSpecificUntil);
+			allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
 
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
@@ -631,28 +632,25 @@ public class RecoeveWebClient extends AbstractVerticle {
 						result = result.trim();
 						if (result.isEmpty()) {
 							result = "Error: Empty result.";
+							System.out.println(result);
 						}
-						System.out.println(result);
+						resp.write("\n" + result, Recoeve.ENCODING);
 					}
 					catch (Exception e) {
 						result = "\nError: writing chunk: " + e.getMessage();
 						System.err.println(result);
+						resp.write(result, Recoeve.ENCODING);
 					}
 				}
 				else {
 					result = "\nError: in future: " + error.getMessage();
 					System.err.println(result);
+					resp.write(result, Recoeve.ENCODING);
 				}
 			};
 
-			findTitleByVertXWebClient0.whenComplete(writeChunk);
-			findTitleByVertXWebClient1.whenComplete(writeChunk);
-
 			findTitle.whenComplete(writeChunk);
-			findHostSpecific.whenComplete(writeChunk);
-
 			findTitleUntil.whenComplete(writeChunk);
-			findHostSpecificUntil.whenComplete(writeChunk);
 
 			allOf.whenComplete((v, error) -> {
 				String errorMsg = "\nComplete with no error.";
