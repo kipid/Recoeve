@@ -14981,7 +14981,6 @@
           console.log(titles[i3][0]);
           if (titles[i3][0].startsWith("Error: No valid session. Please try again.: ")) {
             try {
-              m2.getH1(recoDef.uri);
             } catch (err) {
               console.error(err);
             }
