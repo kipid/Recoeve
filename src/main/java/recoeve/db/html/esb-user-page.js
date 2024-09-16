@@ -15230,6 +15230,10 @@
       if (!uri || typeof uri !== "string" || !uri.length) {
         resolve("");
       }
+      uri = await m2.formatURI(uri, keepOriginal);
+      if (!uriRendered) {
+        uriRendered = await uriRendering(uri, true);
+      }
       let from = uriRendered?.from;
       m2.lastURI = uri = uriRendered?.uri;
       console.log("uriRendered: ", uriRendered);
@@ -15271,11 +15275,14 @@
       }
       if (!keepOriginal && m2.getUTF8Length(uri) > 255) {
         try {
-          resolve(await m2.getConciseURI(uri));
+          uri = await m2.getConciseURI(uri);
+          m2.$input_uri.val(uri);
+          resolve(uri);
         } catch (err) {
           console.error(err);
         }
       }
+      m2.$input_uri.val(uri);
       resolve(uri);
     });
   };
@@ -15285,11 +15292,7 @@
       let uriRendered = await uriRendering(elem.value, true);
       let originalURI = await m2.formatURIFully(elem.value, uriRendered, true);
       let uri = noFormatURI ? originalURI : await m2.formatURIFully(originalURI, uriRendered, false);
-      elem.value = uri;
-      if (!noFormatURI) {
-        elem.value = uri = await m2.formatURIFully(uri, uriRendered);
-        m2.$input_uri.trigger("keyup");
-      }
+      m2.$input_uri.trigger("keyup");
       m2.uri = uri;
       m2.$show_URI.html(uriRendered.html.replace(/\sdelayed-src=/gi, " src="));
       let r2 = m2.myRecos[uri];
@@ -15437,9 +15440,7 @@ ${originalURI + uriRendered.uriHash}
 web	${m2.sW}	${m2.sH}`;
   m2.rmb_me = function(callback, args, saveNewRecoInputs) {
     return new Promise(async function(resolve, reject) {
-      let uri = await m2.formatURI(m2.$input_uri.val());
-      let uriRendered = await uriRendering(uri, true);
-      uri = await m2.formatURIFully(uri, uriRendered);
+      let uri = await m2.formatURIFully(m2.$input_uri.val());
       if (saveNewRecoInputs) {
         m2.localStorage.setItem("uri", uri);
         m2.localStorage.setItem("title", m2.formatTitle(m2.$input_title.val().trim()));
@@ -16067,7 +16068,7 @@ web	${m2.sW}	${m2.sH}`;
           let uri = m2.recoms[m2.currentCat][iToNumber].uri;
           let recoHTML = await m2.recomHTML(m2.userRecos[uri], inListPlay);
           m2.$reco_playing.html(String(recoHTML));
-          let uriRendered = Object(await uriRendering(uri, false, inListPlay, m2.userRecos[uri]?.descR));
+          let uriRendered = await uriRendering(uri, false, inListPlay, m2.userRecos[uri]?.descR);
           m2.recoURIPlaying = uri;
           if (m2.lastRecoURIPlaying !== m2.recoURIPlaying) {
             try {
@@ -16083,7 +16084,7 @@ web	${m2.sW}	${m2.sH}`;
           let r2 = fs.fullList[i3].r;
           let recoHTML = await m2.recoHTML(r2, inListPlay, true, false);
           m2.$reco_playing.html(String(recoHTML));
-          let uriRendered = Object(await uriRendering(r2?.uri, false, inListPlay, r2?.descR));
+          let uriRendered = await uriRendering(r2?.uri, false, inListPlay, r2?.descR);
           m2.recoURIPlaying = r2?.uri;
           if (m2.lastRecoURIPlaying !== m2.recoURIPlaying) {
             try {
@@ -16381,7 +16382,7 @@ m.initialOpen: ${m2.initialOpen}`);
       clearTimeout(m2.setTimeoutCueOrLoadUri);
       if (inListPlay && m2.lastRecoURIPlaying !== m2.recoURIPlaying) {
         let fs = m2.fsToRs;
-        let from = String(uriRendered.from);
+        let from = uriRendered.from;
         m2.listPlayFrom = from;
         if (from === "youtube") {
           m2.$eveElse.html("");
@@ -16627,7 +16628,7 @@ m.initialOpen: ${m2.initialOpen}`);
           uri = "Number: " + uri;
         }
         if (!keepOriginal && m2.getUTF8Length(uri) > 255) {
-          resolve(m2.unescapeHTML(String(await m2.getConciseURI(uri))));
+          resolve(m2.unescapeHTML((await m2.getConciseURI(uri)).trim()));
         }
         resolve(m2.unescapeHTML(uri).trim());
       }
@@ -16885,7 +16886,7 @@ m.initialOpen: ${m2.initialOpen}`);
         }).fail(function(resp) {
           resolve(resp);
         }).done(async function(resp) {
-          let uriRendered = Object(await uriRendering(resp, toA, inListPlay));
+          let uriRendered = await uriRendering(resp, toA, inListPlay);
           uriRendered.newURI = resp;
           resolve(uriRendered);
         });
@@ -17606,8 +17607,8 @@ ${decodedURI}` : ``}`;
       }
       res += `<div class="cats">${m2.catsToA(m2.currentCat)}</div>`;
       if (!inListPlay) {
-        let uriRendered = Object(await uriRendering(r2?.uri, false, inListPlay, r2?.descR));
-        res += String(uriRendered.html);
+        let uriRendered = await uriRendering(r2?.uri, false, inListPlay, r2?.descR);
+        res += uriRendered.html;
       }
       let recomsI = m2.recoms[m2.currentCat][r2?.uri];
       if (recomsI?.valsStat) {
@@ -17658,7 +17659,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
 <div class="cats">${m2.catsToA(r2.cats)}</div>`;
       if (!inListPlay) {
         let uriRendered = await uriRendering(r2?.uri, false, inListPlay, r2?.descR);
-        res += String(uriRendered.html);
+        res += uriRendered.html;
       }
       res += `<div class="cBoth"></div>`;
       if (r2.val?.str) {
@@ -27302,13 +27303,13 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             if (prepare_default.myPage) {
               if (prepare_default.catUriList[cat2]?.has) {
                 if (uri?.constructor === String) {
-                  uri = String(await prepare_default.formatURIFully(uri));
+                  uri = await prepare_default.formatURIFully(uri);
                   prepare_default.catUriList[cat2].UriList = prepare_default.catUriList[cat2].UriList.trim() + "\n" + uri;
                   prepare_default.catUriList[cat2].uris[uri] = { uri, i: prepare_default.catUriList[cat2].uris.length };
                   prepare_default.catUriList[cat2].uris.push(uri);
                 } else if (uri?.constructor === Array) {
                   for (let i4 = prepare_default.catUriList[cat2].uris.length, k = 0, l2 = 0; k < uri.length; k++) {
-                    let uriK = String(await prepare_default.formatURIFully(uri[k]));
+                    let uriK = await prepare_default.formatURIFully(uri[k]);
                     prepare_default.catUriList[cat2].UriList = "\n" + prepare_default.catUriList[cat2].UriList.trim() + "\n";
                     let indexOfUriK = prepare_default.catUriList[cat2].UriList.indexOf("\n" + uriK + "\n");
                     if (indexOfUriK === -1) {
@@ -27324,7 +27325,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
                 catIsPut = Boolean(await prepare_default.putCat(cat2)) || catIsPut;
                 if (!prepare_default.catUriList[cat2]) {
                   if (uri?.constructor === String) {
-                    uri = String(await prepare_default.formatURIFully(uri));
+                    uri = await prepare_default.formatURIFully(uri);
                     prepare_default.catUriList[cat2] = { cat: cat2, down: true, has: true, UriList: `
 ${uri}
 `, uris: [uri] };
@@ -27333,7 +27334,7 @@ ${uri}
 ${uri.join("\n")}
 `, uris: [] };
                     for (let j2 = 0; j2 < uri.length; j2++) {
-                      let uriJ = String(await prepare_default.formatURIFully(uri[j2]));
+                      let uriJ = await prepare_default.formatURIFully(uri[j2]);
                       prepare_default.catUriList[cat2].uris[uriJ] = { uri: uriJ, i: prepare_default.catUriList[cat2].uris.length };
                       prepare_default.catUriList[cat2].uris.push(uriJ);
                     }
@@ -29365,9 +29366,7 @@ ${uri2}	change	${cats2}`;
       };
       prepare_default.$button_reco.on("click", async function(e2) {
         prepare_default.$button_reco.addClass("disabled");
-        let uri = String(await prepare_default.formatURI(prepare_default.$input_uri.val()));
-        uri = String(await prepare_default.formatURIFully(uri));
-        prepare_default.$input_uri.val(uri);
+        let uri = await prepare_default.formatURIFully(prepare_default.$input_uri.val());
         let val = prepare_default.val(prepare_default.$input_val.val().trim());
         let errorMsg = "";
         let valid = true;
