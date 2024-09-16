@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -43,14 +44,15 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int DEFAULT_MAX_DRIVERS = 4;
 	public static final int UNTIL_TOP = 10;
 	public static final long TIMEOUT_MS = 10000L;
-	public static final long FIND_PER_MS = 2000L;
+	public static final long FIND_PER_MS = 200L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
+	public static final String TEST_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
-		HOST_TO_CSS.put("www.youtube.com", "h1");
+		HOST_TO_CSS.put("www.youtube.com", "title,h1,h2");
 		HOST_TO_CSS.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
 		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
@@ -124,7 +126,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+				curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 				curChromeOptions.setAcceptInsecureCerts(true);
 				curChromeOptions.setBrowserVersion("128.0.6613.138");
 				curChromeOptions.setExperimentalOption("detach", true);
@@ -139,7 +141,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+			curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 			curChromeOptions.setAcceptInsecureCerts(true);
 			curChromeOptions.setBrowserVersion("128.0.6613.138");
 			curChromeOptions.setExperimentalOption("detach", true);
@@ -157,7 +159,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+		// curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 		// curChromeOptions.setAcceptInsecureCerts(true);
 		// curChromeOptions.setBrowserVersion("128.0.6613.138");
 		// curChromeOptions.setExperimentalOption("detach", true);
@@ -207,7 +209,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--disable-extensions", "--mute-audio", "--window-size=365,667", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
+					curChromeOptions.addArguments("--lang=ko_KR", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-gpu", "--disable-extensions", "--mute-audio", "--window-size=645,530", "--disable-dev-shm-usage", "--disable-notifications", "--headless=new", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--port=" + curPort);
 					curChromeOptions.setAcceptInsecureCerts(true);
 					curChromeOptions.setBrowserVersion("128.0.6613.138");
 					curChromeOptions.setExperimentalOption("detach", true);
@@ -497,9 +499,15 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return;
 			}
 			try {
-				chromeDriver[0].get(uri);
+				chromeDriver[0].get(TEST_URL);
 				chromeDriver[0].getTitle();
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+
+				((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
+				((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+				((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+
+				chromeDriver[0].get(uri);
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
 				if (HOST_TO_CSS.get(uriHost) == null) {
@@ -536,14 +544,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 					}
 				};
 
-				// findTitleByVertXWebClient0.whenComplete(writeChunk);
-				// findTitleByVertXWebClient1.whenComplete(writeChunk);
-
 				findTitle.whenComplete(writeChunk);
-				// findHostSpecific.whenComplete(writeChunk);
-
 				findTitleUntil.whenComplete(writeChunk);
-				// findHostSpecificUntil.whenComplete(writeChunk);
 
 				allOf.whenComplete((v, error) -> {
 					String errorMsg = "\nComplete with no error.";
@@ -602,11 +604,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
 			// String uriHost = "www.instagram.com";
 
-			String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-			String uriHost = "kipid.tistory.com";
+			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
+			// String uriHost = "kipid.tistory.com";
 
-			// String uri = "https://www.youtube.com/shorts/pqek98cx0XA";
-			// String uriHost = "www.youtube.com";
+			String uri = "https://www.youtube.com/watch?v=Gt40VneLdX4";
+			String uriHost = "www.youtube.com";
 
 			chromeDriver[0].get(uri);
 
