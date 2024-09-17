@@ -27373,7 +27373,7 @@ ${uri.join("\n")}
                 if (prepare_default.catUriList[cat2].uris[uri]) {
                   prepare_default.catUriList[cat2].uris.splice(prepare_default.catUriList[cat2].uris[uri].i, 1);
                   for (let j2 = 0; j2 < prepare_default.catUriList[cat2].uris.length; j2++) {
-                    prepare_default.catUriList[cat2].uris[j2].i = j2;
+                    prepare_default.catUriList[cat2].uris[prepare_default.catUriList[cat2].uris[j2]].i = j2;
                   }
                   prepare_default.catUriList[cat2].uris[uri].i = `deleted-${prepare_default.deletedRecosCount}`;
                 }
