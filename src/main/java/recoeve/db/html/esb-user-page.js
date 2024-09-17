@@ -15361,7 +15361,7 @@ ${originalURI + uriRendered.uriHash}
       console.error(err);
     }
   };
-  m2.delayPad = m2.delayPad || 0;
+  m2.delayPad = m2.delayPad || 512;
   m2.wait = m2.wait || 1024;
   m2.$delayedElems = (0, import_jquery.default)("#nothing");
   m2.previous = Date.now();
