@@ -27268,7 +27268,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             uris = prepare_default.catUriList[cat2].uris;
           }
           for (let i3 = 0; i3 < uris.length; i3++) {
-            let uri = String(uris[i3]);
+            let uri = uris[i3];
             let r2 = prepare_default.userRecos[uri];
             let catsSplit = prepare_default.catsToString(r2?.cats).split(";");
             fsFL[uri] = { i: fsFL.length, catsSplit, uri, r: r2, txt: prepare_default.splitHangul(r2?.title), html: prepare_default.escapeOnlyTag(r2?.title) };
@@ -28106,7 +28106,7 @@ ${uri.join("\n")}
                 catUL.UriList = catUL.uris.join("\n").trim();
                 for (let k = 0; k < catUL.uris.length; k++) {
                   let uri = catUL.uris[k];
-                  catUL.uris[k] = catUL.uris[uri] = { i: k, uri };
+                  catUL.uris[uri] = { i: k, uri };
                   if (!prepare_default.userRecos[uri]) {
                     prepare_default.userRecos[uri] = { uri, down: false };
                   }
