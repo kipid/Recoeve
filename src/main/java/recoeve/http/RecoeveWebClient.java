@@ -187,6 +187,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 				if (driverPool.size() < maxDrivers) {
 					driver.getTitle();
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+					driver.close();
+					curChromeOptions = new ChromeOptions();
+					curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+					curPort++;
+					if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+					driver = new ChromeDriver(curChromeOptions);
 					driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
 				}
