@@ -28584,261 +28584,265 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         });
       };
       prepare_default.refresh = async function(cats2, option, uriOrS) {
-        if (prepare_default.myPage) {
-          cats2 = prepare_default.catsToString(cats2);
-          option = String(option);
-          if (uriOrS.constructor !== Array) {
-            uriOrS = [String(uriOrS)];
-          }
-          prepare_default.beInCurrentCat = false;
-          let catsSplit = cats2.split(";");
-          let k = catsSplit.length - 1;
-          if (prepare_default.currentCat !== void 0) {
-            for (; k >= 0; k--) {
-              if (catsSplit[k] === prepare_default.currentCat) {
-                prepare_default.beInCurrentCat = true;
-                break;
+        return new Promise(async function(resolve, reject) {
+          if (prepare_default.myPage) {
+            cats2 = prepare_default.catsToString(cats2);
+            option = String(option);
+            if (uriOrS.constructor !== Array) {
+              uriOrS = [String(uriOrS)];
+            }
+            prepare_default.beInCurrentCat = false;
+            let catsSplit = cats2.split(";");
+            let k = catsSplit.length - 1;
+            if (prepare_default.currentCat !== void 0) {
+              for (; k >= 0; k--) {
+                if (catsSplit[k] === prepare_default.currentCat) {
+                  prepare_default.beInCurrentCat = true;
+                  break;
+                }
               }
             }
-          }
-          let cat0 = prepare_default.currentCat;
-          if (!prepare_default.beInCurrentCat) {
-            cat0 = catsSplit[0];
-          }
-          let cat2 = prepare_default.currentCat;
-          if (!prepare_default.beInCurrentCat && !prepare_default.catUriList[cat0].uris) {
-            await prepare_default.getUriList("cat\n" + (cat0 === "" ? "	p" : cat0));
-          }
-          for (let uri of uriOrS) {
-            let r2 = prepare_default.myRecos[uri];
-            prepare_default.$recoms_recos = null;
-            switch (option) {
-              case "recoed": {
-                if (prepare_default.myPage) {
-                  if (prepare_default.beInCurrentCat) {
-                    prepare_default.recoedFromRecoms++;
-                  }
-                  let fsGoFLUri = prepare_default.fsGo.fullList[uri];
-                  let r3 = prepare_default.myRecos[uri];
-                  if (!fsGoFLUri) {
-                    fsGoFLUri = prepare_default.fsGo.fullList[prepare_default.fsGo.fullList.length] = prepare_default.fsGo.fullList[uri] = { uri, r: r3, i: prepare_default.fsGo.fullList.length, catsSplit: prepare_default.catsToString(r3?.cats).split(";"), txt: prepare_default.splitHangul(`${r3?.cats} :: ${r3?.title}`), html: prepare_default.escapeOnlyTag(r3?.title), catAndI: {} };
-                  }
-                  if (!fsGoFLUri.catAndI) {
-                    fsGoFLUri.catAndI = {};
-                  }
-                  if (prepare_default.catUriList[cat0]?.has) {
-                    if (!prepare_default.catUriList[cat0].uris[uri]) {
-                      prepare_default.catUriList[cat0].uris[uri] = { uri, i: prepare_default.catUriList[cat0].uris.length };
-                      prepare_default.catUriList[cat0].uris.push(uri);
-                      prepare_default.catUriList[cat0].UriList = prepare_default.catUriList[cat0].UriList.trim() + "\n" + uri;
+            let cat0 = prepare_default.currentCat;
+            if (!prepare_default.beInCurrentCat) {
+              cat0 = catsSplit[0];
+            }
+            let cat2 = prepare_default.currentCat;
+            if (!prepare_default.beInCurrentCat && !prepare_default.catUriList[cat0].uris) {
+              await prepare_default.getUriList("cat\n" + (cat0 === "" ? "	p" : cat0));
+            }
+            for (let uri of uriOrS) {
+              let r2 = prepare_default.myRecos[uri];
+              switch (option) {
+                case "recoed": {
+                  if (prepare_default.myPage) {
+                    if (prepare_default.beInCurrentCat) {
+                      prepare_default.recoedFromRecoms++;
+                    }
+                    let fsGoFLUri = prepare_default.fsGo.fullList[uri];
+                    let r3 = prepare_default.myRecos[uri];
+                    if (!fsGoFLUri) {
+                      fsGoFLUri = prepare_default.fsGo.fullList[prepare_default.fsGo.fullList.length] = prepare_default.fsGo.fullList[uri] = { uri, r: r3, i: prepare_default.fsGo.fullList.length, catsSplit: prepare_default.catsToString(r3?.cats).split(";"), txt: prepare_default.splitHangul(`${r3?.cats} :: ${r3?.title}`), html: prepare_default.escapeOnlyTag(r3?.title), catAndI: {} };
+                    }
+                    if (!fsGoFLUri.catAndI) {
+                      fsGoFLUri.catAndI = {};
+                    }
+                    if (prepare_default.catUriList[cat0]?.has) {
+                      if (!prepare_default.catUriList[cat0].uris[uri]) {
+                        prepare_default.catUriList[cat0].uris[uri] = { uri, i: prepare_default.catUriList[cat0].uris.length };
+                        prepare_default.catUriList[cat0].uris.push(uri);
+                        prepare_default.catUriList[cat0].UriList = prepare_default.catUriList[cat0].UriList.trim() + "\n" + uri;
+                      }
+                    }
+                    if (!(prepare_default.catUriList[cat0]?.uris?.[uri]?.i || prepare_default.catUriList[cat0]?.uris?.[uri]?.i === 0)) {
+                      prepare_default.catUriList[cat0].uris[uri] = { uri, i: prepare_default.catUriList[cat0].uris[uri].length };
+                      prepare_default.catUriList[cat0].uris.push(prepare_default.catUriList[cat0].uris[uri]);
+                    }
+                    fsGoFLUri.catAndI[cat0] = { cat: cat0, i: prepare_default.catUriList[cat0].uris[uri].i };
+                    prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
+                    for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
+                      let $reco = prepare_default.$recoms_recos.eq(k2);
+                      let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
+                      if (recoURI === uri) {
+                        try {
+                          let recoHTML = await prepare_default.recoHTML(r3, false, true, true, option);
+                          $reco.replaceWith(recoHTML);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }
+                    }
+                    try {
+                      let recoHTML = await prepare_default.recoHTML(r3, true, true, false, option);
+                      prepare_default.$reco_playing.html(recoHTML);
+                      let uriRendered = await uriRendering(uri, false, true, r3[uri]?.descR);
+                      clearTimeout(prepare_default.setTimeoutCueOrLoadUri);
+                      prepare_default.recoURIPlaying = uri;
+                      prepare_default.cueOrLoadUri(true, uriRendered, true);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                    try {
+                      let recoHTML = await prepare_default.recoHTML(r3, false, true, false, option);
+                      prepare_default.$contents.prepend(String(recoHTML));
+                    } catch (err) {
+                      console.error(err);
                     }
                   }
-                  if (!(prepare_default.catUriList[cat0]?.uris?.[uri]?.i || prepare_default.catUriList[cat0]?.uris?.[uri]?.i === 0)) {
-                    prepare_default.catUriList[cat0].uris[uri] = { uri, i: prepare_default.catUriList[cat0].uris[uri].length };
-                    prepare_default.catUriList[cat0].uris.push(prepare_default.catUriList[cat0].uris[uri]);
-                  }
-                  fsGoFLUri.catAndI[cat0] = { cat: cat0, i: prepare_default.catUriList[cat0].uris[uri].i };
-                  prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
-                  for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
-                    let $reco = prepare_default.$recoms_recos.eq(k2);
-                    let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
-                    if (recoURI === uri) {
+                  break;
+                }
+                case "changed":
+                case "deleted": {
+                  if (prepare_default.myPage && uri === prepare_default.unescapeHTML(prepare_default.$reco_playing.find(".reco>.textURI").html())) {
+                    if (option === "changed") {
                       try {
-                        let recoHTML = await prepare_default.recoHTML(r3, false, true, true, option);
-                        $reco.replaceWith(recoHTML);
+                        let r3 = prepare_default.myRecos[uri];
+                        let recoHTML = await prepare_default.recoHTML(r3, true, true, false, option);
+                        prepare_default.$reco_playing.html(String(recoHTML));
+                        prepare_default.fsToRs.getAndPlayVideo(true);
+                        await prepare_default.reNewAndReOn();
                       } catch (err) {
                         console.error(err);
                       }
+                    } else if (option === "deleted") {
+                      prepare_default.fsToRs.pauseVideo();
+                      prepare_default.$reco_playing.html("");
+                      prepare_default.$eveElse.html("");
+                      prepare_default.$youtube.html("");
+                      prepare_default.$eveElse_container.hide();
+                      prepare_default.$rC_youtube_container.hide();
                     }
                   }
-                  try {
-                    let recoHTML = await prepare_default.recoHTML(r3, true, true, false, option);
-                    prepare_default.$reco_playing.html(recoHTML);
-                    let uriRendered = await uriRendering(uri, false, true, r3[uri]?.descR);
-                    clearTimeout(prepare_default.setTimeoutCueOrLoadUri);
-                    prepare_default.recoURIPlaying = uri;
-                    prepare_default.cueOrLoadUri(true, uriRendered, true);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                  try {
-                    let recoHTML = await prepare_default.recoHTML(r3, false, true, false, option);
-                    prepare_default.$contents.prepend(String(recoHTML));
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }
-                break;
-              }
-              case "changed":
-              case "deleted": {
-                if (prepare_default.myPage && uri === prepare_default.unescapeHTML(prepare_default.$reco_playing.find(".reco>.textURI").html())) {
-                  if (option === "changed") {
-                    try {
-                      let r3 = prepare_default.myRecos[uri];
-                      let recoHTML = await prepare_default.recoHTML(r3, true, true, false, option);
-                      prepare_default.$reco_playing.html(String(recoHTML));
-                      prepare_default.fsToRs.getAndPlayVideo(true);
+                  if (prepare_default.myPage) {
+                    if (option === "changed") {
+                      prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
+                      for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
+                        let $reco = prepare_default.$recoms_recos.eq(k2);
+                        let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
+                        if (recoURI === uri) {
+                          try {
+                            let recoHTML = await prepare_default.recoHTML(r2, false, true, true, option);
+                            $reco.replaceWith(String(recoHTML));
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }
+                      }
+                      prepare_default.$contents_recos = prepare_default.$contents.find(".reco");
+                      for (let k2 = 0; k2 < prepare_default.$contents_recos.length; k2++) {
+                        let $reco = prepare_default.$contents_recos.eq(k2);
+                        let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
+                        if (recoURI === uri) {
+                          try {
+                            let recoHTML = await prepare_default.recoHTML(r2, false, true, false, option);
+                            $reco.replaceWith(String(recoHTML));
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }
+                      }
                       await prepare_default.reNewAndReOn();
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  } else if (option === "deleted") {
-                    prepare_default.fsToRs.pauseVideo();
-                    prepare_default.$reco_playing.html("");
-                    prepare_default.$eveElse.html("");
-                    prepare_default.$youtube.html("");
-                    prepare_default.$eveElse_container.hide();
-                    prepare_default.$rC_youtube_container.hide();
-                  }
-                }
-                if (prepare_default.myPage) {
-                  if (option === "changed") {
-                    prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
-                    for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
-                      let $reco = prepare_default.$recoms_recos.eq(k2);
-                      let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
-                      if (recoURI === uri) {
-                        try {
-                          let recoHTML = await prepare_default.recoHTML(r2, false, true, true, option);
-                          $reco.replaceWith(String(recoHTML));
-                        } catch (err) {
-                          console.error(err);
+                      let fs = prepare_default.fsGo;
+                      let fsFLUri = fs.fullList[uri];
+                      if (!fsFLUri) {
+                        fsFLUri = fs.fullList[fs.fullList.length] = fs.fullList[uri] = { uri, i: fs.fullList.length, down: false };
+                      }
+                      fsFLUri.txt = prepare_default.splitHangul(`${r2?.cats} :: ${r2?.title}`);
+                      fsFLUri.html = prepare_default.escapeOnlyTag(r2?.title);
+                      fsFLUri[option] = true;
+                      let fs1 = prepare_default.fsToRs;
+                      let fs1FLUri = fs1.fullList[uri];
+                      if (!fs1FLUri) {
+                        fs1FLUri = fs1.fullList[fs1.fullList.length] = fs1.fullList[uri] = { uri, i: fs1.fullList.length, down: false };
+                      }
+                      fs1FLUri.txt = prepare_default.splitHangul(r2?.title);
+                      fs1FLUri.html = prepare_default.escapeOnlyTag(r2?.title);
+                      fs1FLUri.inRange = true;
+                      fs1FLUri[option] = true;
+                      try {
+                        await prepare_default.reTriggerFS(fs);
+                        await prepare_default.reTriggerFS(fs1);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    } else if (option === "deleted") {
+                      let r3 = prepare_default.myRecos[uri];
+                      r3.deleted = true;
+                      r3.has = false;
+                      prepare_default.$recoDeleted[prepare_default.deletedRecosCount] = prepare_default.$recoDeleted[uri] = { r: r3, i: prepare_default.deletedRecosCount };
+                      try {
+                        await prepare_default.refreshFSToRs(cat2);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                      prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
+                      for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
+                        let $reco = prepare_default.$recoms_recos.eq(k2);
+                        let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
+                        if (recoURI === uri) {
+                          try {
+                            let recomHTML = await prepare_default.recomHTML(r3, false, option);
+                            $reco.replaceWith(String(recomHTML));
+                            $reco.find(".button.edit").addClass("deleted");
+                          } catch (err) {
+                            console.error(err);
+                          }
                         }
                       }
-                    }
-                    prepare_default.$contents_recos = prepare_default.$contents.find(".reco");
-                    for (let k2 = 0; k2 < prepare_default.$contents_recos.length; k2++) {
-                      let $reco = prepare_default.$contents_recos.eq(k2);
-                      let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
-                      if (recoURI === uri) {
-                        try {
-                          let recoHTML = await prepare_default.recoHTML(r2, false, true, false, option);
-                          $reco.replaceWith(String(recoHTML));
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      }
-                    }
-                    await prepare_default.reNewAndReOn();
-                    let fs = prepare_default.fsGo;
-                    let fsFLUri = fs.fullList[uri];
-                    if (!fsFLUri) {
-                      fsFLUri = fs.fullList[fs.fullList.length] = fs.fullList[uri] = { uri, i: fs.fullList.length, down: false };
-                    }
-                    fsFLUri.txt = prepare_default.splitHangul(`${r2?.cats} :: ${r2?.title}`);
-                    fsFLUri.html = prepare_default.escapeOnlyTag(r2?.title);
-                    fsFLUri[option] = true;
-                    let fs1 = prepare_default.fsToRs;
-                    let fs1FLUri = fs1.fullList[uri];
-                    if (!fs1FLUri) {
-                      fs1FLUri = fs1.fullList[fs1.fullList.length] = fs1.fullList[uri] = { uri, i: fs1.fullList.length, down: false };
-                    }
-                    fs1FLUri.txt = prepare_default.splitHangul(r2?.title);
-                    fs1FLUri.html = prepare_default.escapeOnlyTag(r2?.title);
-                    fs1FLUri.inRange = true;
-                    fs1FLUri[option] = true;
-                    try {
-                      await prepare_default.reTriggerFS(fs);
-                      await prepare_default.reTriggerFS(fs1);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  } else if (option === "deleted") {
-                    let r3 = prepare_default.myRecos[uri];
-                    r3.deleted = true;
-                    r3.has = false;
-                    prepare_default.$recoDeleted[prepare_default.deletedRecosCount] = prepare_default.$recoDeleted[uri] = { r: r3, i: prepare_default.deletedRecosCount };
-                    try {
-                      await prepare_default.refreshFSToRs(cat2);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                    prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
-                    for (let k2 = 0; k2 < prepare_default.$recoms_recos.length; k2++) {
-                      let $reco = prepare_default.$recoms_recos.eq(k2);
-                      let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
-                      if (recoURI === uri) {
-                        try {
-                          let recomHTML = await prepare_default.recomHTML(r3, false, option);
-                          $reco.replaceWith(String(recomHTML));
+                      prepare_default.$contents_recos = prepare_default.$contents.find(".reco");
+                      for (let k2 = prepare_default.$contents_recos.length - 1; k2 >= 0; k2--) {
+                        let $reco = prepare_default.$contents_recos.eq(k2);
+                        let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
+                        if (recoURI === uri) {
+                          $reco.attr("id", `reco-deleted-${prepare_default.deletedRecosCount}`);
+                          let catsSplit2 = prepare_default.catsToString(prepare_default.fsGo.fullList[uri]?.r?.cats).split(";");
+                          if (!prepare_default.fsGo.fullList[uri].catAndI) {
+                            prepare_default.fsGo.fullList[uri].catAndI = {};
+                          }
+                          for (let i3 = 0; i3 < catsSplit2.length; i3++) {
+                            let catI = catsSplit2[i3];
+                            delete prepare_default.fsGo.fullList[uri].catAndI[catI];
+                          }
+                          prepare_default.fsGo.fullList[uri].catAndI[cat0] = { cat: cat0, i: `deleted-${prepare_default.deletedRecosCount}` };
+                          $reco.addClass("none deleted");
                           $reco.find(".button.edit").addClass("deleted");
-                        } catch (err) {
-                          console.error(err);
+                          prepare_default.$contents.prepend($reco[0].outerHTML);
+                          $reco.remove();
+                        } else {
+                          $reco.attr("id", `reco-${prepare_default.catUriList[cat2].uris[recoURI].i}`);
                         }
                       }
-                    }
-                    prepare_default.$contents_recos = prepare_default.$contents.find(".reco");
-                    for (let k2 = prepare_default.$contents_recos.length - 1; k2 >= 0; k2--) {
-                      let $reco = prepare_default.$contents_recos.eq(k2);
-                      let recoURI = prepare_default.unescapeHTML($reco.find(".textURI").html());
-                      if (recoURI === uri) {
-                        $reco.attr("id", `reco-deleted-${prepare_default.deletedRecosCount}`);
-                        let catsSplit2 = prepare_default.catsToString(prepare_default.fsGo.fullList[uri]?.r?.cats).split(";");
-                        if (!prepare_default.fsGo.fullList[uri].catAndI) {
-                          prepare_default.fsGo.fullList[uri].catAndI = {};
-                        }
-                        for (let i3 = 0; i3 < catsSplit2.length; i3++) {
-                          let catI = catsSplit2[i3];
-                          delete prepare_default.fsGo.fullList[uri].catAndI[catI];
-                        }
-                        prepare_default.fsGo.fullList[uri].catAndI[cat0] = { cat: cat0, i: `deleted-${prepare_default.deletedRecosCount}` };
-                        $reco.addClass("none deleted");
-                        $reco.find(".button.edit").addClass("deleted");
-                        prepare_default.$contents.prepend($reco[0].outerHTML);
-                        $reco.remove();
-                      } else {
-                        $reco.attr("id", `reco-${prepare_default.catUriList[cat2].uris[recoURI].i}`);
+                      await prepare_default.reNewAndReOn();
+                      let fs = prepare_default.fsGo;
+                      let fsFLUri = fs.fullList[uri];
+                      if (!fsFLUri) {
+                        fsFLUri = fs.fullList[uri] = { uri, has: false, down: true };
                       }
+                      fsFLUri.uri = uri;
+                      fsFLUri.r = prepare_default.myRecos[uri];
+                      fsFLUri.has = false;
+                      fsFLUri.down = true;
+                      fsFLUri.deleted = true;
+                      let fs1 = prepare_default.fsToRs;
+                      let fs1FLUri = fs1.fullList[uri];
+                      if (!fs1FLUri) {
+                        fs1FLUri = fs1.fullList[uri] = { uri, has: false, down: true };
+                      }
+                      fs1FLUri.uri = uri;
+                      fs1FLUri.r = prepare_default.myRecos[uri];
+                      fs1FLUri.has = false;
+                      fs1FLUri.down = true;
+                      fs1FLUri.deleted = true;
+                      fs1FLUri.inRange = false;
+                      try {
+                        await prepare_default.reTriggerFS(fs);
+                        await prepare_default.reTriggerFS(fs1);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                      prepare_default.deletedRecosCount++;
+                      prepare_default.showReco(r3);
                     }
-                    await prepare_default.reNewAndReOn();
-                    let fs = prepare_default.fsGo;
-                    let fsFLUri = fs.fullList[uri];
-                    if (!fsFLUri) {
-                      fsFLUri = fs.fullList[uri] = { uri, has: false, down: true };
-                    }
-                    fsFLUri.uri = uri;
-                    fsFLUri.r = prepare_default.myRecos[uri];
-                    fsFLUri.has = false;
-                    fsFLUri.down = true;
-                    fsFLUri.deleted = true;
-                    let fs1 = prepare_default.fsToRs;
-                    let fs1FLUri = fs1.fullList[uri];
-                    if (!fs1FLUri) {
-                      fs1FLUri = fs1.fullList[uri] = { uri, has: false, down: true };
-                    }
-                    fs1FLUri.uri = uri;
-                    fs1FLUri.r = prepare_default.myRecos[uri];
-                    fs1FLUri.has = false;
-                    fs1FLUri.down = true;
-                    fs1FLUri.deleted = true;
-                    fs1FLUri.inRange = false;
-                    try {
-                      await prepare_default.reTriggerFS(fs);
-                      await prepare_default.reTriggerFS(fs1);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                    prepare_default.deletedRecosCount++;
-                    prepare_default.showReco(r3);
                   }
+                  prepare_default.$button_close.trigger("click");
+                  break;
                 }
-                prepare_default.$button_close.trigger("click");
-                break;
+                default:
               }
-              default:
+            }
+            await prepare_default.reNewAndReOn();
+            prepare_default.fsToRs.shuffledOnce = true;
+            prepare_default.fsGo.shuffledOnce = true;
+            try {
+              await prepare_default.reTriggerFS(prepare_default.fsToRs);
+              await prepare_default.reTriggerFS(prepare_default.fsGo);
+              await prepare_default.refreshFSToRs(prepare_default.currentCat);
+              prepare_default.$button_close.trigger("click");
+            } catch (err) {
+              console.error(err);
             }
           }
-          await prepare_default.reNewAndReOn();
-          prepare_default.fsToRs.shuffledOnce = true;
-          prepare_default.fsGo.shuffledOnce = true;
-          try {
-            await prepare_default.reTriggerFS(prepare_default.fsGo);
-            prepare_default.$button_close.trigger("click");
-          } catch (err) {
-            console.error(err);
-          }
-        }
+          resolve();
+        });
       };
       prepare_default.openCat = function(cat2) {
         return new Promise(async function(resolve, reject) {
@@ -29279,8 +29283,8 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
               await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, cat2);
               setTimeout(async function() {
                 prepare_default.emptifyRecoInNewReco();
-                prepare_default.$button_close.trigger("click");
                 await prepare_default.refresh(prepare_default.myRecos[uris[1]].cats, "changed", uris);
+                prepare_default.$button_close.trigger("click");
                 resolve();
               }, prepare_default.wait);
             } else {
@@ -29295,9 +29299,9 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(async function() {
                   prepare_default.emptifyRecoInNewReco();
-                  prepare_default.$button_close.trigger("click");
                   console.log(`m.refresh("${cats2}", "recoed", "${uri}");`);
-                  prepare_default.refresh(cats2, "recoed", uri);
+                  await prepare_default.refresh(cats2, "recoed", uri);
+                  prepare_default.$button_close.trigger("click");
                   resolve();
                 }, prepare_default.wait);
               } else if (result.startsWith("changed")) {
@@ -29307,16 +29311,16 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(async function() {
                   prepare_default.emptifyRecoInNewReco();
+                  await prepare_default.refresh(cats2, "changed", uri);
                   prepare_default.$button_close.trigger("click");
-                  prepare_default.refresh(cats2, "changed", uri);
                   resolve();
                 }, prepare_default.wait);
               } else if (result.startsWith("deleted")) {
                 await prepare_default.delCats_UriFromLists(cats, uri);
                 setTimeout(async function() {
                   prepare_default.emptifyRecoInNewReco();
+                  await prepare_default.refresh(cats, "deleted", uri);
                   prepare_default.$button_close.trigger("click");
-                  prepare_default.refresh(cats, "deleted", uri);
                   resolve();
                 }, prepare_default.wait);
               } else {
@@ -29432,9 +29436,9 @@ ${uri2}	change	${cats2}`;
         }).done(async function(resp) {
           clearInterval(prepare_default.setIntervalDeleyedLogOut);
           clearTimeout(prepare_default.setTimeoutDeleyedLogOut);
-          let res = Object(await prepare_default.strToJSON(resp));
-          let result = String(res[1]?.result);
-          let uri = String(res[1]?.uri);
+          let res = await prepare_default.strToJSON(resp);
+          let result = res[1]?.result;
+          let uri = res[1]?.uri;
           prepare_default.$error.html(prepare_default.escapeOnlyTag(result));
           console.log(res);
           if (result.startsWith("changed")) {
@@ -29451,8 +29455,8 @@ ${uri2}	change	${cats2}`;
             console.log("setTimeout( close ); triggered!");
             setTimeout(async function() {
               prepare_default.emptifyRecoInNewReco();
+              await prepare_default.refresh(args.cats, "changed", uri);
               prepare_default.$button_close.trigger("click");
-              prepare_default.refresh(args.cats, "changed", uri);
             }, prepare_default.wait);
           } else {
             prepare_default.delayedLogOut(res[1]?.result, 60 * 60 * 24, args.$result);
@@ -29556,8 +29560,8 @@ ${uri2}	change	${cats2}`;
                 `[--Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.--]`
               );
             }
-            prepare_default.refresh(cats2, "deleted", uri);
-            setTimeout(function() {
+            setTimeout(async function() {
+              await prepare_default.refresh(cats2, "deleted", uri);
               prepare_default.$button_close.trigger("click");
             }, prepare_default.wait);
           } else {
@@ -29567,18 +29571,14 @@ ${uri2}	change	${cats2}`;
           prepare_default.$button_del.removeClass("disabled");
         });
       };
-      prepare_default.$button_del.on("click", function(e2) {
+      prepare_default.$button_del.on("click", async function(e2) {
         prepare_default.$button_del.addClass("disabled");
         let uri = prepare_default.$input_uri.val();
         let r2 = prepare_default.myRecos[uri];
         if (uri.length !== 0 && r2) {
           let strHeads = "uri	do";
           let strContents = prepare_default.encloseStr(uri) + "	delete";
-          prepare_default.rmb_me(
-            prepare_default.reco_delete_do,
-            { strHeads, strContents, $result: prepare_default.$error, r: r2, uri },
-            true
-          );
+          prepare_default.rmb_me(prepare_default.reco_delete_do, { strHeads, strContents, $result: prepare_default.$error, r: r2, uri }, true);
         } else {
           let errorMsg = "";
           if (uri.length === 0) {
@@ -29589,7 +29589,7 @@ ${uri2}	change	${cats2}`;
             errorMsg = "[--Some error occurs.--]";
           }
           prepare_default.$error.html(errorMsg);
-          prepare_default.refresh(r2.cats, "deleted", r2.uri);
+          await prepare_default.refresh(r2.cats, "deleted", r2.uri);
           prepare_default.$button_del.removeClass("disabled");
         }
       });
