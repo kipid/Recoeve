@@ -54,8 +54,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
 		HOST_TO_CSS.put("www.codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
-		HOST_TO_CSS.put("www.instagram.com", "section main article h1");
-		HOST_TO_CSS.put("instagram.com", "section main article h1");
+		HOST_TO_CSS.put("www.instagram.com", "h1");
+		HOST_TO_CSS.put("instagram.com", "h1");
 	}
 
 	// public static final Map<String, String> mobileEmulation;
@@ -123,7 +123,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driverPool.size() < maxDrivers) {
 			try {
 				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--headless=new", "--window-size=512,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+				curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 				curPort++;
 				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -135,7 +135,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		else {
 			cleanupDrivers();
 			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--headless=new", "--window-size=512,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 			curPort++;
 			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
@@ -150,7 +150,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 		}
 		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--headless=new", "--window-size=512,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		// curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		// curPort++;
 		// if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		// WebDriver webDriver = new ChromeDriver(curChromeOptions);
@@ -197,7 +197,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--headless=new", "--window-size=512,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+					curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 					curPort++;
 					if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 					driver = new ChromeDriver(curChromeOptions);
