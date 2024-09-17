@@ -15286,9 +15286,8 @@
   };
   m2.formatURIAndGetAndShowDefsAndRecoInNewReco = function(noFormatURI, fillDefs) {
     return new Promise(async function(resolve, reject) {
-      let elem = m2.$input_uri[0];
-      let uriRendered = await uriRendering(elem.value, true);
-      let originalURI = await m2.formatURIFully(elem.value, uriRendered, true);
+      let uriRendered = await uriRendering(m2.$input_uri.val(), true);
+      let originalURI = await m2.formatURIFully(m2.$input_uri.val(), uriRendered, true);
       let uri = noFormatURI ? originalURI : await m2.formatURIFully(originalURI, uriRendered, false);
       m2.$input_uri.val(uri);
       m2.uri = uri;
