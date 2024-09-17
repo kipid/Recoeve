@@ -26561,11 +26561,13 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               } catch (err) {
                 console.error(err);
               }
-              window.location.href = "#playlist-container";
-              if (prepare_default.fsToRs.$playing?.hasClass("fixed")) {
-                prepare_default.$window.scrollTop(prepare_default.$playlist_container.offset().top - prepare_default.fsToRs.$playing?.outerHeight());
-              } else {
-                prepare_default.$window.scrollTop(prepare_default.$playlist_container.offset().top);
+              if (!prepare_default.initialOpen || !prepare_default.initialHashURI) {
+                window.location.href = "#playlist-container";
+                if (prepare_default.fsToRs.$playing?.hasClass("fixed")) {
+                  prepare_default.$window.scrollTop(prepare_default.$playlist_container.offset().top - prepare_default.fsToRs.$playing?.outerHeight());
+                } else {
+                  prepare_default.$window.scrollTop(prepare_default.$playlist_container.offset().top);
+                }
               }
             }
           }
