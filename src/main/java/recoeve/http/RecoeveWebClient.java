@@ -37,7 +37,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 51000;
-	public static final int DEFAULT_MAX_DRIVERS = 4;
+	public static final int DEFAULT_MAX_DRIVERS = 2;
 	public static final int UNTIL_TOP = 10;
 	public static final long TIMEOUT_MS = 5500L;
 	public static final long FIND_PER_MS = 1000L;
@@ -48,9 +48,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
-		HOST_TO_CSS.put("www.youtube.com", "title,h1,h2");
-		HOST_TO_CSS.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
-		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
+		HOST_TO_CSS.put("www.youtube.com", "title, h1, h2");
+		HOST_TO_CSS.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
+		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
 		HOST_TO_CSS.put("www.codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
@@ -67,7 +67,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public RecoeveDB db;
 	public WebClient[] webClient;
 	public int curWebClientI;
-	public long[] pID = {0, 0, 0};
+	public long[] pID = {0, 0};
 	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
@@ -78,7 +78,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		this.vertx = vertx;
 		this.context = context;
 		this.db = db;
-		webClient = new WebClient[]{ WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options), WebClient.create(vertx, options) };
+		webClient = new WebClient[]{ WebClient.create(vertx, options), WebClient.create(vertx, options) };
 		curWebClientI = -1;
 		maxDrivers = context.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		driverPool = new ConcurrentLinkedQueue<>();
@@ -388,10 +388,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
 
-		// Function<String, String> applyFn = (result) -> {
-		// 	return result;
-		// };
-
 		final WebDriver[] chromeDriver = new WebDriver[1];
 		try {
 			chromeDriver[0] = getDriver();
@@ -436,9 +432,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 							result = result.trim();
 							if (result.isEmpty()) {
 								result = "\nError: Empty result.";
-								System.out.println(result);
 							}
-							resp.write("\n" + result, Recoeve.ENCODING);
+							else {
+								resp.write("\n" + result, Recoeve.ENCODING);
+							}
+							System.out.println(result);
 						}
 						catch (Exception e) {
 							result = "\nError: writing chunk: " + e.getMessage();
@@ -501,10 +499,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public static void main(String... args) {
-		// Function<String, String> applyFn = (result) -> {
-		// 	return result;
-		// };
-
 		try {
 			Vertx vertx = Vertx.vertx();
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
