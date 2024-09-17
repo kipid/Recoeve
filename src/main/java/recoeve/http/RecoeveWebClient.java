@@ -39,12 +39,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 2;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 5500L;
-	public static final long FIND_PER_MS = 1000L;
+	public static final long TIMEOUT_MS = 5300L;
+	public static final long FIND_PER_MS = 500L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
-	public static final String TEST_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+	public static final String EMPTY_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
@@ -67,7 +67,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public RecoeveDB db;
 	public WebClient[] webClient;
 	public int curWebClientI;
-	public long[] pID = {0, 0};
+	public long[] pID = {0};
 	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
@@ -185,14 +185,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 		try {
 			if (driver != null) {
 				if (driverPool.size() < maxDrivers) {
+					driver.get(EMPTY_URL);
 					driver.getTitle();
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-					driver.quit();
-					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-					curPort++;
-					if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-					driver = new ChromeDriver(curChromeOptions);
 					driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
 				}
@@ -216,6 +211,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 			if (driver != null) {
 				driver.quit();
 			}
+			curChromeOptions = new ChromeOptions();
+			curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+			curPort++;
+			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+			driver = new ChromeDriver(curChromeOptions);
+			driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+				// * offer(E e) : Inserts the specified element at the tail of this queue.
 		}
 	}
 
@@ -328,37 +330,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return cfElements;
 		}
 
-		pID[1] = vertx.setPeriodic(FIND_PER_MS, id -> {
-			try {
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
-				if (elements != null && !elements.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
-						String text = elements.get(i).getText();
-						if (text.isEmpty()) {
-							return;
-						}
-						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
-					}
-					vertx.cancelTimer(pID[1]);
-					cfElements.complete(sb.toString());
-				}
-			}
-			catch (NoSuchSessionException err) {
-				System.out.println(err);
-				cfElements.completeExceptionally(new NoSuchSessionException("\nError: No valid session. Please try again.: " + err.getMessage()));
-			}
-			catch (NoSuchElementException
-				| StaleElementReferenceException
-				| InvalidElementStateException
-				| VertxException err) {
-				System.out.println(err.getMessage());
-			}
-		});
-
 		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
-				vertx.cancelTimer(pID[1]);
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
@@ -410,7 +383,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return;
 			}
 			try {
-				chromeDriver[0].get(TEST_URL);
+				chromeDriver[0].get(EMPTY_URL);
 				chromeDriver[0].getTitle();
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
@@ -422,8 +395,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
 				if (HOST_TO_CSS.get(uriHost) == null) {
-					findTitle = asyncFindTitle(chromeDriver[0], "title,h1,h2");
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title,h1,h2");
+					findTitle = asyncFindTitle(chromeDriver[0], "title, h1, h2");
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, h1, h2");
 				}
 				else {
 					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
@@ -516,11 +489,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 			// String uriHost = "kipid.tistory.com";
 
-			// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
-			// String uriHost = "tistory1.daumcdn.net";
+			String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+			String uriHost = "tistory1.daumcdn.net";
 
-			String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
-			String uriHost = "www.youtube.com";
+			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
+			// String uriHost = "www.youtube.com";
 
 			chromeDriver[0].get(uri);
 
