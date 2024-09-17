@@ -398,7 +398,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		try {
 			if (chromeDriver[0] == null) {
 				if (!resp.ended()) {
-					resp.end("Error: null WebDriver.");
+					resp.end("\nError: null WebDriver.");
 				}
 				releaseOrOfferDriver(chromeDriver[0]);
 				return;
