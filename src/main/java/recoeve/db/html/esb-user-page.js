@@ -27373,8 +27373,8 @@ ${uri.join("\n")}
                 prepare_default.catUriList[cat2].UriList = (fullURIs.substring(0, k) + fullURIs.substring(k + uri.length + 1)).trim();
                 if (prepare_default.catUriList[cat2].uris[uri]) {
                   prepare_default.catUriList[cat2].uris.splice(prepare_default.catUriList[cat2].uris[uri].i, 1);
-                  for (let j2 = prepare_default.catUriList[cat2].uris[uri].i; j2 < prepare_default.catUriList[cat2].uris.length; j2++) {
-                    prepare_default.catUriList[cat2].uris[prepare_default.catUriList[cat2]?.uris?.[j2]?.uri].i = j2;
+                  for (let j2 = 0; j2 < prepare_default.catUriList[cat2].uris.length; j2++) {
+                    prepare_default.catUriList[cat2].uris[j2].i = j2;
                   }
                   prepare_default.catUriList[cat2].uris[uri].i = `deleted-${prepare_default.deletedRecosCount}`;
                 }
@@ -28090,7 +28090,7 @@ ${uri.join("\n")}
             prepare_default.$contents.html("");
             resolve("");
           }).done(async function(resp) {
-            let respJSON = Object(await prepare_default.strToJSON(resp.replace(/%2520/gi, "%20")));
+            let respJSON = await prepare_default.strToJSON(resp.replace(/%2520/gi, "%20"));
             for (let i3 = 1; i3 < respJSON.length; i3++) {
               let catUL = prepare_default.catUriList[respJSON[i3]?.cat] = prepare_default.catUriList[respJSON[i3]?.cat] || {};
               catUL.down = true;
@@ -28107,7 +28107,7 @@ ${uri.join("\n")}
                 catUL.UriList = catUL.uris.join("\n").trim();
                 for (let k = 0; k < catUL.uris.length; k++) {
                   let uri = catUL.uris[k];
-                  catUL.uris[uri] = { i: k, uri };
+                  catUL.uris[k] = catUL.uris[uri] = { i: k, uri };
                   if (!prepare_default.userRecos[uri]) {
                     prepare_default.userRecos[uri] = { uri, down: false };
                   }
@@ -28749,10 +28749,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                     let r3 = prepare_default.myRecos[uri];
                     r3.deleted = true;
                     r3.has = false;
-                    prepare_default.$recoDeleted[prepare_default.deletedRecosCount] = prepare_default.$recoDeleted[uri] = {
-                      r: r3,
-                      i: prepare_default.deletedRecosCount
-                    };
+                    prepare_default.$recoDeleted[prepare_default.deletedRecosCount] = prepare_default.$recoDeleted[uri] = { r: r3, i: prepare_default.deletedRecosCount };
                     try {
                       await prepare_default.refreshFSToRs(cat2);
                     } catch (err) {
@@ -29420,7 +29417,7 @@ ${uri2}	change	${cats2}`;
       });
       prepare_default.reco_change_do = function(args, err) {
         if (err) {
-          prepare_default.delayedLogOut(`[--Failed change.--] ${err}`, 60 * 60 * 24);
+          prepare_default.$error.html(`[--Failed change.--] ${err}`);
           prepare_default.$button_edit.removeClass("disabled");
           return;
         }
