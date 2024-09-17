@@ -15228,6 +15228,9 @@
       if (!uri || typeof uri !== "string" || !uri.length) {
         resolve("");
       }
+      if (keepOriginal) {
+        m2.uri = uri;
+      }
       uri = await m2.formatURI(uri, keepOriginal);
       if (!uriRendered) {
         uriRendered = await uriRendering(uri, true);
@@ -15279,8 +15282,11 @@
         } catch (err) {
           console.error(err);
         }
+      } else if (keepOriginal) {
+        m2.$input_uri.val(m2.uri);
+      } else {
+        m2.$input_uri.val(uri);
       }
-      m2.$input_uri.val(uri);
       resolve(uri);
     });
   };
