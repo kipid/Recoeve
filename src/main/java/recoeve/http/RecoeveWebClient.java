@@ -44,7 +44,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
-	public static final String EMPTY_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+	public static final String EMPTY_URL = "https://recoeve.net/CDN/empty.html";
+		// * https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
@@ -65,7 +66,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public int curWebClientI;
 	public long[] pID = {0};
 	public int maxDrivers;
-	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
+	private final ConcurrentLinkedQueue<WebDriver> driverPool;
 	public int recurseCount;
 	public int curPort;
 
@@ -86,38 +87,24 @@ public class RecoeveWebClient extends AbstractVerticle {
 		startPromise.complete();
 	}
 
-	private static class TimestampedDriver {
-		public final WebDriver driver;
-		public final long timestamp;
-
-		public TimestampedDriver(WebDriver driver, long timestamp) {
-			this.driver = driver;
-			this.timestamp = timestamp;
-		}
-	}
-
 	private WebDriver getDriver() throws Exception {
 		recurseCount++;
 		if (recurseCount >= RECURSE_MAX) {
 			recurseCount = 0;
 			throw new RuntimeException("\nError: Too many recursive!");
 		}
-		TimestampedDriver timestampedDriver;
-		while ((timestampedDriver = driverPool.poll()) != null) {
-			if (System.currentTimeMillis() - timestampedDriver.timestamp > TIMEOUT_DRIVER) {
-				releaseOrOfferDriver(timestampedDriver.driver);
-			}
-			else {
-				recurseCount = 0;
-				timestampedDriver.driver.getTitle();
-					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-				return timestampedDriver.driver;
-			}
+		WebDriver driver;
+		while ((driver = driverPool.poll()) != null) {
+			recurseCount = 0;
+			driver.get(EMPTY_URL);
+			driver.getTitle();
+				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			return driver;
 		}
 
 		if (driverPool.size() < maxDrivers) {
 			try {
-				driverPool.add(new TimestampedDriver(new ChromeDriver(getChromeOptions()), System.currentTimeMillis()));
+				driverPool.add(new ChromeDriver(getChromeOptions()));
 			}
 			catch (Exception err) {
 				System.out.println("Failed to create new WebDriver: " + err.getMessage());
@@ -125,16 +112,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		else {
 			cleanupDrivers();
-			driverPool.add(new TimestampedDriver(new ChromeDriver(getChromeOptions()), System.currentTimeMillis()));
+			driverPool.add(new ChromeDriver(getChromeOptions()));
 		}
-		while ((timestampedDriver = driverPool.poll()) != null) {
-			if (System.currentTimeMillis() - timestampedDriver.timestamp > TIMEOUT_DRIVER) {
-				releaseOrOfferDriver(timestampedDriver.driver);
-			}
-			else {
-				recurseCount = 0;
-				return timestampedDriver.driver;
-			}
+		while ((driver = driverPool.poll()) != null) {
+			recurseCount = 0;
+			driver.get(EMPTY_URL);
+			driver.getTitle();
+				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			return driver;
 		}
 		// WebDriver webDriver = new ChromeDriver(getChromeOptions());
 		// return webDriver;
@@ -145,6 +130,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	private void closeDriver(WebDriver driver) {
 		try {
 			if (driver != null) {
+				driver.get(EMPTY_URL);
 				driver.getTitle();
 					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 				driver.close();
@@ -179,7 +165,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					driver.get(EMPTY_URL);
 					driver.getTitle();
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-					driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+					driverPool.offer(driver);
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
 				}
 				else {
@@ -189,7 +175,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			else {
 				if (driverPool.size() < maxDrivers) {
 					driver = new ChromeDriver(getChromeOptions());
-					driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+					driverPool.offer(driver);
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
 				}
 			}
@@ -199,18 +185,18 @@ public class RecoeveWebClient extends AbstractVerticle {
 				driver.quit();
 			}
 			driver = new ChromeDriver(getChromeOptions());
-			driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
+			driverPool.offer(driver);
 				// * offer(E e) : Inserts the specified element at the tail of this queue.
 		}
 	}
 
 	public void cleanupDrivers() {
-		TimestampedDriver timestampedDriver;
-		while ((timestampedDriver = driverPool.poll()) != null) {
-			closeDriver(timestampedDriver.driver);
+		WebDriver driver;
+		while ((driver = driverPool.poll()) != null) {
+			closeDriver(driver);
 		}
-		if (timestampedDriver != null && timestampedDriver.driver != null) {
-			timestampedDriver.driver.quit();
+		if (driver != null) {
+			driver.quit();
 		}
 	}
 
