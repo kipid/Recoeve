@@ -57,8 +57,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
-		HOST_TO_CSS.put("www.tiktok.com", "NO");
-		HOST_TO_CSS.put("tiktok.com", "NO");
+		HOST_TO_CSS.put("www.tiktok.com", "h1");
+		HOST_TO_CSS.put("tiktok.com", "h1");
 	}
 
 	public RecoeveDB db;
@@ -85,77 +85,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 	@Override
 	public void start(Promise<Void> startPromise) {
 		startPromise.complete();
-	}
-
-	private WebDriver getDriver() throws Exception {
-		recurseCount++;
-		if (recurseCount >= RECURSE_MAX) {
-			recurseCount = 0;
-			throw new RuntimeException("\nError: Too many recursive!");
-		}
-		WebDriver driver;
-		while ((driver = driverPool.poll()) != null) {
-			recurseCount = 0;
-			driver.get(EMPTY_URL);
-			driver.getTitle();
-				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-			return driver;
-		}
-
-		if (driverPool.size() < maxDrivers) {
-			try {
-				driverPool.add(new ChromeDriver(getChromeOptions()));
-			}
-			catch (Exception err) {
-				System.out.println("Failed to create new WebDriver: " + err.getMessage());
-			}
-		}
-		else {
-			cleanupDrivers();
-			driverPool.add(new ChromeDriver(getChromeOptions()));
-		}
-		while ((driver = driverPool.poll()) != null) {
-			recurseCount = 0;
-			driver.get(EMPTY_URL);
-			driver.getTitle();
-				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-			return driver;
-		}
-		// WebDriver webDriver = new ChromeDriver(getChromeOptions());
-		// return webDriver;
-			// ! No new WebDriver. WebDriver number must be controlled by driverPool.
-		return null;
-	}
-
-	private void closeDriver(WebDriver driver) {
-		try {
-			if (driver != null) {
-				driver.get(EMPTY_URL);
-				driver.getTitle();
-					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
-				driver.close();
-			}
-		}
-		catch (NoSuchSessionException e) {
-			System.out.println("Error NoSuchSessionException: " + e.getMessage());
-			driver.quit();
-			System.out.println("driver.quit();");
-		}
-		catch (Exception e) {
-			System.out.println("Error closing WebDriver: " + e.getMessage());
-			if (driver != null) {
-				driver.quit();
-				System.out.println("driver.quit();");
-			}
-		}
-	}
-
-	private ChromeOptions getChromeOptions() {
-		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-		curPort++;
-		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-		return chromeOptions;
 	}
 
 	private synchronized void releaseOrOfferDriver(WebDriver driver) {
@@ -190,6 +119,29 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
+	private void closeDriver(WebDriver driver) {
+		try {
+			if (driver != null) {
+				driver.get(EMPTY_URL);
+				driver.getTitle();
+					// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+				driver.close();
+			}
+		}
+		catch (NoSuchSessionException e) {
+			System.out.println("\nError: NoSuchSessionException: " + e.getMessage());
+			driver.quit();
+			System.out.println("driver.quit();");
+		}
+		catch (Exception e) {
+			System.out.println("\nError: closing WebDriver: " + e.getMessage());
+			if (driver != null) {
+				driver.quit();
+				System.out.println("driver.quit();");
+			}
+		}
+	}
+
 	public void cleanupDrivers() {
 		WebDriver driver;
 		while ((driver = driverPool.poll()) != null) {
@@ -198,6 +150,55 @@ public class RecoeveWebClient extends AbstractVerticle {
 		if (driver != null) {
 			driver.quit();
 		}
+	}
+
+	private WebDriver getDriver() throws Exception {
+		recurseCount++;
+		if (recurseCount >= RECURSE_MAX) {
+			recurseCount = 0;
+			throw new RuntimeException("\nError: Too many recursive!");
+		}
+		WebDriver driver;
+		while ((driver = driverPool.poll()) != null) {
+			recurseCount = 0;
+			driver.get(EMPTY_URL);
+			driver.getTitle();
+				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			return driver;
+		}
+
+		if (driverPool.size() < maxDrivers) {
+			try {
+				driverPool.add(new ChromeDriver(getChromeOptions()));
+			}
+			catch (Exception err) {
+				System.out.println("\nError: Failed to create new WebDriver: " + err.getMessage());
+			}
+		}
+		else {
+			cleanupDrivers();
+			driverPool.add(new ChromeDriver(getChromeOptions()));
+		}
+
+		while ((driver = driverPool.poll()) != null) {
+			recurseCount = 0;
+			driver.get(EMPTY_URL);
+			driver.getTitle();
+				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			return driver;
+		}
+		// WebDriver webDriver = new ChromeDriver(getChromeOptions());
+		// return webDriver;
+			// ! No new WebDriver. WebDriver number must be controlled by driverPool.
+		return null;
+	}
+
+	private ChromeOptions getChromeOptions() {
+		ChromeOptions chromeOptions = new ChromeOptions();
+		chromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curPort++;
+		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+		return chromeOptions;
 	}
 
 	public CompletableFuture<String> redirected(String originalURI) {
@@ -233,6 +234,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
 			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
+			return cfElements;
+		}
+		if (cssSelector.equals("NO")) {
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is NO."));
 			return cfElements;
 		}
 
@@ -296,6 +301,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
 			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
+			return cfElements;
+		}
+		if (cssSelector.equals("NO")) {
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is NO."));
 			return cfElements;
 		}
 
@@ -509,8 +518,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 				String errorMsg = "\nComplete with no error.";
 				if (error != null) {
 					errorMsg = "\nError in futures: " + error.getMessage();
+					System.err.println(errorMsg);
 				}
-				System.err.println(errorMsg + v);
+				else {
+					System.err.println(errorMsg + v);
+				}
 				recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
 			});
 		}
