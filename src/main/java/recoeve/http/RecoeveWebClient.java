@@ -56,19 +56,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
+		HOST_TO_CSS.put("www.tiktok.com", "NO");
+		HOST_TO_CSS.put("tiktok.com", "NO");
 	}
-
-	// public static final Map<String, String> mobileEmulation;
-	// static {
-	// 	mobileEmulation = new HashMap<>();
-	// 	mobileEmulation.put("deviceName", "iPhone SE");
-	// }
 
 	public RecoeveDB db;
 	public WebClient[] webClient;
 	public int curWebClientI;
 	public long[] pID = {0};
-	public ChromeOptions curChromeOptions;
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<TimestampedDriver> driverPool;
 	public int recurseCount;
@@ -122,11 +117,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		if (driverPool.size() < maxDrivers) {
 			try {
-				curChromeOptions = new ChromeOptions();
-				curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-				curPort++;
-				if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-				driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
+				driverPool.add(new TimestampedDriver(new ChromeDriver(getChromeOptions()), System.currentTimeMillis()));
 			}
 			catch (Exception err) {
 				System.out.println("Failed to create new WebDriver: " + err.getMessage());
@@ -134,11 +125,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 		else {
 			cleanupDrivers();
-			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-			curPort++;
-			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-			driverPool.add(new TimestampedDriver(new ChromeDriver(curChromeOptions), System.currentTimeMillis()));
+			driverPool.add(new TimestampedDriver(new ChromeDriver(getChromeOptions()), System.currentTimeMillis()));
 		}
 		while ((timestampedDriver = driverPool.poll()) != null) {
 			if (System.currentTimeMillis() - timestampedDriver.timestamp > TIMEOUT_DRIVER) {
@@ -149,11 +136,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				return timestampedDriver.driver;
 			}
 		}
-		// curChromeOptions = new ChromeOptions();
-		// curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-		// curPort++;
-		// if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-		// WebDriver webDriver = new ChromeDriver(curChromeOptions);
+		// WebDriver webDriver = new ChromeDriver(getChromeOptions());
 		// return webDriver;
 			// ! No new WebDriver. WebDriver number must be controlled by driverPool.
 		return null;
@@ -181,6 +164,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
+	private ChromeOptions getChromeOptions() {
+		ChromeOptions chromeOptions = new ChromeOptions();
+		chromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		curPort++;
+		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
+		return chromeOptions;
+	}
+
 	private synchronized void releaseOrOfferDriver(WebDriver driver) {
 		try {
 			if (driver != null) {
@@ -197,11 +188,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			}
 			else {
 				if (driverPool.size() < maxDrivers) {
-					curChromeOptions = new ChromeOptions();
-					curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-					curPort++;
-					if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-					driver = new ChromeDriver(curChromeOptions);
+					driver = new ChromeDriver(getChromeOptions());
 					driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
 				}
@@ -211,11 +198,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			if (driver != null) {
 				driver.quit();
 			}
-			curChromeOptions = new ChromeOptions();
-			curChromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
-			curPort++;
-			if (curPort > MAX_PORT) { curPort = MIN_PORT; }
-			driver = new ChromeDriver(curChromeOptions);
+			driver = new ChromeDriver(getChromeOptions());
 			driverPool.offer(new TimestampedDriver(driver, System.currentTimeMillis()));
 				// * offer(E e) : Inserts the specified element at the tail of this queue.
 		}
@@ -492,8 +475,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 			// String uriHost = "tistory1.daumcdn.net";
 
-			String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
-			String uriHost = "www.youtube.com";
+			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
+			// String uriHost = "www.youtube.com";
+
+			String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
+			String uriHost = "www.tiktok.com";
 
 			chromeDriver[0].get(uri);
 
