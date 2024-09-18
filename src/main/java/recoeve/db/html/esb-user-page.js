@@ -15284,19 +15284,18 @@
         }
       } else if (keepOriginal) {
         m2.$input_uri.val(m2.uri);
+        resolve(m2.uri);
       } else {
         m2.$input_uri.val(uri);
+        resolve(uri);
       }
-      resolve(uri);
     });
   };
-  m2.formatURIAndGetAndShowDefsAndRecoInNewReco = function(noFormatURI, fillDefs) {
+  m2.formatURIAndGetAndShowDefsAndRecoInNewReco = function(noFormatURI, fillDefs, keepOriginal) {
     return new Promise(async function(resolve, reject) {
       let uriRendered = await uriRendering(m2.$input_uri.val(), true);
-      let originalURI = await m2.formatURIFully(m2.$input_uri.val(), uriRendered, true);
-      let uri = noFormatURI ? originalURI : await m2.formatURIFully(originalURI, uriRendered, false);
-      m2.$input_uri.val(uri);
-      m2.uri = uri;
+      let originalURI = await m2.formatURIFully(m2.$input_uri.val(), uriRendered, keepOriginal);
+      let uri = noFormatURI ? originalURI : await m2.formatURIFully(originalURI, uriRendered, keepOriginal);
       m2.$show_URI.html(uriRendered.html.replace(/\sdelayed-src=/gi, " src="));
       let r2 = m2.myRecos[uri];
       if (!r2) {
@@ -27978,7 +27977,11 @@ ${uri.join("\n")}
           prepare_default.$input_uri.val(r2?.uri ?? "");
           prepare_default.$input_uri[0].disabled = true;
           if (uri.length !== 0 && uri !== prepare_default.lastURI) {
-            await prepare_default.formatURIAndGetAndShowDefsAndRecoInNewReco(true, fillDefs);
+            if (prepare_default.myPage) {
+              await prepare_default.formatURIAndGetAndShowDefsAndRecoInNewReco(true, fillDefs, true);
+            } else {
+              await prepare_default.formatURIAndGetAndShowDefsAndRecoInNewReco(true, fillDefs);
+            }
           }
           prepare_default.wST = prepare_default.$window.scrollTop();
           prepare_default.$window.off("scroll.stop");
