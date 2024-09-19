@@ -511,6 +511,12 @@ public class Recoeve extends AbstractVerticle {
 				// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 				if (fileName != null && !fileName.isEmpty()) {
 					switch (fileName) {
+						case "favicon.ico":
+							//
+							pl.req.response().putHeader("Content-Type", "image/x-icon")
+								.end(fileMap.getCDNFileInMemory("favicon.ico"));
+							System.out.println("Sended favicon.ico");
+							break;
 						case "personal-info-handle": // e.g. path=/personal-info-handle
 							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 									.end(fileMap.getFileWithLang("personal-info-handle.html", pl.lang), ENCODING);
