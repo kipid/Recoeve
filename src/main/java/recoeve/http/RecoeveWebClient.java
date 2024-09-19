@@ -206,7 +206,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	private ChromeOptions getChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments(/*"--headless=new", */"--disable-web-security", "--allow-running-insecure-content", "--disable-site-isolation-trials", "--disable-popup-blocking", "--disable-features=IsolateOrigins,site-per-process", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--disable-browser-side-navigation", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		chromeOptions.addArguments("--headless=new", "--disable-web-security", "--allow-running-insecure-content", "--disable-site-isolation-trials", "--disable-popup-blocking", "--disable-features=IsolateOrigins,site-per-process", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--disable-browser-side-navigation", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		// chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
 		chromeOptions.setAcceptInsecureCerts(true);
