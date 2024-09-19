@@ -2,6 +2,8 @@ package recoeve.http;
 
 
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +16,15 @@ import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -39,11 +45,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 2;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 5300L;
-	public static final long FIND_PER_MS = 500L;
+	public static final long TIMEOUT_MS = 10000L;
+	public static final long FIND_PER_MS = 1000L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
+	public static final ChromeDriverService service = new ChromeDriverService.Builder().withLogOutput(System.out).withLogLevel(ChromiumDriverLogLevel.DEBUG).withAppendLog(true).withReadableTimestamp(true).build();
 	public static final String EMPTY_URL = "https://recoeve.net/CDN/empty.html";
 		// * https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html
 	public static final Map<String, String> HOST_TO_CSS;
@@ -96,9 +103,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 					driverPool.offer(driver);
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
+					System.out.println("\ndriverPool.offer(driver);");
 				}
 				else {
 					closeDriver(driver);
+					System.out.println("\ncloseDriver(driver);");
 				}
 			}
 			else {
@@ -106,6 +115,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					driver = new ChromeDriver(getChromeOptions());
 					driverPool.offer(driver);
 						// * offer(E e) : Inserts the specified element at the tail of this queue.
+					System.out.println("\ndriverPool.offer(driver);");
 				}
 			}
 		} catch (Exception err) {
@@ -116,6 +126,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			driver = new ChromeDriver(getChromeOptions());
 			driverPool.offer(driver);
 				// * offer(E e) : Inserts the specified element at the tail of this queue.
+			System.out.println("\ndriverPool.offer(driver);");
 		}
 	}
 
@@ -195,7 +206,15 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	private ChromeOptions getChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-logging", "--log-level=3", "--output=/dev/null", "--disable-in-process-stack-traces", "--disable-extensions", "--ignore-certificate-errors", "--remote-debugging-pipe", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		chromeOptions.addArguments(/*"--headless=new", */"--disable-web-security", "--allow-running-insecure-content", "--disable-site-isolation-trials", "--disable-popup-blocking", "--disable-features=IsolateOrigins,site-per-process", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--disable-browser-side-navigation", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		// chromeOptions.setBrowserVersion("latest");
+		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
+		chromeOptions.setAcceptInsecureCerts(true);
+		Duration duration = Duration.of(5, ChronoUnit.SECONDS);
+		chromeOptions.setScriptTimeout(duration);
+		chromeOptions.setPageLoadTimeout(duration);
+		chromeOptions.setImplicitWaitTimeout(duration);
+		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		return chromeOptions;
