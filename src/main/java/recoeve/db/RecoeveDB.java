@@ -163,6 +163,9 @@ public class RecoeveDB {
 	private PreparedStatement pstmtPutRecentests;
 	// private PreparedStatement pstmtCutAndPutRecentests;
 
+	private PreparedStatement pstmtPutUriHeads;
+	private PreparedStatement pstmtGetUriHeads;
+
 	private PreparedStatement pstmtPutNeighbor;
 	private PreparedStatement pstmtGetNeighbor;
 	private PreparedStatement pstmtDelNeighbor;
@@ -257,6 +260,9 @@ public class RecoeveDB {
 
 				pstmtPutRecentests = con.prepareStatement("INSERT INTO `RecoStat` (`uri`, `recentests`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
 				// pstmtCutAndPutRecentests = con.prepareStatement("UPDATE `RecoStat` SET `recentests`=CONCAT(SUBSTRING(`recentests` FROM ?), ?), `N`=? WHERE `uri`=?;");
+
+				pstmtPutUriHeads = con.prepareStatement("INSERT INTO `UriHeads` (`uri`, `heads`, `tFirst`, `tUpdate`) VALUES (?, ?, ?, ?);");
+				pstmtGetUriHeads = con.prepareStatement("SELECT * FROM `UriHeads` WHERE `uri`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 				pstmtPutNeighbor = con.prepareStatement("INSERT INTO `Neighbors` (`user_i`, `cat_i`, `user_from`, `cat_from`, `sumSim`, `nSim`, `tUpdate`, `tScanAll`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 				pstmtGetNeighbor = con.prepareStatement("SELECT * FROM `Neighbors` WHERE `user_i`=? and `cat_i`=? and `user_from`=? and `cat_from`=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -2124,6 +2130,32 @@ public class RecoeveDB {
 			err(err);
 		}
 		return false;
+	}
+
+	public boolean putUriHeads(String uri, String heads, Timestamp tNow) {
+		try {
+			pstmtPutUriHeads.setString(1, uri);
+			pstmtPutUriHeads.setString(2, heads.trim());
+			pstmtPutUriHeads.setTimestamp(3, tNow);
+			pstmtPutUriHeads.setTimestamp(4, tNow);
+			return pstmtPutUriHeads.executeUpdate() > 0;
+		} catch (SQLException err) {
+			err(err);
+		}
+		return false;
+	}
+
+	public ResultSet getUriHeads(String uri) {
+		try {
+			pstmtGetUriHeads.setString(1, uri);
+			ResultSet rs = pstmtGetUriHeads.executeQuery();
+			if (rs.next()) {
+				return rs;
+			}
+		} catch (SQLException err) {
+			err(err);
+		}
+		return null;
 	}
 
 	public static final int N_MAX = 8000;
