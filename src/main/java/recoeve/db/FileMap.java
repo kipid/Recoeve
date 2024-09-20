@@ -2,50 +2,40 @@ package recoeve.db;
 
 
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.shareddata.LocalMap;
 
-import java.lang.StringBuilder;
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class FileMap {
-	public static final String version = "1.2.0";
-	private static final String[] referersAllowed = {
-			"localhost", "recoeve.net", "www.recoeve.net"
-			// , "127.0.0.1"
-			// , "172.30.1.18"
-			, "kipid.tistory.com", "tistory1.daumcdn.net"
-	};
-	public static String preFilePath = "";
-	static {
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("win")) {
-			preFilePath = "C:";
-		}
-		else {
-			preFilePath = "/home/kipid";
-		}
-	}
-	private static final String filePath = preFilePath + "/Recoeve/src/main/java/recoeve/db/CDN/";
-	private static final File[] fileNames = (new File(filePath)).listFiles(new FileFilter() {
-		@Override
-		public boolean accept(File pathname) {
-			return pathname.isFile();
-		}
+	public static final String VERSION = "1.2.0";
+	// private static final Set<String> REFERERS_ALLOWED = new HashSet<>(Arrays.asList(
+	// 	"localhost", "recoeve.net", "www.recoeve.net"
+	// 	// , "127.0.0.1"
+	// 	, "kipid.tistory.com", "tistory1.daumcdn.net"
+	// ));
+	public static final String PRE_FILEPATH = "C:";
+	// static {
+	// 	String os = System.getProperty("os.name").toLowerCase();
+	// 	if (os.contains("win")) {
+	// 		PRE_FILEPATH = "C:";
+	// 	}
+	// 	else {
+	// 		PRE_FILEPATH = "/home/kipid";
+	// 	}
+	// }
+	private static final String FILEPATH = PRE_FILEPATH + "/Recoeve/src/main/java/recoeve/db/CDN/";
+	private static final File[] FILENAMES = (new File(FILEPATH)).listFiles((File pathname) -> {
+		return pathname.isFile();
 	});
 
 	public Vertx vertx;
@@ -57,17 +47,17 @@ public class FileMap {
 		FileSystem fileSystem = vertx.fileSystem();
 
 		// Example: Reading a file and storing it in memory
-		for (File fileName : fileNames) {
-			String fileFullPath = filePath + fileName.getName();
+		for (File fileName : FILENAMES) {
+			String fileFullPath = FILEPATH + fileName.getName();
 			fileSystem.readFile(fileFullPath)
-					.onComplete(ar -> {
-						if (ar.succeeded()) {
-							Buffer fileContent = ar.result();
-							fileStorage.put(fileName.getName(), fileContent);
-						} else {
-							System.err.println("Error reading file: " + ar.cause());
-						}
-					});
+				.onComplete(ar -> {
+					if (ar.succeeded()) {
+						Buffer fileContent = ar.result();
+						fileStorage.put(fileName.getName(), fileContent);
+					} else {
+						System.err.println("Error reading file: " + ar.cause());
+					}
+				});
 		}
 	}
 
@@ -82,82 +72,85 @@ public class FileMap {
 		return retrievedFile;
 	}
 
-	private static final String txtFilePath = preFilePath + "/Recoeve/src/main/java/recoeve/db/html/";
-	private static final File[] txtFileNames = (new File(txtFilePath)).listFiles(new FileFilter() {
-		@Override
-		public boolean accept(File pathname) {
-			return pathname.isFile();
-		}
+	private static final String TXT_FILEPATH = PRE_FILEPATH + "/Recoeve/src/main/java/recoeve/db/html/";
+	private static final File[] TXT_FILENAMES = (new File(TXT_FILEPATH)).listFiles((File pathname) -> {
+		return pathname.isFile();
 	});
-	private static final int txtFileMapSize = 30;
-	private static final int fileLangMapSize = 20; // # of languages translated to support.
+	private static final int TXT_FILEMAP_SIZE = 50;
+	private static final int FILE_LANGMAP_SIZE = 15; // # of languages translated to support.
 
-	public static Set<String> refererSet;
-	public static Map<String, Map<String, String>> txtFileMap;
+	public static final Map<String, Map<String, String>> TXT_FILEMAP;
 	// txtFileMap.get("txtFileName").get("lang")
-	public static StrArray langMap;
+	public static final StrArray LANGMAP;
 
-	public static final Pattern ptnReplacer = Pattern.compile("\\[--[^\\[\\]]+?--\\]");
+	public static final Pattern PTN_REPLACER = Pattern.compile("\\[--[^\\[\\]]+?--\\]");
 
 	static {
-		refererSet = new HashSet<String>();
-		for (String referer : referersAllowed) {
-			refererSet.add(referer);
-		}
-
-		txtFileMap = new HashMap<String, Map<String, String>>(txtFileMapSize);
-		File file = null;
+		TXT_FILEMAP = new HashMap<>(TXT_FILEMAP_SIZE);
+		File file;
 		String fileStr = null;
 
-		file = new File(txtFilePath + "lang.txt");
+		file = new File(TXT_FILEPATH + "lang.txt");
 		if (file.exists()) {
+			FileReader reader = null;
 			try {
 				StringBuilder sb = new StringBuilder();
 				int ch;
-				FileReader reader = new FileReader(file);
+				reader = new FileReader(file);
 				while ((ch = reader.read()) != -1) {
 					sb.append((char) ch);
 				}
-				reader.close();
 				fileStr = sb.toString();
 			} catch (IOException e) {
 				System.out.println(e);
 			} finally {
-				file = null;
+				if (reader != null) {
+					try {
+						reader.close();
+					} catch (IOException err) {
+						System.out.println("IOException: " + err.getMessage());
+					}
+				}
 			}
 		}
-		langMap = new StrArray(fileStr, true, true);
+		LANGMAP = new StrArray(fileStr, true, true);
 		// System.out.println(langMap);
 		fileStr = null;
 
-		for (File txtFileName : txtFileNames) {
-			file = new File(txtFilePath + txtFileName.getName());
+		for (File txtFileName : TXT_FILENAMES) {
+			file = new File(TXT_FILEPATH + txtFileName.getName());
 			if (file.exists()) {
+				FileReader reader = null;
 				try {
 					StringBuilder sb = new StringBuilder();
 					int ch;
-					FileReader reader = new FileReader(file);
+					reader = new FileReader(file);
 					while ((ch = reader.read()) != -1) {
 						sb.append((char) ch);
 					}
-					reader.close();
 					fileStr = sb.toString();
 				} catch (IOException e) {
 					System.out.println(e);
 				} finally {
-					file = null;
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException err) {
+							System.out.println("IOException: " + err.getMessage());
+						}
+					}
 				}
 			}
 
 			if (fileStr != null) {
-				txtFileMap.put(txtFileName.getName(), new HashMap<String, String>(fileLangMapSize));
-				Map<String, String> fileLangMap = txtFileMap.get(txtFileName.getName());
+				TXT_FILEMAP.put(txtFileName.getName(), new HashMap<>(FILE_LANGMAP_SIZE));
+				Map<String, String> fileLangMap = TXT_FILEMAP.get(txtFileName.getName());
 				fileLangMap.put("df", fileStr); // default.
 				ArrayList<String> strList = strToList(fileStr);
 				if (strList.size() > 1) {
-					int colSize = langMap.getColSizeAtRow(0);
+					int colSize = LANGMAP.getColSizeAtRow(0);
 					for (int k = 2; k < colSize; k++) {
-						String lang = langMap.get(0, k);
+						String lang = LANGMAP.get(0, k);
 						if (!lang.equals("desc")) {
 							fileLangMap.put(lang, replaceStr(strList, lang)); // after replacing langMap.
 						}
@@ -178,8 +171,8 @@ public class FileMap {
 			return null;
 		}
 		int start = 0;
-		Matcher matchReplacer = ptnReplacer.matcher(fileStr);
-		ArrayList<String> strList = new ArrayList<String>();
+		Matcher matchReplacer = PTN_REPLACER.matcher(fileStr);
+		ArrayList<String> strList = new ArrayList<>();
 		while (start < fileStr.length()) {
 			if (matchReplacer.find(start)) {
 				strList.add(fileStr.substring(start, matchReplacer.start()));
@@ -195,14 +188,14 @@ public class FileMap {
 
 	public static String replaceStr(ArrayList<String> strList, String lang) {
 		String strReplaced = "";
-		String replaced = null;
+		String replaced;
 		for (int i = 0; i < strList.size(); i++) {
 			if (i % 2 == 0) {
 				strReplaced += strList.get(i);
 			} else {
-				replaced = langMap.get(strList.get(i), lang);
+				replaced = LANGMAP.get(strList.get(i), lang);
 				if (replaced == null || replaced.isEmpty() || replaced.equals("-")) {
-					replaced = langMap.get(strList.get(i), "en"); // "en" is default lang.
+					replaced = LANGMAP.get(strList.get(i), "en"); // "en" is default lang.
 				}
 				if (replaced == null) {
 					replaced = strList.get(i);
@@ -218,7 +211,7 @@ public class FileMap {
 	}
 
 	public String getFileWithLang(String txtFileName, String lang) {
-		Map<String, String> fileLangMap = txtFileMap.get(txtFileName);
+		Map<String, String> fileLangMap = TXT_FILEMAP.get(txtFileName);
 		if (fileLangMap == null) {
 			return null;
 		}
