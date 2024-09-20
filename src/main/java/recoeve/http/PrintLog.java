@@ -40,13 +40,29 @@ public class PrintLog implements Handler<RoutingContext> {
 							res[2] = uri.substring(m, n);
 							res[3] = uri.substring(n);
 						}
+						else {
+							res[2] = uri.substring(m);
+							res[3] = "";
+						}
+					}
+					else {
+						res[2] = "";
+						int n = uri.indexOf("#", l);
+						if (n > 0) {
+							res[1] = uri.substring(l, n);
+							res[3] = uri.substring(n);
+						}
+						else {
+							res[1] = uri.substring(k);
+							res[3] = "";
+						}
 					}
 				}
 				else {
+					res[1] = "";
 					int m = uri.indexOf("?", k);
 					if (m > 0) {
 						res[0] = uri.substring(k, m);
-						res[1] = "";
 						int n = uri.indexOf("#", m);
 						if (n > 0) {
 							res[2] = uri.substring(m, n);
@@ -58,17 +74,14 @@ public class PrintLog implements Handler<RoutingContext> {
 						}
 					}
 					else {
+						res[2] = "";
 						int n = uri.indexOf("#", k);
 						if (n > 0) {
 							res[0] = uri.substring(k, n);
-							res[1] = "";
-							res[2] = "";
 							res[3] = uri.substring(n);
 						}
 						else {
 							res[0] = uri.substring(k);
-							res[1] = "";
-							res[2] = "";
 							res[3] = "";
 						}
 					}
@@ -252,6 +265,9 @@ public class PrintLog implements Handler<RoutingContext> {
 	}
 
 	public static void main(String... args) {
-		// Do nothing.
+		String[] decomposedURI = PrintLog.decomposeURI("https://recoeve.net?kjlskd#proflkjfsd");
+		for (String d : decomposedURI) {
+			System.out.println(d);
+		}
 	}
 }
