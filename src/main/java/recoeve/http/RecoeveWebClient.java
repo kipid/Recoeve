@@ -316,44 +316,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 		return cfElements;
 	}
 
-	public CompletableFuture<String> asyncFindTitleUntilEveryIsFound(WebDriver chromeDriver, String cssSelector) throws Exception {
-		CompletableFuture<String> cfElements = new CompletableFuture<>();
-		if (cssSelector == null) {
-			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
-			return cfElements;
-		}
-		if (cssSelector.equals("NO")) {
-			cfElements.completeExceptionally(new Exception("\nError: cssSelector is NO."));
-			return cfElements;
-		}
-
-		((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
-
-		vertx.setTimer(TIMEOUT_MS, id -> {
-			try {
-				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
-				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
-				if (elements != null && !elements.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < elements.size(); i++) {
-						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
-						if (!text.isEmpty()) {
-							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
-						}
-					}
-					cfElements.complete(sb.toString());
-				}
-				else {
-					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
-				}
-			} catch (Exception err) {
-				cfElements.completeExceptionally(err);
-			}
-		});
-
-		return cfElements;
-	}
-
 	public void findTitles(String uri, String uriHost, HttpServerResponse resp) {
 		resp.putHeader("Content-Type", "text/plain; charset=utf-8")
 				.setChunked(true);
@@ -393,17 +355,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 				chromeDriver[0].get(uri);
 				CompletableFuture<String> findTitle;
-				CompletableFuture<String> findTitleUntil;
 				if (HOST_TO_CSS.get(uriHost) == null) {
 					findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
 				}
 				else {
 					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost));
 				}
 
-				allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
+				allOf = CompletableFuture.allOf(findTitle);
 
 				BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 					if (error == null) {
@@ -431,7 +390,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 				};
 
 				findTitle.whenComplete(writeChunk);
-				findTitleUntil.whenComplete(writeChunk);
 
 				allOf.whenComplete((v, error) -> {
 					String errorMsg = "\nComplete with no error.";
@@ -504,17 +462,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 			chromeDriver[0].get(uri);
 
 			CompletableFuture<String> findTitle;
-			CompletableFuture<String> findTitleUntil;
 			if (RecoeveWebClient.HOST_TO_CSS.get(uriHost) == null) {
 				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
 			}
 			else {
 				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], HOST_TO_CSS.get(uriHost));
 			}
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle, findTitleUntil);
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle);
 
 			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 				if (error == null) {
@@ -537,7 +492,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 			};
 
 			findTitle.whenComplete(writeChunk);
-			findTitleUntil.whenComplete(writeChunk);
 
 			allOf.whenComplete((v, error) -> {
 				String errorMsg = "\nComplete with no error.";
