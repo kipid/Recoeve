@@ -15,6 +15,70 @@ import recoeve.db.RecoeveDB;
 // import recoeve.db.HTMLString;
 
 public class PrintLog implements Handler<RoutingContext> {
+	public static String[] decomposeURI(String uri) {
+		uri = uri.split("[\\s\\t\\n]")[0];
+		String[] res = new String[4]; // uriHost, pathname, search, hash
+		res[0] = null;
+		res[1] = null;
+		res[2] = null;
+		res[3] = null;
+		if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
+			int k = 4;
+			if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
+				k++;
+			}
+			if (uri.startsWith("://", k)) {
+				k += 3;
+				int l = uri.indexOf("/", k);
+				if (l > 0) {
+					res[0] = uri.substring(k, l);
+					int m = uri.indexOf("?", l);
+					if (m > 0) {
+						res[1] = uri.substring(l, m);
+						int n = uri.indexOf("#", m);
+						if (n > 0) {
+							res[2] = uri.substring(m, n);
+							res[3] = uri.substring(n);
+						}
+					}
+				}
+				else {
+					int m = uri.indexOf("?", k);
+					if (m > 0) {
+						res[0] = uri.substring(k, m);
+						res[1] = "";
+						int n = uri.indexOf("#", m);
+						if (n > 0) {
+							res[2] = uri.substring(m, n);
+							res[3] = uri.substring(n);
+						}
+						else {
+							res[2] = uri.substring(m);
+							res[3] = "";
+						}
+					}
+					else {
+						int n = uri.indexOf("#", k);
+						if (n > 0) {
+							res[0] = uri.substring(k, n);
+							res[1] = "";
+							res[2] = "";
+							res[3] = uri.substring(n);
+						}
+						else {
+							res[0] = uri.substring(k);
+							res[1] = "";
+							res[2] = "";
+							res[3] = "";
+						}
+					}
+				}
+			}
+		}
+		res[0] = res[0].toLowerCase();
+		return res;
+	}
+
 	private static long numberOfClients = 0;
 	public RecoeveDB db;
 	public HttpServerRequest req;
@@ -80,37 +144,23 @@ public class PrintLog implements Handler<RoutingContext> {
 		if (referer == null) {
 			refererAllowed = true;
 		}
-		else if (referer.substring(0, 4).toLowerCase().equals("http")) {
-			int k = 4;
-			if (referer.charAt(k) == 's' || referer.charAt(k) == 'S') {
-				k++;
-			}
-			if (referer.startsWith("://", k)) {
-				k += 3;
-				int l = referer.indexOf("/", k);
-				String refererHost;
-				if (l > 0) {
-					refererHost = referer.substring(k, l);
-					String[] pathnames = referer.substring(l).split("/");
-					if (pathnames.length >= 3 && pathnames[1].equals("user")) {
-						pathnames = pathnames[2].split("\\?");
-						userId = pathnames[0];
-						msg = "userId: " + userId;
-						System.out.println(msg);
-						// html.append(msg + "<br/>");
-					}
-				}
-				else {
-					refererHost = referer.substring(k);
-				}
-				if (refererHost.equals("www.recoeve.net")) {
-					refererHost = "recoeve.net";
-				}
-				refererAllowed = FileMap.refererAllowed(refererHost);
-				msg = "Referer Host: " + refererHost;
+		else {
+			String[] decomposedReferer = PrintLog.decomposeURI(referer);
+			String refererHost = decomposedReferer[0];
+			String[] pathnames = decomposedReferer[1].split("/");
+			if (pathnames.length >= 3 && pathnames[1].equals("user")) {
+				userId = pathnames[2];
+				msg = "userId: " + userId;
 				System.out.println(msg);
 				// html.append(msg + "<br/>");
 			}
+			if (refererHost.equals("www.recoeve.net")) {
+				refererHost = "recoeve.net";
+			}
+			refererAllowed = FileMap.refererAllowed(refererHost);
+			msg = "Referer Host: " + refererHost;
+			System.out.println(msg);
+			// html.append(msg + "<br/>");
 		}
 		msg = "Referer Allowed: " + refererAllowed;
 		System.out.println(msg);
