@@ -129,11 +129,11 @@ FinTech 관련된 <refer class="table-Fin"></refer>, <refer class="table-DailyPo
 
 Log-in 에 쓰일 <refer class="table-LogInLogs"></refer>, <refer class="table-UserSession"></refer> (Disabled), <refer class="table-UserSession1"></refer>, <refer class="table-UserRemember"></refer> 까지 만들어야 하고.
 
-Reco 를 저장할 <refer class="table-Recos"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
+Reco 를 저장할 <refer class="table-Recos1"></refer>, tree 구조 형식의 데이터 handling 을 도와줄 <refer class="table-CatList"></refer> 와 <refer class="table-UriList"></refer> 도 만들어야 함.
 
 Similarity 를 저장할 <refer class="table-Neighbors"></refer>. Neighbor list 인 <refer class="table-NeighborListFrom"></refer>, <refer class="table-NeighborListTo"></refer>.
 
-Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>.
+Reco 의 여러가지 stat 를 위해 <refer class="table-RecoStat"></refer>, <refer class="table-RecoStatDefCat"></refer>, <refer class="table-RecoStatDefTitle"></refer>, <refer class="table-RecoStatDefDesc"></refer>. 추가적으로 UriHeads 를 저장해둘 <refer class="table-UriHeads"></refer>
 
 Defaults 추천해주기 위해 <refer class="table-RecoStatDefCatSet"></refer>, <refer class="table-RecoStatDefTitleSet"></refer>, <refer class="table-RecoStatDefDescSet"></refer>.
 
@@ -1422,7 +1422,7 @@ Reco 를 지우더라도 `uri`, `tFirst` 는 남겨놔야 할듯? Abusing 할때
 
 Reco 에 up/down vote 가능하게? Reply 도 가능하게???
 
-<div id="table-Recos"><div class="number none">Recos</div>
+<div id="table-Recos1"><div class="number none">Recos1</div>
 
 ```[.linenums.lang-sql]
 CREATE TABLE `Recos1` (
@@ -1525,7 +1525,7 @@ INSERT INTO `Recos` (`user_i`, `uri`, `tFirst`, `tLast`, `cats`, `title`, `desc`
 
 </div>
 
-처음 reco 가 작성되면, <refer class="table-Recos"></refer> 에 저장하고 defaults 관련해서도 다 update 하고, similarity 도 계산해야 함. (DB 적으로 해야하는 연산이 꽤 많네.) 새로운 cat 이면 CatList 도 update 해야하고, 해당 cat 의 UriList 도 업데이트 해야 함.
+처음 reco 가 작성되면, <refer class="table-Recos1"></refer> 에 저장하고 defaults 관련해서도 다 update 하고, similarity 도 계산해야 함. (DB 적으로 해야하는 연산이 꽤 많네.) 새로운 cat 이면 CatList 도 update 해야하고, 해당 cat 의 UriList 도 업데이트 해야 함.
 
 Reco 가 수정되거나 삭제될때도 defaults 값들 update 해야하고, similarity 도 update 해야 함.
 
@@ -1881,7 +1881,7 @@ Default 값 (category, title, description) 관련해서는 stat TABLE 을 따로
 
 #### TABLE `RecoStatDefCat`: Statistics of URI's default category
 
-Category 관련해서는 평가가 이루어지는게 아니니 그냥 count 만 저장해놓으면 될듯? <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `cat`) 뽑아와서 <refer class="table-RecoStatDefCat"></refer> 도 update. (`cat`=null or "" 인건 빼고. 이 경우는 추천해줄 category 도 없을테니?)
+Category 관련해서는 평가가 이루어지는게 아니니 그냥 count 만 저장해놓으면 될듯? <refer class="table-Recos1"></refer> 에서 reco 저장할때 (`uri`, `cat`) 뽑아와서 <refer class="table-RecoStatDefCat"></refer> 도 update. (`cat`=null or "" 인건 빼고. 이 경우는 추천해줄 category 도 없을테니?)
 
 <div id="table-RecoStatDefCat"><div class="number none">RecoStatDefCat</div>
 
@@ -1938,7 +1938,7 @@ pstmtPutRecoStatDefCatSet=con.prepareStatement("INSERT INTO `RecoStatDefCatSet` 
 
 #### TABLE `RecoStatDefTitle`: Statistics of URI's default title
 
-Title 관련해서도 평가가 이루어지지는 않을듯. <refer class="table-Recos"></refer> 에서 reco 저장할때 (`uri`, `title`) 뽑아와서 <refer class="table-RecoStatDefTitle"></refer> 도 update. (`title`=null or "" 인건 빼고. 이 경우는 추천해줄 title 도 없을테니?)
+Title 관련해서도 평가가 이루어지지는 않을듯. <refer class="table-Recos1"></refer> 에서 reco 저장할때 (`uri`, `title`) 뽑아와서 <refer class="table-RecoStatDefTitle"></refer> 도 update. (`title`=null or "" 인건 빼고. 이 경우는 추천해줄 title 도 없을테니?)
 
 <div id="table-RecoStatDefTitle"><div class="number none">RecoStatDefTitle</div>
 
@@ -2051,6 +2051,24 @@ pstmtPutRecoStatDefDescSet=con.prepareStatement("INSERT INTO `RecoStatDefDescSet
 ```/
 
 </div><!-- table-RecoStatDefDescSet -->
+
+
+
+## TABLE `UriHeads`
+
+<div id="table-UriHeads"><span class="number none">UriHeads</span>
+
+```[.linenums]
+CREATE `UriHeads` (
+	`uri` varchar(255) NOT NULL
+	, `heads` text
+	, `tFirst` datetime NOT NULL
+	, `tUpdate` datetime NOT NULL
+	, PRIMARY KEY (`uri`)
+);
+```/
+
+</div>
 
 
 
