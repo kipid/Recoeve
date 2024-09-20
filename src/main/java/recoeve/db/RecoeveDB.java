@@ -352,7 +352,7 @@ public class RecoeveDB {
 						System.out.println("Database operation successful");
 					}
 					else {
-						System.err.println("Database operation failed: " + (res.cause() == null ? "No Error" : res.cause()));
+						System.err.println("Database operation failed: " + res.cause());
 					}
 				}
 				catch (Exception err) {
@@ -468,17 +468,17 @@ public class RecoeveDB {
 			});
 		});
 		cfs.add(future);
-		CompletableFuture<Void> allOf = CompletableFuture.allOf(cfs.toArray(new CompletableFuture[cfs.size()]));
+		CompletableFuture<Void> allOf = CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new));
 		allOf.thenAccept(v -> {
-				cfs.forEach(cf -> {
-					try {
-						// System.out.println(cf.get());
-					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}).join();
+			cfs.forEach(cf -> {
+				try {
+					// System.out.println(cf.get());
+				}
+				catch (Exception e) {
+					System.out.println(e);
+				}
+			});
+		}).join();
 		return future;
 	}
 
@@ -1163,7 +1163,7 @@ public class RecoeveDB {
 				user.updateRow();
 				result = bytesToHexString(new_salt);
 				con.commit();
-				done = true;
+				// done = true;
 				return result;
 			}
 			else {
@@ -1209,14 +1209,15 @@ public class RecoeveDB {
 		String id = inputs.get(1, "userId");
 		try {
 			ResultSet user;
-			if (idType.equals("email")) {
-				user = findUserByEmail(id);
-			}
-			else if (idType.equals("id")) {
-				user = findUserById(id);
-			}
-			else {
-				return "Invalid idType.";
+			switch (idType) {
+				case "email":
+					user = findUserByEmail(id);
+					break;
+				case "id":
+					user = findUserById(id);
+					break;
+				default:
+					return "Invalid idType.";
 			}
 			if (user.next()) {
 				id = user.getString("id");
@@ -1981,7 +1982,7 @@ public class RecoeveDB {
 								try {
 									ResultSet revRSneighborListFrom = getRSNeighborListFrom(
 											Long.parseLong(aL.get(0), 16), aL.get(1));
-									NeighborList revNeighborListFrom = null;
+									NeighborList revNeighborListFrom;
 									if (revRSneighborListFrom != null) {
 										revNeighborListFrom = new NeighborList(
 												revRSneighborListFrom.getString("userCatList"), false, true);
@@ -2211,17 +2212,13 @@ public class RecoeveDB {
 							recentestsCut[i - recentestsStart] = recentests[i];
 						}
 						int offset = rsL - recentestsStart;
-						for (int i = 0; i < 8; i++) {
-							recentestsCut[offset + i] = user_me_bytes[i];
-						}
+						System.arraycopy(user_me_bytes, 0, recentestsCut, offset, 8);
 						rs.updateBytes("recentests", recentestsCut);
 					}
 					else {
 						byte[] recentestsNew = Arrays.copyOf(recentests, rsL + 8);
 						int offset = rsL;
-						for (int i = 0; i < 8; i++) {
-							recentestsNew[offset + i] = user_me_bytes[i];
-						}
+						System.arraycopy(user_me_bytes, 0, recentestsNew, offset, 8);
 						rs.updateBytes("recentests", recentestsNew);
 					}
 					rs.updateTimestamp("tUpdate", tNow);
@@ -2296,7 +2293,7 @@ public class RecoeveDB {
 
 	public void updateRecoStat(long user_me, String uri, Points pts, Timestamp tNow, int increment)
 			throws SQLException {
-		ResultSet recoStat = null;
+		ResultSet recoStat;
 		if (increment > 0) {
 			recoStat = putAndGetRecoRecentests(uri, user_me, tNow);
 		}
@@ -2758,13 +2755,15 @@ public class RecoeveDB {
 					System.out.println("neighborListFrom:\n" + neighborListFrom);
 					int n = neighborListFrom.getRowSize();
 					for (int i = 0; i < n; i++) {
-						userSet.add(Long.parseLong(neighborListFrom.get(i, 0), 16));
+						long user_i = Long.parseLong(neighborListFrom.get(i, 0), 16);
+						userSet.add(user_i);
 					}
 					NeighborList neighborListTo = getNeighborListTo(user_from, cat_from, false);
 					System.out.println("neighborListTo:\n" + neighborListTo);
 					n = neighborListTo.getRowSize();
 					for (int i = 0; i < n; i++) {
-						userSet.add(Long.parseLong(neighborListTo.get(i, 0), 16));
+						long user_i = Long.parseLong(neighborListTo.get(i, 0), 16);
+						userSet.add(user_i);
 					}
 				}
 				for (long user_to : userSet) { // neighborListFrom 과 neighborListTo 로부터...
