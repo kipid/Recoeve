@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
+import io.vertx.core.Context;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import recoeve.http.Cookie;
@@ -3990,19 +3991,22 @@ public class RecoeveDB {
 		// // TRUNCATE `RecoStatDefTitleSet`;
 		// // TRUNCATE `RecoStatDefDescSet`;
 		// db.updateDefsAll(Timestamp.valueOf(now));
-
-		RecoeveDB db = new RecoeveDB(Vertx.vertx());
+		Vertx vertx = Vertx.vertx();
+		Context context = vertx.getOrCreateContext();
+		RecoeveDB db = new RecoeveDB(vertx);
 		// db.vertx.executeBlocking(new Callable<Void>() {
 		// @Override
 		// public Void call() throws Exception {
 		// System.out.println(db.delBlogVisitor());
 		// // db.moveToBlogStat1();
-		db.deleteUser("C@recoeve.net");
-		db.deleteUser("D@recoeve.net");
-		db.deleteUser("E@recoeve.net");
-		db.deleteUser("F@recoeve.net");
-		db.deleteUser("G@recoeve.net");
-		db.deleteUser("H@recoeve.net");
+		vertx.setTimer(10000L, id -> {
+			db.deleteUser("C@recoeve.net");
+			db.deleteUser("D@recoeve.net");
+			db.deleteUser("E@recoeve.net");
+			db.deleteUser("F@recoeve.net");
+			db.deleteUser("G@recoeve.net");
+			db.deleteUser("H@recoeve.net");
+		});
 		// return null;
 		// }
 		// }
