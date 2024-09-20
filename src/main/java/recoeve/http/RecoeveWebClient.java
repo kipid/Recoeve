@@ -56,16 +56,16 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
-		HOST_TO_CSS.put("www.youtube.com", "title, meta[name=\"title\"], meta[name=\"og:title\"], h1, h2");
+		HOST_TO_CSS.put("www.youtube.com", "title, meta[name='title'], meta[name='og:title'], h1, h2");
 		HOST_TO_CSS.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
 		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
-		HOST_TO_CSS.put("www.codeit.kr", "#header p:first-child");
+		HOST_TO_CSS.put("www.codeit.kr", "title, #header p:first-child");
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
-		HOST_TO_CSS.put("www.tiktok.com", "h1");
-		HOST_TO_CSS.put("tiktok.com", "h1");
+		HOST_TO_CSS.put("www.tiktok.com", "div[data-e2e]");
+		HOST_TO_CSS.put("tiktok.com", "div[data-e2e]");
 	}
 
 	public RecoeveDB db;
@@ -206,7 +206,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	private ChromeOptions getChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new", "--disable-web-security", "--allow-running-insecure-content", "--disable-site-isolation-trials", "--disable-popup-blocking", "--disable-features=IsolateOrigins,site-per-process", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--disable-browser-side-navigation", "--window-size=1200,640", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		chromeOptions.addArguments("--headless=new", "--disable-web-security", "--allow-running-insecure-content", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--window-size=1200,730", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
 		// chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
 		chromeOptions.setAcceptInsecureCerts(true);
@@ -392,8 +392,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 				CompletableFuture<String> findTitle;
 				CompletableFuture<String> findTitleUntil;
 				if (HOST_TO_CSS.get(uriHost) == null) {
-					findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name=\"title\"], meta[name=\"og:title\"], h1, h2");
-					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name=\"title\"], meta[name=\"og:title\"], h1, h2");
+					findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+					findTitleUntil = asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
 				}
 				else {
 					findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
@@ -483,8 +483,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
 			// String uriHost = "www.instagram.com";
 
-			String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-			String uriHost = "kipid.tistory.com";
+			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
+			// String uriHost = "kipid.tistory.com";
 
 			// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 			// String uriHost = "tistory1.daumcdn.net";
@@ -492,16 +492,19 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
 			// String uriHost = "www.youtube.com";
 
-			// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
-			// String uriHost = "www.tiktok.com";
+			String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
+			String uriHost = "www.tiktok.com";
+
+			// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
+			// String uriHost = "www.codeit.kr";
 
 			chromeDriver[0].get(uri);
 
 			CompletableFuture<String> findTitle;
 			CompletableFuture<String> findTitleUntil;
 			if (RecoeveWebClient.HOST_TO_CSS.get(uriHost) == null) {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name=\"title\"], meta[name=\"og:title\"], h1, h2");
-				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name=\"title\"], meta[name=\"og:title\"], h1, h2");
+				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+				findTitleUntil = recoeveWebClient.asyncFindTitleUntilEveryIsFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
 			}
 			else {
 				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
