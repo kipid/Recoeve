@@ -140,13 +140,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 		catch (NoSuchSessionException e) {
 			System.out.println("\nError: NoSuchSessionException: " + e.getMessage());
 			driver.quit();
-			System.out.println("driver.quit();");
+			System.out.println("\ndriver.quit();");
 		}
 		catch (Exception e) {
 			System.out.println("\nError: closing WebDriver: " + e.getMessage());
 			if (driver != null) {
 				driver.quit();
-				System.out.println("driver.quit();");
+				System.out.println("\ndriver.quit();");
 			}
 		}
 	}
@@ -483,8 +483,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
 
-			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
-			// String uriHost = "www.instagram.com";
+			String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
+			String uriHost = "www.instagram.com";
 
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 			// String uriHost = "kipid.tistory.com";
@@ -495,8 +495,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
 			// String uriHost = "www.youtube.com";
 
-			String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
-			String uriHost = "www.tiktok.com";
+			// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
+			// String uriHost = "www.tiktok.com";
 
 			// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
 			// String uriHost = "www.codeit.kr";
