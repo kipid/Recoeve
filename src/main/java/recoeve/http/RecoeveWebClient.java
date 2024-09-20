@@ -479,11 +479,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			Vertx vertx = Vertx.vertx();
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 
-			vertx.setTimer(10000L, id -> {
+			vertx.setTimer(500L, id -> {
 				// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
 				// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-				// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
-				String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
+				String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+				// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
 				// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
 				// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
 
