@@ -838,29 +838,7 @@ public class Recoeve extends AbstractVerticle {
 								// pLHtml.append(msg1 + "</div>");
 							}
 							else if (uri.length() > 4 && uri.substring(0, 4).toLowerCase().equals("http")) {
-								int k = 4;
-								if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
-									k++;
-								}
-								if (uri.startsWith("://", k)) {
-									k += 3;
-									int l = uri.indexOf("/", k);
-									String uriHost;
-									if (l > 0) {
-										uriHost = uri.substring(k, l);
-									}
-									else {
-										uriHost = uri.substring(k);
-									}
-									recoeveWebClient.findTitles(uri, uriHost.toLowerCase(), pl.req.response());
-								}
-								else {
-									pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode())
-											.end("No http-URI.", ENCODING);
-									String msg2 = "Sended \"No http-URI.\".";
-									System.out.println(msg2);
-									// pLHtml.append(msg2 + "</div>");
-								}
+								recoeveWebClient.findTitles(uri, pl);
 							}
 							else {
 								pl.req.response()
@@ -1454,7 +1432,7 @@ public class Recoeve extends AbstractVerticle {
 				.setSsl(true)
 				.setKeyCertOptions(
 					new JksOptions()
-						.setPath(FileMap.preFilePath + "/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
+						.setPath(FileMap.PRE_FILEPATH + "/RecoeveNet/Convert/recoeve.net_202402252CEF2.jks")
 						.setPassword("q63kewmf")
 				)
 		)
