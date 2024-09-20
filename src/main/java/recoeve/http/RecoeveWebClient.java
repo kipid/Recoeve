@@ -2,6 +2,9 @@ package recoeve.http;
 
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 2;
-	public static final int UNTIL_TOP = 10;
+	public static final long EXPIRES_IN_MS = 210L * 24L * 60L * 60L * 1000L;
+		// * 210 days in milliseconds
 	public static final long TIMEOUT_MS = 7200L;
 	public static final long FIND_PER_MS = 500L;
 	public static final long TIMEOUT_DRIVER = 600000;
@@ -116,7 +120,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 					System.out.println("\ndriverPool.offer(driver);");
 				}
 			}
-		} catch (Exception err) {
+		}
+		catch (Exception err) {
 			System.out.println("\nThe WebDriver is dead.");
 			if (driver != null) {
 				driver.quit();
@@ -247,7 +252,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		return cf;
 	}
 
-	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
+	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector, ResultSet uriHeads, Timestamp tNow, String keyUri) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
 			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
@@ -304,11 +309,29 @@ public class RecoeveWebClient extends AbstractVerticle {
 						}
 					}
 					cfElements.complete(sb.toString());
+					if (uriHeads != null) {
+						uriHeads.updateString("heads", sb.toString().trim());
+						uriHeads.updateTimestamp("tUpdate", tNow);
+					}
+					else {
+						db.putUriHeads(keyUri, sb.toString().trim(), tNow);
+					}
 				}
 				else {
 					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
+					if (uriHeads != null) {
+						uriHeads.updateString("heads", "");
+						uriHeads.updateTimestamp("tUpdate", tNow);
+					}
+					else {
+						db.putUriHeads(keyUri, "", tNow);
+					}
 				}
-			} catch (Exception err) {
+			}
+			catch (SQLException err) {
+				RecoeveDB.err(err);
+			}
+			catch (Exception err) {
 				cfElements.completeExceptionally(err);
 			}
 		});
@@ -317,118 +340,133 @@ public class RecoeveWebClient extends AbstractVerticle {
 	}
 
 	public void findTitles(String uri, PrintLog pl) {
+		final String[] keyUri = new String[]{ uri };
 		HttpServerResponse resp = pl.req.response();
 		resp.putHeader("Content-Type", "text/plain; charset=utf-8").setChunked(true);
 		resp.write("\nuri\t" + StrArray.enclose(uri));
 
 		String conciseURI = null;
 		if (RecoeveDB.getutf8mb4Length(uri) > 255) {
-			conciseURI = db.getConciseURI(uri);
+			keyUri[0] = conciseURI = db.getConciseURI(uri);
 		}
+		ResultSet uriHeads;
 		if (conciseURI != null) {
 			resp.write("\nconciseURI\t" + StrArray.enclose(conciseURI));
 		}
+		uriHeads = db.getUriHeads(keyUri[0]);
 
-		final WebDriver[] chromeDriver = new WebDriver[1];
 		try {
-			chromeDriver[0] = getDriver();
-		} catch (Exception err) {
-			System.out.println(err.getMessage());
-		}
-		try {
-			if (chromeDriver[0] == null) {
-				if (!resp.ended()) {
-					resp.end("\nError: null WebDriver.");
-				}
-				releaseOrOfferDriver(chromeDriver[0]);
-				return;
+			if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(pl.tNow.getTime() - EXPIRES_IN_MS))) {
+				resp.end("\n" + uriHeads.getString("heads"));
 			}
-			chromeDriver[0].get(EMPTY_URL);
-			chromeDriver[0].getTitle();
-				// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+			else {
+				final WebDriver[] chromeDriver = new WebDriver[1];
+				try {
+					chromeDriver[0] = getDriver();
+				}
+				catch (Exception err) {
+					System.out.println(err.getMessage());
+				}
+				try {
+					if (chromeDriver[0] == null) {
+						if (!resp.ended()) {
+							resp.end("\nError: null WebDriver.");
+						}
+						releaseOrOfferDriver(chromeDriver[0]);
+						return;
+					}
+					chromeDriver[0].get(EMPTY_URL);
+					chromeDriver[0].getTitle();
+						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
-			((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
-			((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
-			((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+					((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
+					((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+					((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
 
-			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
-				if (error == null) {
-					try {
-						result = result.trim();
-						if (result.isEmpty()) {
-							result = "\nError: Empty result.";
+					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+						if (error == null) {
+							try {
+								result = result.trim();
+								if (result.isEmpty()) {
+									result = "\nError: Empty result.";
+								}
+								else {
+									resp.write("\n" + result, Recoeve.ENCODING);
+								}
+								System.out.println(result);
+							}
+							catch (Exception e) {
+								result = "\nError: writing chunk: " + e.getMessage();
+								System.err.println(result);
+								resp.write(result, Recoeve.ENCODING);
+							}
 						}
 						else {
-							resp.write("\n" + result, Recoeve.ENCODING);
+							result = "\nError: in future: " + error.getMessage();
+							System.err.println(result);
+							resp.write(result, Recoeve.ENCODING);
 						}
-						System.out.println(result);
-					}
-					catch (Exception e) {
-						result = "\nError: writing chunk: " + e.getMessage();
-						System.err.println(result);
-						resp.write(result, Recoeve.ENCODING);
-					}
-				}
-				else {
-					result = "\nError: in future: " + error.getMessage();
-					System.err.println(result);
-					resp.write(result, Recoeve.ENCODING);
-				}
-			};
+					};
 
-			redirected(uri).whenComplete((redirectedURI, err) -> {
-				CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
-				if (err == null) {
-					try {
-						chromeDriver[0].get(redirectedURI);
-						String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
-						CompletableFuture<String> findTitle;
-						if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
-							findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+					redirected(uri).whenComplete((redirectedURI, err) -> {
+						CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
+						if (err == null) {
+							try {
+								chromeDriver[0].get(redirectedURI);
+								String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
+								CompletableFuture<String> findTitle;
+								if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
+									findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, pl.tNow, keyUri[0]);
+								}
+								else {
+									findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, pl.tNow, keyUri[0]);
+								}
+
+								allOf = CompletableFuture.allOf(findTitle);
+
+								findTitle.whenComplete(writeChunk);
+
+								allOf.whenComplete((v, error) -> {
+									String errorMsg = "\nComplete with no error. " + v;
+									if (error != null) {
+										errorMsg = "\nError in futures: " + error.getMessage();
+									}
+									System.err.println(errorMsg);
+									if (!resp.ended()) {
+										resp.end(errorMsg);
+									}
+									releaseOrOfferDriver(chromeDriver[0]);
+								});
+							}
+							catch (Exception e) {
+								resp.end("\nError: " + e.getMessage());
+								allOf.completeExceptionally(e);
+							}
 						}
 						else {
-							findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]));
+
 						}
-
-						allOf = CompletableFuture.allOf(findTitle);
-
-						findTitle.whenComplete(writeChunk);
-
-						allOf.whenComplete((v, error) -> {
-							String errorMsg = "\nComplete with no error. " + v;
-							if (error != null) {
-								errorMsg = "\nError in futures: " + error.getMessage();
-							}
-							System.err.println(errorMsg);
-							if (!resp.ended()) {
-								resp.end(errorMsg);
-							}
-							releaseOrOfferDriver(chromeDriver[0]);
-						});
-					} catch (Exception e) {
-						resp.end("\nError: " + e.getMessage());
-						allOf.completeExceptionally(e);
-					}
+					});
 				}
-				else {
-
+				catch (NoSuchSessionException e) {
+					releaseOrOfferDriver(chromeDriver[0]);
+					System.out.println("Release or Offer chromeDriver\nNoSuchSessionException: " + e.getMessage());
+					resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
 				}
-			});
+				catch (RuntimeException e) {
+					releaseOrOfferDriver(chromeDriver[0]);
+					System.out.println("Release or Offer chromeDriver\nRuntimeException: " + e.getMessage());
+					resp.end("\nError: RuntimeException: " + e.getMessage());
+				}
+				catch (Exception e) {
+					releaseOrOfferDriver(chromeDriver[0]);
+					System.out.println("Release or Offer chromeDriver\nException: " + e.getMessage());
+					resp.end("\nError: Exception: " + e.getMessage());
+				}
+			}
 		}
-		catch (NoSuchSessionException e) {
-			releaseOrOfferDriver(chromeDriver[0]);
-			System.out.println("Release or Offer chromeDriver\nNoSuchSessionException: " + e.getMessage());
-			resp.end("\nError: No valid session. Please try again.: " + e.getMessage());
-		}
-		catch (RuntimeException e) {
-			releaseOrOfferDriver(chromeDriver[0]);
-			System.out.println("Release or Offer chromeDriver\nRuntimeException: " + e.getMessage());
-			resp.end("\nError: RuntimeException: " + e.getMessage());
-		}
-		catch (Exception e) {
-			releaseOrOfferDriver(chromeDriver[0]);
-			System.out.println("Release or Offer chromeDriver\nException: " + e.getMessage());
-			resp.end("\nError: Exception: " + e.getMessage());
+		catch (SQLException err) {
+			RecoeveDB.err(err);
 		}
 	}
 
@@ -441,66 +479,122 @@ public class RecoeveWebClient extends AbstractVerticle {
 		try {
 			Vertx vertx = Vertx.vertx();
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
-			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
 
 			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
-
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-
 			// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
-
 			// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
-
 			// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
-
 			String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
-			String uriHost = PrintLog.decomposeURI(uri)[0];
 
-			chromeDriver[0].get(uri);
-
-			CompletableFuture<String> findTitle;
-			if (RecoeveWebClient.HOST_TO_CSS.get(uriHost) == null) {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+			final String[] keyUri = new String[]{ uri };
+			if (RecoeveDB.getutf8mb4Length(uri) > 255) {
+				keyUri[0] = recoeveWebClient.db.getConciseURI(uri);
 			}
-			else {
-				findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(uriHost));
-			}
+			ResultSet uriHeads;
+			uriHeads = recoeveWebClient.db.getUriHeads(keyUri[0]);
 
-			CompletableFuture<Void> allOf = CompletableFuture.allOf(findTitle);
-
-			BiConsumer<String, Throwable> writeChunk = (result, error) -> {
-				if (error == null) {
+			try {
+				Timestamp tNow = recoeveWebClient.db.now();
+				if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
+					System.out.println("\n" + uriHeads.getString("heads"));
+				}
+				else {
+					final WebDriver[] chromeDriver = new WebDriver[1];
 					try {
-						result = result.trim();
-						if (result.isEmpty()) {
-							result = "\nError: Empty result.";
+						chromeDriver[0] = recoeveWebClient.getDriver();
+					}
+					catch (Exception err) {
+						System.out.println(err.getMessage());
+					}
+					try {
+						if (chromeDriver[0] == null) {
+							System.out.println("\nError: null WebDriver.");
+							recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
+							return;
 						}
-						System.out.println(result);
+						chromeDriver[0].get(EMPTY_URL);
+						chromeDriver[0].getTitle();
+							// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
+
+						((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
+						((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+						((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+
+						BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+							if (error == null) {
+								try {
+									result = result.trim();
+									if (result.isEmpty()) {
+										result = "\nError: Empty result.";
+									}
+									System.out.println(result);
+								}
+								catch (Exception e) {
+									result = "\nError: writing chunk: " + e.getMessage();
+									System.err.println(result);
+								}
+							}
+							else {
+								result = "\nError: in future: " + error.getMessage();
+								System.err.println(result);
+							}
+						};
+
+						recoeveWebClient.redirected(uri).whenComplete((redirectedURI, err) -> {
+							CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
+							if (err == null) {
+								try {
+									chromeDriver[0].get(redirectedURI);
+									String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
+									CompletableFuture<String> findTitle;
+									if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
+										findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, tNow, keyUri[0]);
+									}
+									else {
+										findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, tNow, keyUri[0]);
+									}
+
+									allOf = CompletableFuture.allOf(findTitle);
+
+									findTitle.whenComplete(writeChunk);
+
+									allOf.whenComplete((v, error) -> {
+										String errorMsg = "\nComplete with no error. " + v;
+										if (error != null) {
+											errorMsg = "\nError in futures: " + error.getMessage();
+										}
+										System.err.println(errorMsg);
+										recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
+									});
+								}
+								catch (Exception e) {
+									System.out.println("\nError: " + e.getMessage());
+									allOf.completeExceptionally(e);
+								}
+							}
+							else {
+
+							}
+						});
+					}
+					catch (NoSuchSessionException e) {
+						recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
+						System.out.println("Release or Offer chromeDriver\nNoSuchSessionException: " + e.getMessage());
+					}
+					catch (RuntimeException e) {
+						recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
+						System.out.println("Release or Offer chromeDriver\nRuntimeException: " + e.getMessage());
 					}
 					catch (Exception e) {
-						result = "\nError: writing chunk: " + e.getMessage();
-						System.err.println(result);
+						recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
+						System.out.println("Release or Offer chromeDriver\nException: " + e.getMessage());
 					}
 				}
-				else {
-					result = "\nError: in future: " + error.getMessage();
-					System.err.println(result);
-				}
-			};
-
-			findTitle.whenComplete(writeChunk);
-
-			allOf.whenComplete((v, error) -> {
-				String errorMsg = "\nComplete with no error.";
-				if (error != null) {
-					errorMsg = "\nError in futures: " + error.getMessage();
-					System.err.println(errorMsg);
-				}
-				else {
-					System.err.println(errorMsg + v);
-				}
-				recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
-			});
+			}
+			catch (SQLException err) {
+				RecoeveDB.err(err);
+			}
 		}
 		catch (Exception err) {
 			System.out.println("Error: " + err.getMessage());
