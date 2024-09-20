@@ -2,8 +2,6 @@ package recoeve.http;
 
 
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,14 +43,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 2;
 	public static final int UNTIL_TOP = 10;
-	public static final long TIMEOUT_MS = 10000L;
-	public static final long FIND_PER_MS = 1000L;
+	public static final long TIMEOUT_MS = 7200L;
+	public static final long FIND_PER_MS = 500L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
 	public static final int RECURSE_MAX = 10;
 	public static final ChromeDriverService service = new ChromeDriverService.Builder().withLogOutput(System.out).withLogLevel(ChromiumDriverLogLevel.DEBUG).withAppendLog(true).withReadableTimestamp(true).build();
-	public static final String EMPTY_URL = "https://recoeve.net/CDN/empty.html";
-		// * https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html
+	public static final String EMPTY_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+		// = "https://recoeve.net/CDN/empty.html"
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
@@ -64,8 +62,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
-		HOST_TO_CSS.put("www.tiktok.com", "div[data-e2e]");
-		HOST_TO_CSS.put("tiktok.com", "div[data-e2e]");
+		HOST_TO_CSS.put("www.tiktok.com", "h1, div[data-e2e]");
+		HOST_TO_CSS.put("tiktok.com", "h1, div[data-e2e]");
 	}
 
 	public RecoeveDB db;
@@ -210,10 +208,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 		// chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
 		chromeOptions.setAcceptInsecureCerts(true);
-		Duration duration = Duration.of(5, ChronoUnit.SECONDS);
-		chromeOptions.setScriptTimeout(duration);
-		chromeOptions.setPageLoadTimeout(duration);
-		chromeOptions.setImplicitWaitTimeout(duration);
+		// Duration duration = Duration.of(5, ChronoUnit.SECONDS);
+		// chromeOptions.setScriptTimeout(duration);
+		// chromeOptions.setPageLoadTimeout(duration);
+		// chromeOptions.setImplicitWaitTimeout(duration);
 		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
@@ -262,11 +260,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		pID[0] = vertx.setPeriodic(FIND_PER_MS, id -> {
 			try {
+				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					boolean someIsNotEmpty = false;
-					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+					for (int i = 0; i < elements.size(); i++) {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 						if (!text.isEmpty()) {
 							someIsNotEmpty = true;
@@ -294,10 +293,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
 				vertx.cancelTimer(pID[0]);
+				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+					for (int i = 0; i < elements.size(); i++) {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 						if (!text.isEmpty()) {
 							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
@@ -327,12 +327,15 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return cfElements;
 		}
 
+		((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
+
 		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
+				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < Math.min(UNTIL_TOP, elements.size()); i++) {
+					for (int i = 0; i < elements.size(); i++) {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
 						if (!text.isEmpty()) {
 							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
