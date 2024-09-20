@@ -29754,7 +29754,7 @@ ${uri2}	change	${cats2}`;
               resolve(false);
             } else {
               try {
-                await(function() {
+                await(async function() {
                   return new Promise((resolve2) => {
                     fs2.$fsl.prepend(
                       `<div class="list-item${fsFLCat?.down ? " down" : ""}${fsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${k}"><span class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span><span class="list-index">${k}</span>${fs2.fullList[k].html}</div>`
@@ -29860,7 +29860,7 @@ ${uri2}	change	${cats2}`;
           prepare_default.showAndScrollTo($recoElem);
         } else if (isNaN(l2)) {
           try {
-            await function() {
+            await async function() {
               return new Promise(async (resolve) => {
                 prepare_default.$contents_recos.prepend(String(await prepare_default.recoHTML(prepare_default.$recoDeleted[uri]?.r)));
                 resolve();
@@ -29876,7 +29876,7 @@ ${uri2}	change	${cats2}`;
         } else {
           let i3 = Math.floor((prepare_default.catUriList[prepare_default.currentCat].uris.length - 1 - l2) / prepare_default.maxShowReco);
           try {
-            await function() {
+            await async function() {
               return new Promise(async (resolve) => {
                 await (0, import_jquery15.default)(`#load-recos-${i3}`).trigger("click");
                 resolve();
