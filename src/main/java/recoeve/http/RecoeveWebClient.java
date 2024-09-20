@@ -54,12 +54,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
-		HOST_TO_CSS.put("www.youtube.com", "title, meta[name='title'], meta[name='og:title'], h1, h2");
+		HOST_TO_CSS.put("www.youtube.com", "title, h1, h2");
 		HOST_TO_CSS.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
 		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
 		HOST_TO_CSS.put("www.codeit.kr", "title, #header p:first-child");
-		HOST_TO_CSS.put("codeit.kr", "#header p:first-child");
+		HOST_TO_CSS.put("codeit.kr", "title, #header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
 		HOST_TO_CSS.put("www.tiktok.com", "h1, div[data-e2e]");
@@ -483,8 +483,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 			WebDriver[] chromeDriver = new WebDriver[]{ recoeveWebClient.getDriver() };
 
-			String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
-			String uriHost = "www.instagram.com";
+			// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
+			// String uriHost = "www.instagram.com";
 
 			// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 			// String uriHost = "kipid.tistory.com";
@@ -498,8 +498,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
 			// String uriHost = "www.tiktok.com";
 
-			// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
-			// String uriHost = "www.codeit.kr";
+			String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
+			String uriHost = "www.codeit.kr";
 
 			chromeDriver[0].get(uri);
 
