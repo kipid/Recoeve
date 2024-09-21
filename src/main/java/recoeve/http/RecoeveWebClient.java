@@ -463,13 +463,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 						releaseOrOfferDriver(chromeDriver[0]);
 						return;
 					}
-					chromeDriver[0].get(EMPTY_URL);
-					chromeDriver[0].getTitle();
+					// chromeDriver[0].get(EMPTY_URL);
+					// chromeDriver[0].getTitle();
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
 					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
 					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
-					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter; WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
 
 					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 						if (error == null) {
@@ -504,8 +504,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 								CompletableFuture<String> findTitle;
 								CompletableFuture<String> findTitleUntilEveryFound;
 								if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
-									findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
-									findTitleUntilEveryFound = asyncFindTitleUntilEveryFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, pl.tNow, keyUri[0]);
+									findTitle = asyncFindTitle(chromeDriver[0], "title,meta[name='title'],meta[name='og:title'],h1,h2");
+									findTitleUntilEveryFound = asyncFindTitleUntilEveryFound(chromeDriver[0], "title,meta[name='title'],meta[name='og:title'],h1,h2", uriHeads, pl.tNow, keyUri[0]);
 								}
 								else {
 									findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]));
