@@ -73,7 +73,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public RecoeveDB db;
 	public WebClient[] webClient;
 	public int curWebClientI;
-	public long[] pID = {0};
+	public long[] pID = {0, 0};
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<WebDriver> driverPool;
 	public int recurseCount;
@@ -268,7 +268,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		return cf;
 	}
 
-	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector, ResultSet uriHeads, Timestamp tNow, String keyUri) throws Exception {
+	public CompletableFuture<String> asyncFindTitle(WebDriver chromeDriver, String cssSelector) throws Exception {
 		CompletableFuture<String> cfElements = new CompletableFuture<>();
 		if (cssSelector == null) {
 			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
@@ -325,27 +325,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 						}
 					}
 					cfElements.complete(sb.toString());
-					if (uriHeads != null) {
-						uriHeads.updateString("heads", sb.toString().trim());
-						uriHeads.updateTimestamp("tUpdate", tNow);
-					}
-					else {
-						db.putUriHeads(keyUri, sb.toString().trim(), tNow);
-					}
 				}
 				else {
 					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
-					if (uriHeads != null) {
-						uriHeads.updateString("heads", "");
-						uriHeads.updateTimestamp("tUpdate", tNow);
-					}
-					else {
-						db.putUriHeads(keyUri, "", tNow);
-					}
 				}
-			}
-			catch (SQLException err) {
-				RecoeveDB.err(err);
 			}
 			catch (Exception err) {
 				cfElements.completeExceptionally(err);
@@ -366,25 +349,33 @@ public class RecoeveWebClient extends AbstractVerticle {
 			return cfElements;
 		}
 
-		pID[0] = vertx.setPeriodic(FIND_PER_MS, id -> {
+		pID[1] = vertx.setPeriodic(FIND_PER_MS, id -> {
 			try {
 				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					boolean someIsNotEmpty = false;
 					for (int i = 0; i < elements.size(); i++) {
 						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
-						if (!text.isEmpty()) {
-							someIsNotEmpty = true;
-							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+						if (text.isEmpty()) {
+							return;
 						}
+						sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
 					}
-					if (someIsNotEmpty) {
-						vertx.cancelTimer(pID[0]);
-						cfElements.complete(sb.toString());
+					vertx.cancelTimer(pID[1]);
+					cfElements.complete(sb.toString());
+					if (uriHeads != null) {
+						uriHeads.updateString("heads", sb.toString().trim());
+						uriHeads.updateTimestamp("tUpdate", tNow);
+						uriHeads.updateRow();
+					}
+					else {
+						db.putUriHeads(keyUri, sb.toString().trim(), tNow);
 					}
 				}
+			}
+			catch (SQLException err) {
+				RecoeveDB.err(err);
 			}
 			catch (NoSuchSessionException err) {
 				System.out.println(err.getMessage());
@@ -400,7 +391,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 		vertx.setTimer(TIMEOUT_MS, id -> {
 			try {
-				vertx.cancelTimer(pID[0]);
+				vertx.cancelTimer(pID[1]);
 				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
 				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
 				if (elements != null && !elements.isEmpty()) {
@@ -415,6 +406,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					if (uriHeads != null) {
 						uriHeads.updateString("heads", sb.toString().trim());
 						uriHeads.updateTimestamp("tUpdate", tNow);
+						uriHeads.updateRow();
 					}
 					else {
 						db.putUriHeads(keyUri, sb.toString().trim(), tNow);
@@ -422,13 +414,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 				}
 				else {
 					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
-					if (uriHeads != null) {
-						uriHeads.updateString("heads", "");
-						uriHeads.updateTimestamp("tUpdate", tNow);
-					}
-					else {
-						db.putUriHeads(keyUri, "", tNow);
-					}
 				}
 			}
 			catch (SQLException err) {
@@ -489,25 +474,23 @@ public class RecoeveWebClient extends AbstractVerticle {
 					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 						if (error == null) {
 							try {
-								result = result.trim();
+								result = "\n" + result.trim();
 								if (result.isEmpty()) {
 									result = "\nError: Empty result.";
 								}
-								else {
-									resp.write("\n" + result, Recoeve.ENCODING);
-								}
+								resp.write(result, Recoeve.ENCODING);
 								System.out.println(result);
 							}
 							catch (Exception e) {
 								result = "\nError: writing chunk: " + e.getMessage();
-								System.err.println(result);
 								resp.write(result, Recoeve.ENCODING);
+								System.err.println(result);
 							}
 						}
 						else {
 							result = "\nError: in future: " + error.getMessage();
-							System.err.println(result);
 							resp.write(result, Recoeve.ENCODING);
+							System.err.println(result);
 						}
 					};
 
@@ -519,16 +502,20 @@ public class RecoeveWebClient extends AbstractVerticle {
 								chromeDriver[0].get(redirectedURI);
 								String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
 								CompletableFuture<String> findTitle;
+								CompletableFuture<String> findTitleUntilEveryFound;
 								if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
-									findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, pl.tNow, keyUri[0]);
+									findTitle = asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+									findTitleUntilEveryFound = asyncFindTitleUntilEveryFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, pl.tNow, keyUri[0]);
 								}
 								else {
-									findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, pl.tNow, keyUri[0]);
+									findTitle = asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]));
+									findTitleUntilEveryFound = asyncFindTitleUntilEveryFound(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, pl.tNow, keyUri[0]);
 								}
 
-								allOf = CompletableFuture.allOf(findTitle);
+								allOf = CompletableFuture.allOf(findTitle, findTitleUntilEveryFound);
 
 								findTitle.whenComplete(writeChunk);
+								findTitleUntilEveryFound.whenComplete(writeChunk);
 
 								allOf.whenComplete((v, error) -> {
 									String errorMsg = "\nComplete with no error. " + v;
@@ -603,7 +590,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 					Timestamp tNow = recoeveWebClient.db.now();
 					if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
 						System.out.println("\n" + uriHeads.getString("heads"));
-						return;
 					}
 					else {
 						final WebDriver[] chromeDriver = new WebDriver[1];
@@ -619,8 +605,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 								recoeveWebClient.releaseOrOfferDriver(chromeDriver[0]);
 								return;
 							}
-							chromeDriver[0].get(EMPTY_URL);
-							chromeDriver[0].getTitle();
+							// chromeDriver[0].get(EMPTY_URL);
+							// chromeDriver[0].getTitle();
 								// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
 							// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
@@ -630,7 +616,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 							BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 								if (error == null) {
 									try {
-										result = result.trim();
+										result = "\n" + result.trim();
 										if (result.isEmpty()) {
 											result = "\nError: Empty result.";
 										}
@@ -655,16 +641,20 @@ public class RecoeveWebClient extends AbstractVerticle {
 										chromeDriver[0].get(redirectedURI);
 										String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
 										CompletableFuture<String> findTitle;
+										CompletableFuture<String> findTitleUntilEveryFound;
 										if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
-											findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, tNow, keyUri[0]);
+											findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+											findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(chromeDriver[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, tNow, keyUri[0]);
 										}
 										else {
-											findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, tNow, keyUri[0]);
+											findTitle = recoeveWebClient.asyncFindTitle(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]));
+											findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(chromeDriver[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, tNow, keyUri[0]);
 										}
 
-										allOf = CompletableFuture.allOf(findTitle);
+										allOf = CompletableFuture.allOf(findTitle, findTitleUntilEveryFound);
 
 										findTitle.whenComplete(writeChunk);
+										findTitleUntilEveryFound.whenComplete(writeChunk);
 
 										allOf.whenComplete((v, error) -> {
 											String errorMsg = "\nComplete with no error. " + v;
