@@ -96,6 +96,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		startPromise.complete();
 	}
 
+	@Override
+	public void stop(Promise<Void> stopPromise) {
+		cleanupDrivers();
+		stopPromise.complete();
+	}
+
 	private synchronized void releaseOrOfferDriver(WebDriver driver) {
 		try {
 			if (driver != null) {
@@ -559,11 +565,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 		catch (SQLException err) {
 			RecoeveDB.err(err);
 		}
-	}
-
-	@Override
-	public void stop(Promise<Void> stopPromise) {
-		cleanupDrivers();
 	}
 
 	public static void main(String... args) {
