@@ -66,8 +66,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 		HOST_TO_CSS.put("codeit.kr", "title,#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
-		HOST_TO_CSS.put("www.tiktok.com", "h1,div[data-e2e]");
-		HOST_TO_CSS.put("tiktok.com", "h1,div[data-e2e]");
+		HOST_TO_CSS.put("www.tiktok.com", "h1[data-e2e]");
+		HOST_TO_CSS.put("tiktok.com", "h1[data-e2e]");
 	}
 
 	public RecoeveDB db;
@@ -139,7 +139,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
-	private void closeDriver(WebDriver driver) {
+	private synchronized void closeDriver(WebDriver driver) {
 		try {
 			if (driver != null) {
 				driver.get(EMPTY_URL);
@@ -162,7 +162,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 		}
 	}
 
-	public void cleanupDrivers() {
+	public synchronized void cleanupDrivers() {
 		WebDriver driver;
 		while ((driver = driverPool.poll()) != null) {
 			closeDriver(driver);
@@ -213,17 +213,18 @@ public class RecoeveWebClient extends AbstractVerticle {
 		return null;
 	}
 
-	private ChromeOptions getChromeOptions() {
+	private synchronized ChromeOptions getChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments(
-			// "--headless=new",
+			"--headless=new",
 			"--disable-web-security",
 			"--allow-running-insecure-content",
-			"--blink-settings=imagesEnabled=false",
+			// "--blink-settings=imagesEnabled=false", // For TikTok, disabled.
 			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
 			"--disable-software-rasterizer",
 			"--disable-blink-features",
-			"--window-size=1200,730",
+			"--window-size=1920,1080",
+			"--window-position=-5000,-5000",
 			"--disable-gpu",
 			"--disable-notifications",
 			"--ignore-certificate-errors",
@@ -253,17 +254,21 @@ public class RecoeveWebClient extends AbstractVerticle {
 			webClient[curWebClientI].headAbs(originalURI)
 				.send()
 				.onSuccess(response -> {
-					if (response.statusCode() >= 200 && response.statusCode() < 300) {
+					if (response.statusCode() >= 200 && response.statusCode() < 400) {
 						List<String> followedURIs = response.followedRedirects();
 						if (!followedURIs.isEmpty()) {
 							String fullURI = followedURIs.get(followedURIs.size() - 1);
 							System.out.println("The last redirected URL: " + fullURI);
 							cf.complete(fullURI);
 						}
+						else {
+							System.out.println("Sended originalURI because of No followedURIs.");
+							cf.complete(originalURI);
+						}
 					}
 				})
 				.onFailure(throwable -> {
-					System.out.println("Sended originalURI.: " + throwable.getMessage());
+					System.out.println("Sended originalURI on Failure: " + throwable.getMessage());
 					cf.complete(originalURI);
 				});
 		}
@@ -577,9 +582,17 @@ public class RecoeveWebClient extends AbstractVerticle {
 				// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
 				// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 				// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
-				// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
+				// String uri = "https://www.tiktok.com/@aespa_official/video/7393964373347224840?is_from_webapp=1&sender_device=pc";
+				// String uri = "https://www.tiktok.com/@blue.clip001/video/7397362390418902273?is_from_webapp=1&sender_device=pc";
+				// String uri = "https://www.tiktok.com/@khxabi/video/7416536112207891719?is_from_webapp=1&sender_device=pc";
 				// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
-				String uri = "https://recoeve.net/redirect/97e5b877989cf9e7";
+				// String uri = "https://recoeve.net/redirect/97e5b877989cf9e7";
+				String uri = "https://recoeve.net/redirect/dbcd7de1989cf9e7";
+				// String uri = "https://kipid.tistory.com/entry/week6-%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%A0%8C%EB%8D%94%EB%A7%81-%EB%B0%A9%EC%8B%9D-CSR-SSR-SSG-%EA%B0%81%EA%B0%81%EC%9D%98-%ED%8A%B9%EC%A7%95%EA%B3%BC-%EA%B0%81-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%96%B4%EB%96%A4-%EC%83%81%ED%99%A9%EC%97%90-%EC%82%AC%EC%9A%A9%ED%95%98%EB%A9%B4-%EC%A2%8B%EC%9D%84%EC%A7%80-%EC%84%A4%EB%AA%85";
+				// String uri = "https://recoeve.net/redirect/7ee5d220989cf9e8";
+				// String uri = "https://kipid.tistory.com/entry/%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-Binary-Search-Tree-BST-%EC%9D%98-%EC%A4%91%EC%9C%84-%EC%88%9C%ED%9A%8C-Inorder-%EC%A0%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Preorder-%ED%9B%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Postorder-%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90";
+				// String uri = "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html";
+				// String uri = "https://kipid.tistory.com/entry/Lists";
 
 				final String[] keyUri = new String[]{ uri };
 				if (RecoeveDB.getutf8mb4Length(uri) > 255) {
@@ -590,7 +603,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				try {
 					Timestamp tNow = recoeveWebClient.db.now();
 					if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
-						System.out.println("\n" + uriHeads.getString("heads"));
+						System.out.println("\nFrom DB\n" + uriHeads.getString("heads"));
 					}
 					else {
 						final WebDriver[] chromeDriver = new WebDriver[1];
@@ -629,7 +642,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 									}
 								}
 								else {
-									result = "\nError: in future: " + error.getMessage();
+									result = "\nError: in future: " + result + "\n" + error.getMessage();
 									System.err.println(result);
 								}
 							};
