@@ -58,16 +58,16 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final Map<String, String> HOST_TO_CSS;
 	static {
 		HOST_TO_CSS = new HashMap<>(20);
-		HOST_TO_CSS.put("www.youtube.com", "title, h1, h2");
-		HOST_TO_CSS.put("blog.naver.com", ".se-fs-, .se-ff-, .htitle");
-		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-, .se-ff-, h3.tit_h3");
+		HOST_TO_CSS.put("www.youtube.com", "title,h1,h2");
+		HOST_TO_CSS.put("blog.naver.com", ".se-fs-,.se-ff-,.htitle");
+		HOST_TO_CSS.put("m.blog.naver.com", ".se-fs-,.se-ff-,h3.tit_h3");
 		HOST_TO_CSS.put("apod.nasa.gov", "center>b:first-child");
-		HOST_TO_CSS.put("www.codeit.kr", "title, #header p:first-child");
-		HOST_TO_CSS.put("codeit.kr", "title, #header p:first-child");
+		HOST_TO_CSS.put("www.codeit.kr", "title,#header p:first-child");
+		HOST_TO_CSS.put("codeit.kr", "title,#header p:first-child");
 		HOST_TO_CSS.put("www.instagram.com", "h1");
 		HOST_TO_CSS.put("instagram.com", "h1");
-		HOST_TO_CSS.put("www.tiktok.com", "h1, div[data-e2e]");
-		HOST_TO_CSS.put("tiktok.com", "h1, div[data-e2e]");
+		HOST_TO_CSS.put("www.tiktok.com", "h1,div[data-e2e]");
+		HOST_TO_CSS.put("tiktok.com", "h1,div[data-e2e]");
 	}
 
 	public RecoeveDB db;
