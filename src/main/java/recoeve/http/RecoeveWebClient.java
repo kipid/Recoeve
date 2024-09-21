@@ -209,7 +209,23 @@ public class RecoeveWebClient extends AbstractVerticle {
 
 	private ChromeOptions getChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless=new", "--disable-web-security", "--allow-running-insecure-content", "--blink-settings=imagesEnabled=false", "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36", "--disable-software-rasterizer", "--disable-blink-features", "--window-size=1200,730", "--disable-gpu", "--disable-notifications", "--disable-extensions", "--ignore-certificate-errors", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--port=" + curPort);
+		chromeOptions.addArguments(
+			// "--headless=new",
+			"--disable-web-security",
+			"--allow-running-insecure-content",
+			"--blink-settings=imagesEnabled=false",
+			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+			"--disable-software-rasterizer",
+			"--disable-blink-features",
+			"--window-size=1200,730",
+			"--disable-gpu",
+			"--disable-notifications",
+			"--ignore-certificate-errors",
+			"--remote-allow-origins=*",
+			"--no-sandbox",
+			"--disable-dev-shm-usage",
+			"--port=" + curPort
+		);
 		// chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
 		chromeOptions.setAcceptInsecureCerts(true);
@@ -339,6 +355,94 @@ public class RecoeveWebClient extends AbstractVerticle {
 		return cfElements;
 	}
 
+	public CompletableFuture<String> asyncFindTitleUntilEveryFound(WebDriver chromeDriver, String cssSelector, ResultSet uriHeads, Timestamp tNow, String keyUri) throws Exception {
+		CompletableFuture<String> cfElements = new CompletableFuture<>();
+		if (cssSelector == null) {
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is null."));
+			return cfElements;
+		}
+		if (cssSelector.equals("NO")) {
+			cfElements.completeExceptionally(new Exception("\nError: cssSelector is NO."));
+			return cfElements;
+		}
+
+		pID[0] = vertx.setPeriodic(FIND_PER_MS, id -> {
+			try {
+				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+				if (elements != null && !elements.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					boolean someIsNotEmpty = false;
+					for (int i = 0; i < elements.size(); i++) {
+						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						if (!text.isEmpty()) {
+							someIsNotEmpty = true;
+							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+						}
+					}
+					if (someIsNotEmpty) {
+						vertx.cancelTimer(pID[0]);
+						cfElements.complete(sb.toString());
+					}
+				}
+			}
+			catch (NoSuchSessionException err) {
+				System.out.println(err.getMessage());
+				cfElements.completeExceptionally(new NoSuchSessionException("\nError: No valid session. Please try again.: " + err.getMessage()));
+			}
+			catch (NoSuchElementException
+				| StaleElementReferenceException
+				| InvalidElementStateException
+				| VertxException err) {
+				System.out.println(err.getMessage());
+			}
+		});
+
+		vertx.setTimer(TIMEOUT_MS, id -> {
+			try {
+				vertx.cancelTimer(pID[0]);
+				((JavascriptExecutor)(chromeDriver)).executeScript("let videos = document.querySelectorAll(\"video\"); for(video of videos) {video.pause()}");
+				List<WebElement> elements = chromeDriver.findElements(By.cssSelector(cssSelector));
+				if (elements != null && !elements.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < elements.size(); i++) {
+						String text = elements.get(i).getText().replaceAll("\\s", " ").trim();
+						if (!text.isEmpty()) {
+							sb.append("\n").append(cssSelector).append("-").append(i).append("\t").append(StrArray.enclose(text));
+						}
+					}
+					cfElements.complete(sb.toString());
+					if (uriHeads != null) {
+						uriHeads.updateString("heads", sb.toString().trim());
+						uriHeads.updateTimestamp("tUpdate", tNow);
+					}
+					else {
+						db.putUriHeads(keyUri, sb.toString().trim(), tNow);
+					}
+				}
+				else {
+					cfElements.complete("\nError: timeout " + TIMEOUT_MS+"ms.");
+					if (uriHeads != null) {
+						uriHeads.updateString("heads", "");
+						uriHeads.updateTimestamp("tUpdate", tNow);
+					}
+					else {
+						db.putUriHeads(keyUri, "", tNow);
+					}
+				}
+			}
+			catch (SQLException err) {
+				RecoeveDB.err(err);
+			}
+			catch (Exception err) {
+				cfElements.completeExceptionally(err);
+			}
+		});
+
+		return cfElements;
+	}
+
+
 	public void findTitles(String uri, PrintLog pl) {
 		final String[] keyUri = new String[]{ uri };
 		HttpServerResponse resp = pl.req.response();
@@ -378,9 +482,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 					chromeDriver[0].getTitle();
 						// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
-					((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
-					((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
-					((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
+					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+					// ((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
 
 					BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 						if (error == null) {
@@ -408,6 +512,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 					};
 
 					redirected(uri).whenComplete((redirectedURI, err) -> {
+						System.out.println("\nredirectedURI: " + redirectedURI);
 						CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
 						if (err == null) {
 							try {
@@ -482,10 +587,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 			vertx.setTimer(500L, id -> {
 				// String uri = "https://www.instagram.com/p/C_vG4UuPpEh/";
 				// String uri = "https://kipid.tistory.com/entry/Terminal-Cmd-Sublime-text-build-results-%EC%B0%BD-%EC%97%90%EC%84%9C%EC%9D%98-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-Windows";
-				String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
+				// String uri = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 				// String uri = "https://www.youtube.com/watch?v=OUlCf8WlUVg";
 				// String uri = "https://www.tiktok.com/@hxxax__/video/7308805003832003847";
 				// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
+				String uri = "https://recoeve.net/redirect/97e5b877989cf9e7";
 
 				final String[] keyUri = new String[]{ uri };
 				if (RecoeveDB.getutf8mb4Length(uri) > 255) {
@@ -493,11 +599,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 				}
 				ResultSet uriHeads = recoeveWebClient.db.getUriHeads(keyUri[0]);
 
-
 				try {
 					Timestamp tNow = recoeveWebClient.db.now();
 					if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
 						System.out.println("\n" + uriHeads.getString("heads"));
+						return;
 					}
 					else {
 						final WebDriver[] chromeDriver = new WebDriver[1];
@@ -517,9 +623,9 @@ public class RecoeveWebClient extends AbstractVerticle {
 							chromeDriver[0].getTitle();
 								// * Attempt to get the title of the current page. If no exception is thrown, the WebDriver is still active.
 
-							((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
-							((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
-							((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
+							// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})");
+							// ((JavascriptExecutor)(chromeDriver[0])).executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+							// ((JavascriptExecutor)(chromeDriver[0])).executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function (parameter) {if (parameter === 37445) {return 'NVIDIA Corporation';} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';} return getParameter(parameter);};");
 
 							BiConsumer<String, Throwable> writeChunk = (result, error) -> {
 								if (error == null) {
@@ -542,6 +648,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 							};
 
 							recoeveWebClient.redirected(uri).whenComplete((redirectedURI, err) -> {
+								System.out.println("\nredirectedURI: " + redirectedURI);
 								CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
 								if (err == null) {
 									try {
