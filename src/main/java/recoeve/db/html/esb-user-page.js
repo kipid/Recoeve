@@ -6,8 +6,8 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __esm = (fn, res2) => function __init() {
-    return fn && (res2 = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res2;
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
   };
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -13752,12 +13752,12 @@
     return vars;
   };
   m2.arrayToSearch = function(searchVars) {
-    let res2 = "";
+    let res = "";
     for (let i3 = 0; i3 < searchVars.length; i3++) {
-      res2 += `&${encodeURIComponent(searchVars[i3].key)}=${encodeURIComponent(searchVars[i3].val)}`;
+      res += `&${encodeURIComponent(searchVars[i3].key)}=${encodeURIComponent(searchVars[i3].val)}`;
     }
-    if (res2.length > 1) {
-      return `?${res2.substring(1)}`;
+    if (res.length > 1) {
+      return `?${res.substring(1)}`;
     } else {
       return "";
     }
@@ -13874,7 +13874,7 @@
   m2.decomposeURI = function(uri) {
     uri = String(uri);
     uri = uri.split(/\s\t\n/)[0];
-    res = { uri, uriHost: null, pathname: null, search: null, hash: null };
+    const res = { uri, uriHost: null, pathname: null, search: null, hash: null };
     if (uri.length > 4 && uri.substring(0, 4).toLowerCase() === "http") {
       let k = 4;
       if (uri.charAt(k) == "s" || uri.charAt(k) == "S") {
@@ -14392,33 +14392,33 @@
       if (!json || json.constructor !== Array) {
         return "";
       }
-      let res2 = m2.encloseStr(json[0][0]);
+      let res = m2.encloseStr(json[0][0]);
       for (let j2 = 1; j2 < json[0].length; j2++) {
-        res2 += "	" + m2.encloseStr(json[0][j2]);
+        res += "	" + m2.encloseStr(json[0][j2]);
       }
       for (let i3 = 1; i3 < json.length; i3++) {
-        res2 += "\n" + m2.encloseStr(json[i3][json[0][0]]);
+        res += "\n" + m2.encloseStr(json[i3][json[0][0]]);
         let jMax = json[0].length;
         for (let j2 = 1; j2 < jMax; j2++) {
-          res2 += "	" + (json[i3][json[0][j2]] ? m2.encloseStr(json[i3][json[0][j2]]) : "");
+          res += "	" + (json[i3][json[0][j2]] ? m2.encloseStr(json[i3][json[0][j2]]) : "");
         }
       }
-      resolve(res2);
+      resolve(res);
     });
   };
   m2.JSONtoStrRev = function(json) {
-    let res2 = m2.encloseStr(json[0][0]);
+    let res = m2.encloseStr(json[0][0]);
     for (let j2 = 1; j2 < json[0].length; j2++) {
-      res2 += "	" + m2.encloseStr(json[0][j2]);
+      res += "	" + m2.encloseStr(json[0][j2]);
     }
     for (let i3 = json.length - 1; i3 > 0; i3--) {
-      res2 += "\n" + m2.encloseStr(json[i3][json[0][0]]);
+      res += "\n" + m2.encloseStr(json[i3][json[0][0]]);
       let jMax = json[0].length < json[i3].length ? json[0].length : json[i3].length;
       for (let j2 = 1; j2 < jMax; j2++) {
-        res2 += "	" + m2.encloseStr(json[i3][json[0][j2]]);
+        res += "	" + m2.encloseStr(json[i3][json[0][j2]]);
       }
     }
-    return Promise.resolve(res2);
+    return Promise.resolve(res);
   };
   m2.heapify = function(arr, key, sorted, n, i3) {
     let largest = i3;
@@ -14581,32 +14581,32 @@
     }, delay * 1e3);
   };
   m2.val = function(val) {
-    let res2 = { valid: false, str: "", val: -1 };
+    let res = { valid: false, str: "", val: -1 };
     if (val === null || val === void 0) {
-      return res2;
+      return res;
     } else if (typeof val !== "string") {
-      return res2;
+      return res;
     }
-    res2.str = val;
+    res.str = val;
     if (val.length === 0) {
-      res2.valid = true;
-      res2.val = -1;
+      res.valid = true;
+      res.val = -1;
     } else {
       let exec = m2.ptnVal.exec(val);
       if (exec !== null) {
-        res2.numStr = exec[1];
-        res2.num = Number(exec[1]);
-        res2.divisorStr = exec[2];
-        res2.divisor = Number(exec[2]);
-        res2.valid = res2.num >= 0 && res2.num <= res2.divisor;
-        if (res2.valid) {
-          res2.val = res2.num / res2.divisor;
+        res.numStr = exec[1];
+        res.num = Number(exec[1]);
+        res.divisorStr = exec[2];
+        res.divisor = Number(exec[2]);
+        res.valid = res.num >= 0 && res.num <= res.divisor;
+        if (res.valid) {
+          res.val = res.num / res.divisor;
         } else {
-          res2.val = -1;
+          res.val = -1;
         }
       }
     }
-    return res2;
+    return res;
   };
   {
     let r2 = 12;
@@ -15647,15 +15647,15 @@ web	${m2.sW}	${m2.sH}`;
   m2.rJongKE = ["", "\u3131", "\u3131\u3131", "\u3131\u3145", "\u3134", "\u3134\u3148", "\u3134\u314E", "\u3137", "\u3139", "\u3139\u3131", "\u3139\u3141", "\u3139\u3142", "\u3139\u3145", "\u3139\u314C", "\u3139\u314D", "\u3139\u314E", "\u3141", "\u3142", "\u3142\u3145", "\u3145", "\u3145\u3145", "\u3147", "\u3148", "\u314A", "\u314B", "\u314C", "\u314D", "\u314E"];
   m2.rJong = ["", "\u3131", "\u3132", "\u3133", "\u3134", "\u3135", "\u3136", "\u3137", "\u3139", "\u313A", "\u313B", "\u313C", "\u313D", "\u313E", "\u313F", "\u3140", "\u3141", "\u3142", "\u3144", "\u3145", "\u3146", "\u3147", "\u3148", "\u314A", "\u314B", "\u314C", "\u314D", "\u314E"];
   m2.splitHangul = function(str) {
-    let res2 = [];
-    res2.originalStr = str;
-    res2.splitted3 = "";
-    res2.splitted = "";
-    res2.pCho = [];
+    let res = [];
+    res.originalStr = str;
+    res.splitted3 = "";
+    res.splitted = "";
+    res.pCho = [];
     let p = 0;
-    res2.pCho[p] = true;
+    res.pCho[p] = true;
     if (!str || typeof str !== "string") {
-      return res2;
+      return res;
     }
     let cho, jung, jong;
     for (let i3 = 0; i3 < str.length; i3++) {
@@ -15663,30 +15663,30 @@ web	${m2.sW}	${m2.sH}`;
       let n = str.charCodeAt(i3);
       if (n >= 12593 && n <= 12643) {
         n -= 12593;
-        res2[i3] = { "char": c, "splitted3": c, "splitted": m2.jamoKE[n] };
-        res2.pCho[p] = true;
+        res[i3] = { "char": c, "splitted3": c, "splitted": m2.jamoKE[n] };
+        res.pCho[p] = true;
       } else if (n >= 44032 && n <= 55203) {
         n -= 44032;
         jong = n % 28;
         jung = (n - jong) / 28 % 21;
         cho = ((n - jong) / 28 - jung) / 21;
-        res2[i3] = {
+        res[i3] = {
           "char": c,
           "splitted3": m2.rCho[cho] + m2.rJung[jung] + m2.rJong[jong],
           "splitted": m2.rChoKE[cho] + m2.rJungKE[jung] + m2.rJongKE[jong]
         };
-        res2.pCho[p] = true;
+        res.pCho[p] = true;
       } else {
-        res2[i3] = { "char": c, "splitted3": c, "splitted": c };
-        if (i3 > 0 && /[^a-zA-Z0-9]$/.test(res2[i3 - 1].splitted) && /[a-zA-Z0-9]/.test(c)) {
-          res2.pCho[p] = true;
+        res[i3] = { "char": c, "splitted3": c, "splitted": c };
+        if (i3 > 0 && /[^a-zA-Z0-9]$/.test(res[i3 - 1].splitted) && /[a-zA-Z0-9]/.test(c)) {
+          res.pCho[p] = true;
         }
       }
-      p += res2[i3].splitted.length;
-      res2.splitted3 += res2[i3].splitted3;
-      res2.splitted += res2[i3].splitted;
+      p += res[i3].splitted.length;
+      res.splitted3 += res[i3].splitted3;
+      res.splitted += res[i3].splitted;
     }
-    return res2;
+    return res;
   };
   RegExp.quote = function(str) {
     return str.replace(/[.?*+^$[\]\\{}()|-]/g, "\\$&").replace(/\s/g, "[\\s\\S]");
@@ -15694,20 +15694,20 @@ web	${m2.sW}	${m2.sH}`;
   m2.spaceRegExpStr = new RegExp(RegExp.quote(" "), "ig").toString();
   m2.arrayRegExs = function(ptnSH) {
     let str = ptnSH.splitted;
-    let res2 = [];
+    let res = [];
     for (let i3 = 0; i3 < str.length; i3++) {
       let c = str.charAt(i3);
       let mapKE = m2.mapKE[c];
       if (mapKE) {
-        res2.push(new RegExp("[" + c + mapKE + "]", "ig"));
+        res.push(new RegExp("[" + c + mapKE + "]", "ig"));
       } else {
-        res2.push(new RegExp(RegExp.quote(c), "ig"));
+        res.push(new RegExp(RegExp.quote(c), "ig"));
       }
     }
-    return res2;
+    return res;
   };
   m2.highlightStrFromIndices = function(strSplitted, indices) {
-    let res2 = "";
+    let res = "";
     for (let i3 = 0, j2 = 1, k = 0, p1 = 0, p2 = 0; j2 <= indices.length; i3 = j2, j2++) {
       while (j2 < indices.length && indices[j2 - 1].end === indices[j2].start) {
         j2++;
@@ -15732,32 +15732,32 @@ web	${m2.sW}	${m2.sH}`;
     }
     for (let i3 = 0; i3 < strSplitted.length; ) {
       if (strSplitted[i3].matched) {
-        res2 += '<span class="bold">';
+        res += '<span class="bold">';
         while (i3 < strSplitted.length && strSplitted[i3].matched) {
-          res2 += m2.escapeOnlyTag(strSplitted[i3].char);
+          res += m2.escapeOnlyTag(strSplitted[i3].char);
           i3++;
         }
-        res2 += "</span>";
+        res += "</span>";
       } else {
         while (i3 < strSplitted.length && !strSplitted[i3].matched) {
-          res2 += m2.escapeOnlyTag(strSplitted[i3].char);
+          res += m2.escapeOnlyTag(strSplitted[i3].char);
           i3++;
         }
       }
     }
-    return res2;
+    return res;
   };
   m2.matchScoreFromIndices = function(strSH, ptnSH, indices) {
-    let res2 = 0;
+    let res = 0;
     for (let i3 = 0; i3 < indices.length; i3++) {
       if (strSH.pCho[indices[i3].start])
-        res2 += 15;
+        res += 15;
     }
     for (let i3 = 1; i3 < indices.length; i3++) {
       let diff = indices[i3].start - indices[i3 - 1].start;
-      if (diff < 5) res2 += 8 * (5 - diff);
+      if (diff < 5) res += 8 * (5 - diff);
     }
-    return res2;
+    return res;
   };
   m2.fuzzySearch = function(ptnSH, fs) {
     return new Promise((resolve, reject) => {
@@ -17285,15 +17285,15 @@ m.initialOpen: ${m2.initialOpen}`);
       m2.ptnURL.lastIndex = 0;
       let exec = m2.ptnURL.exec(str);
       let start = 0;
-      let res2 = "";
+      let res = "";
       while (exec !== null) {
-        res2 += m2.escapeOnlyTag(str.substring(start, exec.index));
-        res2 += (await uriRendering(await m2.formatURI(exec[0], true), true, false)).html;
+        res += m2.escapeOnlyTag(str.substring(start, exec.index));
+        res += (await uriRendering(await m2.formatURI(exec[0], true), true, false)).html;
         start = m2.ptnURL.lastIndex;
         exec = m2.ptnURL.exec(str);
       }
-      res2 += m2.escapeOnlyTag(str.substring(start));
-      resolve(res2);
+      res += m2.escapeOnlyTag(str.substring(start));
+      resolve(res);
     });
   };
   m2.notifyCopied = function(copied) {
@@ -17467,7 +17467,7 @@ ${decodedURI}` : ``}`;
   };
   m2.ptnDescCmt = /^#\S+/;
   m2.renderStrDescCmt = function(str) {
-    let res2 = [];
+    let res = [];
     let strSplitted = str.trim().split("\n");
     for (let i3 = 0; i3 < strSplitted.length; i3++) {
       strSplitted[i3] = strSplitted[i3].replace(/[\s\t\n\r]+$/, "");
@@ -17480,8 +17480,8 @@ ${decodedURI}` : ``}`;
       if (match === null) {
         listOfValues.push(strSplitted[i3]);
       } else {
-        if (!res2[key.toLowerCase()]) {
-          res2[k] = res2[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
+        if (!res[key.toLowerCase()]) {
+          res[k] = res[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
           k++;
         }
         key = match[0];
@@ -17489,28 +17489,28 @@ ${decodedURI}` : ``}`;
         listOfValues.push(strSplitted[i3].substring(match[0].length));
       }
     }
-    res2[k] = res2[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
-    res2[""].val = res2[""].val.trim();
-    if (!res2[""].val) {
-      res2.splice(0, 1);
-      delete res2[""];
-      for (let i3 = 0; i3 < res2.length; i3++) {
-        res2[i3].i = i3;
+    res[k] = res[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
+    res[""].val = res[""].val.trim();
+    if (!res[""].val) {
+      res.splice(0, 1);
+      delete res[""];
+      for (let i3 = 0; i3 < res.length; i3++) {
+        res[i3].i = i3;
       }
     }
-    return res2;
+    return res;
   };
   m2.descCmtRToString = function(descCmtR) {
-    let res2 = "";
+    let res = "";
     for (let i3 = 0; i3 < descCmtR.length; i3++) {
-      res2 += `${descCmtR[i3].key}
+      res += `${descCmtR[i3].key}
 ${descCmtR[i3].val.trim()}
 
 
 
 `;
     }
-    return res2.trim();
+    return res.trim();
   };
   m2.memorizing = function(elem) {
     (0, import_jquery.default)("#memo-container").show();
@@ -17518,7 +17518,7 @@ ${descCmtR[i3].val.trim()}
   };
   m2.descCmtRToHTML = function(descR) {
     return new Promise(async function(resolve, reject) {
-      let res2 = `<div class="desc">`;
+      let res = `<div class="desc">`;
       for (let l = 0; l < descR.length; l++) {
         let key = m2.escapeOnlyTag(descR[l].key);
         let val = m2.escapeOnlyTag(descR[l].val);
@@ -17527,7 +17527,7 @@ ${descCmtR[i3].val.trim()}
           case "#start:":
           case "#end":
           case "#end:":
-            res2 += `<div class="value"><span class="key">${key}</span> ${val.replace(/(?:  |\t)/g, "&nbsp; ").replace(/\n/g, "<br/>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
+            res += `<div class="value"><span class="key">${key}</span> ${val.replace(/(?:  |\t)/g, "&nbsp; ").replace(/\n/g, "<br/>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
             break;
           case "#lyrics":
           case "#lyrics:":
@@ -17535,7 +17535,7 @@ ${descCmtR[i3].val.trim()}
           case "#lyric:":
           case "#\uAC00\uC0AC":
           case "#\uAC00\uC0AC:":
-            res2 += `<div class="value">
+            res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">\u25BC [--Toggle lyrics--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
@@ -17549,7 +17549,7 @@ ${descCmtR[i3].val.trim()}
           case "#\uC0AC\uC804":
           case "#\uC0AC\uC804:": {
             let valToJSON = await m2.strToJSON(val.trim());
-            res2 += `<div class="value">
+            res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">\u25BC [--Toggle dictionary--]</div> <div class="button memorizing" onclick="m.memorizing(this)">[--Memorizing--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
@@ -17561,7 +17561,7 @@ ${descCmtR[i3].val.trim()}
           }
           case "#memorizing-result": {
             let valToJSON = await m2.strToJSON(val.trim());
-            res2 += `<div class="value">
+            res += `<div class="value">
 <div class="center"><div class="button" onclick="m.slideToggle(this)">\u25BC [--Toggle memorizing result--]</div></div>
 <div class="lyricsC" style="display:none">
 <div class="lyricsArrow"></div>
@@ -17580,22 +17580,22 @@ ${descCmtR[i3].val.trim()}
           case "#":
           case "":
           default:
-            res2 += `<div class="value"><span class="key">${key}</span> `;
+            res += `<div class="value"><span class="key">${key}</span> `;
             let relateds = val.split("\n");
             for (let p = 0; p < relateds.length; p++) {
               try {
-                res2 += String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
+                res += String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
               } catch (err) {
                 console.error(err);
               }
-              res2 += "<br/>";
+              res += "<br/>";
             }
-            res2 += `</div>`;
+            res += `</div>`;
             break;
         }
       }
-      res2 += `</div>`;
-      resolve(res2);
+      res += `</div>`;
+      resolve(res);
     });
   };
   m2.stashReco = function(event2) {
@@ -17645,60 +17645,60 @@ ${descCmtR[i3].val.trim()}
           console.error(err);
         }
       }
-      let res2 = `<div class="reco recom${additionalClass ? ` ${additionalClass}` : ``}"${inListPlay ? `` : ` id="recom-${m2.recoms[m2.currentCat][r2?.uri]?.i}"`}>
+      let res = `<div class="reco recom${additionalClass ? ` ${additionalClass}` : ``}"${inListPlay ? `` : ` id="recom-${m2.recoms[m2.currentCat][r2?.uri]?.i}"`}>
 <div class="edit button fRight" onclick="m.editOrRecoToMine(this, true)">+</div>
 <div class="textURI">${m2.escapeOnlyTag(r2?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r2?.uri)}">RecoStat</a>${m2.uriToA(r2?.uri)}</div>`;
       if (recoDef?.defTitles[0] && recoDef.defTitles[0][0]) {
-        res2 += `<div class="title">${m2.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
+        res += `<div class="title">${m2.escapeOnlyTag(recoDef.defTitles[0][0])}</div>`;
       }
-      res2 += `<div class="cats">${m2.catsToA(m2.currentCat)}</div>`;
+      res += `<div class="cats">${m2.catsToA(m2.currentCat)}</div>`;
       if (!inListPlay) {
         let uriRendered = await uriRendering(r2?.uri, false, inListPlay, r2?.descR);
-        res2 += uriRendered.html;
+        res += uriRendered.html;
       }
       let recomsI = m2.recoms[m2.currentCat][r2?.uri];
       if (recomsI?.valsStat) {
         let valsStat = recomsI.valsStat;
         let dx = 100 / (m2.valsStatN + 2);
-        res2 += `<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
+        res += `<div class="rC" style="padding:0 .5em"><div class="rSC"><div><svg class="vals-stat" width="100%" height="100%">`;
         for (let k = 0; k <= m2.valsStatN; k++) {
           let h = 79 * valsStat[k] / valsStat.max;
-          res2 += `<rect class="column" x="${dx * (k + 0.5)}%" y="${80 - h}%" width="${dx}%" height="${h}%"></rect>`;
+          res += `<rect class="column" x="${dx * (k + 0.5)}%" y="${80 - h}%" width="${dx}%" height="${h}%"></rect>`;
         }
-        res2 += `<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
+        res += `<line class="bar" x1="1%" y1="80%" x2="99%" y2="80%"/>`;
         for (let k = 0; k <= m2.valsStatN; k++) {
           let x = dx * (k + 1);
-          res2 += `<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
+          res += `<line class="bar" x1="${x}%" y1="78%" x2="${x}%" y2="82%"/>`;
         }
-        res2 += `<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`;
+        res += `<text class="tick" text-anchor="middle" x="${dx}%" y="90%">0`;
         for (let k = 2; k <= m2.valsStatN; k += 2) {
-          res2 += `<tspan text-anchor="middle" x="${dx * (k + 1)}%" y="90%">${k / 2}</tspan>`;
+          res += `<tspan text-anchor="middle" x="${dx * (k + 1)}%" y="90%">${k / 2}</tspan>`;
         }
-        res2 += `</text>`;
-        res2 += `<text class="max-simSum" x="0%" y="10%">${(valsStat.max / 1e4).toFixed(2)}</text>`;
+        res += `</text>`;
+        res += `<text class="max-simSum" x="0%" y="10%">${(valsStat.max / 1e4).toFixed(2)}</text>`;
         let x_expected = (2 * recomsI.avgVal + 1) * dx;
-        res2 += `<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
+        res += `<line class="expected" x1="${x_expected}%" y1="1%" x2="${x_expected}%" y2="83%"/><text class="expected" text-anchor="middle" x="${x_expected}%" y="96%" >${recomsI.avgValStr}</text></svg></div></div></div>`;
       }
       if (m2.myPage) {
-        res2 += `<div class="cBoth"></div><div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div><div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
+        res += `<div class="cBoth"></div><div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div><div class="cBoth button fLeft" style="margin:3em 0 1em" onclick="m.stashReco(event)">[--Stash--]</div>`;
       }
-      res2 += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+      res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
       if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
         let descR = m2.renderStrDescCmt(recoDef.defDescs[0][0]);
-        res2 += await m2.descCmtRToHTML(descR);
+        res += await m2.descCmtRToHTML(descR);
       }
       if (recomsI?.cmtsHTML) {
-        res2 += recomsI.cmtsHTML;
+        res += recomsI.cmtsHTML;
       }
-      res2 += `</div>`;
-      resolve(res2);
+      res += `</div>`;
+      resolve(res);
     });
   };
   m2.recoHTML = function(r2, inListPlay, inRange, inRecoms, additionalClass) {
     return new Promise(async function(resolve, reject) {
-      let res2 = "";
-      res2 += `<div class="reco${additionalClass ? ` ${additionalClass}` : ``}${inRange ? `` : ` none`}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m2.recoms[m2.currentCat][r2?.uri]?.i}"` : `-${m2.fsToRs.fullList[r2?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
+      let res = "";
+      res += `<div class="reco${additionalClass ? ` ${additionalClass}` : ``}${inRange ? `` : ` none`}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m2.recoms[m2.currentCat][r2?.uri]?.i}"` : `-${m2.fsToRs.fullList[r2?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" onclick="m.editOrRecoToMine(this)">${m2.myPage ? "[--Edit--]" : "[--Reco to mine--]"}</div>` : ""}
 <div class="textURI">${m2.escapeOnlyTag(r2?.uri)}</div>
 <div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r2?.uri)}">RecoStat</a>${m2.uriToA(r2?.uri)}</div>
@@ -17706,47 +17706,47 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
 <div class="cats">${m2.catsToA(r2.cats)}</div>`;
       if (!inListPlay) {
         let uriRendered = await uriRendering(r2?.uri, false, inListPlay, r2?.descR);
-        res2 += uriRendered.html;
+        res += uriRendered.html;
       }
-      res2 += `<div class="cBoth"></div>`;
+      res += `<div class="cBoth"></div>`;
       if (r2.val?.str) {
-        res2 += `<div class="val">${m2.stars(r2.val.val)} <span class="str">${m2.escapeOnlyTag(r2?.val.str)}</span></div>`;
+        res += `<div class="val">${m2.stars(r2.val.val)} <span class="str">${m2.escapeOnlyTag(r2?.val.str)}</span></div>`;
       } else {
-        res2 += `<div class="val">${m2.stars(0)} <span class="str"> </span></div>`;
+        res += `<div class="val">${m2.stars(0)} <span class="str"> </span></div>`;
       }
-      res2 += `<div class="cBoth"></div>`;
+      res += `<div class="cBoth"></div>`;
       if (m2.myPage) {
         if (r2.val?.str) {
-          res2 += `<div class="my-point">${m2.stars(r2.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m2.escapeOnlyTag(r2?.val.str)}</span></div>`;
+          res += `<div class="my-point">${m2.stars(r2.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m2.escapeOnlyTag(r2?.val.str)}</span></div>`;
         } else {
-          res2 += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+          res += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
         }
       } else if (m2.myRecos[r2?.uri]) {
         let mR = m2.myRecos[r2?.uri];
         if (mR.has) {
-          res2 += `<div class="my-point">${m2.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m2.escapeOnlyTag(mR.val.str)}</span></div>`;
+          res += `<div class="my-point">${m2.stars(mR.val.val)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str">${m2.escapeOnlyTag(mR.val.str)}</span></div>`;
         } else {
-          res2 += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+          res += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
         }
       } else {
-        res2 += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
+        res += `<div class="my-point">${m2.stars(0)} <span class="upDown up">&gt;</span> <span class="upDown down">&lt;</span> <span class="str"> </span></div>`;
       }
-      res2 += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
+      res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
       if (r2.desc) {
         let descR = r2.descR;
-        res2 += await m2.descCmtRToHTML(descR);
+        res += await m2.descCmtRToHTML(descR);
       }
       if (r2.cmt && r2.cmt.length !== 0) {
-        res2 += `<div class="cmt">${await m2.descCmtRToHTML(r2.cmtR)}</div>`;
+        res += `<div class="cmt">${await m2.descCmtRToHTML(r2.cmtR)}</div>`;
       }
       if (r2.tFirst && r2.tLast && r2.tFirst !== r2.tLast) {
-        res2 += `<div class="tFirst">Lastly Editted at ${m2.toLocalTime(r2.tLast)}</div><div class="cBoth"></div>`;
-        res2 += `<div class="tLast">Firstly Recoed at ${m2.toLocalTime(r2.tFirst)}</div><div class="cBoth"></div>`;
+        res += `<div class="tFirst">Lastly Editted at ${m2.toLocalTime(r2.tLast)}</div><div class="cBoth"></div>`;
+        res += `<div class="tLast">Firstly Recoed at ${m2.toLocalTime(r2.tFirst)}</div><div class="cBoth"></div>`;
       } else if (r2.tLast) {
-        res2 += `<div class="tLast">Firstly Recoed at ${m2.toLocalTime(r2.tLast)}</div><div class="cBoth"></div>`;
+        res += `<div class="tLast">Firstly Recoed at ${m2.toLocalTime(r2.tLast)}</div><div class="cBoth"></div>`;
       }
-      res2 += `</div>`;
-      resolve(res2);
+      res += `</div>`;
+      resolve(res);
     });
   };
   m2.reco_pointChange_do = function(args, err) {
@@ -17772,17 +17772,17 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     }).done(async function(resp) {
       clearInterval(m2.setIntervalDeleyedLogOut);
       clearTimeout(m2.setTimeoutDeleyedLogOut);
-      let res2 = Object(await m2.strToJSON(resp));
-      let result = String(res2[1]?.result);
-      let uri2 = res2[1]?.uri;
+      let res = Object(await m2.strToJSON(resp));
+      let result = String(res[1]?.result);
+      let uri2 = res[1]?.uri;
       if (result.startsWith("changed")) {
         m2.myRecos[uri2].val = m2.val(args.valStr);
         m2.changeCats_UriList(m2.myRecos[uri2].cats, args.cats, uri2);
         if (m2.myRecos[uri2].cats !== args.cats) {
           m2.myRecos[uri2].cats = args.cats;
         }
-        m2.myRecos[uri2].tLast = res2[1]?.tLast;
-        args.$result?.html(res2[1].result);
+        m2.myRecos[uri2].tLast = res[1]?.tLast;
+        args.$result?.html(res[1].result);
         m2.refresh(args.cats, "changed", uri2);
       } else if (result.startsWith("recoed")) {
         let r2 = m2.myRecos[uri2];
@@ -17794,8 +17794,8 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         r2.has = true;
         r2.down = true;
         r2.val = m2.val(args.valStr);
-        r2.tFirst = res2[1]?.tLast;
-        r2.tLast = res2[1]?.tLast;
+        r2.tFirst = res[1]?.tLast;
+        r2.tLast = res[1]?.tLast;
         if (args.title) {
           r2.title = args.title;
         } else if (recoDef?.defTitles?.[0]?.[0]) {
@@ -18379,9 +18379,9 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     if (isDraft(childValue)) {
       const path = rootPath && parentState && parentState.type_ !== 3 && // Set objects are atomic since they have no keys.
       !has(parentState.assigned_, prop) ? rootPath.concat(prop) : void 0;
-      const res2 = finalize(rootScope, childValue, path);
-      set(targetObject, prop, res2);
-      if (isDraft(res2)) {
+      const res = finalize(rootScope, childValue, path);
+      set(targetObject, prop, res);
+      if (isDraft(res)) {
         rootScope.canAutoFreeze_ = false;
       } else
         return;
@@ -27217,10 +27217,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.$goto_cats.trigger("keyup.fs");
       prepare_default.putCat = function(cat2) {
         return new Promise(async (resolve, reject) => {
-          let res2 = false;
+          let res = false;
           cat2 = prepare_default.formatCats(cat2);
           if (!cat2) {
-            reject(res2);
+            reject(res);
           }
           let pre = "\n";
           let fullCats = "\n" + prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()).trim() + "\n";
@@ -27247,10 +27247,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
                 pre += "	";
               }
               fullCats = fullCats.substring(0, end - 1) + toPut + fullCats.substring(end - 1);
-              res2 = true;
+              res = true;
             }
           }
-          if (res2) {
+          if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
             prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
             await prepare_default.updateCatFS();
@@ -27258,14 +27258,14 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
             }
           }
-          resolve(res2);
+          resolve(res);
         });
       };
       prepare_default.deleteCat = function(cat2) {
         return new Promise(async (resolve, reject) => {
-          let res2 = false;
+          let res = false;
           if (cat2 === null || cat2.length === 0) {
-            reject(res2);
+            reject(res);
           }
           let fullCats = prepare_default.unescapeHTML(prepare_default.$data_myCatList.html());
           let levels = cat2.split("--");
@@ -27279,7 +27279,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             let toFind = pre + levels[j2] + "\n";
             let i3 = subStr.indexOf(toFind);
             if (i3 === -1) {
-              reject(res2);
+              reject(res);
             } else {
               let ptnEnd = new RegExp(pre.replace(/\n/g, "\\n").replace(/\t/g, "\\t") + "[^\\t\\n]", "g");
               ptnEnd.lastIndex = i3 + toFind.length - 1;
@@ -27295,13 +27295,13 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           subStr = fullCats.substring(start + 1, end);
           if (subStr.length === 0) {
             fullCats = fullCats.substring(0, start0 + 1) + fullCats.substring(end);
-            res2 = true;
+            res = true;
           }
-          if (res2) {
+          if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
             prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
           }
-          return res2;
+          return res;
         });
       };
       prepare_default.refreshFSToRs = function(cat2) {
@@ -29315,21 +29315,21 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           }).done(async function(resp) {
             clearInterval(prepare_default.setIntervalDeleyedLogOut);
             clearTimeout(prepare_default.setTimeoutDeleyedLogOut);
-            let res2 = await prepare_default.strToJSON(resp);
-            let result = res2[1]?.result;
-            let uri = res2[1]?.uri;
-            if (res2[2]?.uri) {
-              prepare_default.$error.html(await prepare_default.arrayToTableHTML(res2, true, [20, 20, 30, 30]));
+            let res = await prepare_default.strToJSON(resp);
+            let result = res[1]?.result;
+            let uri = res[1]?.uri;
+            if (res[2]?.uri) {
+              prepare_default.$error.html(await prepare_default.arrayToTableHTML(res, true, [20, 20, 30, 30]));
               args.$result?.html(prepare_default.$error.html());
               setTimeout(function() {
                 prepare_default.$error.html("");
               }, 10 * prepare_default.wait);
               let uris = ["uri"];
-              for (let i3 = 1; i3 < res2.length; i3++) {
-                let uriI = String(res2[i3].uri);
+              for (let i3 = 1; i3 < res.length; i3++) {
+                let uriI = String(res[i3].uri);
                 uris.push(uriI);
                 prepare_default.recoDowned(uriI, prepare_default.myRecos);
-                prepare_default.myRecos[uriI].tLast = res2[i3]?.tLast;
+                prepare_default.myRecos[uriI].tLast = res[i3]?.tLast;
                 await prepare_default.changeCats_UriList(prepare_default.myRecos[uriI].cats, prepare_default.catsToString(args.cats), uriI);
               }
               await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, cat2);
@@ -29348,7 +29348,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
                 console.log(`await m.putCats_UriToLists("${args.cats}", "${uri}");`);
                 await prepare_default.putCats_UriToLists(args.cats, uri);
-                prepare_default.myRecos[uri].tLast = res2[1]?.tLast;
+                prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(async function() {
                   prepare_default.emptifyRecoInNewReco();
                   console.log(`m.refresh("${cats2}", "recoed", "${uri}");`);
@@ -29360,7 +29360,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
                 await prepare_default.changeCats_UriList(cats2, args.cats, uri);
                 await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, prepare_default.currentCat);
-                prepare_default.myRecos[uri].tLast = res2[1]?.tLast;
+                prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(async function() {
                   prepare_default.emptifyRecoInNewReco();
                   await prepare_default.refresh(cats2, "changed", uri);
@@ -29376,10 +29376,10 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                   resolve();
                 }, prepare_default.wait);
               } else {
-                let resTable = await prepare_default.arrayToTableHTML(res2);
+                let resTable = await prepare_default.arrayToTableHTML(res);
                 prepare_default.$error.html(resTable);
                 args.$result?.html(resTable);
-                if (uri !== String(res2[1]?.originalURI)) {
+                if (uri !== String(res[1]?.originalURI)) {
                   prepare_default.$input_uri.val(uri);
                   prepare_default.$input_uri.trigger("keyup.change");
                 }
@@ -29488,11 +29488,11 @@ ${uri2}	change	${cats2}`;
         }).done(async function(resp) {
           clearInterval(prepare_default.setIntervalDeleyedLogOut);
           clearTimeout(prepare_default.setTimeoutDeleyedLogOut);
-          let res2 = await prepare_default.strToJSON(resp);
-          let result = res2[1]?.result;
-          let uri = res2[1]?.uri;
+          let res = await prepare_default.strToJSON(resp);
+          let result = res[1]?.result;
+          let uri = res[1]?.uri;
           prepare_default.$error.html(prepare_default.escapeOnlyTag(result));
-          console.log(res2);
+          console.log(res);
           if (result.startsWith("changed")) {
             let r2 = args.r;
             r2.title = args.title;
@@ -29501,7 +29501,7 @@ ${uri2}	change	${cats2}`;
             r2.cmt = args.cmt;
             r2.cmtR = prepare_default.renderStrDescCmt(args.cmt);
             r2.val = args.val;
-            r2.tLast = res2[1]?.tLast;
+            r2.tLast = res[1]?.tLast;
             await prepare_default.changeCats_UriList(r2.cats, args.cats, uri);
             r2.cats = args.cats;
             console.log("setTimeout( close ); triggered!");
@@ -29511,7 +29511,7 @@ ${uri2}	change	${cats2}`;
               prepare_default.$button_close.trigger("click");
             }, prepare_default.wait);
           } else {
-            prepare_default.delayedLogOut(res2[1]?.result, 60 * 60 * 24, args.$result);
+            prepare_default.delayedLogOut(res[1]?.result, 60 * 60 * 24, args.$result);
           }
         }).always(function() {
           prepare_default.$button_edit.removeClass("disabled");
@@ -29599,9 +29599,9 @@ ${uri2}	change	${cats2}`;
         }).done(async function(resp) {
           clearInterval(prepare_default.setIntervalDeleyedLogOut);
           clearTimeout(prepare_default.setTimeoutDeleyedLogOut);
-          let res2 = Object(await prepare_default.strToJSON(resp));
-          let uri = String(res2[1].uri);
-          if (res2[1]?.result.startsWith("deleted")) {
+          let res = Object(await prepare_default.strToJSON(resp));
+          let uri = String(res[1].uri);
+          if (res[1]?.result.startsWith("deleted")) {
             prepare_default.$error.html("[--Deleted.--]");
             let cats2 = prepare_default.catsToString(args.r.cats);
             prepare_default.myRecos[uri].deleted = true;
@@ -29617,7 +29617,7 @@ ${uri2}	change	${cats2}`;
               prepare_default.$button_close.trigger("click");
             }, prepare_default.wait);
           } else {
-            prepare_default.delayedLogOut(res2[1]?.result, 60 * 60 * 24, args.$result);
+            prepare_default.delayedLogOut(res[1]?.result, 60 * 60 * 24, args.$result);
           }
         }).always(function() {
           prepare_default.$button_del.removeClass("disabled");
