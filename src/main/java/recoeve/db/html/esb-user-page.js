@@ -13934,7 +13934,9 @@
         }
       }
     }
-    res.uriHost = res.uriHost.toLowerCase();
+    if (uriHost) {
+      res.uriHost = res.uriHost.toLowerCase();
+    }
     return res;
   };
   m2.pad = function(str, max) {
@@ -17247,14 +17249,14 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   window.uriRendering = function(uri, toA, inListPlay, descR) {
     return new Promise(async function(resolve, reject) {
-      const { uriHost, pathname, search, hash } = m2.decomposeURI(uri);
+      const { uriHost: uriHost2, pathname, search, hash } = m2.decomposeURI(uri);
       uriRest = (pathname ? pathname.substring(1) : "") + search;
-      if (uriHost) {
-        if (m2.ptnURI[uriHost]) {
+      if (uriHost2) {
+        if (m2.ptnURI[uriHost2]) {
           try {
-            let result = await m2.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR);
+            let result = await m2.ptnURI[uriHost2]?.toIframe(uriRest, inListPlay, toA, descR);
             if (Boolean(result) !== false) {
-              resolve({ ...result, uri, uriHost, pathname, search, hash });
+              resolve({ ...result, uri, uriHost: uriHost2, pathname, search, hash });
             }
           } catch (err) {
           }
@@ -17263,18 +17265,18 @@ m.initialOpen: ${m2.initialOpen}`);
           try {
             let result = await m2.ptnURI[i3]?.toIframe(uri, inListPlay, toA, descR);
             if (Boolean(result) !== false) {
-              resolve({ ...result, uri, uriHost, pathname, search, hash });
+              resolve({ ...result, uri, uriHost: uriHost2, pathname, search, hash });
             }
           } catch (err) {
           }
         }
         if (toA) {
-          resolve({ html: m2.uriToA(uri), uri, uriHost, pathname, search, hash });
+          resolve({ html: m2.uriToA(uri), uri, uriHost: uriHost2, pathname, search, hash });
         }
       } else {
-        resolve({ html: m2.escapeOnlyTag(uri), uri, uriHost, pathname, search, hash });
+        resolve({ html: m2.escapeOnlyTag(uri), uri, uriHost: uriHost2, pathname, search, hash });
       }
-      resolve({ html: "", uri, uriHost, pathname, search, hash });
+      resolve({ html: "", uri, uriHost: uriHost2, pathname, search, hash });
     });
   };
   window.relatedRendering = function(str) {
