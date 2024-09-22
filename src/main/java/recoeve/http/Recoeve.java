@@ -354,7 +354,6 @@ public class Recoeve extends AbstractVerticle {
 		});
 
 		CorsHandler corsHandler = CorsHandler.create()
-				.addOrigin("*")
 				.addOrigin("https://youtube.com")
 				.addOrigin("https://www.youtube.com")
 				.addOrigin("https://youtube-nocookie.com")
@@ -366,6 +365,7 @@ public class Recoeve extends AbstractVerticle {
 				.addOrigin("https://www.recoeve.net")
 				.addOrigin("https://localhost")
 				.allowedMethod(io.vertx.core.http.HttpMethod.GET)
+				.allowedMethod(io.vertx.core.http.HttpMethod.HEAD)
 				.allowedMethod(io.vertx.core.http.HttpMethod.POST)
 				.allowedMethod(io.vertx.core.http.HttpMethod.PUT)
 				.allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
@@ -396,6 +396,19 @@ public class Recoeve extends AbstractVerticle {
 			}
 		});
 
+		router.head("/redirect/:hashpath").handler((RoutingContext ctx) -> {
+			PrintLog pl = new PrintLog(db);
+			pl.printLog(ctx);
+			String hashpath = ctx.pathParam("hashpath");
+			String originalURI = db.getRedirectURI(RecoeveDB.hexStringToLong(hashpath));
+			String msg = "originalURI: " + Encoder.decodeURIComponent(originalURI);
+			System.out.println(msg);
+			// pLHtml.append(msg + "</div>");
+			// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+			pl.req.response().setStatusCode(StatusCode.FOUND.getCode()) // ! Set the HTTP status code for redirection/FOUND
+					.putHeader("Location", originalURI) // Set the new location
+					.end();
+		});
 		router.get("/redirect/:hashpath").handler((RoutingContext ctx) -> {
 			PrintLog pl = new PrintLog(db);
 			pl.printLog(ctx);
