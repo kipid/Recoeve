@@ -16823,7 +16823,7 @@ m.initialOpen: ${m2.initialOpen}`);
   ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA, descR) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA, descR) {
     return new Promise(function(resolve, reject) {
       let config = {};
       if (descR) {
@@ -16834,7 +16834,7 @@ m.initialOpen: ${m2.initialOpen}`);
           config.endSeconds = config.end = m2.timeToSeconds(descR["#end"].val.trim());
         }
       }
-      let exec = m2.ptnURI["www.youtube.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["www.youtube.com"].regEx.exec(uriRest);
       if (exec !== null) {
         let vars = null;
         if (exec[2]) {
@@ -16858,7 +16858,7 @@ m.initialOpen: ${m2.initialOpen}`);
           resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m2.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
         }
       } else {
-        exec = m2.ptnURI["youtu.be"].regEx0.exec(uriRest2);
+        exec = m2.ptnURI["youtu.be"].regEx0.exec(uriRest);
         if (exec !== null) {
           let vars = null;
           if (exec[2]) {
@@ -16880,7 +16880,7 @@ m.initialOpen: ${m2.initialOpen}`);
           }
           resolve({ html: (toA ? `<a target="_blank" href="https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}">https://www.youtube.com/watch?v=${v}${config.start ? `&start=${config.start}` : ""}${config.end ? `&end=${config.end}` : ""}${list ? `&list=${list}` : ""}</a><br/>` : "") + m2.YTiframe(v, inListPlay, config), from: "youtube", videoId: v, list, config });
         } else {
-          exec = m2.ptnURI["www.youtube.com"].regEx1.exec(uriRest2);
+          exec = m2.ptnURI["www.youtube.com"].regEx1.exec(uriRest);
           if (exec !== null) {
             resolve({ html: toA ? `<a target="_blank" href="https://www.youtube.com/${exec[0]}">https://www.youtube.com/${exec[0]}</a>` : ``, from: "-youtube-link" });
           }
@@ -16892,15 +16892,15 @@ m.initialOpen: ${m2.initialOpen}`);
   ptnURI = m2.ptnURI["docs.google.com"] = {};
   ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-]+)/i;
   ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["docs.google.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["docs.google.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml">https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://docs.google.com/spreadsheets/d/e/${exec[1]}/pubhtml?widget=true&headers=false"></iframe>`), from: "docs-google", docId: exec[1] });
       } else {
-        let exec2 = m2.ptnURI["docs.google.com"].regEx1.exec(uriRest2);
+        let exec2 = m2.ptnURI["docs.google.com"].regEx1.exec(uriRest);
         if (exec2 !== null) {
-          resolve({ html: toA ? `<a target="_blank" href="https://docs.google.com/${uriRest2}">https://docs.google.com/${uriRest2}</a>` : ``, from: "-docs-google", docId: exec2[1] });
+          resolve({ html: toA ? `<a target="_blank" href="https://docs.google.com/${uriRest}">https://docs.google.com/${uriRest}</a>` : ``, from: "-docs-google", docId: exec2[1] });
         }
         reject(false);
       }
@@ -16908,9 +16908,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["instagram.com"] = m2.ptnURI["www.instagram.com"] = {};
   ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["instagram.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["instagram.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://www.instagram.com/p/${exec[1]}/">https://www.instagram.com/p/${exec[1]}/</a><br/>` : "") + m2.rC(`<div class="center"><iframe delayed-src="https://www.instagram.com/p/${exec[1]}/embed" allowtransparency="true"></iframe></div>`, "instagram", null, true), from: "instagram", imgId: exec[1] });
       } else {
@@ -16920,9 +16920,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["imgur.com"] = m2.ptnURI["www.imgur.com"] = {};
   ptnURI.regEx = /^a\/([\w\-]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["imgur.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["imgur.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://imgur.com/a/${exec[1]}">https://imgur.com/a/${exec[1]}</a><br/>` : "") + m2.rC(`<div class="center"><iframe delayed-src="https://imgur.com/a/${exec[1]}/embed?pub=true&context=false" allowtransparency="true"></iframe></div>`, "imgur", null, true), from: "imgur", imgId: exec[1] });
       } else {
@@ -16932,9 +16932,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["www.tiktok.com"] = {};
   ptnURI.regEx = /^@(\S+)\/video\/([0-9]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["www.tiktok.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["www.tiktok.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://www.tiktok.com/@${exec[1]}/video/${exec[2]}">https://www.tiktok.com/@${exec[1]}/video/${exec[2]}</a><br/>` : "") + m2.rC(`<div class="center"><iframe sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin" delayed-src="https://www.tiktok.com/embed/v2/${exec[2]}?referrer=${escape(window.location.host)}"></iframe></div>`, "tiktok", null, true), from: "tiktok", userId: exec[1], videoId: exec[2] });
       } else {
@@ -16944,9 +16944,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["vt.tiktok.com"] = {};
   ptnURI.regEx = /^(\w+)\//i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["vt.tiktok.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["vt.tiktok.com"].regEx.exec(uriRest);
       if (exec !== null) {
         let shortURI = `https://vt.tiktok.com/${exec[1]}/`;
         import_jquery.default.ajax({
@@ -16966,9 +16966,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["serviceapi.rmcnmv.naver.com"] = {};
   ptnURI.regEx = /^\S+/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["serviceapi.rmcnmv.naver.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://serviceapi.rmcnmv.naver.com/${exec[0]}">https://serviceapi.rmcnmv.naver.com/${exec[0]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://serviceapi.rmcnmv.naver.com/${exec[0]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "naver", videoId: exec[0] });
       } else {
@@ -16978,9 +16978,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["tv.naver.com"] = {};
   ptnURI.regEx = /^(?:v|embed)\/([0-9]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["tv.naver.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["tv.naver.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://tv.naver.com/v/${exec[1]}">https://tv.naver.com/v/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://tv.naver.com/embed/${exec[1]}?autoPlay=false" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "naver", videoId: exec[1] });
       } else {
@@ -16990,9 +16990,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["weverse.io"] = {};
   ptnURI.regEx = /^(\S+)\/artist\/([0-9\-]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["weverse.io"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["weverse.io"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://weverse.io/${exec[1]}/artist/${exec[2]}">https://weverse.io/${exec[1]}/artist/${exec[2]}</a><br/>` : "") + m2.rC(`<iframe src="https://weverse.io/${exec[1]}/artist/${exec[2]}" marginwidth="0" marginheight="0" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "weverse", singer: exec[1], videoId: exec[2] });
       } else {
@@ -17003,13 +17003,13 @@ m.initialOpen: ${m2.initialOpen}`);
   ptnURI = m2.ptnURI["tv.kakao.com"] = m2.ptnURI["entertain.daum.net"] = {};
   ptnURI.regEx = /(?:v|cliplink)\/([0-9]+)/i;
   ptnURI.regEx1 = /video\/([0-9]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["tv.kakao.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["tv.kakao.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "kakao", videoId: exec[1] });
       } else {
-        exec = m2.ptnURI["entertain.daum.net"].regEx1.exec(uriRest2);
+        exec = m2.ptnURI["entertain.daum.net"].regEx1.exec(uriRest);
         if (exec !== null) {
           resolve({ html: (toA ? `<a target="_blank" href="https://tv.kakao.com/v/${exec[1]}">https://tv.kakao.com/v/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://play-tv.kakao.com/embed/player/cliplink/${exec[1]}" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "kakao", videoId: exec[1] });
         } else {
@@ -17020,9 +17020,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["tvpot.daum.net"] = {};
   ptnURI.regEx = /^v\/([\w\-]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["tvpot.daum.net"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://tvpot.daum.net/v/${exec[1]}">https://tvpot.daum.net/v/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://videofarm.daum.net/controller/video/viewer/Video.html?vid=${exec[1]}${exec[1].length < 15 ? "$" : ""}&play_loc=undefined"></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "daum", videoId: exec[1] });
       }
@@ -17031,9 +17031,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["vimeo.com"] = {};
   ptnURI.regEx = /^([0-9]+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["vimeo.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["vimeo.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://vimeo.com/${exec[1]}">https://vimeo.com/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://player.vimeo.com/video/${exec[1]}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "vimeo", videoId: exec[1] });
       } else {
@@ -17043,9 +17043,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["www.dailymotion.com"] = {};
   ptnURI.regEx = /video\/(\w+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["www.dailymotion.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["www.dailymotion.com"].regEx.exec(uriRest);
       if (exec !== null) {
         resolve({ html: (toA ? `<a target="_blank" href="https://www.dailymotion.com/video/${exec[1]}">https://www.dailymotion.com/video/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://www.dailymotion.com/embed/video/${exec[1]}" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "dailymotion", videoId: exec[1] });
       } else {
@@ -17055,9 +17055,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["namu.wiki"] = {};
   ptnURI.regEx = /w\/(.*)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["namu.wiki"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["namu.wiki"].regEx.exec(uriRest);
       if (exec !== null) {
         let pathname = exec[1].replace(/\+/gi, "%20").replace(/%2B/gi, "%20");
         resolve({ html: `<a target="_blank" href="https://namu.wiki/w/${pathname}">https://namu.wiki/w/${m2.escapeOnlyTag(decodeURIComponent(pathname))}</a>`, from: "namu.wiki", pathname });
@@ -17068,22 +17068,22 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["www.ted.com"] = m2.ptnURI["embed.ted.com"] = {};
   ptnURI.regEx = /^talks\/(\S+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["www.ted.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["www.ted.com"].regEx.exec(uriRest);
       if (exec !== null) {
-        uriRest2 = uriRest2.substring(6);
-        let k = uriRest2.indexOf("?");
+        uriRest = uriRest.substring(6);
+        let k = uriRest.indexOf("?");
         let vars = null;
         if (k !== -1) {
-          vars = m2.getSearchVars(uriRest2.substring(k));
-          uriRest2 = uriRest2.substring(0, k);
+          vars = m2.getSearchVars(uriRest.substring(k));
+          uriRest = uriRest.substring(0, k);
         }
-        let v = uriRest2;
+        let v = uriRest;
         if (vars?.language) {
-          uriRest2 = "lang/" + vars.language.val + "/" + uriRest2;
+          uriRest = "lang/" + vars.language.val + "/" + uriRest;
         }
-        resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest2}" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "ted", videoId: v });
+        resolve({ html: (toA ? `<a target="_blank" href="https://www.ted.com/${exec[1]}">https://www.ted.com/${exec[1]}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://embed.ted.com/talks/${uriRest}" allowfullscreen></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : null), from: "ted", videoId: v });
       } else {
         reject(false);
       }
@@ -17091,9 +17091,9 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["w.soundcloud.com"] = {};
   ptnURI.regEx = /^player\/(\?\S+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["w.soundcloud.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["w.soundcloud.com"].regEx.exec(uriRest);
       if (exec !== null) {
         let vars = m2.getSearchVars(exec[1]);
         let lastPath = "player/?";
@@ -17113,19 +17113,19 @@ m.initialOpen: ${m2.initialOpen}`);
   ptnURI = m2.ptnURI["gall.dcinside.com"] = {};
   ptnURI.regEx = /\/movie\/share_movie(\?\S+)/i;
   ptnURI.regEx1 = /\/poll\/vote(\?\S+)/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["gall.dcinside.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["gall.dcinside.com"].regEx.exec(uriRest);
       if (exec !== null) {
         let vars = m2.getSearchVars(exec[1]);
         let v = vars.no?.val;
         if (v) {
           resolve({ html: (toA ? `<a target="_blank" href="https://gall.dcinside.com/board/movie/share_movie?no=${v}">https://gall.dcinside.com/board/movie/share_movie?no=${v}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://gall.dcinside.com/board/movie/share_movie?no=${v}"></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : ""), from: "dcinside", videoId: v });
         } else {
-          resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest2}">https://gall.dcinside.com/${m2.escapeOnlyTag(decodeURIComponent(uriRest2))}</a>` });
+          resolve({ html: `<a target="_blank" href="https://gall.dcinside.com/${uriRest}">https://gall.dcinside.com/${m2.escapeOnlyTag(decodeURIComponent(uriRest))}</a>` });
         }
       } else {
-        exec = m2.ptnURI["gall.dcinside.com"].regEx1.exec(uriRest2);
+        exec = m2.ptnURI["gall.dcinside.com"].regEx1.exec(uriRest);
         if (exec !== null) {
           let vars = m2.getSearchVars(exec[1]);
           let no = vars.no?.val;
@@ -17139,13 +17139,13 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   ptnURI = m2.ptnURI["v.qq.com"] = {};
   ptnURI.regEx = /([\w\d]+)\/([\w\d]+).html$/i;
-  ptnURI.toIframe = function(uriRest2, inListPlay, toA) {
+  ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
-      let exec = m2.ptnURI["v.qq.com"].regEx.exec(uriRest2);
+      let exec = m2.ptnURI["v.qq.com"].regEx.exec(uriRest);
       if (exec !== null) {
         let v = exec[2];
         if (v) {
-          resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest2}">https://v.qq.com/${uriRest2}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : ""), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest2}` });
+          resolve({ html: (toA ? `<a target="_blank" href="https://v.qq.com/${uriRest}">https://v.qq.com/${uriRest}</a><br/>` : "") + m2.rC(`<iframe delayed-src="https://v.qq.com/txp/iframe/player.html?vid=${v}"></iframe>`, inListPlay && m2.fsToRs.fixed ? "fixed" : ""), from: "qq", videoId: v, newURI: `https://v.qq.com/${uriRest}` });
         }
       }
       reject(false);
@@ -17250,7 +17250,7 @@ m.initialOpen: ${m2.initialOpen}`);
   window.uriRendering = function(uri, toA, inListPlay, descR) {
     return new Promise(async function(resolve, reject) {
       const { uriHost, pathname, search, hash } = m2.decomposeURI(uri);
-      uriRest = (pathname ? pathname.substring(1) : "") + search;
+      const uriRest = (pathname ? pathname.substring(1) : "") + search;
       if (uriHost) {
         if (m2.ptnURI[uriHost]) {
           try {
