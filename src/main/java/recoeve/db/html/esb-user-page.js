@@ -13867,9 +13867,9 @@
     return `/recostat?uri=${encodeURIComponent(uri)}${argsSearch}${hash ? `#${encodeURIComponent(hash)}` : ""}`;
   };
   m2.ptnURI = [];
-  m2.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
-  m2.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
-  m2.ptnTag = /^<\w+[\s\S]+>/i;
+  m2.ptnURL = /https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+  m2.ptnFILE = /file:\/\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+  m2.ptnTag = /<\w+[\s\S]+>/ig;
   m2.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
   m2.pad = function(str, max) {
     str = str.toString();
@@ -16702,6 +16702,7 @@ m.initialOpen: ${m2.initialOpen}`);
     if (!uri || typeof uri !== "string") {
       uri = String(uri);
     }
+    m2.ptnURL.lastIndex = 0;
     let exec = m2.ptnURL.exec(uri);
     if (exec !== null) {
       return `<a target="_blank" href="${exec[0]}">${m2.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
@@ -17241,15 +17242,15 @@ m.initialOpen: ${m2.initialOpen}`);
       if (!str || typeof str !== "string") {
         str = String(str);
       }
-      let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\[\]]+/ig;
-      let exec = ptnURL.exec(str);
+      m2.ptnURL.lastIndex = 0;
+      let exec = m2.ptnURL.exec(str);
       let start = 0;
       let res = "";
       while (exec !== null) {
         res += m2.escapeOnlyTag(str.substring(start, exec.index));
-        res += String(Object(await uriRendering(String(await m2.formatURI(exec[0], true)), true, false)).html);
-        start = ptnURL.lastIndex;
-        exec = ptnURL.exec(str);
+        res += (await uriRendering(await m2.formatURI(exec[0], true), true, false)).html;
+        start = m2.ptnURL.lastIndex;
+        exec = m2.ptnURL.exec(str);
       }
       res += m2.escapeOnlyTag(str.substring(start));
       resolve(res);
