@@ -2,6 +2,8 @@ package recoeve.http;
 
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -254,12 +256,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 			webClient[curWebClientI].headAbs(originalURI)
 				.send()
 				.onSuccess(response -> {
-					System.out.println("response: " + response.statusCode() + response.followedRedirects());
 					if (response.statusCode() < 400) {
 						List<String> followedURIs = response.followedRedirects();
 						if (!followedURIs.isEmpty()) {
 							String fullURI = followedURIs.get(followedURIs.size() - 1);
-							System.out.println("The last redirected URL: " + fullURI);
 							cf.complete(fullURI);
 						}
 						else {
@@ -507,7 +507,11 @@ public class RecoeveWebClient extends AbstractVerticle {
 					};
 
 					redirected(uri).whenComplete((redirectedURI, err) -> {
-						System.out.println("\nredirectedURI: " + redirectedURI);
+						try {
+							System.out.println("\nredirectedURI: " + URLDecoder.decode(redirectedURI, "UTF-8"));
+						} catch (UnsupportedEncodingException e) {
+							RecoeveDB.err(e);
+						}
 						CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
 						if (err == null) {
 							try {
@@ -588,13 +592,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 				// String uri = "https://www.tiktok.com/@khxabi/video/7416536112207891719?is_from_webapp=1&sender_device=pc";
 				// String uri = "https://www.codeit.kr/topics/js-server-with-relational-db";
 				// String uri = "https://recoeve.net/redirect/97e5b877989cf9e7";
-				String uri = "https://recoeve.net/redirect/dbcd7de1989cf9e7";
+				// String uri = "https://recoeve.net/redirect/dbcd7de1989cf9e7";
 				// String uri = "https://kipid.tistory.com/entry/week6-%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%A0%8C%EB%8D%94%EB%A7%81-%EB%B0%A9%EC%8B%9D-CSR-SSR-SSG-%EA%B0%81%EA%B0%81%EC%9D%98-%ED%8A%B9%EC%A7%95%EA%B3%BC-%EA%B0%81-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%96%B4%EB%96%A4-%EC%83%81%ED%99%A9%EC%97%90-%EC%82%AC%EC%9A%A9%ED%95%98%EB%A9%B4-%EC%A2%8B%EC%9D%84%EC%A7%80-%EC%84%A4%EB%AA%85";
 				// String uri = "https://recoeve.net/redirect/7ee5d220989cf9e8";
 				// String uri = "https://kipid.tistory.com/entry/%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-Binary-Search-Tree-BST-%EC%9D%98-%EC%A4%91%EC%9C%84-%EC%88%9C%ED%9A%8C-Inorder-%EC%A0%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Preorder-%ED%9B%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Postorder-%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90";
 				// String uri = "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html";
-				// String uri = "https://kipid.tistory.com/entry/Lists";
-				// String uri = "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html";
+				String uri = "https://kipid.tistory.com/entry/Lists";
 
 				final String[] keyUri = new String[]{ uri };
 				if (RecoeveDB.getutf8mb4Length(uri) > 255) {
