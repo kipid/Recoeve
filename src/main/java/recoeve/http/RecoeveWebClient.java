@@ -254,7 +254,8 @@ public class RecoeveWebClient extends AbstractVerticle {
 			webClient[curWebClientI].headAbs(originalURI)
 				.send()
 				.onSuccess(response -> {
-					if (response.statusCode() >= 200 && response.statusCode() < 400) {
+					System.out.println("response: " + response.statusCode() + response.followedRedirects());
+					if (response.statusCode() < 400) {
 						List<String> followedURIs = response.followedRedirects();
 						if (!followedURIs.isEmpty()) {
 							String fullURI = followedURIs.get(followedURIs.size() - 1);
@@ -593,6 +594,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 				// String uri = "https://kipid.tistory.com/entry/%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-Binary-Search-Tree-BST-%EC%9D%98-%EC%A4%91%EC%9C%84-%EC%88%9C%ED%9A%8C-Inorder-%EC%A0%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Preorder-%ED%9B%84%EC%9C%84-%EC%88%9C%ED%9A%8C-Postorder-%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90";
 				// String uri = "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html";
 				// String uri = "https://kipid.tistory.com/entry/Lists";
+				// String uri = "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html";
 
 				final String[] keyUri = new String[]{ uri };
 				if (RecoeveDB.getutf8mb4Length(uri) > 255) {
