@@ -188,7 +188,6 @@ nbdist/
 *.sublime-workspace
 *.sublime-project
 
-*.log
 *.mdmp
 
 build/distributions/http-1.0.0-SNAPSHOT.tar
