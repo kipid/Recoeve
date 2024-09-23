@@ -611,7 +611,7 @@ textarea.multi-line {
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0 0 0 0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   overflow: auto;
   color: rgb(35 35 35);
 }
@@ -938,7 +938,7 @@ textarea.multi-line {
 }
 .loading .outerCircle {
   background-color: transparent;
-  border: 8px solid rgba(185 80 9 0.9);
+  border: 8px solid rgba(185, 80, 9, 0.9);
   opacity: .9;
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
@@ -952,7 +952,7 @@ textarea.multi-line {
 }
 .loading .innerCircle {
   background-color: transparent;
-  border: 5px solid rgba(189 215 60 0.6);
+  border: 5px solid rgba(189, 215, 60, 0.6);
   opacity: .9;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
@@ -1258,6 +1258,7 @@ textarea.multi-line {
 /* ../../../Recoeve/src/main/java/recoeve/db/CDN/user-page-style.css */
 #block-touch {
   display: flex;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 #block-touch-exit {
   display: none;
@@ -1272,7 +1273,7 @@ textarea.multi-line {
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: rgba(0 0 0 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .block-touch > .center {
   display: inline-block;
@@ -1482,7 +1483,7 @@ textarea.multi-line {
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0 0 0 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   overflow: auto;
 }
 #memo-container .title {
@@ -1704,7 +1705,7 @@ textarea.multi-line {
   width: 33px;
   top: 0;
   bottom: 0;
-  background-color: rgba(150 150 150 0.7);
+  background-color: rgba(150, 150, 150, 0.7);
   border: .15em solid rgb(50 50 50);
 }
 .point-range-left {
@@ -1840,7 +1841,7 @@ textarea.multi-line {
   width: 23px;
   top: 0;
   bottom: 0;
-  background-color: rgba(150 150 150 0.7);
+  background-color: rgba(150, 150, 150, 0.7);
   border: .15em solid rgb(50 50 50);
 }
 #floating-key .point-range-left {

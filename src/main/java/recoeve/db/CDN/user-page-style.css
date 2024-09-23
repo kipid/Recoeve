@@ -1,5 +1,6 @@
 #block-touch {
-	display:flex
+	display:flex;
+	background-color:rgba(0, 0, 0, 0.2)
 }
 
 #block-touch-exit {
@@ -16,7 +17,7 @@
 	right:0;
 	top:0;
 	bottom:0;
-	background-color:rgba(0 0 0 0.3)
+	background-color:rgba(0, 0, 0, 0.3)
 }
 
 .block-touch>.center {
@@ -263,7 +264,7 @@
 	top:0;
 	right:0;
 	bottom:0;
-	background-color:rgba(0 0 0 0.8);
+	background-color:rgba(0, 0, 0, 0.8);
 	overflow:auto;
 }
 
@@ -533,7 +534,7 @@
 	width:33px;
 	top:0;
 	bottom:0;
-	background-color:rgba(150 150 150 0.7);
+	background-color:rgba(150, 150, 150, 0.7);
 	border:.15em solid rgb(50 50 50)
 }
 
@@ -693,7 +694,7 @@
 	width:23px;
 	top:0;
 	bottom:0;
-	background-color:rgba(150 150 150 0.7);
+	background-color:rgba(150, 150, 150, 0.7);
 	border:.15em solid rgb(50 50 50)
 }
 
