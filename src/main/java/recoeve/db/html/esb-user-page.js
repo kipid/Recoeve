@@ -13652,7 +13652,7 @@
     }
   });
 
-  // src/user-page.js
+  // src/user-page.jsx
   init_react_shim();
   var import_client = __toESM(require_client(), 1);
 
@@ -30910,7 +30910,7 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
     ] });
   }
 
-  // src/user-page.js
+  // src/user-page.jsx
   var import_jsx_runtime33 = __toESM(require_jsx_runtime(), 1);
   var root = import_client.default.createRoot(document.getElementById("root"));
   root.render(/* @__PURE__ */ (0, import_jsx_runtime33.jsx)(App, {}));
