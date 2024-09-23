@@ -27660,7 +27660,9 @@ ${uri.join("\n")}
             await prepare_default.getUriListAndShowRecosOnCat(prepare_default.currentCat, false);
             let fs = prepare_default.fsToRs;
             fs[0].ptnSH = prepare_default.splitHangul("$!@#");
-            fs.$fs.trigger("keyup.fs").then(() => {
+            fs.$fs.trigger("keyup.fs").catch((err) => {
+              console.error(err);
+            }).finally(() => {
               if (!fs.$fsl.find(".list-item.selected").length) {
                 fs.$fsl.find(".list-item").eq(0).trigger("click");
               }
@@ -27773,7 +27775,9 @@ ${uri.join("\n")}
             await prepare_default.getUriListAndShowRecosOnCat(prepare_default.currentCat, false);
             let fs = prepare_default.fsToRs;
             fs[0].ptnSH = prepare_default.splitHangul("$!@#");
-            fs.$fs.trigger("keyup.fs").then(() => {
+            fs.$fs.trigger("keyup.fs").catch((err) => {
+              console.error(err);
+            }).finally(() => {
               if (!fs.$fsl.find(".list-item.selected").length) {
                 fs.$fsl.find(".list-item").eq(0).trigger("click");
               }
@@ -29813,7 +29817,9 @@ ${uri2}	change	${cats2}`;
                     );
                     resolve2();
                   });
-                })().then(() => {
+                })().catch((err) => {
+                  console.error(err);
+                }).finally(() => {
                   $gotoCatsK = (0, import_jquery15.default)(`#gotoCats-${k}`);
                   $gotoCatsK.trigger("click");
                   resolve(false);
@@ -29918,7 +29924,9 @@ ${uri2}	change	${cats2}`;
                 prepare_default.$contents_recos.prepend(await prepare_default.recoHTML(prepare_default.$recoDeleted[uri]?.r));
                 resolve();
               });
-            })().then(() => {
+            })().catch((err) => {
+              console.error(err);
+            }).finally(() => {
               $recoElem = (0, import_jquery15.default)(`#reco-${l2}`);
               if ($recoElem.length) {
                 prepare_default.showAndScrollTo($recoElem);
@@ -29935,7 +29943,9 @@ ${uri2}	change	${cats2}`;
                 await (0, import_jquery15.default)(`#load-recos-${i3}`).trigger("click");
                 resolve();
               });
-            })().then(() => {
+            })().catch((err) => {
+              console.error(err);
+            }).finally(() => {
               let $recoElem2 = (0, import_jquery15.default)(`#reco-${l2}`);
               if ($recoElem2.length) {
                 prepare_default.showAndScrollTo($recoElem2);
