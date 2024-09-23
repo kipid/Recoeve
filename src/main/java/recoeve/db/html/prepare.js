@@ -1984,9 +1984,9 @@ m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 m.str_rmb_me = `log\tsW\tsH\nweb\t${m.sW}\t${m.sH}`;
 m.rmb_me = function (callback, args, saveNewRecoInputs) {
 	return new Promise(async function (resolve, reject) {
-		let uri = await m.formatURIFully(m.$input_uri.val());
-			// * (uri, uriRendered, keepOriginal)
 		if (saveNewRecoInputs) {
+			const uri = await m.formatURIFully(m.$input_uri.val());
+				// * (uri, uriRendered, keepOriginal)
 			m.localStorage.setItem("uri", uri);
 			m.localStorage.setItem("title", m.formatTitle(m.$input_title.val().trim()));
 			m.localStorage.setItem("cats", m.formatCats(m.$input_cats.val().trim()));
