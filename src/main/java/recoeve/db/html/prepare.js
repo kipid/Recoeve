@@ -2,6 +2,8 @@ const m = window.m = window.m || {};
 
 (function (m, $, undefined) {
 // Used in user-page.html, log-in.html, changePwd.html, verify.html
+const m = window.m = window.m || {};
+
 m.$window = $(window);
 m.$document = $(document);
 
@@ -62,10 +64,14 @@ m.recoms = {};
 m.recomsSorted = {};
 m.recomsPlusRandomSorted = {};
 
-m.mdInPRL = false; // mouse down in Point Range Left
-m.mdInPRR = false; // mouse down in Point Range Right
-m.mdInPRL1 = false; // mouse down in Point Range1 Left
-m.mdInPRR1 = false; // mouse down in Point Range1 Right
+m.mdInPRL = false;
+	// mouse down in Point Range Left
+m.mdInPRR = false;
+	// mouse down in Point Range Right
+m.mdInPRL1 = false;
+	// mouse down in Point Range1 Left
+m.mdInPRR1 = false;
+	// mouse down in Point Range1 Right
 m.PRmax = 10.0;
 m.fullPts = 10.0;
 
@@ -127,7 +133,8 @@ m.arrayToSearch = function (searchVars) {
 |*|	* docCookies.hasItem(name)
 |*|	* docCookies.keys()
 	*/
-m.expire = 365 * 24 * 60 * 60; // max-age in seconds.
+m.expire = 365 * 24 * 60 * 60;
+	// max-age in seconds.
 m.docCookies = {
 	hasItem: function (sKey) {
 		return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
@@ -239,10 +246,83 @@ m.pathOfRecoStat = function (uri, lang, hash, args) {
 // URI rendering :: http link itself, videos, images, maps.
 ////////////////////////////////////////////////////
 m.ptnURI = [];
-m.ptnURL = /^https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
-m.ptnFILE = /^file:\/\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/i;
-m.ptnTag = /^<\w+[\s\S]+>/i;
+m.ptnURL = /https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+m.ptnFILE = /file:\/\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+m.ptnTag = /<\w+[\s\S]+>/ig;
 m.ptnVal = /^([0-9]+(?:\.[0-9]+)?)\/([0-9]+(?:\.[0-9]+)?)$/;
+m.decomposeURI = function (uri) {
+	uri = String(uri);
+	uri = uri.split(/\s\t\n/)[0];
+	const res = { uri, uriHost: null, pathname: null, search: null, hash: null }; // uriHost, pathname, search, hash
+	if (uri.length > 4 && uri.substring(0, 4).toLowerCase() === "http") {
+		let k = 4;
+		if (uri.charAt(k) == 's' || uri.charAt(k) == 'S') {
+			k++;
+		}
+		if (uri.startsWith("://", k)) {
+			k += 3;
+			let l = uri.indexOf("/", k);
+			if (l > 0) {
+				res.uriHost = uri.substring(k, l);
+				let m = uri.indexOf("?", l);
+				if (m > 0) {
+					res.pathname = uri.substring(l, m);
+					let n = uri.indexOf("#", m);
+					if (n > 0) {
+						res.search = uri.substring(m, n);
+						res.hash = uri.substring(n);
+					}
+					else {
+						res.search = uri.substring(m);
+						res.hash = "";
+					}
+				}
+				else {
+					res.search = "";
+					let n = uri.indexOf("#", l);
+					if (n > 0) {
+						res.pathname = uri.substring(l, n);
+						res.hash = uri.substring(n);
+					}
+					else {
+						res.pathname = uri.substring(k);
+						res.hash = "";
+					}
+				}
+			}
+			else {
+				res.pathname = "";
+				let m = uri.indexOf("?", k);
+				if (m > 0) {
+					res.uriHost = uri.substring(k, m);
+					let n = uri.indexOf("#", m);
+					if (n > 0) {
+						res.search = uri.substring(m, n);
+						res.hash = uri.substring(n);
+					}
+					else {
+						res.search = uri.substring(m);
+						res.hash = "";
+					}
+				}
+				else {
+					res.search = "";
+					let n = uri.indexOf("#", k);
+					if (n > 0) {
+						res.uriHost = uri.substring(k, n);
+						res.hash = uri.substring(n);
+					}
+					else {
+						res.uriHost = uri.substring(k);
+						res.hash = "";
+					}
+				}
+			}
+		}
+	}
+	if (res.uriHost) { res.uriHost = res.uriHost.toLowerCase(); }
+	return res;
+};
 
 ////////////////////////////////////////////////////
 // hash encrypt
@@ -315,7 +395,8 @@ m.hash4 = function (str) {/* RS Hash Function */
 				q = (q + (a << j)) >>> 0;
 			}
 		}
-		a = q; // a=a*b;
+		a = q;
+			// a=a*b;
 	}
 	return m.pad(h.toString(16), 8);
 };
@@ -341,7 +422,8 @@ m.hash6 = function (str) {/* ELF Hash Function */
 	return m.pad(h.toString(16), 8);
 };
 m.hash7 = function (str) {/* BKDR Hash Function */
-	let a = 131; // 31 131 1313 13131 131313 etc..
+	let a = 131;
+		// 31 131 1313 13131 131313 etc..
 	let h = 0;
 	for (let i = 0; i < str.length; i++) {
 		let q = 0;
@@ -694,22 +776,25 @@ m.memoArrayToTableHTML = function (txtArray, escapeTag = true) {
 	tableStr += "</tbody></table>";
 	return tableStr;
 };
-m.JSONtoStr = async function (json) {
-	if (!json || json.constructor !== Array) {
-		return "";
-	}
-	let res = m.encloseStr(json[0][0]);
-	for (let j = 1; j < json[0].length; j++) {
-		res += "\t" + m.encloseStr(json[0][j]);
-	}
-	for (let i = 1; i < json.length; i++) {
-		res += "\n" + m.encloseStr(json[i][json[0][0]]);
-		let jMax = json[0].length; // < json[i].length ? json[0].length : json[i].length;
-		for (let j = 1; j < jMax; j++) {
-			res += "\t" + (json[i][json[0][j]] ? m.encloseStr(json[i][json[0][j]]) : "");
+m.JSONtoStr = function (json) {
+	return new Promise((resolve, reject) => {
+		if (!json || json.constructor !== Array) {
+			return "";
 		}
-	}
-	return Promise.resolve(res);
+		let res = m.encloseStr(json[0][0]);
+		for (let j = 1; j < json[0].length; j++) {
+			res += "\t" + m.encloseStr(json[0][j]);
+		}
+		for (let i = 1; i < json.length; i++) {
+			res += "\n" + m.encloseStr(json[i][json[0][0]]);
+			let jMax = json[0].length;
+				// < json[i].length ? json[0].length : json[i].length;
+			for (let j = 1; j < jMax; j++) {
+				res += "\t" + (json[i][json[0][j]] ? m.encloseStr(json[i][json[0][j]]) : "");
+			}
+		}
+		resolve(res);
+	});
 };
 m.JSONtoStrRev = function (json) {
 	let res = m.encloseStr(json[0][0]);
@@ -913,7 +998,9 @@ m.val = function (val) {
 	else {
 		let exec = m.ptnVal.exec(val);
 		if (exec !== null) {
+			res.numStr = exec[1];
 			res.num = Number(exec[1]);
+			res.divisorStr = exec[2];
 			res.divisor = Number(exec[2]);
 			res.valid = (res.num >= 0 && res.num <= res.divisor);
 			if (res.valid) {
@@ -927,10 +1014,14 @@ m.val = function (val) {
 	return res;
 };
 {
-	let r = 12; // outer radius of star
-	let r0 = 6; // inner radius of star
-	let pad = 1; // padding of star
-	let pad0 = 9; // left/right pad
+	let r = 12;
+		// outer radius of star
+	let r0 = 6;
+		// inner radius of star
+	let pad = 1;
+		// padding of star
+	let pad0 = 9;
+		// left/right pad
 	let thetas = [];
 	let coss = [];
 	let sins = [];
@@ -970,6 +1061,12 @@ m.recoDefs[""].heads["default"] = m.recoDefs[""].heads[0];
 ////////////////////////////////////////////////////
 // CatList rendering
 ////////////////////////////////////////////////////
+m.catsToString = function (cats) {
+	if (cats === undefined || cats === null) {
+		return "[--Unknown--]";
+	}
+	return String(cats);
+};
 m.getDepthOfTabs = function (str) {
 	let n = 0;
 	while (n < str.length && str.charAt(n) === "\t") {
@@ -1006,7 +1103,8 @@ m.strCatListToJSON = function (strCatList, catList) {
 		if (strCatList.length === 0) {
 			list = [];
 		}
-		list.unshift(""); // cat=uncategorized : empty cat.
+		list.unshift("");
+			// cat=uncategorized : empty cat.
 		if (!catList) {
 			catList = m.catList;
 		}
@@ -1038,8 +1136,7 @@ m.catsToA = function (cats) {
 	for (let i = 0; i < list.length; i++) {
 		let cat = list[i];
 		arrayHTML.push(
-			`<a class="move-cat${m.currentCat === cat ? ` currentCat` : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat
-			)}</span>${m.escapeOnlyTag(cat)}</a>`
+			`<a class="move-cat${m.currentCat === cat ? ` currentCat` : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cat)}</a>`
 		);
 	}
 	return arrayHTML.join(" ; ");
@@ -1063,7 +1160,7 @@ m.catListToHTML = function () {
 			let afterDepth = cL[i + 1].depth;
 			if (beforeDepth < currentDepth) {
 				// open subCat
-				catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[i].subCatExpanded ? "block" : "none"}">`;
+				catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
 			}
 			else {
 				for (let j = currentDepth; j < beforeDepth; j++) {
@@ -1086,7 +1183,7 @@ m.catListToHTML = function () {
 			let currentDepth = cL[i].depth;
 			if (beforeDepth < currentDepth) {
 				// open subCat
-				catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:none">`;
+				catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
 			}
 			else {
 				for (let j = currentDepth; j < beforeDepth; j++) {
@@ -1135,13 +1232,14 @@ m.getConciseURI = function (uri) {
 		})
 	});
 };
-m.recoDowned = async function (urisStr, recos) {
+m.recoDowned = function (urisStr, recos) {
 	let uris = urisStr.trim().split("\n");
 	for (let k = 0; k < uris.length; k++) {
 		let uri = uris[k];
 		let r = recos[uri];
 		if (!r) { r = recos[uri] = { uri }; }
-		r.down = true; // User's or My reco on the uri is downloaded.
+		r.down = true;
+			// User's or My reco on the uri is downloaded.
 	}
 };
 // * conciseURIs are disabled.
@@ -1150,9 +1248,10 @@ m.recoToEve = function (resp, recos, cat) {
 		resp = resp.replace(/%2520/gi, "%20");
 		try {
 			resp = Object(await m.strToJSON(resp));
-		} catch (err) {
+		}
+		catch (err) {
 			resp = [];
-			console.log(err);
+			console.error(err);
 		}
 		console.log(resp);
 		for (let k = 1; k < resp.length; k++) {
@@ -1162,13 +1261,15 @@ m.recoToEve = function (resp, recos, cat) {
 			let r = recos[uri];
 			if (!r) { r = recos[uri] = { uri }; }
 			r.down = true;
-			r.has = true; // * User has a reco on the uri.
+			r.has = true;
+				// * User has a reco on the uri.
 			for (let prop in respK) {
 				if (isNaN(String(prop))) {
 					prop = String(prop);
 					r[prop] = String(respK[prop]);
 					if (prop === "has") {
-						r[prop] = Boolean(r[prop]); // ! r.has must be true (or "yes") or false (or "")
+						r[prop] = Boolean(r[prop]);
+							// ! r.has must be true (or "yes") or false (or "")
 					}
 				}
 			}
@@ -1178,8 +1279,10 @@ m.recoToEve = function (resp, recos, cat) {
 			else {
 				r.deleted = false;
 			}
-			r.descR = m.renderStrDescCmt(String(r.desc)); // R for rendered.
-			r.cmtR = m.renderStrDescCmt(String(r.cmt)); // R for rendered.
+			r.descR = m.renderStrDescCmt(r.desc);
+				// R for rendered.
+			r.cmtR = m.renderStrDescCmt(r.cmt);
+				// R for rendered.
 			if (r.val === undefined || r.val === null || typeof r.val === "string") {
 				r.val = m.val(String(r.val));
 			}
@@ -1196,14 +1299,16 @@ m.recoToEve = function (resp, recos, cat) {
 					fsFL[fsFL.length] = fsFL[uri] = { i: fsFL.length, catsSplit, uri, r, catAndI: {}, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title) };
 				}
 				else {
-					fsFL[fsFL[uri].i] = fsFL[uri] = { ...fsFL[uri], catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title) }; // * i and catAndI is preserved.
+					fsFL[fsFL[uri].i] = fsFL[uri] = { ...fsFL[uri], catsSplit, uri, r, txt: m.splitHangul(`${r?.cats} :: ${r?.title}`), html: m.escapeOnlyTag(r?.title) };
+						// * i and catAndI is preserved.
 					if (!fsFL[uri].catAndI) {
 						fsFL[uri].catAndI = {};
 					}
 				}
 			}
 			m.beInCurrentCat = false;
-			if (!cat && cat !== "") { // * If (!cat&&cat!==""), only resp[1] (one reco/edit/delete) is there in most cases.
+			if (!cat && cat !== "") {
+					// * If (!cat&&cat!==""), only resp[1] (one reco/edit/delete) is there in most cases.
 				let catsSplit = m.catsToString(r?.cats).split(";");
 				for (let i = catsSplit.length - 1; i >= 0; i--) {
 					let catI = catsSplit[i];
@@ -1212,14 +1317,16 @@ m.recoToEve = function (resp, recos, cat) {
 						break;
 					}
 				}
-				// ! cat = m.beInCurrentCat ? m.currentCat : catsSplit[0]; // Must not asign!
+				// ! cat = m.beInCurrentCat ? m.currentCat : catsSplit[0];
+					// Must not asign!
 			}
 			if (m.beInCurrentCat) {
 				if (!m.catUriList[m.currentCat]?.has) {
 					try {
 						await m.getUriList("cat\n" + (m.currentCat === "" ? "\tp" : m.currentCat));
-					} catch (err) {
-						console.log(err);
+					}
+					catch (err) {
+						console.error(err);
 					}
 				}
 				for (let k = 1; k < resp.length; k++) {
@@ -1230,16 +1337,18 @@ m.recoToEve = function (resp, recos, cat) {
 				fs.shuffledOnce=true;
 				try {
 					await m.reTriggerFS(fs);
-				} catch (err) {
-					console.log(err);
+				}
+				catch (err) {
+					console.error(err);
 				}
 			}
 			else if (cat || cat === "") {
 				if (!m.catUriList[cat]?.has) {
 					try {
 						await m.getUriList("cat\n" + (cat === "" ? "\tp" : cat));
-					} catch (err) {
-						console.log(err);
+					}
+					catch (err) {
+						console.error(err);
 					}
 				}
 				for (let k = 1; k < resp.length; k++) {
@@ -1251,8 +1360,9 @@ m.recoToEve = function (resp, recos, cat) {
 				fs.shuffledOnce=true;
 				try {
 					await m.reTriggerFS(fs);
-				} catch (err) {
-					console.log(err);
+				}
+				catch (err) {
+					console.error(err);
 				}
 			}
 			if (m.catUriList[cat]?.uris) {
@@ -1297,7 +1407,8 @@ m.showReco = async function (r) {
 	}
 	if (r.has) {
 		let recoHTML = await m.recoHTML(r, true, true);
-		m.$my_reco.html(String(recoHTML)); // need to be edit.
+		m.$my_reco.html(String(recoHTML));
+			// need to be edit.
 		let $edit = $my_reco.find(".button.edit").remove();
 	}
 	else {
@@ -1306,23 +1417,23 @@ m.showReco = async function (r) {
 };
 m.fillRecoInNewReco = function (r, fillDefs) {
 	if (r.has) {
-		m.$input_title[0].value = r.title;
-		m.$input_cats[0].value = r.cats;
-		m.$input_desc[0].value = r.desc;
-		m.$input_cmt[0].value = r.cmt;
-		m.$input_val[0].value = r.val.str;
-		m.$input_val.trigger("keyup");
+		m.$input_title.val(r.title);
+		m.$input_cats.val(r.cats);
+		m.$input_desc.val(r.desc);
+		m.$input_cmt.val(r.cmt);
+		m.$input_val.val(r.val.str);
+		m.$input_val.trigger("keyup.change-point");
 	}
 	else if (fillDefs) {
 		let recoDef = m.recoDefs[r?.uri];
 		if (recoDef?.defTitles?.[0]?.[0]) {
-			m.$input_title[0].value = recoDef.defTitles[0][0];
+			m.$input_title.val(recoDef.defTitles[0][0]);
 		}
 		if (recoDef?.defCats[0]?.[0]) {
-			m.$input_cats[0].value = recoDef.defCats[0][0];
+			m.$input_cats.val(recoDef.defCats[0][0]);
 		}
 		if (recoDef?.defDescs[0]?.[0]) {
-			m.$input_desc[0].value = recoDef.defDescs[0][0];
+			m.$input_desc.val(recoDef.defDescs[0][0]);
 		}
 	}
 	let uri = r?.uri;
@@ -1351,9 +1462,9 @@ m.fillRecoInNewReco = function (r, fillDefs) {
 };
 m.emptifyRecoInNewReco = function () {
 	m.localStorage.clear();
-	m.$input_uri[0].value = "";
-	m.$input_val.trigger("keyup");
-	m.formatURIAndGetAndShowDefsAndRecoInNewReco(true, false); // * (noFormatURI, fillDefs)
+	m.$input_uri.val("");
+	m.formatURIAndGetAndShowDefsAndRecoInNewReco(true, false);
+		// * (noFormatURI, fillDefs)
 };
 m.getFullURI = function (shortURI) {
 	return new Promise(function (resolve, reject) {
@@ -1373,6 +1484,14 @@ m.processChunk = async function (chunk, recoDef) {
 		for (let i = 0; i < titles.length; i++) {
 			if (titles[i]?.[0]?.startsWith("Error:")) {
 				console.log(titles[i][0]);
+				if (titles[i][0].startsWith("Error: No valid session. Please try again.: ")) {
+					try {
+						// m.getH1(recoDef.uri);
+					}
+					catch (err) {
+						console.error(err);
+					}
+				}
 				continue;
 			}
 			const headText = decodeURIComponent(titles[i]?.[1]?.trim().replace(/[\s\t\n\r]+/g, " "));
@@ -1472,8 +1591,9 @@ m.showDefs = function (uri) {
 		if (!recoDef) { recoDef = m.recoDefs[uri] = { uri, heads:[], defTitles: [[""]], defCats: [[""]], defDescs: [[""]], down: false }; }
 		try {
 			m.getH1(uri);
-		} catch (err) {
-			console.log(err);
+		}
+		catch (err) {
+			console.error(err);
 		}
 		let defCats = m.recoDefs[uri].defCats;
 		let defCatsHTML = `<div class="def-cat replace-cat">[--Indifferent--]</div> <div class="def-cat replace-cat">[--Later--]</div> <div class="def-cat replace-cat">[--Stashed--]</div> <div id="add-cat" class="def-cat add-txt">;</div> <div id="sub-cat" class="def-cat add-txt">--</div> <div id="delete-cat" class="def-cat delete-cat">[--Delete--]</div><br/>`;
@@ -1493,7 +1613,7 @@ m.showDefs = function (uri) {
 			$this.addClass("selected");
 			let k = fs.k;
 			fs.catsSplit[k] = m.unescapeHTML($this.html()).trim();
-			fs.$fs[0].value = fs.catsSplit.join(";");
+			fs.$fs.val(fs.catsSplit.join(";"));
 			let sStart = 0;
 			for (let i = 0; i < k; i++) {
 				sStart += fs.catsSplit[i].length + 1;
@@ -1509,10 +1629,10 @@ m.showDefs = function (uri) {
 			$this.addClass("selected");
 			let sStart = m.$input_cats[0].selectionStart;
 			let sEnd = m.$input_cats[0].selectionEnd;
-			let inputValue = m.$input_cats[0].value;
+			let inputValue = m.$input_cats.val();
 			let inserted = m.unescapeHTML($this.html());
-			m.$input_cats[0].value = `${inputValue.substring(0, sStart)}${inserted}${inputValue.substring(sEnd)}`;
-			let l = m.$input_cats[0].value.length;
+			m.$input_cats.val(`${inputValue.substring(0, sStart)}${inserted}${inputValue.substring(sEnd)}`);
+			let l = m.$input_cats.val().length;
 			m.$input_cats.focus();
 			sEnd = sStart + inserted.length;
 			m.$input_cats[0].setSelectionRange(sEnd, sEnd);
@@ -1526,7 +1646,7 @@ m.showDefs = function (uri) {
 			$this.addClass("selected");
 			let k = fs.k;
 			fs.catsSplit.splice(k, 1);
-			fs.$fs[0].value = fs.catsSplit.join(";");
+			fs.$fs.val(fs.catsSplit.join(";"));
 			let sStart = 0;
 			for (let i = 0; i < k; i++) {
 				sStart += fs.catsSplit[i].length + 1;
@@ -1556,7 +1676,7 @@ m.showDefs = function (uri) {
 			$defDesc.removeClass("selected");
 			let $this = $(this);
 			$this.addClass("selected");
-			m.$input_desc[0].value = m.unescapeHTML($this.find("data.none").html());
+			m.$input_desc.val(m.unescapeHTML($this.find("data.none").html()));
 		});
 		resolve();
 	});
@@ -1632,9 +1752,21 @@ m.formatNOfPoints = function (n) {
 };
 m.formatURIFully = function (uri, uriRendered, keepOriginal) {
 	return new Promise(async function (resolve, reject) {
-		let from = String(uriRendered?.from);
-		console.log(`uriRendered: `, uriRendered);
-		m.lastURI = uri;
+		if (!uri || typeof uri !== "string" || !uri.length ) {
+			resolve("");
+		}
+		if (keepOriginal) {
+			m.uri = uri;
+		}
+		uri = await m.formatURI(uri, keepOriginal);
+			// * (uri, keepOriginal)
+		if (!uriRendered) {
+			uriRendered = await uriRendering(uri, true);
+				// * (uri, toA, inListPlay, descR)
+		}
+		let from = uriRendered?.from;
+		m.lastURI = uri = uriRendered?.uri;
+		console.log("uriRendered: ", uriRendered);
 		switch (from) {
 			case "youtube":
 				uri = `https://www.youtube.com/watch?v=${uriRendered.videoId}`;
@@ -1672,28 +1804,33 @@ m.formatURIFully = function (uri, uriRendered, keepOriginal) {
 		}
 		if (!keepOriginal && m.getUTF8Length(uri) > 255) {
 			try {
-				resolve(String(await m.getConciseURI(uri)));
+				uri = await m.getConciseURI(uri);
+				m.$input_uri.val(uri);
+				resolve(uri);
 			}
 			catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 		}
-		resolve(uri);
+		else if (keepOriginal) {
+			m.$input_uri.val(m.uri);
+			resolve(m.uri);
+		}
+		else {
+			m.$input_uri.val(uri);
+			resolve(uri);
+		}
 	});
 };
-m.formatURIAndGetAndShowDefsAndRecoInNewReco = function (noFormatURI, fillDefs) {
+m.formatURIAndGetAndShowDefsAndRecoInNewReco = function (noFormatURI, fillDefs, keepOriginal) {
 	return new Promise(async function (resolve, reject) {
-		let elem = m.$input_uri[0];
-		let uriRendered = Object(await uriRendering(elem.value, true)); // * (uri, toA, inListPlay, descR)
-		let originalURI = String(await m.formatURIFully(elem.value, uriRendered, true)); // * (uri, uriRendered, keepOriginal)
-		let uri = noFormatURI ? originalURI : String(await m.formatURIFully(originalURI, uriRendered, false)); // * (uri, uriRendered, keepOriginal)
-		elem.value = uri;
-		if (!noFormatURI) {
-			elem.value = uri = String(await m.formatURIFully(uri, uriRendered)); // * (uri, uriRendered, keepOriginal)
-			m.$input_uri.trigger("keyup");
-		}
-		m.uri = uri;
-		m.$show_URI.html(String(uriRendered.html));
+		let uriRendered = await uriRendering(m.$input_uri.val(), true);
+			// * (uri, toA, inListPlay, descR)
+		let originalURI = await m.formatURIFully(m.$input_uri.val(), uriRendered, keepOriginal);
+			// * (uri, uriRendered, keepOriginal)
+		let uri = noFormatURI ? originalURI : await m.formatURIFully(originalURI, uriRendered, keepOriginal);
+			// * (uri, uriRendered, keepOriginal)
+		m.$show_URI.html(uriRendered.html.replace(/\sdelayed-src=/gi, " src="));
 		let r = m.myRecos[uri];
 		if (!r) {
 			r = m.myRecos[uri] = { uri };
@@ -1712,9 +1849,9 @@ m.formatURIAndGetAndShowDefsAndRecoInNewReco = function (noFormatURI, fillDefs) 
 		}
 		await m.getAndFillRecoInNewReco(r, fillDefs);
 		await m.getAndShowDefsInNewReco(r);
-		m.reNewAndReOn();
+		await m.reNewAndReOn();
 		if (originalURI !== uri) {
-			let desc = m.$input_desc[0].value;
+			let desc = m.$input_desc.val();
 			let descR = m.renderStrDescCmt(desc);
 			if (descR["#originaluri"]) {
 				descR["#originaluri"].key = "#originalURI";
@@ -1727,7 +1864,23 @@ m.formatURIAndGetAndShowDefsAndRecoInNewReco = function (noFormatURI, fillDefs) 
 					descR[i].i = i;
 				}
 			}
-			m.$input_desc[0].value = m.descCmtRToString(descR);
+			m.$input_desc.val(m.descCmtRToString(descR));
+		}
+		if (uriRendered.uriHash) {
+			let desc = m.$input_desc.val();
+			let descR = m.renderStrDescCmt(desc);
+			if (descR["#uriwithhash"]) {
+				descR["#uriwithhash"].key = "#URIwithHash";
+				descR["#uriwithhash"].val += `\n${originalURI + uriRendered.uriHash}\n`;
+			}
+			else {
+				descR["#uriwithhash"] = { key: "#URIwithHash", val: `\n${originalURI + uriRendered.uriHash}\n` };
+				descR.splice(0, 0, descR["#uriwithhash"]);
+				for (let i = 0; i < descR.length; i++) {
+					descR[i].i = i;
+				}
+			}
+			m.$input_desc.val(m.descCmtRToString(descR));
 		}
 		m.lastURI = uri;
 		resolve();
@@ -1739,13 +1892,14 @@ m.formatURIAndGetAndShowDefsAndRecoInNewReco = function (noFormatURI, fillDefs) 
 ////////////////////////////////////////////////////
 m.logPrint = function (html) {
 	try {
-		m.$error.append(html);
-		m.$error.scrollTop(m.$error[0].scrollHeight);
-	} catch (err) {
-		console.log(err);
+		m.$logs.append(html);
+		m.$logs.scrollTop(m.$logs[0].scrollHeight);
+	}
+	catch (err) {
+		console.error(err);
 	}
 };
-m.delayPad = m.delayPad || 0;
+m.delayPad = m.delayPad || 512;
 m.wait = m.wait || 1024;
 m.$delayedElems = $("#nothing");
 m.previous = Date.now();
@@ -1791,7 +1945,6 @@ $.fn.delayedLoad = function () {
 };
 m.delayedLoadAll = function () {
 	return new Promise(async function (resolve, reject) {
-		m.logPrint(`<br/>Doing delayed-load. : ${m.$delayedElems.length}`);
 		if (m.$delayedElems.length > 0) {
 			m.$delayedElems.each(function () {
 				if ($(this).delayedLoad()) {
@@ -1824,7 +1977,6 @@ m.delayedLoadByScroll = function () {
 				await m.delayedLoadAll();
 				resolve();
 			}, m.wait * 1.5 - passed);
-			m.logPrint(`<br/>wait ${(m.wait * 1.5 - passed).toFixed(0)}ms.`);
 		}
 	});
 };
@@ -1834,14 +1986,15 @@ m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
 m.str_rmb_me = `log\tsW\tsH\nweb\t${m.sW}\t${m.sH}`;
 m.rmb_me = function (callback, args, saveNewRecoInputs) {
 	return new Promise(async function (resolve, reject) {
+		let uri = await m.formatURIFully(m.$input_uri.val());
+			// * (uri, uriRendered, keepOriginal)
 		if (saveNewRecoInputs) {
-			let uri = String(await m.formatURI(m.$input_uri[0].value));
-			m.localStorage.setItem("uri", String(await m.formatURIFully(uri, Object(await uriRendering(uri)))));
-			m.localStorage.setItem("title", m.formatTitle(m.$input_title[0].value.trim()));
-			m.localStorage.setItem("cats", m.formatCats(m.$input_cats[0].value.trim()));
-			m.localStorage.setItem("desc", m.$input_desc[0].value.trim());
-			m.localStorage.setItem("cmt", m.$input_cmt[0].value.trim());
-			m.localStorage.setItem("points", m.$input_val[0].value.trim());
+			m.localStorage.setItem("uri", uri);
+			m.localStorage.setItem("title", m.formatTitle(m.$input_title.val().trim()));
+			m.localStorage.setItem("cats", m.formatCats(m.$input_cats.val().trim()));
+			m.localStorage.setItem("desc", m.$input_desc.val().trim());
+			m.localStorage.setItem("cmt", m.$input_cmt.val().trim());
+			m.localStorage.setItem("points", m.$input_val.val().trim());
 		}
 		const SSNencrypt = function (callback, args) {
 			return new Promise(async (resolve, reject) => {
@@ -1854,8 +2007,9 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 					if (isNaN(iter)) {
 						try {
 							await callback(args, resp);
-						} catch (err) {
-							console.log(err);
+						}
+						catch (err) {
+							console.error(err);
 						}
 						m.docCookies.removeItem("tCreate");
 						m.localStorage.removeItem("session");
@@ -1876,8 +2030,10 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 										else {
 											try {
 												await callback(args, resp);
-											} catch (err) {
-												console.log(err);
+													// ! No salt and session => Error.
+											}
+											catch (err) {
+												console.error(err);
 											}
 										}
 										resolve();
@@ -1885,8 +2041,10 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 									else {
 										try {
 											await callback(args, resp);
-										} catch (err) {
-											console.log(err);
+												// ! Not Rmbd => Error.
+										}
+										catch (err) {
+											console.error(err);
 										}
 										resolve();
 									}
@@ -1896,20 +2054,24 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 						else {
 							try {
 								await callback(args, "Error: No rmbdI cookie.");
-							} catch (err) {
-								console.log(err);
+									// ! No rmbdI cookie => Error.
+							}
+							catch (err) {
+								console.error(err);
 							}
 							resolve();
 						}
 					}
 					else {
-						m.docCookies.setItem("SSN"
-						, m.encrypt(m.localStorage.getItem("salt"), m.localStorage.getItem("session").substring(3, 11), Number(iter)) // * (salt, pwd, iter)
-						, 3, "/", false, true);
+						m.docCookies.setItem("SSN", m.encrypt(m.localStorage.getItem("salt"), m.localStorage.getItem("session").substring(3, 11), Number(iter))
+							// * (salt, pwd, iter)
+							, 3, "/", false, true);
 						try {
-							await callback(args, null); // * null means no error.
-						} catch (err) {
-							console.log(err);
+							await callback(args, null);
+								// * null means no error.
+						}
+						catch (err) {
+							console.error(err);
 						}
 						resolve();
 					}
@@ -1919,6 +2081,7 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		if (m.docCookies.hasItem('tCreate')) {
 			if (m.docCookies.hasItem("salt") || m.docCookies.hasItem("session")) {
 				m.saveSSN();
+					// cookie to localStorage.
 			}
 			if (m.localStorage.getItem("salt") && m.localStorage.getItem("session")) {
 				SSNencrypt(callback, args);
@@ -1940,11 +2103,13 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 						}
 						else {
 							callback(args, resp);
+								// ! No salt and session => Error.
 							resolve();
 						}
 					}
 					else {
 						callback(args, resp);
+							// ! Not Rmbd => Error.
 						resolve();
 					}
 				}, m.wait);
@@ -1952,6 +2117,7 @@ m.rmb_me = function (callback, args, saveNewRecoInputs) {
 		}
 		else {
 			callback(args, "Error: No rmbdI cookie.");
+				// ! No rmbdI cookie => Error.
 			resolve();
 		}
 	});
@@ -1983,7 +2149,8 @@ m.splitHangul = function (str) {
 	res.originalStr = str;
 	res.splitted3 = "";
 	res.splitted = "";
-	res.pCho = []; // position of word-start or 초성
+	res.pCho = [];
+		// position of word-start or 초성
 	let p = 0;
 	res.pCho[p] = true;
 	if (!str || typeof str !== "string") {
@@ -2119,7 +2286,8 @@ m.fuzzySearch = function (ptnSH, fs) {
 		let list = [];
 		if (fs.shuffledOnce && fs.shuffled && fs.shuffled.length > 0) {
 			let shuffled = fs.shuffled;
-			for (let i = shuffled.length - 1; i >= 0; i--) { // * Newest to the top from the bottom. Max index to the top.
+			for (let i = shuffled.length - 1; i >= 0; i--) {
+					// * Newest to the top from the bottom. Max index to the top.
 				list.push(fs.fullList[shuffled[i].i]);
 			}
 		}
@@ -2130,11 +2298,13 @@ m.fuzzySearch = function (ptnSH, fs) {
 			}
 		}
 		else {
-			for (let i = fs.fullList.length - 1; i >= 0; i--) { // * Newest to the top from the bottom. Max index to the top.
+			for (let i = fs.fullList.length - 1; i >= 0; i--) {
+					// * Newest to the top from the bottom. Max index to the top.
 				list.push(fs.fullList[i]);
 			}
 			if (fs === m.fsGo && fs.shuffledOnce) {
-				for (let i = fs.fullList.length - 1; i >= 0; i--) { // * Newest to the top from the bottom. Max index to the top.
+				for (let i = fs.fullList.length - 1; i >= 0; i--) {
+						// * Newest to the top from the bottom. Max index to the top.
 					let uri = fs.fullList[i].uri;
 					if (!fs.fullList[uri].catAndI) {
 						fs.fullList[uri].catAndI = {};
@@ -2174,7 +2344,8 @@ m.fuzzySearch = function (ptnSH, fs) {
 				let maxMatchScore = 0;
 				if (matched) {
 					maxMatchScore = m.matchScoreFromIndices(txt, ptnSH, indices);
-					let indicesMMS = [...indices]; // indices of max match score
+					let indicesMMS = [...indices];
+						// indices of max match score
 					if (txt.length < m.fsLength) {
 						for (let k = indices.length - 1; k >= 0;) {
 							if (regExs[k].toString() === m.spaceRegExpStr) {
@@ -2382,7 +2553,7 @@ m.onKeydownInFS = function (e, fs) {
 	let $fsl = fs.$fsl;
 	let $fs_container = fs.$fs_container;
 	let $target = $(e.target);
-	let catsTxt = $target[0].value;
+	let catsTxt = $target.val();
 	let sEnd = $target[0].selectionEnd;
 	fs.catsSplit = catsTxt.split(";");
 	let l = catsTxt.length;
@@ -2515,35 +2686,43 @@ m.fsToRs.getAndPlayVideo = function (cue, inListPlay = true) {
 				let iToNumber = Number(i.substring(12));
 				let uri = m.recoms[m.currentCat][iToNumber].uri;
 				let recoHTML = await m.recomHTML(m.userRecos[uri], inListPlay);
+					// * (r, inListPlay, additionalClass)
 				m.$reco_playing.html(String(recoHTML));
-				let uriRendered = Object(await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR)); // * (uri, toA, inListPlay, descR)
+				let uriRendered = await uriRendering(uri, false, inListPlay, m.userRecos[uri]?.descR);
+					// * (uri, toA, inListPlay, descR)
 				m.recoURIPlaying = uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					try {
-						await m.cueOrLoadUri(cue, uriRendered, inListPlay); // * (cue, uriRendered, inListPlay)
-					} catch (err) {
-						console.log(err);
+						await m.cueOrLoadUri(cue, uriRendered, inListPlay);
+							// * (cue, uriRendered, inListPlay)
 					}
-					m.reNewAndReOn();
-					resolve();
+					catch (err) {
+						console.error(err);
+					}
+					await m.reNewAndReOn();
 				}
+				resolve();
 			}
 			else if (!isNaN(i) && 0 <= i && i < fs.fullList.length) {
 				$(`#toR-${i}`).addClass("selected");
 				let r = fs.fullList[i].r;
-				let recoHTML = await m.recoHTML(r, inListPlay, true, false); // * (r, inListPlay, inRange, inRecoms, additionalClass)
+				let recoHTML = await m.recoHTML(r, inListPlay, true, false);
+					// * (r, inListPlay, inRange, inRecoms, additionalClass)
 				m.$reco_playing.html(String(recoHTML));
-				let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR)); // * (uri, toA, inListPlay, descR)
+				let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+					// * (uri, toA, inListPlay, descR)
 				m.recoURIPlaying = r?.uri;
 				if (m.lastRecoURIPlaying !== m.recoURIPlaying) {
 					try {
-						await m.cueOrLoadUri(cue, uriRendered, inListPlay); // * (cue, uriRendered, inListPlay)
-					} catch (err) {
-						console.log(err);
+						await m.cueOrLoadUri(cue, uriRendered, inListPlay);
+							// * (cue, uriRendered, inListPlay)
 					}
-					m.reNewAndReOn();
-					resolve();
+					catch (err) {
+						console.error(err);
+					}
+					await m.reNewAndReOn();
 				}
+				resolve();
 			}
 			else {
 				m.$reco_playing.html('');
@@ -2555,9 +2734,10 @@ m.fsToRs.getAndPlayVideo = function (cue, inListPlay = true) {
 			}
 		}
 		catch (err) {
-			console.log(err);
+			console.error(err);
 			reject(err);
 		}
+		resolve();
 	});
 };
 m.fsToRs.pauseVideo = function () {
@@ -2591,18 +2771,20 @@ m.fsToRs.playNext = function (increment, cue, first, byKeyboard = false) {
 				if (fs.fullList[fs.currentIndex]?.r?.has) {
 					m.fsScrollToSelected(fs, $toR0);
 					try {
-						await fs.getAndPlayVideo(true); // * (cue, inListPlay = true)
-					} catch (err) {
-						console.log(err);
+						await fs.getAndPlayVideo(true);
+							// * (cue, inListPlay = true)
+					}
+					catch (err) {
+						console.error(err);
 					}
 				}
 				else if (m.countSetTimeoutPlayNext < 8) {
-					fs.$fs[0].value="";
+					fs.$fs.val("");
 					(m.reTriggerFS(fs))
 						.then(() => {
 							fs.playNext(increment, cue, first);
 						})
-						.catch(err => console.log(err));
+						.catch(err => console.error(err));
 				}
 			}
 			else {
@@ -2621,12 +2803,12 @@ m.fsToRs.playNext = function (increment, cue, first, byKeyboard = false) {
 				}
 				m.countSetTimeoutPlayNext++;
 				if (m.countSetTimeoutPlayNext < 8) {
-					fs.$fs[0].value="";
+					fs.$fs.val("");
 					(m.reTriggerFS(fs))
 						.then(() => {
 							fs.playNext(increment, cue, first);
 						})
-						.catch(err => console.log(err));
+						.catch(err => console.error(err));
 				}
 			}
 			return;
@@ -2676,7 +2858,8 @@ m.fsToRs.playNext = function (increment, cue, first, byKeyboard = false) {
 m.goDirectlyToHash = function (hashURI) { // Decoded hashURI without "#".
 	m.hashURI = hashURI;
 	window.location.hash = `#${m.hashURI}`;
-	m.$window.scrollTop($(window.location.hash).offset().top); // For when hash is not changed.
+	m.$window.scrollTop($(window.location.hash).offset().top);
+		// For when hash is not changed.
 	if (!m.initialOpen && !m.doNotPushHistory) {
 		window.history.replaceState(
 			{ cat: m.currentCat, mode: m.recoMode, gotoCatsOn: m.gotoCatsOn, goOn: m.goOn, ToRsOn: m.ToRsOn, newRecoOn: m.newRecoOn },
@@ -2689,11 +2872,17 @@ m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
 		m.fsGo.tryN = 0;
 		m.firstLiGotoLiClicked = false;
 		clearInterval(m.setIntervalFsGo);
-		m.setIntervalFsGo = setInterval(function (setIntervalFsGo = m.setIntervalFsGo) {
+		m.setIntervalFsGo = setInterval(async function (setIntervalFsGo = m.setIntervalFsGo) {
 			m.fsGo.tryN++;
+			if (m.fsGo.tryN > m.initialMaxTries) {
+				clearInterval(m.setIntervalFsGo);
+				m.fsGo.tryN = 0;
+				return;
+			}
 			console.log(`m.setIntervalFsGo triggered!: ${setIntervalFsGo},\nm.fsGo.tryN: ${m.fsGo.tryN};`);
 			if (m.fsGo.fullList[hashURI]) {
 				let k = m.fsGo.fullList[hashURI]?.i;
+				let fsFLk = m.fsGo.fullList[k];
 				let $liK = $(`#li-${k}`);
 				if ($liK.length) {
 					if (m.firstLiGotoLiClicked) {
@@ -2703,11 +2892,28 @@ m.gotoHash = function (hashURI) { // Decoded hashURI without "#".
 					}
 					m.hashURI = hashURI;
 					console.log(`$(\`#li-${k}\`).trigger("click");`)
-					$(`#li-${k}`).trigger("click");
+					await $(`#li-${k}`).trigger("click");
+					m.fsScrollToSelected(m.fsGo, m.fsGo.$fsl.find(".selected"));
 					m.firstLiGotoLiClicked = true;
 				}
+				else {
+					m.$fuzzy_search_list.prepend(`<div id="li-${k}" class="list-item${fsFLk.selected ? " selected" : ""}${fsFLk.r?.deleted ? " deleted" : ""}" style="display:block"><span class="list-index">${k}</span><span class="list-index-id">${m.escapeOnlyTag(fsFLk.r?.uri)}</span>${fsFLk.html}</div>`);
+					$liK = $(`#li-${k}`);
+					if ($liK.length) {
+						if (m.firstLiGotoLiClicked) {
+							clearInterval(setIntervalFsGo);
+							m.fsGo.tryN = 0;
+							m.firstLiGotoLiClicked = false;
+						}
+						m.hashURI = hashURI;
+						console.log(`$(\`#li-${k}\`).trigger("click");`)
+						await $(`#li-${k}`).trigger("click");
+						m.fsScrollToSelected(m.fsGo, m.fsGo.$fsl.find(".selected"));
+						m.firstLiGotoLiClicked = true;
+					}
+				}
 			}
-			else if (m.fsGo.tryN < 8) {
+			else if (m.fsGo.tryN < m.initialMaxTries) {
 				let $elem = $(`#${m.escapeEncodePctg(encodeURIComponent(hashURI))}`);
 				if ($elem.length) {
 					clearInterval(setIntervalFsGo);
@@ -2743,8 +2949,9 @@ m.finalizeInitialOpen = async function () {
 			await m.reTriggerFS(m.fsGotoCats);
 			await m.reTriggerFS(m.fsTimezone);
 			await m.reTriggerFS(m.fsGo);
-		} catch (err) {
-			console.log(err);
+		}
+		catch (err) {
+			console.error(err);
 		}
 	}
 }
@@ -2799,7 +3006,8 @@ m.fsToRs.prepareRecoListPlay = function (ytAPINeeded, cue, uriRendered, inListPl
 					});
 				}
 				if (!$("#youtube-API").length) {
-					let ytAPI = `<script id="youtube-API" src="https://www.youtube.com/iframe_api"></` + `script>`; // Avoid closing script
+					let ytAPI = `<script id="youtube-API" src="https://www.youtube.com/iframe_api"></` + `script>`;
+						// Avoid closing script
 					m.$scripts.append(ytAPI);
 				}
 				m.YtAPILoaded = true;
@@ -2817,7 +3025,7 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 		clearTimeout(m.setTimeoutCueOrLoadUri);
 		if (inListPlay && m.lastRecoURIPlaying !== m.recoURIPlaying) {
 			let fs = m.fsToRs;
-			let from = String(uriRendered.from);
+			let from = uriRendered.from;
 			m.listPlayFrom = from;
 			if (from === "youtube") {
 				m.$eveElse.html('');
@@ -2881,9 +3089,11 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 					}
 					else {
 						try {
-							await fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay); // * (ytAPINeeded, cue, uriRendered, inListPlay)
-						} catch (err) {
-							console.log(err);
+							await fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);
+								// * (ytAPINeeded, cue, uriRendered, inListPlay)
+						}
+						catch (err) {
+							console.error(err);
 						}
 						resolve();
 					}
@@ -2958,9 +3168,11 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 					}
 					else {
 						try {
-							await fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay); // * (ytAPINeeded, cue, uriRendered, inListPlay)
-						} catch (err) {
-							console.log(err);
+							await fs.prepareRecoListPlay(true, cue, uriRendered, inListPlay);
+								// * (ytAPINeeded, cue, uriRendered, inListPlay)
+						}
+						catch (err) {
+							console.error(err);
 						}
 						resolve();
 					}
@@ -2973,7 +3185,8 @@ m.cueOrLoadUri = function (cue, uriRendered, inListPlay) {
 				fs.$playing = m.$eveElse_container;
 				let config = uriRendered.config;
 				if (fs.lastIndex !== fs.currentIndex || m.lastCat !== m.currentCat || m.lastRecoURIPlaying !== m.recoURIPlaying) {
-					m.$eveElse.replaceWith(m.rC(`<video id="video" controls preload="metadata" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse")); // * (elemStr, option, id, noPc)
+					m.$eveElse.replaceWith(m.rC(`<video id="video" controls preload="metadata" src="${uriRendered.src}${config.hash ? config.hash : ""}"></video>`, (inListPlay && m.fsToRs.fixed ? "fixed eveElse" : "eveElse"), "eveElse"));
+						// * (elemStr, option, id, noPc)
 					fs.lastIndex = fs.currentIndex;
 					m.lastCat = m.currentCat;
 					m.lastRecoURIPlaying = m.recoURIPlaying;
@@ -3074,8 +3287,9 @@ m.formatURI = function (uri, keepOriginal) {
 						src = $uri.find("[src]").attr("src");
 						if (src) { uri = src; }
 					}
-				} catch (err) {
-					console.log(err);
+				}
+				catch (err) {
+					console.error(err);
 				}
 			}
 			exec = m.ptnPureNumber.exec(uri);
@@ -3083,7 +3297,7 @@ m.formatURI = function (uri, keepOriginal) {
 				uri = "Number: " + uri;
 			}
 			if (!keepOriginal && m.getUTF8Length(uri) > 255) {
-				resolve(m.unescapeHTML(String(await m.getConciseURI(uri))));
+				resolve(m.unescapeHTML((await m.getConciseURI(uri)).trim()));
 			}
 			resolve(m.unescapeHTML(uri).trim());
 		}
@@ -3157,6 +3371,8 @@ m.uriToA = function (uri) {
 	if (!uri || typeof uri !== "string") {
 		uri = String(uri);
 	}
+	// * m.ptnURL = /https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+	m.ptnURL.lastIndex = 0;
 	let exec = m.ptnURL.exec(uri);
 	if (exec !== null) {
 		return `<a target="_blank" href="${exec[0]}">${m.escapeOnlyTag(decodeURIComponent(uri).replace(/[\n\s\t\r]/g, " "))}</a>`;
@@ -3211,7 +3427,7 @@ m.YTiframe = function (v, inListPlay, config, list) {
 
 let ptnURI;
 ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
@@ -3280,8 +3496,8 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 };
 
 ptnURI = m.ptnURI["docs.google.com"] = {};
-ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-]+)/i;
-ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-]+)/i
+ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-_]+)/i;
+ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-_]+)/i
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
@@ -3299,7 +3515,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["instagram.com"] = m.ptnURI["www.instagram.com"] = {};
-ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-]+)/i;
+ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
@@ -3313,7 +3529,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["imgur.com"] = m.ptnURI["www.imgur.com"] = {};
-ptnURI.regEx = /^a\/([\w\-]+)/i;
+ptnURI.regEx = /^a\/([\w\-_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
@@ -3352,7 +3568,8 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 			}).fail(function (resp) {
 				resolve(resp);
 			}).done(async function (resp) {
-				let uriRendered = Object(await uriRendering(resp, toA, inListPlay));
+				let uriRendered = await uriRendering(resp, toA, inListPlay);
+					// * (uri, toA, inListPlay, descR)
 				uriRendered.newURI = resp;
 				resolve(uriRendered);
 			});
@@ -3424,7 +3641,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["tvpot.daum.net"] = {};
-ptnURI.regEx = /^v\/([\w\-]+)/i;
+ptnURI.regEx = /^v\/([\w\-_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
@@ -3683,50 +3900,39 @@ ptnURI.toIframe = function (uri, inListPlay, toA) {
 
 window.uriRendering = function (uri, toA, inListPlay, descR) {
 	return new Promise(async function (resolve, reject) {
-		if (typeof uri === "string") {
-			if (uri.length > 6) {
-				uri = m.unescapeHTML(uri);
-				if (uri.substring(0, 4).toLowerCase() === "http") {
-					let k = 4;
-					if (uri.charAt(k).toLowerCase() === 's') {
-						k++;
-					}
-					if (uri.substring(k, k + 3) === "://") {
-						let uriAnalysed = new URL(uri);
-						k += 3;
-						let uriHost = uriAnalysed.host;
-						let uriRest = uriAnalysed.pathname.substring(1) + uriAnalysed.search + uriAnalysed.hash;
-						if (m.ptnURI[uriHost]) {
-							try {
-								let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR)
-								if (Boolean(result) !== false) {
-									resolve(result);
-								}
-							} catch (err) {
-								console.log(err);
-							}
-						}
+		const { uriHost, pathname, search, hash } = m.decomposeURI(uri);
+		const uriRest = (pathname ? pathname.substring(1) : "") + search;
+		if (uriHost) {
+			if (m.ptnURI[uriHost]) {
+				try {
+					let result = await m.ptnURI[uriHost]?.toIframe(uriRest, inListPlay, toA, descR)
+					if (Boolean(result) !== false) {
+						resolve({ ...result, uri, uriHost, pathname, search, hash });
 					}
 				}
-				for (let i = 0; i < m.ptnURI.length; i++) {
-					try {
-						let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR);
-						if (Boolean(result) !== false) {
-							resolve(result);
-						}
-					} catch (err) {
-						console.log(err);
-					}
-				}
-				if (toA) {
-					resolve({ html: m.uriToA(uri) });
-				}
+				catch (err) {
+					// console.error("toIframe rejected: ", err);
+				} // ! if error, reject(false);
 			}
-			else {
-				resolve({ html: m.escapeOnlyTag(uri) });
+			for (let i = 0; i < m.ptnURI.length; i++) {
+				try {
+					let result = await m.ptnURI[i]?.toIframe(uri, inListPlay, toA, descR);
+					if (Boolean(result) !== false) {
+						resolve({ ...result, uri, uriHost, pathname, search, hash });
+					}
+				}
+				catch (err) {
+					// console.error("toIframe rejected: ", err);
+				} // ! if error, reject(false);
+			}
+			if (toA) {
+				resolve({ html: m.uriToA(uri), uri, uriHost, pathname, search, hash });
 			}
 		}
-		resolve({ html: "" });
+		else {
+			resolve({ html: m.escapeOnlyTag(uri), uri, uriHost, pathname, search, hash });
+		}
+		resolve({ html: "", uri, uriHost, pathname, search, hash });
 	});
 };
 window.relatedRendering = function (str) {
@@ -3734,15 +3940,17 @@ window.relatedRendering = function (str) {
 		if (!str || typeof str !== "string") {
 			str = String(str);
 		}
-		let ptnURL = /https?:\/\/[^\"\'\`\s\t\n\r\<\>\[\]]+/ig;
-		let exec = ptnURL.exec(str);
+		// * m.ptnURL = /https?:\/\/[^\s\t\n\r\"\'\`\<\>\{\}\[\]]+/ig;
+		m.ptnURL.lastIndex = 0;
+		let exec = m.ptnURL.exec(str);
 		let start = 0;
 		let res = "";
 		while (exec !== null) {
 			res += m.escapeOnlyTag(str.substring(start, exec.index));
-			res += String(Object((await uriRendering(String(await m.formatURI(exec[0], true)), true, false))).html);
-			start = ptnURL.lastIndex;
-			exec = ptnURL.exec(str);
+			res += (await uriRendering(await m.formatURI(exec[0], true), true, false)).html;
+				// * (uri, toA, inListPlay, descR)
+			start = m.ptnURL.lastIndex;
+			exec = m.ptnURL.exec(str);
 		}
 		res += m.escapeOnlyTag(str.substring(start));
 		resolve(res);
@@ -3754,7 +3962,7 @@ window.relatedRendering = function (str) {
 ///////////////////////////////////////////////
 m.notifyCopied = function (copied) {
 	m.$notify_copied.show();
-	m.$textarea_copied[0].value = copied;
+	m.$textarea_copied.val(copied);
 };
 m.shareCurrentPage = function (service) {
 	let title = `${m.currentCat} of ${m.userId}'s Recoeve.net`;
@@ -3770,7 +3978,7 @@ m.shareCurrentPage = function (service) {
 		m.args[argName] = m.docCookies.getItem(argName);
 	}
 	if (m.$table_of_recos_container.is(":visible")) {
-		m.args["ToR"] = m.$table_of_recos[0].value;
+		m.args["ToR"] = m.$table_of_recos.val();
 	}
 	let recoeveURI =
 		window.location.origin +
@@ -3917,12 +4125,14 @@ m.slideUp = function (elem) {
 ////////////////////////////////////////////////////
 // Show recos
 ////////////////////////////////////////////////////
-m.ptnDescCmt = /^#\S+/; // \w=[A-Za-z0-9_]
+m.ptnDescCmt = /^#\S+/;
+	// \w=[A-Za-z0-9_]
 m.renderStrDescCmt = function (str) {
 	let res = [];
 	let strSplitted = str.trim().split("\n");
 	for (let i = 0; i < strSplitted.length; i++) {
-		strSplitted[i] = strSplitted[i].replace(/[\s\t\n\r]+$/, ""); // trim only last blanks.
+		strSplitted[i] = strSplitted[i].replace(/[\s\t\n\r]+$/, "");
+			// trim only last blanks.
 	}
 	let k = 0;
 	let key = "";
@@ -3943,6 +4153,7 @@ m.renderStrDescCmt = function (str) {
 		}
 	}
 	res[k] = res[key.toLowerCase()] = { i: k, key, val: listOfValues.join("\n") };
+		// * Last asign manually.
 	res[""].val = res[""].val.trim();
 	if (!res[""].val) {
 		res.splice(0, 1);
@@ -3956,7 +4167,7 @@ m.renderStrDescCmt = function (str) {
 m.descCmtRToString = function (descCmtR) {
 	let res = "";
 	for (let i = 0; i < descCmtR.length; i++) {
-		res += `${descCmtR[i].key}${descCmtR[i].val}\n`;
+		res += `${descCmtR[i].key}\n${descCmtR[i].val.trim()}\n\n\n\n`;
 	}
 	return res.trim();
 };
@@ -3971,8 +4182,8 @@ m.descCmtRToHTML = function (descR) {
 			let key = m.escapeOnlyTag(descR[l].key);
 			let val = m.escapeOnlyTag(descR[l].val);
 			switch (key.toLowerCase()) {
-				case "#start": case "#end":
-				case "#": case "": default:
+				case "#start": case "#start:":
+				case "#end": case "#end:":
 					res += `<div class="value"><span class="key">${key}</span> ${val.replace(/(?:  |\t)/g, "&nbsp; ").replace(/\n/g, "<br/>").replace(/\s+/g, " ").trim().replace(/(?:([0-9]{1,2})\:)?(?:([0-9]{1,2})\:)([0-9]{1,})/g, `<a class="seekTo" onclick="m.seekToVideo($3,$2,$1)">$&</a>`)}</div>`;
 					break;
 				case "#lyrics": case "#lyrics:":
@@ -4014,6 +4225,8 @@ m.descCmtRToHTML = function (descR) {
 				}
 				case "#related": case "#related:":
 				case "#originaluri": case "#originaluri:":
+				case "#uriwithhash": case "#uriwithhash:":
+				case "#": case "": default:
 					res += `<div class="value"><span class="key">${key}</span> `;
 					let relateds = val.split("\n");
 					for (let p = 0; p < relateds.length; p++) {
@@ -4021,7 +4234,7 @@ m.descCmtRToHTML = function (descR) {
 							res += String(await relatedRendering(relateds[p])).replace(/(?:  |\t)/g, "&nbsp; ");
 						}
 						catch (err) {
-							console.log(err);
+							console.error(err);
 						}
 						res += '<br/>';
 					}
@@ -4043,10 +4256,12 @@ m.stashReco = function (event) {
 	}
 	else {
 		let inRecoms = true;
-		let valStr = ""; // $reco.find(".str").html();
+		let valStr = "";
+			// $reco.find(".str").html();
 		let uri = m.unescapeHTML($reco.find(".textURI").html());
 		let strHeads = "uri\tdo\tval";
-		let strContents = `${m.encloseStr(uri)}\toverwrite\t`; // Empty val.
+		let strContents = `${m.encloseStr(uri)}\toverwrite\t`;
+			// Empty val.
 		let r = m.myRecos[uri];
 		let recoDef = m.recoDefs[uri];
 		if (!r) {
@@ -4079,7 +4294,7 @@ m.recomHTML = function (r, inListPlay, additionalClass) {
 				recoDef = m.recoDefs[r?.uri];
 			}
 			catch (err) {
-				// Do nothing.
+				console.error(err);
 			}
 		}
 		let res = `<div class="reco recom${additionalClass ? ` ${additionalClass}` : ``}"${inListPlay ? `` : ` id="recom-${m.recoms[m.currentCat][r?.uri]?.i}"`}>
@@ -4091,8 +4306,9 @@ m.recomHTML = function (r, inListPlay, additionalClass) {
 		}
 		res += `<div class="cats">${m.catsToA(m.currentCat)}</div>`;
 		if (!inListPlay) {
-			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
-			res += String(uriRendered.html);
+			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+				// * (uri, toA, inListPlay, descR)
+			res += uriRendered.html;
 		}
 		let recomsI = m.recoms[m.currentCat][r?.uri];
 		if (recomsI?.valsStat) {
@@ -4123,7 +4339,7 @@ m.recomHTML = function (r, inListPlay, additionalClass) {
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (recoDef?.defDescs[0] && recoDef.defDescs[0][0]) {
 			let descR = m.renderStrDescCmt(recoDef.defDescs[0][0]);
-			res += String(await m.descCmtRToHTML(descR));
+			res += await m.descCmtRToHTML(descR);
 		}
 		if (recomsI?.cmtsHTML) {
 			res += recomsI.cmtsHTML;
@@ -4142,8 +4358,9 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 <div class="title">${m.escapeOnlyTag(r?.title)}</div>
 <div class="cats">${m.catsToA(r.cats)}</div>`
 		if (!inListPlay) {
-			let uriRendered = Object(await uriRendering(r?.uri, false, inListPlay, r?.descR));
-			res += String(uriRendered.html);
+			let uriRendered = await uriRendering(r?.uri, false, inListPlay, r?.descR);
+				// * (uri, toA, inListPlay, descR)
+			res += uriRendered.html;
 		}
 		res += `<div class="cBoth"></div>`;
 		if (r.val?.str) {
@@ -4176,10 +4393,10 @@ ${m.myIndex ? `<div class="button edit fRight${r.deleted ? " deleted" : ""}" onc
 		res += `<div class="cBoth"></div><div class="result" style="margin:.5em 0"></div>`;
 		if (r.desc) {
 			let descR = r.descR;
-			res += String(await m.descCmtRToHTML(descR));
+			res += await m.descCmtRToHTML(descR);
 		}
 		if (r.cmt && r.cmt.length !== 0) {
-			res += `<div class="cmt">${String(await m.descCmtRToHTML(r.cmtR))}</div>`;
+			res += `<div class="cmt">${await m.descCmtRToHTML(r.cmtR)}</div>`;
 		}
 		if (r.tFirst && r.tLast && r.tFirst !== r.tLast) {
 			res += `<div class="tFirst">Lastly Editted at ${m.toLocalTime(r.tLast)}</div><div class="cBoth"></div>`;
@@ -4296,7 +4513,8 @@ m.recoByOnlyStars = function ($str, uri, $result, inRecoms) {
 			strHeads += "\tcats";
 			let cats = "";
 			if (m.recoMode === "multireco") {
-				cats = m.$multireco_input_cats[0].value = m.formatCats(m.$multireco_input_cats[0].value);
+				m.$multireco_input_cats.val(m.formatCats(m.$multireco_input_cats.val()));
+				cats = m.$multireco_input_cats.val();
 			}
 			else {
 				cats = m.formatCats(m.currentCat);
@@ -4311,7 +4529,8 @@ m.recoByOnlyStars = function ($str, uri, $result, inRecoms) {
 			let cats = "";
 			let catsChanged = true;
 			if (m.recoMode === "multireco") {
-				cats = m.$multireco_input_cats[0].value = m.formatCats(m.$multireco_input_cats[0].value);
+				m.$multireco_input_cats.val(m.formatCats(m.$multireco_input_cats.val()));
+				cats = m.$multireco_input_cats.val();
 				if (m.myRecos[uri].cats && m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 					cats = m.formatCats(m.myRecos[uri].cats);
 					catsChanged = false;
@@ -4340,7 +4559,8 @@ m.recoByOnlyStars = function ($str, uri, $result, inRecoms) {
 				let cats = "";
 				let catsChanged = true;
 				if (m.recoMode === "multireco") {
-					cats = m.$multireco_input_cats[0].value = m.formatCats(m.$multireco_input_cats[0].value);
+					m.$multireco_input_cats.val(m.formatCats(m.$multireco_input_cats.val()));
+					cats = m.$multireco_input_cats.val();
 					if (m.myRecos[uri].cats && m.catsContainsAllAnotCats(m.myRecos[uri].cats, cats)) {
 						cats = m.formatCats(m.myRecos[uri].cats);
 						catsChanged = false;
@@ -4377,7 +4597,8 @@ m.recoByOnlyStars = function ($str, uri, $result, inRecoms) {
 			}
 			let cats = "";
 			if (m.recoMode === "multireco") {
-				cats = m.$multireco_input_cats[0].value = m.formatCats(m.$multireco_input_cats[0].value);
+				m.$multireco_input_cats.val(m.formatCats(m.$multireco_input_cats.val()));
+				cats = m.$multireco_input_cats.val();
 			}
 			else {
 				cats = m.formatCats(m.currentCat);
@@ -4555,7 +4776,7 @@ m.reNewAndReOn = async function () {
 			m.$html.off("mouseup.mdInStars touchend.mdInStars mousemove.mdInStars touchmove.mdInStars");
 			m.timeout[uri] = setTimeout(function () {
 				m.recoByOnlyStars($str, uri, $result, $reco.hasClass("recom"));
-			}, 2 * m.wait);
+			}, m.wait);
 		});
 	});
 	const $ups = $(".my-point>.up");
