@@ -29770,11 +29770,11 @@ ${uri2}	change	${cats2}`;
       prepare_default.triggerOpenCat = function(event2) {
         return new Promise((resolve, reject) => {
           let $elem = (0, import_jquery15.default)(event2.target);
-          if (!(event2?.originalEvent?.srcElement?.nodeName === "A" && $elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
+          if (!($elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
             $elem = $elem.parents(".baseCat, .move-cat");
           }
           if (!$elem.length) {
-            reject("$(event.target) is NOT <a> tag, or there is no .baseCat");
+            reject("$(event.target) is NOT [.baseCat] or [.move-cat].");
           }
           let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
           if (event2?.which === 2) {
