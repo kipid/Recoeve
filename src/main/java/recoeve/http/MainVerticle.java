@@ -41,7 +41,7 @@ public class MainVerticle extends AbstractVerticle {
 	public void start(Promise<Void> startPromise) {
 		LOG.info("Start " + getClass().getName() + " on tread " + Thread.currentThread().getName());
 		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
-		Future<String> deploy0 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config).setInstances(2))
+		Future<String> deploy0 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config).setInstances(1))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId0 = res.result();
@@ -53,7 +53,7 @@ public class MainVerticle extends AbstractVerticle {
 					LOG.error("RecoeveWebClient is NOT deployed.");
 				}
 			});
-		Future<String> deploy1 = vertx.deployVerticle(recoeve, new DeploymentOptions().setInstances(2))
+		Future<String> deploy1 = vertx.deployVerticle(recoeve, new DeploymentOptions().setInstances(1))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId1 = res.result();
