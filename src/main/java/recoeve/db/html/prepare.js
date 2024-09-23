@@ -701,7 +701,7 @@ m.csvToJSON = function (str, colMap = true, rowMap = false) {
 		resolve(rows);
 	});
 };
-m.arrayToTableHTML = async function (txtArray, escapeTag = true, colgroup = []) {
+m.arrayToTableHTML = function (txtArray, escapeTag = true, colgroup = []) {
 	return new Promise((resolve, reject) => {
 		if (!txtArray || txtArray.constructor !== Array) {
 			return "";
