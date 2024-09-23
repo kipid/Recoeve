@@ -764,8 +764,8 @@ public class RecoeveDB {
 				Timestamp tFrom = Timestamp.valueOf(user.getString("tChangePwd"));
 				System.out.println(tNow + "\t" + tFrom);
 				return tFrom != null
-						&& checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)
-						&& Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
+					&& tNow.before(new Timestamp(tFrom.getTime() + SECONDS_CHANGE_PWD_TOKEN * 1000L))
+					&& Arrays.equals(hexStrToBytes(params.get("token")), user.getBytes("tokenChangePwd"));
 			}
 		}
 		catch (SQLException err) {
@@ -781,8 +781,8 @@ public class RecoeveDB {
 				Timestamp tFrom = user.getTimestamp("tChangePwd");
 				System.out.println(tNow + "\t" + tFrom);
 				return tFrom != null
-						&& checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)
-						&& Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
+					&& tNow.before(new Timestamp(tFrom.getTime() + SECONDS_CHANGE_PWD_TOKEN * 1000L))
+					&& Arrays.equals(hexStrToBytes(token), user.getBytes("tokenChangePwd"));
 			}
 		}
 		catch (SQLException err) {
@@ -1173,14 +1173,14 @@ public class RecoeveDB {
 				id = user.getString("id");
 				String email = user.getString("email");
 				Timestamp tFrom = user.getTimestamp("tChangePwd");
-				if (tFrom != null && checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN)) {
+				if (tFrom != null && tNow.before(new Timestamp(tFrom.getTime() + SECONDS_CHANGE_PWD_TOKEN * 1000L))) {
 					return FileMap.replaceStr("[--pre already sended email to--] " + encryptEmail(email) + "[--post already sended email to--]", lang);
 				}
-				System.out.println("from=null or checkTimeDiff(tNow, from, " + SECONDS_CHANGE_PWD_TOKEN + ")=false.");
+				System.out.println("PWD_TOKEN expires after " + SECONDS_CHANGE_PWD_TOKEN + "secs.");
 				System.out.println("tNow:" + tNow);
 				if (tFrom != null) {
 					System.out.println("from:" + tFrom);
-					System.out.println("checkTimeDiff(tNow, from, " + SECONDS_CHANGE_PWD_TOKEN + "):" + checkTimeDiff(tNow, tFrom, SECONDS_CHANGE_PWD_TOKEN));
+					System.out.println("tNow.before(new Timestamp(tFrom.getTime() + SECONDS_CHANGE_PWD_TOKEN * 1000L)) : " + tNow.before(new Timestamp(tFrom.getTime() + SECONDS_CHANGE_PWD_TOKEN * 1000L)));
 				}
 				user.updateTimestamp("tChangePwd", tNow);
 				byte[] token = randomBytes(32);
