@@ -29094,7 +29094,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
       prepare_default.$new_reco.find("input, textarea").on("keydown.common", function(e2) {
         if (e2.code === "Escape" && prepare_default.$new_reco.is(":visible")) {
           prepare_default.$window.trigger({ type: "keydown", code: "KeyN" });
-        } else if (e2.ctrlKey && e2.code === "Enter") {
+        } else if (e2.ctrlKey && (e2.code === "Enter" || e2.code === "NumpadEnter")) {
           let r2 = prepare_default.myRecos[prepare_default.$input_uri.val().trim()];
           if (r2.has) {
             prepare_default.$button_edit.trigger("click");
@@ -29200,6 +29200,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         const cursorPosition = this.selectionEnd;
         switch (e2.code) {
           case "Enter":
+          case "NumpadEnter":
             e2.preventDefault();
             break;
           case "ArrowUp":
@@ -29231,6 +29232,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         const val = prepare_default.val(this.value);
         switch (e2.code) {
           case "Enter":
+          case "NumpadEnter":
             e2.preventDefault();
             return;
           default:

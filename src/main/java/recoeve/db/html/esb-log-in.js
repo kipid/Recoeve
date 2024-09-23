@@ -18649,7 +18649,7 @@ ${window.location.href}	${document.referrer}	log-in guest`;
       htmlLang += `</div>`;
       $dataLang.after(htmlLang);
       (0, import_jquery5.default)("#input-userPwd").on("keydown", function(e) {
-        if (e.code === "Enter") {
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
           e.preventDefault();
           e.stopPropagation();
           prepare_default.$button_log_in.trigger("click");
@@ -18661,21 +18661,21 @@ ${window.location.href}	${document.referrer}	log-in guest`;
         }, prepare_default.wait);
       });
       (0, import_jquery5.default)("#input-su-wGoogle-userId").on("keydown", function(e) {
-        if (e.code === "Enter") {
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
           e.preventDefault();
           e.stopPropagation();
           prepare_default.$log_in_with_google.trigger("click");
         }
       });
       (0, import_jquery5.default)("#input-su-userPwdCfm").on("keydown", function(e) {
-        if (e.code === "Enter") {
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
           e.preventDefault();
           e.stopPropagation();
           prepare_default.$button_sign_up.trigger("click");
         }
       });
       (0, import_jquery5.default)("input.go-next").on("keydown", function(e) {
-        if (e.code === "Enter") {
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
           e.preventDefault();
           e.stopPropagation();
           (0, import_jquery5.default)(e.target).next("input").trigger("focus");
