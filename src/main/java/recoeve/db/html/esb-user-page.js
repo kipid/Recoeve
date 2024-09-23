@@ -14786,14 +14786,6 @@
       resolve();
     });
   };
-  m2.$catList.on("mouseup.move-cat", (e2) => {
-    try {
-      m2.triggerOpenCat(e2);
-    } catch (err) {
-      console.error(err);
-    }
-    return false;
-  });
   m2.getCatListChanged = function() {
     m2.$change_catList_order_ok.hide();
     m2.$change_catList_order_cancel.hide();
@@ -18851,6 +18843,14 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       prepare_default.$sidebar_dragger_in = (0, import_jquery4.default)("#sidebar-dragger-in");
       prepare_default.$sidebar = (0, import_jquery4.default)("#sidebar");
       prepare_default.$catList = (0, import_jquery4.default)("#catList");
+      prepare_default.$catList.on("mouseup.move-cat", (e2) => {
+        try {
+          prepare_default.triggerOpenCat(e2);
+        } catch (err) {
+          console.error(err);
+        }
+        return false;
+      });
       prepare_default.$catList_result = (0, import_jquery4.default)("#catList-result");
       if (window.innerWidth < 700) {
         updateOpened((draft) => {

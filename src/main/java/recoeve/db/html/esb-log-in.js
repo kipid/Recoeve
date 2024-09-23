@@ -14786,14 +14786,6 @@
       resolve();
     });
   };
-  m.$catList.on("mouseup.move-cat", (e) => {
-    try {
-      m.triggerOpenCat(e);
-    } catch (err) {
-      console.error(err);
-    }
-    return false;
-  });
   m.getCatListChanged = function() {
     m.$change_catList_order_ok.hide();
     m.$change_catList_order_cancel.hide();
