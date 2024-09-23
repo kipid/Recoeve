@@ -927,7 +927,11 @@ img {
 
 /* r(S)C:Ratio (Sub)Container */
 .rC {
-	margin:.5em 0
+	margin:.5em auto
+}
+
+.docuK .rC.facebook {
+	max-width:550px
 }
 
 .rC.recoeve {
@@ -977,6 +981,11 @@ img {
 	overflow:auto
 }
 
+.rC.facebook>.rSC {
+	padding-bottom:234%;
+	overflow:auto
+}
+
 .rC.tiktok>.rSC {
 	height:895px;
 	padding-bottom:0;
@@ -994,8 +1003,7 @@ img {
 	height:100%;
 	max-width:100%;
 	max-height:100%;
-	left:0;
-	top:0;
+	inset:0;
 	overflow-x:hidden;
 	overflow-y:hidden
 }
@@ -1007,8 +1015,7 @@ img {
 	height:100%;
 	max-width:100%;
 	max-height:100%;
-	left:0;
-	top:0;
+	inset:0;
 	overflow-x:hidden;
 	overflow-y:hidden
 }
@@ -1019,8 +1026,7 @@ img {
 	height:100%;
 	max-width:100%;
 	min-height:100%;
-	left:0;
-	top:0;
+	inset:0;
 	overflow-x:hidden;
 	overflow-y:auto
 }
@@ -1637,6 +1643,10 @@ text.now-local {
 		height:9px
 	}
 
+	.rC.facebook>.rSC {
+		padding-bottom:209%;
+	}
+
 	#page-views-chart {
 		font-size:9.5px
 	}
@@ -1646,6 +1656,10 @@ text.now-local {
 	.docuK>.sec {
 		border-left:2px rgb(25, 60, 25) solid;
 		border-right:2px rgb(25, 60, 25) solid
+	}
+
+	.rC.facebook>.rSC {
+		padding-bottom:165%;
 	}
 
 	#docuK-log {
@@ -1670,6 +1684,10 @@ text.now-local {
 @media all and (min-width:600px) {
 	.docuK .SNS-top {
 		padding-top:0
+	}
+
+	.rC.facebook>.rSC {
+		padding-bottom:136%;
 	}
 
 	.docuK .deviceInfo,
