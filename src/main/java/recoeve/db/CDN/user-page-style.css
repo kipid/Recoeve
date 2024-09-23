@@ -16,14 +16,14 @@
 	right:0;
 	top:0;
 	bottom:0;
-	background:rgb(0, 0, 0, 0.3)
+	background-color:rgba(0 0 0 0.3)
 }
 
 .block-touch>.center {
 	display:inline-block;
 	margin:auto;
 	color:wheat;
-	background:black;
+	background-color:black;
 	border:5px solid wheat;
 	padding:1em
 }
@@ -36,7 +36,7 @@
 #user-noti {
 	padding:.3em .2em;
 	font-size:1.1em;
-	color:rgb(150, 150, 240)
+	color:rgb(150 150 240)
 }
 
 #logs {
@@ -47,7 +47,7 @@
 }
 
 .bright #user-noti {
-	color:rgb(50, 50, 190)
+	color:rgb(50 50 190)
 }
 
 #catList {
@@ -68,36 +68,36 @@
 }
 
 #catList .cat .baseCat.down {
-	color:rgb(100, 150, 100)
+	color:rgb(100 150 100)
 }
 
 #catList .cat.deleted {
-	color:rgb(150, 100, 100)
+	color:rgb(150 100 100)
 }
 
 #catList .cat.selected,
 #catList .cat.selected .baseCat.down {
-	color:rgb(255, 210, 210)
+	color:rgb(255 210 210)
 }
 
 .bright #catList .cat.selected,
 .bright #catList .cat.selected .baseCat.down {
-	color:rgb(200, 0, 0)
+	color:rgb(200 0 0)
 }
 
 .pink #catList .cat.selected,
 .pink #catList .cat.selected .baseCat.down {
-	color:rgb(250, 100, 100)
+	color:rgb(250 100 100)
 }
 
 #cat-to-here {
-	border:1px solid rgb(130, 130, 130);
+	border:1px solid rgb(130 130 130);
 	margin:.5em
 }
 
 #catList .cat.edit {
 	position:relative;
-	border:1px solid rgb(150, 150, 225);
+	border:1px solid rgb(150 150 225);
 	padding:0 1.3em
 }
 
@@ -111,7 +111,7 @@
 	width:1.3em;
 	top:0;
 	bottom:0;
-	background:rgb(150, 150, 225)
+	background-color:rgb(150 150 225)
 }
 
 #catList .cat.edit>.edit-bar:first-child {
@@ -160,7 +160,7 @@
 	height:200px;
 	left:0;
 	width:2em;
-	background:transparent
+	background-color:transparent
 }
 
 #sidebar-dragger-in {
@@ -180,7 +180,7 @@
 	max-height:100%;
 	margin:0 0 0 -15em;
 	padding:.5em;
-	background:rgb(35, 35, 35);
+	background-color:rgb(35 35 35);
 	color:white;
 	border-right:1px solid white;
 	border-bottom:1px solid white;
@@ -188,13 +188,13 @@
 }
 
 .bright #sidebar {
-	background:rgb(230, 230, 230);
+	background-color:rgb(230 230 230);
 	color:black;
 	border-color:black
 }
 
 .pink #sidebar {
-	background:rgb(134, 31, 110);
+	background-color:rgb(134 31 110);
 	color:wheat;
 	border-color:wheat
 }
@@ -202,7 +202,7 @@
 #sidebar-toggle {
 	width:2em;
 	height:2em;
-	background:black;
+	background-color:black;
 	border:white 2px solid
 }
 
@@ -240,14 +240,14 @@
 }
 
 .tip {
-	color:rgb(250, 150, 100)
+	color:rgb(250 150 100)
 }
 
 #textarea-gs {
 	padding:.3em;
 	font-size:1em;
 	font-family:'맑은 고딕', 'Malgun Gothic', 'Coutier New';
-	background:white;
+	background-color:white;
 	color:black;
 	width:30em;
 	max-width:100%;
@@ -263,7 +263,7 @@
 	top:0;
 	right:0;
 	bottom:0;
-	background:rgba(0, 0, 0, 0.8);
+	background-color:rgba(0 0 0 0.8);
 	overflow:auto;
 }
 
@@ -293,7 +293,7 @@
 	width:100%;
 	border:2px solid white;
 	font:inherit;
-	background:black;
+	background-color:black;
 	color:white;
 	text-align:right;
 }
@@ -381,27 +381,27 @@
 }
 
 #memo .bottom-buttons>.green {
-	background:green;
+	background-color:green;
 }
 
 #memo .bottom-buttons>.darkolivegreen {
-	background:darkolivegreen;
+	background-color:darkolivegreen;
 }
 
 #memo .bottom-buttons>.darkred {
-	background:darkred;
+	background-color:darkred;
 }
 
 #progress-bars>.correct {
-	background:darkolivegreen;
+	background-color:darkolivegreen;
 }
 
 #progress-bars>.wrong {
-	background:darkred;
+	background-color:darkred;
 }
 
 #progress-bars>.left {
-	background:gray;
+	background-color:gray;
 }
 
 #sort-list {
@@ -417,12 +417,12 @@
 }
 
 #sort-list .button:nth-child(odd) {
-	background:#653c6f
+	background-color:#653c6f
 }
 
 .button-sort,
 #sort-list .button:nth-child(even) {
-	background:#ae51c5
+	background-color:#ae51c5
 }
 
 .bright #sort-list .button:nth-child(odd) {
@@ -446,11 +446,11 @@
 
 .button-mode,
 .pink .button-mode {
-	background:darkolivegreen
+	background-color:darkolivegreen
 }
 
 .bright .button-mode {
-	background:#93be49;
+	background-color:#93be49;
 }
 
 .button-loop,
@@ -464,48 +464,48 @@
 .pink .button-Go,
 .pink .button-ToR,
 .pink .button-goto-cats {
-	background:cornflowerblue
+	background-color:cornflowerblue
 }
 
 .bright .button-Go,
 .bright .button-ToR,
 .bright .button-goto-cats {
-	background:#91b3f1;
+	background-color:#91b3f1;
 }
 
 .button.darkgoldenrod,
 .pink .button.darkgoldenrod {
-	background:darkgoldenrod
+	background-color:darkgoldenrod
 }
 
 .bright .button.darkgoldenrod {
-	background:#f3be3d;
+	background-color:#f3be3d;
 }
 
 .button-new-reco,
 .pink .button-new-reco {
-	background:black
+	background-color:black
 }
 
 .bright .button-new-reco {
-	background:white
+	background-color:white
 }
 
 .button.button-recostat {
 	margin:0 .5em 0 0;
 	padding:0 2px;
 	color:#ffe3af;
-	background:#808000
+	background-color:#808000
 }
 
 .bright .button.button-recostat {
 	color:#fff2da;
-	background:#bebe84
+	background-color:#bebe84
 }
 
 .pink .button.button-recostat {
 	color:#f5deb3;
-	background:#555521
+	background-color:#555521
 }
 
 .point-range {
@@ -516,7 +516,7 @@
 	width:270px;
 	max-width:80%;
 	height:30px;
-	background:rgb(200, 100, 100)
+	background-color:rgb(200 100 100)
 }
 
 .point-range-bar {
@@ -524,7 +524,7 @@
 	left:0;
 	right:0;
 	height:100%;
-	background:rgb(100, 200, 100)
+	background-color:rgb(100 200 100)
 }
 
 .point-range-left,
@@ -533,8 +533,8 @@
 	width:33px;
 	top:0;
 	bottom:0;
-	background:rgba(150, 150, 150, 0.7);
-	border:.15em solid rgb(50, 50, 50)
+	background-color:rgba(150 150 150 0.7);
+	border:.15em solid rgb(50 50 50)
 }
 
 .point-range-left {
@@ -589,15 +589,15 @@
 }
 
 #floating-key div.button:first-child {
-	border-top:2px solid rgb(50, 50, 50)
+	border-top:2px solid rgb(50 50 50)
 }
 
 .bright #floating-key div.button:first-child {
-	border-top:2px solid rgb(200, 200, 200)
+	border-top:2px solid rgb(200 200 200)
 }
 
 .pink #floating-key div.button:first-child {
-	border-top:2px solid rgb(180, 0, 180)
+	border-top:2px solid rgb(180 0 180)
 }
 
 #toggle-floating-key {
@@ -656,7 +656,7 @@
 	right:0;
 	width:9em;
 	height:23px;
-	background:wheat;
+	background-color:wheat;
 	border-bottom:1px solid wheat
 }
 
@@ -675,7 +675,7 @@
 	left:10%;
 	width:80%;
 	height:100%;
-	background:rgb(200, 100, 100)
+	background-color:rgb(200 100 100)
 }
 
 #floating-key .point-range-bar {
@@ -684,7 +684,7 @@
 	right:0;
 	top:0;
 	bottom:0;
-	background:rgb(100, 200, 100)
+	background-color:rgb(100 200 100)
 }
 
 #floating-key .point-range-left,
@@ -693,8 +693,8 @@
 	width:23px;
 	top:0;
 	bottom:0;
-	background:rgba(150, 150, 150, 0.7);
-	border:.15em solid rgb(50, 50, 50)
+	background-color:rgba(150 150 150 0.7);
+	border:.15em solid rgb(50 50 50)
 }
 
 #floating-key .point-range-left {
@@ -708,7 +708,7 @@
 #floating-key .point-range-result {
 	margin:0;
 	font-size:13px;
-	background:black;
+	background-color:black;
 	color:white;
 	text-align:center;
 	padding:.1em .5em;
@@ -718,13 +718,13 @@
 }
 
 .bright #floating-key .point-range-result {
-	background:white;
+	background-color:white;
 	color:black;
 	border-color:black
 }
 
 .pink #floating-key .point-range-result {
-	background:pink;
+	background-color:pink;
 	color:white;
 	border-color:pink
 }
@@ -740,9 +740,9 @@
 }
 
 .vals-stat rect.column {
-	fill:rgb(255, 255, 0);
+	fill:rgb(255 255 0);
 	stroke-width:1;
-	stroke:rgb(0, 150, 150)
+	stroke:rgb(0 150 150)
 }
 
 .vals-stat line.bar {
@@ -786,17 +786,17 @@
 	position:relative;
 	margin:1em 0;
 	padding:1.1em;
-	border:2px solid rgb(150, 100, 100);
+	border:2px solid rgb(150 100 100);
 	width:100%;
-	background:black
+	background-color:black
 }
 
 .bright .neighbor-con {
-	background:wheat
+	background-color:wheat
 }
 
 .neighbor-sim {
-	background:yellow;
+	background-color:yellow;
 	position:absolute;
 	left:0;
 	top:0;
