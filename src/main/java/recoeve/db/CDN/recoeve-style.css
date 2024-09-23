@@ -18,7 +18,7 @@ body {
 }
 
 img {
-	box-sizing:content-box;
+	box-sizing:content-box
 }
 
 data {
@@ -596,9 +596,13 @@ a.seekTo {
 	max-width:100%;
 	margin:1em auto;
 	padding:1em;
+	text-align:left
+}
+
+.dark #new-reco form {
 	background-color:black;
 	border:.2em solid rgb(120, 120, 130);
-	text-align:left
+	color:white
 }
 
 .bright #new-reco form {
@@ -762,7 +766,7 @@ textarea.multi-line {
 	margin:0;
 	max-height:15em;
 	overflow-y:auto;
-	border:1px solid #571111;
+	border:1px solid #571111
 }
 
 #new-reco .def-cat,
@@ -871,11 +875,11 @@ textarea.multi-line {
 }
 
 .reco.recoed {
-	border:.3em solid rgb(50, 50, 200);
+	border:.3em solid rgb(50, 50, 200)
 }
 
 .reco.changed {
-	border:.3em solid rgb(50, 200, 50);
+	border:.3em solid rgb(50, 200, 50)
 }
 
 .reco.deleted {
@@ -989,7 +993,7 @@ textarea.multi-line {
 }
 
 .bright .reco>.cats>a.currentCat {
-	color:#027102;
+	color:#027102
 }
 
 .reco>.desc {
