@@ -29773,7 +29773,7 @@ ${uri2}	change	${cats2}`;
           console.log(event2);
           console.log(event2.target);
           let $elem = (0, import_jquery15.default)(event2.target);
-          if (!(event2?.srcElement?.nodeName === "A" && $elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
+          if (!(event2?.originalEvent?.srcElement?.nodeName === "A" && $elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
             $elem = $elem.parents(".baseCat, .move-cat");
           }
           if (!$elem.length) {
