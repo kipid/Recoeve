@@ -18847,7 +18847,6 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         try {
           prepare_default.triggerOpenCat(e2);
         } catch (err) {
-          console.error(err);
         }
         return false;
       });
@@ -29770,8 +29769,6 @@ ${uri2}	change	${cats2}`;
       };
       prepare_default.triggerOpenCat = function(event2) {
         return new Promise((resolve, reject) => {
-          console.log(event2);
-          console.log(event2.target);
           let $elem = (0, import_jquery15.default)(event2.target);
           if (!(event2?.originalEvent?.srcElement?.nodeName === "A" && $elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
             $elem = $elem.parents(".baseCat, .move-cat");
