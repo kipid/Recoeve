@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
-import io.vertx.core.Context;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import recoeve.http.Cookie;
@@ -1160,14 +1159,15 @@ public class RecoeveDB {
 		try {
 			ResultSet user;
 			switch (idType) {
-				case "email":
+				case "email" -> {
 					user = findUserByEmail(id);
-					break;
-				case "id":
+				}
+				case "id" -> {
 					user = findUserById(id);
-					break;
-				default:
+				}
+				default -> {
 					return "Invalid idType.";
+				}
 			}
 			if (user.next()) {
 				id = user.getString("id");
@@ -1437,12 +1437,12 @@ public class RecoeveDB {
 			con.setAutoCommit(false);
 			ResultSet user = null;
 			switch (inputs.get(1, "idType")) {
-				case "id":
+				case "id" -> {
 					user = findUserById(inputs.get(1, "userId"));
-					break;
-				case "email":
+				}
+				case "email" -> {
 					user = findUserByEmail(inputs.get(1, "userId"));
-					break;
+				}
 			}
 			if (user != null && user.next()) {
 				user_me = user.getLong("i");
@@ -3610,7 +3610,7 @@ public class RecoeveDB {
 					boolean hasReco = reco.next();
 					String toDo = "nothing";
 					switch (doStr) {
-						case "reco":
+						case "reco" -> {
 							if (hasReco) {
 								// error.
 								sb.append("[--Reco on this uri exists already.--]");
@@ -3619,8 +3619,8 @@ public class RecoeveDB {
 								// put a reco.
 								toDo = "put";
 							}
-							break;
-						case "change":
+						}
+						case "change" -> {
 							if (hasReco) {
 								// change a reco.
 								toDo = "change";
@@ -3629,8 +3629,8 @@ public class RecoeveDB {
 								// error.
 								sb.append("[--Reco on the uri does not exist.--]");
 							}
-							break;
-						case "overwrite":
+						}
+						case "overwrite" -> {
 							if (hasReco) {
 								// change a reco.
 								toDo = "change";
@@ -3639,8 +3639,8 @@ public class RecoeveDB {
 								// put a reco.
 								toDo = "put";
 							}
-							break;
-						case "delete":
+						}
+						case "delete" -> {
 							if (hasReco) {
 								// delete a reco.
 								toDo = "delete";
@@ -3649,7 +3649,11 @@ public class RecoeveDB {
 								// error.
 								sb.append("[--Reco on the uri does not exist.--]");
 							}
-							break;
+						}
+						default -> {
+							toDo = "nothing";
+							sb.append("[--Nothing to be done.--]");
+						}
 					}
 					System.out.println("toDo: " + toDo);
 					switch (toDo) {
@@ -3992,7 +3996,7 @@ public class RecoeveDB {
 		// // TRUNCATE `RecoStatDefDescSet`;
 		// db.updateDefsAll(Timestamp.valueOf(now));
 		Vertx vertx = Vertx.vertx();
-		Context context = vertx.getOrCreateContext();
+		// Context context = vertx.getOrCreateContext();
 		RecoeveDB db = new RecoeveDB(vertx);
 		// db.vertx.executeBlocking(new Callable<Void>() {
 		// @Override

@@ -95,7 +95,8 @@ public class Recoeve extends AbstractVerticle {
 			else {
 				String authenticater = ctx.pathParam("authenticater");
 				switch (authenticater) {
-					case "pre-google": // e.g. path=/account/log-in/with/pre-google
+					case "pre-google" -> {
+						// e.g. path=/account/log-in/with/pre-google
 						pl.req.bodyHandler((Buffer data) -> {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(db.putPreGoogle(data.toString(), pl.ip, pl.tNow), ENCODING);
@@ -104,8 +105,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg1.replaceAll("\\n", "<br/>") + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						});
-						break;
-					case "google": // e.g. path=/account/log-in/with/google
+					}
+					case "google" -> {
+						// e.g. path=/account/log-in/with/google
 						pl.req.response()
 								.end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 						// To send #hash data with POST method.
@@ -113,8 +115,9 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					case "google.do": // e.g. path=/account/log-in/with/google.do
+					}
+					case "google.do" -> {
+						// e.g. path=/account/log-in/with/google.do
 						pl.req.bodyHandler((Buffer data) -> {
 							StrArray inputs = new StrArray(data.toString());
 							if (db.getPreGoogle(inputs.get(1, "state"), pl.ip, pl.tNow)) {
@@ -142,13 +145,13 @@ public class Recoeve extends AbstractVerticle {
 								}
 							}
 						});
-						break;
-					default:
+					}
+					default -> {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS;
 						System.out.println(msg);
-						break;
+					}
 				}
 			}
 		});
@@ -288,38 +291,20 @@ public class Recoeve extends AbstractVerticle {
 					pl.req.response().putHeader("ETag", "1.8.8");
 					String[] fileNameSplit = fileName.split("\\.");
 					switch (fileNameSplit[fileNameSplit.length - 1]) {
-						case "ico":
-							pl.req.response().putHeader("Content-Type", "image/x-icon");
-							break;
-						case "png":
-							pl.req.response().putHeader("Content-Type", "image/png");
-							break;
-						case "jpeg":
-						case "jpg":
-							pl.req.response().putHeader("Content-Type", "image/jpeg");
-							break;
-						case "css":
-							pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8");
-							break;
-						case "js":
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8");
-							break;
-						case "map":
-							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8");
-							break;
-						case "webm":
-							pl.req.response().putHeader("Content-Type", "video/webm");
-							break;
-						case "html":
-							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
-							break;
-						default:
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
+						case "jpeg", "jpg" -> { pl.req.response().putHeader("Content-Type", "image/jpeg"); }
+						case "webm" -> { pl.req.response().putHeader("Content-Type", "video/webm"); }
+						case "html" -> { pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8"); }
+						case "ico" -> { pl.req.response().putHeader("Content-Type", "image/x-icon"); }
+						case "png" -> { pl.req.response().putHeader("Content-Type", "image/png"); }
+						case "css" -> { pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8"); }
+						case "map" -> { pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8"); }
+						case "js" -> { pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8"); }
+						default -> { pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8"); }
 					}
 					Buffer fileInMemory = fileMap.getCDNFileInMemory(fileName);
 					if (fileInMemory != null) {
 						pl.req.response()
-								.end(fileInMemory);
+							.end(fileInMemory);
 						msg = "Sended file in memory: " + fileName;
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
@@ -327,7 +312,7 @@ public class Recoeve extends AbstractVerticle {
 					}
 					else {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
+							.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = "No file in memory: " + fileName + ".";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
@@ -443,15 +428,15 @@ public class Recoeve extends AbstractVerticle {
 			if (pl.cookie.get("I") != null && pl.cookie.get("I").equals("5f5e100")) {
 				String query = ctx.pathParam("query");
 				switch (query) {
-					case "logs":
+					case "logs" -> {
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 								.end(fileMap.getCDNFileInMemory("logs.html"));
 						msg = "Sended \"logs.html\" file in memory.";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					case "printLogs":
+					}
+					case "printLogs" -> {
 						if (pl.sessionPassed) {
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.end(db.printLogs());
@@ -468,8 +453,8 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					// case "access-logs":
+					}
+					// case "access-logs" -> {
 					// 	msg = "Sended access-logs.html";
 					// 	System.out.println(msg);
 					// 	// pLHtml.append(msg + "</div>");
@@ -477,8 +462,8 @@ public class Recoeve extends AbstractVerticle {
 
 					// 	pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 					// 			.end(fileMap.getFileWithLang("access-logs.html", pl.lang), ENCODING);
-					// 	break;
-					// case "access-logs.do":
+					// }
+					// case "access-logs.do" -> {
 					// 	if (pl.sessionPassed) {
 					// 		pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
 					// 				.end(db.getLogAccessInSEEForm(pl.tNow));
@@ -493,13 +478,13 @@ public class Recoeve extends AbstractVerticle {
 					// 		// pLHtml.append(msg + "</div>");
 					// 		// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 					// 	}
-					// 	break;
-					default:
+					// }
+					default -> {
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 								.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS;
 						System.out.println(msg);
-						break;
+					}
 				}
 			}
 			else {
@@ -525,94 +510,73 @@ public class Recoeve extends AbstractVerticle {
 				// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 				if (fileName != null && !fileName.isEmpty()) {
 					switch (fileName) {
-						case "favicon.ico":
+						case "favicon.ico" -> {
 							//
 							pl.req.response().putHeader("Content-Type", "image/x-icon")
 								.end(fileMap.getCDNFileInMemory("favicon.ico"));
 							System.out.println("Sended favicon.ico");
-							break;
-						case "personal-info-handle": // e.g. path=/personal-info-handle
+						}
+						case "multireco" -> {
+							// e.g. path=/multireco
 							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(fileMap.getFileWithLang("personal-info-handle.html", pl.lang), ENCODING);
-							break;
-						case "service-summary": // e.g. path=/service-summary
-							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(fileMap.getFileWithLang("service-summary.html", pl.lang), ENCODING);
-							break;
-						case "multireco": // e.g. path=/multireco
-							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
+								.end(FileMapWithVar.getFileWithLangAndVars("multireco.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
-							break;
-						case "bundle-tsx-log-out.js": // e.g. path=/service-summary
-							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(fileMap.getFileWithLang("bundle-tsx-log-out.js", pl.lang), ENCODING);
-							break;
-						case "esb-user-page.js": // e.g. path=/esb-user-page.js
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("esb-user-page.js", pl.lang), ENCODING);
-							break;
-						case "esb-user-page.js.map": // e.g. path=/esb-user-page.js.map
-							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8")
-									.end(fileMap.getFileWithLang("esb-user-page.js.map", pl.lang), ENCODING);
-							break;
-						case "esb-log-in.js": // e.g. path=/esb-log-in.js
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("esb-log-in.js", pl.lang), ENCODING);
-							break;
-						case "esb-log-in.js.map": // e.g. path=/esb-log-in.js.map
-							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8")
-									.end(fileMap.getFileWithLang("esb-log-in.js.map", pl.lang), ENCODING);
-							break;
-						case "bundle-changePwd.js": // e.g. path=/bundle-changePwd.js
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("bundle-changePwd.js", pl.lang), ENCODING);
-							break;
-						case "jquery.js": // e.g. path=/jquery.js
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("jquery.js", pl.lang), ENCODING);
-							break;
-						case "prepare.js": // e.g. path=/prepare.js
-							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("prepare.js", pl.lang), ENCODING);
-							break;
-						case "sessionIter": // e.g. path=/sessionIter
+						}
+						case "sessionIter" -> {
+							// e.g. path=/sessionIter
 							String iter = db.sessionIter(pl.cookie, pl.tNow);
 							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.end(iter);
+								.end(iter);
 							msg = "iter: " + iter;
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-							break;
-						case "reco": // e.g. path=/reco
+						}
+						case "reco" -> {
+							// e.g. path=/reco
 							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
+								.end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 							msg = "Sended user-page.html. URI [?search] will be handled by javascript.";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-							break;
-						case "recostat": // e.g. path=/recostat?uri=...
+						}
+						case "recostat" -> {
+							// e.g. path=/recostat?uri=...
 							pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8")
-									.end(FileMapWithVar.getFileWithLangAndVars("recostat.html", pl.lang,
+								.end(FileMapWithVar.getFileWithLangAndVars("recostat.html", pl.lang,
 											db.varMapMyPage(pl.cookie)), ENCODING);
-							break;
-						case "robots.txt": // e.g. path=/robots.txt
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.end(fileMap.getFileWithLang("robots.txt", "df"), ENCODING);
-							break;
-						case "ads.txt": // e.g. path=/ads.txt
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
-									.end(fileMap.getFileWithLang("ads.txt", "df"), ENCODING);
-							break;
-						default:
-							pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
+						}
+						default -> {
+							String[] fileNameSplit = fileName.split("\\.");
+							switch (fileNameSplit[fileNameSplit.length - 1]) {
+								case "jpeg", "jpg" -> { pl.req.response().putHeader("Content-Type", "image/jpeg"); }
+								case "webm" -> { pl.req.response().putHeader("Content-Type", "video/webm"); }
+								case "html" -> { pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8"); }
+								case "ico" -> { pl.req.response().putHeader("Content-Type", "image/x-icon"); }
+								case "png" -> { pl.req.response().putHeader("Content-Type", "image/png"); }
+								case "css" -> { pl.req.response().putHeader("Content-Type", "text/css; charset=utf-8"); }
+								case "map" -> { pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8"); }
+								case "js" -> { pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8"); }
+								default -> { pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8"); }
+							}
+							String fileInMemory = fileMap.getFileWithLang(fileName, pl.lang);
+							if (fileInMemory != null) {
+								pl.req.response().end(fileInMemory, ENCODING);
+								msg = "Sended file in memory: " + fileName;
+								System.out.println(msg);
+								// pLHtml.append(msg + "</div>");
+								// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+							}
+							else {
+								pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8")
 									.setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
-							msg = INVALID_ACCESS;
-							System.out.println(msg);
-							// pLHtml.append(msg + "</div>");
-							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+								msg = "No file in memory: " + fileName + ".";
+								System.out.println(msg);
+								// pLHtml.append(msg + "</div>");
+								// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+							}
+						}
 					}
 				}
 				else {
@@ -689,7 +653,8 @@ public class Recoeve extends AbstractVerticle {
 					// pLHtml.append(msg + "<br/>");
 					if (wildcard != null) {
 						switch (wildcard) {
-							case "get-Recos": // e.g. path=/user/kipid/get-Recos
+							case "get-Recos" -> {
+								// e.g. path=/user/kipid/get-Recos
 								pl.req.bodyHandler((Buffer data) -> {
 									pl.req.response()
 											.end(db.getRecos(finalUserId, new StrArray(data.toString())).replaceAll("%20", "%2520"),
@@ -698,8 +663,9 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "</div>");
 								});
-								break;
-							case "get-UriList": // e.g. path=/user/kipid/get-UriList
+							}
+							case "get-UriList" -> {
+								// e.g. path=/user/kipid/get-UriList
 								pl.req.bodyHandler((Buffer data) -> {
 									pl.req.response()
 											.end(db.getStringCatUriList(finalUserId, new StrArray(data.toString())).replaceAll("%20", "%2520"), ENCODING);
@@ -707,8 +673,9 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "</div>");
 								});
-								break;
-							case "change-order-of-UriList": // e.g. path=/user/kipid/change-order-of-UriList?cat=......
+							}
+							case "change-order-of-UriList" -> {
+								// e.g. path=/user/kipid/change-order-of-UriList?cat=......
 								if (pl.sessionPassed) {
 									final String cat = Encoder.decodeURIComponent(pl.req.getParam("cat"));
 									msg = "cat: " + cat;
@@ -732,8 +699,9 @@ public class Recoeve extends AbstractVerticle {
 									// pLHtml.append(msg + "</div>");
 									// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 								}
-								break;
-							case "get-Neighbors": // e.g. path=/user/kipid/get-Neighbors
+							}
+							case "get-Neighbors" -> {
+								// e.g. path=/user/kipid/get-Neighbors
 								pl.req.bodyHandler((Buffer data) -> {
 									pl.req.response()
 											.end(db.getStrOfNeighbors(finalUserId, data.toString(), pl.tNow),
@@ -742,8 +710,9 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "</div>");
 								});
-								break;
-							case "cut-Neighbors": // e.g. path=/user/kipid/cut-Neighbors
+							}
+							case "cut-Neighbors" -> {
+								// e.g. path=/user/kipid/cut-Neighbors
 								if (pl.sessionPassed) {
 									pl.req.bodyHandler((Buffer data) -> {
 										pl.req.response()
@@ -763,8 +732,9 @@ public class Recoeve extends AbstractVerticle {
 									// pLHtml.append(msg + "</div>");
 									// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 								}
-								break;
-							case "get-Recoms": // e.g. path=/user/kipid/get-Recoms
+							}
+							case "get-Recoms" -> {
+								// e.g. path=/user/kipid/get-Recoms
 								pl.req.bodyHandler((Buffer data) -> {
 									pl.req.response()
 											.end(db.getRecoms(finalUserId, data.toString()), ENCODING);
@@ -772,13 +742,14 @@ public class Recoeve extends AbstractVerticle {
 									System.out.println(msg1);
 									// pLHtml.append(msg1 + "</div>");
 								});
-								break;
-							default:
+							}
+							default -> {
 								pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 								msg = INVALID_ACCESS;
 								System.out.println(msg);
 								// pLHtml.append(msg + "</div>");
 								// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+							}
 						}
 					}
 					else {
@@ -820,7 +791,8 @@ public class Recoeve extends AbstractVerticle {
 				System.out.println(msg);
 				// pLHtml.append(msg + "<br/>");
 				switch (toDo) {
-					case "getConciseURI": // path=/reco/getConciseURI
+					case "getConciseURI" -> {
+						// path=/reco/getConciseURI
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
 							System.out.println(uri);
@@ -841,8 +813,9 @@ public class Recoeve extends AbstractVerticle {
 								// pLHtml.append("uri: <a target=\"_blank\" href=\"" + uri + "\">" + HTMLString.escapeOnlyTag(Encoder.decodeURIComponent(uri)) + "</a><br/>conciseURI: <a target=\"_blank\" href=\"" + conciseURI + "\">" + conciseURI + "</a></div>");
 							}
 						});
-						break;
-					case "getH1": // path=/reco/getH1
+					}
+					case "getH1" -> {
+						// path=/reco/getH1
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
 							String msg1 = "getH1 of uri: " + uri;
@@ -866,8 +839,9 @@ public class Recoeve extends AbstractVerticle {
 								// pLHtml.append(msg2 + "</div>");
 							}
 						});
-						break;
-					case "defs": // path=/reco/defs
+					}
+					case "defs" -> {
+						// path=/reco/defs
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
 							String res = db.recoDefs(uri);
@@ -877,8 +851,9 @@ public class Recoeve extends AbstractVerticle {
 							System.out.println(msg1);
 							// pLHtml.append(msg1 + "</div>");
 						});
-						break;
-					case "multidefs": // path=/reco/multidefs
+					}
+					case "multidefs" -> {
+						// path=/reco/multidefs
 						pl.req.bodyHandler((Buffer data) -> {
 							String res = db.recoDefs(new StrArray(data.toString().trim(), false, false));
 							pl.req.response()
@@ -887,8 +862,9 @@ public class Recoeve extends AbstractVerticle {
 							System.out.println(msg1);
 							// pLHtml.append(msg1 + "</div>");
 						});
-						break;
-					case "do": // path=/reco/do
+					}
+					case "do" -> {
+						// path=/reco/do
 						if (pl.sessionPassed) {
 							pl.req.bodyHandler((Buffer data) -> {
 								final String recoStr = data.toString();
@@ -908,8 +884,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "stat": // path=/reco/stat
+					}
+					case "stat" -> {
+						// path=/reco/stat
 						pl.req.bodyHandler((Buffer data) -> {
 							final String uri = data.toString();
 							pl.req.response()
@@ -919,13 +896,14 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					default:
+					}
+					default -> {
 						pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS + " (Invalid URI.)";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
+					}
 				}
 			}
 			else {
@@ -948,7 +926,8 @@ public class Recoeve extends AbstractVerticle {
 				System.out.println(msg);
 				// pLHtml.append(msg + "<br/>");
 				switch (param0) {
-					case "verify": // path=/account/verify/:userId/:token
+					case "verify" -> {
+						// path=/account/verify/:userId/:token
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.sessionPassed && pl.method == HttpMethod.POST) {
 							// VeriKey check.
@@ -1004,8 +983,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "changePwd": // path=/account/changePwd
+					}
+					case "changePwd" -> {
+						// path=/account/changePwd
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 						if (db.checkChangePwdToken(pl.req.params(), pl.tNow)) {
 							pl.req.response()
@@ -1022,8 +1002,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "getNewSalt": // path=/account/getNewSalt
+					}
+					case "getNewSalt" -> {
+						// path=/account/getNewSalt
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1067,8 +1048,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "changePwd.do": // path=/account/changePwd.do
+					}
+					case "changePwd.do" -> {
+						// path=/account/changePwd.do
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1117,12 +1099,13 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "log-in": // path=/account/log-in
+					}
+					case "log-in" -> {
+						// path=/account/log-in
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 						if (pl.sessionPassed) {
 							pl.req.response()
-									.end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
+								.end(FileMapWithVar.getFileWithLangAndVars("user-page.html", pl.lang, db.varMapMyPage(pl.cookie)), ENCODING);
 							msg = "Sended user-page.html. (already logged-in)";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1130,7 +1113,7 @@ public class Recoeve extends AbstractVerticle {
 						}
 						else if (pl.cookie.get("rmbdI") != null) {
 							pl.req.response()
-									.end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
+								.end(fileMap.getFileWithLang("remember-me.html", pl.lang), ENCODING);
 							msg = "Sended remember-me.html.";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
@@ -1138,14 +1121,15 @@ public class Recoeve extends AbstractVerticle {
 						}
 						else {
 							pl.req.response()
-									.end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
+								.end(fileMap.getFileWithLang("log-in.html", pl.lang), ENCODING);
 							msg = "Sended log-in.html. (No rmbd cookie)";
 							System.out.println(msg);
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "pwd_iteration": // path=/account/pwd_iteration
+					}
+					case "pwd_iteration" -> {
+						// path=/account/pwd_iteration
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1177,8 +1161,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "log-in.do": // path=/account/log-in.do
+					}
+					case "log-in.do" -> {
+						// path=/account/log-in.do
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1213,9 +1198,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "log-out":
-					case "log-out-from-all": // path=/account/log-out or /account/log-out-from-all
+					}
+					case "log-out", "log-out-from-all" -> {
+						// path=/account/log-out or /account/log-out-from-all
 						pl.req.response().putHeader("Content-Type", "text/html; charset=utf-8");
 						List<io.vertx.core.http.Cookie> setDelCookie0 = db.logout(pl.cookie, pl.sessionPassed);
 						for (io.vertx.core.http.Cookie singleCookie : setDelCookie0) {
@@ -1227,8 +1212,9 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					case "log-out.do": // path=/account/log-out.do
+					}
+					case "log-out.do" -> {
+						// path=/account/log-out.do
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						List<io.vertx.core.http.Cookie> setDelCookie1 = db.logout(pl.cookie, pl.sessionPassed);
 						for (io.vertx.core.http.Cookie singleCookie : setDelCookie1) {
@@ -1241,8 +1227,9 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					case "log-out-from-all.do": // path=/account/log-out-from-all.do
+					}
+					case "log-out-from-all.do" -> {
+						// path=/account/log-out-from-all.do
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						List<io.vertx.core.http.Cookie> setDelCookie2 = db.logoutFromAll(pl.cookie, pl.sessionPassed);
 						for (io.vertx.core.http.Cookie singleCookie : setDelCookie2) {
@@ -1256,8 +1243,9 @@ public class Recoeve extends AbstractVerticle {
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
-					case "check": // path=/account/check
+					}
+					case "check" -> {
+						// path=/account/check
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1304,8 +1292,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "forgotPwd": // path=/account/forgotPwd
+					}
+					case "forgotPwd" -> {
+						// path=/account/forgotPwd
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1325,8 +1314,9 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					case "sign-up": // path=/account/sign-up
+					}
+					case "sign-up" -> {
+						// path=/account/sign-up
 						pl.req.response().putHeader("Content-Type", "text/plain; charset=utf-8");
 						if (pl.method == HttpMethod.POST) {
 							pl.req.bodyHandler((Buffer data) -> {
@@ -1373,14 +1363,14 @@ public class Recoeve extends AbstractVerticle {
 							// pLHtml.append(msg + "</div>");
 							// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
 						}
-						break;
-					default:
+					}
+					default -> {
 						pl.req.response().setStatusCode(StatusCode.BAD_REQUEST.getCode()).end(INVALID_ACCESS, ENCODING);
 						msg = INVALID_ACCESS + " (Invalid URI.)";
 						System.out.println(msg);
 						// pLHtml.append(msg + "</div>");
 						// db.putLogAccess(pl.tNow, pl.user_i, pLHtml.toString(), db.getLogAccess(pl.tNow));
-						break;
+					}
 				}
 			}
 			else {
