@@ -2,8 +2,6 @@ const m = window.m = window.m || {};
 
 (function (m, $, undefined) {
 // Used in user-page.html, log-in.html, changePwd.html, verify.html
-const m = window.m = window.m || {};
-
 m.$window = $(window);
 m.$document = $(document);
 
@@ -1151,7 +1149,7 @@ m.catListToHTML = function () {
 	return new Promise(async function (resolve, reject) {
 		let cL = m.catList;
 		let cat = cL[0].cat;
-		let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+		let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
 		let i = 1;
 		for (; i < cL.length - 1; i++) {
 			cat = cL[i].cat;
@@ -1173,9 +1171,9 @@ m.catListToHTML = function () {
 				catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat}'])">${cL[i].subCatExpanded ? "▼" : "▶"}</span>`;
 			}
 			else {
-				catListHTML += `<span key="noEC-${encodeURIComponent(cat)}" class="noEC"></span>`;
+				catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="noEC"></span>`;
 			}
-			catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+			catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 		}
 		if (cL.length > 1) {
 			cat = cL[i].cat;
@@ -1191,7 +1189,7 @@ m.catListToHTML = function () {
 					catListHTML += `</div>`;
 				}
 			}
-			catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+			catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span key="EC-${encodeURIComponent(cat)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
 			for (let j = 0; j < currentDepth; j++) {
 				// close subCats
 				catListHTML += `</div>`;
@@ -1407,9 +1405,9 @@ m.showReco = async function (r) {
 	}
 	if (r.has) {
 		let recoHTML = await m.recoHTML(r, true, true);
-		m.$my_reco.html(String(recoHTML));
+		m.$my_reco.html(recoHTML);
 			// need to be edit.
-		let $edit = $my_reco.find(".button.edit").remove();
+		let $edit = m.$my_reco.find(".button.edit").remove();
 	}
 	else {
 		m.$my_reco.html("");
