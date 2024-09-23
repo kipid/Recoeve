@@ -124,11 +124,11 @@ table > * > tr > td {
   background: cadetblue;
 }
 .bright .button {
-  border-color: rgb(200, 200, 200);
+  border-color: rgb(90, 90, 90);
   background: rgb(190, 190, 190);
 }
 .pink .button {
-  border-color: rgb(180, 0, 180);
+  border-color: rgb(166, 83, 166);
   background: rgb(138, 13, 106);
 }
 .reco .button {
@@ -507,6 +507,10 @@ a.seekTo {
   border: .2em solid rgb(120, 120, 130);
   text-align: left;
 }
+.bright #new-reco form {
+  background: rgb(210, 210, 210);
+  border: .2em solid rgb(120, 120, 130);
+}
 #new-reco form .reset {
   position: absolute;
   display: inline-block;
@@ -600,9 +604,9 @@ textarea.multi-line {
   top: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   overflow: auto;
-  color: white;
+  color: rgb(35, 35, 35);
 }
 #def-titles {
   display: flex;
