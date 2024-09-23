@@ -26,9 +26,11 @@ html, body {font-family:"맑은 고딕", "Malgun Gothic", 굴림}
 <body>
 <div id="print-logs"></div>
 <textarea id="textarea-csv" style="width:100%; height:30em; font-size:1em; background:white; color:black"></textarea>
+<div id="logs"></div>
 </body>
 <script>
 (function (m, $, undefined) {
+m.$logs = $("#logs");
 $print_logs=$("#print-logs");
 m.printLogs=function (args, err) {
 	$.ajax({
