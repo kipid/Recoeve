@@ -527,13 +527,22 @@ a.seekTo {
 	background-color:rgb(255 255 215)
 }
 
-.fs-list .list-item.down {
+.fs-list .list-item.down:nth-child(2n+1) {
 	background-color:rgb(30 70 30);
 	border:1px solid rgb(120 120 70)
 }
 
 .fs-list .list-item.down:nth-child(2n) {
 	background-color:rgb(60 100 60)
+}
+
+.bright .fs-list .list-item.down:nth-child(2n+1) {
+	background-color:rgb(83 183 83);
+	border:1px solid rgb(120 120 70)
+}
+
+.bright .fs-list .list-item.down:nth-child(2n) {
+	background-color:rgb(138 228 138)
 }
 
 .fs-list .list-item.selected {
