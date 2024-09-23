@@ -26881,19 +26881,21 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.putCatToFSFullList = function(i3, cat2, catList) {
         if (catList === prepare_default.myFSCatList) {
           if (!prepare_default.fsCat.fullList[cat2]) {
-            prepare_default.fsCat.fullList[cat2] = { i: prepare_default.fsCat.fullList.length, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-            prepare_default.fsCat.fullList.push(prepare_default.fsCat.fullList[cat2]);
+            prepare_default.fsCat.fullList[i3] = prepare_default.fsCat.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
+          } else {
+            prepare_default.fsCat.fullList[i3] = prepare_default.fsCat.fullList[cat2];
           }
           if (!prepare_default.fsMRCat.fullList[cat2]) {
-            prepare_default.fsMRCat.fullList[cat2] = { i: prepare_default.fsMRCat.fullList.length, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-            prepare_default.fsMRCat.fullList.push(prepare_default.fsMRCat.fullList[cat2]);
+            prepare_default.fsMRCat.fullList[i3] = prepare_default.fsMRCat.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
+          } else {
+            prepare_default.fsMRCat.fullList[i3] = prepare_default.fsMRCat.fullList[cat2];
           }
         }
         if (catList === prepare_default.catList) {
-          let fsGotoCatsFLCat = prepare_default.fsGotoCats.fullList[cat2];
-          if (!fsGotoCatsFLCat) {
-            prepare_default.fsGotoCats.fullList[cat2] = fsGotoCatsFLCat = { i: prepare_default.fsGotoCats.fullList.length, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-            prepare_default.fsGotoCats.fullList.push(prepare_default.fsGotoCats.fullList[cat2]);
+          if (!prepare_default.fsGotoCats.fullList[cat2]) {
+            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
+          } else {
+            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2];
           }
         }
       };
@@ -28650,7 +28652,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           }
         });
       };
-      prepare_default.refresh = async function(cats2, option, uriOrS) {
+      prepare_default.refresh = function(cats2, option, uriOrS) {
         return new Promise(async function(resolve, reject) {
           if (prepare_default.myPage) {
             cats2 = prepare_default.catsToString(cats2);
