@@ -9,12 +9,15 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonObject;
 import recoeve.db.FileMap;
 import recoeve.db.FileMapWithVar;
 import recoeve.db.RecoeveDB;
 
 public class MainVerticle extends AbstractVerticle {
+	private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 	public FileMap fileMap;
 	public FileMapWithVar fileMapWithVar;
 	public RecoeveWebClient recoeveWebClient;
@@ -31,29 +34,35 @@ public class MainVerticle extends AbstractVerticle {
 		db = new RecoeveDB(vertx);
 		recoeveWebClient = new RecoeveWebClient(vertx, context, db);
 		recoeve = new Recoeve(vertx, context, fileMap, fileMapWithVar, recoeveWebClient, db);
+		LOG.info("MainVerticle created.");
 	}
 
 	@Override
 	public void start(Promise<Void> startPromise) {
+		LOG.info("Start " + getClass().getName() + " on tread " + Thread.currentThread().getName());
 		JsonObject config = new JsonObject().put("maxDrivers", RecoeveWebClient.DEFAULT_MAX_DRIVERS);
-		Future<String> deploy0 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config))
+		Future<String> deploy0 = vertx.deployVerticle(recoeveWebClient, new DeploymentOptions(config).setInstances(2))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId0 = res.result();
 					System.out.println("Deployment id is: " + verticleId0);
+					LOG.info("RecoeveWebClient is deployed.");
 				}
 				else {
 					System.out.println("Deployment failed!");
+					LOG.error("RecoeveWebClient is NOT deployed.");
 				}
 			});
-		Future<String> deploy1 = vertx.deployVerticle(recoeve)
+		Future<String> deploy1 = vertx.deployVerticle(recoeve, new DeploymentOptions().setInstances(2))
 			.onComplete(res -> {
 				if (res.succeeded()) {
 					verticleId1 = res.result();
 					System.out.println("Deployment id is: " + verticleId1);
+					LOG.info("Recoeve is deployed.");
 				}
 				else {
 					System.out.println("Deployment failed!");
+					LOG.error("Recoeve is NOT deployed.");
 				}
 			});
 		Future.all(deploy0, deploy1).onComplete((res) -> {
