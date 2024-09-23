@@ -36,7 +36,9 @@ m.printLogs=function (args, err) {
 		console.log(resp);
 		$print_logs.html(resp);
 	}).done(async function (resp) {
+		m.txtResp = resp;
 		let txtArray=await m.strToJSON(resp);
+		m.txtArray = txtArray;
 		let csv="Email";
 		let iMax=txtArray.length;
 		for (let i=1;i<iMax;i++) {
