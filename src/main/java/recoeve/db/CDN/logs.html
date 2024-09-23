@@ -52,7 +52,7 @@ m.printLogs=function (args, err) {
 			txtArray[i].splice(2, 1, `<a target="_blank" href="https://recoeve.net/user/${txtArray[i].user_id}">${txtArray[i].user_id}</a>`);
 			txtArray[i].splice(3, 1, `<a target="_blank" href="https://mail.google.com/mail/?view=cm&fs=1&to=${txtArray[i].email}">${txtArray[i].email}</a>`);
 		}
-		$print_logs.html(await m.arrayToTableHTML(txtArray, false, [3, 4, 13, 15, 5, 7, 3, 5, 25]));
+		$print_logs.html(await m.arrayToTableHTML(txtArray, false, [4, 4, 12, 15, 10, 7, 3, 3, 22]));
 			// * (txtArray, escapeTag = true, colgroup = [])
 			// * user_i, index(16), user_id, email, t, ip, log, success, desc
 	});
