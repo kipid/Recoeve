@@ -29770,12 +29770,14 @@ ${uri2}	change	${cats2}`;
       };
       prepare_default.triggerOpenCat = function(event2) {
         return new Promise((resolve, reject) => {
+          console.log(event2);
+          console.log(event2.target);
           let $elem = (0, import_jquery15.default)(event2.target);
           if (!(event2?.srcElement?.nodeName === "A" && $elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
             $elem = $elem.parents(".baseCat, .move-cat");
           }
           if (!$elem.length) {
-            reject("$(event.target) is NOT a tag, or there is no .baseCat");
+            reject("$(event.target) is NOT <a> tag, or there is no .baseCat");
           }
           let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
           if (event2?.which === 2) {
