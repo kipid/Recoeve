@@ -590,12 +590,6 @@ a.seekTo {
 	stroke-width:23%
 }
 
-.bright #new-reco form {
-	background-color:rgb(210, 210, 210);
-	border:.2em solid rgb(120, 120, 130);
-	color:#2b2b2b
-}
-
 #new-reco form {
 	position:relative;
 	width:40em;
@@ -605,6 +599,12 @@ a.seekTo {
 	background-color:black;
 	border:.2em solid rgb(120, 120, 130);
 	text-align:left
+}
+
+.bright #new-reco form {
+	background-color:rgb(210, 210, 210);
+	border:.2em solid rgb(120, 120, 130);
+	color:#2b2b2b
 }
 
 #new-reco form .reset {
