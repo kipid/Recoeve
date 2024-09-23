@@ -13656,7 +13656,7 @@
   init_react_shim();
   var import_client = __toESM(require_client(), 1);
 
-  // src/App.js
+  // src/App.jsx
   init_react_shim();
   var import_jquery15 = __toESM(require_jquery(), 1);
 
@@ -14744,7 +14744,7 @@
     return new Promise(async function(resolve, reject) {
       let cL = m2.catList;
       let cat2 = cL[0].cat;
-      let catListHTML = `<div id="cat-" key="cat-" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+      let catListHTML = `<div id="cat-" key="cat-" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
       let i3 = 1;
       for (; i3 < cL.length - 1; i3++) {
         cat2 = cL[i3].cat;
@@ -14762,9 +14762,9 @@
         if (currentDepth < afterDepth) {
           catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat2}'])">${cL[i3].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
         } else {
-          catListHTML += `<span key="noEC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
+          catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
         }
-        catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+        catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
       }
       if (cL.length > 1) {
         cat2 = cL[i3].cat;
@@ -14777,7 +14777,7 @@
             catListHTML += `</div>`;
           }
         }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span class="noEC"></span><a class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+        catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
         for (let j2 = 0; j2 < currentDepth; j2++) {
           catListHTML += `</div>`;
         }
@@ -14786,6 +14786,14 @@
       resolve();
     });
   };
+  m2.$catList.on("mouseup.move-cat", (e2) => {
+    try {
+      m2.triggerOpenCat(e2);
+    } catch (err) {
+      console.error(err);
+    }
+    return false;
+  });
   m2.getCatListChanged = function() {
     m2.$change_catList_order_ok.hide();
     m2.$change_catList_order_cancel.hide();
@@ -14971,8 +14979,8 @@
     }
     if (r2.has) {
       let recoHTML = await m2.recoHTML(r2, true, true);
-      m2.$my_reco.html(String(recoHTML));
-      let $edit = $my_reco.find(".button.edit").remove();
+      m2.$my_reco.html(recoHTML);
+      let $edit = m2.$my_reco.find(".button.edit").remove();
     } else {
       m2.$my_reco.html("");
     }
@@ -18108,7 +18116,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   };
   var prepare_default = window.m;
 
-  // src/App.js
+  // src/App.jsx
   var import_react9 = __toESM(require_react(), 1);
 
   // node_modules/use-immer/dist/use-immer.module.js
@@ -18764,11 +18772,11 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     }, [])];
   }
 
-  // src/SidebarCon.js
+  // src/components/SidebarCon.jsx
   init_react_shim();
   var import_jquery4 = __toESM(require_jquery(), 1);
 
-  // src/SidebarDragger.js
+  // src/components/SidebarDragger.jsx
   init_react_shim();
   var import_jquery2 = __toESM(require_jquery(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
@@ -18796,7 +18804,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     ] });
   }
 
-  // src/Sidebar.js
+  // src/components/Sidebar.jsx
   init_react_shim();
   var import_jquery3 = __toESM(require_jquery(), 1);
   var import_react3 = __toESM(require_react(), 1);
@@ -18830,7 +18838,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     ] });
   }
 
-  // src/SidebarCon.js
+  // src/components/SidebarCon.jsx
   var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   function SidebarCon({ userCatList }) {
@@ -18910,7 +18918,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     ] });
   }
 
-  // src/RightTop.js
+  // src/components/RightTop.jsx
   init_react_shim();
   var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
   function RightTop() {
@@ -18936,7 +18944,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     ] });
   }
 
-  // src/LangList.js
+  // src/components/LangList.jsx
   init_react_shim();
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
   function LangList() {
@@ -18949,10 +18957,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/FSTimezone.js
+  // src/components/FSTimezone.jsx
   init_react_shim();
 
-  // src/Move.js
+  // src/components/Move.jsx
   init_react_shim();
   var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
   function Move() {
@@ -18970,7 +18978,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] }) }) });
   }
 
-  // src/Reset.js
+  // src/components/Reset.jsx
   init_react_shim();
   var import_jquery5 = __toESM(require_jquery(), 1);
   var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
@@ -18994,7 +19002,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] }) }) });
   }
 
-  // src/Exit.js
+  // src/components/Exit.jsx
   init_react_shim();
   var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
   function Exit({ onClick, id, style, className }) {
@@ -19010,7 +19018,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] }) });
   }
 
-  // src/FSTimezone.js
+  // src/components/FSTimezone.jsx
   var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
   function FSTimezone() {
     return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { id: "search-timezone-container", className: "fs-container", style: { display: "none" }, children: [
@@ -19023,7 +19031,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/TimezoneList.js
+  // src/components/TimezoneList.jsx
   init_react_shim();
   var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
   function TimezoneList() {
@@ -24752,7 +24760,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     );
   }
 
-  // src/ChangeStyle.js
+  // src/components/ChangeStyle.jsx
   init_react_shim();
   var import_jquery6 = __toESM(require_jquery(), 1);
   var import_react5 = __toESM(require_react(), 1);
@@ -24897,7 +24905,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/Foot.js
+  // src/components/Foot.jsx
   init_react_shim();
   var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
   function Foot() {
@@ -24912,14 +24920,14 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ShortKeys.js
+  // src/components/ShortKeys.jsx
   init_react_shim();
   var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
   function ShortKeys() {
     return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "side2", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("ul", { id: "shortkeys" }) });
   }
 
-  // src/GoogleSearch.js
+  // src/components/GoogleSearch.jsx
   init_react_shim();
   var import_jquery7 = __toESM(require_jquery(), 1);
   var import_react6 = __toESM(require_react(), 1);
@@ -24957,7 +24965,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ButtonsHead.js
+  // src/components/ButtonsHead.jsx
   init_react_shim();
   var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
   function ButtonsHead() {
@@ -24990,7 +24998,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ContentsRecoms.js
+  // src/components/ContentsRecoms.jsx
   init_react_shim();
   var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
   function ContentsRecoms() {
@@ -25000,7 +25008,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ButtonsPointRange.js
+  // src/components/ButtonsPointRange.jsx
   init_react_shim();
   var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
   function ButtonsPointRange() {
@@ -25017,7 +25025,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/HeadPlay.js
+  // src/components/HeadPlay.jsx
   init_react_shim();
   var import_react7 = __toESM(require_react(), 1);
   var import_jquery8 = __toESM(require_jquery(), 1);
@@ -25057,7 +25065,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/Tip.js
+  // src/components/Manual.jsx
+  init_react_shim();
+
+  // src/components/Tip.jsx
   init_react_shim();
   var import_jsx_runtime19 = __toESM(require_jsx_runtime(), 1);
   function Tip() {
@@ -25085,8 +25096,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/Manual.js
-  init_react_shim();
+  // src/components/Manual.jsx
   var import_jsx_runtime20 = __toESM(require_jsx_runtime(), 1);
   function Manual() {
     return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_jsx_runtime20.Fragment, { children: [
@@ -25132,14 +25142,14 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ContentsRecos.js
+  // src/components/ContentsRecos.jsx
   init_react_shim();
   var import_jsx_runtime21 = __toESM(require_jsx_runtime(), 1);
   function ContentsRecos() {
     return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("article", { className: "side2", id: "contents" });
   }
 
-  // src/FSGotoCats.js
+  // src/components/FSGotoCats.jsx
   init_react_shim();
   var import_jsx_runtime22 = __toESM(require_jsx_runtime(), 1);
   function FSGotoCats() {
@@ -25153,7 +25163,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/FSGo.js
+  // src/components/FSGo.jsx
   init_react_shim();
   var import_jsx_runtime23 = __toESM(require_jsx_runtime(), 1);
   function FSGo() {
@@ -25167,7 +25177,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/FSTableOfRecos.js
+  // src/components/FSTableOfRecos.jsx
   init_react_shim();
   var import_jsx_runtime24 = __toESM(require_jsx_runtime(), 1);
   function FSTableOfRecos() {
@@ -25181,7 +25191,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/FSMultirecoCats.js
+  // src/components/FSMultirecoCats.jsx
   init_react_shim();
   var import_jsx_runtime25 = __toESM(require_jsx_runtime(), 1);
   function FSMultirecoCats() {
@@ -25208,7 +25218,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/ButtonsFloating.js
+  // src/components/ButtonsFloating.jsx
   init_react_shim();
   var import_jquery9 = __toESM(require_jquery(), 1);
   var import_jsx_runtime26 = __toESM(require_jsx_runtime(), 1);
@@ -25331,7 +25341,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/Memorizing.js
+  // src/components/Memorizing.jsx
   init_react_shim();
   var import_react8 = __toESM(require_react(), 1);
   var import_jquery10 = __toESM(require_jquery(), 1);
@@ -25633,7 +25643,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] }) });
   }
 
-  // src/FormNewReco.js
+  // src/components/FormNewReco.jsx
   init_react_shim();
   var import_jquery11 = __toESM(require_jquery(), 1);
   var import_jsx_runtime28 = __toESM(require_jsx_runtime(), 1);
@@ -25726,7 +25736,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] }) });
   }
 
-  // src/NotiCopied.js
+  // src/components/NotiCopied.jsx
   init_react_shim();
   var import_jquery12 = __toESM(require_jquery(), 1);
   var import_jsx_runtime29 = __toESM(require_jsx_runtime(), 1);
@@ -25740,7 +25750,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/NotiLogOut.js
+  // src/components/NotiLogOut.jsx
   init_react_shim();
   var import_jquery13 = __toESM(require_jquery(), 1);
   var import_jsx_runtime30 = __toESM(require_jsx_runtime(), 1);
@@ -25751,7 +25761,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/BlockTouch.js
+  // src/components/BlockTouch.jsx
   init_react_shim();
   var import_jquery14 = __toESM(require_jquery(), 1);
   var import_jsx_runtime31 = __toESM(require_jsx_runtime(), 1);
@@ -25787,7 +25797,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     ] });
   }
 
-  // src/App.js
+  // src/App.jsx
   var import_jsx_runtime32 = __toESM(require_jsx_runtime(), 1);
   prepare_default.pathname = prepare_default.initialPathname;
   if (prepare_default.initialPathname === "/reco") {
@@ -29798,7 +29808,7 @@ ${uri2}	change	${cats2}`;
             } else {
               try {
                 await(async function() {
-                  return new Promise((resolve2) => {
+                  return new Promise((resolve2, reject2) => {
                     fs2.$fsl.prepend(
                       `<div class="list-item${fsFLCat?.down ? " down" : ""}${fsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${k}"><span class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span><span class="list-index">${k}</span>${fs2.fullList[k].html}</div>`
                     );

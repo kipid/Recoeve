@@ -14744,7 +14744,7 @@
     return new Promise(async function(resolve, reject) {
       let cL = m.catList;
       let cat = cL[0].cat;
-      let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+      let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
       let i = 1;
       for (; i < cL.length - 1; i++) {
         cat = cL[i].cat;
@@ -14762,9 +14762,9 @@
         if (currentDepth < afterDepth) {
           catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat}'])">${cL[i].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
         } else {
-          catListHTML += `<span key="noEC-${encodeURIComponent(cat)}" class="noEC"></span>`;
+          catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="noEC"></span>`;
         }
-        catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+        catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
       }
       if (cL.length > 1) {
         cat = cL[i].cat;
@@ -14777,7 +14777,7 @@
             catListHTML += `</div>`;
           }
         }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span class="noEC"></span><a class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}" onmouseup="m.triggerOpenCat(event)"><span class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span key="EC-${encodeURIComponent(cat)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
         for (let j = 0; j < currentDepth; j++) {
           catListHTML += `</div>`;
         }
@@ -14786,6 +14786,14 @@
       resolve();
     });
   };
+  m.$catList.on("mouseup.move-cat", (e) => {
+    try {
+      m.triggerOpenCat(e);
+    } catch (err) {
+      console.error(err);
+    }
+    return false;
+  });
   m.getCatListChanged = function() {
     m.$change_catList_order_ok.hide();
     m.$change_catList_order_cancel.hide();
@@ -14971,8 +14979,8 @@
     }
     if (r2.has) {
       let recoHTML = await m.recoHTML(r2, true, true);
-      m.$my_reco.html(String(recoHTML));
-      let $edit = $my_reco.find(".button.edit").remove();
+      m.$my_reco.html(recoHTML);
+      let $edit = m.$my_reco.find(".button.edit").remove();
     } else {
       m.$my_reco.html("");
     }
@@ -18111,7 +18119,7 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
   // src/LogIn.jsx
   var import_react4 = __toESM(require_react(), 1);
 
-  // src/FormLogIn.jsx
+  // src/components/FormLogIn.jsx
   init_react_shim();
   var import_jquery2 = __toESM(require_jquery(), 1);
   var import_react2 = __toESM(require_react(), 1);
@@ -18309,7 +18317,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${idType}	${userId}	${re
     ] });
   }
 
-  // src/FormLogInWithGoogle.jsx
+  // src/components/FormLogInWithGoogle.jsx
   init_react_shim();
   var import_jquery3 = __toESM(require_jquery(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
@@ -18440,7 +18448,7 @@ ${prepare_default.state}	${prepare_default.searchVars.goto?.val ? prepare_defaul
     ] });
   }
 
-  // src/FormSignUp.jsx
+  // src/components/FormSignUp.jsx
   init_react_shim();
   var import_jquery4 = __toESM(require_jquery(), 1);
   var import_react3 = __toESM(require_react(), 1);
