@@ -150,8 +150,8 @@ table>*>tr>td {
 }
 
 .bright .button {
-	border-color:rgb(90, 90, 90);
-	background:rgb(190, 190, 190)
+	border-color:#b2b2b2;
+	background:#dfdfdf
 }
 
 .pink .button {
