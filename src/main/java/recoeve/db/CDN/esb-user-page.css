@@ -510,6 +510,7 @@ a.seekTo {
 .bright #new-reco form {
   background: rgb(210, 210, 210);
   border: .2em solid rgb(120, 120, 130);
+  color: #2b2b2b;
 }
 #new-reco form .reset {
   position: absolute;
