@@ -196,6 +196,12 @@ build/libs/http-1.0.0-SNAPSHOT-fat.jar
 build/libs/http-1.0.0-SNAPSHOT.jar
 build/distributions/http-shadow-1.0.0-SNAPSHOT.tar
 build/distributions/http-shadow-1.0.0-SNAPSHOT.zip
+build/distributions/recoeve-1.0.0-SNAPSHOT.tar
+build/distributions/recoeve-1.0.0-SNAPSHOT.zip
+build/libs/recoeve-1.0.0-SNAPSHOT-fat.jar
+build/libs/recoeve-1.0.0-SNAPSHOT.jar
+build/distributions/recoeve-shadow-1.0.0-SNAPSHOT.tar
+build/distributions/recoeve-shadow-1.0.0-SNAPSHOT.zip
 build/scripts/*
 apache-maven-*
 
