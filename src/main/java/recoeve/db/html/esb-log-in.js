@@ -18109,7 +18109,7 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
   var prepare_default = window.m;
 
   // src/LogIn.jsx
-  var import_react4 = __toESM(require_react(), 1);
+  var import_react5 = __toESM(require_react(), 1);
 
   // src/components/FormLogIn.jsx
   init_react_shim();
@@ -18312,6 +18312,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${idType}	${userId}	${re
   // src/components/FormLogInWithGoogle.jsx
   init_react_shim();
   var import_jquery3 = __toESM(require_jquery(), 1);
+  var import_react3 = __toESM(require_react(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   prepare_default.state = Math.random().toString(16).substring(2);
   prepare_default.oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -18331,9 +18332,9 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${idType}	${userId}	${re
   prepare_default.paramsSearch = "?" + prepare_default.paramsSearch.substring(1);
   prepare_default.authGoogleURL = prepare_default.oauth2Endpoint + prepare_default.paramsSearch;
   function FormLogInWithGoogle() {
-    const [userId, setUserId] = useState("");
-    const [logInDisabled, setLogInDisabled] = useState(false);
-    const [logInErrs, setLogInErrs] = useState([]);
+    const [userId, setUserId] = (0, import_react3.useState)("");
+    const [logInDisabled, setLogInDisabled] = (0, import_react3.useState)(false);
+    const [logInErrs, setLogInErrs] = (0, import_react3.useState)([]);
     prepare_default.logInWithGoogle = function() {
       setLogInDisabled(true);
       if (userId === "") {
@@ -18443,15 +18444,15 @@ ${prepare_default.state}	${prepare_default.searchVars.goto?.val ? prepare_defaul
   // src/components/FormSignUp.jsx
   init_react_shim();
   var import_jquery4 = __toESM(require_jquery(), 1);
-  var import_react3 = __toESM(require_react(), 1);
+  var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   function FormSignUp() {
-    const [userId, setUserId] = (0, import_react3.useState)("");
-    const [userEmail, setUserEmail] = (0, import_react3.useState)("");
-    const [userPwd, setUserPwd] = (0, import_react3.useState)("");
-    const [userPwdCfm, setUserPwdCfm] = (0, import_react3.useState)("");
-    const [signUpDisabled, setSignUpDisabled] = (0, import_react3.useState)(false);
-    const [signUpErrs, setSignUpErrs] = (0, import_react3.useState)([]);
+    const [userId, setUserId] = (0, import_react4.useState)("");
+    const [userEmail, setUserEmail] = (0, import_react4.useState)("");
+    const [userPwd, setUserPwd] = (0, import_react4.useState)("");
+    const [userPwdCfm, setUserPwdCfm] = (0, import_react4.useState)("");
+    const [signUpDisabled, setSignUpDisabled] = (0, import_react4.useState)(false);
+    const [signUpErrs, setSignUpErrs] = (0, import_react4.useState)([]);
     prepare_default.signUp = function() {
       setSignUpDisabled(true);
       let userIdLength = prepare_default.getUTF8Length(userId);
@@ -18741,7 +18742,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${prepare_default.hashMa
     }
     ;
     let ignore = false;
-    (0, import_react4.useEffect)(() => {
+    (0, import_react5.useEffect)(() => {
       if (!ignore) {
         initialEffect();
       }
