@@ -29807,20 +29807,21 @@ ${uri2}	change	${cats2}`;
               resolve(false);
             } else {
               try {
-                await(async function() {
+                (function() {
                   return new Promise((resolve2, reject2) => {
                     fs2.$fsl.prepend(
                       `<div class="list-item${fsFLCat?.down ? " down" : ""}${fsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${k}"><span class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span><span class="list-index">${k}</span>${fs2.fullList[k].html}</div>`
                     );
                     resolve2();
                   });
-                })();
+                })().then(() => {
+                  $gotoCatsK = (0, import_jquery15.default)(`#gotoCats-${k}`);
+                  $gotoCatsK.trigger("click");
+                  resolve(false);
+                });
               } catch (err) {
                 console.error(err);
               }
-              $gotoCatsK = (0, import_jquery15.default)(`#gotoCats-${k}`);
-              $gotoCatsK.trigger("click");
-              resolve(false);
             }
           }
           resolve(false);
@@ -29913,45 +29914,47 @@ ${uri2}	change	${cats2}`;
           prepare_default.showAndScrollTo($recoElem);
         } else if (isNaN(l2)) {
           try {
-            await async function() {
+            (function() {
               return new Promise(async (resolve) => {
-                prepare_default.$contents_recos.prepend(String(await prepare_default.recoHTML(prepare_default.$recoDeleted[uri]?.r)));
+                prepare_default.$contents_recos.prepend(await prepare_default.recoHTML(prepare_default.$recoDeleted[uri]?.r));
                 resolve();
               });
-            }();
+            })().then(() => {
+              $recoElem = (0, import_jquery15.default)(`#reco-${l2}`);
+              if ($recoElem.length) {
+                prepare_default.showAndScrollTo($recoElem);
+              }
+            });
           } catch (err) {
             console.error(err);
-          }
-          $recoElem = (0, import_jquery15.default)(`#reco-${l2}`);
-          if ($recoElem.length) {
-            prepare_default.showAndScrollTo($recoElem);
           }
         } else {
           let i3 = Math.floor((prepare_default.catUriList[prepare_default.currentCat].uris.length - 1 - l2) / prepare_default.maxShowReco);
           try {
-            await async function() {
+            (function() {
               return new Promise(async (resolve) => {
                 await (0, import_jquery15.default)(`#load-recos-${i3}`).trigger("click");
                 resolve();
               });
-            }();
+            })().then(() => {
+              let $recoElem2 = (0, import_jquery15.default)(`#reco-${l2}`);
+              if ($recoElem2.length) {
+                prepare_default.showAndScrollTo($recoElem2);
+                console.log(`m.showAndScrollTo($(\`#reco-${l2}\`));`);
+              } else {
+                if (!prepare_default.setTimeoutGotoLiCount || prepare_default.setTimeoutGotoLiCount >= 3) {
+                  prepare_default.setTimeoutGotoLiCount = 0;
+                }
+                prepare_default.setTimeoutGotoLiCount++;
+                if (prepare_default.setTimeoutGotoLiCount < 3) {
+                  prepare_default.setTimeoutGotoLi = setTimeout(function() {
+                    prepare_default.gotoLi(event2);
+                  }, prepare_default.wait);
+                }
+              }
+            });
           } catch (err) {
             console.error(err);
-          }
-          let $recoElem2 = (0, import_jquery15.default)(`#reco-${l2}`);
-          if ($recoElem2.length) {
-            prepare_default.showAndScrollTo($recoElem2);
-            console.log(`m.showAndScrollTo($(\`#reco-${l2}\`));`);
-          } else {
-            if (!prepare_default.setTimeoutGotoLiCount || prepare_default.setTimeoutGotoLiCount >= 3) {
-              prepare_default.setTimeoutGotoLiCount = 0;
-            }
-            prepare_default.setTimeoutGotoLiCount++;
-            if (prepare_default.setTimeoutGotoLiCount < 3) {
-              prepare_default.setTimeoutGotoLi = setTimeout(function() {
-                prepare_default.gotoLi(event2);
-              }, prepare_default.wait);
-            }
           }
         }
       };
