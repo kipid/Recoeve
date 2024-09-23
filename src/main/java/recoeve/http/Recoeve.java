@@ -556,9 +556,13 @@ public class Recoeve extends AbstractVerticle {
 							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8")
 									.end(fileMap.getFileWithLang("esb-user-page.js.map", pl.lang), ENCODING);
 							break;
-						case "bundle-log-in.js": // e.g. path=/bundle-log-in.js
+						case "esb-log-in.js": // e.g. path=/esb-log-in.js
 							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
-									.end(fileMap.getFileWithLang("bundle-log-in.js", pl.lang), ENCODING);
+									.end(fileMap.getFileWithLang("esb-log-in.js", pl.lang), ENCODING);
+							break;
+						case "esb-log-in.js.map": // e.g. path=/esb-log-in.js.map
+							pl.req.response().putHeader("Content-Type", "application/json; charset=utf-8")
+									.end(fileMap.getFileWithLang("esb-log-in.js.map", pl.lang), ENCODING);
 							break;
 						case "bundle-changePwd.js": // e.g. path=/bundle-changePwd.js
 							pl.req.response().putHeader("Content-Type", "text/javascript; charset=utf-8")
