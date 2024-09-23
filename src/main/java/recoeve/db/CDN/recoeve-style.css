@@ -6,7 +6,7 @@ body {
 	overflow-wrap:break-word;
 	word-wrap:break-word;
 	word-break:break-word;
-	background:rgb(150, 150, 150);
+	background-color:rgb(150 150 150);
 	overflow-x:hidden
 }
 
@@ -92,13 +92,13 @@ code {
 	font-size:.9em;
 	padding:.2em;
 	display:inline;
-	border:2px solid rgb(200, 150, 150);
+	border:2px solid rgb(200 150 150);
 	border-radius:.2em;
-	background:rgb(30, 30, 30)
+	background-color:rgb(30 30 30)
 }
 
 .bright code {
-	background:rgb(230, 230, 230);
+	background-color:rgb(230 230 230);
 	color:black
 }
 
@@ -129,34 +129,34 @@ table>*>tr>td {
 	border-radius:.3em;
 	margin:0 .1em .5em;
 	padding:.2em .5em;
-	border:.15em solid rgb(50, 50, 50);
-	background:rgb(110, 110, 110)
+	border:.15em solid rgb(50 50 50);
+	background-color:rgb(110 110 110)
 }
 
 .button.darkred {
-	background:darkred
+	background-color:darkred
 }
 
 .bright .button.darkred {
-	background:indianred
+	background-color:indianred
 }
 
 .pink .button.darkred {
-	background:orangered
+	background-color:orangered
 }
 
 .button.cadetblue {
-	background:cadetblue
+	background-color:cadetblue
 }
 
 .bright .button {
 	border-color:#b2b2b2;
-	background:#dfdfdf
+	background-color:#dfdfdf
 }
 
 .pink .button {
-	border-color:rgb(166, 83, 166);
-	background:rgb(138, 13, 106)
+	border-color:rgb(166 83 166);
+	background-color:rgb(138 13 106)
 }
 
 .reco .button {
@@ -164,7 +164,7 @@ table>*>tr>td {
 }
 
 .reco .button.deleted {
-	background:rgb(255, 118, 0)
+	background-color:rgb(255 118 0)
 }
 
 .button.to-be-executed, .button.load-recos {
@@ -176,13 +176,13 @@ table>*>tr>td {
 
 .button.disabled {
 	pointer-events:none;
-	background:rgb(25, 25, 25);
-	color:rgb(120, 120, 120)
+	background-color:rgb(25 25 25);
+	color:rgb(120 120 120)
 }
 
 .bright .button.disabled {
-	background:rgb(100, 100, 100);
-	color:rgb(25, 25, 25)
+	background-color:rgb(100 100 100);
+	color:rgb(25 25 25)
 }
 
 .button.fLeft {
@@ -190,35 +190,35 @@ table>*>tr>td {
 }
 
 .button:active {
-	background:rgb(0, 80, 80)
+	background-color:rgb(0 80 80)
 }
 
 .bright .button:active {
-	background:rgb(100, 180, 180)
+	background-color:rgb(100 180 180)
 }
 
 .button.enabled {
-	background:seagreen
+	background-color:seagreen
 }
 
 .bright .button.enabled {
-	background:palegreen
+	background-color:palegreen
 }
 
 .pink .button.enabled {
-	background:lightseagreen
+	background-color:lightseagreen
 }
 
 .button.enabled:active {
-	background:rgb(70, 70, 70)
+	background-color:rgb(70 70 70)
 }
 
 .bright .button.enabled:active {
-	background:rgb(190, 190, 190)
+	background-color:rgb(190 190 190)
 }
 
 .pink .button.enabled:active {
-	background:rgb(125, 125, 125)
+	background-color:rgb(125 125 125)
 }
 
 a {
@@ -226,7 +226,7 @@ a {
 }
 
 a:link {
-	color:rgb(190, 190, 235)
+	color:rgb(190 190 235)
 }
 
 .bright a:link {
@@ -234,57 +234,57 @@ a:link {
 }
 
 .pink a:link {
-	color:rgb(155, 195, 131)
+	color:rgb(155 195 131)
 }
 
 a:visited {
-	color:rgb(170, 170, 215)
+	color:rgb(170 170 215)
 }
 
 .bright a:visited {
-	color:rgb(0, 0, 66)
+	color:rgb(0 0 66)
 }
 
 .pink a:visited {
-	color:rgb(111, 146, 235)
+	color:rgb(111 146 235)
 }
 
 a:active {
-	color:rgb(100, 215, 215)
+	color:rgb(100 215 215)
 }
 
 .bright a:active {
-	color:rgb(0, 100, 100)
+	color:rgb(0 100 100)
 }
 
 .pink a:active {
-	color:rgb(70, 170, 170)
+	color:rgb(70 170 170)
 }
 
 a:hover {
-	color:rgb(170, 215, 170);
+	color:rgb(170 215 170);
 	text-decoration:underline
 }
 
 .bright a:hover {
-	color:rgb(40, 140, 40)
+	color:rgb(40 140 40)
 }
 
 .pink a:hover {
-	color:rgb(70, 170, 70)
+	color:rgb(70 170 70)
 }
 
 a.seekTo {
-	color:rgb(170, 215, 170);
+	color:rgb(170 215 170);
 	text-decoration:underline
 }
 
 .bright a.seekTo {
-	color:rgb(40, 140, 40)
+	color:rgb(40 140 40)
 }
 
 .pink a.seekTo {
-	color:rgb(70, 170, 70)
+	color:rgb(70 170 70)
 }
 
 ::-webkit-scrollbar {
@@ -300,12 +300,12 @@ a.seekTo {
 ::-webkit-scrollbar-thumb {
 	-webkit-border-radius:5px;
 	border-radius:5px;
-	background:rgb(0, 120, 120);
-	-webkit-box-shadow:inset 0 0 3px rgb(0, 0, 0)
+	background-color:rgb(0 120 120);
+	-webkit-box-shadow:inset 0 0 3px rgb(0 0 0)
 }
 
 ::-webkit-scrollbar-corner {
-	background:transparent
+	background-color:transparent
 }
 
 #right-top-log-in .button {
@@ -332,17 +332,17 @@ a.seekTo {
 	max-width:1400px;
 	line-height:1.6;
 	font-family:'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, 'MS Mincho', Tahoma, Sans-serif;
-	background:rgb(75, 75, 75);
+	background-color:rgb(75 75 75);
 	color:white
 }
 
 #container.bright {
-	background:rgb(250, 250, 250);
+	background-color:rgb(250 250 250);
 	color:black
 }
 
 #container.pink {
-	background:rgb(68, 0, 59);
+	background-color:rgb(68 0 59);
 	color:wheat
 }
 
@@ -351,7 +351,7 @@ a.seekTo {
 	left:0;
 	top:0;
 	z-index:10010;
-	background:black;
+	background-color:black;
 	width:20em;
 	max-width:100%;
 	height:auto;
@@ -359,7 +359,7 @@ a.seekTo {
 }
 
 .bright .fs-container {
-	background:wheat
+	background-color:wheat
 }
 
 .fs-container>.move, .fs-container>.reset, .fs-container .exit {
@@ -372,8 +372,8 @@ a.seekTo {
 	text-align:center;
 	border-radius:0;
 	cursor:pointer;
-	border:2px rgb(80, 80, 80) solid;
-	background-color:rgb(30, 30, 30);
+	border:2px rgb(80 80 80) solid;
+	background-color:rgb(30 30 30);
 	color:white
 }
 
@@ -449,7 +449,7 @@ a.seekTo {
 	width:100%;
 	padding:.1em;
 	border:.15em gray solid;
-	background:white
+	background-color:white
 }
 
 .fs-container textarea {
@@ -462,8 +462,8 @@ a.seekTo {
 	overflow-x:hidden;
 	overflow-y:auto;
 	padding:0.2em 0.3em;
-	background:white;
-	color:rgb(50, 50, 50)
+	background-color:white;
+	color:rgb(50 50 50)
 }
 
 #goto-cats {
@@ -484,60 +484,64 @@ a.seekTo {
 	max-height:15em;
 	overflow-y:auto;
 	border:.15em gray solid;
-	background:rgb(20, 20, 20)
+	background-color:rgb(20 20 20)
+}
+
+.bright .fs-list {
+	background-color:rgb(195 195 195)
 }
 
 .fs-list .list-item {
 	display:inherit;
-	background:black;
+	background-color:black;
 	color:white;
 	padding:.3em .5em
 }
 
 .fs-list .list-item.from-recoms {
-	background:rgb(80, 80, 40)
+	background-color:rgb(80 80 40)
 }
 
 .bright .fs-list .list-item {
-	background:rgb(240, 240, 240);
+	background-color:rgb(240 240 240);
 	color:black
 }
 
 .bright .fs-list .list-item.from-recoms {
-	background:rgb(240, 240, 200)
+	background-color:rgb(240 240 200)
 }
 
 .fs-list .list-item:nth-child(2n) {
-	background:rgb(40, 40, 40)
+	background-color:rgb(40 40 40)
 }
 
 .fs-list .list-item.from-recoms:nth-child(2n) {
-	background:rgb(120, 120, 80)
+	background-color:rgb(120 120 80)
 }
 
 .bright .fs-list .list-item:nth-child(2n) {
-	background:white
+	background-color:white
 }
 
 .bright .fs-list .list-item.from-recoms:nth-child(2n) {
-	background:rgb(255, 255, 215)
+	background-color:rgb(255 255 215)
 }
 
 .fs-list .list-item.down {
-	background:rgb(30, 70, 30);
-	border:1px solid rgb(120, 120, 70)
+	background-color:rgb(30 70 30);
+	border:1px solid rgb(120 120 70)
 }
 
 .fs-list .list-item.down:nth-child(2n) {
-	background:rgb(60, 100, 60)
+	background-color:rgb(60 100 60)
 }
 
 .fs-list .list-item.selected {
-	border:.15em solid rgb(210, 150, 150)
+	border:.15em solid rgb(210 150 150)
 }
 
 .fs-list .list-item.deleted {
-	background:rgb(70, 30, 30)
+	background-color:rgb(70 30 30)
 }
 
 .list-index-id,
@@ -554,11 +558,11 @@ a.seekTo {
 .fs-list .list-item .highlighted {
 	display:inherit;
 	font-size:.5em;
-	color:rgb(150, 150, 150)
+	color:rgb(150 150 150)
 }
 
 .fs-list .list-item .highlighted .bold {
-	color:rgb(170, 250, 170)
+	color:rgb(170 250 170)
 }
 
 .exit {
@@ -573,8 +577,8 @@ a.seekTo {
 	line-height:1.0;
 	text-align:center;
 	cursor:pointer;
-	border:.15em rgb(80, 80, 80) solid;
-	background-color:rgb(30, 30, 30);
+	border:.15em rgb(80 80 80) solid;
+	background-color:rgb(30 30 30);
 	color:white
 }
 
@@ -601,13 +605,13 @@ a.seekTo {
 
 .dark #new-reco form {
 	background-color:black;
-	border:.2em solid rgb(120, 120, 130);
+	border:.2em solid rgb(120 120 130);
 	color:white
 }
 
 .bright #new-reco form {
-	background-color:rgb(210, 210, 210);
-	border:.2em solid rgb(120, 120, 130);
+	background-color:rgb(210 210 210);
+	border:.2em solid rgb(120 120 130);
 	color:#2b2b2b
 }
 
@@ -621,8 +625,8 @@ a.seekTo {
 	line-height:1.0;
 	text-align:center;
 	cursor:pointer;
-	border:2px rgb(80, 80, 80) solid;
-	background-color:rgb(30, 30, 30);
+	border:2px rgb(80 80 80) solid;
+	background-color:rgb(30 30 30);
 	color:white
 }
 
@@ -663,8 +667,8 @@ a.seekTo {
 	overflow-x:hidden;
 	overflow-y:auto;
 	padding:.2em .3em;
-	background:white;
-	color:rgb(50, 50, 50)
+	background-color:white;
+	color:rgb(50 50 50)
 }
 
 textarea#input-uri {
@@ -720,9 +724,9 @@ textarea.multi-line {
 	top:0;
 	right:0;
 	bottom:0;
-	background:rgba(0, 0, 0, 0.7);
+	background-color:rgba(0 0 0 0.7);
 	overflow:auto;
-	color:rgb(35, 35, 35)
+	color:rgb(35 35 35)
 }
 
 #def-titles {
@@ -737,24 +741,24 @@ textarea.multi-line {
 
 #new-reco .def-title {
 	margin:0;
-	border:1px solid rgb(130, 130, 130);
+	border:1px solid rgb(130 130 130);
 	padding:1px .5em;
 	font-size:.9em
 }
 
 #new-reco .def-title.selected {
-	border-color:rgb(255, 180, 180)
+	border-color:rgb(255 180 180)
 }
 
 #new-reco .def-desc {
 	margin:.2em 0;
-	border:1px solid rgb(130, 130, 130);
+	border:1px solid rgb(130 130 130);
 	padding:1px .5em;
 	font-size:.9em
 }
 
 #new-reco .def-desc.selected {
-	border-color:rgb(255, 180, 180)
+	border-color:rgb(255 180 180)
 }
 
 #new-reco .buttons {
@@ -773,19 +777,19 @@ textarea.multi-line {
 #multireco-cats-container .def-cat {
 	display:inline-block;
 	margin:.2em 0;
-	border:1px solid rgb(130, 130, 130);
+	border:1px solid rgb(130 130 130);
 	padding:1px .5em;
 	font-size:.9em
 }
 
 #new-reco .def-cat.selected,
 #multireco-cats-container .def-cat.selected {
-	border-color:rgb(255, 180, 180)
+	border-color:rgb(255 180 180)
 }
 
 #delete-cat,
 #multireco-delete-cat {
-	background:#ff7600
+	background-color:#ff7600
 }
 
 #new-reco .def-cmd,
@@ -793,17 +797,17 @@ textarea.multi-line {
 #formatting-lyrics {
 	display:inline-block;
 	margin:.2em 0;
-	border:1px solid rgb(130, 130, 130);
+	border:1px solid rgb(130 130 130);
 	padding:1px .5em;
 	font-size:.9em
 }
 
 #formatting-lyrics {
-	border-color:rgb(130, 130, 200)
+	border-color:rgb(130 130 200)
 }
 
 #preview-desc {
-	border-color:rgb(130, 200, 130)
+	border-color:rgb(130 200 130)
 }
 
 #previewed-desc {
@@ -869,31 +873,31 @@ textarea.multi-line {
 
 .reco {
 	margin:0 0 1em;
-	border-top:.15em solid rgb(100, 100, 100);
-	border-bottom:.15em solid rgb(100, 100, 100);
-	background:black
+	border-top:.15em solid rgb(100 100 100);
+	border-bottom:.15em solid rgb(100 100 100);
+	background-color:black
 }
 
 .reco.recoed {
-	border:.3em solid rgb(50, 50, 200)
+	border:.3em solid rgb(50 50 200)
 }
 
 .reco.changed {
-	border:.3em solid rgb(50, 200, 50)
+	border:.3em solid rgb(50 200 50)
 }
 
 .reco.deleted {
-	border:.3em solid rgb(168, 50, 0)
+	border:.3em solid rgb(168 50 0)
 }
 
 .bright .reco {
 	border-color:#d3d3d3;
-	background:rgb(230, 230, 230)
+	background-color:rgb(230 230 230)
 }
 
 .pink .reco {
 	border-color:wheat;
-	background:rgb(35, 0, 97)
+	background-color:rgb(35 0 97)
 }
 
 .multireco .reco {
@@ -903,13 +907,13 @@ textarea.multi-line {
 .edit.fRight {
 	float:right;
 	padding:.1em .5em;
-	background:gray;
+	background-color:gray;
 	text-align:center;
 	font-weight:bold
 }
 
 .SNS-img {
-	background:white
+	background-color:white
 }
 
 .reco .SNS-img {
@@ -929,7 +933,7 @@ textarea.multi-line {
 }
 
 .reco .SNS-img .icon-X {
-	background:#a92323;
+	background-color:#a92323;
 	position:absolute;
 	left:5%;
 	top:5%;
@@ -944,7 +948,7 @@ textarea.multi-line {
 
 .reco>.uri {
 	font-size:.7em;
-	border:2px solid rgb(100, 100, 150);
+	border:2px solid rgb(100 100 150);
 	border-bottom:0;
 	padding:.2em .5em
 }
@@ -955,7 +959,7 @@ textarea.multi-line {
 
 .reco>.title {
 	font-size:1.1em;
-	border:2px solid rgb(150, 100, 100);
+	border:2px solid rgb(150 100 100);
 	padding:.2em .5em
 }
 
@@ -966,7 +970,7 @@ textarea.multi-line {
 
 .reco>.cats {
 	font-size:.8em;
-	border:2px solid rgb(100, 150, 100);
+	border:2px solid rgb(100 150 100);
 	border-top:0;
 	padding:.2em .5em
 }
@@ -1017,13 +1021,13 @@ textarea.multi-line {
 	font-size:.8em;
 	margin:0;
 	padding:.3em;
-	background:rgb(30, 30, 30);
-	border-left:.3em solid rgb(10, 80, 80)
+	background-color:rgb(30 30 30);
+	border-left:.3em solid rgb(10 80 80)
 }
 
 .bright .reco>.cmt,
 .bright .reco>.cmts>.cmt {
-	background:rgb(220, 220, 220)
+	background-color:rgb(220 220 220)
 }
 
 .multireco .reco>.desc,
@@ -1034,11 +1038,11 @@ textarea.multi-line {
 }
 
 .bright .reco>.cmt {
-	background:rgb(200, 200, 200)
+	background-color:rgb(200 200 200)
 }
 
 .pink .reco>.cmt {
-	background:rgb(75, 47, 47)
+	background-color:rgb(75 47 47)
 }
 
 .stars-container {
@@ -1051,7 +1055,7 @@ textarea.multi-line {
 	position:absolute;
 	top:1px;
 	bottom:1px;
-	background:rgb(232, 242, 80)
+	background-color:rgb(232 242 80)
 }
 
 .stars-container>svg.out-stars {
@@ -1063,7 +1067,7 @@ textarea.multi-line {
 }
 
 .stars-container>svg.out-stars>polygon {
-	fill:rgb(50, 50, 50);
+	fill:rgb(50 50 50);
 	stroke-width:0;
 	fill-rule:evenodd
 }
@@ -1114,7 +1118,7 @@ textarea.multi-line {
 
 .loading .outerCircle {
 	background-color:transparent;
-	border:8px solid rgba(185, 80, 9, 0.9);
+	border:8px solid rgba(185 80 9 0.9);
 	opacity:.9;
 	border-right:5px solid transparent;
 	border-left:5px solid transparent;
@@ -1129,7 +1133,7 @@ textarea.multi-line {
 
 .loading .innerCircle {
 	background-color:transparent;
-	border:5px solid rgba(189, 215, 60, 0.6);
+	border:5px solid rgba(189 215 60 0.6);
 	opacity:.9;
 	border-left:5px solid transparent;
 	border-right:5px solid transparent;
@@ -1245,13 +1249,13 @@ textarea.multi-line {
 	height:0;
 	padding:0;
 	margin:0 auto;
-	border-color:transparent transparent rgb(0, 30, 0);
+	border-color:transparent transparent rgb(0 30 0);
 	border-style:solid;
 	border-width:0.5em
 }
 
 .lyrics {
-	border:0.3em solid rgb(0, 30, 0);
+	border:0.3em solid rgb(0 30 0);
 	padding:1em .5em;
 	margin-top:-1px
 }
@@ -1274,12 +1278,12 @@ textarea.multi-line {
 	max-width:100%;
 	margin:0;
 	padding:1px;
-	background:black;
+	background-color:black;
 	border-bottom:.15em solid white
 }
 
 .bright .rC.fixed {
-	background:white;
+	background-color:white;
 	border-color:black
 }
 
