@@ -14682,17 +14682,19 @@
     }
     return null;
   };
-  m2.ExpCol = function(elem, catEC) {
-    let $elem = (0, import_jquery.default)(elem);
-    let $next = $elem.parent().next();
+  m2.ExpCol = function(elem) {
+    const $elem = (0, import_jquery.default)(elem);
+    const $baseCat = $elem.next(".baseCat");
+    const cat2 = m2.unescapeHTML($baseCat.find(".list-index-id").html());
+    const $next = $elem.parent().next();
     if ($next.is(":visible")) {
       $next.hide();
       $elem.html("\u25B6");
-      catEC.subCatExpanded = false;
+      m2.catList[cat2].subCatExpanded = false;
     } else {
       $next.show();
       $elem.html("\u25BC");
-      catEC.subCatExpanded = true;
+      m2.catList[cat2].subCatExpanded = true;
     }
   };
   m2.strCatListToJSON = function(strCatList, catList) {
@@ -26544,10 +26546,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
       await prepare_default.catListToHTML();
-      let $catECs = prepare_default.$catList.find(".cat:has(>.EC)");
-      for (let i3 = $catECs.length - 1; i3 >= 0; i3--) {
-        prepare_default.catList[decodeURIComponent(prepare_default.unescapeEncodePctg($catECs.eq(i3).attr("id").substring(4)))].subCatExpanded = false;
-      }
       prepare_default.$timezone_trs = (0, import_jquery15.default)("table.timezone").find("tr");
       for (let i3 = prepare_default.$timezone_trs.length - 1; i3 >= 1; i3--) {
         let timezoneTxt = prepare_default.$timezone_trs.eq(i3).text().replace(/[\s\r\n\t]+/g, " ").trim();
@@ -27532,6 +27530,7 @@ ${uri.join("\n")}
                 }
               }
             }
+            await prepare_default.catListToHTML();
             resolve();
           } else {
             reject(`You are not in your own page.`);
@@ -28704,7 +28703,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                     }
                     if (!(prepare_default.catUriList[cat0]?.uris?.[uri]?.i || prepare_default.catUriList[cat0]?.uris?.[uri]?.i === 0)) {
                       prepare_default.catUriList[cat0].uris[uri] = { uri, i: prepare_default.catUriList[cat0].uris[uri].length };
-                      prepare_default.catUriList[cat0].uris.push(prepare_default.catUriList[cat0].uris[uri]);
+                      prepare_default.catUriList[cat0].uris.push(uri);
                     }
                     fsGoFLUri.catAndI[cat0] = { cat: cat0, i: prepare_default.catUriList[cat0].uris[uri].i };
                     prepare_default.$recoms_recos = prepare_default.$contents_recoms.find(".reco");
@@ -28732,7 +28731,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                     }
                     try {
                       let recoHTML = await prepare_default.recoHTML(r3, false, true, false, option);
-                      prepare_default.$contents.prepend(String(recoHTML));
+                      prepare_default.$contents.prepend(recoHTML);
                     } catch (err) {
                       console.error(err);
                     }
@@ -29367,11 +29366,12 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
                 console.log(`await m.putCats_UriToLists("${args.cats}", "${uri}");`);
                 await prepare_default.putCats_UriToLists(args.cats, uri);
+                await prepare_default.catListToHTML();
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
-                setTimeout(async function() {
+                setTimeout(function() {
                   prepare_default.emptifyRecoInNewReco();
                   console.log(`m.refresh("${cats2}", "recoed", "${uri}");`);
-                  await prepare_default.refresh(cats2, "recoed", uri);
+                  prepare_default.refresh(cats2, "recoed", uri);
                   prepare_default.$button_close.trigger("click");
                   resolve();
                 }, prepare_default.wait);
@@ -29380,17 +29380,17 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 await prepare_default.changeCats_UriList(cats2, args.cats, uri);
                 await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, prepare_default.currentCat);
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
-                setTimeout(async function() {
+                setTimeout(function() {
                   prepare_default.emptifyRecoInNewReco();
-                  await prepare_default.refresh(cats2, "changed", uri);
+                  prepare_default.refresh(cats2, "changed", uri);
                   prepare_default.$button_close.trigger("click");
                   resolve();
                 }, prepare_default.wait);
               } else if (result.startsWith("deleted")) {
                 await prepare_default.delCats_UriFromLists(cats, uri);
-                setTimeout(async function() {
+                setTimeout(function() {
                   prepare_default.emptifyRecoInNewReco();
-                  await prepare_default.refresh(cats, "deleted", uri);
+                  prepare_default.refresh(cats, "deleted", uri);
                   prepare_default.$button_close.trigger("click");
                   resolve();
                 }, prepare_default.wait);
@@ -29524,9 +29524,9 @@ ${uri2}	change	${cats2}`;
             await prepare_default.changeCats_UriList(r2.cats, args.cats, uri);
             r2.cats = args.cats;
             console.log("setTimeout( close ); triggered!");
-            setTimeout(async function() {
+            setTimeout(function() {
               prepare_default.emptifyRecoInNewReco();
-              await prepare_default.refresh(args.cats, "changed", uri);
+              prepare_default.refresh(args.cats, "changed", uri);
               prepare_default.$button_close.trigger("click");
             }, prepare_default.wait);
           } else {
@@ -29631,8 +29631,8 @@ ${uri2}	change	${cats2}`;
                 `[--Intentionally deleted/editted reco remains in the UriLists of old cats of the reco, for a reason of easy recovery of that reco.--]`
               );
             }
-            setTimeout(async function() {
-              await prepare_default.refresh(cats2, "deleted", uri);
+            setTimeout(function() {
+              prepare_default.refresh(cats2, "deleted", uri);
               prepare_default.$button_close.trigger("click");
             }, prepare_default.wait);
           } else {

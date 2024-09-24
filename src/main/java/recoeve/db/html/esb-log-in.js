@@ -14682,17 +14682,19 @@
     }
     return null;
   };
-  m.ExpCol = function(elem, catEC) {
-    let $elem = (0, import_jquery.default)(elem);
-    let $next = $elem.parent().next();
+  m.ExpCol = function(elem) {
+    const $elem = (0, import_jquery.default)(elem);
+    const $baseCat = $elem.next(".baseCat");
+    const cat = m.unescapeHTML($baseCat.find(".list-index-id").html());
+    const $next = $elem.parent().next();
     if ($next.is(":visible")) {
       $next.hide();
       $elem.html("\u25B6");
-      catEC.subCatExpanded = false;
+      m.catList[cat].subCatExpanded = false;
     } else {
       $next.show();
       $elem.html("\u25BC");
-      catEC.subCatExpanded = true;
+      m.catList[cat].subCatExpanded = true;
     }
   };
   m.strCatListToJSON = function(strCatList, catList) {
