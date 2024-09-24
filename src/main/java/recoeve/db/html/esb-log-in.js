@@ -14709,19 +14709,16 @@
       catList.splice(0, catList.length);
       let superCats = [];
       let k = 0;
-      if (strCatList.trim() === "") {
-        catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
-        k++;
-      } else {
-        for (let i = 1; i < list.length; i++) {
-          let baseCat = list[i].trim();
-          let depth = m.getDepthOfTabs(list[i]);
-          superCats.splice(depth, superCats.length - depth, baseCat);
-          let cat = superCats.join("--");
-          if (!catList[cat]) {
-            catList[k] = catList[cat] = { i: k, cat, baseCat, depth };
-            k++;
-          }
+      catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
+      k++;
+      for (let i = 1; i < list.length; i++) {
+        let baseCat = list[i].trim();
+        let depth = m.getDepthOfTabs(list[i]);
+        superCats.splice(depth, superCats.length - depth, baseCat);
+        let cat = superCats.join("--");
+        if (!catList[cat]) {
+          catList[k] = catList[cat] = { i: k, cat, baseCat, depth };
+          k++;
         }
       }
       resolve();
@@ -17820,7 +17817,9 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
           r2.desc = "";
         }
         r2.descR = m.renderStrDescCmt(r2.desc);
-        m.putCats_UriToLists(r2.cats, uri2);
+        if (await m.putCats_UriToLists(r2.cats, uri2)) {
+          await m.catListToHTML();
+        }
         m.refresh(r2.cats, "recoed", uri2);
       } else {
         m.delayedLogOut(result, 60 * 60 * 24, args.$result);

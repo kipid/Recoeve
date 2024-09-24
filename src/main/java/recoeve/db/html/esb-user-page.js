@@ -14709,19 +14709,16 @@
       catList.splice(0, catList.length);
       let superCats = [];
       let k = 0;
-      if (strCatList.trim() === "") {
-        catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
-        k++;
-      } else {
-        for (let i3 = 1; i3 < list.length; i3++) {
-          let baseCat = list[i3].trim();
-          let depth = m2.getDepthOfTabs(list[i3]);
-          superCats.splice(depth, superCats.length - depth, baseCat);
-          let cat2 = superCats.join("--");
-          if (!catList[cat2]) {
-            catList[k] = catList[cat2] = { i: k, cat: cat2, baseCat, depth };
-            k++;
-          }
+      catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
+      k++;
+      for (let i3 = 1; i3 < list.length; i3++) {
+        let baseCat = list[i3].trim();
+        let depth = m2.getDepthOfTabs(list[i3]);
+        superCats.splice(depth, superCats.length - depth, baseCat);
+        let cat2 = superCats.join("--");
+        if (!catList[cat2]) {
+          catList[k] = catList[cat2] = { i: k, cat: cat2, baseCat, depth };
+          k++;
         }
       }
       resolve();
@@ -17820,7 +17817,9 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           r2.desc = "";
         }
         r2.descR = m2.renderStrDescCmt(r2.desc);
-        m2.putCats_UriToLists(r2.cats, uri2);
+        if (await m2.putCats_UriToLists(r2.cats, uri2)) {
+          await m2.catListToHTML();
+        }
         m2.refresh(r2.cats, "recoed", uri2);
       } else {
         m2.delayedLogOut(result, 60 * 60 * 24, args.$result);
@@ -26854,15 +26853,15 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
       });
       prepare_default.$change_catList_order_cancel.on("click.change-catList-order", async function(e2) {
-        let catListChanged = prepare_default.unescapeHTML(prepare_default.getCatListChanged());
-        let catList = prepare_default.unescapeHTML(prepare_default.$data_catList.html());
-        if (catListChanged !== catList) {
+        let dataCatListChanged = prepare_default.unescapeHTML(prepare_default.getCatListChanged());
+        let dataCatList = prepare_default.unescapeHTML(prepare_default.$data_catList.html());
+        if (dataCatListChanged !== dataCatList) {
           let $catSelected = prepare_default.$catList.find(".cat.selected").eq(0);
           let selectedCat = null;
           if ($catSelected.length) {
             selectedCat = prepare_default.unescapeHTML($catSelected.find(".list-index-id").html());
           }
-          await prepare_default.strCatListToJSON(catList, prepare_default.catList);
+          await prepare_default.strCatListToJSON(dataCatList, prepare_default.catList);
           await prepare_default.catListToHTML();
           if (selectedCat) {
             (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
@@ -26870,12 +26869,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
         prepare_default.$change_catList_order.show();
       });
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_catList.html()), prepare_default.catList);
-      if (!prepare_default.myPage) {
-        await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
-      }
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped), prepare_default.catList);
       await prepare_default.catListToHTML();
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.putCatToFSFullList = function(i3, cat2, catList) {
         if (catList === prepare_default.myFSCatList) {
           if (!prepare_default.fsCat.fullList[cat2]) {
@@ -26896,64 +26892,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         }
       };
-      prepare_default.updateCatFS = function() {
-        return new Promise(async (resolve, reject) => {
-          prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
-          prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
-          prepare_default.myFSCatList.splice(0, prepare_default.myFSCatList.length);
-          if (prepare_default.myPage) {
-            prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-            await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.catList);
-            await prepare_default.catListToHTML();
-            let l3 = prepare_default.catList.length;
-            for (let i3 = l3 - 1; i3 > 0; i3--) {
-              prepare_default.putCatToFSFullList(l3 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
-            }
-          }
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
-          let l2 = prepare_default.myFSCatList.length;
-          for (let i3 = l2 - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
-          }
-          let cat2 = "";
-          if (!prepare_default.fsCat.fullList[cat2]) {
-            prepare_default.fsCat.fullList[cat2] = { i: prepare_default.fsCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-            prepare_default.fsCat.fullList.push(prepare_default.fsCat.fullList[cat2]);
-          }
-          if (!prepare_default.fsMRCat.fullList[cat2]) {
-            prepare_default.fsMRCat.fullList[cat2] = { i: prepare_default.fsMRCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-            prepare_default.fsMRCat.fullList.push(prepare_default.fsMRCat.fullList[cat2]);
-          }
-          if (prepare_default.myPage) {
-            if (!prepare_default.fsGotoCats.fullList[cat2]) {
-              prepare_default.fsGotoCats.fullList[cat2] = { i: prepare_default.fsGotoCats.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-              prepare_default.fsGotoCats.fullList.push(prepare_default.fsGotoCats.fullList[cat2]);
-            }
-          }
-          resolve();
-        });
-      };
-      await prepare_default.updateCatFS();
-      prepare_default.updateGotoCatsFS = function() {
-        return new Promise(async (resolve, reject) => {
-          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_catList.html()), prepare_default.catList);
-          let l2 = prepare_default.catList.length;
-          for (let i4 = l2 - 1; i4 > 0; i4--) {
-            prepare_default.putCatToFSFullList(l2 - 1 - i4, prepare_default.catList[i4].cat, prepare_default.catList);
-          }
-          let i3 = l2 - 1;
-          let cat2 = "";
-          let fsFLCat = prepare_default.fsGotoCats.fullList[cat2];
-          if (fsFLCat) {
-            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { ...fsFLCat, i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-          } else {
-            fsFLCat = prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-          }
-          resolve();
-        });
-      };
-      await prepare_default.updateGotoCatsFS();
       prepare_default.completeCat = function(event2) {
         let $elem = (0, import_jquery15.default)(event2.target);
         let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
@@ -27408,7 +27346,7 @@ ${uri.join("\n")}
             prepare_default.$change_catList_order_cancel.trigger("click");
             await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
           }
-          resolve();
+          resolve(catIsPut);
         });
       };
       prepare_default.indexOfUriOnCatUriListCat = function(catUriListCat, uri) {
@@ -29365,11 +29303,11 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
               if (result.startsWith("recoed")) {
                 await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, cat2);
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
-                console.log(`await m.putCats_UriToLists("${args.cats}", "${uri}");`);
-                await prepare_default.putCats_UriToLists(args.cats, uri);
-                await prepare_default.catListToHTML();
-                await prepare_default.updateCatFS();
-                await prepare_default.updateGotoCatsFS();
+                if (await prepare_default.putCats_UriToLists(args.cats, uri)) {
+                  await prepare_default.catListToHTML();
+                  await prepare_default.updateCatFS();
+                  await prepare_default.updateGotoCatsFS();
+                }
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(function() {
                   prepare_default.emptifyRecoInNewReco();
@@ -30896,6 +30834,65 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
         await prepare_default.reNewAndReOn();
       })();
     }, []);
+    (0, import_react9.useEffect)(async () => {
+      prepare_default.updateCatFS = function() {
+        return new Promise(async (resolve, reject) => {
+          if (prepare_default.myPage || prepare_default.initialOpen) {
+            await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+            await prepare_default.catListToHTML();
+            prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
+            let l2 = prepare_default.catList.length;
+            for (let i3 = l2 - 1; i3 > 0; i3--) {
+              prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
+            }
+          }
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
+          prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
+          prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
+          let l = prepare_default.myFSCatList.length;
+          for (let i3 = l - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
+          }
+          let cat2 = "";
+          if (!prepare_default.fsCat.fullList[cat2]) {
+            prepare_default.fsCat.fullList[cat2] = { i: prepare_default.fsCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+            prepare_default.fsCat.fullList.push(prepare_default.fsCat.fullList[cat2]);
+          }
+          if (!prepare_default.fsMRCat.fullList[cat2]) {
+            prepare_default.fsMRCat.fullList[cat2] = { i: prepare_default.fsMRCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+            prepare_default.fsMRCat.fullList.push(prepare_default.fsMRCat.fullList[cat2]);
+          }
+          if (prepare_default.myPage) {
+            if (!prepare_default.fsGotoCats.fullList[cat2]) {
+              prepare_default.fsGotoCats.fullList[cat2] = { i: prepare_default.fsGotoCats.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+              prepare_default.fsGotoCats.fullList.push(prepare_default.fsGotoCats.fullList[cat2]);
+            }
+          }
+          resolve();
+        });
+      };
+      await prepare_default.updateCatFS();
+      prepare_default.updateGotoCatsFS = function() {
+        return new Promise(async (resolve, reject) => {
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
+          let l = prepare_default.catList.length;
+          for (let i4 = l - 1; i4 > 0; i4--) {
+            prepare_default.putCatToFSFullList(l - 1 - i4, prepare_default.catList[i4].cat, prepare_default.catList);
+          }
+          let i3 = l - 1;
+          let cat2 = "";
+          let fsFLCat = prepare_default.fsGotoCats.fullList[cat2];
+          if (fsFLCat) {
+            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { ...fsFLCat, i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+          } else {
+            fsFLCat = prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+          }
+          resolve();
+        });
+      };
+      await prepare_default.updateGotoCatsFS();
+    }, [userCatList]);
     return /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_jsx_runtime32.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("h1", { id: "h1", class: "none", children: `${prepare_default.userId}'s Recoeve.net` }),
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("data", { id: "data-myCatList" }),
