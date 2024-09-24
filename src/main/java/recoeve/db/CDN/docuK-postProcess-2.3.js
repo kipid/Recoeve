@@ -428,7 +428,6 @@ Log <span class="bold underline">o</span>ut
 			case "INPUT": case "SELECT": case "TEXTAREA": return;
 		}
 		event.preventDefault();
-		event.stopPropagation();
 		let scrollTop = null;
 		let i, k;
 		switch (event.code) {
