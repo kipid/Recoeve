@@ -1080,48 +1080,47 @@ m.getSuperCat = function (cat) {
 	}
 	return null;
 };
-m.ExpCol = function (elem, catEC) {
-	let $elem = $(elem);
-	let $next = $elem.parent().next();
+m.ExpCol = function (elem) {
+	const $elem = $(elem);
+	const $baseCat = $elem.next(".baseCat");
+	const cat = m.unescapeHTML($baseCat.find(".list-index-id").html());
+	const $next = $elem.parent().next();
 	if ($next.is(":visible")) {
 		$next.hide();
 		$elem.html("▶");
-		catEC.subCatExpanded = false;
+		m.catList[cat].subCatExpanded = false;
 	}
 	else {
 		$next.show();
 		$elem.html("▼");
-		catEC.subCatExpanded = true;
+		m.catList[cat].subCatExpanded = true;
 	}
 };
 m.strCatListToJSON = function (strCatList, catList) {
+		// * catList[i] = catList[cat] = { i, cat, baseCat, depth }
 	return new Promise(function (resolve, reject) {
 		let list = strCatList.trim().split("\n");
 		if (strCatList.length === 0) {
 			list = [];
 		}
 		list.unshift("");
-			// cat=uncategorized : empty cat.
+			// cat= : empty cat = [--Uncategorized--].
 		if (!catList) {
 			catList = m.catList;
 		}
 		catList.splice(0, catList.length);
 		let superCats = [];
 		let k = 0;
-		if (strCatList.trim() === "") {
-			catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
-			k++;
-		}
-		else {
-			for (let i = 1; i < list.length; i++) {
-				let baseCat = list[i].trim();
-				let depth = m.getDepthOfTabs(list[i]);
-				superCats.splice(depth, superCats.length - depth, baseCat);
-				let cat = superCats.join("--");
-				if (!catList[cat]) {
-					catList[k] = catList[cat] = { i: k, cat, baseCat, depth };
-					k++;
-				}
+		catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
+		k++;
+		for (let i = 1; i < list.length; i++) {
+			let baseCat = list[i].trim();
+			let depth = m.getDepthOfTabs(list[i]);
+			superCats.splice(depth, superCats.length - depth, baseCat);
+			let cat = superCats.join("--");
+			if (!catList[cat]) {
+				catList[k] = catList[cat] = { i: k, cat, baseCat, depth };
+				k++;
 			}
 		}
 		resolve();
@@ -4478,7 +4477,9 @@ m.reco_pointChange_do = function (args, err) { // args : {strHeads, strContents,
 				r.desc = "";
 			}
 			r.descR = m.renderStrDescCmt(r.desc);
-			m.putCats_UriToLists(r.cats, uri);
+			if (await m.putCats_UriToLists(r.cats, uri)) {
+				await m.catListToHTML();
+			}
 			m.refresh(r.cats, "recoed", uri);
 		}
 		else {
