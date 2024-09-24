@@ -14696,23 +14696,21 @@
       m2.catList[cat2].subCatExpanded = true;
     }
   };
-  m2.strCatListToJSON = function(strCatList, catList) {
+  m2.strCatListToJSON = function(strCatList, catList = m2.catList) {
     return new Promise(function(resolve, reject) {
       let list = strCatList.trim().split("\n");
-      if (strCatList.length === 0) {
+      if (strCatList.trim().length === 0) {
         list = [];
       }
       list.unshift("");
-      if (!catList) {
-        catList = m2.catList;
-      }
       catList.splice(0, catList.length);
+      Object.keys(catList).forEach((key) => delete catList[key]);
       let superCats = [];
       let k = 0;
       catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
       k++;
       for (let i3 = 1; i3 < list.length; i3++) {
-        let baseCat = list[i3].trim();
+        let baseCat = list[i3].trim().replace(/^[\-]+/, "").replace(/[\-]+$/, "");
         let depth = m2.getDepthOfTabs(list[i3]);
         superCats.splice(depth, superCats.length - depth, baseCat);
         let cat2 = superCats.join("--");
@@ -25863,6 +25861,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   function App() {
     const [styles, updateStyles] = i2(prepare_default.defaultStyles);
     const [blockTouch, updateBlockTouch] = i2(false);
+    const [myCatList, updateMyCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped) });
     const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
     const ignore = (0, import_react9.useRef)(false);
     async function initialEffect() {
@@ -30837,19 +30836,17 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
     (0, import_react9.useEffect)(async () => {
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
-          if (prepare_default.myPage || prepare_default.initialOpen) {
-            await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-            await prepare_default.catListToHTML();
-            prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-            let l2 = prepare_default.catList.length;
-            for (let i3 = l2 - 1; i3 > 0; i3--) {
-              prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
-            }
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+          await prepare_default.catListToHTML();
+          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
+          let l = prepare_default.catList.length;
+          for (let i3 = l - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
           }
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
           prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
           prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
-          let l = prepare_default.myFSCatList.length;
+          l = prepare_default.myFSCatList.length;
           for (let i3 = l - 1; i3 > 0; i3--) {
             prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
           }

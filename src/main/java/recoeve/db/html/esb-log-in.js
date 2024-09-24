@@ -14696,23 +14696,21 @@
       m.catList[cat].subCatExpanded = true;
     }
   };
-  m.strCatListToJSON = function(strCatList, catList) {
+  m.strCatListToJSON = function(strCatList, catList = m.catList) {
     return new Promise(function(resolve, reject) {
       let list = strCatList.trim().split("\n");
-      if (strCatList.length === 0) {
+      if (strCatList.trim().length === 0) {
         list = [];
       }
       list.unshift("");
-      if (!catList) {
-        catList = m.catList;
-      }
       catList.splice(0, catList.length);
+      Object.keys(catList).forEach((key) => delete catList[key]);
       let superCats = [];
       let k = 0;
       catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
       k++;
       for (let i = 1; i < list.length; i++) {
-        let baseCat = list[i].trim();
+        let baseCat = list[i].trim().replace(/^[\-]+/, "").replace(/[\-]+$/, "");
         let depth = m.getDepthOfTabs(list[i]);
         superCats.splice(depth, superCats.length - depth, baseCat);
         let cat = superCats.join("--");
