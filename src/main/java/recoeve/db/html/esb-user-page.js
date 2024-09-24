@@ -13666,7 +13666,6 @@
   var m2 = window.m = window.m || {};
   m2.$window = (0, import_jquery.default)(window);
   m2.$document = (0, import_jquery.default)(document);
-  m2.myCatList = [];
   m2.catUriList = [];
   m2.userRecos = {};
   m2.recoDefs = {};
@@ -14742,8 +14741,9 @@
     }
     return arrayHTML.join(" ; ");
   };
-  m2.catList = m2.myPage ? m2.myCatList : [];
-  m2.myFSCatList = [];
+  m2.myCatList = [{ cat: "" }];
+  m2.catList = m2.myPage ? m2.myCatList : [{ cat: "" }];
+  m2.myFSCatList = [{ cat: "" }];
   m2.myRecos = m2.myPage ? m2.userRecos : {};
   m2.myRecos[""] = { uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m2.val("10.0/10") };
   m2.catListToHTML = function() {
@@ -26152,219 +26152,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.fsToRs.$fs = prepare_default.$table_of_recos;
       prepare_default.fsToRs.$fsl = prepare_default.$table_of_recos_list;
       prepare_default.fsToRs.$fs_container = prepare_default.$table_of_recos_container;
-      prepare_default.$change_catList_order_ok.hide();
-      prepare_default.$change_catList_order_cancel.hide();
-      prepare_default.$change_catList_order.on("click.change-catList-order", function(e2) {
-        prepare_default.$change_catList_order.hide();
-        prepare_default.$change_catList_order_ok.show();
-        prepare_default.$change_catList_order_cancel.show();
-        let $cats = prepare_default.$catList.find(".cat").not(`#cat-`);
-        $cats.addClass("edit");
-        $cats.prepend('<div class="edit-bar"></div>');
-        $cats.append('<div class="edit-bar"></div>');
-        prepare_default.$catList.find(".edit-bar").on("mousedown touchstart", function(e3) {
-          e3.preventDefault();
-          e3.stopPropagation();
-          let $catM = (0, import_jquery15.default)(this);
-          if (!$catM.hasClass("cat")) {
-            $catM = $catM.parents(".cat");
-          }
-          let $catSiblings = $catM.siblings(".cat").not(`#cat-`);
-          if ($catSiblings.length) {
-            let touch0 = e3.type === "touchstart" ? e3.originalEvent.touches[0] : e3;
-            let relativeX = touch0.clientX - Math.round($catM.offset().left) + prepare_default.$window.scrollLeft();
-            let relativeY = touch0.clientY - Math.round($catM.offset().top) + prepare_default.$window.scrollTop();
-            let $subCat = $catM.next(".subCat");
-            let subCatIsVisible = false;
-            if ($subCat.length && $subCat.is(":visible")) {
-              $subCat.hide();
-              subCatIsVisible = true;
-            }
-            let $lastSibling = $catSiblings.last();
-            let $lastSubCat = $lastSibling.next(".subCat");
-            if ($lastSubCat.length && $lastSubCat.is(":visible")) {
-              $lastSibling = $lastSubCat;
-            }
-            $catM.css({ width: $catM.outerWidth() });
-            $catM.addClass("move");
-            let cat2 = decodeURIComponent(prepare_default.unescapeEncodePctg($catM.attr("id").substring(4)));
-            let $catTo = (0, import_jquery15.default)(
-              `<div id="cat-to-here" style="margin-left:${prepare_default.catList[cat2].depth + 0.5}em"></div>`
-            );
-            $catM.before($catTo);
-            let catTo = -2;
-            prepare_default.$html.on("mousemove.mdInEB touchmove.mdInEB", function(e4) {
-              window.getSelection().removeAllRanges();
-              e4.preventDefault();
-              e4.stopPropagation();
-              let touch02 = e4.type === "touchmove" ? e4.originalEvent.touches[0] : e4;
-              $catM.css({
-                left: touch02.clientX - relativeX,
-                top: touch02.clientY - relativeY
-              });
-              let wST = prepare_default.$window.scrollTop();
-              let sidebarTop = prepare_default.$sidebar.offset().top - wST;
-              let sidebarBottom = sidebarTop + prepare_default.$sidebar.outerHeight();
-              let scrollPad = 20;
-              if (sidebarTop < 0 ? touch02.clientY < scrollPad : touch02.clientY < sidebarTop + scrollPad) {
-                if (sidebarTop < 0) {
-                  prepare_default.$window.scrollTop(wST + touch02.clientY - scrollPad);
-                } else {
-                  prepare_default.$sidebar.scrollTop(
-                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarTop - scrollPad
-                  );
-                }
-              } else if (sidebarBottom > prepare_default.$window.outerHeight() ? touch02.clientY > prepare_default.$window.outerHeight() - scrollPad : touch02.clientY > sidebarBottom - scrollPad) {
-                if (sidebarBottom > prepare_default.$window.outerHeight()) {
-                  prepare_default.$window.scrollTop(
-                    wST + touch02.clientY - prepare_default.$window.outerHeight() + scrollPad
-                  );
-                } else {
-                  prepare_default.$sidebar.scrollTop(
-                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarBottom + scrollPad
-                  );
-                }
-              }
-              let tops = [];
-              for (let i3 = 1; i3 < $catSiblings.length; i3++) {
-                tops.push(($catSiblings.eq(i3 - 1).offset().top - wST + $catSiblings.eq(i3).offset().top - wST) / 2);
-              }
-              tops.push(($catSiblings.last().offset().top - wST + $lastSibling.offset().top + $lastSibling.outerHeight() - wST) / 2);
-              let k = 0;
-              for (; k < tops.length; k++) {
-                if (touch02.clientY < tops[k]) {
-                  break;
-                }
-              }
-              if (catTo !== k) {
-                if (k < tops.length) {
-                  $catSiblings.eq(k).before($catTo);
-                } else {
-                  $lastSibling.after($catTo);
-                }
-                catTo = k;
-              }
-            });
-            prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
-              prepare_default.$html.off(
-                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
-              );
-              $catM.removeClass("move");
-              $catM.css({ width: "", left: "", top: "" });
-              $catTo.replaceWith($catM);
-              if ($subCat.length) {
-                $catM.after($subCat);
-                if (subCatIsVisible) {
-                  $subCat.show();
-                }
-              }
-            });
-          } else {
-            $catM.css({ "border-color": "rgb(230,120,120)" });
-            prepare_default.$html.on("mousemove.mdInEB touchmove.mdInEB", function(e4) {
-              window.getSelection().removeAllRanges();
-              e4.preventDefault();
-              e4.stopPropagation();
-            });
-            prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
-              prepare_default.$html.off(
-                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
-              );
-              $catM.css({ "border-color": "" });
-            });
-          }
-        });
-      });
-      prepare_default.change_catList_order_do = function(args, err) {
-        return new Promise(async (resolve, reject) => {
-          if (err) {
-            args.$result?.html(err);
-            reject(err);
-          }
-          if (prepare_default.myPage) {
-            prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(args.catListChanged);
-            prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
-            updateUserCatList((data) => ({ text: prepare_default.myCatListHTMLEscaped }));
-            await prepare_default.updateCatFS();
-          } else {
-            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(args.catListChanged) }));
-            prepare_default.$data_catList.html(userCatList.text);
-            await prepare_default.updateGotoCatsFS();
-          }
-          prepare_default.$change_catList_order.show();
-          if (prepare_default.myPage) {
-            import_jquery15.default.ajax({
-              type: "POST",
-              url: "/changeOrders/CatList",
-              data: args.catListChanged,
-              dataType: "text"
-            }).fail(function() {
-              args.$result?.html("[--Changing CatList order has failed.--]");
-              setTimeout(function() {
-                args.$result?.html("");
-              }, 5 * prepare_default.wait);
-              reject("[--Changing CatList order has failed.--]");
-            }).done(function(resp) {
-              if (resp === "true") {
-                args.$result?.html(`[--The order of catList is changed.--]`);
-                setTimeout(function() {
-                  args.$result?.html("");
-                }, 5 * prepare_default.wait);
-                resolve(`[--The order of catList is changed.--]`);
-              } else {
-                args.$result?.html(`[--The order of catList is NOT changed. Some error may occur.--]`);
-                setTimeout(function() {
-                  args.$result?.html("");
-                }, 5 * prepare_default.wait);
-                reject(`[--The order of catList is NOT changed. Some error may occur.--]`);
-              }
-            });
-          } else {
-            args.$result?.html(`[--This is not your page. The order is just temporarily changed.--]`);
-            resolve(`[--This is not your page. The order is just temporarily changed.--]`);
-            setTimeout(function() {
-              args.$result?.html("");
-            }, 5 * prepare_default.wait);
-          }
-        });
-      };
-      prepare_default.$change_catList_order_ok.on("click.change-catList-order", async function(e2) {
-        let catListChanged = prepare_default.getCatListChanged();
-        if (catListChanged !== prepare_default.unescapeHTML(prepare_default.$data_catList.html())) {
-          if (prepare_default.myPage) {
-            prepare_default.rmb_me(prepare_default.change_catList_order_do, {
-              catListChanged,
-              $result: prepare_default.$catList_result
-            });
-          } else {
-            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(catListChanged) }));
-            prepare_default.$data_catList.html(userCatList.text);
-            prepare_default.$change_catList_order.show();
-          }
-          await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
-          await prepare_default.reTriggerFS(prepare_default.fsCat);
-          await prepare_default.reTriggerFS(prepare_default.fsMRCat);
-        } else {
-          prepare_default.$change_catList_order.show();
-        }
-      });
-      prepare_default.$change_catList_order_cancel.on("click.change-catList-order", async function(e2) {
-        let catListChanged = prepare_default.unescapeHTML(prepare_default.getCatListChanged());
-        let catList = prepare_default.unescapeHTML(prepare_default.$data_catList.html());
-        if (catListChanged !== catList) {
-          let $catSelected = prepare_default.$catList.find(".cat.selected").eq(0);
-          let selectedCat = null;
-          if ($catSelected.length) {
-            selectedCat = prepare_default.unescapeHTML($catSelected.find(".list-index-id").html());
-          }
-          await prepare_default.strCatListToJSON(catList, prepare_default.catList);
-          await prepare_default.catListToHTML();
-          if (selectedCat) {
-            (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
-          }
-        }
-        prepare_default.$change_catList_order.show();
-      });
       prepare_default.$floating_key = (0, import_jquery15.default)("#floating-key");
       prepare_default.$toggle_floating_key = (0, import_jquery15.default)("#toggle-floating-key");
       if (prepare_default.myPage) {
@@ -26870,6 +26657,219 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         });
       };
+      prepare_default.$change_catList_order_ok.hide();
+      prepare_default.$change_catList_order_cancel.hide();
+      prepare_default.$change_catList_order.on("click.change-catList-order", function(e2) {
+        prepare_default.$change_catList_order.hide();
+        prepare_default.$change_catList_order_ok.show();
+        prepare_default.$change_catList_order_cancel.show();
+        let $cats = prepare_default.$catList.find(".cat").not(`#cat-`);
+        $cats.addClass("edit");
+        $cats.prepend('<div class="edit-bar"></div>');
+        $cats.append('<div class="edit-bar"></div>');
+        prepare_default.$catList.find(".edit-bar").on("mousedown.order-change touchstart.order-change", function(e3) {
+          e3.preventDefault();
+          e3.stopPropagation();
+          let $catM = (0, import_jquery15.default)(this);
+          if (!$catM.hasClass("cat")) {
+            $catM = $catM.parents(".cat");
+          }
+          let $catSiblings = $catM.siblings(".cat").not(`#cat-`);
+          if ($catSiblings.length) {
+            let touch0 = e3.type === "touchstart" ? e3.originalEvent.touches[0] : e3;
+            let relativeX = touch0.clientX - Math.round($catM.offset().left) + prepare_default.$window.scrollLeft();
+            let relativeY = touch0.clientY - Math.round($catM.offset().top) + prepare_default.$window.scrollTop();
+            let $subCat = $catM.next(".subCat");
+            let subCatIsVisible = false;
+            if ($subCat.length && $subCat.is(":visible")) {
+              $subCat.hide();
+              subCatIsVisible = true;
+            }
+            let $lastSibling = $catSiblings.last();
+            let $lastSubCat = $lastSibling.next(".subCat");
+            if ($lastSubCat.length && $lastSubCat.is(":visible")) {
+              $lastSibling = $lastSubCat;
+            }
+            $catM.css({ width: $catM.outerWidth() });
+            $catM.addClass("move");
+            let cat2 = decodeURIComponent(prepare_default.unescapeEncodePctg($catM.attr("id").substring(4)));
+            let $catTo = (0, import_jquery15.default)(
+              `<div id="cat-to-here" style="margin-left:${prepare_default.catList[cat2].depth + 0.5}em"></div>`
+            );
+            $catM.before($catTo);
+            let catTo = -2;
+            prepare_default.$html.on("mousemove.mdInEB touchmove.mdInEB", function(e4) {
+              window.getSelection().removeAllRanges();
+              e4.preventDefault();
+              e4.stopPropagation();
+              let touch02 = e4.type === "touchmove" ? e4.originalEvent.touches[0] : e4;
+              $catM.css({
+                left: touch02.clientX - relativeX,
+                top: touch02.clientY - relativeY
+              });
+              let wST = prepare_default.$window.scrollTop();
+              let sidebarTop = prepare_default.$sidebar.offset().top - wST;
+              let sidebarBottom = sidebarTop + prepare_default.$sidebar.outerHeight();
+              let scrollPad = 20;
+              if (sidebarTop < 0 ? touch02.clientY < scrollPad : touch02.clientY < sidebarTop + scrollPad) {
+                if (sidebarTop < 0) {
+                  prepare_default.$window.scrollTop(wST + touch02.clientY - scrollPad);
+                } else {
+                  prepare_default.$sidebar.scrollTop(
+                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarTop - scrollPad
+                  );
+                }
+              } else if (sidebarBottom > prepare_default.$window.outerHeight() ? touch02.clientY > prepare_default.$window.outerHeight() - scrollPad : touch02.clientY > sidebarBottom - scrollPad) {
+                if (sidebarBottom > prepare_default.$window.outerHeight()) {
+                  prepare_default.$window.scrollTop(
+                    wST + touch02.clientY - prepare_default.$window.outerHeight() + scrollPad
+                  );
+                } else {
+                  prepare_default.$sidebar.scrollTop(
+                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarBottom + scrollPad
+                  );
+                }
+              }
+              let tops = [];
+              for (let i3 = 1; i3 < $catSiblings.length; i3++) {
+                tops.push(($catSiblings.eq(i3 - 1).offset().top - wST + $catSiblings.eq(i3).offset().top - wST) / 2);
+              }
+              tops.push(($catSiblings.last().offset().top - wST + $lastSibling.offset().top + $lastSibling.outerHeight() - wST) / 2);
+              let k = 0;
+              for (; k < tops.length; k++) {
+                if (touch02.clientY < tops[k]) {
+                  break;
+                }
+              }
+              if (catTo !== k) {
+                if (k < tops.length) {
+                  $catSiblings.eq(k).before($catTo);
+                } else {
+                  $lastSibling.after($catTo);
+                }
+                catTo = k;
+              }
+            });
+            prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
+              prepare_default.$html.off(
+                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
+              );
+              $catM.removeClass("move");
+              $catM.css({ width: "", left: "", top: "" });
+              $catTo.replaceWith($catM);
+              if ($subCat.length) {
+                $catM.after($subCat);
+                if (subCatIsVisible) {
+                  $subCat.show();
+                }
+              }
+            });
+          } else {
+            $catM.css({ "border-color": "rgb(230,120,120)" });
+            prepare_default.$html.on("mousemove.mdInEB touchmove.mdInEB", function(e4) {
+              window.getSelection().removeAllRanges();
+              e4.preventDefault();
+              e4.stopPropagation();
+            });
+            prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
+              prepare_default.$html.off(
+                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
+              );
+              $catM.css({ "border-color": "" });
+            });
+          }
+        });
+      });
+      prepare_default.change_catList_order_do = function(args, err) {
+        return new Promise(async (resolve, reject) => {
+          if (err) {
+            args.$result?.html(err);
+            reject(err);
+          }
+          if (prepare_default.myPage) {
+            prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(args.catListChanged);
+            prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
+            updateUserCatList((data) => ({ text: prepare_default.myCatListHTMLEscaped }));
+            await prepare_default.updateCatFS();
+          } else {
+            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(args.catListChanged) }));
+            prepare_default.$data_catList.html(userCatList.text);
+            await prepare_default.updateGotoCatsFS();
+          }
+          prepare_default.$change_catList_order.show();
+          if (prepare_default.myPage) {
+            import_jquery15.default.ajax({
+              type: "POST",
+              url: "/changeOrders/CatList",
+              data: args.catListChanged,
+              dataType: "text"
+            }).fail(function() {
+              args.$result?.html("[--Changing CatList order has failed.--]");
+              setTimeout(function() {
+                args.$result?.html("");
+              }, 5 * prepare_default.wait);
+              reject("[--Changing CatList order has failed.--]");
+            }).done(function(resp) {
+              if (resp === "true") {
+                args.$result?.html(`[--The order of catList is changed.--]`);
+                setTimeout(function() {
+                  args.$result?.html("");
+                }, 5 * prepare_default.wait);
+                resolve(`[--The order of catList is changed.--]`);
+              } else {
+                args.$result?.html(`[--The order of catList is NOT changed. Some error may occur.--]`);
+                setTimeout(function() {
+                  args.$result?.html("");
+                }, 5 * prepare_default.wait);
+                reject(`[--The order of catList is NOT changed. Some error may occur.--]`);
+              }
+            });
+          } else {
+            args.$result?.html(`[--This is not your page. The order is just temporarily changed.--]`);
+            resolve(`[--This is not your page. The order is just temporarily changed.--]`);
+            setTimeout(function() {
+              args.$result?.html("");
+            }, 5 * prepare_default.wait);
+          }
+        });
+      };
+      prepare_default.$change_catList_order_ok.on("click.change-catList-order", async function(e2) {
+        let catListChanged = prepare_default.getCatListChanged();
+        if (catListChanged !== prepare_default.unescapeHTML(prepare_default.$data_catList.html())) {
+          if (prepare_default.myPage) {
+            prepare_default.rmb_me(prepare_default.change_catList_order_do, {
+              catListChanged,
+              $result: prepare_default.$catList_result
+            });
+          } else {
+            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(catListChanged) }));
+            prepare_default.$data_catList.html(userCatList.text);
+            prepare_default.$change_catList_order.show();
+          }
+          await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
+          await prepare_default.reTriggerFS(prepare_default.fsCat);
+          await prepare_default.reTriggerFS(prepare_default.fsMRCat);
+        } else {
+          prepare_default.$change_catList_order.show();
+        }
+      });
+      prepare_default.$change_catList_order_cancel.on("click.change-catList-order", async function(e2) {
+        let catListChanged = prepare_default.unescapeHTML(prepare_default.getCatListChanged());
+        let catList = prepare_default.unescapeHTML(prepare_default.$data_catList.html());
+        if (catListChanged !== catList) {
+          let $catSelected = prepare_default.$catList.find(".cat.selected").eq(0);
+          let selectedCat = null;
+          if ($catSelected.length) {
+            selectedCat = prepare_default.unescapeHTML($catSelected.find(".list-index-id").html());
+          }
+          await prepare_default.strCatListToJSON(catList, prepare_default.catList);
+          await prepare_default.catListToHTML();
+          if (selectedCat) {
+            (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
+          }
+        }
+        prepare_default.$change_catList_order.show();
+      });
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_catList.html()), prepare_default.catList);
       if (!prepare_default.myPage) {
         await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
@@ -27264,7 +27264,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
             prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
-            await prepare_default.updateCatFS();
             if (prepare_default.myPage) {
               prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
             }

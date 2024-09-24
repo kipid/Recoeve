@@ -13666,7 +13666,6 @@
   var m = window.m = window.m || {};
   m.$window = (0, import_jquery.default)(window);
   m.$document = (0, import_jquery.default)(document);
-  m.myCatList = [];
   m.catUriList = [];
   m.userRecos = {};
   m.recoDefs = {};
@@ -14742,8 +14741,9 @@
     }
     return arrayHTML.join(" ; ");
   };
-  m.catList = m.myPage ? m.myCatList : [];
-  m.myFSCatList = [];
+  m.myCatList = [{ cat: "" }];
+  m.catList = m.myPage ? m.myCatList : [{ cat: "" }];
+  m.myFSCatList = [{ cat: "" }];
   m.myRecos = m.myPage ? m.userRecos : {};
   m.myRecos[""] = { uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m.val("10.0/10") };
   m.catListToHTML = function() {
