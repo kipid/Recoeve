@@ -18805,10 +18805,12 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function Sidebar({ userCatList, opened, isChangingOrder, onChangeOrder }) {
     (0, import_react3.useEffect)(() => {
+      prepare_default.$change_catList_order = (0, import_jquery3.default)("#change-catList-order");
+      prepare_default.$change_catList_order_ok = (0, import_jquery3.default)("#change-catList-order-ok");
+      prepare_default.$change_catList_order_cancel = (0, import_jquery3.default)("#change-catList-order-cancel");
+    }, []);
+    (0, import_react3.useEffect)(() => {
       try {
-        prepare_default.$change_catList_order = (0, import_jquery3.default)("#change-catList-order");
-        prepare_default.$change_catList_order_ok = (0, import_jquery3.default)("#change-catList-order-ok");
-        prepare_default.$change_catList_order_cancel = (0, import_jquery3.default)("#change-catList-order-cancel");
         prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
       } catch (err) {
         console.error(err);
@@ -26891,7 +26893,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
         if (catList === prepare_default.catList) {
           if (!prepare_default.fsGotoCats.fullList[cat2]) {
-            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
+            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
           } else {
             prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2];
           }
@@ -26904,16 +26906,16 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           prepare_default.myFSCatList.splice(0, prepare_default.myFSCatList.length);
           if (prepare_default.myPage) {
             prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-          }
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
-          let l2 = prepare_default.myCatList.length;
-          for (let i3 = l2 - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.myCatList[i3].cat, prepare_default.myCatList);
+            await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.catList);
+            let l2 = prepare_default.catList.length;
+            for (let i3 = l2 - 1; i3 > 0; i3--) {
+              prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
+            }
           }
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
-          l2 = prepare_default.myFSCatList.length;
-          for (let i3 = l2 - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
+          l = prepare_default.myFSCatList.length;
+          for (let i3 = l - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
           }
           let cat2 = "";
           if (!prepare_default.fsCat.fullList[cat2]) {
@@ -28173,7 +28175,7 @@ ${uri.join("\n")}
                 catUL.uris = catUL.UriList.split("\n").reverse();
                 catUL.UriList = catUL.uris.join("\n").trim();
                 for (let k = 0; k < catUL.uris.length; k++) {
-                  let uri = catUL.uris[k];
+                  const uri = catUL.uris[k];
                   catUL.uris[uri] = { i: k, uri };
                   if (!prepare_default.userRecos[uri]) {
                     prepare_default.userRecos[uri] = { uri, down: false };
