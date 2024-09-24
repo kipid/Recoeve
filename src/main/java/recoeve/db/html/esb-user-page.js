@@ -14709,16 +14709,20 @@
       }
       catList.splice(0, catList.length);
       let superCats = [];
+      let k = 0;
       if (strCatList.trim() === "") {
-        catList[""] = catList[0] = { i: 0, cat: "", baseCat: "", depth: 0 };
+        catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
+        k++;
       } else {
-        for (let i3 = 0; i3 < list.length; i3++) {
+        for (let i3 = 1; i3 < list.length; i3++) {
           let baseCat = list[i3].trim();
           let depth = m2.getDepthOfTabs(list[i3]);
           superCats.splice(depth, superCats.length - depth, baseCat);
           let cat2 = superCats.join("--");
-          catList[cat2] = { i: i3, cat: cat2, baseCat, depth };
-          catList.push(catList[cat2]);
+          if (!catList[cat2]) {
+            catList[k] = catList[cat2] = { i: k, cat: cat2, baseCat, depth };
+            k++;
+          }
         }
       }
       resolve();
@@ -26358,16 +26362,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           if (selectedCat) {
             (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
           }
-          for (let i3 = prepare_default.catList.length - 1; i3 >= 0; i3--) {
-            if (prepare_default.catList[i3].subCatExpanded) {
-              (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(prepare_default.catList[i3].cat))}>.EC`).trigger("click");
-            }
-          }
         }
         prepare_default.$change_catList_order.show();
-        await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
-        await prepare_default.reTriggerFS(prepare_default.fsCat);
-        await prepare_default.reTriggerFS(prepare_default.fsMRCat);
       });
       prepare_default.$floating_key = (0, import_jquery15.default)("#floating-key");
       prepare_default.$toggle_floating_key = (0, import_jquery15.default)("#toggle-floating-key");
@@ -26544,10 +26540,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           });
         });
       });
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_catList.html()), prepare_default.catList);
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
-      await prepare_default.catListToHTML();
       prepare_default.$timezone_trs = (0, import_jquery15.default)("table.timezone").find("tr");
       for (let i3 = prepare_default.$timezone_trs.length - 1; i3 >= 1; i3--) {
         let timezoneTxt = prepare_default.$timezone_trs.eq(i3).text().replace(/[\s\r\n\t]+/g, " ").trim();
@@ -26878,6 +26870,12 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         });
       };
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_catList.html()), prepare_default.catList);
+      if (!prepare_default.myPage) {
+        await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.myCatList);
+      }
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
+      await prepare_default.catListToHTML();
       prepare_default.putCatToFSFullList = function(i3, cat2, catList) {
         if (catList === prepare_default.myFSCatList) {
           if (!prepare_default.fsCat.fullList[cat2]) {
@@ -26890,8 +26888,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           } else {
             prepare_default.fsMRCat.fullList[i3] = prepare_default.fsMRCat.fullList[cat2];
           }
-        }
-        if (catList === prepare_default.catList) {
+        } else if (catList === prepare_default.catList) {
           if (!prepare_default.fsGotoCats.fullList[cat2]) {
             prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
           } else {
@@ -26907,6 +26904,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           if (prepare_default.myPage) {
             prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
             await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.catList);
+            await prepare_default.catListToHTML();
             let l3 = prepare_default.catList.length;
             for (let i3 = l3 - 1; i3 > 0; i3--) {
               prepare_default.putCatToFSFullList(l3 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
@@ -27533,6 +27531,8 @@ ${uri.join("\n")}
               }
             }
             await prepare_default.catListToHTML();
+            await prepare_default.updateCatFS();
+            await prepare_default.updateGotoCatsFS();
             resolve();
           } else {
             reject(`You are not in your own page.`);
@@ -29369,6 +29369,8 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 console.log(`await m.putCats_UriToLists("${args.cats}", "${uri}");`);
                 await prepare_default.putCats_UriToLists(args.cats, uri);
                 await prepare_default.catListToHTML();
+                await prepare_default.updateCatFS();
+                await prepare_default.updateGotoCatsFS();
                 prepare_default.myRecos[uri].tLast = res[1]?.tLast;
                 setTimeout(function() {
                   prepare_default.emptifyRecoInNewReco();
