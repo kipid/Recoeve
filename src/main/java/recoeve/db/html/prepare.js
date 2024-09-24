@@ -1108,17 +1108,21 @@ m.strCatListToJSON = function (strCatList, catList) {
 		}
 		catList.splice(0, catList.length);
 		let superCats = [];
+		let k = 0;
 		if (strCatList.trim() === "") {
-			catList[""] = catList[0] = { i: 0, cat: "", baseCat: "", depth: 0 };
+			catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
+			k++;
 		}
 		else {
-			for (let i = 0; i < list.length; i++) {
+			for (let i = 1; i < list.length; i++) {
 				let baseCat = list[i].trim();
 				let depth = m.getDepthOfTabs(list[i]);
 				superCats.splice(depth, superCats.length - depth, baseCat);
 				let cat = superCats.join("--");
-				catList[cat] = { i, cat, baseCat, depth };
-				catList.push(catList[cat]);
+				if (!catList[cat]) {
+					catList[k] = catList[cat] = { i: k, cat, baseCat, depth };
+					k++;
+				}
 			}
 		}
 		resolve();
