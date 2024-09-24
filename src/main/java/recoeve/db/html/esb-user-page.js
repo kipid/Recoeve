@@ -29722,7 +29722,7 @@ ${uri2}	change	${cats2}`;
             $elem = $elem.parents(".baseCat, .move-cat");
           }
           if (!$elem.length) {
-            reject("$(event.target) is NOT [.baseCat] or [.move-cat].");
+            return;
           }
           let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
           if (event2?.which === 2) {
