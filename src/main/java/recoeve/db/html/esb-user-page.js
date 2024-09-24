@@ -26907,15 +26907,15 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           if (prepare_default.myPage) {
             prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
             await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()), prepare_default.catList);
-            let l2 = prepare_default.catList.length;
-            for (let i3 = l2 - 1; i3 > 0; i3--) {
-              prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
+            let l3 = prepare_default.catList.length;
+            for (let i3 = l3 - 1; i3 > 0; i3--) {
+              prepare_default.putCatToFSFullList(l3 - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
             }
           }
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
-          l = prepare_default.myFSCatList.length;
-          for (let i3 = l - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
+          let l2 = prepare_default.myFSCatList.length;
+          for (let i3 = l2 - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l2 - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
           }
           let cat2 = "";
           if (!prepare_default.fsCat.fullList[cat2]) {
