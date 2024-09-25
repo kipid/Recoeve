@@ -282,7 +282,7 @@ m.decomposeURI = function (uri) {
 						res.hash = uri.substring(n);
 					}
 					else {
-						res.pathname = uri.substring(k);
+						res.pathname = uri.substring(l);
 						res.hash = "";
 					}
 				}
@@ -1096,25 +1096,23 @@ m.ExpCol = function (elem) {
 		m.catList[cat].subCatExpanded = true;
 	}
 };
-m.strCatListToJSON = function (strCatList, catList) {
+m.strCatListToJSON = function (strCatList, catList = m.catList) {
 		// * catList[i] = catList[cat] = { i, cat, baseCat, depth }
 	return new Promise(function (resolve, reject) {
 		let list = strCatList.trim().split("\n");
-		if (strCatList.length === 0) {
+		if (strCatList.trim().length === 0) {
 			list = [];
 		}
 		list.unshift("");
-			// cat= : empty cat = [--Uncategorized--].
-		if (!catList) {
-			catList = m.catList;
-		}
+			// * cat= : empty cat = [--Uncategorized--].
 		catList.splice(0, catList.length);
+		Object.keys(catList).forEach(key => delete catList[key]);
 		let superCats = [];
 		let k = 0;
 		catList[k] = catList[""] = { i: k, cat: "[--Uncategorized--]", baseCat: "[--Uncategorized--]", depth: 0 };
 		k++;
 		for (let i = 1; i < list.length; i++) {
-			let baseCat = list[i].trim();
+			let baseCat = list[i].trim().replace(/^[\-]+/, "").replace(/[\-]+$/, "");
 			let depth = m.getDepthOfTabs(list[i]);
 			superCats.splice(depth, superCats.length - depth, baseCat);
 			let cat = superCats.join("--");
@@ -3428,7 +3426,7 @@ m.YTiframe = function (v, inListPlay, config, list) {
 
 let ptnURI;
 ptnURI = m.ptnURI["www.youtube.com"] = m.ptnURI["youtube.com"] = m.ptnURI["youtu.be"] = m.ptnURI["m.youtube.com"] = {};
-ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-\_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
@@ -3497,8 +3495,8 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA, descR) {
 };
 
 ptnURI = m.ptnURI["docs.google.com"] = {};
-ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-_]+)/i;
-ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-_]+)/i
+ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-\_]+)/i;
+ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-\_]+)/i
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["docs.google.com"].regEx.exec(uriRest);
@@ -3516,7 +3514,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["instagram.com"] = m.ptnURI["www.instagram.com"] = {};
-ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-_]+)/i;
+ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-\_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["instagram.com"].regEx.exec(uriRest);
@@ -3530,7 +3528,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["imgur.com"] = m.ptnURI["www.imgur.com"] = {};
-ptnURI.regEx = /^a\/([\w\-_]+)/i;
+ptnURI.regEx = /^a\/([\w\-\_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["imgur.com"].regEx.exec(uriRest);
@@ -3642,7 +3640,7 @@ ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 };
 
 ptnURI = m.ptnURI["tvpot.daum.net"] = {};
-ptnURI.regEx = /^v\/([\w\-_]+)/i;
+ptnURI.regEx = /^v\/([\w\-\_]+)/i;
 ptnURI.toIframe = function (uriRest, inListPlay, toA) {
 	return new Promise(function (resolve, reject) {
 		let exec = m.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
@@ -3948,8 +3946,9 @@ window.relatedRendering = function (str) {
 		let res = "";
 		while (exec !== null) {
 			res += m.escapeOnlyTag(str.substring(start, exec.index));
-			res += (await uriRendering(await m.formatURI(exec[0], true), true, false)).html;
+			let uriRendered = await uriRendering(await m.formatURI(exec[0], true), true, false);
 				// * (uri, toA, inListPlay, descR)
+			res += uriRendered.html;
 			start = m.ptnURL.lastIndex;
 			exec = m.ptnURL.exec(str);
 		}
