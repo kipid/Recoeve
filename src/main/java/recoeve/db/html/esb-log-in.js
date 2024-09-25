@@ -18119,6 +18119,52 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
     }
   };
   m.kakaoInit = setInterval(m.kakaoInitDo, 2 * m.wait);
+  m.catListToHTML = function() {
+    return new Promise(async function(resolve, reject) {
+      let cL = m.catList;
+      let cat = cL[0].cat;
+      let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+      let i = 1;
+      for (; i < cL.length - 1; i++) {
+        cat = cL[i].cat;
+        let beforeDepth = cL[i - 1].depth;
+        let currentDepth = cL[i].depth;
+        let afterDepth = cL[i + 1].depth;
+        if (beforeDepth < currentDepth) {
+          catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
+        } else {
+          for (let j = currentDepth; j < beforeDepth; j++) {
+            catListHTML += `</div>`;
+          }
+        }
+        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i]?.depth}em">`;
+        if (currentDepth < afterDepth) {
+          catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat}'])">${cL[i].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
+        } else {
+          catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="noEC"></span>`;
+        }
+        catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+      }
+      if (cL.length > 1) {
+        cat = cL[i].cat;
+        let beforeDepth = cL[i - 1].depth;
+        let currentDepth = cL[i].depth;
+        if (beforeDepth < currentDepth) {
+          catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
+        } else {
+          for (let j = currentDepth; j < beforeDepth; j++) {
+            catListHTML += `</div>`;
+          }
+        }
+        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span key="EC-${encodeURIComponent(cat)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
+        for (let j = 0; j < currentDepth; j++) {
+          catListHTML += `</div>`;
+        }
+      }
+      m.$catList.html(catListHTML);
+      resolve();
+    });
+  };
   (async function(m2, $6, undefined2) {
     await m2.strCatListToJSON(m2.unescapeHTML(m2.catListHTMLEscaped), m2.catList);
     await m2.catListToHTML();
