@@ -26755,12 +26755,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         });
       };
-      prepare_default.$change_catList_order_ok.hide();
-      prepare_default.$change_catList_order_cancel.hide();
       prepare_default.$change_catList_order.on("click.change-catList-order", function(e2) {
-        prepare_default.$change_catList_order.hide();
-        prepare_default.$change_catList_order_ok.show();
-        prepare_default.$change_catList_order_cancel.show();
         let $cats = prepare_default.$catList.find(".cat").not(`#cat-`);
         $cats.addClass("edit");
         $cats.prepend('<div class="edit-bar"></div>');
@@ -26849,6 +26844,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               }
             });
             prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
+              e4.preventDefault();
+              e4.stopPropagation();
               prepare_default.$html.off(
                 "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
               );
