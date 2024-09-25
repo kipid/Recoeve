@@ -16821,7 +16821,7 @@ m.initialOpen: ${m2.initialOpen}`);
   };
   var ptnURI;
   ptnURI = m2.ptnURI["www.youtube.com"] = m2.ptnURI["youtube.com"] = m2.ptnURI["youtu.be"] = m2.ptnURI["m.youtube.com"] = {};
-  ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+  ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-\_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA, descR) {
@@ -16891,8 +16891,8 @@ m.initialOpen: ${m2.initialOpen}`);
     });
   };
   ptnURI = m2.ptnURI["docs.google.com"] = {};
-  ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-_]+)/i;
-  ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-_]+)/i;
+  ptnURI.regEx = /^spreadsheets\/d\/e\/([\w\-\_]+)/i;
+  ptnURI.regEx1 = /^spreadsheets\/d\/([\w\-\_]+)/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
       let exec = m2.ptnURI["docs.google.com"].regEx.exec(uriRest);
@@ -16908,7 +16908,7 @@ m.initialOpen: ${m2.initialOpen}`);
     });
   };
   ptnURI = m2.ptnURI["instagram.com"] = m2.ptnURI["www.instagram.com"] = {};
-  ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-_]+)/i;
+  ptnURI.regEx = /^(?:p|tv|reel)\/([\w\-\_]+)/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
       let exec = m2.ptnURI["instagram.com"].regEx.exec(uriRest);
@@ -16920,7 +16920,7 @@ m.initialOpen: ${m2.initialOpen}`);
     });
   };
   ptnURI = m2.ptnURI["imgur.com"] = m2.ptnURI["www.imgur.com"] = {};
-  ptnURI.regEx = /^a\/([\w\-_]+)/i;
+  ptnURI.regEx = /^a\/([\w\-\_]+)/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
       let exec = m2.ptnURI["imgur.com"].regEx.exec(uriRest);
@@ -17020,7 +17020,7 @@ m.initialOpen: ${m2.initialOpen}`);
     });
   };
   ptnURI = m2.ptnURI["tvpot.daum.net"] = {};
-  ptnURI.regEx = /^v\/([\w\-_]+)/i;
+  ptnURI.regEx = /^v\/([\w\-\_]+)/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA) {
     return new Promise(function(resolve, reject) {
       let exec = m2.ptnURI["tvpot.daum.net"].regEx.exec(uriRest);
@@ -17291,7 +17291,8 @@ m.initialOpen: ${m2.initialOpen}`);
       let res = "";
       while (exec !== null) {
         res += m2.escapeOnlyTag(str.substring(start, exec.index));
-        res += (await uriRendering(await m2.formatURI(exec[0], true), true, false)).html;
+        let uriRendered = await uriRendering(await m2.formatURI(exec[0], true), true, false);
+        res += uriRendered.html;
         start = m2.ptnURL.lastIndex;
         exec = m2.ptnURL.exec(str);
       }
