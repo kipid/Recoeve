@@ -53,7 +53,7 @@ public class PrintLog implements Handler<RoutingContext> {
 							res[3] = uri.substring(n);
 						}
 						else {
-							res[1] = uri.substring(k);
+							res[1] = uri.substring(l);
 							res[3] = "";
 						}
 					}
@@ -265,7 +265,7 @@ public class PrintLog implements Handler<RoutingContext> {
 	}
 
 	public static void main(String... args) {
-		String[] decomposedURI = PrintLog.decomposeURI("https://recoeve.net?kjlskd#proflkjfsd");
+		String[] decomposedURI = PrintLog.decomposeURI("https://www.instagram.com/p/C7lynXUxUhW/");
 		for (String d : decomposedURI) {
 			System.out.println(d);
 		}
