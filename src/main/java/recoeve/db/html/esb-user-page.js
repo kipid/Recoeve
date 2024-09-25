@@ -18160,17 +18160,20 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       if (!m2.fsCat.fullList[cat2]) {
         m2.fsCat.fullList[i3] = m2.fsCat.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
       } else {
+        m2.fsCat.fullList[cat2].i = i3;
         m2.fsCat.fullList[i3] = m2.fsCat.fullList[cat2];
       }
       if (!m2.fsMRCat.fullList[cat2]) {
         m2.fsMRCat.fullList[i3] = m2.fsMRCat.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
       } else {
+        m2.fsMRCat.fullList[cat2].i = i3;
         m2.fsMRCat.fullList[i3] = m2.fsMRCat.fullList[cat2];
       }
     } else if (catList === m2.catList) {
       if (!m2.fsGotoCats.fullList[cat2]) {
         m2.fsGotoCats.fullList[i3] = m2.fsGotoCats.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
       } else {
+        m2.fsGotoCats.fullList[cat2].i = i3;
         m2.fsGotoCats.fullList[i3] = m2.fsGotoCats.fullList[cat2];
       }
     }
