@@ -4863,15 +4863,6 @@ m.catListToHTML = function () {
 		resolve();
 	});
 };
-(async function(m, $, undefined) {
-	await m.strCatListToJSON(m.unescapeHTML(m.catListHTMLEscaped), m.catList);
-	await m.catListToHTML();
-	// ! catList 는 SideBar 에다 그리는 용도와 m.fsGotoCats 로만 쓰여서 FS 와 관련 없음. 그래서 m.myCatList 는 update 불필요. 단 m.myCatListHTMLEscaped 는 m.myFSCatList 를 위해 업데이트 필요!!!
-	// if (!m.myPage) {
-	// 	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped), m.myCatList);
-	// }
-	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped.trim()+"\n"+m.catListHTMLEscaped.trim()+"\n"+m.kipidCatListHTMLEscaped.trim()), m.myFSCatList);
-})(m, $);
 
 m.putCatToFSFullList = function (i, cat, catList) {
 	if (catList === m.myFSCatList) {
