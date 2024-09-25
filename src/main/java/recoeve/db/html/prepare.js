@@ -1,6 +1,6 @@
 const m = window.m = window.m || {};
 
-(async function (m, $, undefined) {
+(function (m, $, undefined) {
 // Used in user-page.html, log-in.html, changePwd.html, verify.html
 m.$window = $(window);
 m.$document = $(document);
@@ -4863,13 +4863,15 @@ m.kakaoInit = setInterval(m.kakaoInitDo, 2 * m.wait);
 //////////////////////////////////////
 // Fuzzy search on Cat :: Initialize m.fsCat, m.fsMRCat, m.fsGotoCats
 //////////////////////////////////////
-await m.strCatListToJSON(m.unescapeHTML(m.catListHTMLEscaped), m.catList);
-await m.catListToHTML();
-// ! catList 는 SideBar 에다 그리는 용도와 m.fsGotoCats 로만 쓰여서 FS 와 관련 없음. 그래서 m.myCatList 는 update 불필요. 단 m.myCatListHTMLEscaped 는 m.myFSCatList 를 위해 업데이트 필요!!!
-// if (!m.myPage) {
-// 	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped), m.myCatList);
-// }
-await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped.trim()+"\n"+m.catListHTMLEscaped.trim()+"\n"+m.kipidCatListHTMLEscaped.trim()), m.myFSCatList);
+(async function(m, $, undefined) {
+	await m.strCatListToJSON(m.unescapeHTML(m.catListHTMLEscaped), m.catList);
+	await m.catListToHTML();
+	// ! catList 는 SideBar 에다 그리는 용도와 m.fsGotoCats 로만 쓰여서 FS 와 관련 없음. 그래서 m.myCatList 는 update 불필요. 단 m.myCatListHTMLEscaped 는 m.myFSCatList 를 위해 업데이트 필요!!!
+	// if (!m.myPage) {
+	// 	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped), m.myCatList);
+	// }
+	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped.trim()+"\n"+m.catListHTMLEscaped.trim()+"\n"+m.kipidCatListHTMLEscaped.trim()), m.myFSCatList);
+})(m, jQuery);
 
 m.putCatToFSFullList = function (i, cat, catList) {
 	if (catList === m.myFSCatList) {
