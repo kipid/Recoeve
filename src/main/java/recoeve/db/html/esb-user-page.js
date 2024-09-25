@@ -30810,11 +30810,9 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
         }
       };
     }
-    (0, import_react9.useEffect)(() => {
-      (async function() {
-        await initialEffect();
-        await prepare_default.reNewAndReOn();
-      })();
+    (0, import_react9.useEffect)(async () => {
+      await initialEffect();
+      await prepare_default.reNewAndReOn();
     }, []);
     (0, import_react9.useEffect)(async () => {
       prepare_default.updateCatFS = function() {
