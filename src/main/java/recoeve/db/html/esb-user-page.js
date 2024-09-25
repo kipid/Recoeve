@@ -18883,6 +18883,11 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   function SidebarDragger({ opened, updateOpened: updateOpened2 }) {
     (0, import_react3.useEffect)(() => {
+      if (window.innerWidth < 700) {
+        updateOpened2((draft) => {
+          draft.value = false;
+        });
+      }
       m.$window.on("resize.sidebar", function(e2) {
         updateOpened2((draft) => {
           draft.count = draft.count + 1;
@@ -18946,11 +18951,6 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         return false;
       });
       prepare_default.$catList_result = (0, import_jquery3.default)("#catList-result");
-      if (window.innerWidth < 700) {
-        updateOpened((draft) => {
-          draft.value = false;
-        });
-      }
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
       await prepare_default.catListToHTML();
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + userCatList.text.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
