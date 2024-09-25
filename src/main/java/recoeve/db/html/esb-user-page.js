@@ -18165,11 +18165,6 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       resolve();
     });
   };
-  (async function(m3, $16, undefined2) {
-    await m3.strCatListToJSON(m3.unescapeHTML(m3.catListHTMLEscaped), m3.catList);
-    await m3.catListToHTML();
-    await m3.strCatListToJSON(m3.unescapeHTML(m3.myCatListHTMLEscaped.trim() + "\n" + m3.catListHTMLEscaped.trim() + "\n" + m3.kipidCatListHTMLEscaped.trim()), m3.myFSCatList);
-  })(m2, import_jquery.default);
   m2.putCatToFSFullList = function(i3, cat2, catList) {
     if (catList === m2.myFSCatList) {
       if (!m2.fsCat.fullList[cat2]) {
