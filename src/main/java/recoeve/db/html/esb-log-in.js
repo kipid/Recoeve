@@ -15381,14 +15381,6 @@ ${originalURI + uriRendered.uriHash}
       resolve();
     });
   };
-  m.logPrint = function(html) {
-    try {
-      m.$logs.append(html);
-      m.$logs.scrollTop(m.$logs[0].scrollHeight);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   m.delayPad = m.delayPad || 512;
   m.wait = m.wait || 1024;
   m.$delayedElems = (0, import_jquery.default)("#nothing");
@@ -15431,12 +15423,10 @@ ${originalURI + uriRendered.uriHash}
         m.$delayedElems.each(function() {
           if ((0, import_jquery.default)(this).delayedLoad()) {
             m.$delayedElems = m.$delayedElems.not(this);
-            m.logPrint(`<br/><span class="emph">${this} at vertical position of ${(100 * (0, import_jquery.default)(this).offset().top / m.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br/>${m.$delayedElems.length} of $delayedElems are remained.<br/>`);
           }
         });
         m.$window.on("scroll.delayedLoad", m.delayedLoadByScroll);
       } else {
-        m.logPrint(`<br/><br/>All delayedElem are loaded.`);
         m.$window.off("scroll.delayedLoad");
       }
       m.previous = Date.now();

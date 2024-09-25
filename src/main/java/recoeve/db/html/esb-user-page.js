@@ -15381,14 +15381,6 @@ ${originalURI + uriRendered.uriHash}
       resolve();
     });
   };
-  m2.logPrint = function(html) {
-    try {
-      m2.$logs.append(html);
-      m2.$logs.scrollTop(m2.$logs[0].scrollHeight);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   m2.delayPad = m2.delayPad || 512;
   m2.wait = m2.wait || 1024;
   m2.$delayedElems = (0, import_jquery.default)("#nothing");
@@ -15431,12 +15423,10 @@ ${originalURI + uriRendered.uriHash}
         m2.$delayedElems.each(function() {
           if ((0, import_jquery.default)(this).delayedLoad()) {
             m2.$delayedElems = m2.$delayedElems.not(this);
-            m2.logPrint(`<br/><span class="emph">${this} at vertical position of ${(100 * (0, import_jquery.default)(this).offset().top / m2.$document.height()).toPrecision(3)}% of document is delayed-loaded.</span><br/>${m2.$delayedElems.length} of $delayedElems are remained.<br/>`);
           }
         });
         m2.$window.on("scroll.delayedLoad", m2.delayedLoadByScroll);
       } else {
-        m2.logPrint(`<br/><br/>All delayedElem are loaded.`);
         m2.$window.off("scroll.delayedLoad");
       }
       m2.previous = Date.now();
@@ -26011,7 +26001,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.$previewed_desc = (0, import_jquery15.default)("#previewed-desc");
       prepare_default.$input_cmt = (0, import_jquery15.default)("#input-cmt");
       prepare_default.$error = (0, import_jquery15.default)("#error-msg");
-      prepare_default.$logs = (0, import_jquery15.default)("#logs");
       prepare_default.$input_val = (0, import_jquery15.default)(".input-val");
       prepare_default.$button_reco = (0, import_jquery15.default)(".button-reco");
       prepare_default.$button_edit = (0, import_jquery15.default)(".button-edit");
@@ -30903,7 +30892,6 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(ContentsRecoms, {}),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(ButtonsPointRange, {}),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(HeadPlay, {}),
-        /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { className: "side2", children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { id: "logs" }) }),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(Manual, {}),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { class: "side2", children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { className: "numbers-of-recos", id: "numbers-of-recos" }) }),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(ContentsRecos, {}),
