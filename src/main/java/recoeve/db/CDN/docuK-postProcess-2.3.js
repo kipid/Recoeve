@@ -440,6 +440,7 @@ Log <span class="bold underline">o</span>ut
 				m.toggleFK();
 				break;
 			case 'KeyG':
+				e.preventDefault();
 				if ($fuzzy_search_container.is(":visible")) {
 					$fuzzy_search_container.hide();
 					$out_focus.focus();
