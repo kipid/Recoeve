@@ -5,6 +5,7 @@ body {
 	font-family:'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 나눔고딕, NanumGothic, Tahoma, Sans-serif;
 	margin:0;
 	padding:0;
+	tab-size:4;
 	overflow-wrap:break-word;
 	word-wrap:break-word;
 	word-break:break-word
