@@ -18964,7 +18964,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       }
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
       await prepare_default.catListToHTML();
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + userCatList.text.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.$sidebar_dragger_in.on("mousedown.sd touchstart.sd", function(e2) {
         let touch0 = e2.type === "touchstart" ? e2.originalEvent.touches[0] : e2;
         let relativeX = touch0.clientX - Math.round(prepare_default.$sidebar_dragger.offset().left) + prepare_default.$window.scrollLeft();
