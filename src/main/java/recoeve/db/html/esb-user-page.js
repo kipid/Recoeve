@@ -18110,6 +18110,122 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     $downs.on("click.ud", m2.starsOnDownClick);
     m2.reNewFSsOn();
   };
+  m2.pathname = m2.initialPathname;
+  if (m2.initialPathname === "/reco") {
+    m2.newRecoOn = true;
+  }
+  if (m2.initialPathname.substring(0, 6) !== "/user/") {
+    m2.pathname = "/user/" + m2.myId;
+  }
+  m2.pathnameSplit = m2.pathname.split("/");
+  if (m2.userId !== decodeURIComponent(m2.pathnameSplit[2])) {
+    console.log(
+      `Error: userId is not matched.: ${m2.userId}!==${decodeURIComponent(m2.pathnameSplit[2])}`
+    );
+  }
+  m2.myPage = m2.myIndex === m2.userIndex;
+  m2.userPath = `/user/${encodeURIComponent(m2.userId)}`;
+  m2.recoMode = m2.pathnameSplit[3] === "mode" && m2.pathnameSplit[4] ? m2.pathnameSplit[4] : "";
+  m2.hashURI = m2.initialHashURI;
+  if (m2.initialHashURI > 0) {
+    let ampIndex = m2.initialHashURI.indexOf("&");
+    if (ampIndex >= 0) {
+      m2.hashURI = m2.initialHashURI = m2.initialHashURI.substring(0, ampIndex);
+    }
+    m2.hashURI = decodeURIComponent(m2.initialHashURI.replace(/\+/g, "%20"));
+  }
+  m2.searchVars = m2.getSearchVars(m2.initialSearch);
+  m2.currentCat = m2.searchVars.cat?.val ?? "";
+  (0, import_jquery.default)("head").append(
+    `<link rel="canonical" href="https://recoeve.net${m2.pathOfCat(m2.currentCat)}" />`
+  );
+  for (let prop in m2.searchVars) {
+    m2.args[m2.searchVars[prop].key] = m2.searchVars[prop].val;
+  }
+  if (m2.args.cat) {
+    delete m2.args.cat;
+  }
+  if (m2.args.lang) {
+    delete m2.args.lang;
+  }
+  m2.lang = null;
+  if (m2.searchVars?.lang) {
+    m2.lang = m2.searchVars.lang.val;
+    m2.docCookies.setItem("lang", m2.lang, Infinity, "/", false, true);
+  } else if (m2.docCookies.hasItem("lang")) {
+    m2.lang = m2.docCookies.getItem("lang");
+  }
+  m2.kakaoTries = 0;
+  m2.kakaoInitDo = function() {
+    if (typeof Kakao !== "undefined" || m2.kakaoTries++ > 15) {
+      clearInterval(m2.kakaoInit);
+      if (!Kakao.isInitialized()) {
+        Kakao.init("f076e37310bc101c5c50c9e2714b59ca");
+      }
+    }
+  };
+  m2.kakaoInit = setInterval(m2.kakaoInitDo, 2 * m2.wait);
+  (async function(m3, $16, undefined2) {
+    await m3.strCatListToJSON(m3.unescapeHTML(m3.catListHTMLEscaped), m3.catList);
+    await m3.catListToHTML();
+    await m3.strCatListToJSON(m3.unescapeHTML(m3.myCatListHTMLEscaped.trim() + "\n" + m3.catListHTMLEscaped.trim() + "\n" + m3.kipidCatListHTMLEscaped.trim()), m3.myFSCatList);
+  })(m2, import_jquery.default);
+  m2.putCatToFSFullList = function(i3, cat2, catList) {
+    if (catList === m2.myFSCatList) {
+      if (!m2.fsCat.fullList[cat2]) {
+        m2.fsCat.fullList[i3] = m2.fsCat.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
+      } else {
+        m2.fsCat.fullList[i3] = m2.fsCat.fullList[cat2];
+      }
+      if (!m2.fsMRCat.fullList[cat2]) {
+        m2.fsMRCat.fullList[i3] = m2.fsMRCat.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
+      } else {
+        m2.fsMRCat.fullList[i3] = m2.fsMRCat.fullList[cat2];
+      }
+    } else if (catList === m2.catList) {
+      if (!m2.fsGotoCats.fullList[cat2]) {
+        m2.fsGotoCats.fullList[i3] = m2.fsGotoCats.fullList[cat2] = { i: i3, txt: m2.splitHangul(cat2), cat: cat2, html: m2.escapeOnlyTag(cat2) };
+      } else {
+        m2.fsGotoCats.fullList[i3] = m2.fsGotoCats.fullList[cat2];
+      }
+    }
+  };
+  m2.completeCat = function(event2) {
+    let $elem = (0, import_jquery.default)(event2.target);
+    let cat2 = m2.unescapeHTML($elem.find(".list-index-id").html());
+    let fs = m2.fsCat;
+    fs.$fsLis = fs.$fsl.find(".list-item");
+    fs.$fsLis.removeClass("selected");
+    $elem.addClass("selected");
+    let k = fs.k;
+    fs.catsSplit[k] = cat2;
+    fs.$fs[0].value = fs.catsSplit.join(";");
+    let sStart = 0;
+    for (let i3 = 0; i3 < k; i3++) {
+      sStart += fs.catsSplit[i3].length + 1;
+    }
+    let sEnd = sStart + fs.catsSplit[k].length;
+    fs.$fs.trigger("focus");
+    fs.$fs[0].setSelectionRange(sEnd, sEnd);
+  };
+  m2.completeMRCat = function(event2) {
+    let $elem = (0, import_jquery.default)(event2.target);
+    let cat2 = m2.unescapeHTML($elem.find(".list-index-id").html());
+    let fs = m2.fsMRCat;
+    fs.$fsLis = fs.$fsl.find(".list-item");
+    fs.$fsLis.removeClass("selected");
+    $elem.addClass("selected");
+    let k = fs.k;
+    fs.catsSplit[k] = cat2;
+    m2.$multireco_input_cats[0].value = fs.catsSplit.join(";");
+    let sStart = 0;
+    for (let i3 = 0; i3 < k; i3++) {
+      sStart += fs.catsSplit[i3].length + 1;
+    }
+    let sEnd = sStart + fs.catsSplit[k].length;
+    m2.$multireco_input_cats.trigger("focus");
+    m2.$multireco_input_cats[0].setSelectionRange(sEnd, sEnd);
+  };
   var prepare_default = window.m;
 
   // src/App.jsx
@@ -25804,61 +25920,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/App.jsx
   var import_jsx_runtime32 = __toESM(require_jsx_runtime(), 1);
-  prepare_default.pathname = prepare_default.initialPathname;
-  if (prepare_default.initialPathname === "/reco") {
-    prepare_default.newRecoOn = true;
-  }
-  if (prepare_default.initialPathname.substring(0, 6) !== "/user/") {
-    prepare_default.pathname = "/user/" + prepare_default.myId;
-  }
-  prepare_default.pathnameSplit = prepare_default.pathname.split("/");
-  if (prepare_default.userId !== decodeURIComponent(prepare_default.pathnameSplit[2])) {
-    console.log(
-      `Error: userId is not matched.: ${prepare_default.userId}!==${decodeURIComponent(prepare_default.pathnameSplit[2])}`
-    );
-  }
-  prepare_default.myPage = prepare_default.myIndex === prepare_default.userIndex;
-  prepare_default.userPath = `/user/${encodeURIComponent(prepare_default.userId)}`;
-  prepare_default.recoMode = prepare_default.pathnameSplit[3] === "mode" && prepare_default.pathnameSplit[4] ? prepare_default.pathnameSplit[4] : "";
-  prepare_default.hashURI = prepare_default.initialHashURI;
-  if (prepare_default.initialHashURI > 0) {
-    let ampIndex = prepare_default.initialHashURI.indexOf("&");
-    if (ampIndex >= 0) {
-      prepare_default.hashURI = prepare_default.initialHashURI = prepare_default.initialHashURI.substring(0, ampIndex);
-    }
-    prepare_default.hashURI = decodeURIComponent(prepare_default.initialHashURI.replace(/\+/g, "%20"));
-  }
-  prepare_default.searchVars = prepare_default.getSearchVars(prepare_default.initialSearch);
-  prepare_default.currentCat = prepare_default.searchVars.cat?.val ?? "";
-  (0, import_jquery15.default)("head").append(
-    `<link rel="canonical" href="https://recoeve.net${prepare_default.pathOfCat(prepare_default.currentCat)}" />`
-  );
-  for (let prop in prepare_default.searchVars) {
-    prepare_default.args[prepare_default.searchVars[prop].key] = prepare_default.searchVars[prop].val;
-  }
-  if (prepare_default.args.cat) {
-    delete prepare_default.args.cat;
-  }
-  if (prepare_default.args.lang) {
-    delete prepare_default.args.lang;
-  }
-  prepare_default.lang = null;
-  if (prepare_default.searchVars?.lang) {
-    prepare_default.lang = prepare_default.searchVars.lang.val;
-    prepare_default.docCookies.setItem("lang", prepare_default.lang, Infinity, "/", false, true);
-  } else if (prepare_default.docCookies.hasItem("lang")) {
-    prepare_default.lang = prepare_default.docCookies.getItem("lang");
-  }
-  prepare_default.kakaoTries = 0;
-  prepare_default.kakaoInitDo = function() {
-    if (typeof Kakao !== "undefined" || prepare_default.kakaoTries++ > 15) {
-      clearInterval(prepare_default.kakaoInit);
-      if (!Kakao.isInitialized()) {
-        Kakao.init("f076e37310bc101c5c50c9e2714b59ca");
-      }
-    }
-  };
-  prepare_default.kakaoInit = setInterval(prepare_default.kakaoInitDo, 2 * prepare_default.wait);
+  window.m = prepare_default;
   function App() {
     const [styles, updateStyles] = i2(prepare_default.defaultStyles);
     const [blockTouch, updateBlockTouch] = i2(false);
@@ -26869,65 +26931,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
         prepare_default.$change_catList_order.show();
       });
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped), prepare_default.catList);
-      await prepare_default.catListToHTML();
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
-      prepare_default.putCatToFSFullList = function(i3, cat2, catList) {
-        if (catList === prepare_default.myFSCatList) {
-          if (!prepare_default.fsCat.fullList[cat2]) {
-            prepare_default.fsCat.fullList[i3] = prepare_default.fsCat.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-          } else {
-            prepare_default.fsCat.fullList[i3] = prepare_default.fsCat.fullList[cat2];
-          }
-          if (!prepare_default.fsMRCat.fullList[cat2]) {
-            prepare_default.fsMRCat.fullList[i3] = prepare_default.fsMRCat.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-          } else {
-            prepare_default.fsMRCat.fullList[i3] = prepare_default.fsMRCat.fullList[cat2];
-          }
-        } else if (catList === prepare_default.catList) {
-          if (!prepare_default.fsGotoCats.fullList[cat2]) {
-            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul(cat2), cat: cat2, html: prepare_default.escapeOnlyTag(cat2) };
-          } else {
-            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2];
-          }
-        }
-      };
-      prepare_default.completeCat = function(event2) {
-        let $elem = (0, import_jquery15.default)(event2.target);
-        let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
-        let fs = prepare_default.fsCat;
-        fs.$fsLis = fs.$fsl.find(".list-item");
-        fs.$fsLis.removeClass("selected");
-        $elem.addClass("selected");
-        let k = fs.k;
-        fs.catsSplit[k] = cat2;
-        fs.$fs[0].value = fs.catsSplit.join(";");
-        let sStart = 0;
-        for (let i3 = 0; i3 < k; i3++) {
-          sStart += fs.catsSplit[i3].length + 1;
-        }
-        let sEnd = sStart + fs.catsSplit[k].length;
-        fs.$fs.trigger("focus");
-        fs.$fs[0].setSelectionRange(sEnd, sEnd);
-      };
-      prepare_default.completeMRCat = function(event2) {
-        let $elem = (0, import_jquery15.default)(event2.target);
-        let cat2 = prepare_default.unescapeHTML($elem.find(".list-index-id").html());
-        let fs = prepare_default.fsMRCat;
-        fs.$fsLis = fs.$fsl.find(".list-item");
-        fs.$fsLis.removeClass("selected");
-        $elem.addClass("selected");
-        let k = fs.k;
-        fs.catsSplit[k] = cat2;
-        prepare_default.$multireco_input_cats[0].value = fs.catsSplit.join(";");
-        let sStart = 0;
-        for (let i3 = 0; i3 < k; i3++) {
-          sStart += fs.catsSplit[i3].length + 1;
-        }
-        let sEnd = sStart + fs.catsSplit[k].length;
-        prepare_default.$multireco_input_cats.trigger("focus");
-        prepare_default.$multireco_input_cats[0].setSelectionRange(sEnd, sEnd);
-      };
       prepare_default.doFSCat = function(fs) {
         return new Promise(async function(resolve, reject) {
           let catsTxt = fs.$fs[0].value;
