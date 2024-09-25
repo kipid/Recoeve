@@ -14741,52 +14741,6 @@
   m2.myFSCatList = [{ cat: "" }];
   m2.myRecos = m2.myPage ? m2.userRecos : {};
   m2.myRecos[""] = { uri: "", has: true, down: true, title: "", cats: "", desc: "", cmt: "", val: m2.val("10.0/10") };
-  m2.catListToHTML = function() {
-    return new Promise(async function(resolve, reject) {
-      let cL = m2.catList;
-      let cat2 = cL[0].cat;
-      let catListHTML = `<div id="cat-" key="cat-" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
-      let i3 = 1;
-      for (; i3 < cL.length - 1; i3++) {
-        cat2 = cL[i3].cat;
-        let beforeDepth = cL[i3 - 1].depth;
-        let currentDepth = cL[i3].depth;
-        let afterDepth = cL[i3 + 1].depth;
-        if (beforeDepth < currentDepth) {
-          catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
-        } else {
-          for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
-            catListHTML += `</div>`;
-          }
-        }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3]?.depth}em">`;
-        if (currentDepth < afterDepth) {
-          catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat2}'])">${cL[i3].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
-        } else {
-          catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
-        }
-        catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
-      }
-      if (cL.length > 1) {
-        cat2 = cL[i3].cat;
-        let beforeDepth = cL[i3 - 1].depth;
-        let currentDepth = cL[i3].depth;
-        if (beforeDepth < currentDepth) {
-          catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
-        } else {
-          for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
-            catListHTML += `</div>`;
-          }
-        }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${m2.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${m2.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${m2.escapeOnlyTag(cat2)}</span>${m2.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
-        for (let j2 = 0; j2 < currentDepth; j2++) {
-          catListHTML += `</div>`;
-        }
-      }
-      m2.$catList.html(catListHTML);
-      resolve();
-    });
-  };
   m2.getCatListChanged = function() {
     m2.$change_catList_order_ok.hide();
     m2.$change_catList_order_cancel.hide();
@@ -30838,6 +30792,52 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
       })();
     }, []);
     (0, import_react9.useEffect)(async () => {
+      prepare_default.catListToHTML = function() {
+        return new Promise(async function(resolve, reject) {
+          let cL = prepare_default.catList;
+          let cat2 = cL[0].cat;
+          let catListHTML = `<div id="cat-" key="cat-" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+          let i3 = 1;
+          for (; i3 < cL.length - 1; i3++) {
+            cat2 = cL[i3].cat;
+            let beforeDepth = cL[i3 - 1].depth;
+            let currentDepth = cL[i3].depth;
+            let afterDepth = cL[i3 + 1].depth;
+            if (beforeDepth < currentDepth) {
+              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
+            } else {
+              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
+                catListHTML += `</div>`;
+              }
+            }
+            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3]?.depth}em">`;
+            if (currentDepth < afterDepth) {
+              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat2}'])">${cL[i3].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
+            } else {
+              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
+            }
+            catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+          }
+          if (cL.length > 1) {
+            cat2 = cL[i3].cat;
+            let beforeDepth = cL[i3 - 1].depth;
+            let currentDepth = cL[i3].depth;
+            if (beforeDepth < currentDepth) {
+              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
+            } else {
+              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
+                catListHTML += `</div>`;
+              }
+            }
+            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+            for (let j2 = 0; j2 < currentDepth; j2++) {
+              catListHTML += `</div>`;
+            }
+          }
+          prepare_default.$catList.html(catListHTML);
+          resolve();
+        });
+      };
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
