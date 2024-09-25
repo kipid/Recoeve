@@ -13902,7 +13902,7 @@
               res.pathname = uri.substring(l, n);
               res.hash = uri.substring(n);
             } else {
-              res.pathname = uri.substring(k);
+              res.pathname = uri.substring(l);
               res.hash = "";
             }
           }
