@@ -18958,8 +18958,12 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   function SidebarCon({ userCatList }) {
     const [opened, updateOpened] = i2({ value: true, count: 0 });
     const [isChangingOrder, setIsChangingOrder] = (0, import_react4.useState)(false);
-    const ignore = (0, import_react4.useRef)(false);
-    function initialEffect() {
+    async function initialEffect() {
+      prepare_default.$sidebar_dragger = (0, import_jquery4.default)("#sidebar-dragger");
+      prepare_default.$sidebar_toggle = (0, import_jquery4.default)("#sidebar-toggle");
+      prepare_default.$sidebar_dragger_in = (0, import_jquery4.default)("#sidebar-dragger-in");
+      prepare_default.$sidebar = (0, import_jquery4.default)("#sidebar");
+      prepare_default.$catList = (0, import_jquery4.default)("#catList");
       prepare_default.$catList.on("mouseup.move-cat", (e2) => {
         try {
           prepare_default.triggerOpenCat(e2);
@@ -18973,6 +18977,9 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           draft.value = false;
         });
       }
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+      await prepare_default.catListToHTML();
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.$sidebar_dragger_in.on("mousedown.sd touchstart.sd", function(e2) {
         let touch0 = e2.type === "touchstart" ? e2.originalEvent.touches[0] : e2;
         let relativeX = touch0.clientX - Math.round(prepare_default.$sidebar_dragger.offset().left) + prepare_default.$window.scrollLeft();
@@ -19020,14 +19027,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         });
       });
     }
-    (0, import_react4.useEffect)(() => {
-      if (!ignore.current) {
-        initialEffect();
-      }
-      return () => {
-        ignore.current = true;
-      };
-    }, []);
+    (0, import_react4.useEffect)(initialEffect, []);
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SidebarDragger, { opened, updateOpened }),
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Sidebar, { userCatList, opened, isChangingOrder, onChangeOrder: setIsChangingOrder })
@@ -26069,11 +26069,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.$html = (0, import_jquery15.default)("html");
       prepare_default.$title = (0, import_jquery15.default)("title");
       prepare_default.$body = (0, import_jquery15.default)("body");
-      prepare_default.$sidebar_dragger = (0, import_jquery15.default)("#sidebar-dragger");
-      prepare_default.$sidebar_toggle = (0, import_jquery15.default)("#sidebar-toggle");
-      prepare_default.$sidebar_dragger_in = (0, import_jquery15.default)("#sidebar-dragger-in");
-      prepare_default.$sidebar = (0, import_jquery15.default)("#sidebar");
-      prepare_default.$catList = (0, import_jquery15.default)("#catList");
       prepare_default.changeLang = function(lang, e2, elem) {
         prepare_default.docCookies.setItem("lang", lang, Infinity, "/");
         let search = window.location.search;
@@ -30838,9 +30833,6 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
       })();
     }, []);
     (0, import_react9.useEffect)(async () => {
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-      await prepare_default.catListToHTML();
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
