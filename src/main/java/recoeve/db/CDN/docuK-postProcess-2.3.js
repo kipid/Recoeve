@@ -427,7 +427,6 @@ Log <span class="bold underline">o</span>ut
 		switch (event.target && event.target.nodeName) {
 			case "INPUT": case "SELECT": case "TEXTAREA": return;
 		}
-		event.preventDefault();
 		let scrollTop = null;
 		let i, k;
 		switch (event.code) {
