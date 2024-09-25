@@ -18877,10 +18877,10 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   init_react_shim();
   var import_jquery2 = __toESM(require_jquery(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-  function SidebarDragger({ opened, updateOpened }) {
+  function SidebarDragger({ opened, updateOpened: updateOpened2 }) {
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { id: "sidebar-dragger", count: opened.count, style: { left: opened.value ? (0, import_jquery2.default)("#sidebar").length ? (0, import_jquery2.default)("#sidebar").outerWidth() : window.innerWidth >= 900 ? "20em" : "15em" : 0 }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { id: "sidebar-toggle", onClick: () => {
-        updateOpened((o2) => {
+        updateOpened2((o2) => {
           if (o2.value) {
             m.$sidebar.css({ "margin-left": `${-m.$sidebar.outerWidth()}px` });
           } else {
@@ -18912,43 +18912,12 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       prepare_default.$change_catList_order_ok = (0, import_jquery3.default)("#change-catList-order-ok");
       prepare_default.$change_catList_order_cancel = (0, import_jquery3.default)("#change-catList-order-cancel");
     }, []);
-    (0, import_react3.useEffect)(() => {
-      try {
-        prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
-      } catch (err) {
-        console.error(err);
-      }
-    }, [userCatList]);
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("aside", { id: "sidebar", count: opened.count, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "user-noti" }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList" }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList-result" }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "right", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: !isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order", onClick: () => {
-          onChangeOrder(true);
-        }, children: "[--Change orders--]" }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order-ok", onClick: () => {
-          onChangeOrder(false);
-        }, children: "[--OK--]" }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order-cancel", onClick: () => {
-          onChangeOrder(false);
-        }, children: "[--Cancel--]" })
-      ] })
-    ] });
-  }
-
-  // src/components/SidebarCon.jsx
-  var import_react4 = __toESM(require_react(), 1);
-  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-  function SidebarCon({ userCatList }) {
-    const [opened, updateOpened] = i2({ value: true, count: 0 });
-    const [isChangingOrder, setIsChangingOrder] = (0, import_react4.useState)(false);
-    async function initialEffect() {
-      prepare_default.$sidebar_dragger = (0, import_jquery4.default)("#sidebar-dragger");
-      prepare_default.$sidebar_toggle = (0, import_jquery4.default)("#sidebar-toggle");
-      prepare_default.$sidebar_dragger_in = (0, import_jquery4.default)("#sidebar-dragger-in");
-      prepare_default.$sidebar = (0, import_jquery4.default)("#sidebar");
-      prepare_default.$catList = (0, import_jquery4.default)("#catList");
+    (0, import_react3.useEffect)(async () => {
+      prepare_default.$sidebar_dragger = (0, import_jquery3.default)("#sidebar-dragger");
+      prepare_default.$sidebar_toggle = (0, import_jquery3.default)("#sidebar-toggle");
+      prepare_default.$sidebar_dragger_in = (0, import_jquery3.default)("#sidebar-dragger-in");
+      prepare_default.$sidebar = (0, import_jquery3.default)("#sidebar");
+      prepare_default.$catList = (0, import_jquery3.default)("#catList");
       prepare_default.$catList.on("mouseup.move-cat", (e2) => {
         try {
           prepare_default.triggerOpenCat(e2);
@@ -18956,7 +18925,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         }
         return false;
       });
-      prepare_default.$catList_result = (0, import_jquery4.default)("#catList-result");
+      prepare_default.$catList_result = (0, import_jquery3.default)("#catList-result");
       if (window.innerWidth < 700) {
         updateOpened((draft) => {
           draft.value = false;
@@ -18965,6 +18934,61 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
       await prepare_default.catListToHTML();
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + userCatList.text.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
+      prepare_default.updateCatFS = function() {
+        return new Promise(async (resolve, reject) => {
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+          await prepare_default.catListToHTML();
+          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
+          let l = prepare_default.catList.length;
+          for (let i3 = l - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
+          }
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
+          prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
+          prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
+          l = prepare_default.myFSCatList.length;
+          for (let i3 = l - 1; i3 > 0; i3--) {
+            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
+          }
+          let cat2 = "";
+          if (!prepare_default.fsCat.fullList[cat2]) {
+            prepare_default.fsCat.fullList[cat2] = { i: prepare_default.fsCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+            prepare_default.fsCat.fullList.push(prepare_default.fsCat.fullList[cat2]);
+          }
+          if (!prepare_default.fsMRCat.fullList[cat2]) {
+            prepare_default.fsMRCat.fullList[cat2] = { i: prepare_default.fsMRCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+            prepare_default.fsMRCat.fullList.push(prepare_default.fsMRCat.fullList[cat2]);
+          }
+          if (prepare_default.myPage) {
+            if (!prepare_default.fsGotoCats.fullList[cat2]) {
+              prepare_default.fsGotoCats.fullList[cat2] = { i: prepare_default.fsGotoCats.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+              prepare_default.fsGotoCats.fullList.push(prepare_default.fsGotoCats.fullList[cat2]);
+            }
+          }
+          resolve();
+        });
+      };
+      await prepare_default.updateCatFS();
+      prepare_default.updateGotoCatsFS = function() {
+        return new Promise(async (resolve, reject) => {
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
+          let l = prepare_default.catList.length;
+          for (let i4 = l - 1; i4 > 0; i4--) {
+            prepare_default.putCatToFSFullList(l - 1 - i4, prepare_default.catList[i4].cat, prepare_default.catList);
+          }
+          let i3 = l - 1;
+          let cat2 = "";
+          let fsFLCat = prepare_default.fsGotoCats.fullList[cat2];
+          if (fsFLCat) {
+            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { ...fsFLCat, i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+          } else {
+            fsFLCat = prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
+          }
+          resolve();
+        });
+      };
+      await prepare_default.updateGotoCatsFS();
       prepare_default.$sidebar_dragger_in.on("mousedown.sd touchstart.sd", function(e2) {
         let touch0 = e2.type === "touchstart" ? e2.originalEvent.touches[0] : e2;
         let relativeX = touch0.clientX - Math.round(prepare_default.$sidebar_dragger.offset().left) + prepare_default.$window.scrollLeft();
@@ -19011,10 +19035,38 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           }
         });
       });
-    }
-    (0, import_react4.useEffect)(initialEffect, []);
+      try {
+        prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
+      } catch (err) {
+        console.error(err);
+      }
+    }, [userCatList]);
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("aside", { id: "sidebar", count: opened.count, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "user-noti" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList-result" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "right", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: !isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order", onClick: () => {
+          onChangeOrder(true);
+        }, children: "[--Change orders--]" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order-ok", onClick: () => {
+          onChangeOrder(false);
+        }, children: "[--OK--]" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order-cancel", onClick: () => {
+          onChangeOrder(false);
+        }, children: "[--Cancel--]" })
+      ] })
+    ] });
+  }
+
+  // src/components/SidebarCon.jsx
+  var import_react4 = __toESM(require_react(), 1);
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  function SidebarCon({ userCatList }) {
+    const [opened, updateOpened2] = i2({ value: true, count: 0 });
+    const [isChangingOrder, setIsChangingOrder] = (0, import_react4.useState)(false);
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SidebarDragger, { opened, updateOpened }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SidebarDragger, { opened, updateOpened: updateOpened2 }),
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Sidebar, { userCatList, opened, isChangingOrder, onChangeOrder: setIsChangingOrder })
     ] });
   }
@@ -30814,63 +30866,6 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
       await initialEffect();
       await prepare_default.reNewAndReOn();
     }, []);
-    (0, import_react9.useEffect)(async () => {
-      prepare_default.updateCatFS = function() {
-        return new Promise(async (resolve, reject) => {
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-          await prepare_default.catListToHTML();
-          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-          let l = prepare_default.catList.length;
-          for (let i3 = l - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
-          }
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
-          prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
-          prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
-          l = prepare_default.myFSCatList.length;
-          for (let i3 = l - 1; i3 > 0; i3--) {
-            prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.myFSCatList[i3].cat, prepare_default.myFSCatList);
-          }
-          let cat2 = "";
-          if (!prepare_default.fsCat.fullList[cat2]) {
-            prepare_default.fsCat.fullList[cat2] = { i: prepare_default.fsCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-            prepare_default.fsCat.fullList.push(prepare_default.fsCat.fullList[cat2]);
-          }
-          if (!prepare_default.fsMRCat.fullList[cat2]) {
-            prepare_default.fsMRCat.fullList[cat2] = { i: prepare_default.fsMRCat.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-            prepare_default.fsMRCat.fullList.push(prepare_default.fsMRCat.fullList[cat2]);
-          }
-          if (prepare_default.myPage) {
-            if (!prepare_default.fsGotoCats.fullList[cat2]) {
-              prepare_default.fsGotoCats.fullList[cat2] = { i: prepare_default.fsGotoCats.fullList.length, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-              prepare_default.fsGotoCats.fullList.push(prepare_default.fsGotoCats.fullList[cat2]);
-            }
-          }
-          resolve();
-        });
-      };
-      await prepare_default.updateCatFS();
-      prepare_default.updateGotoCatsFS = function() {
-        return new Promise(async (resolve, reject) => {
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-          prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
-          let l = prepare_default.catList.length;
-          for (let i4 = l - 1; i4 > 0; i4--) {
-            prepare_default.putCatToFSFullList(l - 1 - i4, prepare_default.catList[i4].cat, prepare_default.catList);
-          }
-          let i3 = l - 1;
-          let cat2 = "";
-          let fsFLCat = prepare_default.fsGotoCats.fullList[cat2];
-          if (fsFLCat) {
-            prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { ...fsFLCat, i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-          } else {
-            fsFLCat = prepare_default.fsGotoCats.fullList[i3] = prepare_default.fsGotoCats.fullList[cat2] = { i: i3, txt: prepare_default.splitHangul("[--Uncategorized--]"), cat: cat2, html: prepare_default.escapeOnlyTag("[--Uncategorized--]") };
-          }
-          resolve();
-        });
-      };
-      await prepare_default.updateGotoCatsFS();
-    }, [userCatList]);
     return /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_jsx_runtime32.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("h1", { id: "h1", class: "none", children: `${prepare_default.userId}'s Recoeve.net` }),
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("data", { id: "data-myCatList" }),
