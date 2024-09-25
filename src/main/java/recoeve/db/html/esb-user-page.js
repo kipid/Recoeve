@@ -18217,7 +18217,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   var prepare_default = window.m;
 
   // src/App.jsx
-  var import_react9 = __toESM(require_react(), 1);
+  var import_react10 = __toESM(require_react(), 1);
 
   // node_modules/use-immer/dist/use-immer.module.js
   init_react_shim();
@@ -18879,8 +18879,25 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   // src/components/SidebarDragger.jsx
   init_react_shim();
   var import_jquery2 = __toESM(require_jquery(), 1);
+  var import_react3 = __toESM(require_react(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   function SidebarDragger({ opened, updateOpened: updateOpened2 }) {
+    (0, import_react3.useEffect)(() => {
+      m.$window.on("resize.sidebar", function(e2) {
+        updateOpened2((draft) => {
+          draft.count = draft.count + 1;
+          if (window.innerWidth < 700) {
+            draft.value = false;
+            m.$sidebar.css({ marginLeft: -m.$sidebar.outerWidth() });
+            m.$sidebar_dragger.css({ left: 0 });
+          } else {
+            draft.value = true;
+            m.$sidebar.css({ marginLeft: 0 });
+            m.$sidebar_dragger.css({ left: m.$sidebar.outerWidth() });
+          }
+        });
+      });
+    }, []);
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { id: "sidebar-dragger", count: opened.count, style: { left: opened.value ? (0, import_jquery2.default)("#sidebar").length ? (0, import_jquery2.default)("#sidebar").outerWidth() : window.innerWidth >= 900 ? "20em" : "15em" : 0 }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { id: "sidebar-toggle", onClick: () => {
         updateOpened2((o2) => {
@@ -18907,15 +18924,15 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   // src/components/Sidebar.jsx
   init_react_shim();
   var import_jquery3 = __toESM(require_jquery(), 1);
-  var import_react3 = __toESM(require_react(), 1);
+  var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function Sidebar({ userCatList, opened, isChangingOrder, onChangeOrder }) {
-    (0, import_react3.useEffect)(() => {
+    (0, import_react4.useEffect)(() => {
       prepare_default.$change_catList_order = (0, import_jquery3.default)("#change-catList-order");
       prepare_default.$change_catList_order_ok = (0, import_jquery3.default)("#change-catList-order-ok");
       prepare_default.$change_catList_order_cancel = (0, import_jquery3.default)("#change-catList-order-cancel");
     }, []);
-    (0, import_react3.useEffect)(async () => {
+    (0, import_react4.useEffect)(async () => {
       prepare_default.$sidebar_dragger = (0, import_jquery3.default)("#sidebar-dragger");
       prepare_default.$sidebar_toggle = (0, import_jquery3.default)("#sidebar-toggle");
       prepare_default.$sidebar_dragger_in = (0, import_jquery3.default)("#sidebar-dragger-in");
@@ -19024,20 +19041,6 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           });
         });
       });
-      prepare_default.$window.on("resize.sidebar", function(e2) {
-        updateOpened((draft) => {
-          draft.count = draft.count + 1;
-          if (window.innerWidth < 700) {
-            draft.value = false;
-            prepare_default.$sidebar.css({ marginLeft: -prepare_default.$sidebar.outerWidth() });
-            prepare_default.$sidebar_dragger.css({ left: 0 });
-          } else {
-            draft.value = true;
-            prepare_default.$sidebar.css({ marginLeft: 0 });
-            prepare_default.$sidebar_dragger.css({ left: prepare_default.$sidebar.outerWidth() });
-          }
-        });
-      });
       try {
         prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
       } catch (err) {
@@ -19063,11 +19066,11 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   }
 
   // src/components/SidebarCon.jsx
-  var import_react4 = __toESM(require_react(), 1);
+  var import_react5 = __toESM(require_react(), 1);
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   function SidebarCon({ userCatList }) {
     const [opened, updateOpened2] = i2({ value: true, count: 0 });
-    const [isChangingOrder, setIsChangingOrder] = (0, import_react4.useState)(false);
+    const [isChangingOrder, setIsChangingOrder] = (0, import_react5.useState)(false);
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SidebarDragger, { opened, updateOpened: updateOpened2 }),
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Sidebar, { userCatList, opened, isChangingOrder, onChangeOrder: setIsChangingOrder })
@@ -24919,10 +24922,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   // src/components/ChangeStyle.jsx
   init_react_shim();
   var import_jquery6 = __toESM(require_jquery(), 1);
-  var import_react5 = __toESM(require_react(), 1);
+  var import_react6 = __toESM(require_react(), 1);
   var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
   function ChangeStyle({ styles, updateStyles }) {
-    const ignore = (0, import_react5.useRef)(false);
+    const ignore = (0, import_react6.useRef)(false);
     prepare_default.resetStyle = function() {
       prepare_default.Cmode(prepare_default.defaultStyles.mode);
       prepare_default.CfontFamily(prepare_default.defaultStyles.fontFamily);
@@ -25013,7 +25016,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         });
       });
     }
-    (0, import_react5.useEffect)(() => {
+    (0, import_react6.useEffect)(() => {
       if (!ignore.current) {
         initialEffect();
       }
@@ -25086,11 +25089,11 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   // src/components/GoogleSearch.jsx
   init_react_shim();
   var import_jquery7 = __toESM(require_jquery(), 1);
-  var import_react6 = __toESM(require_react(), 1);
+  var import_react7 = __toESM(require_react(), 1);
   var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
   function GoogleSearch() {
-    const [text, setText] = (0, import_react6.useState)("");
-    const ignore = (0, import_react6.useRef)(false);
+    const [text, setText] = (0, import_react7.useState)("");
+    const ignore = (0, import_react7.useRef)(false);
     function initialEffect() {
       m.$textarea_gs = (0, import_jquery7.default)("#textarea-gs");
       m.$button_gs = (0, import_jquery7.default)("#button-gs");
@@ -25101,7 +25104,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
       });
     }
-    (0, import_react6.useEffect)(() => {
+    (0, import_react7.useEffect)(() => {
       if (!ignore.current) {
         initialEffect();
       }
@@ -25183,18 +25186,18 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/HeadPlay.jsx
   init_react_shim();
-  var import_react7 = __toESM(require_react(), 1);
+  var import_react8 = __toESM(require_react(), 1);
   var import_jquery8 = __toESM(require_jquery(), 1);
   var import_jsx_runtime18 = __toESM(require_jsx_runtime(), 1);
   function HeadPlay() {
-    const ignore = (0, import_react7.useRef)(false);
-    const pc = (0, import_react7.useRef)(null);
+    const ignore = (0, import_react8.useRef)(false);
+    const pc = (0, import_react8.useRef)(null);
     function initialEffect() {
       (0, import_jquery8.default)(pc.current).on("click", function() {
         m.togglePosition(pc.current);
       });
     }
-    (0, import_react7.useEffect)(() => {
+    (0, import_react8.useEffect)(() => {
       if (!ignore.current) {
         initialEffect();
       }
@@ -25499,7 +25502,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/Memorizing.jsx
   init_react_shim();
-  var import_react8 = __toESM(require_react(), 1);
+  var import_react9 = __toESM(require_react(), 1);
   var import_jquery10 = __toESM(require_jquery(), 1);
   var import_jsx_runtime27 = __toESM(require_jsx_runtime(), 1);
   prepare_default.dict = {};
@@ -25517,7 +25520,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [progressCorrect, setProgressCorrect] = i2(-1);
     const [progressLength, setProgressLength] = i2(1);
     const [showAnswer, setShowAnswer] = i2(false);
-    const ignore = (0, import_react8.useRef)(false);
+    const ignore = (0, import_react9.useRef)(false);
     function initialEffect() {
       (0, import_jquery10.default)("#memo-container").hide();
       let savedFromIndex = prepare_default.localStorage.getItem("m.dict.fromIndex");
@@ -25644,7 +25647,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
       };
     }
-    (0, import_react8.useEffect)(() => {
+    (0, import_react9.useEffect)(() => {
       if (!ignore.current) {
         initialEffect();
       }
@@ -25961,7 +25964,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [blockTouch, updateBlockTouch] = i2(false);
     const [myCatList, updateMyCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped) });
     const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
-    const ignore = (0, import_react9.useRef)(false);
+    const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
       prepare_default.$container = (0, import_jquery15.default)("#container");
       prepare_default.$h1 = (0, import_jquery15.default)("#h1");
@@ -30865,7 +30868,7 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
         }
       };
     }
-    (0, import_react9.useEffect)(async () => {
+    (0, import_react10.useEffect)(async () => {
       await initialEffect();
       await prepare_default.reNewAndReOn();
     }, []);
