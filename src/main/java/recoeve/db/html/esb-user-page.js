@@ -25920,7 +25920,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/App.jsx
   var import_jsx_runtime32 = __toESM(require_jsx_runtime(), 1);
-  window.m = prepare_default;
+  Window.m = window.m = prepare_default;
   function App() {
     const [styles, updateStyles] = i2(prepare_default.defaultStyles);
     const [blockTouch, updateBlockTouch] = i2(false);
@@ -30838,6 +30838,9 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
       })();
     }, []);
     (0, import_react9.useEffect)(async () => {
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
+      await prepare_default.catListToHTML();
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
