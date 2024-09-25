@@ -1,6 +1,6 @@
 const m = window.m = window.m || {};
 
-(function (m, $, undefined) {
+(async function (m, $, undefined) {
 // Used in user-page.html, log-in.html, changePwd.html, verify.html
 m.$window = $(window);
 m.$document = $(document);
@@ -4788,5 +4788,149 @@ m.reNewAndReOn = async function () {
 	$ups.on("click.ud", m.starsOnUpClick);
 	$downs.on("click.ud", m.starsOnDownClick);
 	m.reNewFSsOn();
+};
+
+m.pathname = m.initialPathname;
+if (m.initialPathname === "/reco") {
+	m.newRecoOn = true;
+}
+if (m.initialPathname.substring(0, 6) !== "/user/") {
+	// e.g. path=/ or /reco?... or /account/log-in with sessionPassed
+	m.pathname = "/user/" + m.myId;
+}
+
+m.pathnameSplit = m.pathname.split("/");
+if (m.userId !== decodeURIComponent(m.pathnameSplit[2])) {
+	console.log(
+		`Error: userId is not matched.: ${m.userId}!==${decodeURIComponent(m.pathnameSplit[2])}`
+	);
+}
+
+m.myPage = m.myIndex === m.userIndex;
+m.userPath = `/user/${encodeURIComponent(m.userId)}`;
+m.recoMode =
+	m.pathnameSplit[3] === "mode" && m.pathnameSplit[4]
+		? m.pathnameSplit[4]
+		: "";
+
+m.hashURI = m.initialHashURI;
+if (m.initialHashURI > 0) {
+	let ampIndex = m.initialHashURI.indexOf("&");
+	if (ampIndex >= 0) {
+		m.hashURI = m.initialHashURI = m.initialHashURI.substring(0, ampIndex);
+	}
+	m.hashURI = decodeURIComponent(m.initialHashURI.replace(/\+/g, "%20"));
+}
+
+m.searchVars = m.getSearchVars(m.initialSearch);
+m.currentCat = m.searchVars.cat?.val ?? "";
+$("head").append(
+	`<link rel="canonical" href="https://recoeve.net${m.pathOfCat(m.currentCat)}" />`
+);
+for (let prop in m.searchVars) {
+	m.args[m.searchVars[prop].key] = m.searchVars[prop].val;
+}
+if (m.args.cat) {
+	delete m.args.cat;
+}
+if (m.args.lang) {
+	delete m.args.lang;
+}
+
+m.lang = null;
+if (m.searchVars?.lang) {
+	m.lang = m.searchVars.lang.val;
+	m.docCookies.setItem("lang", m.lang, Infinity, "/", false, true);
+}
+else if (m.docCookies.hasItem("lang")) {
+	m.lang = m.docCookies.getItem("lang");
+}
+
+////////////////////////////////////////////
+// Main codes
+////////////////////////////////////////////
+m.kakaoTries = 0;
+m.kakaoInitDo = function () {
+	if (typeof Kakao !== "undefined" || m.kakaoTries++ > 15) {
+		clearInterval(m.kakaoInit);
+		if (!Kakao.isInitialized()) {
+			Kakao.init("f076e37310bc101c5c50c9e2714b59ca");
+		}
+	}
+};
+m.kakaoInit = setInterval(m.kakaoInitDo, 2 * m.wait);
+
+//////////////////////////////////////
+// Fuzzy search on Cat :: Initialize m.fsCat, m.fsMRCat, m.fsGotoCats
+//////////////////////////////////////
+await m.strCatListToJSON(m.unescapeHTML(m.catListHTMLEscaped), m.catList);
+await m.catListToHTML();
+// ! catList 는 SideBar 에다 그리는 용도와 m.fsGotoCats 로만 쓰여서 FS 와 관련 없음. 그래서 m.myCatList 는 update 불필요. 단 m.myCatListHTMLEscaped 는 m.myFSCatList 를 위해 업데이트 필요!!!
+// if (!m.myPage) {
+// 	await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped), m.myCatList);
+// }
+await m.strCatListToJSON(m.unescapeHTML(m.myCatListHTMLEscaped.trim()+"\n"+m.catListHTMLEscaped.trim()+"\n"+m.kipidCatListHTMLEscaped.trim()), m.myFSCatList);
+
+m.putCatToFSFullList = function (i, cat, catList) {
+	if (catList === m.myFSCatList) {
+		if (!m.fsCat.fullList[cat]) {
+			m.fsCat.fullList[i] = m.fsCat.fullList[cat] = { i, txt: m.splitHangul(cat), cat, html: m.escapeOnlyTag(cat) };
+		}
+		else {
+			m.fsCat.fullList[i] = m.fsCat.fullList[cat];
+		}
+		if (!m.fsMRCat.fullList[cat]) {
+			m.fsMRCat.fullList[i] = m.fsMRCat.fullList[cat] = { i, txt: m.splitHangul(cat), cat, html: m.escapeOnlyTag(cat) };
+		}
+		else {
+			m.fsMRCat.fullList[i] = m.fsMRCat.fullList[cat];
+		}
+	}
+	else if (catList === m.catList) {
+		if (!m.fsGotoCats.fullList[cat]) {
+			m.fsGotoCats.fullList[i] = m.fsGotoCats.fullList[cat] = { i, txt: m.splitHangul(cat), cat, html: m.escapeOnlyTag(cat) };
+		}
+		else {
+			m.fsGotoCats.fullList[i] = m.fsGotoCats.fullList[cat];
+		}
+	}
+};
+m.completeCat = function (event) {
+	let $elem = $(event.target);
+	let cat = m.unescapeHTML($elem.find(".list-index-id").html());
+	let fs = m.fsCat;
+	fs.$fsLis = fs.$fsl.find(".list-item");
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k = fs.k;
+		// index of cat on sEnd.
+	fs.catsSplit[k] = cat;
+	fs.$fs[0].value = fs.catsSplit.join(";");
+	let sStart = 0;
+	for (let i = 0; i < k; i++) {
+		sStart += fs.catsSplit[i].length + 1;
+	}
+	let sEnd = sStart + fs.catsSplit[k].length;
+	fs.$fs.trigger("focus");
+	fs.$fs[0].setSelectionRange(sEnd, sEnd);
+};
+m.completeMRCat = function (event) {
+	let $elem = $(event.target);
+	let cat = m.unescapeHTML($elem.find(".list-index-id").html());
+	let fs = m.fsMRCat;
+	fs.$fsLis = fs.$fsl.find(".list-item");
+	fs.$fsLis.removeClass("selected");
+	$elem.addClass("selected");
+	let k = fs.k;
+		// index of cat on sEnd.
+	fs.catsSplit[k] = cat;
+	m.$multireco_input_cats[0].value = fs.catsSplit.join(";");
+	let sStart = 0;
+	for (let i = 0; i < k; i++) {
+		sStart += fs.catsSplit[i].length + 1;
+	}
+	let sEnd = sStart + fs.catsSplit[k].length;
+	m.$multireco_input_cats.trigger("focus");
+	m.$multireco_input_cats[0].setSelectionRange(sEnd, sEnd);
 };
 })(window.m, jQuery);
