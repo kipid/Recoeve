@@ -440,7 +440,6 @@ Log <span class="bold underline">o</span>ut
 				m.toggleFK();
 				break;
 			case 'KeyG':
-				e.preventDefault();
 				if ($fuzzy_search_container.is(":visible")) {
 					$fuzzy_search_container.hide();
 					$out_focus.focus();
@@ -449,6 +448,7 @@ Log <span class="bold underline">o</span>ut
 					window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 				}
 				else {
+					e.preventDefault();
 					$fuzzy_search_container.show();
 					$fuzzy_search.focus();
 					$button_Go.addClass("enabled");
