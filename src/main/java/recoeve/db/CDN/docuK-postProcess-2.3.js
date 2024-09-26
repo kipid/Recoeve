@@ -440,6 +440,7 @@ Log <span class="bold underline">o</span>ut
 				m.toggleFK();
 				break;
 			case 'KeyG':
+				event.preventDefault();
 				if ($fuzzy_search_container.is(":visible")) {
 					$fuzzy_search_container.hide();
 					$out_focus.focus();
@@ -448,7 +449,6 @@ Log <span class="bold underline">o</span>ut
 					window.history.pushState({ goOn: m.goOn, logOn: m.logOn }, "");
 				}
 				else {
-					e.preventDefault();
 					$fuzzy_search_container.show();
 					$fuzzy_search.focus();
 					$button_Go.addClass("enabled");
@@ -561,7 +561,7 @@ Log <span class="bold underline">o</span>ut
 				}
 		}
 	}
-	m.$window.on("keydown", m.processShortKey);
+	m.$window.on("keydown.shortkey", m.processShortKey);
 	m.logPrint(`<br><br>New ShortKeys (T: Table of Contents, F: Forward Section, D: Previous Section, L: To 전체목록/[Lists]) are set.`);
 
 	m.logPrint(`<br><br>m.delayPad=${m.delayPad};<br>m.wait=${m.wait};`);
