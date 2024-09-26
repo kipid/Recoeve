@@ -26840,6 +26840,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               e4.stopPropagation();
               prepare_default.$html.off("mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB");
               $catM.removeClass("move");
+              $catM.css({ width: "auto", left: "unset", top: "unset" });
               $catTo.replaceWith($catM);
               if ($subCat.length) {
                 $catM.after($subCat);
