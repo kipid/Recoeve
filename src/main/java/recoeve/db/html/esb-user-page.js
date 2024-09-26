@@ -13658,7 +13658,7 @@
 
   // src/App.jsx
   init_react_shim();
-  var import_jquery15 = __toESM(require_jquery(), 1);
+  var import_jquery14 = __toESM(require_jquery(), 1);
 
   // prime-src/prepare.js
   init_react_shim();
@@ -18874,7 +18874,6 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
 
   // src/components/SidebarCon.jsx
   init_react_shim();
-  var import_jquery4 = __toESM(require_jquery(), 1);
 
   // src/components/SidebarDragger.jsx
   init_react_shim();
@@ -18943,17 +18942,18 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       prepare_default.$sidebar_dragger_in = (0, import_jquery3.default)("#sidebar-dragger-in");
       prepare_default.$sidebar = (0, import_jquery3.default)("#sidebar");
       prepare_default.$catList = (0, import_jquery3.default)("#catList");
-      prepare_default.$catList.on("mouseup.move-cat", (e2) => {
+      prepare_default.handleChangeCat = (e2) => {
         try {
           prepare_default.triggerOpenCat(e2);
         } catch (err) {
         }
         return false;
-      });
+      };
+      prepare_default.$catList.on("mouseup.change-cat", prepare_default.handleChangeCat);
       prepare_default.$catList_result = (0, import_jquery3.default)("#catList-result");
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
       await prepare_default.catListToHTML();
-      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + userCatList.text.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
+      await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
@@ -18963,7 +18963,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           for (let i3 = l - 1; i3 > 0; i3--) {
             prepare_default.putCatToFSFullList(l - 1 - i3, prepare_default.catList[i3].cat, prepare_default.catList);
           }
-          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.$data_myCatList.html().trim() + "\n" + prepare_default.$data_catList.html().trim() + "\n" + prepare_default.$data_kipid_catList.html().trim()), prepare_default.myFSCatList);
+          await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
           prepare_default.fsCat.fullList.splice(0, prepare_default.fsCat.fullList.length);
           prepare_default.fsMRCat.fullList.splice(0, prepare_default.fsMRCat.fullList.length);
           l = prepare_default.myFSCatList.length;
@@ -19042,7 +19042,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         });
       });
       try {
-        prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
+        prepare_default.$change_catList_order_cancel.trigger("click.change-order-catList");
       } catch (err) {
         console.error(err);
       }
@@ -19139,12 +19139,12 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/Reset.jsx
   init_react_shim();
-  var import_jquery5 = __toESM(require_jquery(), 1);
+  var import_jquery4 = __toESM(require_jquery(), 1);
   var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
   function Reset({ onClick }) {
     return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "reset", onClick: (event2) => {
       event2.stopPropagation();
-      const $target = (0, import_jquery5.default)(event2.target);
+      const $target = (0, import_jquery4.default)(event2.target);
       const $fsInput = $target.parents(".fs-container").find(".fs-input");
       if ($fsInput?.length) {
         $fsInput[0].value = "";
@@ -24921,7 +24921,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/ChangeStyle.jsx
   init_react_shim();
-  var import_jquery6 = __toESM(require_jquery(), 1);
+  var import_jquery5 = __toESM(require_jquery(), 1);
   var import_react6 = __toESM(require_react(), 1);
   var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
   function ChangeStyle({ styles, updateStyles }) {
@@ -24999,7 +24999,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       cookieItem = prepare_default.docCookies.getItem("styles.fontFamily");
       if (cookieItem !== null) {
         prepare_default.CfontFamily(cookieItem);
-        (0, import_jquery6.default)(`#input-font-family`)[0].value = prepare_default.fontFamily;
+        (0, import_jquery5.default)(`#input-font-family`)[0].value = prepare_default.fontFamily;
       }
       cookieItem = prepare_default.docCookies.getItem("styles.fontSize");
       if (cookieItem !== null) {
@@ -25088,15 +25088,15 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/GoogleSearch.jsx
   init_react_shim();
-  var import_jquery7 = __toESM(require_jquery(), 1);
+  var import_jquery6 = __toESM(require_jquery(), 1);
   var import_react7 = __toESM(require_react(), 1);
   var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
   function GoogleSearch() {
     const [text, setText] = (0, import_react7.useState)("");
     const ignore = (0, import_react7.useRef)(false);
     function initialEffect() {
-      m.$textarea_gs = (0, import_jquery7.default)("#textarea-gs");
-      m.$button_gs = (0, import_jquery7.default)("#button-gs");
+      m.$textarea_gs = (0, import_jquery6.default)("#textarea-gs");
+      m.$button_gs = (0, import_jquery6.default)("#button-gs");
       m.$textarea_gs.on("keydown.gs", function(e2) {
         if (e2.code === "Enter") {
           e2.preventDefault();
@@ -25187,13 +25187,13 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   // src/components/HeadPlay.jsx
   init_react_shim();
   var import_react8 = __toESM(require_react(), 1);
-  var import_jquery8 = __toESM(require_jquery(), 1);
+  var import_jquery7 = __toESM(require_jquery(), 1);
   var import_jsx_runtime18 = __toESM(require_jsx_runtime(), 1);
   function HeadPlay() {
     const ignore = (0, import_react8.useRef)(false);
     const pc = (0, import_react8.useRef)(null);
     function initialEffect() {
-      (0, import_jquery8.default)(pc.current).on("click", function() {
+      (0, import_jquery7.default)(pc.current).on("click", function() {
         m.togglePosition(pc.current);
       });
     }
@@ -25379,7 +25379,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/ButtonsFloating.jsx
   init_react_shim();
-  var import_jquery9 = __toESM(require_jquery(), 1);
+  var import_jquery8 = __toESM(require_jquery(), 1);
   var import_jsx_runtime26 = __toESM(require_jsx_runtime(), 1);
   function ButtonsFloating() {
     return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_jsx_runtime26.Fragment, { children: [
@@ -25503,7 +25503,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   // src/components/Memorizing.jsx
   init_react_shim();
   var import_react9 = __toESM(require_react(), 1);
-  var import_jquery10 = __toESM(require_jquery(), 1);
+  var import_jquery9 = __toESM(require_jquery(), 1);
   var import_jsx_runtime27 = __toESM(require_jsx_runtime(), 1);
   prepare_default.dict = {};
   prepare_default.dict.array = [["A", "B"]];
@@ -25522,7 +25522,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [showAnswer, setShowAnswer] = i2(false);
     const ignore = (0, import_react9.useRef)(false);
     function initialEffect() {
-      (0, import_jquery10.default)("#memo-container").hide();
+      (0, import_jquery9.default)("#memo-container").hide();
       let savedFromIndex = prepare_default.localStorage.getItem("m.dict.fromIndex");
       if (savedFromIndex && !isNaN(savedFromIndex)) {
         setFromIndex(parseInt(savedFromIndex));
@@ -25536,7 +25536,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         setCutoff(parseFloat(savedCutoff));
       }
       prepare_default.dict.memoSetting = async function(elem) {
-        let $elem = (0, import_jquery10.default)(elem);
+        let $elem = (0, import_jquery9.default)(elem);
         let $reco = $elem.parents(".reco");
         let uri = prepare_default.unescapeHTML($reco.find(">.textURI").html().trim());
         prepare_default.dict.uri = uri;
@@ -25626,7 +25626,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         let resultStr = String(await prepare_default.JSONtoStr(prepare_default.dict.result));
         let uri = prepare_default.dict.uri;
         if (prepare_default.myIndex) {
-          (0, import_jquery10.default)("#memo-in-setting .err-msg").html(prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
+          (0, import_jquery9.default)("#memo-in-setting .err-msg").html(prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
           let r2 = prepare_default.myRecos[uri];
           if (r2) {
             if (!r2.cmtR?.["#memorizing-result"]) {
@@ -25640,10 +25640,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             let $result = prepare_default.$numbers_of_recos.add("#error-msg");
             await prepare_default.rmb_me(prepare_default.reco_do, { strRecoDo, $result, uri, cats: r2.cats }, true);
           } else {
-            (0, import_jquery10.default)("#memo-in-setting .err-msg").html(`You have no reco on this uri=${uri}.` + prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
+            (0, import_jquery9.default)("#memo-in-setting .err-msg").html(`You have no reco on this uri=${uri}.` + prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
           }
         } else {
-          (0, import_jquery10.default)("#memo-in-setting .err-msg").html("To save the result, you have to log-in to Recoeve.net!" + prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
+          (0, import_jquery9.default)("#memo-in-setting .err-msg").html("To save the result, you have to log-in to Recoeve.net!" + prepare_default.memoArrayToTableHTML(prepare_default.dict.currentResult));
         }
       };
     }
@@ -25659,9 +25659,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "title", children: "Memorizer" }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Exit, { onClick: () => {
         prepare_default.dict.saveResult();
-        (0, import_jquery10.default)("#memo-in-setting").show();
-        (0, import_jquery10.default)("#memo-in-progress").hide();
-        (0, import_jquery10.default)("#memo-container").hide();
+        (0, import_jquery9.default)("#memo-in-setting").show();
+        (0, import_jquery9.default)("#memo-in-progress").hide();
+        (0, import_jquery9.default)("#memo-container").hide();
       } }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { id: "memo-in-setting", children: [
         /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("label", { className: "auto-select", children: [
@@ -25710,11 +25710,11 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             setProgressLength(prepare_default.dict.indexes.length);
             setProgress(0);
             setProgressCorrect(0);
-            (0, import_jquery10.default)("#memo-in-setting").hide();
-            (0, import_jquery10.default)("#memo-in-progress").show();
-            (0, import_jquery10.default)("#memo-in-setting .err-msg").html("");
+            (0, import_jquery9.default)("#memo-in-setting").hide();
+            (0, import_jquery9.default)("#memo-in-progress").show();
+            (0, import_jquery9.default)("#memo-in-setting .err-msg").html("");
           } else {
-            (0, import_jquery10.default)("#memo-in-setting .err-msg").html("No matched dictionary in the above condition!");
+            (0, import_jquery9.default)("#memo-in-setting .err-msg").html("No matched dictionary in the above condition!");
           }
         }, children: "Start" }) })
       ] }),
@@ -25757,8 +25757,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             if (progress === progressLength - 1) {
               prepare_default.dict.saveResult();
               if (prepare_default.dict.indexes.length === 0) {
-                (0, import_jquery10.default)("#memo-in-progress").hide();
-                (0, import_jquery10.default)("#memo-in-setting").show();
+                (0, import_jquery9.default)("#memo-in-progress").hide();
+                (0, import_jquery9.default)("#memo-in-setting").show();
               } else {
                 setProgress(0);
                 setProgressCorrect(0);
@@ -25804,7 +25804,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/FormNewReco.jsx
   init_react_shim();
-  var import_jquery11 = __toESM(require_jquery(), 1);
+  var import_jquery10 = __toESM(require_jquery(), 1);
   var import_jsx_runtime28 = __toESM(require_jsx_runtime(), 1);
   function FormNewReco() {
     return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("div", { id: "new-reco", children: /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)("form", { children: [
@@ -25841,7 +25841,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("textarea", { className: "single-line", id: "input-cats", name: "cats", placeholder: "[--placeholder Category--]", type: "text", tabindex: "3" }),
       /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)("div", { id: "cat-fs-container", className: "fs-container", style: { display: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("div", { id: "cat-fs-list", className: "fs-list" }),
-        /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Exit, { id: "exit-cat-fs-container", onClick: (e2) => (0, import_jquery11.default)(e2.target).parents(".fs-container").hide() })
+        /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Exit, { id: "exit-cat-fs-container", onClick: (e2) => (0, import_jquery10.default)(e2.target).parents(".fs-container").hide() })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)("div", { className: "buttons", children: [
         /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("div", { className: "button fLeft button-close", tabindex: "4", onClick: () => prepare_default.closeNewReco(), children: "[--Close--]" }),
@@ -25897,7 +25897,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 
   // src/components/NotiCopied.jsx
   init_react_shim();
-  var import_jquery12 = __toESM(require_jquery(), 1);
+  var import_jquery11 = __toESM(require_jquery(), 1);
   var import_jsx_runtime29 = __toESM(require_jsx_runtime(), 1);
   function NotiCopied() {
     return /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)(import_jsx_runtime29.Fragment, { children: [
@@ -25905,24 +25905,24 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { style: { padding: ".5em 1em", width: "100%", background: "black", color: "white" }, children: "[--The following is copied!--]" }),
         /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("textarea", { id: "textarea-copied", style: { padding: ".5em 1em", width: "100%", height: "20em", background: "white", color: "black" } })
       ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(Exit, { id: "notify-copied-exit", className: "block-touch-exit", style: { zIndex: 31e3, position: "fixed" }, onClick: () => (0, import_jquery12.default)("#notify-copied, #notify-copied-exit").hide() })
+      /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(Exit, { id: "notify-copied-exit", className: "block-touch-exit", style: { zIndex: 31e3, position: "fixed" }, onClick: () => (0, import_jquery11.default)("#notify-copied, #notify-copied-exit").hide() })
     ] });
   }
 
   // src/components/NotiLogOut.jsx
   init_react_shim();
-  var import_jquery13 = __toESM(require_jquery(), 1);
+  var import_jquery12 = __toESM(require_jquery(), 1);
   var import_jsx_runtime30 = __toESM(require_jsx_runtime(), 1);
   function NotiLogOut() {
     return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(import_jsx_runtime30.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "block-touch", id: "log-out-do-container", style: { display: "flex" }, children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "center", id: "log-out-do", style: { display: "inline-block", margin: "auto", color: "wheat", background: "black", border: "5px solid wheat", padding: "1em" } }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(Exit, { id: "log-out-do-exit", className: "block-touch-exit", style: { zIndex: 31e3, position: "fixed" }, onClick: () => (0, import_jquery13.default)("#log-out-do-container, #log-out-do-exit").hide() })
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(Exit, { id: "log-out-do-exit", className: "block-touch-exit", style: { zIndex: 31e3, position: "fixed" }, onClick: () => (0, import_jquery12.default)("#log-out-do-container, #log-out-do-exit").hide() })
     ] });
   }
 
   // src/components/BlockTouch.jsx
   init_react_shim();
-  var import_jquery14 = __toESM(require_jquery(), 1);
+  var import_jquery13 = __toESM(require_jquery(), 1);
   var import_jsx_runtime31 = __toESM(require_jsx_runtime(), 1);
   function BlockTouch({ blockTouch, updateBlockTouch }) {
     return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_jsx_runtime31.Fragment, { children: [
@@ -25940,7 +25940,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           className: "block-touch-exit exit",
           id: "block-touch-exit",
           onClick: () => {
-            (0, import_jquery14.default)(`#block-touch, #block-touch-exit`).hide();
+            (0, import_jquery13.default)(`#block-touch, #block-touch-exit`).hide();
             updateBlockTouch((data) => false);
           },
           style: { display: "none", zIndex: 31e3, position: "fixed" },
@@ -25966,32 +25966,29 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
     const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
-      prepare_default.$container = (0, import_jquery15.default)("#container");
-      prepare_default.$h1 = (0, import_jquery15.default)("#h1");
-      prepare_default.$block_touch = (0, import_jquery15.default)("#block-touch");
-      prepare_default.$block_touch_exit = (0, import_jquery15.default)("#block-touch-exit");
+      prepare_default.$container = (0, import_jquery14.default)("#container");
+      prepare_default.$h1 = (0, import_jquery14.default)("#h1");
+      prepare_default.$block_touch = (0, import_jquery14.default)("#block-touch");
+      prepare_default.$block_touch_exit = (0, import_jquery14.default)("#block-touch-exit");
       prepare_default.$block_touch_exit.trigger("click");
-      prepare_default.$data_myCatList = (0, import_jquery15.default)("#data-myCatList");
-      prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
-      prepare_default.$data_catList = prepare_default.myPage ? prepare_default.$data_myCatList : (0, import_jquery15.default)("#data-catList");
-      prepare_default.$data_catList.html(prepare_default.catListHTMLEscaped);
-      prepare_default.$data_kipid_catList = (0, import_jquery15.default)("#data-kipid-catList");
-      prepare_default.$data_kipid_catList.html(prepare_default.kipidCatListHTMLEscaped);
-      prepare_default.$choose_lang = (0, import_jquery15.default)("#choose-lang");
-      prepare_default.$choose_lang_list = (0, import_jquery15.default)("#choose-lang-list");
-      prepare_default.$data_lang = (0, import_jquery15.default)("#data-lang");
-      prepare_default.$choose_timezone = (0, import_jquery15.default)("#choose-timezone");
-      prepare_default.$choose_timezone_list = (0, import_jquery15.default)("#choose-timezone-list");
-      prepare_default.$search_timezone_container = (0, import_jquery15.default)("#search-timezone-container");
-      prepare_default.$search_timezone = (0, import_jquery15.default)("#search-timezone");
-      prepare_default.$search_timezone_list = (0, import_jquery15.default)("#search-timezone-list");
-      prepare_default.$user_noti = (0, import_jquery15.default)("#user-noti");
-      prepare_default.$my_id = (0, import_jquery15.default)("#my-id");
-      prepare_default.$new_reco = (0, import_jquery15.default)("#new-reco");
+      prepare_default.$data_myCatList = (0, import_jquery14.default)("#data-myCatList");
+      prepare_default.$data_catList = prepare_default.myPage ? prepare_default.$data_myCatList : (0, import_jquery14.default)("#data-catList");
+      prepare_default.$data_kipid_catList = (0, import_jquery14.default)("#data-kipid-catList");
+      prepare_default.$choose_lang = (0, import_jquery14.default)("#choose-lang");
+      prepare_default.$choose_lang_list = (0, import_jquery14.default)("#choose-lang-list");
+      prepare_default.$data_lang = (0, import_jquery14.default)("#data-lang");
+      prepare_default.$choose_timezone = (0, import_jquery14.default)("#choose-timezone");
+      prepare_default.$choose_timezone_list = (0, import_jquery14.default)("#choose-timezone-list");
+      prepare_default.$search_timezone_container = (0, import_jquery14.default)("#search-timezone-container");
+      prepare_default.$search_timezone = (0, import_jquery14.default)("#search-timezone");
+      prepare_default.$search_timezone_list = (0, import_jquery14.default)("#search-timezone-list");
+      prepare_default.$user_noti = (0, import_jquery14.default)("#user-noti");
+      prepare_default.$my_id = (0, import_jquery14.default)("#my-id");
+      prepare_default.$new_reco = (0, import_jquery14.default)("#new-reco");
       prepare_default.$new_reco.hide();
-      prepare_default.$my_reco = (0, import_jquery15.default)("#my-reco");
-      prepare_default.$log_out_do_container = (0, import_jquery15.default)("#log-out-do-container, #log-out-do-exit");
-      prepare_default.$log_out_do = (0, import_jquery15.default)("#log-out-do");
+      prepare_default.$my_reco = (0, import_jquery14.default)("#my-reco");
+      prepare_default.$log_out_do_container = (0, import_jquery14.default)("#log-out-do-container, #log-out-do-exit");
+      prepare_default.$log_out_do = (0, import_jquery14.default)("#log-out-do");
       prepare_default.$log_out_do_container.hide();
       prepare_default.$log_out_do_container.on("click", function(e2) {
         prepare_default.$log_out_do_container.hide();
@@ -25999,8 +25996,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.$log_out_do.on("click", function(e2) {
         e2.stopPropagation();
       });
-      prepare_default.$headPlay = (0, import_jquery15.default)("#headPlay");
-      (0, import_jquery15.default)("#headPlay-buttons").html(`<div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyQ' })">[--Preceding(_Q_)--]</div>
+      prepare_default.$headPlay = (0, import_jquery14.default)("#headPlay");
+      (0, import_jquery14.default)("#headPlay-buttons").html(`<div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyQ' })">[--Preceding(_Q_)--]</div>
 <div class="button darkgoldenrod" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyW' })">[--Follo_w_ing--]</div>
 <div style="display:inline-block">
 	<div class="button button-sort" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyS' })">\u25BC [--_S_ort--]</div>
@@ -26023,21 +26020,21 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 <div class="button button-one-loop" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyP' })">[--One-loo_p_--]</div>
 <div class="button button-ToR" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyT' })">[--_T_ofR--]</div>
 <div class="button button-move-all" onclick="m.moveAllTo()">[--Move filtered all recos in ToRs to the different cats at once.--]</div>`);
-      prepare_default.$toggle_reco_list_play = (0, import_jquery15.default)("#toggle-reco-list-play");
-      prepare_default.$playlist_container = (0, import_jquery15.default)("#playlist-container");
-      prepare_default.$uri_rendered_container = (0, import_jquery15.default)("#uri-rendered-container");
-      prepare_default.$eveElse_container = (0, import_jquery15.default)("#eveElse-container");
-      prepare_default.$rC_youtube_container = (0, import_jquery15.default)("#rC-youtube-container");
-      prepare_default.$eveElse = (0, import_jquery15.default)("#eveElse");
-      prepare_default.$youtube = (0, import_jquery15.default)("#youtube");
-      prepare_default.$video = (0, import_jquery15.default)("#video");
-      prepare_default.$reco_playing = (0, import_jquery15.default)("#reco-playing");
-      prepare_default.$button_shuffle = (0, import_jquery15.default)("#headPlay-buttons .button-shuffle");
-      prepare_default.$input_uri = (0, import_jquery15.default)("#input-uri");
-      prepare_default.$show_URI = (0, import_jquery15.default)("#show-URI");
-      prepare_default.$def_titles = (0, import_jquery15.default)("#def-titles");
-      prepare_default.$input_title = (0, import_jquery15.default)("#input-title");
-      prepare_default.$lyrics_search = (0, import_jquery15.default)("#lyrics-search");
+      prepare_default.$toggle_reco_list_play = (0, import_jquery14.default)("#toggle-reco-list-play");
+      prepare_default.$playlist_container = (0, import_jquery14.default)("#playlist-container");
+      prepare_default.$uri_rendered_container = (0, import_jquery14.default)("#uri-rendered-container");
+      prepare_default.$eveElse_container = (0, import_jquery14.default)("#eveElse-container");
+      prepare_default.$rC_youtube_container = (0, import_jquery14.default)("#rC-youtube-container");
+      prepare_default.$eveElse = (0, import_jquery14.default)("#eveElse");
+      prepare_default.$youtube = (0, import_jquery14.default)("#youtube");
+      prepare_default.$video = (0, import_jquery14.default)("#video");
+      prepare_default.$reco_playing = (0, import_jquery14.default)("#reco-playing");
+      prepare_default.$button_shuffle = (0, import_jquery14.default)("#headPlay-buttons .button-shuffle");
+      prepare_default.$input_uri = (0, import_jquery14.default)("#input-uri");
+      prepare_default.$show_URI = (0, import_jquery14.default)("#show-URI");
+      prepare_default.$def_titles = (0, import_jquery14.default)("#def-titles");
+      prepare_default.$input_title = (0, import_jquery14.default)("#input-title");
+      prepare_default.$lyrics_search = (0, import_jquery14.default)("#lyrics-search");
       prepare_default.$lyrics_search.on("click", function(e2) {
         window.open(
           `http://www.google.com/search?q=${encodeURIComponent(
@@ -26046,52 +26043,52 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           "_blank"
         );
       });
-      prepare_default.$def_cats = (0, import_jquery15.default)("#def-cats");
-      prepare_default.$input_cats = (0, import_jquery15.default)("#input-cats");
+      prepare_default.$def_cats = (0, import_jquery14.default)("#def-cats");
+      prepare_default.$input_cats = (0, import_jquery14.default)("#input-cats");
       prepare_default.$input_cats.attr(
         "placeholder",
         "[--placeholder Category--]\n[--([\" ' `] is forbidden.)--]"
       );
-      prepare_default.$formatting_lyrics = (0, import_jquery15.default)("#formatting-lyrics");
-      prepare_default.$def_descs = (0, import_jquery15.default)("#def-descs");
-      prepare_default.$input_desc = (0, import_jquery15.default)("#input-desc");
-      prepare_default.$preview_desc = (0, import_jquery15.default)("#preview-desc");
-      prepare_default.$previewed_desc = (0, import_jquery15.default)("#previewed-desc");
-      prepare_default.$input_cmt = (0, import_jquery15.default)("#input-cmt");
-      prepare_default.$error = (0, import_jquery15.default)("#error-msg");
-      prepare_default.$input_val = (0, import_jquery15.default)(".input-val");
-      prepare_default.$button_reco = (0, import_jquery15.default)(".button-reco");
-      prepare_default.$button_edit = (0, import_jquery15.default)(".button-edit");
-      prepare_default.$button_del = (0, import_jquery15.default)(".button-del");
-      prepare_default.$button_back = (0, import_jquery15.default)(".button-back");
-      prepare_default.$button_close = (0, import_jquery15.default)(".button-close");
-      prepare_default.$button_new_reco = (0, import_jquery15.default)(".button-new-reco");
-      prepare_default.$out_focus = (0, import_jquery15.default)("#out-focus");
-      prepare_default.$fuzzy_search_container = (0, import_jquery15.default)("#fuzzy-search-container");
-      prepare_default.$fuzzy_search = (0, import_jquery15.default)("#fuzzy-search");
-      prepare_default.$fuzzy_search_list = (0, import_jquery15.default)("#fuzzy-search-list");
+      prepare_default.$formatting_lyrics = (0, import_jquery14.default)("#formatting-lyrics");
+      prepare_default.$def_descs = (0, import_jquery14.default)("#def-descs");
+      prepare_default.$input_desc = (0, import_jquery14.default)("#input-desc");
+      prepare_default.$preview_desc = (0, import_jquery14.default)("#preview-desc");
+      prepare_default.$previewed_desc = (0, import_jquery14.default)("#previewed-desc");
+      prepare_default.$input_cmt = (0, import_jquery14.default)("#input-cmt");
+      prepare_default.$error = (0, import_jquery14.default)("#error-msg");
+      prepare_default.$input_val = (0, import_jquery14.default)(".input-val");
+      prepare_default.$button_reco = (0, import_jquery14.default)(".button-reco");
+      prepare_default.$button_edit = (0, import_jquery14.default)(".button-edit");
+      prepare_default.$button_del = (0, import_jquery14.default)(".button-del");
+      prepare_default.$button_back = (0, import_jquery14.default)(".button-back");
+      prepare_default.$button_close = (0, import_jquery14.default)(".button-close");
+      prepare_default.$button_new_reco = (0, import_jquery14.default)(".button-new-reco");
+      prepare_default.$out_focus = (0, import_jquery14.default)("#out-focus");
+      prepare_default.$fuzzy_search_container = (0, import_jquery14.default)("#fuzzy-search-container");
+      prepare_default.$fuzzy_search = (0, import_jquery14.default)("#fuzzy-search");
+      prepare_default.$fuzzy_search_list = (0, import_jquery14.default)("#fuzzy-search-list");
       prepare_default.$fuzzy_search_list.on("click.gotoLi", async function(event2) {
         await prepare_default.gotoLi(event2);
       });
-      prepare_default.$table_of_recos_container = (0, import_jquery15.default)("#table-of-recos-container");
-      prepare_default.$table_of_recos = (0, import_jquery15.default)("#table-of-recos");
-      prepare_default.$table_of_recos_list = (0, import_jquery15.default)("#table-of-recos-list");
+      prepare_default.$table_of_recos_container = (0, import_jquery14.default)("#table-of-recos-container");
+      prepare_default.$table_of_recos = (0, import_jquery14.default)("#table-of-recos");
+      prepare_default.$table_of_recos_list = (0, import_jquery14.default)("#table-of-recos-list");
       prepare_default.$table_of_recos_list.on("click.playLi", async function(event2) {
         await prepare_default.playLi(event2);
       });
-      prepare_default.$goto_cats_container = (0, import_jquery15.default)("#goto-cats-container");
-      prepare_default.$goto_cats = (0, import_jquery15.default)("#goto-cats");
-      prepare_default.$goto_cats_list = (0, import_jquery15.default)("#goto-cats-list");
+      prepare_default.$goto_cats_container = (0, import_jquery14.default)("#goto-cats-container");
+      prepare_default.$goto_cats = (0, import_jquery14.default)("#goto-cats");
+      prepare_default.$goto_cats_list = (0, import_jquery14.default)("#goto-cats-list");
       prepare_default.$goto_cats_list.on("click.completeCatAndOpenCat", function(event2) {
         prepare_default.completeCatAndOpenCat(event2);
       });
-      prepare_default.$cat_fs_container = (0, import_jquery15.default)("#cat-fs-container");
-      prepare_default.$cat_fs_list = (0, import_jquery15.default)("#cat-fs-list");
-      prepare_default.$multireco_cats_container = (0, import_jquery15.default)("#multireco-cats-container");
-      prepare_default.$multireco_def_cats = (0, import_jquery15.default)("#multireco-def-cats");
-      prepare_default.$multireco_input_cats = (0, import_jquery15.default)("#multireco-input-cats");
-      prepare_default.$multireco_cat_fs_container = (0, import_jquery15.default)("#multireco-cat-fs-container");
-      prepare_default.$multireco_cat_fs_list = (0, import_jquery15.default)("#multireco-cat-fs-list");
+      prepare_default.$cat_fs_container = (0, import_jquery14.default)("#cat-fs-container");
+      prepare_default.$cat_fs_list = (0, import_jquery14.default)("#cat-fs-list");
+      prepare_default.$multireco_cats_container = (0, import_jquery14.default)("#multireco-cats-container");
+      prepare_default.$multireco_def_cats = (0, import_jquery14.default)("#multireco-def-cats");
+      prepare_default.$multireco_input_cats = (0, import_jquery14.default)("#multireco-input-cats");
+      prepare_default.$multireco_cat_fs_container = (0, import_jquery14.default)("#multireco-cat-fs-container");
+      prepare_default.$multireco_cat_fs_list = (0, import_jquery14.default)("#multireco-cat-fs-list");
       prepare_default.$multireco_cat_fs_list.on("click.complete-MRCat", function(event2) {
         prepare_default.completeMRCat(event2);
       });
@@ -26099,18 +26096,18 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.$multirecoReplaceCats = prepare_default.$multireco_def_cats.find(".replace-cat");
       prepare_default.$multirecoAddTxts = prepare_default.$multireco_def_cats.find(".add-txt");
       prepare_default.$multirecoDeleteCat = prepare_default.$multireco_def_cats.find(".delete-cat");
-      prepare_default.$show_recos_without_points = (0, import_jquery15.default)("#show-recos-without-points");
+      prepare_default.$show_recos_without_points = (0, import_jquery14.default)("#show-recos-without-points");
       prepare_default.showRWOP = true;
-      prepare_default.$show_only_unrecoed = (0, import_jquery15.default)("#show-only-unrecoed");
-      prepare_default.$numbers_of_recos = (0, import_jquery15.default)(".numbers-of-recos");
-      prepare_default.$numbers_of_recos0 = (0, import_jquery15.default)("#numbers-of-recos");
-      prepare_default.$subCats = (0, import_jquery15.default)("#subCats");
-      prepare_default.$contents_recoms = (0, import_jquery15.default)("#contents-recoms");
-      prepare_default.$contents = (0, import_jquery15.default)("#contents");
-      prepare_default.$scripts = (0, import_jquery15.default)("#scripts");
-      prepare_default.$html = (0, import_jquery15.default)("html");
-      prepare_default.$title = (0, import_jquery15.default)("title");
-      prepare_default.$body = (0, import_jquery15.default)("body");
+      prepare_default.$show_only_unrecoed = (0, import_jquery14.default)("#show-only-unrecoed");
+      prepare_default.$numbers_of_recos = (0, import_jquery14.default)(".numbers-of-recos");
+      prepare_default.$numbers_of_recos0 = (0, import_jquery14.default)("#numbers-of-recos");
+      prepare_default.$subCats = (0, import_jquery14.default)("#subCats");
+      prepare_default.$contents_recoms = (0, import_jquery14.default)("#contents-recoms");
+      prepare_default.$contents = (0, import_jquery14.default)("#contents");
+      prepare_default.$scripts = (0, import_jquery14.default)("#scripts");
+      prepare_default.$html = (0, import_jquery14.default)("html");
+      prepare_default.$title = (0, import_jquery14.default)("title");
+      prepare_default.$body = (0, import_jquery14.default)("body");
       prepare_default.changeLang = function(lang, e2, elem) {
         prepare_default.docCookies.setItem("lang", lang, Infinity, "/");
         let search = window.location.search;
@@ -26123,7 +26120,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
         let href = `${window.location.pathname}${prepare_default.arrayToSearch(searchVars)}#${encodeURIComponent(prepare_default.hashURI)}`;
         if (e2?.which === 2) {
-          (0, import_jquery15.default)(elem).attr({ href });
+          (0, import_jquery14.default)(elem).attr({ href });
           return true;
         } else {
           window.location.href = href;
@@ -26250,10 +26247,10 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
       prepare_default.fsToRs.$fs = prepare_default.$table_of_recos;
       prepare_default.fsToRs.$fsl = prepare_default.$table_of_recos_list;
       prepare_default.fsToRs.$fs_container = prepare_default.$table_of_recos_container;
-      prepare_default.$floating_key = (0, import_jquery15.default)("#floating-key");
-      prepare_default.$toggle_floating_key = (0, import_jquery15.default)("#toggle-floating-key");
+      prepare_default.$floating_key = (0, import_jquery14.default)("#floating-key");
+      prepare_default.$toggle_floating_key = (0, import_jquery14.default)("#toggle-floating-key");
       if (prepare_default.myPage) {
-        (0, import_jquery15.default)("#button-get-recoms").before(`<div style="position:relative; margin:0 1.5em 2em; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
+        (0, import_jquery14.default)("#button-get-recoms").before(`<div style="position:relative; margin:0 1.5em 2em; float:right; width:70%; padding:1em; background:rgb(200,100,100)"><div id="time-limit" style="position:absolute; left:0; top:0; width:100%; height:100%">
 		<div id="time-limit-range" style="position:absolute; left:0px; right:0; height:100%; background:rgb(100,200,100)"></div>
 		<div id="time-limit-scroll" style="position:absolute; width:36px; left:-18px; top:0; bottom:0; background:rgba(150,150,150,0.7); border:0.15em solid rgb(50,50,50)"></div>
 		<svg width="100%" height="100%" style="overflow:visible">
@@ -26274,46 +26271,46 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
 		</text>
 		</svg>
 		</div></div>`);
-        (0, import_jquery15.default)("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyR' })">[--Get _R_ecoms--]</div>
+        (0, import_jquery14.default)("#button-get-recoms").replaceWith(`<div class="button button-mode button-get-recoms fLeft" id="button-get-recoms" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyR' })">[--Get _R_ecoms--]</div>
 		<div class="button button-mode button-daily-mix fLeft" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyY' })">[--Dail_y_ Mix Recoms with ToR--]</div>
 		<div class="cBoth"></div>`);
       } else {
-        (0, import_jquery15.default)("#button-get-recoms").replaceWith(
+        (0, import_jquery14.default)("#button-get-recoms").replaceWith(
           `<div class="button button-mode button-get-recoms none" style="display:none" id="button-get-recoms" onclick="m.$window.trigger({ type: 'keydown', code: 'KeyR' })">[--Get _R_ecoms--]</div>`
         );
       }
-      prepare_default.$a_log_in = (0, import_jquery15.default)(".a-log-in");
-      prepare_default.$a_log_out = (0, import_jquery15.default)(".a-log-out");
-      prepare_default.$a_log_out_from_all = (0, import_jquery15.default)(".a-log-out-from-all");
+      prepare_default.$a_log_in = (0, import_jquery14.default)(".a-log-in");
+      prepare_default.$a_log_out = (0, import_jquery14.default)(".a-log-out");
+      prepare_default.$a_log_out_from_all = (0, import_jquery14.default)(".a-log-out-from-all");
       prepare_default.$a_log_in.on("click mousedown mouseup", prepare_default.a_log_in);
       prepare_default.$a_log_out.on("click mousedown mouseup", prepare_default.a_log_out);
       prepare_default.$a_log_out_from_all.on("click mousedown mouseup", prepare_default.a_log_out_from_all);
-      prepare_default.$a_to_my_page = (0, import_jquery15.default)("#a-to-my-page");
+      prepare_default.$a_to_my_page = (0, import_jquery14.default)("#a-to-my-page");
       prepare_default.$a_to_my_page.on("click mousedown mouseup", prepare_default.a_to_my_page);
-      prepare_default.$button_hideFK = (0, import_jquery15.default)("#button-hideFK");
-      prepare_default.$button_block_touch = (0, import_jquery15.default)(".button-block-touch");
-      prepare_default.$button_auto_skip = (0, import_jquery15.default)(".button-auto-skip");
-      prepare_default.$button_loop = (0, import_jquery15.default)(".button-loop");
-      prepare_default.$button_one_loop = (0, import_jquery15.default)(".button-one-loop");
-      prepare_default.$button_Go = (0, import_jquery15.default)(".button-Go");
-      prepare_default.$button_ToR = (0, import_jquery15.default)(".button-ToR");
-      prepare_default.$button_mode = (0, import_jquery15.default)(".button-mode");
-      prepare_default.$button_neighbors_mode = (0, import_jquery15.default)(".button-neighbors-mode");
-      prepare_default.$button_multireco_mode = (0, import_jquery15.default)(".button-multireco-mode");
-      prepare_default.$sort_list = (0, import_jquery15.default)("#sort-list");
+      prepare_default.$button_hideFK = (0, import_jquery14.default)("#button-hideFK");
+      prepare_default.$button_block_touch = (0, import_jquery14.default)(".button-block-touch");
+      prepare_default.$button_auto_skip = (0, import_jquery14.default)(".button-auto-skip");
+      prepare_default.$button_loop = (0, import_jquery14.default)(".button-loop");
+      prepare_default.$button_one_loop = (0, import_jquery14.default)(".button-one-loop");
+      prepare_default.$button_Go = (0, import_jquery14.default)(".button-Go");
+      prepare_default.$button_ToR = (0, import_jquery14.default)(".button-ToR");
+      prepare_default.$button_mode = (0, import_jquery14.default)(".button-mode");
+      prepare_default.$button_neighbors_mode = (0, import_jquery14.default)(".button-neighbors-mode");
+      prepare_default.$button_multireco_mode = (0, import_jquery14.default)(".button-multireco-mode");
+      prepare_default.$sort_list = (0, import_jquery14.default)("#sort-list");
       if (prepare_default.fsToRs.skip) {
         prepare_default.$button_auto_skip.addClass("enabled");
       } else {
         prepare_default.$button_auto_skip.removeClass("enabled");
       }
-      prepare_default.$button_get_recoms = (0, import_jquery15.default)(".button-get-recoms");
-      prepare_default.$button0_get_recoms = (0, import_jquery15.default)("#button-get-recoms");
-      prepare_default.$button_daily_mix = (0, import_jquery15.default)(".button-daily-mix");
-      prepare_default.$button_new_reco = (0, import_jquery15.default)(".button-new-reco");
-      prepare_default.$button_goto_cats = (0, import_jquery15.default)(".button-goto-cats");
-      prepare_default.$time_limit = (0, import_jquery15.default)("#time-limit");
-      prepare_default.$time_limit_range = (0, import_jquery15.default)("#time-limit-range");
-      prepare_default.$time_limit_scroll = (0, import_jquery15.default)("#time-limit-scroll");
+      prepare_default.$button_get_recoms = (0, import_jquery14.default)(".button-get-recoms");
+      prepare_default.$button0_get_recoms = (0, import_jquery14.default)("#button-get-recoms");
+      prepare_default.$button_daily_mix = (0, import_jquery14.default)(".button-daily-mix");
+      prepare_default.$button_new_reco = (0, import_jquery14.default)(".button-new-reco");
+      prepare_default.$button_goto_cats = (0, import_jquery14.default)(".button-goto-cats");
+      prepare_default.$time_limit = (0, import_jquery14.default)("#time-limit");
+      prepare_default.$time_limit_range = (0, import_jquery14.default)("#time-limit-range");
+      prepare_default.$time_limit_scroll = (0, import_jquery14.default)("#time-limit-scroll");
       prepare_default.TL = 0;
       prepare_default.lastTLIndex = 0;
       prepare_default.TLIndex = 0;
@@ -26366,15 +26363,15 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           );
         });
       });
-      prepare_default.$point_range = (0, import_jquery15.default)(".point-range").eq(0);
-      prepare_default.$point_range_bar = (0, import_jquery15.default)(".point-range-bar").eq(0);
-      prepare_default.$point_range_left = (0, import_jquery15.default)(".point-range-left").eq(0);
-      prepare_default.$point_range_right = (0, import_jquery15.default)(".point-range-right").eq(0);
-      prepare_default.$point_range1 = (0, import_jquery15.default)(".point-range").eq(1);
-      prepare_default.$point_range_bar1 = (0, import_jquery15.default)(".point-range-bar").eq(1);
-      prepare_default.$point_range_left1 = (0, import_jquery15.default)(".point-range-left").eq(1);
-      prepare_default.$point_range_right1 = (0, import_jquery15.default)(".point-range-right").eq(1);
-      prepare_default.$point_range_result = (0, import_jquery15.default)(".point-range-result");
+      prepare_default.$point_range = (0, import_jquery14.default)(".point-range").eq(0);
+      prepare_default.$point_range_bar = (0, import_jquery14.default)(".point-range-bar").eq(0);
+      prepare_default.$point_range_left = (0, import_jquery14.default)(".point-range-left").eq(0);
+      prepare_default.$point_range_right = (0, import_jquery14.default)(".point-range-right").eq(0);
+      prepare_default.$point_range1 = (0, import_jquery14.default)(".point-range").eq(1);
+      prepare_default.$point_range_bar1 = (0, import_jquery14.default)(".point-range-bar").eq(1);
+      prepare_default.$point_range_left1 = (0, import_jquery14.default)(".point-range-left").eq(1);
+      prepare_default.$point_range_right1 = (0, import_jquery14.default)(".point-range-right").eq(1);
+      prepare_default.$point_range_result = (0, import_jquery14.default)(".point-range-result");
       prepare_default.$user_noti.html(prepare_default.userId + "'s recos");
       if (prepare_default.myIndex) {
         prepare_default.$my_id.html(prepare_default.myId + " \u25BE");
@@ -26400,8 +26397,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         }
         prepare_default.$floating_key.toggle();
       };
-      (0, import_jquery15.default)(".fs-container>.move").each(function(index, elem) {
-        let $elem = (0, import_jquery15.default)(elem);
+      (0, import_jquery14.default)(".fs-container>.move").each(function(index, elem) {
+        let $elem = (0, import_jquery14.default)(elem);
         $elem.on("mousedown.move touchstart.move", function(e2) {
           e2.preventDefault();
           e2.stopPropagation();
@@ -26425,7 +26422,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           });
         });
       });
-      prepare_default.$timezone_trs = (0, import_jquery15.default)("table.timezone").find("tr");
+      prepare_default.$timezone_trs = (0, import_jquery14.default)("table.timezone").find("tr");
       for (let i3 = prepare_default.$timezone_trs.length - 1; i3 >= 1; i3--) {
         let timezoneTxt = prepare_default.$timezone_trs.eq(i3).text().replace(/[\s\r\n\t]+/g, " ").trim();
         prepare_default.fsTimezone.fullList.push({
@@ -26441,7 +26438,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         fs.$fsLis = fs.$fsl.find(".list-item");
         fs.$fsLis.removeClass("selected");
         if (elem) {
-          let $elem = (0, import_jquery15.default)(elem);
+          let $elem = (0, import_jquery14.default)(elem);
           $elem.addClass("selected");
         }
         let [addHours, addMinutes] = timezone.substring(3).split(":");
@@ -26470,7 +26467,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
         return new Promise(async (resolve, reject) => {
           let fs = prepare_default.fsToRs;
           if (event2?.target?.nodeName !== "A") {
-            let $elem = (0, import_jquery15.default)(event2.target);
+            let $elem = (0, import_jquery14.default)(event2.target);
             if (!$elem.hasClass("list-item")) {
               $elem = $elem.parents(".list-item");
             }
@@ -26658,7 +26655,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               }
             } else if (prepare_default.recoMode === "" || prepare_default.recoMode === "daily-mix") {
               if (prepare_default.lastRecoURIPlaying !== prepare_default.recoURIPlaying) {
-                let $toRK = (0, import_jquery15.default)(`#toR-${fs.currentIndex}`);
+                let $toRK = (0, import_jquery14.default)(`#toR-${fs.currentIndex}`);
                 if ($toRK.length) {
                   $toRK.trigger("click");
                 } else {
@@ -26669,7 +26666,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
                   prepare_default.setTimeoutPlayNextFirst1 = setTimeout(function selfPlayNextFirst1() {
                     console.log("selfPlayNextFirst1();");
                     prepare_default.setTimeoutPlayNextFirst1Count++;
-                    let $toRK2 = (0, import_jquery15.default)(`#toR-${fs.currentIndex}`);
+                    let $toRK2 = (0, import_jquery14.default)(`#toR-${fs.currentIndex}`);
                     if ($toRK2.length) {
                       $toRK2.trigger("click");
                       prepare_default.fsScrollToSelected(fs, $toRK2);
@@ -26755,15 +26752,16 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         });
       };
-      prepare_default.$change_catList_order.on("click.change-catList-order", function(e2) {
+      prepare_default.$change_catList_order.on("click.change-order-catList", function(e2) {
         let $cats = prepare_default.$catList.find(".cat").not(`#cat-`);
         $cats.addClass("edit");
         $cats.prepend('<div class="edit-bar"></div>');
         $cats.append('<div class="edit-bar"></div>');
         prepare_default.$catList.find(".edit-bar").on("mousedown.order-change touchstart.order-change", function(e3) {
+          prepare_default.$catList.off("mouseup.change-cat");
           e3.preventDefault();
           e3.stopPropagation();
-          let $catM = (0, import_jquery15.default)(this);
+          let $catM = (0, import_jquery14.default)(this);
           if (!$catM.hasClass("cat")) {
             $catM = $catM.parents(".cat");
           }
@@ -26786,7 +26784,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             $catM.css({ width: $catM.outerWidth() });
             $catM.addClass("move");
             let cat2 = decodeURIComponent(prepare_default.unescapeEncodePctg($catM.attr("id").substring(4)));
-            let $catTo = (0, import_jquery15.default)(
+            let $catTo = (0, import_jquery14.default)(
               `<div id="cat-to-here" style="margin-left:${prepare_default.catList[cat2].depth + 0.5}em"></div>`
             );
             $catM.before($catTo);
@@ -26808,19 +26806,13 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
                 if (sidebarTop < 0) {
                   prepare_default.$window.scrollTop(wST + touch02.clientY - scrollPad);
                 } else {
-                  prepare_default.$sidebar.scrollTop(
-                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarTop - scrollPad
-                  );
+                  prepare_default.$sidebar.scrollTop(prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarTop - scrollPad);
                 }
               } else if (sidebarBottom > prepare_default.$window.outerHeight() ? touch02.clientY > prepare_default.$window.outerHeight() - scrollPad : touch02.clientY > sidebarBottom - scrollPad) {
                 if (sidebarBottom > prepare_default.$window.outerHeight()) {
-                  prepare_default.$window.scrollTop(
-                    wST + touch02.clientY - prepare_default.$window.outerHeight() + scrollPad
-                  );
+                  prepare_default.$window.scrollTop(wST + touch02.clientY - prepare_default.$window.outerHeight() + scrollPad);
                 } else {
-                  prepare_default.$sidebar.scrollTop(
-                    prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarBottom + scrollPad
-                  );
+                  prepare_default.$sidebar.scrollTop(prepare_default.$sidebar.scrollTop() + touch02.clientY - sidebarBottom + scrollPad);
                 }
               }
               let tops = [];
@@ -26846,11 +26838,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
               e4.preventDefault();
               e4.stopPropagation();
-              prepare_default.$html.off(
-                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
-              );
+              prepare_default.$html.off("mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB");
               $catM.removeClass("move");
-              $catM.css({ width: "", left: "", top: "" });
               $catTo.replaceWith($catM);
               if ($subCat.length) {
                 $catM.after($subCat);
@@ -26858,6 +26847,8 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
                   $subCat.show();
                 }
               }
+              $catM = null;
+              prepare_default.$catList.on("mouseup.change-cat", prepare_default.handleChangeCat);
             });
           } else {
             $catM.css({ "border-color": "rgb(230,120,120)" });
@@ -26867,9 +26858,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               e4.stopPropagation();
             });
             prepare_default.$html.on("mouseup.mdInEB touchend.mdInEB", function(e4) {
-              prepare_default.$html.off(
-                "mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB"
-              );
+              prepare_default.$html.off("mouseup.mdInEB touchend.mdInEB mousemove.mdInEB touchmove.mdInEB");
               $catM.css({ "border-color": "" });
             });
           }
@@ -26881,19 +26870,17 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             args.$result?.html(err);
             reject(err);
           }
+          prepare_default.catListHTMLEscaped = prepare_default.escapeOnlyTag(args.catListChanged);
           if (prepare_default.myPage) {
-            prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(args.catListChanged);
-            prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
-            updateUserCatList((data) => ({ text: prepare_default.myCatListHTMLEscaped }));
-            await prepare_default.updateCatFS();
-          } else {
-            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(args.catListChanged) }));
-            prepare_default.$data_catList.html(userCatList.text);
-            await prepare_default.updateGotoCatsFS();
+            prepare_default.myCatListHTMLEscaped = prepare_default.catListHTMLEscaped;
+            updateMyCatList((data) => data.text = prepare_default.catListHTMLEscaped);
           }
+          updateUserCatList((data) => data.text = prepare_default.catListHTMLEscaped);
+          await prepare_default.updateCatFS();
+          await prepare_default.updateGotoCatsFS();
           prepare_default.$change_catList_order.show();
           if (prepare_default.myPage) {
-            import_jquery15.default.ajax({
+            import_jquery14.default.ajax({
               type: "POST",
               url: "/changeOrders/CatList",
               data: args.catListChanged,
@@ -26928,9 +26915,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
         });
       };
-      prepare_default.$change_catList_order_ok.on("click.change-catList-order", async function(e2) {
+      prepare_default.$change_catList_order_ok.on("click.change-order-catList", async function(e2) {
         let catListChanged = prepare_default.getCatListChanged();
-        if (catListChanged !== prepare_default.unescapeHTML(prepare_default.$data_catList.html())) {
+        if (catListChanged !== prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped)) {
           if (prepare_default.myPage) {
             prepare_default.rmb_me(prepare_default.change_catList_order_do, {
               catListChanged,
@@ -26938,7 +26925,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             });
           } else {
             updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(catListChanged) }));
-            prepare_default.$data_catList.html(userCatList.text);
             prepare_default.$change_catList_order.show();
           }
           await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
@@ -26948,9 +26934,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           prepare_default.$change_catList_order.show();
         }
       });
-      prepare_default.$change_catList_order_cancel.on("click.change-catList-order", async function(e2) {
+      prepare_default.$change_catList_order_cancel.on("click.change-order-catList", async function(e2) {
         let dataCatListChanged = prepare_default.unescapeHTML(prepare_default.getCatListChanged());
-        let dataCatList = prepare_default.unescapeHTML(prepare_default.$data_catList.html());
+        let dataCatList = prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped);
         if (dataCatListChanged !== dataCatList) {
           let $catSelected = prepare_default.$catList.find(".cat.selected").eq(0);
           let selectedCat = null;
@@ -26960,7 +26946,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           await prepare_default.strCatListToJSON(dataCatList, prepare_default.catList);
           await prepare_default.catListToHTML();
           if (selectedCat) {
-            (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
+            (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
           }
         }
         prepare_default.$change_catList_order.show();
@@ -26989,7 +26975,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               let fsFLk = fs.fullList[k];
               fsFLk = fs.fullList[k] = fs.fullList[fsFLk?.cat];
               str += `<div class="list-item${fsFLk?.cat === prepare_default.currentCat ? " selected" : ""}${fsFLk?.down ? " down" : ""}${fsFLk?.deleted ? " deleted" : ""}" id="gotoCats-${k}"><span class="list-index-id">${prepare_default.escapeOnlyTag(fsFLk.cat)}</span>${fs.fullList[fsSortedI.i].html}${fsSortedI.highlight !== void 0 ? `<div class="highlighted"><span class="maxMatchScore">${fsSortedI.maxMatchScore}</span> :: ${fsSortedI.highlight}</div>` : ""}</div>`;
-              let $catI = (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
+              let $catI = (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(fsFLk?.cat))}`);
               if ($catI.length) {
                 if (fsFLk?.down) {
                   $catI.find(".baseCat").addClass("down");
@@ -27016,7 +27002,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             for (let i3 = 0; i3 < fsRes.length; i3++) {
               let fsSortedI = fsRes[fsRes.sorted[i3]];
               let fsFLk = fs.fullList[fsSortedI.i];
-              let $gotoCatI = (0, import_jquery15.default)(`#gotoCats-${fsFLk.i}`);
+              let $gotoCatI = (0, import_jquery14.default)(`#gotoCats-${fsFLk.i}`);
               if ($gotoCatI.length) {
                 if (fsFLk?.down) {
                   $gotoCatI.addClass("down");
@@ -27209,7 +27195,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             reject(res);
           }
           let pre = "\n";
-          let fullCats = "\n" + prepare_default.unescapeHTML(prepare_default.$data_myCatList.html()).trim() + "\n";
+          let fullCats = "\n" + prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim()) + "\n";
           let levels = cat2.split("--");
           let start = 0;
           let end = fullCats.length;
@@ -27238,9 +27224,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
           if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
-            prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
+            updateMyCatList((draft) => draft.text = prepare_default.myCatListHTMLEscaped);
             if (prepare_default.myPage) {
-              prepare_default.$change_catList_order_cancel.trigger("click.change-catList-order");
+              prepare_default.$change_catList_order_cancel.trigger("click.change-order-catList");
             }
           }
           resolve(res);
@@ -27252,7 +27238,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           if (cat2 === null || cat2.length === 0) {
             reject(res);
           }
-          let fullCats = prepare_default.unescapeHTML(prepare_default.$data_myCatList.html());
+          let fullCats = prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped);
           let levels = cat2.split("--");
           let pre = "\n";
           let start0 = 0;
@@ -27284,7 +27270,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
           if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
-            prepare_default.$data_myCatList.html(prepare_default.myCatListHTMLEscaped);
+            updateMyCatList((draft) => draft.text = prepare_default.myCatListHTMLEscaped);
           }
           return res;
         });
@@ -27940,7 +27926,7 @@ ${uri.join("\n")}
           }
           let $elem = null;
           if (elem) {
-            $elem = (0, import_jquery15.default)(elem);
+            $elem = (0, import_jquery14.default)(elem);
           }
           let fs = prepare_default.fsToRs;
           let l2 = fs.fullList.length;
@@ -27961,7 +27947,7 @@ ${uri.join("\n")}
               strHTML += `<div id="load-recos-${k}" class="button to-be-executed load-recos" onclick="m.showRecosOnCat(this,${i3})">Load more... <span class="from">${i3}</span> to <span class="to">${i3 - prepare_default.maxShowReco + 1 >= 0 ? i3 - prepare_default.maxShowReco + 1 : 0}</span></div>`;
             }
             prepare_default.$contents.html(strHTML);
-            (0, import_jquery15.default)(".to-be-executed").eq(0).trigger("click");
+            (0, import_jquery14.default)(".to-be-executed").eq(0).trigger("click");
           } else if (from !== void 0 && from !== null && from.constructor === Number) {
             for (let i3 = from, k = 0; i3 >= 0 && k < prepare_default.maxShowReco; i3--, k++) {
               let fsFLi = fs.fullList[i3];
@@ -27997,7 +27983,7 @@ ${uri.join("\n")}
       prepare_default.editOrRecoToMine = async function(elem, fillDefs) {
         if (!prepare_default.$new_reco.is(":visible")) {
           prepare_default.$new_reco.show();
-          let $reco = (0, import_jquery15.default)(elem).parents(".reco");
+          let $reco = (0, import_jquery14.default)(elem).parents(".reco");
           let uri = prepare_default.unescapeHTML($reco.find(".textURI").html());
           let r2 = prepare_default.myRecos[uri];
           if (!r2) {
@@ -28056,7 +28042,7 @@ ${uri.join("\n")}
           if (getRecosN > 0) {
             let postURL = recos === prepare_default.userRecos ? `${prepare_default.userPath}/get-Recos` : prepare_default.myIndex ? `/user/${prepare_default.myId}/get-Recos` : null;
             if (postURL) {
-              import_jquery15.default.ajax({
+              import_jquery14.default.ajax({
                 type: "POST",
                 url: postURL,
                 data: getRecosStr.replace(/%20/gi, "%2520"),
@@ -28107,7 +28093,7 @@ ${uri.join("\n")}
             let fs = prepare_default.fsToRs;
             if (prepare_default.lastCat !== cat2 || fs.lastIndex !== fs.currentIndex) {
               let k = fs.currentIndex;
-              let $toRK = (0, import_jquery15.default)(`#toR-${k}`);
+              let $toRK = (0, import_jquery14.default)(`#toR-${k}`);
               try {
                 await fs.getAndPlayVideo($toRK[0]?.id === fs.$fsl.find(".list-item")[0]?.id);
               } catch (err) {
@@ -28121,7 +28107,7 @@ ${uri.join("\n")}
       };
       prepare_default.getUriList = function(catListStr) {
         return new Promise(function(resolve, reject) {
-          import_jquery15.default.ajax({
+          import_jquery14.default.ajax({
             type: "POST",
             url: `${prepare_default.userPath}/get-UriList`,
             data: catListStr,
@@ -28167,7 +28153,7 @@ ${uri.join("\n")}
       prepare_default.getMultiDefs = function(uris) {
         return new Promise(async function(resolve, reject) {
           if (uris) {
-            import_jquery15.default.ajax({
+            import_jquery14.default.ajax({
               type: "POST",
               url: "/reco/multidefs",
               data: uris.trim(),
@@ -28225,11 +28211,11 @@ ${uri.join("\n")}
         if (until > 0) {
           strHTML += `<div class="button cBoth" onclick="m.loadMoreRecoms(this, ${until}, ${until - 12})">More Recoms...</div>`;
         }
-        (0, import_jquery15.default)(elem).replaceWith(strHTML);
+        (0, import_jquery14.default)(elem).replaceWith(strHTML);
         await prepare_default.reNewAndReOn();
       };
       prepare_default.cutNeighbors = function(str) {
-        import_jquery15.default.ajax({
+        import_jquery14.default.ajax({
           type: "POST",
           url: `${prepare_default.userPath}/cut-Neighbors`,
           data: str,
@@ -28459,7 +28445,7 @@ ${uri.join("\n")}
                       req += `
 ${neighborI.user_to}	${neighborI.cat_to}`;
                     }
-                    import_jquery15.default.ajax({
+                    import_jquery14.default.ajax({
                       type: "POST",
                       url: `${prepare_default.userPath}/get-Recoms`,
                       data: req,
@@ -28503,7 +28489,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
               } else {
                 prepare_default.$numbers_of_recos.html(`Loading neighbors of cat="${prepare_default.escapeOnlyTag(cat2)}".`);
                 let cat_from2 = prepare_default.currentCat = cat2;
-                import_jquery15.default.ajax({
+                import_jquery14.default.ajax({
                   type: "POST",
                   url: `${prepare_default.userPath}/get-Neighbors`,
                   data: cat_from2,
@@ -28549,7 +28535,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
             case "neighbors":
               prepare_default.$numbers_of_recos.html(`Loading neighbors of cat="${prepare_default.escapeOnlyTag(cat2)}", and plotting charts.`);
               let cat_from = prepare_default.currentCat = cat2;
-              import_jquery15.default.ajax({
+              import_jquery14.default.ajax({
                 type: "POST",
                 url: `${prepare_default.userPath}/get-Neighbors`,
                 data: cat_from,
@@ -28892,7 +28878,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         return new Promise(async function(resolve, reject) {
           if (prepare_default.catList[cat2]) {
             prepare_default.$catList.find(".cat").removeClass("selected");
-            let $cat = (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(cat2))}`);
+            let $cat = (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(cat2))}`);
             if ($cat.length) {
               $cat.addClass("selected");
               let $parents = $cat.parents(".subCat");
@@ -28906,7 +28892,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
             reject(`Cat="${cat2}" may NOT exist.`);
           }
           prepare_default.currentCat = cat2 = cat2 ?? "";
-          (0, import_jquery15.default)('link[rel="canonical"]').attr("href", `https://recoeve.net${prepare_default.pathOfCat(cat2)}`);
+          (0, import_jquery14.default)('link[rel="canonical"]').attr("href", `https://recoeve.net${prepare_default.pathOfCat(cat2)}`);
           prepare_default.$h1.html(`${cat2 ? `${prepare_default.escapeOnlyTag(cat2)} of` : "[--Uncategorized--] of"} ${prepare_default.userId}'s recoeve.net`);
           prepare_default.$title.html(`Cat=${cat2 ? `${prepare_default.escapeOnlyTag(cat2)} of` : "Cat=[--Uncategorized--] of"} ${prepare_default.userId}'s recoeve.net`);
           if (!prepare_default.catUriList[cat2]?.has) {
@@ -29001,13 +28987,13 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           }
         }
       };
-      prepare_default.$def_cmd = (0, import_jquery15.default)("#def-cmds").find(".def-cmd");
+      prepare_default.$def_cmd = (0, import_jquery14.default)("#def-cmds").find(".def-cmd");
       prepare_default.$def_cmd.on("click", function(e2) {
         prepare_default.$input_desc.trigger("focus");
         let sStart = prepare_default.$input_desc[0].selectionStart;
         let sEnd = prepare_default.$input_desc[0].selectionEnd;
         let inputValue = prepare_default.$input_desc.val();
-        let $target = (0, import_jquery15.default)(event.target);
+        let $target = (0, import_jquery14.default)(event.target);
         if (!$target.hasClass("def-cmd")) {
           $target = $target.parents(".def-cmd");
         }
@@ -29018,7 +29004,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         prepare_default.$input_desc[0].setSelectionRange(sEnd, sEnd);
       });
       prepare_default.$multirecoReplaceCats.on("click", function(e2) {
-        let $this = (0, import_jquery15.default)(this);
+        let $this = (0, import_jquery14.default)(this);
         let fs = prepare_default.fsMRCat;
         prepare_default.$multirecoDefCats.removeClass("selected");
         $this.addClass("selected");
@@ -29034,7 +29020,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         fs.$fs[0].setSelectionRange(sEnd, sEnd);
       });
       prepare_default.$multirecoAddTxts.on("click", function(e2) {
-        let $this = (0, import_jquery15.default)(this);
+        let $this = (0, import_jquery14.default)(this);
         prepare_default.$multirecoDefCats.removeClass("selected");
         $this.addClass("selected");
         let sStart = prepare_default.$multireco_input_cats[0].selectionStart;
@@ -29052,7 +29038,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         prepare_default.$multireco_input_cats.trigger("keyup.fs");
       });
       prepare_default.$multirecoDeleteCat.on("click", function(e2) {
-        let $this = (0, import_jquery15.default)(this);
+        let $this = (0, import_jquery14.default)(this);
         let fs = prepare_default.fsMRCat;
         prepare_default.$multirecoDefCats.removeClass("selected");
         $this.addClass("selected");
@@ -29095,7 +29081,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
       };
       prepare_default.$input_uri.on("input.change keyup.change keydown.change cut.change paste.change click.change focus.change", prepare_default.input_uriOn);
       prepare_default.lastVal = prepare_default.val("10.0/10");
-      prepare_default.$input_val_stars = (0, import_jquery15.default)(".input-val-stars");
+      prepare_default.$input_val_stars = (0, import_jquery14.default)(".input-val-stars");
       prepare_default.$input_val_stars.html(prepare_default.stars(1));
       prepare_default.$input_val_stars.on(
         "mousedown.mdInStars touchstart.mdInStars",
@@ -29136,7 +29122,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
         }
       );
       prepare_default.$input_val_stars.on("click", function(e2) {
-        let $bar = (0, import_jquery15.default)(this).find(".bar");
+        let $bar = (0, import_jquery14.default)(this).find(".bar");
         let barW = $bar.width();
         let $val = prepare_default.$input_val;
         let w = e2.clientX + prepare_default.$window.scrollLeft() - $bar.offset().left;
@@ -29215,7 +29201,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           default:
         }
         if (this.value !== prepare_default.lastVal.str) {
-          let $bar = (0, import_jquery15.default)(".input-val-stars .bar");
+          let $bar = (0, import_jquery14.default)(".input-val-stars .bar");
           if (val.valid && val.str.length !== 0) {
             prepare_default.fullPts = val.divisor;
             $bar.css({ width: prepare_default.starsWidth * val.val });
@@ -29226,8 +29212,8 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           prepare_default.$input_val.val(val.str);
         }
       });
-      prepare_default.$input_val_down = (0, import_jquery15.default)(".input-val-down");
-      prepare_default.$input_val_up = (0, import_jquery15.default)(".input-val-up");
+      prepare_default.$input_val_down = (0, import_jquery14.default)(".input-val-down");
+      prepare_default.$input_val_up = (0, import_jquery14.default)(".input-val-up");
       prepare_default.$input_val_down.on("click", function(e2) {
         let val = prepare_default.val(prepare_default.$input_val.val());
         if (val.valid) {
@@ -29295,7 +29281,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
           let cat2 = prepare_default.currentCat;
           let strRecoDoJSON = await prepare_default.strToJSON(args.strRecoDo.replace(/%20/gi, "%2520"), true, true);
           const dataToSend = await prepare_default.JSONtoStr(strRecoDoJSON);
-          import_jquery15.default.ajax({
+          import_jquery14.default.ajax({
             type: "POST",
             url: "/reco/do",
             data: dataToSend,
@@ -29473,7 +29459,7 @@ ${uri2}	change	${cats2}`;
           prepare_default.$button_edit.removeClass("disabled");
           return;
         }
-        import_jquery15.default.ajax({
+        import_jquery14.default.ajax({
           type: "POST",
           url: "/reco/do",
           data: (args.strHeads + "\n" + args.strContents).replace(/%20/gi, "%2520"),
@@ -29583,7 +29569,7 @@ ${uri2}	change	${cats2}`;
           prepare_default.$button_del.removeClass("disabled");
           return;
         }
-        import_jquery15.default.ajax({
+        import_jquery14.default.ajax({
           type: "POST",
           url: "/reco/do",
           data: (args.strHeads + "\n" + args.strContents).replace(/%20/gi, "%2520"),
@@ -29644,7 +29630,7 @@ ${uri2}	change	${cats2}`;
       });
       prepare_default.completeCatAndOpenCat = async function(event2) {
         return new Promise(async (resolve, reject) => {
-          let $elem = (0, import_jquery15.default)(event2.target);
+          let $elem = (0, import_jquery14.default)(event2.target);
           if (!$elem.hasClass("list-item")) {
             $elem = $elem.parents(".list-item");
           }
@@ -29658,7 +29644,7 @@ ${uri2}	change	${cats2}`;
             let i3 = fs2.fullList.length;
             fsGotoCatsFLCat = fs2.fullList[i3] = fs2.fullList[cat2] = { cat: cat2, i: i3, txt: prepare_default.splitHangul(cat2), html: prepare_default.escapeOnlyTag(cat2) };
           }
-          let $catI = (0, import_jquery15.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(cat2))}`);
+          let $catI = (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(cat2))}`);
           if ($catI.length) {
             prepare_default.$catList.find(".cat").removeClass("selected");
             $catI.addClass("selected");
@@ -29755,9 +29741,9 @@ ${uri2}	change	${cats2}`;
       };
       prepare_default.triggerOpenCat = function(event2) {
         return new Promise((resolve, reject) => {
-          let $elem = (0, import_jquery15.default)(event2.target);
+          let $elem = (0, import_jquery14.default)(event2.target);
           if (!($elem.hasClass("baseCat") || $elem.hasClass("move-cat"))) {
-            $elem = $elem.parents(".baseCat, .move-cat");
+            $elem = $elem.parents(".baseCat, .change-cat");
           }
           if (!$elem.length) {
             return;
@@ -29786,7 +29772,7 @@ ${uri2}	change	${cats2}`;
               fsFLCat = fs2.fullList[i3] = fs2.fullList[cat2] = { i: i3, cat: cat2, txt: prepare_default.splitHangul(cat2), html: prepare_default.escapeOnlyTag(cat2) };
             }
             let k = fsFLCat.i;
-            let $gotoCatsK = (0, import_jquery15.default)(`#gotoCats-${k}`);
+            let $gotoCatsK = (0, import_jquery14.default)(`#gotoCats-${k}`);
             if ($gotoCatsK.length) {
               $gotoCatsK.trigger("click");
               resolve(false);
@@ -29802,7 +29788,7 @@ ${uri2}	change	${cats2}`;
                 })().catch((err) => {
                   console.error(err);
                 }).finally(() => {
-                  $gotoCatsK = (0, import_jquery15.default)(`#gotoCats-${k}`);
+                  $gotoCatsK = (0, import_jquery14.default)(`#gotoCats-${k}`);
                   $gotoCatsK.trigger("click");
                   resolve(false);
                 });
@@ -29848,7 +29834,7 @@ ${uri2}	change	${cats2}`;
         }
         let fs = prepare_default.fsGo;
         let fs1 = prepare_default.fsToRs;
-        let $elem = (0, import_jquery15.default)(event2.target);
+        let $elem = (0, import_jquery14.default)(event2.target);
         if (!$elem.hasClass("list-item")) {
           $elem = $elem.parents(".list-item");
         }
@@ -29896,7 +29882,7 @@ ${uri2}	change	${cats2}`;
         if (prepare_default.beInCurrentCat && l2 !== k) {
           console.log(`l:${l2} and k:${k} are different! This is problematic.`);
         }
-        let $recoElem = (0, import_jquery15.default)(`#reco-${l2}`);
+        let $recoElem = (0, import_jquery14.default)(`#reco-${l2}`);
         if ($recoElem.length) {
           prepare_default.showAndScrollTo($recoElem);
         } else if (isNaN(l2)) {
@@ -29909,7 +29895,7 @@ ${uri2}	change	${cats2}`;
             })().catch((err) => {
               console.error(err);
             }).finally(() => {
-              $recoElem = (0, import_jquery15.default)(`#reco-${l2}`);
+              $recoElem = (0, import_jquery14.default)(`#reco-${l2}`);
               if ($recoElem.length) {
                 prepare_default.showAndScrollTo($recoElem);
               }
@@ -29922,13 +29908,13 @@ ${uri2}	change	${cats2}`;
           try {
             (function() {
               return new Promise(async (resolve) => {
-                await (0, import_jquery15.default)(`#load-recos-${i3}`).trigger("click");
+                await (0, import_jquery14.default)(`#load-recos-${i3}`).trigger("click");
                 resolve();
               });
             })().catch((err) => {
               console.error(err);
             }).finally(() => {
-              let $recoElem2 = (0, import_jquery15.default)(`#reco-${l2}`);
+              let $recoElem2 = (0, import_jquery14.default)(`#reco-${l2}`);
               if ($recoElem2.length) {
                 prepare_default.showAndScrollTo($recoElem2);
                 console.log(`m.showAndScrollTo($(\`#reco-${l2}\`));`);
@@ -30023,8 +30009,8 @@ ${uri2}	change	${cats2}`;
       prepare_default.$table_of_recos.on("keydown", function(e2) {
         prepare_default.onKeydownInFS0(e2, "T", prepare_default.fsToRs);
       });
-      prepare_default.$button_save_this_order = (0, import_jquery15.default)("#button-save-this-order");
-      prepare_default.$result_of_change_order = (0, import_jquery15.default)("#result-of-change-order");
+      prepare_default.$button_save_this_order = (0, import_jquery14.default)("#button-save-this-order");
+      prepare_default.$result_of_change_order = (0, import_jquery14.default)("#result-of-change-order");
       if (prepare_default.myPage) {
         prepare_default.$button_save_this_order.show();
         prepare_default.$button_save_this_order.on("click", function(e2) {
@@ -30044,7 +30030,7 @@ ${uri2}	change	${cats2}`;
             } else {
               let urisReversed = uris.split("\n").reverse().join("\n");
               prepare_default.rmb_me(function() {
-                import_jquery15.default.ajax({
+                import_jquery14.default.ajax({
                   type: "POST",
                   url: `${prepare_default.userPath}/change-order-of-UriList?cat=${encodeURIComponent(prepare_default.currentCat)}`,
                   data: urisReversed,
@@ -30090,8 +30076,8 @@ ${uri2}	change	${cats2}`;
           });
         });
       }
-      prepare_default.$notify_copied = (0, import_jquery15.default)("#notify-copied, #notify-copied-exit");
-      prepare_default.$textarea_copied = (0, import_jquery15.default)("#textarea-copied");
+      prepare_default.$notify_copied = (0, import_jquery14.default)("#notify-copied, #notify-copied-exit");
+      prepare_default.$textarea_copied = (0, import_jquery14.default)("#textarea-copied");
       prepare_default.$notify_copied.hide();
       prepare_default.$textarea_copied.on("click", function(e2) {
         e2.stopPropagation();
@@ -30112,7 +30098,7 @@ m.intervalCount[intervalId]: ${prepare_default.intervalCount[intervalId]}`
         let fs = prepare_default.fsGotoCats;
         let fsGotoCatsFLCat = fs.fullList[prepare_default.currentCat];
         if (fsGotoCatsFLCat?.i || fsGotoCatsFLCat?.i === 0) {
-          let $gotoCatsI = (0, import_jquery15.default)(`#gotoCats-${fsGotoCatsFLCat.i}`);
+          let $gotoCatsI = (0, import_jquery14.default)(`#gotoCats-${fsGotoCatsFLCat.i}`);
           if (prepare_default.intervalCount[intervalId] > prepare_default.initialMaxTries) {
             clearInterval(intervalId);
             delete prepare_default.intervalCount[intervalId];
@@ -30140,7 +30126,7 @@ m.intervalCount[intervalId]: ${prepare_default.intervalCount[intervalId]}`
             clearInterval(intervalId);
             delete prepare_default.intervalCount[intervalId];
             fs.$fsl.prepend(`<div class="list-item${fsGotoCatsFLCat?.down ? " down" : ""}${fsGotoCatsFLCat?.deleted ? " deleted" : ""}" id="gotoCats-${fsGotoCatsFLCat.i}"><span class="list-index-id">${prepare_default.escapeOnlyTag(cat)}</span><span class="list-index">${fsGotoCatsFLCat.i}</span>${fsGotoCatsFLCat.html}</div>`);
-            $gotoCatsI = (0, import_jquery15.default)(`#gotoCats-${fsGotoCatsFLCat.i}`);
+            $gotoCatsI = (0, import_jquery14.default)(`#gotoCats-${fsGotoCatsFLCat.i}`);
             $gotoCatsI.trigger("click");
             console.log(`$("#gotoCats-${fsGotoCatsFLCat.i}").trigger("click"); in m.recoMode: ${prepare_default.recoMode}`);
             console.log(`m.currentCat: ${prepare_default.currentCat}, fsGotoCatsFLCat: `, fsGotoCatsFLCat);
@@ -30172,7 +30158,7 @@ m.intervalCount[intervalId]: ${prepare_default.intervalCount[intervalId]}`
           e2.preventDefault();
         }
       );
-      prepare_default.$fdList = (0, import_jquery15.default)(
+      prepare_default.$fdList = (0, import_jquery14.default)(
         "#right-top-log-in, #change-style, #foot, #head, #headPlay, #playlist-container, .numbers-of-recos, .reco, .to-be-executed"
       );
       prepare_default.zIndex = 10010;
@@ -30538,7 +30524,7 @@ m.intervalCount[intervalId]: ${prepare_default.intervalCount[intervalId]}`
         }
       };
       prepare_default.$window.on("keydown.sk", prepare_default.processShortKey);
-      prepare_default.$shortkeyDesc = (0, import_jquery15.default)("ul#shortkeys");
+      prepare_default.$shortkeyDesc = (0, import_jquery14.default)("ul#shortkeys");
       if (prepare_default.$shortkeyDesc.length) {
         prepare_default.$shortkeyDesc.html(
           `<li><span onclick="m.$window.trigger({ type: 'keydown', code: 'KeyC' })"><span class="bold">C</span>: [--Go to _C_ats--]</span></li>
@@ -30571,13 +30557,13 @@ m.intervalCount[intervalId]: ${prepare_default.intervalCount[intervalId]}`
       prepare_default.$shortkeyDesc.before(
         `<div class="button" id="button-toggle-shortkey-desc" onclick="m.toggleShortkeyDesc()">[--Toggle ShortKey Description--]</div>`
       );
-      prepare_default.$button_toggle_shortkey_desc = (0, import_jquery15.default)("#button-toggle-shortkey-desc");
+      prepare_default.$button_toggle_shortkey_desc = (0, import_jquery14.default)("#button-toggle-shortkey-desc");
       prepare_default.$document.ready(async function() {
         await prepare_default.reNewFSsOn();
         setTimeout(function() {
           let blogStat = `URI	referer	REACTION_GUEST
 ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
-          import_jquery15.default.ajax({
+          import_jquery14.default.ajax({
             type: "POST",
             url: "/BlogStat",
             data: blogStat,
@@ -30795,8 +30781,8 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
               }
               return false;
             };
-            (0, import_jquery15.default)("#log-out-do-container>.center").html(`[--Log-in with remember me option: 0--]${encodeURIComponent(prepare_default.initialPathname + prepare_default.initialSearch + "#" + encodeURIComponent(prepare_default.initialHashURI))}[--Log-in with remember me option: 1--]`);
-            (0, import_jquery15.default)("#log-out-do-container, #log-out-do-exit").show();
+            (0, import_jquery14.default)("#log-out-do-container>.center").html(`[--Log-in with remember me option: 0--]${encodeURIComponent(prepare_default.initialPathname + prepare_default.initialSearch + "#" + encodeURIComponent(prepare_default.initialHashURI))}[--Log-in with remember me option: 1--]`);
+            (0, import_jquery14.default)("#log-out-do-container, #log-out-do-exit").show();
           }
         }
         prepare_default.$title.html(`${prepare_default.userId}'s recoeve.net`);
@@ -30837,8 +30823,8 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
           prepare_default.$toggle_reco_list_play.html(`\u25BC [--Showing reco list play--]`);
         }
       };
-      prepare_default.$toggle_manual = (0, import_jquery15.default)("#toggle-manual");
-      prepare_default.$recoeve_manual = (0, import_jquery15.default)("#recoeve-manual");
+      prepare_default.$toggle_manual = (0, import_jquery14.default)("#toggle-manual");
+      prepare_default.$recoeve_manual = (0, import_jquery14.default)("#recoeve-manual");
       prepare_default.$toggle_manual.on("mouseenter", function(e2) {
         prepare_default.$toggle_manual.html(`\u25BC [--Toggle Recoeve.net Manual--]`);
       });
