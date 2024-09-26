@@ -881,7 +881,9 @@ Based on your points on URIs (musics), you will be connected to your neighbors (
 <div class="rC recoeve"><div class="rSC">
 <iframe delayed-src="https://recoeve.net/user/${m.recoeveUserId ? encodeURIComponent(m.recoeveUserId) : "kipid"}/mode/multireco?cat=${encodeURIComponent(m.recoCat)}&ToR=#numbers-of-recos" frameborder="0"></iframe>
 </div></div></div>
-</div>`;
+</div>
+<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)">Toggle <span class="bold underline">a</span> mess</div>
+<div class="cBoth"></div>`;
 };
 
 // logPrint function.
@@ -2229,9 +2231,7 @@ Short Keys
 	}
 
 	// Style change widget, and SNS widget.
-	$docuKI.prepend(`<div class="button toggle-a-mess fRight cBoth order" onclick="k.toggleAMess(this)">Toggle <span class="bold underline">a</span> mess</div>
-<div class="cBoth"></div>
-<div class="change-docuK-style">
+	$docuKI.prepend(`<div class="change-docuK-style">
 <form><button type="button" onclick="k.resetStyle()" style="width:auto; padding:0 .5em">Reset docuK style</button></form>
 <form><input id="button${docuKI}-Dark" type="radio" name="mode" value="Dark" onclick="k.Cmode(this.value)"><label for="button${docuKI}-Dark" style="display:inline-block; background:black; color:white; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Dark</label>
 </input><input id="button${docuKI}-Bright" type="radio" name="mode" value="Bright" onclick="k.Cmode(this.value)"><label for="button${docuKI}-Bright" style="display:inline-block; background:white; color:black; border:2px solid rgb(150,150,150); padding:0.1em 0.2em">Bright</label></input></form>
