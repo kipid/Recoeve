@@ -3,14 +3,10 @@ package recoeve.db;
 // import java.lang.StringBuilder;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.HashSet;
-// import java.util.LinkedHashMap;
-// import java.util.Iterator;
-// import java.util.HashMap;
-
-import java.util.regex.Pattern;
+import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /////////////////////////
 // Strict rules
@@ -103,7 +99,7 @@ public class CatList {
 		int start0 = 0;
 		int start = 0;
 		int end = fullCats.length();
-		String subStr = "";
+		String subStr;
 		for (int j = 0; j < levels.length; j++) {
 			subStr = fullCats.substring(start, end);
 			String toFind = pre + levels[j] + "\n";
@@ -133,9 +129,9 @@ public class CatList {
 	}
 
 	public ArrayList<String> subCats(String cat) { // including itself, only if matched.
-		ArrayList<String> aL = new ArrayList<String>();
-		String subStr = null;
-		ArrayList<String> superCats = new ArrayList<String>();
+		ArrayList<String> aL = new ArrayList<>();
+		String subStr;
+		ArrayList<String> superCats = new ArrayList<>();
 		if (cat == null) { // return full cat list.
 			subStr = fullCats;
 		} else if (cat.isEmpty()) {
@@ -203,9 +199,9 @@ public class CatList {
 	}
 
 	public boolean changeOrders(String newFullCats) {
-		Set<String> setCats = new HashSet<String>();
-		Set<String> newSetCats = new HashSet<String>();
-		ArrayList<String> superCats = new ArrayList<String>();
+		Set<String> setCats = new HashSet<>();
+		Set<String> newSetCats = new HashSet<>();
+		ArrayList<String> superCats = new ArrayList<>();
 		String[] list = fullCats.split("\n");
 		for (int i = 0; i < list.length; i++) {
 			int depth = getDepthOfTabs(list[i]);
@@ -259,6 +255,7 @@ public class CatList {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return fullCats;
 	}
