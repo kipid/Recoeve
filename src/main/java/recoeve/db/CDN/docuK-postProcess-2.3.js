@@ -93,10 +93,6 @@ for (let i = 0; i < $list.length; i++) {
 	m.fsGo.fullList[$list.length - 1 - i] = { i: $list.length - 1 - i, txt: m.splitHangul(txt), html: html, $listI: $listI };
 }
 
-$fuzzy_search.trigger("keyup.fs");
-$button_Go = $(".button-Go");
-$button_log = $(".button-log");
-
 // Scripts will be appended on this.
 m.$headOrBody = $("head") || $("body") || $("#docuK-style");
 
@@ -195,6 +191,9 @@ Log <span class="bold underline">o</span>ut
 			m.$docuK.eq(i).after(m.promoting(`promoting-${i}-1`));
 		}
 	}
+	$fuzzy_search.trigger("keyup.fs");
+	$button_Go = $(".button-Go");
+	$button_log = $(".button-log");
 	// Printing codes in <codeprint> with id (which starts with "code-") into <pre id="pre-code-...">.
 	let $codeprints = $("codeprint");
 	for (let i = 0; i < $codeprints.length; i++) {

@@ -207,6 +207,10 @@ codeprint.SEE {
 	background-color:cornflowerblue
 }
 
+.button-Go.enabled {
+	background-color:#037017
+}
+
 .button-list {
 	background-color:#0f5796
 }
