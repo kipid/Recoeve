@@ -3,8 +3,8 @@ package recoeve.db;
 
 
 public class Encrypt {
-	public static final int iterFull=10000;
-	public static final int iterSSNFull=1000;
+	public static final int ITER_FULL=10000;
+	public static final int ITER_SSN_FULL=1000;
 	public static String pad(String str, int max) {
 		return (str.length()<max)?pad("0"+str,max):str;
 	}
@@ -71,7 +71,7 @@ public class Encrypt {
 	};
 	public static String hash6(String str) {/* ELF Hash Function */
 		int h=0;
-		int x=0;
+		int x;
 		for (int i=0;i<str.length();i++) {
 			h=(h<<4)+str.codePointAt(i);
 			if ((x=h&0xf0000000)!=0) {
@@ -138,7 +138,7 @@ public class Encrypt {
 		return pad(Integer.toHexString(h), 8);
 	};
 	public static String encrypt0(String salt, String h, int iter) {
-		String tmp1=null, tmp2=null, tmp3=null, tmp4=null, tmp5=null, tmp6=null, tmp7=null, tmp8=null, tmp9=null, tmp10=null, tmp11=null, tmp12=null, tmp13=null;
+		String tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13;
 		int i=0;
 		String h1=h.substring(i,i+8); i+=8;
 		String h2=h.substring(i,i+8); i+=8;
@@ -152,7 +152,7 @@ public class Encrypt {
 		String h10=h.substring(i,i+8); i+=8;
 		String h11=h.substring(i,i+8); i+=8;
 		String h12=h.substring(i,i+8); i+=8;
-		String h13=h.substring(i,i+8); i+=8;
+		String h13=h.substring(i,i+8);
 		for (int k=0;k<iter;k++) {
 			tmp1=h13+h12+h11+h10+h9+salt+h8+h7+h6+h5+h4+h3+h2+h1;
 			tmp2=h1+h3+salt+h2;
@@ -193,28 +193,28 @@ public class Encrypt {
 		);
 	}
 	public static String encryptRest(String salt, String pwd, int iter) {
-		return encrypt0(salt, pwd, iterFull-iter);
+		return encrypt0(salt, pwd, ITER_FULL-iter);
 	}
 	public static String encryptSSNRest(String salt, String pwd, int iter) {
-		return encrypt0(salt, pwd, iterSSNFull-iter);
+		return encrypt0(salt, pwd, ITER_SSN_FULL-iter);
 	}
-	
+
 	public static void main(String... args) {
 		// int h=-100;
 		// System.out.println(pad(Integer.toHexString(h), 8)); // ffffff9c
 
 		// String salt="14d95b54b8ac93af5891cca6fd09e81346fca2de72cfc4f2fa519b32ae4e41e720c2b70087d9775a8cb85bb756f2cc8bcbcb24d0";
-		// System.out.println("encrypt('Ef!%qKd3$2b') : "+encrypt(salt, "Ef!%qKd3$2b",iterFull));
-		// System.out.println("encrypt('3s9dkf@Q)34WKZ,e') : "+encrypt(salt, "3s9dkf@Q)34WKZ,e",iterFull));
-		// System.out.println("encrypt('c,DksEI%@8WE^% sq') : "+encrypt(salt, "c,DksEI%@8WE^% sq",iterFull));
-		// System.out.println("encrypt(' a528wdf329') : "+encrypt(salt, " a528wdf329",iterFull));
-		// System.out.println("encrypt('347958416') : "+encrypt(salt, "347958416",iterFull));
-		
+		// System.out.println("encrypt('Ef!%qKd3$2b') : "+encrypt(salt, "Ef!%qKd3$2b",ITER_FULL));
+		// System.out.println("encrypt('3s9dkf@Q)34WKZ,e') : "+encrypt(salt, "3s9dkf@Q)34WKZ,e",ITER_FULL));
+		// System.out.println("encrypt('c,DksEI%@8WE^% sq') : "+encrypt(salt, "c,DksEI%@8WE^% sq",ITER_FULL));
+		// System.out.println("encrypt(' a528wdf329') : "+encrypt(salt, " a528wdf329",ITER_FULL));
+		// System.out.println("encrypt('347958416') : "+encrypt(salt, "347958416",ITER_FULL));
+
 		// int k=-100%1000;
 		// System.out.println(k);
 		// k=(int)((-100&0xffff_ffffL)%1000);
 		// System.out.println(k);
-		
+
 		// k=1;
 		// for (int i=0;i<100;i++) {
 		// 	System.out.println(
@@ -225,7 +225,7 @@ public class Encrypt {
 		// 		+pad(Integer.toBinaryString(k), 32) );
 		// 	k=k*-3;
 		// }
-		
+
 		// k=0x7fff_ffff;
 		// for (int i=0;i<10;i++) {
 		// 	System.out.println(
