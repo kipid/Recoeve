@@ -1105,7 +1105,7 @@ public class RecoeveDB {
 				user = findUserByEmail(id);
 			}
 			if (user != null && user.next()) {
-				user.updateInt("pwd_iteration", Encrypt.iterFull - 1);
+				user.updateInt("pwd_iteration", Encrypt.ITER_FULL - 1);
 				byte[] new_salt = randomBytes(128);
 				user.updateBytes("pwd_salt", new_salt);
 				System.out.println("pwd_salt is renewed. :: " + bytesToHexString(new_salt));
@@ -1612,7 +1612,7 @@ public class RecoeveDB {
 			pstmtCreateUserSession.setLong(1, user_me);
 			pstmtCreateUserSession.setTimestamp(2, tNow);
 			pstmtCreateUserSession.setBytes(3, pwdEncrypt(salt, Encrypt.encrypt(bytesToHexString(salt),
-					bytesToHexString(session).substring(3, 11), Encrypt.iterSSNFull)));
+					bytesToHexString(session).substring(3, 11), Encrypt.ITER_SSN_FULL)));
 			pstmtCreateUserSession.setBytes(4, salt);
 			pstmtCreateUserSession.setString(5, ip);
 			pstmtCreateUserSession.setString(6, userAgent);
