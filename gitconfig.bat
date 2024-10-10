@@ -1,4 +1,4 @@
-rem copy to C:/kipid/PortableGit/bin
+rem copy to C:/PortableGit/bin
 
 :: Current directory
 SET BASEDIR=%CD%
