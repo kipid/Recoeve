@@ -14150,6 +14150,14 @@
     }
     return h1 + h2 + h3 + h4 + h5 + h6 + h7 + h8 + h9 + h10 + h11 + h12 + h13;
   };
+  m.generateRandomHexString = function(length = 32) {
+    const characters = "0123456789abcdef";
+    let result = "";
+    for (let i = 0; i < length; i += 1) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
   m.iterFull = 1e4;
   m.iterSessionFull = 1e3;
   m.escapeHTML = function(str) {
@@ -18422,7 +18430,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${idType}	${userId}	${re
   var import_jquery3 = __toESM(require_jquery(), 1);
   var import_react3 = __toESM(require_react(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
-  prepare_default.state = Math.random().toString(16).substring(2);
+  prepare_default.state = prepare_default.generateRandomHexString();
   prepare_default.oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
   prepare_default.params = {
     client_id: "964496446286-seakqek5ek8g4j9oih8uvmluc5g57cgi.apps.googleusercontent.com",
@@ -18512,7 +18520,7 @@ ${prepare_default.state}	${prepare_default.searchVars.goto?.val ? prepare_defaul
         }
       ),
       logInErrs.filter((errMsg, i) => i >= logInErrs.length - prepare_default.maxErrMsgs).map((errMsg, i) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "error-msg", children: errMsg }, i)),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("button", { id: "log-in-with-google", className: "button", onClick: () => prepare_default.logInWithGoogle(), tabIndex: "6", disabled: logInDisabled, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("button", { id: "log-in-with-google", className: "button", onClick: prepare_default.logInWithGoogle, tabIndex: "6", disabled: logInDisabled, children: [
         /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "logo-google", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("svg", { version: "1.1", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", className: "LgbsSe-Bz112c", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("g", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             "path",
@@ -18849,14 +18857,8 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${prepare_default.hashMa
       prepare_default.$delayedElems = (0, import_jquery5.default)("[delayed-src], [delayed-bgimage], .to-be-executed");
     }
     ;
-    let ignore = false;
     (0, import_react5.useEffect)(() => {
-      if (!ignore) {
-        initialEffect();
-      }
-      return () => {
-        ignore = true;
-      };
+      initialEffect();
     }, []);
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { id: "recoeve-container", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("h1", { children: "[--welcome--]" }),
@@ -18892,8 +18894,8 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${prepare_default.hashMa
             "a",
             {
               target: "_blank",
-              href: "/user/kipid/mode/multireco?cat=%5BMy%20Blog%5D--%5BMusic%2FBreak%5D--%EC%B8%84%EC%B8%84#headPlay",
-              children: "[My Blog]--[Music/Break]--\uCE04\uCE04 (My Pet) of kipid's Recoeve.net (Multireco mode)"
+              href: "/user/kipid/mode/multireco?cat=%5BMusic%2FBreak%5D--Pet#numbers-of-recos",
+              children: "[Music/Break]--Pet of kipid's Recoeve.net (Multireco mode)"
             }
           ) }),
           /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
@@ -18908,7 +18910,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${prepare_default.hashMa
             "a",
             {
               target: "_blank",
-              href: "https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics&lang=ko&PRL=0.80&PRR=1.00#headPlay",
+              href: "https://recoeve.net/user/kipid?cat=%5BPhysics%2FMath%2FScience%5D--Physics#headPlay",
               children: "[Physics/Math/Science]--Physics of kipid's Recoeve.net"
             }
           ) }),
@@ -18916,7 +18918,7 @@ web	&#9760;	${prepare_default.sW}	${prepare_default.sH}	${prepare_default.hashMa
             "a",
             {
               target: "_blank",
-              href: "https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95&lang=ko&PRL=0.80&PRR=1.00#headPlay",
+              href: "https://recoeve.net/user/kipid?cat=%5B%EC%9D%8C%EC%8B%9D%2F%EC%9A%94%EB%A6%AC%2F%EA%B1%B4%EA%B0%95%5D--%EA%B1%B4%EA%B0%95#headPlay",
               children: "[\uC74C\uC2DD/\uC694\uB9AC/\uAC74\uAC15]--\uAC74\uAC15 of kipid's Recoeve.net"
             }
           ) })

@@ -14150,6 +14150,14 @@
     }
     return h1 + h2 + h3 + h4 + h5 + h6 + h7 + h8 + h9 + h10 + h11 + h12 + h13;
   };
+  m2.generateRandomHexString = function(length = 32) {
+    const characters = "0123456789abcdef";
+    let result = "";
+    for (let i3 = 0; i3 < length; i3 += 1) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
   m2.iterFull = 1e4;
   m2.iterSessionFull = 1e3;
   m2.escapeHTML = function(str) {
