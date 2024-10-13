@@ -16774,7 +16774,7 @@ m.initialOpen: ${m2.initialOpen}`);
   var ptnURI;
   ptnURI = m2.ptnURI["www.youtube.com"] = m2.ptnURI["youtube.com"] = m2.ptnURI["youtu.be"] = m2.ptnURI["m.youtube.com"] = {};
   ptnURI.regEx = /^(?:watch|embed|live|shorts|playlist)\/?([\w\-\_]+)?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
-  ptnURI.regEx0 = /^(\w+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
+  ptnURI.regEx0 = /^([\w\-\_]+)\/?(\?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.regEx1 = /^(@?[^\"\'\`\<\>\[\]\s\t\n\r]+)?/i;
   ptnURI.toIframe = function(uriRest, inListPlay, toA, descR) {
     return new Promise(function(resolve, reject) {
