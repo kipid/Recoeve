@@ -17769,7 +17769,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
         }
         r2.descR = m2.renderStrDescCmt(r2.desc);
         if (await m2.putCats_UriToLists(r2.cats, uri2)) {
-          await m2.catListToHTML();
+          await m2.catListToHTML(args.updateRawUserCatListHTML);
         }
         m2.refresh(r2.cats, "recoed", uri2);
       } else {
@@ -18117,7 +18117,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     }
   };
   m2.kakaoInit = setInterval(m2.kakaoInitDo, 2 * m2.wait);
-  m2.catListToHTML = function() {
+  m2.catListToHTML = function(updateRawUserCatListHTML) {
     return new Promise(async function(resolve, reject) {
       let cL = m2.catList;
       let cat2 = cL[0].cat;
@@ -18159,8 +18159,8 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
           catListHTML += `</div>`;
         }
       }
-      m2.$catList.html(catListHTML);
-      resolve();
+      updateRawUserCatListHTML(catListHTML);
+      resolve(catListHTML);
     });
   };
   m2.putCatToFSFullList = function(i3, cat2, catList) {
@@ -18938,7 +18938,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   var import_jquery3 = __toESM(require_jquery(), 1);
   var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
-  function Sidebar({ userCatList, opened, isChangingOrder, onChangeOrder }) {
+  function Sidebar({ userCatList, updateRawUserCatListHTML, opened, isChangingOrder, onChangeOrder }) {
     (0, import_react4.useEffect)(() => {
       prepare_default.$change_catList_order = (0, import_jquery3.default)("#change-catList-order");
       prepare_default.$change_catList_order_ok = (0, import_jquery3.default)("#change-catList-order-ok");
@@ -18960,12 +18960,12 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
       prepare_default.$catList.on("mouseup.change-cat", prepare_default.handleChangeCat);
       prepare_default.$catList_result = (0, import_jquery3.default)("#catList-result");
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-      await prepare_default.catListToHTML();
+      await prepare_default.catListToHTML(updateRawUserCatListHTML);
       await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped.trim() + "\n" + prepare_default.catListHTMLEscaped.trim() + "\n" + prepare_default.kipidCatListHTMLEscaped.trim()), prepare_default.myFSCatList);
       prepare_default.updateCatFS = function() {
         return new Promise(async (resolve, reject) => {
           await prepare_default.strCatListToJSON(prepare_default.unescapeHTML(userCatList.text), prepare_default.catList);
-          await prepare_default.catListToHTML();
+          await prepare_default.catListToHTML(updateRawUserCatListHTML);
           prepare_default.fsGotoCats.fullList.splice(0, prepare_default.fsGotoCats.fullList.length);
           let l = prepare_default.catList.length;
           for (let i3 = l - 1; i3 > 0; i3--) {
@@ -19057,7 +19057,7 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
     }, [userCatList]);
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("aside", { id: "sidebar", count: opened.count, children: [
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "user-noti" }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList", dangerouslySetInnerHTML: { __html: rawHTML } }),
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { id: "catList-result" }),
       /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "right", children: [
         /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "button", style: { display: !isChangingOrder ? "inline-block" : "none" }, id: "change-catList-order", onClick: () => {
@@ -19076,12 +19076,12 @@ ${m2.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" o
   // src/components/SidebarCon.jsx
   var import_react5 = __toESM(require_react(), 1);
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-  function SidebarCon({ userCatList }) {
+  function SidebarCon({ userCatList, updateRawUserCatListHTML }) {
     const [opened, updateOpened2] = i2({ value: true, count: 0 });
     const [isChangingOrder, setIsChangingOrder] = (0, import_react5.useState)(false);
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SidebarDragger, { opened, updateOpened: updateOpened2 }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Sidebar, { userCatList, opened, isChangingOrder, onChangeOrder: setIsChangingOrder })
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Sidebar, { userCatList, updateRawUserCatListHTML, opened, isChangingOrder, onChangeOrder: setIsChangingOrder })
     ] });
   }
 
@@ -25972,6 +25972,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [blockTouch, updateBlockTouch] = i2(false);
     const [myCatList, updateMyCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped) });
     const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
+    const [rawUserCatListHTML, updateRawUserCatListHTML] = i2("");
     const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
       prepare_default.$container = (0, import_jquery14.default)("#container");
@@ -26953,7 +26954,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             selectedCat = prepare_default.unescapeHTML($catSelected.find(".list-index-id").html());
           }
           await prepare_default.strCatListToJSON(dataCatList, prepare_default.catList);
-          await prepare_default.catListToHTML();
+          await prepare_default.catListToHTML(updateRawUserCatListHTML);
           if (selectedCat) {
             (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
           }
@@ -27499,7 +27500,7 @@ ${uri.join("\n")}
                 }
               }
             }
-            await prepare_default.catListToHTML();
+            await prepare_default.catListToHTML(updateRawUserCatListHTML);
             await prepare_default.updateCatFS();
             await prepare_default.updateGotoCatsFS();
             resolve();
@@ -29336,7 +29337,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, cat2);
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
                 if (await prepare_default.putCats_UriToLists(args.cats, uri)) {
-                  await prepare_default.catListToHTML();
+                  await prepare_default.catListToHTML(updateRawUserCatListHTML);
                   await prepare_default.updateCatFS();
                   await prepare_default.updateGotoCatsFS();
                 }
@@ -30870,7 +30871,7 @@ ${window.location.href}	${document.referrer}	${prepare_default.myId}`;
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("data", { id: "data-catList" }),
       /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("data", { id: "data-kipid-catList" }),
       /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)("div", { id: "container", className: styles.mode, style: { fontFamily: styles.fontFamily, fontSize: styles.fontSize.toFixed(2) + "em", lineHeight: styles.lineHeight }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(SidebarCon, { userCatList }),
+        /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(SidebarCon, { userCatList, updateRawUserCatListHTML }),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(RightTop, {}),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(LangList, {}),
         /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FSTimezone, {}),

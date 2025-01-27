@@ -17769,7 +17769,7 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
         }
         r2.descR = m.renderStrDescCmt(r2.desc);
         if (await m.putCats_UriToLists(r2.cats, uri2)) {
-          await m.catListToHTML();
+          await m.catListToHTML(args.updateRawUserCatListHTML);
         }
         m.refresh(r2.cats, "recoed", uri2);
       } else {
@@ -18117,7 +18117,7 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
     }
   };
   m.kakaoInit = setInterval(m.kakaoInitDo, 2 * m.wait);
-  m.catListToHTML = function() {
+  m.catListToHTML = function(updateRawUserCatListHTML) {
     return new Promise(async function(resolve, reject) {
       let cL = m.catList;
       let cat = cL[0].cat;
@@ -18159,8 +18159,8 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
           catListHTML += `</div>`;
         }
       }
-      m.$catList.html(catListHTML);
-      resolve();
+      updateRawUserCatListHTML(catListHTML);
+      resolve(catListHTML);
     });
   };
   m.putCatToFSFullList = function(i, cat, catList) {
