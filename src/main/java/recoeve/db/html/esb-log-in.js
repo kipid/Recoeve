@@ -17657,7 +17657,7 @@ ${descCmtR[i].val.trim()}
       res += `<div class="reco${additionalClass ? ` ${additionalClass}` : ``}${inRange ? `` : ` none`}"${inListPlay ? `` : ` id="reco${inRecoms ? `m-${m.recoms[m.currentCat][r2?.uri]?.i}"` : `-${m.fsToRs.fullList[r2?.uri]?.i}"`}`}><img class="SNS-img" src="/CDN/link.png" onclick="return m.shareSNS(this,'link')"><img class="SNS-img" src="/CDN/icon-Tag.png" onclick="return m.shareSNS(this,'tag')"><img class="SNS-img" src="/CDN/icon-Recoeve.png" onclick="return m.shareSNS(this,'recoeve')"><img class="SNS-img" src="/CDN/icon-X.png" onclick="return m.shareSNS(this,'X')"><img class="SNS-img" src="/CDN/icon-Facebook.png" onclick="return m.shareSNS(this,'facebook')"><img class="SNS-img" src="/CDN/icon-Kakao.png" onclick="return m.shareSNS(this,'kakao')"/><img class="SNS-img" src="/CDN/icon-Whatsapp.png" onclick="return m.shareSNS(this,'whatsapp')"/>
 ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" onclick="m.editOrRecoToMine(this)">${m.myPage ? "[--Edit--]" : "[--Reco to mine--]"}</div>` : ""}
 <div class="textURI">${m.escapeOnlyTag(r2?.uri)}</div>
-<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r2?.uri)}">RecoStat</a>${m.uriToA(r2?.uri)}</div>
+<div class="uri cBoth"><a class="button button-recostat" target="_blank" href="/recostat?uri=${encodeURIComponent(r2?.uri)}">RecoStat</a>&nbsp;${m.uriToA(r2?.uri)}</div>
 <div class="title">${m.escapeOnlyTag(r2?.title)}</div>
 <div class="cats">${m.catsToA(r2.cats)}</div>`;
       if (!inListPlay) {
@@ -17769,7 +17769,7 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
         }
         r2.descR = m.renderStrDescCmt(r2.desc);
         if (await m.putCats_UriToLists(r2.cats, uri2)) {
-          await m.catListToHTML(args.updateRawUserCatListHTML);
+          await m.catListToHTML();
         }
         m.refresh(r2.cats, "recoed", uri2);
       } else {
@@ -18117,52 +18117,6 @@ ${m.myIndex ? `<div class="button edit fRight${r2.deleted ? " deleted" : ""}" on
     }
   };
   m.kakaoInit = setInterval(m.kakaoInitDo, 2 * m.wait);
-  m.catListToHTML = function(updateRawUserCatListHTML) {
-    return new Promise(async function(resolve, reject) {
-      let cL = m.catList;
-      let cat = cL[0].cat;
-      let catListHTML = `<div id="cat-" key="cat-" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
-      let i = 1;
-      for (; i < cL.length - 1; i++) {
-        cat = cL[i].cat;
-        let beforeDepth = cL[i - 1].depth;
-        let currentDepth = cL[i].depth;
-        let afterDepth = cL[i + 1].depth;
-        if (beforeDepth < currentDepth) {
-          catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
-        } else {
-          for (let j = currentDepth; j < beforeDepth; j++) {
-            catListHTML += `</div>`;
-          }
-        }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i]?.depth}em">`;
-        if (currentDepth < afterDepth) {
-          catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat}'])">${cL[i].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
-        } else {
-          catListHTML += `<span key="EC-${encodeURIComponent(cat)}" class="noEC"></span>`;
-        }
-        catListHTML += `<a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
-      }
-      if (cL.length > 1) {
-        cat = cL[i].cat;
-        let beforeDepth = cL[i - 1].depth;
-        let currentDepth = cL[i].depth;
-        if (beforeDepth < currentDepth) {
-          catListHTML += `<div key="subCat-${encodeURIComponent(cat)}" class="subCat" style="display:${cL[cat].subCatExpanded ? "block" : "none"}">`;
-        } else {
-          for (let j = currentDepth; j < beforeDepth; j++) {
-            catListHTML += `</div>`;
-          }
-        }
-        catListHTML += `<div id="cat-${encodeURIComponent(cat)}" key="cat-${encodeURIComponent(cat)}" class="cat${m.fsGotoCats?.fullList[cat]?.selected ? " selected" : ""}" style="margin-left:${cL[i].depth}em"><span key="EC-${encodeURIComponent(cat)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat)}" class="baseCat${m.fsGotoCats?.fullList[cat]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat)}" class="list-index-id">${m.escapeOnlyTag(cat)}</span>${m.escapeOnlyTag(cL[i].baseCat)}</a></div>`;
-        for (let j = 0; j < currentDepth; j++) {
-          catListHTML += `</div>`;
-        }
-      }
-      updateRawUserCatListHTML(catListHTML);
-      resolve(catListHTML);
-    });
-  };
   m.putCatToFSFullList = function(i, cat, catList) {
     if (catList === m.myFSCatList) {
       if (!m.fsCat.fullList[cat]) {
