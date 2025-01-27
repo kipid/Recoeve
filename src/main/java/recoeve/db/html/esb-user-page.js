@@ -25929,6 +25929,52 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [rawUserCatListHTML, updateRawUserCatListHTML] = (0, import_react10.useState)("");
     const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
+      prepare_default.catListToHTML = function() {
+        return new Promise(async function(resolve, reject) {
+          let cL = prepare_default.catList;
+          let cat2 = cL[0].cat;
+          let catListHTML = `<div id="cat-" key="cat-" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
+          let i3 = 1;
+          for (; i3 < cL.length - 1; i3++) {
+            cat2 = cL[i3].cat;
+            let beforeDepth = cL[i3 - 1].depth;
+            let currentDepth = cL[i3].depth;
+            let afterDepth = cL[i3 + 1].depth;
+            if (beforeDepth < currentDepth) {
+              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
+            } else {
+              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
+                catListHTML += `</div>`;
+              }
+            }
+            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3]?.depth}em">`;
+            if (currentDepth < afterDepth) {
+              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat2}'])">${cL[i3].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
+            } else {
+              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
+            }
+            catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+          }
+          if (cL.length > 1) {
+            cat2 = cL[i3].cat;
+            let beforeDepth = cL[i3 - 1].depth;
+            let currentDepth = cL[i3].depth;
+            if (beforeDepth < currentDepth) {
+              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
+            } else {
+              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
+                catListHTML += `</div>`;
+              }
+            }
+            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
+            for (let j2 = 0; j2 < currentDepth; j2++) {
+              catListHTML += `</div>`;
+            }
+          }
+          updateRawUserCatListHTML(catListHTML);
+          resolve(catListHTML);
+        });
+      };
       prepare_default.$container = (0, import_jquery14.default)("#container");
       prepare_default.$h1 = (0, import_jquery14.default)("#h1");
       prepare_default.$block_touch = (0, import_jquery14.default)("#block-touch");
@@ -26425,52 +26471,6 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           return `${dateT} ${timeT.substring(0, 8)}`;
         }
         return "";
-      };
-      prepare_default.catListToHTML = function() {
-        return new Promise(async function(resolve, reject) {
-          let cL = prepare_default.catList;
-          let cat2 = cL[0].cat;
-          let catListHTML = `<div id="cat-" key="cat-" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:0em"><span key="EC-" class="noEC"></span><a key="baseCat-" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-" class="list-index-id"></span>[--Uncategorized--]</a></div>`;
-          let i3 = 1;
-          for (; i3 < cL.length - 1; i3++) {
-            cat2 = cL[i3].cat;
-            let beforeDepth = cL[i3 - 1].depth;
-            let currentDepth = cL[i3].depth;
-            let afterDepth = cL[i3 + 1].depth;
-            if (beforeDepth < currentDepth) {
-              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
-            } else {
-              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
-                catListHTML += `</div>`;
-              }
-            }
-            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3]?.depth}em">`;
-            if (currentDepth < afterDepth) {
-              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="EC" onclick="m.ExpCol(this,m.catList['${cat2}'])">${cL[i3].subCatExpanded ? "\u25BC" : "\u25B6"}</span>`;
-            } else {
-              catListHTML += `<span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span>`;
-            }
-            catListHTML += `<a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
-          }
-          if (cL.length > 1) {
-            cat2 = cL[i3].cat;
-            let beforeDepth = cL[i3 - 1].depth;
-            let currentDepth = cL[i3].depth;
-            if (beforeDepth < currentDepth) {
-              catListHTML += `<div key="subCat-${encodeURIComponent(cat2)}" class="subCat" style="display:${cL[cat2].subCatExpanded ? "block" : "none"}">`;
-            } else {
-              for (let j2 = currentDepth; j2 < beforeDepth; j2++) {
-                catListHTML += `</div>`;
-              }
-            }
-            catListHTML += `<div id="cat-${encodeURIComponent(cat2)}" key="cat-${encodeURIComponent(cat2)}" class="cat${prepare_default.fsGotoCats?.fullList[cat2]?.selected ? " selected" : ""}" style="margin-left:${cL[i3].depth}em"><span key="EC-${encodeURIComponent(cat2)}" class="noEC"></span><a key="baseCat-${encodeURIComponent(cat2)}" class="baseCat${prepare_default.fsGotoCats?.fullList[cat2]?.down ? " down" : ""}"><span key="list-id-${encodeURIComponent(cat2)}" class="list-index-id">${prepare_default.escapeOnlyTag(cat2)}</span>${prepare_default.escapeOnlyTag(cL[i3].baseCat)}</a></div>`;
-            for (let j2 = 0; j2 < currentDepth; j2++) {
-              catListHTML += `</div>`;
-            }
-          }
-          updateRawUserCatListHTML(catListHTML);
-          resolve(catListHTML);
-        });
       };
       prepare_default.playLi = function(event2) {
         return new Promise(async (resolve, reject) => {
