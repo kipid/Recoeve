@@ -26954,7 +26954,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
             selectedCat = prepare_default.unescapeHTML($catSelected.find(".list-index-id").html());
           }
           await prepare_default.strCatListToJSON(dataCatList, prepare_default.catList);
-          await prepare_default.catListToHTML(updateRawUserCatListHTML);
+          await prepare_default.catListToHTML();
           if (selectedCat) {
             (0, import_jquery14.default)(`#cat-${prepare_default.escapeEncodePctg(encodeURIComponent(selectedCat))}`).addClass("selected");
           }
@@ -27500,7 +27500,7 @@ ${uri.join("\n")}
                 }
               }
             }
-            await prepare_default.catListToHTML(updateRawUserCatListHTML);
+            await prepare_default.catListToHTML();
             await prepare_default.updateCatFS();
             await prepare_default.updateGotoCatsFS();
             resolve();
@@ -29337,7 +29337,7 @@ ${neighborI.user_to}	${neighborI.cat_to}`;
                 await prepare_default.recoToEve(args.strRecoDo, prepare_default.myRecos, cat2);
                 let cats2 = prepare_default.catsToString(prepare_default.myRecos[uri].cats);
                 if (await prepare_default.putCats_UriToLists(args.cats, uri)) {
-                  await prepare_default.catListToHTML(updateRawUserCatListHTML);
+                  await prepare_default.catListToHTML();
                   await prepare_default.updateCatFS();
                   await prepare_default.updateGotoCatsFS();
                 }
