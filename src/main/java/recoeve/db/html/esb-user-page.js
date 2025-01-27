@@ -25926,7 +25926,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
     const [blockTouch, updateBlockTouch] = i2(false);
     const [myCatList, updateMyCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped) });
     const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
-    const [rawUserCatListHTML, updateRawUserCatListHTML] = i2("");
+    const [rawUserCatListHTML, updateRawUserCatListHTML] = (0, import_react10.useState)("");
     const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
       prepare_default.$container = (0, import_jquery14.default)("#container");
