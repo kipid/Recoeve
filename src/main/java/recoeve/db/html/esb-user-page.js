@@ -25923,9 +25923,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
   Window.m = window.m = prepare_default;
   function App() {
     const [styles, updateStyles] = i2(prepare_default.defaultStyles);
-    const [blockTouch, updateBlockTouch] = i2(false);
-    const [myCatList, updateMyCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.myCatListHTMLEscaped) });
-    const [userCatList, updateUserCatList] = i2({ text: prepare_default.unescapeHTML(prepare_default.catListHTMLEscaped) });
+    const [blockTouch, updateBlockTouch] = (0, import_react10.useState)(false);
+    const [myCatList, updateMyCatList] = (0, import_react10.useState)(prepare_default.myCatListHTMLEscaped);
+    const [userCatList, updateUserCatList] = (0, import_react10.useState)(prepare_default.catListHTMLEscaped);
     const [rawUserCatListHTML, updateRawUserCatListHTML] = (0, import_react10.useState)("");
     const ignore = (0, import_react10.useRef)(false);
     async function initialEffect() {
@@ -26883,9 +26883,9 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           prepare_default.catListHTMLEscaped = prepare_default.escapeOnlyTag(args.catListChanged);
           if (prepare_default.myPage) {
             prepare_default.myCatListHTMLEscaped = prepare_default.catListHTMLEscaped;
-            updateMyCatList((data) => data.text = prepare_default.catListHTMLEscaped);
+            updateMyCatList((draft) => prepare_default.catListHTMLEscaped);
           }
-          updateUserCatList((data) => data.text = prepare_default.catListHTMLEscaped);
+          updateUserCatList((draft) => prepare_default.catListHTMLEscaped);
           await prepare_default.updateCatFS();
           await prepare_default.updateGotoCatsFS();
           prepare_default.$change_catList_order.show();
@@ -26934,7 +26934,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
               $result: prepare_default.$catList_result
             });
           } else {
-            updateUserCatList((data) => ({ text: prepare_default.escapeOnlyTag(catListChanged) }));
+            updateUserCatList((draft) => prepare_default.escapeOnlyTag(catListChanged));
             prepare_default.$change_catList_order.show();
           }
           await prepare_default.reTriggerFS(prepare_default.fsGotoCats);
@@ -27234,7 +27234,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
           if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
-            updateMyCatList((draft) => draft.text = prepare_default.myCatListHTMLEscaped);
+            updateMyCatList((draft) => prepare_default.myCatListHTMLEscaped);
             if (prepare_default.myPage) {
               prepare_default.$change_catList_order_cancel.trigger("click.change-order-catList");
             }
@@ -27280,7 +27280,7 @@ English/\uC601\uC5B4/\u82F1\u8A9E/en	Korean/\uD55C\uAD6D\uC5B4/\u97D3\u8A9E/ko	C
           }
           if (res) {
             prepare_default.myCatListHTMLEscaped = prepare_default.escapeOnlyTag(fullCats);
-            updateMyCatList((draft) => draft.text = prepare_default.myCatListHTMLEscaped);
+            updateMyCatList((draft) => prepare_default.myCatListHTMLEscaped);
           }
           return res;
         });
