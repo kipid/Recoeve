@@ -145,7 +145,9 @@ table>*>tr>td {
 	background-color:orangered
 }
 
-.button.cadetblue {
+.button.cadetblue,
+.bright .button.cadetblue,
+.pink .button.cadetblue {
 	background-color:cadetblue
 }
 
@@ -887,15 +889,21 @@ textarea.multi-line {
 	background-color:black
 }
 
-.reco.recoed {
+.reco.recoed,
+.bright .reco.recoed,
+.pink .reco.recoed {
 	border:.3em solid rgb(50 50 200)
 }
 
-.reco.changed {
+.reco.changed,
+.bright .reco.changed,
+.pink .reco.changed {
 	border:.3em solid rgb(50 200 50)
 }
 
-.reco.deleted {
+.reco.deleted,
+.bright .reco.deleted,
+.pink .reco.deleted {
 	border:.3em solid rgb(168 50 0)
 }
 
