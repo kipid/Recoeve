@@ -889,6 +889,11 @@ textarea.multi-line {
 	background-color:black
 }
 
+.bright .reco {
+	border-color:#d3d3d3;
+	background-color:rgb(230 230 230)
+}
+
 .reco.recoed,
 .bright .reco.recoed,
 .pink .reco.recoed {
@@ -905,11 +910,6 @@ textarea.multi-line {
 .bright .reco.deleted,
 .pink .reco.deleted {
 	border:.3em solid rgb(168 50 0)
-}
-
-.bright .reco {
-	border-color:#d3d3d3;
-	background-color:rgb(230 230 230)
 }
 
 .pink .reco {
