@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<script>
-const m = window.m = {
-	initialPathname: window.location.pathname,
-	initialSearch: window.location.search,
-	initialHash: window.location.hash,
-	hashMap: [],
-	authToken: "{--m.authToken--}",
-	regExId: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]*$/,
-	regExEmail:
-		/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/,
-	minIdLength: 1,
-	maxIdLength: 128,
-	minPwdLength: 4,
-	maxPwdLength: 128,
-	maxErrMsgs: 8,
-	args: {},
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script>
+const m=window.m={
+initialPathname:window.location.pathname,
+initialSearch:window.location.search,
+initialHash:window.location.hash,
+hashMap:[],
+authToken:"{--m.authToken--}",
+regExId:/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]*$/,
+regExEmail:
+/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+@[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\-\_\.]+\.[\w]{2,3}$/,
+minIdLength:1,
+maxIdLength:128,
+minPwdLength:4,
+maxPwdLength:128,
+maxErrMsgs:8,
+args:{},
 };
-	</script>
-	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
-	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=3,user-scalable=yes"/>
-	<meta name="keywords" content="Recoeve.net"/>
-	<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico"/>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-	<script>
-let fullPath = m.initialPathname + m.initialSearch + m.initialHash;
-let path = "/account/log-in";
+</script>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=3,user-scalable=yes"/>
+<meta name="keywords" content="Recoeve.net"/>
+<link rel="icon" type="image/x-icon" href="/CDN/favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+<script>
+let fullPath=m.initialPathname+m.initialSearch+m.initialHash;
+let path="/account/log-in";
 if (!m.initialPathname.startsWith(path)) {
-	window.history.replaceState(
-		{},
-		"",
-		`${path}?goto=${encodeURIComponent(fullPath)}`
-	);
+window.history.replaceState(
+{},
+"",
+`${path}?goto=${encodeURIComponent(fullPath)}`
+);
 }
-	</script>
-	<title>Recoeve.net (3S|Slow/Sexy/Sincere SNS)</title>
-	<link rel="stylesheet" href="/CDN/esb-log-in.css"/>
+</script>
+<title>Recoeve.net (3S|Slow/Sexy/Sincere SNS)</title>
+<link rel="stylesheet" href="/CDN/esb-log-in.css"/>
 </head>
 <body>
-	<div id="root"></div>
+<div id="root"></div>
 </body>
 <script src="/esb-log-in.js" charset="utf-8"></script>
 </html>
