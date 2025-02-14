@@ -1841,7 +1841,7 @@ m.HideBR = function (elem) {
 };
 
 // Changing Styles of docuK
-m.mode = "Dark";
+m.mode = "Bright";
 m.fontFamily = "Noto Sans KR";
 m.fontSize = 10;
 m.lineHeight10 = 16;
