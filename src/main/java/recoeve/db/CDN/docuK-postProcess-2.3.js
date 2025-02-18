@@ -219,7 +219,7 @@ Log <span class="bold underline">o</span>ut
 		m.logPrint(`<br>Mode ${cookieItem} is set from cookie.`);
 	}
 	else {
-		m.Cmode("Dark");
+		m.Cmode("Bright");
 	}
 	for (let i = 1; i < m.$docuK.length; i++) {
 		$(`#button${i}-${m.mode}`).prop('checked', true);
