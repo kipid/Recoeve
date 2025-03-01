@@ -46,14 +46,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 			.setFollowRedirects(true);
 	public static final int MIN_PORT = 50000;
 	public static final int MAX_PORT = 51000;
-	public static final int DEFAULT_MAX_DRIVERS = 2;
+	public static final int DEFAULT_MAX_DRIVERS = 1;
 	public static final long EXPIRES_IN_MS = 210L * 24L * 60L * 60L * 1000L;
 		// * 210 days in milliseconds
 	public static final long TIMEOUT_MS = 7200L;
 	public static final long FIND_PER_MS = 500L;
 	public static final long TIMEOUT_DRIVER = 600000;
 		// * 10 minutes in milliseconds
-	public static final int RECURSE_MAX = 10;
+	public static final int RECURSE_MAX = 3;
 	public static final ChromeDriverService service = new ChromeDriverService.Builder().withLogOutput(System.out).withLogLevel(ChromiumDriverLogLevel.DEBUG).withAppendLog(true).withReadableTimestamp(true).build();
 	public static final String EMPTY_URL = "https://tistory1.daumcdn.net/tistory/1468360/skin/images/empty.html";
 		// = "https://recoeve.net/CDN/empty.html"
