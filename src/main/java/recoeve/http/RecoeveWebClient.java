@@ -7,6 +7,8 @@ import java.net.URLDecoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -219,30 +221,30 @@ public class RecoeveWebClient extends AbstractVerticle {
 		ChromeOptions chromeOptions = new ChromeOptions();
 		chromeOptions.addArguments(
 			"--headless=new",
-			"--disable-web-security",
-			"--allow-running-insecure-content",
-			// "--blink-settings=imagesEnabled=false", // For TikTok, disabled.
-			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-			"--disable-software-rasterizer",
+			// "--disable-web-security",
+			// "--allow-running-insecure-content",
+			"--blink-settings=imagesEnabled=false", // For TikTok, disable this.
+			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+			// "--disable-software-rasterizer",
 			"--disable-blink-features",
 			"--window-size=1920,1080",
 			"--window-position=-5000,-5000",
-			"--disable-gpu",
+			// "--disable-gpu",
 			"--disable-notifications",
-			"--ignore-certificate-errors",
-			"--remote-allow-origins=*",
-			"--no-sandbox",
+			// "--ignore-certificate-errors",
+			// "--remote-allow-origins=*",
+			// "--no-sandbox",
 			"--disable-dev-shm-usage",
 			"--port=" + curPort
 		);
-		// chromeOptions.setBrowserVersion("latest");
-		chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
-		chromeOptions.setAcceptInsecureCerts(true);
-		// Duration duration = Duration.of(5, ChronoUnit.SECONDS);
-		// chromeOptions.setScriptTimeout(duration);
-		// chromeOptions.setPageLoadTimeout(duration);
-		// chromeOptions.setImplicitWaitTimeout(duration);
-		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
+		chromeOptions.setBrowserVersion("latest");
+		chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+		chromeOptions.setAcceptInsecureCerts(false);
+		Duration duration = Duration.of(5, ChronoUnit.SECONDS);
+		chromeOptions.setScriptTimeout(duration);
+		chromeOptions.setPageLoadTimeout(duration);
+		chromeOptions.setImplicitWaitTimeout(duration);
+		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		return chromeOptions;
