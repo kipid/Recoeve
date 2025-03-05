@@ -199,13 +199,13 @@ public class RecoeveDB {
 		this.vertx = vertx;
 		try {
 			ds = new MysqlConnectionPoolDataSource();
-			ds.setServerName("localhost");
-			ds.setPort(3306);
-			ds.setDatabaseName("recoeve0.1");
-			// ds.setURL("localhost:3306/recoeve0.1?serverTimezone=UTC");
-			ds.setUser("eve");
-			ds.setPassword("$Re7pAkeoCo#ev3e");
-			ds.setServerTimezone("UTC");
+			ds.setServerName(Config.DB_SERVER_NAME);
+			ds.setPort(Config.DB_PORT);
+			ds.setDatabaseName(Config.DB_DATABASE_NAME);
+			// ds.setURL("localhost:3306/DB_NAME?serverTimezone=UTC");
+			ds.setUser(Config.DB_USER);
+			ds.setPassword(Config.DB_PASSWORD);
+			ds.setServerTimezone(Config.DB_SERVER_TIMEZONE);
 			vertx.executeBlocking(() -> {
 				con = ds.getConnection();
 
