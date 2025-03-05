@@ -232,7 +232,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			// "--disable-gpu",
 			"--disable-notifications",
 			// "--ignore-certificate-errors",
-			// "--remote-allow-origins=*",
+			"--remote-allow-origins=*",
 			// "--no-sandbox",
 			"--disable-dev-shm-usage",
 			"--port=" + curPort
