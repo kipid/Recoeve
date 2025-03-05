@@ -12,6 +12,7 @@ tmp/
 *~.nib
 local.properties
 config.properties
+Config.java
 .settings/
 .loadpath
 .recommenders
