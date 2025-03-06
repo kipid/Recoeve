@@ -235,7 +235,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			"--disable-dev-shm-usage",
 			"--port=" + curPort
 		);
-		// chromeOptions.setBrowserVersion("latest");
+		chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
 		chromeOptions.setAcceptInsecureCerts(false);
 		// Duration duration = Duration.of(5, ChronoUnit.SECONDS);
