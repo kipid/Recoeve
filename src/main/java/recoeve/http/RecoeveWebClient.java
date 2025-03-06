@@ -223,17 +223,17 @@ public class RecoeveWebClient extends AbstractVerticle {
 			"--headless=new",
 			// "--disable-web-security",
 			// "--allow-running-insecure-content",
-			"--blink-settings=imagesEnabled=false", // For TikTok, disable this.
+			// "--blink-settings=imagesEnabled=false", // For TikTok, disable this.
 			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
 			// "--disable-software-rasterizer",
 			"--disable-blink-features",
 			"--window-size=1920,1080",
 			"--window-position=-5000,-5000",
-			// "--disable-gpu",
+			"--disable-gpu",
 			"--disable-notifications",
 			// "--ignore-certificate-errors",
 			"--remote-allow-origins=*",
-			// "--no-sandbox",
+			"--no-sandbox",
 			"--disable-dev-shm-usage",
 			"--port=" + curPort
 		);
