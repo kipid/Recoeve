@@ -551,7 +551,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 							}
 						}
 						else {
-
+							System.out.println("\nError: redirected(uri).whenComplete((redirectedURI, err) -> : " + err.getMessage());
 						}
 					});
 				}
