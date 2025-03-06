@@ -94,7 +94,7 @@ public class MainVerticle extends AbstractVerticle {
 		vertx = null;
 		fileMap = null;
 		fileMapWithVar = null;
-		recoeveWebClient.cleanupDrivers();
+		recoeveWebClient.cleanupPages();
 		recoeveWebClient = null;
 		try {
 			if (db.con != null) {
@@ -110,7 +110,7 @@ public class MainVerticle extends AbstractVerticle {
 					System.out.println("HTTP server closed successfully.");
 					stopPromise.complete();
 				} else {
-					System.err.println("Failed to close HTTP server: " + ar.cause());
+					System.err.println("Failed to close HTTP server: " + ar.toString());
 					stopPromise.fail(ar.cause());
 				}
 				stopPromise.complete();
