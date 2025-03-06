@@ -7,8 +7,6 @@ import java.net.URLDecoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,14 +235,14 @@ public class RecoeveWebClient extends AbstractVerticle {
 			"--disable-dev-shm-usage",
 			"--port=" + curPort
 		);
-		chromeOptions.setBrowserVersion("latest");
+		// chromeOptions.setBrowserVersion("latest");
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
 		chromeOptions.setAcceptInsecureCerts(false);
-		Duration duration = Duration.of(5, ChronoUnit.SECONDS);
-		chromeOptions.setScriptTimeout(duration);
-		chromeOptions.setPageLoadTimeout(duration);
-		chromeOptions.setImplicitWaitTimeout(duration);
-		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY);
+		// Duration duration = Duration.of(5, ChronoUnit.SECONDS);
+		// chromeOptions.setScriptTimeout(duration);
+		// chromeOptions.setPageLoadTimeout(duration);
+		// chromeOptions.setImplicitWaitTimeout(duration);
+		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		curPort++;
 		if (curPort > MAX_PORT) { curPort = MIN_PORT; }
 		return chromeOptions;
