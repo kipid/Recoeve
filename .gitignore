@@ -13,6 +13,7 @@ tmp/
 local.properties
 config.properties
 Config.java
+gitconfig.bat
 .settings/
 .loadpath
 .recommenders
