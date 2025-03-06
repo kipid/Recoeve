@@ -14,8 +14,8 @@ repositories {
 	mavenCentral()
 }
 
-val vertxVersion = "4.5.9"
-val junitJupiterVersion = "5.9.1"
+val vertxVersion = "4.5.13"
+val junitJupiterVersion = "5.12.0"
 
 val mainVerticleName = "recoeve.http.MainVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
@@ -57,6 +57,7 @@ dependencies {
 	testImplementation("io.vertx:vertx-junit5")
 	testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 	implementation("org.seleniumhq.selenium:selenium-java:4.29.0") // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+	implementation("com.microsoft.playwright:playwright:1.42.0") // https://mvnrepository.com/artifact/com.microsoft.playwright/playwright
 }
 
 java {
