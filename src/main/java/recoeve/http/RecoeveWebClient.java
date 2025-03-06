@@ -225,7 +225,7 @@ public class RecoeveWebClient extends AbstractVerticle {
 			"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
 			// "--disable-software-rasterizer",
 			"--disable-blink-features",
-			"--window-size=1920,1080",
+			"--window-size=600,600",
 			"--window-position=-5000,-5000",
 			"--disable-gpu",
 			"--disable-notifications",
