@@ -14,6 +14,7 @@ local.properties
 config.properties
 Config.java
 gitconfig.bat
+gitconfig.sh
 .settings/
 .loadpath
 .recommenders
