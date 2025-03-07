@@ -36,8 +36,6 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public static final WebClientOptions WEB_CLIENT_OPTIONS = new WebClientOptions()
 			.setMaxHeaderSize(20000)
 			.setFollowRedirects(true);
-	public static final int MIN_PORT = 50000;
-	public static final int MAX_PORT = 51000;
 	public static final int DEFAULT_MAX_DRIVERS = 2;
 	public static final long EXPIRES_IN_MS = 210L * 24L * 60L * 60L * 1000L; // 210 days in milliseconds
 	public static final long TIMEOUT_MS = 7200L;
@@ -67,9 +65,10 @@ public class RecoeveWebClient extends AbstractVerticle {
 	public long[] pID = {0, 0};
 	public int maxDrivers;
 	private final ConcurrentLinkedQueue<Page> pagePool;
+	private Playwright playwright;
+	private Browser browser;
 	private BrowserContext browserContext; // 필드로 유지
 	public int recurseCount;
-	public int curPort;
 
 	public RecoeveWebClient(Vertx vertx, Context vertxContext, RecoeveDB db) {
 		this.vertx = vertx;
@@ -80,13 +79,13 @@ public class RecoeveWebClient extends AbstractVerticle {
 		maxDrivers = vertxContext.config().getInteger("maxDrivers", DEFAULT_MAX_DRIVERS);
 		pagePool = new ConcurrentLinkedQueue<>();
 		recurseCount = 0;
-		curPort = MIN_PORT + (int) ((MAX_PORT - MIN_PORT) * Math.random());
 	}
 
 	@Override
 	public void start(Promise<Void> startPromise) {
-		try (Playwright playwright = Playwright.create();
-			 Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))) {
+		try {
+			this.playwright = Playwright.create();
+			this.browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
 			this.browserContext = browser.newContext(getBrowserContextOptions());
 			startPromise.complete();
 		} catch (Exception e) {
@@ -99,6 +98,12 @@ public class RecoeveWebClient extends AbstractVerticle {
 		cleanupPages();
 		if (browserContext != null) {
 			browserContext.close();
+		}
+		if (browser != null) {
+			browser.close();
+		}
+		if (playwright != null) {
+			playwright.close();
 		}
 		stopPromise.complete();
 	}
@@ -482,94 +487,103 @@ public class RecoeveWebClient extends AbstractVerticle {
 			Vertx vertx = Vertx.vertx();
 			RecoeveWebClient recoeveWebClient = new RecoeveWebClient(vertx, vertx.getOrCreateContext(), new RecoeveDB(vertx));
 
-			vertx.setTimer(500L, id -> {
-				String uri = "https://kipid.tistory.com/entry/Lists";
+			// Verticle 배포
+			vertx.deployVerticle(recoeveWebClient, res -> {
+				if (res.succeeded()) {
+					System.out.println("Verticle deployed successfully");
+					vertx.setTimer(500L, id -> {
+						String uri = "https://kipid.tistory.com/entry/Lists";
 
-				final String[] keyUri = new String[]{uri};
-				if (RecoeveDB.getutf8mb4Length(uri) > 255) {
-					keyUri[0] = recoeveWebClient.db.getConciseURI(uri);
-				}
-				ResultSet uriHeads = recoeveWebClient.db.getUriHeads(keyUri[0]);
-
-				try {
-					Timestamp tNow = recoeveWebClient.db.now();
-					if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
-						System.out.println("\nFrom DB\n" + uriHeads.getString("heads"));
-					} else {
-						final Page[] page = new Page[1];
-						try {
-							page[0] = recoeveWebClient.getPage();
-						} catch (Exception err) {
-							System.out.println(err.getMessage());
+						final String[] keyUri = new String[]{uri};
+						if (RecoeveDB.getutf8mb4Length(uri) > 255) {
+							keyUri[0] = recoeveWebClient.db.getConciseURI(uri);
 						}
+						ResultSet uriHeads = recoeveWebClient.db.getUriHeads(keyUri[0]);
+
 						try {
-							if (page[0] == null) {
-								System.out.println("\nError: null Page.");
-								recoeveWebClient.releaseOrOfferPage(page[0]);
-								return;
-							}
-
-							BiConsumer<String, Throwable> writeChunk = (result, error) -> {
-								if (error == null) {
-									try {
-										result = "\n" + result.trim();
-										if (result.isEmpty()) {
-											result = "\nError: Empty result.";
-										}
-										System.out.println(result);
-									} catch (Exception e) {
-										result = "\nError: writing chunk: " + e.getMessage();
-										System.err.println(result);
-									}
-								} else {
-									result = "\nError: in future: " + result + "\n" + error.getMessage();
-									System.err.println(result);
+							Timestamp tNow = recoeveWebClient.db.now();
+							if (uriHeads != null && uriHeads.getTimestamp("tUpdate").after(new Timestamp(tNow.getTime() - EXPIRES_IN_MS))) {
+								System.out.println("\nFrom DB\n" + uriHeads.getString("heads"));
+							} else {
+								final Page[] page = new Page[1];
+								try {
+									page[0] = recoeveWebClient.getPage();
+								} catch (Exception err) {
+									System.out.println(err.getMessage());
 								}
-							};
+								try {
+									if (page[0] == null) {
+										System.out.println("\nError: null Page.");
+										recoeveWebClient.releaseOrOfferPage(page[0]);
+										return;
+									}
 
-							recoeveWebClient.redirected(uri).whenComplete((redirectedURI, err) -> {
-								System.out.println("\nredirectedURI: " + redirectedURI);
-								CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
-								if (err == null) {
-									try {
-										page[0].navigate(redirectedURI);
-										String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
-										CompletableFuture<String> findTitle;
-										CompletableFuture<String> findTitleUntilEveryFound;
-										if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
-											findTitle = recoeveWebClient.asyncFindTitle(page[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
-											findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(page[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, tNow, keyUri[0]);
-										} else {
-											findTitle = recoeveWebClient.asyncFindTitle(page[0], HOST_TO_CSS.get(decomposedURI[0]));
-											findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(page[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, tNow, keyUri[0]);
-										}
-
-										allOf = CompletableFuture.allOf(findTitle, findTitleUntilEveryFound);
-
-										findTitle.whenComplete(writeChunk);
-										findTitleUntilEveryFound.whenComplete(writeChunk);
-
-										allOf.whenComplete((v, error) -> {
-											String errorMsg = "\nComplete with no error. " + v;
-											if (error != null) {
-												errorMsg = "\nError in futures: " + error.getMessage();
+									BiConsumer<String, Throwable> writeChunk = (result, error) -> {
+										if (error == null) {
+											try {
+												result = "\n" + result.trim();
+												if (result.isEmpty()) {
+													result = "\nError: Empty result.";
+												}
+												System.out.println(result);
+											} catch (Exception e) {
+												result = "\nError: writing chunk: " + e.getMessage();
+												System.err.println(result);
 											}
-											System.err.println(errorMsg);
-											recoeveWebClient.releaseOrOfferPage(page[0]);
-										});
-									} catch (Exception e) {
-										System.out.println("\nError: " + e.getMessage());
-										allOf.completeExceptionally(e);
-									}
+										} else {
+											result = "\nError: in future: " + result + "\n" + error.getMessage();
+											System.err.println(result);
+										}
+									};
+
+									recoeveWebClient.redirected(uri).whenComplete((redirectedURI, err) -> {
+										System.out.println("\nredirectedURI: " + redirectedURI);
+										CompletableFuture<Void> allOf = CompletableFuture.runAsync(() -> {});
+										if (err == null) {
+											try {
+												page[0].navigate(redirectedURI);
+												String[] decomposedURI = PrintLog.decomposeURI(redirectedURI);
+												CompletableFuture<String> findTitle;
+												CompletableFuture<String> findTitleUntilEveryFound;
+												if (HOST_TO_CSS.get(decomposedURI[0]) == null) {
+													findTitle = recoeveWebClient.asyncFindTitle(page[0], "title, meta[name='title'], meta[name='og:title'], h1, h2");
+													findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(page[0], "title, meta[name='title'], meta[name='og:title'], h1, h2", uriHeads, tNow, keyUri[0]);
+												} else {
+													findTitle = recoeveWebClient.asyncFindTitle(page[0], HOST_TO_CSS.get(decomposedURI[0]));
+													findTitleUntilEveryFound = recoeveWebClient.asyncFindTitleUntilEveryFound(page[0], HOST_TO_CSS.get(decomposedURI[0]), uriHeads, tNow, keyUri[0]);
+												}
+
+												allOf = CompletableFuture.allOf(findTitle, findTitleUntilEveryFound);
+
+												findTitle.whenComplete(writeChunk);
+												findTitleUntilEveryFound.whenComplete(writeChunk);
+
+												allOf.whenComplete((v, error) -> {
+													String errorMsg = "\nComplete with no error. " + v;
+													if (error != null) {
+														errorMsg = "\nError in futures: " + error.getMessage();
+													}
+													System.err.println(errorMsg);
+													recoeveWebClient.releaseOrOfferPage(page[0]);
+												});
+											} catch (Exception e) {
+												System.out.println("\nError: " + e.getMessage());
+												allOf.completeExceptionally(e);
+											}
+										}
+									});
+								} catch (Exception e) {
+									recoeveWebClient.releaseOrOfferPage(page[0]);
+									System.out.println("Release or Offer page\nException: " + e.getMessage());
 								}
-							});
-						} catch (Exception e) {
-							recoeveWebClient.releaseOrOfferPage(page[0]);
-							System.out.println("Release or Offer page\nException: " + e.getMessage());
+							}
+						} catch (SQLException err) {
+							RecoeveDB.err(err);
 						}
-					}
-				} catch (SQLException err) {
-					RecoeveDB.err(err);
+					});
+				}
+				else {
+					System.out.println("Verticle deployment failed");
 				}
 			});
 		} catch (Exception err) {
