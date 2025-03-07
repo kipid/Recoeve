@@ -926,7 +926,8 @@ textarea.multi-line {
 	padding:.1em .5em;
 	background-color:gray;
 	text-align:center;
-	font-weight:bold
+	font-weight:bold;
+	color:white
 }
 
 .SNS-img {
