@@ -1295,7 +1295,7 @@ textarea.multi-line {
 	width:100%;
 	max-width:100%;
 	margin:0;
-	padding:1px;
+	padding:0;
 	background-color:black;
 	border-bottom:.15em solid white
 }
